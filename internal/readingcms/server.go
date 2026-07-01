@@ -29,6 +29,7 @@ func (s *Server) Handler() http.Handler {
 	mux.HandleFunc("/api/drafts/generate", s.handleGenerate)
 	mux.HandleFunc("/api/drafts/import-text", s.handleImportText)
 	mux.HandleFunc("/api/drafts/import-json", s.handleImportJSON)
+	mux.HandleFunc("/api/drafts/import-json-batch", s.handleImportJSONBatch)
 	mux.HandleFunc("/api/prompts/reading", s.handleReadingPrompt)
 	mux.HandleFunc("/api/published", s.handlePublished)
 	mux.HandleFunc("/api/published/detail", s.handlePublishedDetail)
@@ -66,7 +67,7 @@ func (s *Server) handleDrafts(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	q := r.URL.Query()
-	items, err := s.svc.ListDrafts(q.Get("course_code"), q.Get("level"), q.Get("status"), q.Get("audio"), q.Get("search"))
+	items, err := s.svc.ListDrafts(q.Get("course_code"), q.Get("level"), q.Get("status"), q.Get("audio"), q.Get("cover"), q.Get("search"))
 	if err != nil {
 		writeError(w, http.StatusInternalServerError, err)
 		return
@@ -128,6 +129,24 @@ func (s *Server) handleImportJSON(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, map[string]interface{}{"draft": meta, "document": doc})
 }
 
+func (s *Server) handleImportJSONBatch(w http.ResponseWriter, r *http.Request) {
+	if r.Method != http.MethodPost {
+		methodNotAllowed(w)
+		return
+	}
+	var req ImportJSONBatchRequest
+	if err := readJSON(r, &req); err != nil {
+		writeError(w, http.StatusBadRequest, err)
+		return
+	}
+	resp, err := s.svc.ImportJSONBatch(r.Context(), req)
+	if err != nil {
+		writeError(w, http.StatusBadRequest, err)
+		return
+	}
+	writeJSON(w, resp)
+}
+
 func (s *Server) handleReadingPrompt(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		methodNotAllowed(w)
@@ -154,7 +173,7 @@ func (s *Server) handlePublished(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodGet:
 		q := r.URL.Query()
-		items, err := s.svc.ListPublished(q.Get("course_code"), q.Get("level"), q.Get("search"), q.Get("cover"))
+		items, err := s.svc.ListPublished(q.Get("course_code"), q.Get("level"), q.Get("search"), q.Get("cover"), q.Get("git"))
 		if err != nil {
 			writeError(w, http.StatusInternalServerError, err)
 			return

@@ -52,6 +52,107 @@ func (r *WordRepository) GetWordCard(word string) (*models.WordCard, error) {
 	return r.GetWordCardByLemma(word)
 }
 
+// GetWordCardsByIDs retrieves multiple word cards in a single query, keyed by ID. IDs not found
+// in the database are simply absent from the returned map.
+func (r *WordRepository) GetWordCardsByIDs(ids []int64) (map[int64]*models.WordCard, error) {
+	result := make(map[int64]*models.WordCard, len(ids))
+	if len(ids) == 0 {
+		return result, nil
+	}
+
+	placeholders := strings.TrimSuffix(strings.Repeat("?,", len(ids)), ",")
+	query := `SELECT id, word, definition, pos, noun_gender, opposite_gender_word, transcription, definition_ru,
+			  examples_json, verb_forms_json, display_en,
+			  COALESCE(CAST(processed_at AS TEXT), '') as processed_at,
+			  COALESCE(processing_error, '') as processing_error,
+			  COALESCE(course_code, '') as course_code,
+			  CAST(created_at AS TEXT) as created_at,
+			  CAST(updated_at AS TEXT) as updated_at
+			  FROM word_cards
+			  WHERE id IN (` + placeholders + `)`
+
+	args := make([]interface{}, len(ids))
+	for i, id := range ids {
+		args[i] = id
+	}
+
+	rows, err := r.db.Query(query, args...)
+	if err != nil {
+		return nil, fmt.Errorf("failed to get word cards: %w", err)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var card models.WordCard
+		var createdAt, updatedAt, processedAtStr, processingErrorStr string
+		var pos, nounGender, oppositeGenderWord, transcription, definitionRU, examplesJSON, verbFormsJSON, displayEN sql.NullString
+
+		if err := rows.Scan(
+			&card.ID,
+			&card.Word,
+			&card.Definition,
+			&pos,
+			&nounGender,
+			&oppositeGenderWord,
+			&transcription,
+			&definitionRU,
+			&examplesJSON,
+			&verbFormsJSON,
+			&displayEN,
+			&processedAtStr,
+			&processingErrorStr,
+			&card.CourseCode,
+			&createdAt,
+			&updatedAt,
+		); err != nil {
+			return nil, fmt.Errorf("failed to scan word card: %w", err)
+		}
+
+		card.CreatedAt, _ = time.Parse("2006-01-02 15:04:05", createdAt)
+		card.UpdatedAt, _ = time.Parse("2006-01-02 15:04:05", updatedAt)
+
+		if pos.Valid {
+			card.POS = &pos.String
+		}
+		if nounGender.Valid {
+			card.NounGender = &nounGender.String
+		}
+		if oppositeGenderWord.Valid {
+			card.OppositeGenderWord = &oppositeGenderWord.String
+		}
+		if transcription.Valid {
+			card.Transcription = &transcription.String
+		}
+		if definitionRU.Valid {
+			card.DefinitionRU = &definitionRU.String
+		}
+		if examplesJSON.Valid {
+			card.ExamplesJSON = &examplesJSON.String
+		}
+		if verbFormsJSON.Valid {
+			card.VerbFormsJSON = &verbFormsJSON.String
+		}
+		if displayEN.Valid {
+			card.DisplayEN = &displayEN.String
+		}
+		if processedAtStr != "" {
+			processedAt, _ := time.Parse("2006-01-02 15:04:05", processedAtStr)
+			card.ProcessedAt = &processedAt
+		}
+		if processingErrorStr != "" {
+			card.ProcessingError = &processingErrorStr
+		}
+
+		models.SyncWordCardNeutralAliases(&card)
+		result[card.ID] = &card
+	}
+	if err := rows.Err(); err != nil {
+		return nil, fmt.Errorf("failed to iterate word cards: %w", err)
+	}
+
+	return result, nil
+}
+
 // GetWordCardByID retrieves a word card by ID
 func (r *WordRepository) GetWordCardByID(id int64) (*models.WordCard, error) {
 	query := `SELECT id, word, definition, pos, noun_gender, opposite_gender_word, transcription, definition_ru,

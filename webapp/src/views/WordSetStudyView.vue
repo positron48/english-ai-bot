@@ -12,7 +12,9 @@
     <div v-if="loading" class="loading">{{ t('wordSets.loadingWords') }}</div>
     <div v-else-if="error" class="error">{{ error }}</div>
     <div v-else-if="currentWord" class="study-card">
-      <div v-if="loadingCard" class="loading">{{ t('wordSets.loadingCard') }}</div>
+      <div v-if="loadingCard" class="loading">
+        {{ loadingCardGenerating ? t('wordSets.generatingCard') : t('wordSets.loadingCard') }}
+      </div>
       <div v-else-if="currentTrainingCard" class="word-display">
         <h2>{{ currentTrainingCard.display_target || currentTrainingCard.display_word || currentTrainingCard.word_target || currentTrainingCard.word_en || currentWord.display_target || currentWord.display_word || currentWord.word }}</h2>
         <div v-if="currentTrainingCard.transcription" class="transcription-with-audio">
@@ -134,6 +136,10 @@ const words = ref<WordInfo[]>([])
 const currentIndex = ref(0)
 const processing = ref(false)
 const loadingCard = ref(false)
+// True once a card fetch has been pending longer than typical DB round-trip time — signals the
+// backend is likely generating a brand-new training card via AI, not just fetching an existing one.
+const loadingCardGenerating = ref(false)
+let loadingCardGeneratingTimer: ReturnType<typeof setTimeout> | null = null
 const currentTrainingCard = ref<TrainingCard | null>(null)
 const currentPronunciationURL = ref<string | null>(null)
 const playingPronunciation = ref(false)
@@ -199,8 +205,13 @@ let loadTrainingCardGen = 0
 const loadTrainingCard = async (wordCardId: number) => {
   const gen = ++loadTrainingCardGen
   loadingCard.value = true
+  loadingCardGenerating.value = false
   currentTrainingCard.value = null
   currentPronunciationURL.value = null
+  if (loadingCardGeneratingTimer) clearTimeout(loadingCardGeneratingTimer)
+  loadingCardGeneratingTimer = setTimeout(() => {
+    if (gen === loadTrainingCardGen) loadingCardGenerating.value = true
+  }, 600)
   try {
     const data: { training_card: TrainingCard } = 
       await apiClient.request(`/api/learning/words/sets/${setId}/study?word_card_id=${wordCardId}`)
@@ -240,7 +251,12 @@ const loadTrainingCard = async (wordCardId: number) => {
     }
   } finally {
     if (gen === loadTrainingCardGen) {
+      if (loadingCardGeneratingTimer) {
+        clearTimeout(loadingCardGeneratingTimer)
+        loadingCardGeneratingTimer = null
+      }
       loadingCard.value = false
+      loadingCardGenerating.value = false
     }
   }
 }

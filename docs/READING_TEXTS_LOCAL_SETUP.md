@@ -31,7 +31,7 @@ Workflow:
 
 1. **Generate** — batch LLM (`COUNT`, `LEVEL`, `FORMAT`); опционально TTS сразу.
 2. **Import plain text** — вставить готовый текст; LLM (`--input-text`) преобразует в сегменты/переводы/вопросы/диалоги, по умолчанию сразу TTS и **auto-publish** в course (можно отключить чекбоксами в UI).
-3. **Import JSON** — готовый JSON **без LLM**: назначение голосов, TTS, publish (кнопки «Скопировать промпт» — course-specific промпт для внешней модели).
+3. **Import JSON** — готовый JSON **без LLM**: один объект, массив объектов, несколько объектов подряд или `.json` файл; CMS назначает голоса, делает TTS и publish (кнопки «Скопировать промпт» — course-specific промпт для внешней модели).
 4. **Preview** — открыть черновик, при необходимости править JSON.
 5. **Approve / Generate audio / Publish** — для generate-flow или JSON-import без автопубликации.
 6. **Delete** — удаление из course/bundle.
@@ -45,6 +45,59 @@ make check
 ```
 
 CMS **не** встроена в prod runtime и **не** требует admin login.
+
+### 0.1 Как CMS генерит / импортирует reading-тексты
+
+Есть три режима:
+
+1. **Generate**: UI вызывает `POST /api/drafts/generate`; backend запускает `courses/<course>/scripts/generate-reading-text.py` без входного текста. Скрипт строит course-specific LLM prompt, получает JSON (`title_short`, `segments`, `vocab_focus`, `questions`), назначает голоса и пишет временный reading catalog. CMS переносит результат в `.local/reading-cms/drafts/`.
+2. **Import plain text**: UI вызывает `POST /api/drafts/import-text`; backend запускает тот же `generate-reading-text.py --input-text`. LLM сохраняет смысл исходного текста, но раскладывает его в сегменты, переводы, вопросы и словарь.
+3. **Import JSON / batch JSON**: UI вызывает `POST /api/drafts/import-json` или `POST /api/drafts/import-json-batch`; LLM не используется. CMS принимает уже готовый JSON, запускает `generate-reading-text.py --input-json`, чтобы назначить `voice_id`, `audio_rel_path`, токены, сгенерировать TTS и опционально сразу опубликовать.
+
+Batch JSON в UI принимает:
+
+- один JSON-объект;
+- JSON-массив объектов;
+- несколько JSON-объектов подряд;
+- `.json` файл через file picker.
+
+Готовый пример для NPC: `tools/reading-cms/batches/es_ru_npc_stories.json`.
+
+Минимальная схема входного JSON:
+
+```json
+{
+  "title_short": "La canción de Lucía",
+  "level": "A1",
+  "segments": [
+    {
+      "segment_id": "s1",
+      "speaker_id": "speaker_a",
+      "speaker_gender": "female",
+      "text": "Lucía canta en la plaza.",
+      "text_translation_ru": "Лусия поёт на площади."
+    }
+  ],
+  "vocab_focus": ["canta", "plaza"],
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "Лусия поёт на площади.",
+      "type": "true_false",
+      "correct_answer": "true",
+      "explanation": "В тексте сказано: canta en la plaza."
+    }
+  ]
+}
+```
+
+Важно:
+
+- `text` всегда на изучаемом языке курса (`es` для `es_ru`, `en` для `en_ru`);
+- `text_translation_ru`, `questions.prompt`, `questions.explanation` — на русском;
+- для диалогов используйте стабильные `speaker_id` (`speaker_a`, `speaker_b`) и `speaker_gender`;
+- для нарратива можно использовать `speaker_id: "narrator"` и импортировать с `Format = narrative`;
+- итоговый опубликованный документ уже будет иметь полный формат `reading/texts/<text_id>.json`: `id`, `category_id`, `reading_passage.segments[].voice_id`, `audio_rel_path`, `tokens`.
 
 ## 1) Как устроен выбор голоса
 

@@ -28,3 +28,5 @@ Dockerfile ships `/app/import_spanish_verbs`, `/app/backfill_word_verb_links`,
 - **One-time per DB** (`linglow_unified` after merge): `import_spanish_verbs` (Jehle + haber) + `backfill_word_verb_links`.
 - **Every rollout**: initContainer runs `sync_verb_training_json` (GitOps: `devops-time-host/apps/linglow/base/deployment.yaml`).
 - Operator runbook: `devops-time-host/apps/linglow/RELEASE_K3S.md` §2.7.
+
+## Imported Claude Cowork project instructions

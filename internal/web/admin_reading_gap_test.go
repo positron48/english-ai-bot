@@ -245,11 +245,11 @@ func TestAdminReadingGap_HandleAdminReadingTexts_RoutesAnd405(t *testing.T) {
 		}
 	})
 
-	t.Run("DELETE", func(t *testing.T) {
+	t.Run("DELETE method not allowed", func(t *testing.T) {
 		req := httptest.NewRequest(http.MethodDelete, "/api/admin/reading/texts/route-text?course_code=en_ru", nil)
 		rr := httptest.NewRecorder()
 		router.handleAdminReadingTexts(rr, req)
-		if rr.Code != http.StatusOK {
+		if rr.Code != http.StatusMethodNotAllowed {
 			t.Fatalf("DELETE status = %d: %s", rr.Code, rr.Body.String())
 		}
 	})
@@ -443,8 +443,8 @@ func TestAdminReadingGap_HandleAdminReadingTextDelete_Validation(t *testing.T) {
 
 func TestAdminReadingGap_HandleAdminReadingTextDelete_DBOnlySuccess(t *testing.T) {
 	router, db := adminReadingGapRouter(t, config.LearningConfig{
-		TargetLang:    "en",
-		ContentSource: "db",
+		TargetLang:      "en",
+		ContentSource:   "db",
 		GrammarBundleID: "zz-no-bundle",
 	})
 	adminReadingGapSeedCatalog(t, db, repository.ReadingTextUpsert{

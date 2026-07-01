@@ -9,6 +9,7 @@ import (
 	"strings"
 	"time"
 
+	"tgbot-skeleton/internal/cache"
 	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/learning"
 	"tgbot-skeleton/internal/models"
@@ -335,6 +336,14 @@ func (r *Router) SetSpeakingEvaluator(evaluator *service.SpeakingEvaluatorServic
 // SetOTPRepo sets the OTP repository
 func (r *Router) SetOTPRepo(otpRepo *repository.WebOTPRepository) {
 	r.otpRepo = otpRepo
+}
+
+// SetCourseMapCache wires an optional cache used to avoid recomputing the (course-wide, static)
+// portion of the Linglow course map on every request. c may be nil.
+func (r *Router) SetCourseMapCache(c cache.Cache) {
+	if r.courseRepo != nil {
+		r.courseRepo.SetCourseMapCache(c)
+	}
 }
 
 // getAuthMiddleware returns the auth middleware

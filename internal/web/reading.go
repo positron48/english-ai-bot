@@ -465,17 +465,14 @@ func (r *Router) handleReadingWordLookup(w http.ResponseWriter, req *http.Reques
 	}
 	if !isKnown {
 		wordSetService := r.getWordSetService()
-		if err := wordSetService.EnsureTrainingCardsExist(req.Context(), wordCardID); err != nil {
-			r.logger.Warn("reading word lookup: failed to ensure training cards", zap.Int64("word_card_id", wordCardID), zap.Error(err))
-		}
-		if err := wordSetService.EnsureUserCardsForWord(userID, wordCardID); err != nil {
-			r.logger.Error("reading word lookup: failed to create user cards", zap.Int64("user_id", userID), zap.Int64("word_card_id", wordCardID), zap.Error(err))
+		if err := wordSetService.EnsureCardsForWord(req.Context(), userID, wordCardID); err != nil {
+			r.logger.Error("reading word lookup: failed to ensure cards", zap.Int64("user_id", userID), zap.Int64("word_card_id", wordCardID), zap.Error(err))
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			return
 		}
 	}
 
-	r.handleVocabWordCards(w, req, userID, canonicalLemma)
+	r.handleVocabWordCardsByID(w, req, userID, wordCardID, canonicalLemma)
 }
 
 type readingWordLookupService interface {

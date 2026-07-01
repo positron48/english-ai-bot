@@ -14,6 +14,7 @@ import (
 	"time"
 
 	"tgbot-skeleton/internal/ai"
+	"tgbot-skeleton/internal/cache"
 	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/database"
 	"tgbot-skeleton/internal/grammarbundle"
@@ -24,17 +25,18 @@ import (
 	"tgbot-skeleton/internal/wordsetimport"
 
 	tgbotapi "github.com/go-telegram-bot-api/telegram-bot-api/v5"
+	"github.com/redis/go-redis/v9"
 	"go.uber.org/zap"
 )
 
 // Bot represents the Telegram bot
 type Bot struct {
-	api                  *tgbotapi.BotAPI
-	config               *config.Config
-	logger               *zap.Logger
-	handler              *Handler
-	db                   *database.DB
-	trainingWorker       *service.TrainingWorker
+	api            *tgbotapi.BotAPI
+	config         *config.Config
+	logger         *zap.Logger
+	handler        *Handler
+	db             *database.DB
+	trainingWorker *service.TrainingWorker
 	// trainingWorkers holds per-course workers when training.multi_course is enabled
 	// (one worker per active course on the unified DB). Empty in single-course mode.
 	trainingWorkers      []*service.TrainingWorker
@@ -94,6 +96,27 @@ func New(cfg *config.Config, log *zap.Logger) (*Bot, error) {
 	if err != nil {
 		return nil, fmt.Errorf("failed to initialize database: %w", err)
 	}
+
+	// Redis is optional and provisioned separately in the cluster; an unreachable or unconfigured
+	// Redis must never block startup — course-map caching just stays disabled (see internal/cache).
+	var redisClient *redis.Client
+	if addr := strings.TrimSpace(cfg.Redis.Addr); addr != "" {
+		redisClient = redis.NewClient(&redis.Options{
+			Addr:     addr,
+			Password: cfg.Redis.Password,
+			DB:       cfg.Redis.DB,
+		})
+		pingCtx, cancel := context.WithTimeout(context.Background(), 2*time.Second)
+		pingErr := redisClient.Ping(pingCtx).Err()
+		cancel()
+		if pingErr != nil {
+			log.Warn("redis unreachable at startup, course-map caching disabled", zap.String("addr", addr), zap.Error(pingErr))
+			redisClient = nil
+		} else {
+			log.Info("redis connected", zap.String("addr", addr))
+		}
+	}
+	courseMapCache := cache.NewRedisCache(redisClient, log)
 
 	// Create AI service
 	aiHTTPTimeout := ai.ParseHTTPTimeout(cfg.AI.RequestTimeout)
@@ -472,6 +495,7 @@ func New(cfg *config.Config, log *zap.Logger) (*Bot, error) {
 		cbService,
 	)
 	webRouter.SetDependencies(userRepo, wordService, aiService, bot, cfg.Telegram.Token)
+	webRouter.SetCourseMapCache(courseMapCache)
 	webRouter.SetOTPRepo(otpRepo)
 	webRouter.SetGrammarService(grammarService)
 	webRouter.SetGrammarServices(grammarServicesByBundle)

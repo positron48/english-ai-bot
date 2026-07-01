@@ -1,0 +1,938 @@
+[
+  {
+    "title_short": "Mara y la taza azul",
+    "level": "A0",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "speaker_a",
+        "speaker_gender": "neutral",
+        "text": "Hola, Mara. ¿Esta taza es tuya?",
+        "text_translation_ru": "Привет, Мара. Эта чашка твоя?"
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "female",
+        "text": "Sí, es mi taza azul.",
+        "text_translation_ru": "Да, это моя синяя чашка."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "speaker_a",
+        "speaker_gender": "neutral",
+        "text": "¿Por qué está aquí?",
+        "text_translation_ru": "Почему она здесь?"
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "female",
+        "text": "La calle tiene sol hoy.",
+        "text_translation_ru": "На улице сегодня солнце."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "female",
+        "text": "Yo vendo café fuera.",
+        "text_translation_ru": "Я продаю кофе снаружи."
+      },
+      {
+        "segment_id": "s6",
+        "speaker_id": "speaker_a",
+        "speaker_gender": "neutral",
+        "text": "Entonces la plaza huele a café.",
+        "text_translation_ru": "Значит, площадь пахнет кофе."
+      }
+    ],
+    "vocab_focus": ["taza", "azul", "calle", "sol", "café", "plaza"],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "У Мары синяя чашка.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Мара говорит: es mi taza azul."
+      },
+      {
+        "id": "q2",
+        "prompt": "Мара продаёт чай внутри кафе.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "Она продаёт кофе снаружи."
+      },
+      {
+        "id": "q3",
+        "prompt": "Сегодня на улице солнечно.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Мара говорит, что на улице сегодня солнце."
+      }
+    ]
+  },
+  {
+    "title_short": "La libreta de Sam",
+    "level": "A1",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "speaker_a",
+        "speaker_gender": "neutral",
+        "text": "Sam, siempre sabes dónde está todo en la tienda.",
+        "text_translation_ru": "Сэм, ты всегда знаешь, где что лежит в магазине."
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "male",
+        "text": "Tengo una libreta pequeña detrás del mostrador.",
+        "text_translation_ru": "У меня есть маленькая тетрадь за прилавком."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "speaker_a",
+        "speaker_gender": "neutral",
+        "text": "¿Es una lista de productos?",
+        "text_translation_ru": "Это список товаров?"
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "male",
+        "text": "Sí, y también una lista de vecinos.",
+        "text_translation_ru": "Да, а ещё список соседей."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "male",
+        "text": "Así recuerdo quién necesita agua, pan o pilas.",
+        "text_translation_ru": "Так я помню, кому нужна вода, хлеб или батарейки."
+      },
+      {
+        "segment_id": "s6",
+        "speaker_id": "speaker_a",
+        "speaker_gender": "neutral",
+        "text": "Tu tienda parece pequeña, pero ayuda mucho.",
+        "text_translation_ru": "Твой магазин кажется маленьким, но очень помогает."
+      }
+    ],
+    "vocab_focus": ["tienda", "libreta", "mostrador", "vecinos", "agua", "pan"],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "У Сэма есть маленькая тетрадь.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Он говорит, что держит маленькую тетрадь за прилавком."
+      },
+      {
+        "id": "q2",
+        "prompt": "Сэм записывает только цены.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "Он записывает товары и соседей, которым что-то нужно."
+      },
+      {
+        "id": "q3",
+        "prompt": "Магазин Сэма помогает району.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Собеседник говорит, что магазин очень помогает."
+      }
+    ]
+  },
+  {
+    "title_short": "La caja de Officer Park",
+    "level": "A2",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "speaker_a",
+        "speaker_gender": "neutral",
+        "text": "Officer Park, ¿por qué hay una caja con paraguas en la entrada?",
+        "text_translation_ru": "Офицер Парк, почему у входа коробка с зонтиками?"
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "male",
+        "text": "No son pruebas. Son objetos perdidos de la semana.",
+        "text_translation_ru": "Это не улики. Это потерянные вещи за неделю."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "speaker_a",
+        "speaker_gender": "neutral",
+        "text": "¿La gente vuelve por cosas tan pequeñas?",
+        "text_translation_ru": "Люди возвращаются за такими мелкими вещами?"
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "male",
+        "text": "Sí. A veces un paraguas tiene una historia familiar.",
+        "text_translation_ru": "Да. Иногда у зонтика есть семейная история."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "male",
+        "text": "Mi primer caso aquí fue devolver una bufanda roja.",
+        "text_translation_ru": "Моим первым делом здесь было вернуть красный шарф."
+      },
+      {
+        "segment_id": "s6",
+        "speaker_id": "speaker_a",
+        "speaker_gender": "neutral",
+        "text": "Entonces la comisaría también guarda recuerdos.",
+        "text_translation_ru": "Значит, участок хранит ещё и воспоминания."
+      }
+    ],
+    "vocab_focus": ["caja", "paraguas", "entrada", "objetos perdidos", "bufanda", "recuerdos"],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "В коробке лежат потерянные вещи.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Officer Park говорит: objetos perdidos de la semana."
+      },
+      {
+        "id": "q2",
+        "prompt": "Первым делом Officer Park было вернуть красный шарф.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Он прямо упоминает bufanda roja."
+      },
+      {
+        "id": "q3",
+        "prompt": "Officer Park считает зонтики уликами.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "Он говорит, что это не улики."
+      }
+    ]
+  },
+  {
+    "title_short": "El cuaderno de Inés",
+    "level": "A2",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "speaker_a",
+        "speaker_gender": "neutral",
+        "text": "Inés, siempre tienes un cuaderno verde en la mesa.",
+        "text_translation_ru": "Инес, у тебя на столе всегда зелёная тетрадь."
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "female",
+        "text": "Es para recordar frases que ayudan a respirar mejor.",
+        "text_translation_ru": "Она нужна, чтобы помнить фразы, которые помогают лучше дышать."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "speaker_a",
+        "speaker_gender": "neutral",
+        "text": "¿Las escribes durante las sesiones?",
+        "text_translation_ru": "Ты записываешь их во время сессий?"
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "female",
+        "text": "No escribo secretos. Escribo ideas simples y útiles.",
+        "text_translation_ru": "Я не записываю секреты. Я записываю простые и полезные идеи."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "female",
+        "text": "Una vez, una niña dibujó una ventana abierta aquí.",
+        "text_translation_ru": "Однажды девочка нарисовала здесь открытое окно."
+      },
+      {
+        "segment_id": "s6",
+        "speaker_id": "speaker_a",
+        "speaker_gender": "neutral",
+        "text": "Ahora el cuaderno parece un lugar tranquilo.",
+        "text_translation_ru": "Теперь тетрадь кажется спокойным местом."
+      }
+    ],
+    "vocab_focus": ["cuaderno", "mesa", "respirar", "sesiones", "secretos", "ventana"],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "Инес записывает секреты клиентов.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "Она говорит, что не записывает секреты."
+      },
+      {
+        "id": "q2",
+        "prompt": "Тетрадь Инес зелёная.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "В первой реплике сказано cuaderno verde."
+      },
+      {
+        "id": "q3",
+        "prompt": "Девочка однажды нарисовала открытое окно.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Инес рассказывает именно об этом рисунке."
+      }
+    ]
+  },
+  {
+    "title_short": "La llave del profesor",
+    "level": "B1",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "speaker_a",
+        "speaker_gender": "neutral",
+        "text": "Profesor Martín Sol, ¿por qué lleva una llave antigua en el bolsillo?",
+        "text_translation_ru": "Профессор Мартин Соль, почему вы носите в кармане старый ключ?"
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "male",
+        "text": "No abre ninguna puerta de la universidad actual.",
+        "text_translation_ru": "Он не открывает ни одну дверь нынешнего университета."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "male",
+        "text": "Era de la primera aula donde di clase.",
+        "text_translation_ru": "Он был от первой аудитории, где я преподавал."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "speaker_a",
+        "speaker_gender": "neutral",
+        "text": "¿Lo guarda por nostalgia?",
+        "text_translation_ru": "Вы храните его из ностальгии?"
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "male",
+        "text": "Por memoria y por humildad: aquel día olvidé mi propio tema.",
+        "text_translation_ru": "Из-за памяти и смирения: в тот день я забыл собственную тему."
+      },
+      {
+        "segment_id": "s6",
+        "speaker_id": "speaker_a",
+        "speaker_gender": "neutral",
+        "text": "Entonces enseña que hasta un profesor empieza con miedo.",
+        "text_translation_ru": "Значит, он показывает, что даже профессор начинает со страха."
+      }
+    ],
+    "vocab_focus": ["llave", "bolsillo", "universidad", "aula", "nostalgia", "humildad"],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "Ключ открывает дверь современного университета.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "Профессор говорит, что он не открывает нынешние двери."
+      },
+      {
+        "id": "q2",
+        "prompt": "Ключ связан с первой аудиторией профессора.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Он говорит, что ключ был от первой аудитории."
+      },
+      {
+        "id": "q3",
+        "prompt": "В первый день профессор забыл свою тему.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Он называет это причиной хранить ключ с humildad."
+      }
+    ]
+  },
+  {
+    "title_short": "La planta de Doña Pilar",
+    "level": "A1",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "speaker_a",
+        "speaker_gender": "neutral",
+        "text": "Doña Pilar, la farmacia huele a menta hoy.",
+        "text_translation_ru": "Донья Пилар, сегодня аптека пахнет мятой."
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "female",
+        "text": "Es mi planta. Vive junto a la ventana.",
+        "text_translation_ru": "Это моё растение. Оно живёт у окна."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "speaker_a",
+        "speaker_gender": "neutral",
+        "text": "¿La usas para medicinas?",
+        "text_translation_ru": "Ты используешь его для лекарств?"
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "female",
+        "text": "No, solo para saludar mejor a la gente.",
+        "text_translation_ru": "Нет, только чтобы лучше встречать людей."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "female",
+        "text": "Cuando alguien está nervioso, mira la planta primero.",
+        "text_translation_ru": "Когда кто-то нервничает, он сначала смотрит на растение."
+      },
+      {
+        "segment_id": "s6",
+        "speaker_id": "speaker_a",
+        "speaker_gender": "neutral",
+        "text": "Entonces también cuidas con calma.",
+        "text_translation_ru": "Значит, ты лечишь ещё и спокойствием."
+      }
+    ],
+    "vocab_focus": ["farmacia", "menta", "planta", "ventana", "medicinas", "nervioso"],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "В аптеке пахнет мятой.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Первая реплика говорит об этом."
+      },
+      {
+        "id": "q2",
+        "prompt": "Донья Пилар использует растение для лекарств.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "Она говорит: No, solo para saludar mejor."
+      },
+      {
+        "id": "q3",
+        "prompt": "Растение стоит у окна.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Пилар говорит, что растение живёт у окна."
+      }
+    ]
+  },
+  {
+    "title_short": "La bicicleta del doctor",
+    "level": "A2",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "speaker_a",
+        "speaker_gender": "neutral",
+        "text": "Doctor Mateo, ¿viene a la clínica en bicicleta?",
+        "text_translation_ru": "Доктор Матео, вы приезжаете в клинику на велосипеде?"
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "male",
+        "text": "Sí, casi todos los días, si no llueve demasiado.",
+        "text_translation_ru": "Да, почти каждый день, если не слишком сильный дождь."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "speaker_a",
+        "speaker_gender": "neutral",
+        "text": "Pensé que los médicos siempre tenían prisa.",
+        "text_translation_ru": "Я думал, что врачи всегда спешат."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "male",
+        "text": "Precisamente por eso pedaleo despacio antes de trabajar.",
+        "text_translation_ru": "Именно поэтому я медленно еду на велосипеде перед работой."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "male",
+        "text": "Me ayuda a escuchar mejor a la primera persona.",
+        "text_translation_ru": "Это помогает мне лучше слушать первого пациента."
+      },
+      {
+        "segment_id": "s6",
+        "speaker_id": "speaker_a",
+        "speaker_gender": "neutral",
+        "text": "Entonces su mañana empieza antes de la consulta.",
+        "text_translation_ru": "Значит, ваше утро начинается до приёма."
+      }
+    ],
+    "vocab_focus": ["clínica", "bicicleta", "llueve", "médicos", "despacio", "consulta"],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "Доктор Матео часто приезжает на велосипеде.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Он говорит: casi todos los días."
+      },
+      {
+        "id": "q2",
+        "prompt": "Он едет быстро, чтобы успеть на работу.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "Он говорит, что едет медленно."
+      },
+      {
+        "id": "q3",
+        "prompt": "Поездка помогает ему лучше слушать пациента.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Матео прямо говорит, что это помогает слушать."
+      }
+    ]
+  },
+  {
+    "title_short": "El paraguas sin lluvia",
+    "level": "A1",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "speaker_a",
+        "speaker_gender": "neutral",
+        "text": "Señor, hoy no llueve. ¿Por qué trae paraguas?",
+        "text_translation_ru": "Сеньор, сегодня нет дождя. Почему вы несёте зонт?"
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "male",
+        "text": "Este paraguas no es solo para la lluvia.",
+        "text_translation_ru": "Этот зонт не только для дождя."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "speaker_a",
+        "speaker_gender": "neutral",
+        "text": "¿También es para el sol?",
+        "text_translation_ru": "Он ещё и для солнца?"
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "male",
+        "text": "Sí, y para recordar a mi abuela.",
+        "text_translation_ru": "Да, и чтобы помнить мою бабушку."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "male",
+        "text": "Ella decía: una sombra pequeña cambia un día largo.",
+        "text_translation_ru": "Она говорила: маленькая тень меняет длинный день."
+      },
+      {
+        "segment_id": "s6",
+        "speaker_id": "speaker_a",
+        "speaker_gender": "neutral",
+        "text": "Ahora su paraguas parece una historia.",
+        "text_translation_ru": "Теперь ваш зонт похож на историю."
+      }
+    ],
+    "vocab_focus": ["llueve", "paraguas", "lluvia", "sol", "abuela", "sombra"],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "Сегодня идёт дождь.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "Собеседник говорит: hoy no llueve."
+      },
+      {
+        "id": "q2",
+        "prompt": "Зонт напоминает мужчине о бабушке.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Он говорит: para recordar a mi abuela."
+      },
+      {
+        "id": "q3",
+        "prompt": "Бабушка говорила о маленькой тени.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "В тексте есть фраза про una sombra pequeña."
+      }
+    ]
+  },
+  {
+    "title_short": "La libreta de Carmen",
+    "level": "B1",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "speaker_a",
+        "speaker_gender": "neutral",
+        "text": "Carmen Sombra, su libreta está llena de dibujos de esquinas.",
+        "text_translation_ru": "Кармен Сомбра, ваша тетрадь полна рисунков углов улиц."
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "female",
+        "text": "Las esquinas cuentan más que los carteles grandes.",
+        "text_translation_ru": "Углы рассказывают больше, чем большие плакаты."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "speaker_a",
+        "speaker_gender": "neutral",
+        "text": "¿Aprendió eso investigando el mural perdido?",
+        "text_translation_ru": "Вы узнали это, расследуя пропавшую фреску?"
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "female",
+        "text": "Lo aprendí antes, cuando vendía periódicos de niña.",
+        "text_translation_ru": "Я узнала это раньше, когда в детстве продавала газеты."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "female",
+        "text": "La gente deja pistas cuando cree que nadie mira.",
+        "text_translation_ru": "Люди оставляют подсказки, когда думают, что никто не смотрит."
+      },
+      {
+        "segment_id": "s6",
+        "speaker_id": "speaker_a",
+        "speaker_gender": "neutral",
+        "text": "Entonces su detective empezó en una esquina normal.",
+        "text_translation_ru": "Значит, ваш детектив начался на обычном углу."
+      }
+    ],
+    "vocab_focus": ["libreta", "dibujos", "esquinas", "carteles", "periódicos", "pistas"],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "Кармен рисует углы улиц в тетради.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "В первой реплике сказано, что тетрадь полна таких рисунков."
+      },
+      {
+        "id": "q2",
+        "prompt": "Кармен в детстве продавала газеты.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Она говорит: vendía periódicos de niña."
+      },
+      {
+        "id": "q3",
+        "prompt": "Кармен считает, что большие плакаты рассказывают больше углов.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "Она говорит наоборот: углы рассказывают больше."
+      }
+    ]
+  },
+  {
+    "title_short": "Rafa y el asiento delantero",
+    "level": "A2",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "speaker_a",
+        "speaker_gender": "neutral",
+        "text": "Rafa, ¿por qué saluda a cada persona que sube al autobús?",
+        "text_translation_ru": "Рафа, почему вы здороваетесь с каждым, кто входит в автобус?"
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "male",
+        "text": "Porque el viaje empieza mejor con una palabra amable.",
+        "text_translation_ru": "Потому что поездка лучше начинается с доброго слова."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "speaker_a",
+        "speaker_gender": "neutral",
+        "text": "¿No se cansa de repetir lo mismo?",
+        "text_translation_ru": "Вы не устаёте повторять одно и то же?"
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "male",
+        "text": "No, cada saludo tiene una cara diferente.",
+        "text_translation_ru": "Нет, у каждого приветствия своё лицо."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "male",
+        "text": "De niño, mi madre conducía esta misma línea.",
+        "text_translation_ru": "В детстве моя мама водила этот же маршрут."
+      },
+      {
+        "segment_id": "s6",
+        "speaker_id": "speaker_a",
+        "speaker_gender": "neutral",
+        "text": "Entonces usted también conduce un recuerdo.",
+        "text_translation_ru": "Значит, вы ведёте ещё и воспоминание."
+      }
+    ],
+    "vocab_focus": ["saluda", "autobús", "viaje", "palabra", "línea", "recuerdo"],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "Рафа здоровается с пассажирами.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Первая реплика спрашивает, почему он это делает."
+      },
+      {
+        "id": "q2",
+        "prompt": "Мать Рафы водила этот же маршрут.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Рафа говорит: mi madre conducía esta misma línea."
+      },
+      {
+        "id": "q3",
+        "prompt": "Рафа считает каждое приветствие одинаковым.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "Он говорит, что у каждого приветствия разное лицо."
+      }
+    ]
+  },
+  {
+    "title_short": "La canción de Lucía",
+    "level": "A1",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "speaker_a",
+        "speaker_gender": "neutral",
+        "text": "Lucía, ¿por qué cantas en la plaza?",
+        "text_translation_ru": "Лусия, почему ты поёшь на площади?"
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "female",
+        "text": "Porque aquí pasa mucha gente tranquila.",
+        "text_translation_ru": "Потому что здесь проходит много спокойных людей."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "speaker_a",
+        "speaker_gender": "neutral",
+        "text": "¿No tienes un teatro?",
+        "text_translation_ru": "У тебя нет театра?"
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "female",
+        "text": "Sí, pero hoy el teatro está cerrado.",
+        "text_translation_ru": "Есть, но сегодня театр закрыт."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "female",
+        "text": "Mi vecina cumple años y escucha desde su balcón.",
+        "text_translation_ru": "У моей соседки день рождения, и она слушает с балкона."
+      },
+      {
+        "segment_id": "s6",
+        "speaker_id": "speaker_a",
+        "speaker_gender": "neutral",
+        "text": "Entonces la calle es tu escenario hoy.",
+        "text_translation_ru": "Значит, сегодня улица — твоя сцена."
+      }
+    ],
+    "vocab_focus": ["cantas", "plaza", "gente", "teatro", "vecina", "balcón"],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "Лусия поёт на площади.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Собеседник прямо спрашивает, почему она поёт на площади."
+      },
+      {
+        "id": "q2",
+        "prompt": "Сегодня театр открыт.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "Лусия говорит, что театр закрыт."
+      },
+      {
+        "id": "q3",
+        "prompt": "Соседка Лусии слушает с балкона.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Лусия говорит: escucha desde su balcón."
+      }
+    ]
+  },
+  {
+    "title_short": "El sello de Vega",
+    "level": "B1",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "speaker_a",
+        "speaker_gender": "neutral",
+        "text": "Bibliotecaria Vega, ese sello de madera parece muy antiguo.",
+        "text_translation_ru": "Библиотекарь Вега, эта деревянная печать кажется очень старой."
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "female",
+        "text": "Lo encontré en una caja cuando ordenamos el archivo.",
+        "text_translation_ru": "Я нашла её в коробке, когда мы разбирали архив."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "speaker_a",
+        "speaker_gender": "neutral",
+        "text": "¿Todavía lo usa para los libros?",
+        "text_translation_ru": "Вы всё ещё используете её для книг?"
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "female",
+        "text": "Solo en tarjetas especiales, cuando alguien termina su primer libro.",
+        "text_translation_ru": "Только на особых карточках, когда кто-то заканчивает свою первую книгу."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "female",
+        "text": "Me recuerda que leer también necesita una pequeña ceremonia.",
+        "text_translation_ru": "Она напоминает мне, что чтению тоже нужна маленькая церемония."
+      },
+      {
+        "segment_id": "s6",
+        "speaker_id": "speaker_a",
+        "speaker_gender": "neutral",
+        "text": "Así la biblioteca celebra sin hacer ruido.",
+        "text_translation_ru": "Так библиотека празднует без шума."
+      }
+    ],
+    "vocab_focus": ["sello", "madera", "archivo", "tarjetas", "libro", "ceremonia"],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "Вега нашла печать в архивной коробке.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Она говорит, что нашла её в коробке при разборе архива."
+      },
+      {
+        "id": "q2",
+        "prompt": "Печать ставят на каждую обычную книгу.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "Вега использует её только на особых карточках."
+      },
+      {
+        "id": "q3",
+        "prompt": "Вега считает чтение маленькой церемонией.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Она говорит, что чтению нужна маленькая церемония."
+      }
+    ]
+  },
+  {
+    "title_short": "La capa doblada",
+    "level": "B2",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "speaker_a",
+        "speaker_gender": "neutral",
+        "text": "Don Álvaro, en su banco hay una tela roja cuidadosamente doblada.",
+        "text_translation_ru": "Дон Альваро, на вашей скамейке лежит аккуратно сложенная красная ткань."
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "male",
+        "text": "No es una capa heroica, aunque algunos vecinos la llamen así.",
+        "text_translation_ru": "Это не героический плащ, хотя некоторые соседи так его называют."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "male",
+        "text": "Era el mantel de una fiesta que organicé cuando la plaza casi quedó vacía.",
+        "text_translation_ru": "Это была скатерть с праздника, который я устроил, когда площадь почти опустела."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "speaker_a",
+        "speaker_gender": "neutral",
+        "text": "¿La guarda porque aquella fiesta cambió algo?",
+        "text_translation_ru": "Вы храните её, потому что тот праздник что-то изменил?"
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "male",
+        "text": "Cambió mi idea de valentía: a veces basta poner una mesa y escuchar.",
+        "text_translation_ru": "Он изменил моё понимание смелости: иногда достаточно накрыть стол и слушать."
+      },
+      {
+        "segment_id": "s6",
+        "speaker_id": "speaker_a",
+        "speaker_gender": "neutral",
+        "text": "Entonces su misión más grande fue invitar a quedarse.",
+        "text_translation_ru": "Значит, вашей самой большой миссией было пригласить людей остаться."
+      }
+    ],
+    "vocab_focus": ["banco", "tela", "capa", "mantel", "plaza", "valentía"],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "Красная ткань была скатертью с праздника.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Дон Альваро говорит: Era el mantel de una fiesta."
+      },
+      {
+        "id": "q2",
+        "prompt": "Дон Альваро называет ткань настоящим героическим плащом.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "Он говорит, что это не героический плащ."
+      },
+      {
+        "id": "q3",
+        "prompt": "Праздник изменил его понимание смелости.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Он прямо говорит, что праздник изменил idea de valentía."
+      }
+    ]
+  }
+]

@@ -172,7 +172,9 @@
     <!-- Полный экран как в «Словарь»: карточки, SRS, формы глаголов; слово в обучение — на сервере при word-lookup -->
     <div v-if="wordModalVisible" class="word-modal-overlay" @click.self="closeWordModal">
       <div class="word-modal-panel">
-        <div v-if="wordLookupLoading" class="word-modal-loading">{{ t('common.loading') }}</div>
+        <div v-if="wordLookupLoading" class="word-modal-loading">
+          {{ wordLookupGenerating ? t('reading.wordGenerating') : t('common.loading') }}
+        </div>
         <div v-else-if="wordLookupError" class="word-modal-error">
           <p class="word-modal-error-text">{{ wordLookupError }}</p>
           <button type="button" class="word-modal-close-btn" @click="closeWordModal">{{ t('common.close') }}</button>
@@ -224,6 +226,11 @@ const { playSuccess, playFail } = useAudio()
 const showTranslation = ref(false)
 const wordModalVisible = ref(false)
 const wordLookupLoading = ref(false)
+// True once a lookup has been pending longer than typical DB round-trip time — at that point the
+// backend is almost certainly generating a brand-new word card via AI rather than just fetching
+// an existing one, so we swap the generic "loading" message for one that explains the wait.
+const wordLookupGenerating = ref(false)
+let wordLookupGeneratingTimer: ReturnType<typeof setTimeout> | null = null
 const wordLookupError = ref('')
 const modalLemma = ref('')
 const modalPreloaded = ref<VocabCardsAPIResponse | null>(null)
@@ -457,6 +464,7 @@ watch(wordModalVisible, (open) => {
 
 onUnmounted(() => {
   window.removeEventListener('keydown', wordModalKeydown)
+  if (wordLookupGeneratingTimer) clearTimeout(wordLookupGeneratingTimer)
 })
 
 const onTokenClick = async (event: MouseEvent, token: any, segment: any) => {
@@ -466,9 +474,15 @@ const onTokenClick = async (event: MouseEvent, token: any, segment: any) => {
 
   wordModalVisible.value = true
   wordLookupLoading.value = true
+  wordLookupGenerating.value = false
   wordLookupError.value = ''
   modalPreloaded.value = null
   modalLemma.value = token.lemma
+
+  if (wordLookupGeneratingTimer) clearTimeout(wordLookupGeneratingTimer)
+  wordLookupGeneratingTimer = setTimeout(() => {
+    wordLookupGenerating.value = true
+  }, 600)
 
   try {
     const data: VocabCardsAPIResponse = await apiClient.request(
@@ -490,7 +504,12 @@ const onTokenClick = async (event: MouseEvent, token: any, segment: any) => {
       wordLookupError.value = t('reading.wordLookupFailed')
     }
   } finally {
+    if (wordLookupGeneratingTimer) {
+      clearTimeout(wordLookupGeneratingTimer)
+      wordLookupGeneratingTimer = null
+    }
     wordLookupLoading.value = false
+    wordLookupGenerating.value = false
   }
 }
 

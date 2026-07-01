@@ -134,6 +134,10 @@ func (m *mockUserCardRepoForWordSet) CreateUserCard(card *models.UserCard) (int6
 	return 0, nil
 }
 
+func (m *mockUserCardRepoForWordSet) CountUserCardsForWord(_, _ int64) (int, error) {
+	return 0, nil
+}
+
 // TestMarkKnown_DeleteUserCardsFails verifies that when DeleteUserCardsByWordCardIDForUser fails, MarkKnown still returns nil (Warn path).
 func TestMarkKnown_DeleteUserCardsFails(t *testing.T) {
 	logger, _ := zap.NewDevelopment()

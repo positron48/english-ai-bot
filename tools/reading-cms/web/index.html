@@ -38,9 +38,17 @@
             <option>B1</option><option>B2</option><option>C1</option>
           </select>
           <select id="pub-cover" aria-label="Cover">
-            <option value="">Любая обложка</option>
-            <option value="none">Без обложки</option>
-            <option value="ready">С обложкой</option>
+            <option value="">Любая картинка</option>
+            <option value="none">Без картинки</option>
+            <option value="prompt">Промпт без картинки</option>
+            <option value="ready">С картинкой</option>
+          </select>
+          <select id="pub-git" aria-label="Git status">
+            <option value="">Любой git-статус</option>
+            <option value="committed">Закоммиченные</option>
+            <option value="uncommitted">Незакоммиченные</option>
+            <option value="new">Новые незакоммиченные</option>
+            <option value="changed">Изменённые незакоммиченные</option>
           </select>
           <select id="pub-sort" aria-label="Sort">
             <option value="level">Сортировка: уровень</option>
@@ -81,6 +89,12 @@
             <option value="none">none</option>
             <option value="partial">partial</option>
             <option value="ready">ready</option>
+          </select>
+          <select id="filter-cover">
+            <option value="">Любая картинка</option>
+            <option value="none">Без картинки</option>
+            <option value="prompt">Промпт без картинки</option>
+            <option value="ready">С картинкой</option>
           </select>
           <input id="filter-search" type="search" placeholder="Поиск…" />
           <button id="refresh-drafts" class="btn" type="button">↻</button>
@@ -162,6 +176,9 @@
       </div>
       <div id="import-panel-json" class="hidden">
         <p class="hint">JSON без LLM — голоса, TTS, опционально publish.</p>
+        <label class="file-label">JSON file
+          <input id="import-json-file" type="file" accept=".json,application/json" />
+        </label>
         <textarea id="import-json" rows="10" class="mono" placeholder='{"title":"...","level":"A2",...}'></textarea>
         <div class="json-options">
           <label class="checkbox"><input id="json-audio" type="checkbox" checked /> TTS</label>

@@ -44,7 +44,6 @@
             <th>Lang</th>
             <th>Category</th>
             <th>Segments</th>
-            <th>Actions</th>
           </tr>
         </thead>
         <tbody>
@@ -54,11 +53,6 @@
             <td>{{ text.target_language || '-' }}</td>
             <td class="mono">{{ text.category_id || '-' }}</td>
             <td>{{ text.segments_count }}</td>
-            <td>
-              <button class="btn btn-danger" :disabled="deletingId === text.text_id" @click="deleteText(text)">
-                {{ deletingId === text.text_id ? 'Deleting...' : 'Delete' }}
-              </button>
-            </td>
           </tr>
         </tbody>
       </table>
@@ -69,7 +63,6 @@
 <script setup lang="ts">
 import { onMounted, ref, watch } from 'vue'
 import { apiClient } from '../api/client'
-import { showAlert, showConfirm } from '../composables/useDialog'
 import { courseClient, type CourseSummary } from '../api/courseClient'
 
 interface ReadingTextAdminItem {
@@ -88,7 +81,6 @@ const search = ref('')
 const level = ref('')
 const loading = ref(false)
 const error = ref<string | null>(null)
-const deletingId = ref<string | null>(null)
 const availableCourses = ref<CourseSummary[]>([])
 const selectedCourseCode = ref('')
 const coursesLoading = ref(false)
@@ -114,24 +106,6 @@ const loadTexts = async () => {
     error.value = e?.message || 'Failed to load reading texts'
   } finally {
     loading.value = false
-  }
-}
-
-const deleteText = async (text: ReadingTextAdminItem) => {
-  const ok = await showConfirm(`Delete "${text.title}" and all related files?`)
-  if (!ok) return
-
-  deletingId.value = text.text_id
-  try {
-    await apiClient.request(`/api/admin/reading/texts/${encodeURIComponent(text.text_id)}?course_code=${encodeURIComponent(selectedCourseCode.value)}`, {
-      method: 'DELETE',
-    })
-    await loadTexts()
-    await showAlert('Reading text deleted.')
-  } catch (e: any) {
-    await showAlert(e?.message || 'Failed to delete reading text')
-  } finally {
-    deletingId.value = null
   }
 }
 

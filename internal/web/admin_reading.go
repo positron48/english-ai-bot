@@ -34,9 +34,6 @@ func (r *Router) handleAdminReadingTexts(w http.ResponseWriter, req *http.Reques
 	case http.MethodGet:
 		r.handleAdminReadingTextsList(w, req)
 		return
-	case http.MethodDelete:
-		r.handleAdminReadingTextDelete(w, req)
-		return
 	default:
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return

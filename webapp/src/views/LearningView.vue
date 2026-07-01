@@ -265,12 +265,11 @@ onMounted(async () => {
   window.addEventListener('online', handleNetworkChange)
   window.addEventListener('offline', handleNetworkChange)
   await ensureCourseLoaded()
-  await Promise.all([loadContinueChapter(), ensureLearningLoaded(), refreshVerbFormsPoolCount()])
+  await Promise.all([loadContinueChapter(), ensureLearningLoaded(), refreshVerbFormsPoolCount(), loadVocabSummary()])
   ensureMe().then(() => {
     isPro.value = hasFeature('conversation')
     void loadSentenceAvailability()
   })
-  await loadVocabSummary()
 })
 
 watch(currentCourseCode, async () => {

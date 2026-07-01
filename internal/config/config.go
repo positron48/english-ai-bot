@@ -34,8 +34,18 @@ type Config struct {
 	Speaking  SpeakingConfig  `mapstructure:"speaking"`
 	Migration MigrationConfig `mapstructure:"migration"`
 	Media     MediaConfig     `mapstructure:"media"`
+	Redis     RedisConfig     `mapstructure:"redis"`
 
 	SentenceComposition SentenceCompositionConfig `mapstructure:"sentence_composition"`
+}
+
+// RedisConfig holds optional Redis connection settings used for caching (e.g. the Linglow
+// course map). Addr empty means caching is disabled and callers must degrade gracefully —
+// Redis is provisioned separately in the k3s cluster and may not be present in every environment.
+type RedisConfig struct {
+	Addr     string `mapstructure:"addr"`
+	Password string `mapstructure:"password"`
+	DB       int    `mapstructure:"db"`
 }
 
 // SentenceCompositionConfig configures the daily Pro sentence-composition training.
@@ -163,16 +173,16 @@ type LoggingConfig struct {
 
 // AIConfig holds AI provider configuration
 type AIConfig struct {
-	URL            string `mapstructure:"url"`
-	Model          string `mapstructure:"model"`
-	ModelHigh      string `mapstructure:"model_high"`
+	URL       string `mapstructure:"url"`
+	Model     string `mapstructure:"model"`
+	ModelHigh string `mapstructure:"model_high"`
 	// ConversationModel overrides the model used for NPC role-play conversations only (it benefits
 	// from stronger instruction-following than dictionary/training). Empty = fall back to Model.
 	ConversationModel string `mapstructure:"conversation_model"`
 	APIKey            string `mapstructure:"api_key"`
-	Prompt         string `mapstructure:"prompt"`
-	PromptFile     string `mapstructure:"prompt_file"`
-	RequestTimeout string `mapstructure:"request_timeout"` // e.g. 120s, 3m; HTTP client timeout for chat/completions (default 30s)
+	Prompt            string `mapstructure:"prompt"`
+	PromptFile        string `mapstructure:"prompt_file"`
+	RequestTimeout    string `mapstructure:"request_timeout"` // e.g. 120s, 3m; HTTP client timeout for chat/completions (default 30s)
 }
 
 // TTSConfig holds text-to-speech/pronunciation audio configuration
@@ -240,7 +250,7 @@ type DatabaseConfig struct {
 
 // TrainingConfig holds training system configuration
 type TrainingConfig struct {
-	WorkerEnabled           bool   `mapstructure:"worker_enabled"`
+	WorkerEnabled bool `mapstructure:"worker_enabled"`
 	// MultiCourse runs one training worker per active course (each scoped to its own
 	// course_code and learning config), so a single deployment on the unified DB can
 	// generate cards for both en_ru and es_ru. When false, a single worker uses cfg.Learning.
@@ -561,6 +571,12 @@ func Load() (*Config, error) {
 	viper.SetDefault("media.public_base_path", "/api/media")
 	_ = viper.BindEnv("media.dir", "MEDIA_DIR")
 	_ = viper.BindEnv("media.public_base_path", "MEDIA_PUBLIC_BASE_PATH")
+
+	viper.SetDefault("redis.addr", "")
+	viper.SetDefault("redis.db", 0)
+	_ = viper.BindEnv("redis.addr", "REDIS_ADDR")
+	_ = viper.BindEnv("redis.password", "REDIS_PASSWORD")
+	_ = viper.BindEnv("redis.db", "REDIS_DB")
 
 	// Set config file
 	viper.SetConfigName("config")

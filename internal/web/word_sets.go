@@ -433,12 +433,22 @@ func (r *Router) handleLearningWordsSetDetail(w http.ResponseWriter, req *http.R
 		return
 	}
 	wordRepo := repository.NewWordRepository(r.db, r.logger)
+	wordCardIDs := make([]int64, 0, len(words))
+	for _, wInfo := range words {
+		if wInfo != nil {
+			wordCardIDs = append(wordCardIDs, wInfo.WordCardID)
+		}
+	}
+	wordCardsByID, err := wordRepo.GetWordCardsByIDs(wordCardIDs)
+	if err != nil {
+		r.logger.Warn("failed to batch-load word cards for morphology", zap.Error(err))
+		wordCardsByID = map[int64]*models.WordCard{}
+	}
 	for _, wInfo := range words {
 		if wInfo == nil {
 			continue
 		}
-		wordCard, _ := wordRepo.GetWordCardByID(wInfo.WordCardID)
-		if wordCard != nil {
+		if wordCard := wordCardsByID[wInfo.WordCardID]; wordCard != nil {
 			wInfo.Morph = buildCompactMorphFromWordCard(r.config.Learning.TargetLang, wordCard, nil)
 		}
 	}
@@ -503,22 +513,13 @@ func (r *Router) handleLearningWordsSetStudy(w http.ResponseWriter, req *http.Re
 
 	// Verify word is in the set
 	wordSetRepo := repository.NewWordSetRepository(r.db, r.logger)
-	words, err := wordSetRepo.GetWordSetWords(setID, userID)
+	inSet, err := wordSetRepo.IsWordInSet(setID, wordCardID)
 	if err != nil {
-		r.logger.Error("failed to get word set words", zap.Error(err))
+		r.logger.Error("failed to check word set membership", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
-
-	found := false
-	for _, word := range words {
-		if word.WordCardID == wordCardID {
-			found = true
-			break
-		}
-	}
-
-	if !found {
+	if !inSet {
 		http.Error(w, "Word not found in set", http.StatusNotFound)
 		return
 	}
@@ -640,22 +641,13 @@ func (r *Router) handleLearningWordsSetStudyLearn(w http.ResponseWriter, req *ht
 
 	// Verify word is in the set
 	wordSetRepo := repository.NewWordSetRepository(r.db, r.logger)
-	words, err := wordSetRepo.GetWordSetWords(setID, userID)
+	inSet, err := wordSetRepo.IsWordInSet(setID, requestData.WordCardID)
 	if err != nil {
-		r.logger.Error("failed to get word set words", zap.Error(err))
+		r.logger.Error("failed to check word set membership", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
-
-	found := false
-	for _, word := range words {
-		if word.WordCardID == requestData.WordCardID {
-			found = true
-			break
-		}
-	}
-
-	if !found {
+	if !inSet {
 		http.Error(w, "Word not found in set", http.StatusBadRequest)
 		return
 	}
@@ -666,19 +658,14 @@ func (r *Router) handleLearningWordsSetStudyLearn(w http.ResponseWriter, req *ht
 		r.logger.Warn("failed to remove known status", zap.Error(err))
 	}
 
-	// Ensure training cards exist
+	// Ensure training cards + user cards exist (errors are logged but not fatal - cards may be
+	// created later); single training-cards fetch instead of two.
 	wordSetService := r.getWordSetService()
-	if err := wordSetService.EnsureTrainingCardsExist(req.Context(), requestData.WordCardID); err != nil {
-		r.logger.Warn("failed to ensure training cards",
+	if err := wordSetService.EnsureCardsForWord(req.Context(), userID, requestData.WordCardID); err != nil {
+		r.logger.Warn("failed to ensure cards",
 			zap.Int64("word_card_id", requestData.WordCardID),
 			zap.Error(err),
 		)
-		// Continue anyway - might be generated later
-	}
-
-	// Create user cards (errors are logged but not fatal - cards may be created later)
-	if err := wordSetService.EnsureUserCardsForWord(userID, requestData.WordCardID); err != nil {
-		r.logger.Warn("failed to create user cards", zap.Error(err))
 	}
 
 	r.ensureVerbFormUserCardsAfterVocab(userID)

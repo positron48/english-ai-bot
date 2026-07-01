@@ -457,6 +457,20 @@ func (r *WordSetRepository) GetCategoriesAggregateProgress(categoryIDs []int64, 
 	return total, known, inVocab, nil
 }
 
+// IsWordInSet reports whether wordCardID belongs to wordSetID via a single indexed lookup,
+// avoiding a full GetWordSetWords fetch when the caller only needs a membership check.
+func (r *WordSetRepository) IsWordInSet(wordSetID, wordCardID int64) (bool, error) {
+	var exists bool
+	err := r.db.QueryRow(
+		`SELECT EXISTS(SELECT 1 FROM word_set_items WHERE word_set_id = ? AND word_card_id = ?)`,
+		wordSetID, wordCardID,
+	).Scan(&exists)
+	if err != nil {
+		return false, fmt.Errorf("failed to check word set membership: %w", err)
+	}
+	return exists, nil
+}
+
 // GetWordSetWords retrieves words in a set with their status for a user
 // If the word set has preferred_pos set, data from matching training cards is included
 // All words are returned regardless of whether they have matching training cards

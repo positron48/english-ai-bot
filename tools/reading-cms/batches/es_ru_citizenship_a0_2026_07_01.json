@@ -1,0 +1,1425 @@
+[
+  {
+    "title_short": "La bandera de España",
+    "level": "A0",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Hola, veo una bandera.",
+        "text_translation_ru": "Привет, я вижу флаг."
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Es la bandera de España.",
+        "text_translation_ru": "Это флаг Испании."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Tiene rojo, amarillo y rojo.",
+        "text_translation_ru": "На нём красный, жёлтый и красный."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "La bandera está en la plaza.",
+        "text_translation_ru": "Флаг находится на площади."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Hoy miro la bandera.",
+        "text_translation_ru": "Сегодня я смотрю на флаг."
+      }
+    ],
+    "vocab_focus": [
+      "bandera",
+      "España",
+      "rojo",
+      "amarillo",
+      "plaza"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "В тексте есть флаг Испании.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "В тексте сказано: Es la bandera de España."
+      },
+      {
+        "id": "q2",
+        "prompt": "Флаг только синий.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "В тексте есть rojo и amarillo."
+      },
+      {
+        "id": "q3",
+        "prompt": "Флаг находится на площади.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "В тексте сказано: está en la plaza."
+      }
+    ]
+  },
+  {
+    "title_short": "Tres colores",
+    "level": "A0",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Aquí hay una bandera.",
+        "text_translation_ru": "Здесь есть флаг."
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "La bandera es de España.",
+        "text_translation_ru": "Флаг испанский."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Arriba hay rojo.",
+        "text_translation_ru": "Сверху есть красный."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "En medio hay amarillo.",
+        "text_translation_ru": "В середине есть жёлтый."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Abajo hay rojo.",
+        "text_translation_ru": "Снизу есть красный."
+      }
+    ],
+    "vocab_focus": [
+      "bandera",
+      "arriba",
+      "medio",
+      "abajo",
+      "rojo",
+      "amarillo"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "В середине флага есть жёлтый цвет.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "В тексте сказано: En medio hay amarillo."
+      },
+      {
+        "id": "q2",
+        "prompt": "Сверху есть зелёный цвет.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "Сверху есть rojo."
+      },
+      {
+        "id": "q3",
+        "prompt": "Флаг из Испании.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "В тексте сказано: La bandera es de España."
+      }
+    ]
+  },
+  {
+    "title_short": "Madrid es capital",
+    "level": "A0",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Hola, estoy en Madrid.",
+        "text_translation_ru": "Привет, я в Мадриде."
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Madrid es una ciudad.",
+        "text_translation_ru": "Мадрид — это город."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Madrid es la capital.",
+        "text_translation_ru": "Мадрид — столица."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Es la capital de España.",
+        "text_translation_ru": "Это столица Испании."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Hoy paseo por Madrid.",
+        "text_translation_ru": "Сегодня я гуляю по Мадриду."
+      }
+    ],
+    "vocab_focus": [
+      "Madrid",
+      "capital",
+      "ciudad",
+      "España",
+      "paseo"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "Мадрид — столица Испании.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "В тексте сказано: Madrid es la capital de España."
+      },
+      {
+        "id": "q2",
+        "prompt": "Герой находится в Барселоне.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "Герой говорит: estoy en Madrid."
+      },
+      {
+        "id": "q3",
+        "prompt": "Мадрид — город.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "В тексте сказано: Madrid es una ciudad."
+      }
+    ]
+  },
+  {
+    "title_short": "Dos apellidos",
+    "level": "A0",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Hola, soy Ana García López.",
+        "text_translation_ru": "Привет, я Ана Гарсия Лопес."
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Ana es mi nombre.",
+        "text_translation_ru": "Ана — моё имя."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "García es mi primer apellido.",
+        "text_translation_ru": "Гарсия — моя первая фамилия."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "López es mi segundo apellido.",
+        "text_translation_ru": "Лопес — моя вторая фамилия."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "En España hay dos apellidos.",
+        "text_translation_ru": "В Испании есть две фамилии."
+      }
+    ],
+    "vocab_focus": [
+      "nombre",
+      "apellido",
+      "primer",
+      "segundo",
+      "España"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "Ana — это имя.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "В тексте сказано: Ana es mi nombre."
+      },
+      {
+        "id": "q2",
+        "prompt": "López — первая фамилия.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "López — segundo apellido."
+      },
+      {
+        "id": "q3",
+        "prompt": "В Испании обычно есть две фамилии.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "В тексте сказано: hay dos apellidos."
+      }
+    ]
+  },
+  {
+    "title_short": "Mi nombre completo",
+    "level": "A0",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Hola, soy Lucas Martín Pérez.",
+        "text_translation_ru": "Привет, я Лукас Мартин Перес."
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Lucas es mi nombre.",
+        "text_translation_ru": "Лукас — моё имя."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Martín es un apellido.",
+        "text_translation_ru": "Мартин — это фамилия."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Pérez es otro apellido.",
+        "text_translation_ru": "Перес — другая фамилия."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Mi nombre completo es largo.",
+        "text_translation_ru": "Моё полное имя длинное."
+      }
+    ],
+    "vocab_focus": [
+      "nombre",
+      "completo",
+      "apellido",
+      "otro",
+      "largo"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "Lucas — имя.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "В тексте сказано: Lucas es mi nombre."
+      },
+      {
+        "id": "q2",
+        "prompt": "Pérez — это город.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "Pérez es otro apellido."
+      },
+      {
+        "id": "q3",
+        "prompt": "Полное имя героя длинное.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "В тексте сказано: Mi nombre completo es largo."
+      }
+    ]
+  },
+  {
+    "title_short": "La paella",
+    "level": "A0",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Hoy como paella.",
+        "text_translation_ru": "Сегодня я ем паэлью."
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "La paella tiene arroz.",
+        "text_translation_ru": "В паэлье есть рис."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Tiene pollo y verduras.",
+        "text_translation_ru": "В ней есть курица и овощи."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "La paella es de España.",
+        "text_translation_ru": "Паэлья из Испании."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Me gusta la paella.",
+        "text_translation_ru": "Мне нравится паэлья."
+      }
+    ],
+    "vocab_focus": [
+      "paella",
+      "arroz",
+      "pollo",
+      "verduras",
+      "España"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "В паэлье есть рис.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "В тексте сказано: La paella tiene arroz."
+      },
+      {
+        "id": "q2",
+        "prompt": "Герой ест пасту.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "Он ест paella."
+      },
+      {
+        "id": "q3",
+        "prompt": "Паэлья связана с Испанией.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "В тексте сказано: La paella es de España."
+      }
+    ]
+  },
+  {
+    "title_short": "Tortilla española",
+    "level": "A0",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Tengo una tortilla.",
+        "text_translation_ru": "У меня есть тортилья."
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Es tortilla española.",
+        "text_translation_ru": "Это испанская тортилья."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Tiene huevo.",
+        "text_translation_ru": "В ней есть яйцо."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Tiene patata.",
+        "text_translation_ru": "В ней есть картофель."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "La tortilla está caliente.",
+        "text_translation_ru": "Тортилья горячая."
+      }
+    ],
+    "vocab_focus": [
+      "tortilla",
+      "española",
+      "huevo",
+      "patata",
+      "caliente"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "Испанская тортилья в тексте с яйцом.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "В тексте сказано: Tiene huevo."
+      },
+      {
+        "id": "q2",
+        "prompt": "В тортилье есть картофель.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "В тексте сказано: Tiene patata."
+      },
+      {
+        "id": "q3",
+        "prompt": "Тортилья холодная.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "В тексте сказано: está caliente."
+      }
+    ]
+  },
+  {
+    "title_short": "Gazpacho frío",
+    "level": "A0",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Hoy hace calor.",
+        "text_translation_ru": "Сегодня жарко."
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Tomo gazpacho.",
+        "text_translation_ru": "Я беру гаспачо."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "El gazpacho es frío.",
+        "text_translation_ru": "Гаспачо холодный."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Tiene tomate.",
+        "text_translation_ru": "В нём есть помидор."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Es una comida española.",
+        "text_translation_ru": "Это испанская еда."
+      }
+    ],
+    "vocab_focus": [
+      "calor",
+      "gazpacho",
+      "frío",
+      "tomate",
+      "comida"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "Гаспачо в тексте холодный.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "В тексте сказано: El gazpacho es frío."
+      },
+      {
+        "id": "q2",
+        "prompt": "В гаспачо есть помидор.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "В тексте сказано: Tiene tomate."
+      },
+      {
+        "id": "q3",
+        "prompt": "Сегодня холодно.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "В тексте сказано: Hoy hace calor."
+      }
+    ]
+  },
+  {
+    "title_short": "Churros por la mañana",
+    "level": "A0",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Es por la mañana.",
+        "text_translation_ru": "Сейчас утро."
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Estoy en un bar.",
+        "text_translation_ru": "Я в баре."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Quiero churros.",
+        "text_translation_ru": "Я хочу чуррос."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Los churros son dulces.",
+        "text_translation_ru": "Чуррос сладкие."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "También quiero café.",
+        "text_translation_ru": "Ещё я хочу кофе."
+      }
+    ],
+    "vocab_focus": [
+      "mañana",
+      "bar",
+      "churros",
+      "dulces",
+      "café"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "Герой находится в баре.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "В тексте сказано: Estoy en un bar."
+      },
+      {
+        "id": "q2",
+        "prompt": "Герой хочет чуррос.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "В тексте сказано: Quiero churros."
+      },
+      {
+        "id": "q3",
+        "prompt": "Чуррос солёные.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "В тексте сказано: son dulces."
+      }
+    ]
+  },
+  {
+    "title_short": "Sidra en Asturias",
+    "level": "A0",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Estoy en Asturias.",
+        "text_translation_ru": "Я в Астурии."
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Aquí hay sidra.",
+        "text_translation_ru": "Здесь есть сидр."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "La sidra es una bebida.",
+        "text_translation_ru": "Сидр — это напиток."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "La bebida es típica.",
+        "text_translation_ru": "Напиток типичный."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Me gusta Asturias.",
+        "text_translation_ru": "Мне нравится Астурия."
+      }
+    ],
+    "vocab_focus": [
+      "Asturias",
+      "sidra",
+      "bebida",
+      "típica",
+      "gusta"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "Герой находится в Астурии.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "В тексте сказано: Estoy en Asturias."
+      },
+      {
+        "id": "q2",
+        "prompt": "Сидр — это напиток.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "В тексте сказано: La sidra es una bebida."
+      },
+      {
+        "id": "q3",
+        "prompt": "В тексте говорится о Мадриде.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "В тексте говорится об Asturias."
+      }
+    ]
+  },
+  {
+    "title_short": "Desayuno a las ocho",
+    "level": "A0",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Son las ocho.",
+        "text_translation_ru": "Сейчас восемь."
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Es hora de desayuno.",
+        "text_translation_ru": "Время завтрака."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Tomo café.",
+        "text_translation_ru": "Я пью кофе."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Como pan.",
+        "text_translation_ru": "Я ем хлеб."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "En España desayuno temprano.",
+        "text_translation_ru": "В Испании я завтракаю рано."
+      }
+    ],
+    "vocab_focus": [
+      "ocho",
+      "hora",
+      "desayuno",
+      "café",
+      "pan"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "Завтрак в тексте в восемь.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "В тексте сказано: Son las ocho."
+      },
+      {
+        "id": "q2",
+        "prompt": "Герой пьёт кофе.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "В тексте сказано: Tomo café."
+      },
+      {
+        "id": "q3",
+        "prompt": "Герой ест рис на завтрак.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "Он ест pan."
+      }
+    ]
+  },
+  {
+    "title_short": "Comida a las dos",
+    "level": "A0",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Son las dos.",
+        "text_translation_ru": "Сейчас два."
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Es hora de comida.",
+        "text_translation_ru": "Время обеда."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Tengo sopa.",
+        "text_translation_ru": "У меня суп."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Tengo agua.",
+        "text_translation_ru": "У меня вода."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "En España como tarde.",
+        "text_translation_ru": "В Испании я обедаю поздно."
+      }
+    ],
+    "vocab_focus": [
+      "dos",
+      "comida",
+      "sopa",
+      "agua",
+      "tarde"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "Обед в тексте в два часа.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "В тексте сказано: Son las dos."
+      },
+      {
+        "id": "q2",
+        "prompt": "У героя есть вода.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "В тексте сказано: Tengo agua."
+      },
+      {
+        "id": "q3",
+        "prompt": "Герой завтракает в два часа.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "В тексте речь о comida."
+      }
+    ]
+  },
+  {
+    "title_short": "Cena a las nueve",
+    "level": "A0",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Son las nueve.",
+        "text_translation_ru": "Сейчас девять."
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Es hora de cena.",
+        "text_translation_ru": "Время ужина."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Como tortilla.",
+        "text_translation_ru": "Я ем тортилью."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Tomo agua.",
+        "text_translation_ru": "Я пью воду."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "En España ceno tarde.",
+        "text_translation_ru": "В Испании я ужинаю поздно."
+      }
+    ],
+    "vocab_focus": [
+      "nueve",
+      "cena",
+      "tortilla",
+      "agua",
+      "tarde"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "Ужин в тексте в девять.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "В тексте сказано: Son las nueve."
+      },
+      {
+        "id": "q2",
+        "prompt": "Герой ест тортилью.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "В тексте сказано: Como tortilla."
+      },
+      {
+        "id": "q3",
+        "prompt": "В тексте герой ужинает рано.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "В тексте сказано: ceno tarde."
+      }
+    ]
+  },
+  {
+    "title_short": "Una tapa pequeña",
+    "level": "A0",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Estoy en un bar.",
+        "text_translation_ru": "Я в баре."
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Pido una bebida.",
+        "text_translation_ru": "Я заказываю напиток."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "También hay una tapa.",
+        "text_translation_ru": "Также есть тапа."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "La tapa es pequeña.",
+        "text_translation_ru": "Тапа маленькая."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Es comida de bar.",
+        "text_translation_ru": "Это еда из бара."
+      }
+    ],
+    "vocab_focus": [
+      "bar",
+      "bebida",
+      "tapa",
+      "pequeña",
+      "comida"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "Герой в баре.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "В тексте сказано: Estoy en un bar."
+      },
+      {
+        "id": "q2",
+        "prompt": "Тапа маленькая.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "В тексте сказано: La tapa es pequeña."
+      },
+      {
+        "id": "q3",
+        "prompt": "В тексте нет напитка.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "Герой говорит: Pido una bebida."
+      }
+    ]
+  },
+  {
+    "title_short": "Soy Elena",
+    "level": "A0",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "narrator",
+        "speaker_gender": "female",
+        "text": "Hola, soy Elena.",
+        "text_translation_ru": "Привет, я Елена."
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "narrator",
+        "speaker_gender": "female",
+        "text": "Soy de Madrid.",
+        "text_translation_ru": "Я из Мадрида."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "narrator",
+        "speaker_gender": "female",
+        "text": "Vivo en España.",
+        "text_translation_ru": "Я живу в Испании."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "narrator",
+        "speaker_gender": "female",
+        "text": "Tengo una hermana.",
+        "text_translation_ru": "У меня есть сестра."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "narrator",
+        "speaker_gender": "female",
+        "text": "Estudio español cada día.",
+        "text_translation_ru": "Я учу испанский каждый день."
+      }
+    ],
+    "vocab_focus": [
+      "soy",
+      "Madrid",
+      "vivo",
+      "hermana",
+      "estudio"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "Героиню зовут Elena.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Она говорит: soy Elena."
+      },
+      {
+        "id": "q2",
+        "prompt": "Elena живёт в Испании.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Она говорит: Vivo en España."
+      },
+      {
+        "id": "q3",
+        "prompt": "Elena учит английский.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "Она говорит: Estudio español."
+      }
+    ]
+  },
+  {
+    "title_short": "Soy Omar",
+    "level": "A0",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "narrator",
+        "speaker_gender": "male",
+        "text": "Hola, soy Omar.",
+        "text_translation_ru": "Привет, я Омар."
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "narrator",
+        "speaker_gender": "male",
+        "text": "Soy de Valencia.",
+        "text_translation_ru": "Я из Валенсии."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "narrator",
+        "speaker_gender": "male",
+        "text": "Vivo en una calle tranquila.",
+        "text_translation_ru": "Я живу на спокойной улице."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "narrator",
+        "speaker_gender": "male",
+        "text": "Trabajo en una tienda.",
+        "text_translation_ru": "Я работаю в магазине."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "narrator",
+        "speaker_gender": "male",
+        "text": "Me gusta el café.",
+        "text_translation_ru": "Мне нравится кофе."
+      }
+    ],
+    "vocab_focus": [
+      "soy",
+      "Valencia",
+      "calle",
+      "trabajo",
+      "tienda",
+      "café"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "Героя зовут Omar.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Он говорит: soy Omar."
+      },
+      {
+        "id": "q2",
+        "prompt": "Omar работает в магазине.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Он говорит: Trabajo en una tienda."
+      },
+      {
+        "id": "q3",
+        "prompt": "Omar из Мадрида.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "Он говорит: Soy de Valencia."
+      }
+    ]
+  },
+  {
+    "title_short": "Soy Lina",
+    "level": "A0",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "narrator",
+        "speaker_gender": "female",
+        "text": "Hola, soy Lina.",
+        "text_translation_ru": "Привет, я Лина."
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "narrator",
+        "speaker_gender": "female",
+        "text": "Soy de Sevilla.",
+        "text_translation_ru": "Я из Севильи."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "narrator",
+        "speaker_gender": "female",
+        "text": "Vivo con mi madre.",
+        "text_translation_ru": "Я живу с мамой."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "narrator",
+        "speaker_gender": "female",
+        "text": "Tengo un perro.",
+        "text_translation_ru": "У меня есть собака."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "narrator",
+        "speaker_gender": "female",
+        "text": "Me gusta la música.",
+        "text_translation_ru": "Мне нравится музыка."
+      }
+    ],
+    "vocab_focus": [
+      "Lina",
+      "Sevilla",
+      "madre",
+      "perro",
+      "música"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "Lina из Севильи.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Она говорит: Soy de Sevilla."
+      },
+      {
+        "id": "q2",
+        "prompt": "У Lina есть собака.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Она говорит: Tengo un perro."
+      },
+      {
+        "id": "q3",
+        "prompt": "Lina живёт с отцом.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "Она говорит: Vivo con mi madre."
+      }
+    ]
+  },
+  {
+    "title_short": "Soy Marco",
+    "level": "A0",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "narrator",
+        "speaker_gender": "male",
+        "text": "Hola, soy Marco.",
+        "text_translation_ru": "Привет, я Марко."
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "narrator",
+        "speaker_gender": "male",
+        "text": "Soy de Málaga.",
+        "text_translation_ru": "Я из Малаги."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "narrator",
+        "speaker_gender": "male",
+        "text": "Vivo cerca del mar.",
+        "text_translation_ru": "Я живу рядом с морем."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "narrator",
+        "speaker_gender": "male",
+        "text": "Trabajo en un hotel.",
+        "text_translation_ru": "Я работаю в отеле."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "narrator",
+        "speaker_gender": "male",
+        "text": "Me gusta nadar.",
+        "text_translation_ru": "Мне нравится плавать."
+      }
+    ],
+    "vocab_focus": [
+      "Marco",
+      "Málaga",
+      "mar",
+      "hotel",
+      "nadar"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "Marco из Малаги.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Он говорит: Soy de Málaga."
+      },
+      {
+        "id": "q2",
+        "prompt": "Marco работает в отеле.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Он говорит: Trabajo en un hotel."
+      },
+      {
+        "id": "q3",
+        "prompt": "Marco живёт рядом с горой.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "Он говорит: Vivo cerca del mar."
+      }
+    ]
+  },
+  {
+    "title_short": "Soy Sara",
+    "level": "A0",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "narrator",
+        "speaker_gender": "female",
+        "text": "Hola, soy Sara.",
+        "text_translation_ru": "Привет, я Сара."
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "narrator",
+        "speaker_gender": "female",
+        "text": "Soy de Granada.",
+        "text_translation_ru": "Я из Гранады."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "narrator",
+        "speaker_gender": "female",
+        "text": "Vivo en un piso.",
+        "text_translation_ru": "Я живу в квартире."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "narrator",
+        "speaker_gender": "female",
+        "text": "Estudio por la mañana.",
+        "text_translation_ru": "Я учусь утром."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "narrator",
+        "speaker_gender": "female",
+        "text": "Me gusta leer.",
+        "text_translation_ru": "Мне нравится читать."
+      }
+    ],
+    "vocab_focus": [
+      "Sara",
+      "Granada",
+      "piso",
+      "estudio",
+      "mañana",
+      "leer"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "Sara живёт в квартире.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Она говорит: Vivo en un piso."
+      },
+      {
+        "id": "q2",
+        "prompt": "Sara учится утром.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Она говорит: Estudio por la mañana."
+      },
+      {
+        "id": "q3",
+        "prompt": "Sara из Валенсии.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "Она говорит: Soy de Granada."
+      }
+    ]
+  },
+  {
+    "title_short": "Soy Diego",
+    "level": "A0",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "narrator",
+        "speaker_gender": "male",
+        "text": "Hola, soy Diego.",
+        "text_translation_ru": "Привет, я Диего."
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "narrator",
+        "speaker_gender": "male",
+        "text": "Soy de Bilbao.",
+        "text_translation_ru": "Я из Бильбао."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "narrator",
+        "speaker_gender": "male",
+        "text": "Vivo con mi familia.",
+        "text_translation_ru": "Я живу с моей семьёй."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "narrator",
+        "speaker_gender": "male",
+        "text": "Trabajo en casa.",
+        "text_translation_ru": "Я работаю дома."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "narrator",
+        "speaker_gender": "male",
+        "text": "Me gusta caminar.",
+        "text_translation_ru": "Мне нравится гулять."
+      }
+    ],
+    "vocab_focus": [
+      "Diego",
+      "Bilbao",
+      "familia",
+      "casa",
+      "caminar"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "Diego из Бильбао.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Он говорит: Soy de Bilbao."
+      },
+      {
+        "id": "q2",
+        "prompt": "Diego живёт с семьёй.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Он говорит: Vivo con mi familia."
+      },
+      {
+        "id": "q3",
+        "prompt": "Diego работает в школе.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "Он говорит: Trabajo en casa."
+      }
+    ]
+  }
+]

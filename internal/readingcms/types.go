@@ -64,22 +64,24 @@ type TextDocument struct {
 
 // PublishedItem is a text already present in course reading catalog.
 type PublishedItem struct {
-	TextID             string `json:"text_id"`
-	CourseCode         string `json:"course_code"`
-	Title              string `json:"title"`
-	Level              string `json:"level"`
-	TargetLanguage     string `json:"target_language"`
-	CategoryID         string `json:"category_id"`
-	SegmentsCount      int    `json:"segments_count"`
-	SegmentsWithAudio  int    `json:"segments_with_audio"`
-	AudioStatus        string `json:"audio_status"`
-	AudioReady         bool   `json:"audio_ready"`
-	CoverStatus        string `json:"cover_status"`
-	CoverThumbRelPath  string `json:"cover_thumb_rel_path,omitempty"`
-	CoverHeroRelPath   string `json:"cover_hero_rel_path,omitempty"`
-	CoverImagePrompt   string `json:"cover_image_prompt,omitempty"`
-	CoverGeneratedAt   *time.Time `json:"cover_generated_at,omitempty"`
-	InCMS              bool   `json:"in_cms"`
+	TextID            string     `json:"text_id"`
+	CourseCode        string     `json:"course_code"`
+	Title             string     `json:"title"`
+	Level             string     `json:"level"`
+	TargetLanguage    string     `json:"target_language"`
+	CategoryID        string     `json:"category_id"`
+	SegmentsCount     int        `json:"segments_count"`
+	SegmentsWithAudio int        `json:"segments_with_audio"`
+	AudioStatus       string     `json:"audio_status"`
+	AudioReady        bool       `json:"audio_ready"`
+	CoverStatus       string     `json:"cover_status"`
+	CoverThumbRelPath string     `json:"cover_thumb_rel_path,omitempty"`
+	CoverHeroRelPath  string     `json:"cover_hero_rel_path,omitempty"`
+	CoverImagePrompt  string     `json:"cover_image_prompt,omitempty"`
+	CoverGeneratedAt  *time.Time `json:"cover_generated_at,omitempty"`
+	InCMS             bool       `json:"in_cms"`
+	GitStatus         string     `json:"git_status,omitempty"`
+	IsNewUncommitted  bool       `json:"is_new_uncommitted,omitempty"`
 }
 
 // PublishedCoverRequest generates a cover for one published course text.
@@ -130,6 +132,34 @@ type ImportJSONRequest struct {
 	WithAudio   *bool           `json:"with_audio"`
 	AutoPublish bool            `json:"auto_publish"`
 	SyncBundle  bool            `json:"sync_bundle"`
+}
+
+// ImportJSONBatchRequest imports several LLM-ready JSON documents from pasted text.
+type ImportJSONBatchRequest struct {
+	CourseCode    string `json:"course_code"`
+	Level         string `json:"level"`
+	Format        string `json:"format"`
+	Title         string `json:"title"`
+	DocumentsText string `json:"documents_text"`
+	WithAudio     *bool  `json:"with_audio"`
+	AutoPublish   bool   `json:"auto_publish"`
+	SyncBundle    bool   `json:"sync_bundle"`
+}
+
+// ImportJSONBatchResult reports one item in a batch import.
+type ImportJSONBatchResult struct {
+	Index    int           `json:"index"`
+	Draft    *DraftMeta    `json:"draft,omitempty"`
+	Document *TextDocument `json:"document,omitempty"`
+	Error    string        `json:"error,omitempty"`
+}
+
+// ImportJSONBatchResponse summarizes a batch import.
+type ImportJSONBatchResponse struct {
+	Total     int                     `json:"total"`
+	Succeeded int                     `json:"succeeded"`
+	Failed    int                     `json:"failed"`
+	Results   []ImportJSONBatchResult `json:"results"`
 }
 
 // PromptRequest selects course-specific reading LLM prompt text.

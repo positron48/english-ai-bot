@@ -9,7 +9,7 @@ import (
 )
 
 // ListPublished scans course reading catalog on disk.
-func (s *Service) ListPublished(courseCode, levelFilter, search, coverFilter string) ([]PublishedItem, error) {
+func (s *Service) ListPublished(courseCode, levelFilter, search, coverFilter, gitFilter string) ([]PublishedItem, error) {
 	course, err := s.paths.Course(courseCode)
 	if err != nil {
 		return nil, err
@@ -26,6 +26,8 @@ func (s *Service) ListPublished(courseCode, levelFilter, search, coverFilter str
 	levelFilter = strings.ToUpper(strings.TrimSpace(levelFilter))
 	search = strings.ToLower(strings.TrimSpace(search))
 	coverFilter = strings.TrimSpace(coverFilter)
+	gitFilter = strings.TrimSpace(gitFilter)
+	gitStatuses := s.gitStatusesForCourseTexts(course, idx)
 
 	var out []PublishedItem
 	seen := map[string]bool{}
@@ -54,6 +56,10 @@ func (s *Service) ListPublished(courseCode, levelFilter, search, coverFilter str
 		}
 		segs := CountSegments(doc)
 		_, withAudio, audioSt := AudioStats(doc, course.GrammarDir)
+		gitStatus := gitStatuses[textID]
+		if !matchesGitFilter(gitStatus, gitFilter) {
+			continue
+		}
 		out = append(out, PublishedItem{
 			TextID:            textID,
 			CourseCode:        course.Code,
@@ -71,6 +77,8 @@ func (s *Service) ListPublished(courseCode, levelFilter, search, coverFilter str
 			CoverImagePrompt:  doc.CoverImagePrompt,
 			CoverGeneratedAt:  CoverGeneratedAt(doc, course.GrammarDir),
 			InCMS:             cmsIDs[textID],
+			GitStatus:         gitStatus,
+			IsNewUncommitted:  isNewUncommittedGitStatus(gitStatus),
 		})
 	}
 	return out, nil
@@ -103,6 +111,7 @@ func (s *Service) GetPublishedDocument(courseCode, textID string) (*PublishedIte
 	total := CountSegments(doc)
 	_, withAudio, audioSt := AudioStats(doc, course.GrammarDir)
 	coverSt := CoverStats(doc, course.GrammarDir)
+	gitStatus := s.gitStatusesForCourseTexts(course, idx)[textID]
 	item := &PublishedItem{
 		TextID:            textID,
 		CourseCode:        course.Code,
@@ -120,6 +129,8 @@ func (s *Service) GetPublishedDocument(courseCode, textID string) (*PublishedIte
 		CoverImagePrompt:  doc.CoverImagePrompt,
 		CoverGeneratedAt:  CoverGeneratedAt(doc, course.GrammarDir),
 		InCMS:             cmsIDs[textID],
+		GitStatus:         gitStatus,
+		IsNewUncommitted:  isNewUncommittedGitStatus(gitStatus),
 	}
 	return item, doc, nil
 }

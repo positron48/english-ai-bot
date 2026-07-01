@@ -98,6 +98,14 @@ input, select, textarea {
 }
 textarea { resize: vertical; }
 textarea.mono { width: 100%; font-family: ui-monospace, Menlo, monospace; font-size: 0.8rem; }
+.file-label {
+  display: grid;
+  gap: 6px;
+  margin-bottom: 10px;
+  color: #cbd5e1;
+  font-size: 0.85rem;
+}
+.file-label input { width: 100%; }
 .btn {
   border: 1px solid #334155;
   background: #1f2937;
@@ -168,6 +176,8 @@ textarea.mono { width: 100%; font-family: ui-monospace, Menlo, monospace; font-s
 .badge.ready { background: #166534; }
 .badge.partial { background: #854d0e; }
 .badge.none { background: #475569; }
+.badge.new-uncommitted { background: #0f766e; color: #ccfbf1; }
+.badge.git-dirty { background: #7c2d12; color: #fed7aa; }
 .texts-table .title-cell { max-width: 280px; }
 .table-thumb { width: 48px; height: 48px; object-fit: cover; border-radius: 6px; }
 .table-thumb-placeholder {

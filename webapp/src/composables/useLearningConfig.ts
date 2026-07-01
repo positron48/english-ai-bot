@@ -63,25 +63,25 @@ function learningFromHealthPayload(raw: unknown): LearningPayload | null {
   }
 }
 
-/** Loads learning metadata from GET /health (no auth) then GET /api/settings (cached). Safe to call multiple times. */
+/** Loads learning metadata from GET /health (no auth) and GET /api/settings (cached), fetched
+ *  concurrently since settings doesn't depend on health's result. Safe to call multiple times. */
 export async function ensureLearningLoaded(): Promise<void> {
   if (!loadPromise) {
     loadPromise = (async () => {
-      try {
-        const hr = await fetch('/health')
-        if (hr.ok) {
-          const hj = await hr.json()
-          const pub = learningFromHealthPayload(hj?.learning)
-          if (pub) {
-            learning.value = pub
-          }
+      const [healthResult, settingsResult] = await Promise.allSettled([
+        fetch('/health').then((hr) => (hr.ok ? hr.json() : null)),
+        apiClient.request<{ learning?: Partial<LearningPayload> }>('/api/settings'),
+      ])
+
+      if (healthResult.status === 'fulfilled') {
+        const pub = learningFromHealthPayload(healthResult.value?.learning)
+        if (pub) {
+          learning.value = pub
         }
-      } catch {
-        /* ignore */
       }
-      try {
-        const data = await apiClient.request<{ learning?: Partial<LearningPayload> }>('/api/settings')
-        const patch = data.learning
+
+      if (settingsResult.status === 'fulfilled') {
+        const patch = settingsResult.value.learning
         const base = learning.value ?? defaultLearning()
         learning.value = {
           ...base,
@@ -94,10 +94,8 @@ export async function ensureLearningLoaded(): Promise<void> {
             ? (patch.spanish_verb_scope_ladder as SpanishVerbScopeLadderStep[])
             : base.spanish_verb_scope_ladder,
         }
-      } catch {
-        if (!learning.value) {
-          learning.value = defaultLearning()
-        }
+      } else if (!learning.value) {
+        learning.value = defaultLearning()
       }
     })()
   }

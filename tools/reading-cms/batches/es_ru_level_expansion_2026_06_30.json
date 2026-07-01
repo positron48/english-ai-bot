@@ -1,0 +1,4552 @@
+[
+  {
+    "title_short": "La llave roja",
+    "level": "A0",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Hola, soy Lina.",
+        "text_translation_ru": "Привет, я Lina."
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Estoy en la entrada.",
+        "text_translation_ru": "Я у входа."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Tengo una llave roja.",
+        "text_translation_ru": "У меня красный ключ."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "La llave abre una puerta pequeña.",
+        "text_translation_ru": "Ключ открывает маленькую дверь."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Todo está bien.",
+        "text_translation_ru": "Всё хорошо."
+      }
+    ],
+    "vocab_focus": [
+      "llave",
+      "roja",
+      "entrada",
+      "puerta"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "Lina находится у входа.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "В тексте сказано: Estoy en la entrada."
+      },
+      {
+        "id": "q2",
+        "prompt": "У Lina есть красный ключ.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "В тексте сказано: Tengo una llave roja."
+      },
+      {
+        "id": "q3",
+        "prompt": "В тексте говорится, что всё плохо.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "В конце сказано: Todo está bien."
+      }
+    ]
+  },
+  {
+    "title_short": "Agua en la mesa",
+    "level": "A0",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Hola, soy Toma.",
+        "text_translation_ru": "Привет, я Toma."
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Estoy en la cocina.",
+        "text_translation_ru": "Я на кухне."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Tengo un vaso de agua.",
+        "text_translation_ru": "У меня стакан воды."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "El vaso está en la mesa.",
+        "text_translation_ru": "Стакан стоит на столе."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Todo está bien.",
+        "text_translation_ru": "Всё хорошо."
+      }
+    ],
+    "vocab_focus": [
+      "agua",
+      "vaso",
+      "cocina",
+      "mesa"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "Toma находится на кухне.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "В тексте сказано: Estoy en la cocina."
+      },
+      {
+        "id": "q2",
+        "prompt": "У Toma есть стакан воды.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "В тексте сказано: Tengo un vaso de agua."
+      },
+      {
+        "id": "q3",
+        "prompt": "В тексте говорится, что всё плохо.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "В конце сказано: Todo está bien."
+      }
+    ]
+  },
+  {
+    "title_short": "Dos billetes",
+    "level": "A0",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Hola, soy Nora.",
+        "text_translation_ru": "Привет, я Nora."
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Estoy en la estación.",
+        "text_translation_ru": "Я на станции."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Tengo dos billetes.",
+        "text_translation_ru": "У меня два билета."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Un billete es para Nora y otro para Leo.",
+        "text_translation_ru": "Один билет для Норы, а другой для Лео."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Todo está bien.",
+        "text_translation_ru": "Всё хорошо."
+      }
+    ],
+    "vocab_focus": [
+      "billetes",
+      "estación",
+      "otro",
+      "para"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "Nora находится на станции.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "В тексте сказано: Estoy en la estación."
+      },
+      {
+        "id": "q2",
+        "prompt": "У Nora есть два билета.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "В тексте сказано: Tengo dos billetes."
+      },
+      {
+        "id": "q3",
+        "prompt": "В тексте говорится, что всё плохо.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "В конце сказано: Todo está bien."
+      }
+    ]
+  },
+  {
+    "title_short": "Mi mapa",
+    "level": "A0",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Hola, soy Pablo.",
+        "text_translation_ru": "Привет, я Pablo."
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Estoy en la plaza.",
+        "text_translation_ru": "Я на площади."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Tengo un mapa nuevo.",
+        "text_translation_ru": "У меня новая карта."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "El mapa muestra tres calles.",
+        "text_translation_ru": "На карте показаны три улицы."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Todo está bien.",
+        "text_translation_ru": "Всё хорошо."
+      }
+    ],
+    "vocab_focus": [
+      "mapa",
+      "plaza",
+      "nuevo",
+      "calles"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "Pablo находится на площади.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "В тексте сказано: Estoy en la plaza."
+      },
+      {
+        "id": "q2",
+        "prompt": "У Pablo есть новая карта.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "В тексте сказано: Tengo un mapa nuevo."
+      },
+      {
+        "id": "q3",
+        "prompt": "В тексте говорится, что всё плохо.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "В конце сказано: Todo está bien."
+      }
+    ]
+  },
+  {
+    "title_short": "Pan caliente",
+    "level": "A0",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Hola, soy Eva.",
+        "text_translation_ru": "Привет, я Eva."
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Estoy en la panadería.",
+        "text_translation_ru": "Я в булочной."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Tengo pan caliente.",
+        "text_translation_ru": "У меня тёплый хлеб."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "El pan huele muy bien.",
+        "text_translation_ru": "Хлеб очень хорошо пахнет."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Todo está bien.",
+        "text_translation_ru": "Всё хорошо."
+      }
+    ],
+    "vocab_focus": [
+      "pan",
+      "caliente",
+      "panadería",
+      "huele"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "Eva находится в булочной.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "В тексте сказано: Estoy en la panadería."
+      },
+      {
+        "id": "q2",
+        "prompt": "У Eva есть тёплый хлеб.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "В тексте сказано: Tengo pan caliente."
+      },
+      {
+        "id": "q3",
+        "prompt": "В тексте говорится, что всё плохо.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "В конце сказано: Todo está bien."
+      }
+    ]
+  },
+  {
+    "title_short": "Taxi libre",
+    "level": "A0",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Hola, soy Mario.",
+        "text_translation_ru": "Привет, я Mario."
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Estoy en la calle.",
+        "text_translation_ru": "Я на улице."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Tengo un taxi libre.",
+        "text_translation_ru": "У меня свободное такси."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "El taxi va al hotel.",
+        "text_translation_ru": "Такси едет в отель."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Todo está bien.",
+        "text_translation_ru": "Всё хорошо."
+      }
+    ],
+    "vocab_focus": [
+      "taxi",
+      "libre",
+      "calle",
+      "hotel"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "Mario находится на улице.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "В тексте сказано: Estoy en la calle."
+      },
+      {
+        "id": "q2",
+        "prompt": "У Mario есть свободное такси.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "В тексте сказано: Tengo un taxi libre."
+      },
+      {
+        "id": "q3",
+        "prompt": "В тексте говорится, что всё плохо.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "В конце сказано: Todo está bien."
+      }
+    ]
+  },
+  {
+    "title_short": "La mochila pequeña",
+    "level": "A0",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Hola, soy Sara.",
+        "text_translation_ru": "Привет, я Sara."
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Estoy en la clase.",
+        "text_translation_ru": "Я в классе."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Tengo una mochila pequeña.",
+        "text_translation_ru": "У меня маленький рюкзак."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "La mochila tiene un libro.",
+        "text_translation_ru": "В рюкзаке есть книга."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Todo está bien.",
+        "text_translation_ru": "Всё хорошо."
+      }
+    ],
+    "vocab_focus": [
+      "mochila",
+      "pequeña",
+      "clase",
+      "libro"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "Sara находится в классе.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "В тексте сказано: Estoy en la clase."
+      },
+      {
+        "id": "q2",
+        "prompt": "У Sara есть маленький рюкзак.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "В тексте сказано: Tengo una mochila pequeña."
+      },
+      {
+        "id": "q3",
+        "prompt": "В тексте говорится, что всё плохо.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "В конце сказано: Todo está bien."
+      }
+    ]
+  },
+  {
+    "title_short": "Café para Ana",
+    "level": "A0",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Hola, soy Ana.",
+        "text_translation_ru": "Привет, я Ana."
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Estoy en la cafetería.",
+        "text_translation_ru": "Я в кафе."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Tengo un café con leche.",
+        "text_translation_ru": "У меня кофе с молоком."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Ana bebe café por la mañana.",
+        "text_translation_ru": "Ана пьёт кофе утром."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Todo está bien.",
+        "text_translation_ru": "Всё хорошо."
+      }
+    ],
+    "vocab_focus": [
+      "café",
+      "leche",
+      "cafetería",
+      "mañana"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "Ana находится в кафе.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "В тексте сказано: Estoy en la cafetería."
+      },
+      {
+        "id": "q2",
+        "prompt": "У Ana есть кофе с молоком.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "В тексте сказано: Tengo un café con leche."
+      },
+      {
+        "id": "q3",
+        "prompt": "В тексте говорится, что всё плохо.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "В конце сказано: Todo está bien."
+      }
+    ]
+  },
+  {
+    "title_short": "La plaza tranquila",
+    "level": "A0",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Hola, soy Iris.",
+        "text_translation_ru": "Привет, я Iris."
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Estoy en la plaza.",
+        "text_translation_ru": "Я на площади."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Tengo una flor blanca.",
+        "text_translation_ru": "У меня белый цветок."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "La plaza está tranquila hoy.",
+        "text_translation_ru": "Площадь сегодня спокойная."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Todo está bien.",
+        "text_translation_ru": "Всё хорошо."
+      }
+    ],
+    "vocab_focus": [
+      "plaza",
+      "tranquila",
+      "flor",
+      "blanca"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "Iris находится на площади.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "В тексте сказано: Estoy en la plaza."
+      },
+      {
+        "id": "q2",
+        "prompt": "У Iris есть белый цветок.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "В тексте сказано: Tengo una flor blanca."
+      },
+      {
+        "id": "q3",
+        "prompt": "В тексте говорится, что всё плохо.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "В конце сказано: Todo está bien."
+      }
+    ]
+  },
+  {
+    "title_short": "Un cuaderno azul",
+    "level": "A0",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Hola, soy Leo.",
+        "text_translation_ru": "Привет, я Leo."
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Estoy en la biblioteca.",
+        "text_translation_ru": "Я в библиотеке."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Tengo un cuaderno azul.",
+        "text_translation_ru": "У меня синяя тетрадь."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Leo escribe una palabra nueva.",
+        "text_translation_ru": "Лео пишет новое слово."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Todo está bien.",
+        "text_translation_ru": "Всё хорошо."
+      }
+    ],
+    "vocab_focus": [
+      "cuaderno",
+      "azul",
+      "biblioteca",
+      "palabra"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "Leo находится в библиотеке.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "В тексте сказано: Estoy en la biblioteca."
+      },
+      {
+        "id": "q2",
+        "prompt": "У Leo есть синяя тетрадь.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "В тексте сказано: Tengo un cuaderno azul."
+      },
+      {
+        "id": "q3",
+        "prompt": "В тексте говорится, что всё плохо.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "В конце сказано: Todo está bien."
+      }
+    ]
+  },
+  {
+    "title_short": "Una cita en el centro",
+    "level": "A1",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "speaker_a",
+        "speaker_gender": "neutral",
+        "text": "Clara, ¿adónde vas?",
+        "text_translation_ru": "Clara, куда ты идёшь?"
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "female",
+        "text": "Voy al centro.",
+        "text_translation_ru": "Я иду в центр."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "female",
+        "text": "Necesito comprar una libreta.",
+        "text_translation_ru": "Мне нужно купить тетрадь."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "speaker_a",
+        "speaker_gender": "neutral",
+        "text": "¿Vas a las cinco?",
+        "text_translation_ru": "Ты идёшь в пять?"
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "female",
+        "text": "Sí, y Mateo viene conmigo.",
+        "text_translation_ru": "Да, и Mateo идёт со мной."
+      },
+      {
+        "segment_id": "s6",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "female",
+        "text": "Después toman un chocolate.",
+        "text_translation_ru": "Потом они пьют горячий шоколад."
+      }
+    ],
+    "vocab_focus": [
+      "centro",
+      "libreta",
+      "cinco",
+      "chocolate"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "Clara идёт в центр.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "В тексте сказано: Voy al centro."
+      },
+      {
+        "id": "q2",
+        "prompt": "Clara идёт один/одна.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "Mateo идёт вместе с ним/ней."
+      },
+      {
+        "id": "q3",
+        "prompt": "План связан с купить тетрадь.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Герою нужно comprar una libreta."
+      }
+    ]
+  },
+  {
+    "title_short": "La bolsa del gimnasio",
+    "level": "A1",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "speaker_a",
+        "speaker_gender": "neutral",
+        "text": "Rosa, ¿adónde vas?",
+        "text_translation_ru": "Rosa, куда ты идёшь?"
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "female",
+        "text": "Voy al gimnasio.",
+        "text_translation_ru": "Я иду в спортзал."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "female",
+        "text": "Necesito llevar una toalla.",
+        "text_translation_ru": "Мне нужно взять полотенце."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "speaker_a",
+        "speaker_gender": "neutral",
+        "text": "¿Vas por la tarde?",
+        "text_translation_ru": "Ты идёшь днём?"
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "female",
+        "text": "Sí, y Iván viene conmigo.",
+        "text_translation_ru": "Да, и Iván идёт со мной."
+      },
+      {
+        "segment_id": "s6",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "female",
+        "text": "Iván también lleva agua.",
+        "text_translation_ru": "Иван также берёт воду."
+      }
+    ],
+    "vocab_focus": [
+      "gimnasio",
+      "toalla",
+      "tarde",
+      "agua"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "Rosa идёт в спортзал.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "В тексте сказано: Voy al gimnasio."
+      },
+      {
+        "id": "q2",
+        "prompt": "Rosa идёт один/одна.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "Iván идёт вместе с ним/ней."
+      },
+      {
+        "id": "q3",
+        "prompt": "План связан с взять полотенце.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Герою нужно llevar una toalla."
+      }
+    ]
+  },
+  {
+    "title_short": "En la oficina nueva",
+    "level": "A1",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "speaker_a",
+        "speaker_gender": "neutral",
+        "text": "Luis, ¿adónde vas?",
+        "text_translation_ru": "Luis, куда ты идёшь?"
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "female",
+        "text": "Voy a la oficina nueva.",
+        "text_translation_ru": "Я иду в новый офис."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "female",
+        "text": "Necesito buscar la sala dos.",
+        "text_translation_ru": "Мне нужно найти второй зал."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "speaker_a",
+        "speaker_gender": "neutral",
+        "text": "¿Vas a las nueve?",
+        "text_translation_ru": "Ты идёшь в девять?"
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "female",
+        "text": "Sí, y Marta viene conmigo.",
+        "text_translation_ru": "Да, и Marta идёт со мной."
+      },
+      {
+        "segment_id": "s6",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "female",
+        "text": "Marta tiene el plano.",
+        "text_translation_ru": "У Марты есть план."
+      }
+    ],
+    "vocab_focus": [
+      "oficina",
+      "sala",
+      "nueve",
+      "plano"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "Luis идёт в новый офис.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "В тексте сказано: Voy a la oficina nueva."
+      },
+      {
+        "id": "q2",
+        "prompt": "Luis идёт один/одна.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "Marta идёт вместе с ним/ней."
+      },
+      {
+        "id": "q3",
+        "prompt": "План связан с найти второй зал.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Герою нужно buscar la sala dos."
+      }
+    ]
+  },
+  {
+    "title_short": "Una merienda rápida",
+    "level": "A1",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "speaker_a",
+        "speaker_gender": "neutral",
+        "text": "Elena, ¿adónde vas?",
+        "text_translation_ru": "Elena, куда ты идёшь?"
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "female",
+        "text": "Voy a la panadería.",
+        "text_translation_ru": "Я иду в булочную."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "female",
+        "text": "Necesito comprar empanadas.",
+        "text_translation_ru": "Мне нужно купить пирожки."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "speaker_a",
+        "speaker_gender": "neutral",
+        "text": "¿Vas antes de clase?",
+        "text_translation_ru": "Ты идёшь перед занятием?"
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "female",
+        "text": "Sí, y Dani viene conmigo.",
+        "text_translation_ru": "Да, и Dani идёт со мной."
+      },
+      {
+        "segment_id": "s6",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "female",
+        "text": "Compran dos empanadas y una botella de agua.",
+        "text_translation_ru": "Они покупают два пирожка и бутылку воды."
+      }
+    ],
+    "vocab_focus": [
+      "panadería",
+      "empanadas",
+      "clase",
+      "botella"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "Elena идёт в булочную.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "В тексте сказано: Voy a la panadería."
+      },
+      {
+        "id": "q2",
+        "prompt": "Elena идёт один/одна.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "Dani идёт вместе с ним/ней."
+      },
+      {
+        "id": "q3",
+        "prompt": "План связан с купить пирожки.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Герою нужно comprar empanadas."
+      }
+    ]
+  },
+  {
+    "title_short": "El paraguas negro",
+    "level": "A1",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "speaker_a",
+        "speaker_gender": "neutral",
+        "text": "Sofía, ¿adónde vas?",
+        "text_translation_ru": "Sofía, куда ты идёшь?"
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "female",
+        "text": "Voy a casa.",
+        "text_translation_ru": "Я иду домой."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "female",
+        "text": "Necesito buscar un paraguas.",
+        "text_translation_ru": "Мне нужно найти зонт."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "speaker_a",
+        "speaker_gender": "neutral",
+        "text": "¿Vas ahora?",
+        "text_translation_ru": "Ты идёшь сейчас?"
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "female",
+        "text": "Sí, y Raúl viene conmigo.",
+        "text_translation_ru": "Да, и Raúl идёт со мной."
+      },
+      {
+        "segment_id": "s6",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "female",
+        "text": "Fuera llueve mucho.",
+        "text_translation_ru": "На улице сильный дождь."
+      }
+    ],
+    "vocab_focus": [
+      "paraguas",
+      "casa",
+      "ahora",
+      "llueve"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "Sofía идёт домой.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "В тексте сказано: Voy a casa."
+      },
+      {
+        "id": "q2",
+        "prompt": "Sofía идёт один/одна.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "Raúl идёт вместе с ним/ней."
+      },
+      {
+        "id": "q3",
+        "prompt": "План связан с найти зонт.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Герою нужно buscar un paraguas."
+      }
+    ]
+  },
+  {
+    "title_short": "La entrada del museo",
+    "level": "A1",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "speaker_a",
+        "speaker_gender": "neutral",
+        "text": "Inés, ¿adónde vas?",
+        "text_translation_ru": "Inés, куда ты идёшь?"
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "female",
+        "text": "Voy al museo.",
+        "text_translation_ru": "Я иду в музей."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "female",
+        "text": "Necesito ver una exposición.",
+        "text_translation_ru": "Мне нужно посмотреть выставку."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "speaker_a",
+        "speaker_gender": "neutral",
+        "text": "¿Vas el sábado?",
+        "text_translation_ru": "Ты идёшь в субботу?"
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "female",
+        "text": "Sí, y Tomás viene conmigo.",
+        "text_translation_ru": "Да, и Tomás идёт со мной."
+      },
+      {
+        "segment_id": "s6",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "female",
+        "text": "La entrada es gratuita por la mañana.",
+        "text_translation_ru": "Утром вход бесплатный."
+      }
+    ],
+    "vocab_focus": [
+      "museo",
+      "exposición",
+      "sábado",
+      "entrada"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "Inés идёт в музей.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "В тексте сказано: Voy al museo."
+      },
+      {
+        "id": "q2",
+        "prompt": "Inés идёт один/одна.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "Tomás идёт вместе с ним/ней."
+      },
+      {
+        "id": "q3",
+        "prompt": "План связан с посмотреть выставку.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Герою нужно ver una exposición."
+      }
+    ]
+  },
+  {
+    "title_short": "Un mensaje corto",
+    "level": "A1",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "speaker_a",
+        "speaker_gender": "neutral",
+        "text": "Julia, ¿adónde vas?",
+        "text_translation_ru": "Julia, куда ты идёшь?"
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "female",
+        "text": "Voy a la biblioteca.",
+        "text_translation_ru": "Я иду в библиотеку."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "female",
+        "text": "Necesito devolver un libro.",
+        "text_translation_ru": "Мне нужно вернуть книгу."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "speaker_a",
+        "speaker_gender": "neutral",
+        "text": "¿Vas después del trabajo?",
+        "text_translation_ru": "Ты идёшь после работы?"
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "female",
+        "text": "Sí, y Bruno viene conmigo.",
+        "text_translation_ru": "Да, и Bruno идёт со мной."
+      },
+      {
+        "segment_id": "s6",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "female",
+        "text": "Julia envía un mensaje a Bruno.",
+        "text_translation_ru": "Хулия отправляет Бруно сообщение."
+      }
+    ],
+    "vocab_focus": [
+      "mensaje",
+      "biblioteca",
+      "devolver",
+      "trabajo"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "Julia идёт в библиотеку.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "В тексте сказано: Voy a la biblioteca."
+      },
+      {
+        "id": "q2",
+        "prompt": "Julia идёт один/одна.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "Bruno идёт вместе с ним/ней."
+      },
+      {
+        "id": "q3",
+        "prompt": "План связан с вернуть книгу.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Герою нужно devolver un libro."
+      }
+    ]
+  },
+  {
+    "title_short": "Clase de cocina",
+    "level": "A1",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "speaker_a",
+        "speaker_gender": "neutral",
+        "text": "Nadia, ¿adónde vas?",
+        "text_translation_ru": "Nadia, куда ты идёшь?"
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "female",
+        "text": "Voy a una clase de cocina.",
+        "text_translation_ru": "Я иду на кулинарный урок."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "female",
+        "text": "Necesito aprender una sopa sencilla.",
+        "text_translation_ru": "Мне нужно научиться простому супу."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "speaker_a",
+        "speaker_gender": "neutral",
+        "text": "¿Vas hoy?",
+        "text_translation_ru": "Ты идёшь сегодня?"
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "female",
+        "text": "Sí, y Óscar viene conmigo.",
+        "text_translation_ru": "Да, и Óscar идёт со мной."
+      },
+      {
+        "segment_id": "s6",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "female",
+        "text": "Óscar trae tomates frescos.",
+        "text_translation_ru": "Оскар приносит свежие помидоры."
+      }
+    ],
+    "vocab_focus": [
+      "cocina",
+      "sopa",
+      "tomates",
+      "frescos"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "Nadia идёт на кулинарный урок.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "В тексте сказано: Voy a una clase de cocina."
+      },
+      {
+        "id": "q2",
+        "prompt": "Nadia идёт один/одна.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "Óscar идёт вместе с ним/ней."
+      },
+      {
+        "id": "q3",
+        "prompt": "План связан с научиться простому супу.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Герою нужно aprender una sopa sencilla."
+      }
+    ]
+  },
+  {
+    "title_short": "El tren temprano",
+    "level": "A1",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "speaker_a",
+        "speaker_gender": "neutral",
+        "text": "Paula, ¿adónde vas?",
+        "text_translation_ru": "Paula, куда ты идёшь?"
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "female",
+        "text": "Voy a la estación.",
+        "text_translation_ru": "Я иду на станцию."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "female",
+        "text": "Necesito tomar el tren temprano.",
+        "text_translation_ru": "Мне нужно сесть на ранний поезд."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "speaker_a",
+        "speaker_gender": "neutral",
+        "text": "¿Vas mañana?",
+        "text_translation_ru": "Ты идёшь завтра?"
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "female",
+        "text": "Sí, y Hugo viene conmigo.",
+        "text_translation_ru": "Да, и Hugo идёт со мной."
+      },
+      {
+        "segment_id": "s6",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "female",
+        "text": "Paula compra los billetes en línea.",
+        "text_translation_ru": "Паула покупает билеты онлайн."
+      }
+    ],
+    "vocab_focus": [
+      "tren",
+      "temprano",
+      "billetes",
+      "línea"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "Paula идёт на станцию.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "В тексте сказано: Voy a la estación."
+      },
+      {
+        "id": "q2",
+        "prompt": "Paula идёт один/одна.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "Hugo идёт вместе с ним/ней."
+      },
+      {
+        "id": "q3",
+        "prompt": "План связан с сесть на ранний поезд.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Герою нужно tomar el tren temprano."
+      }
+    ]
+  },
+  {
+    "title_short": "Una planta para la ventana",
+    "level": "A1",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "speaker_a",
+        "speaker_gender": "neutral",
+        "text": "Teresa, ¿adónde vas?",
+        "text_translation_ru": "Teresa, куда ты идёшь?"
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "female",
+        "text": "Voy al mercado.",
+        "text_translation_ru": "Я иду на рынок."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "female",
+        "text": "Necesito comprar una planta.",
+        "text_translation_ru": "Мне нужно купить растение."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "speaker_a",
+        "speaker_gender": "neutral",
+        "text": "¿Vas el domingo?",
+        "text_translation_ru": "Ты идёшь в воскресенье?"
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "female",
+        "text": "Sí, y Lucas viene conmigo.",
+        "text_translation_ru": "Да, и Lucas идёт со мной."
+      },
+      {
+        "segment_id": "s6",
+        "speaker_id": "speaker_b",
+        "speaker_gender": "female",
+        "text": "La planta necesita mucha luz.",
+        "text_translation_ru": "Растению нужно много света."
+      }
+    ],
+    "vocab_focus": [
+      "mercado",
+      "planta",
+      "domingo",
+      "luz"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "Teresa идёт на рынок.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "В тексте сказано: Voy al mercado."
+      },
+      {
+        "id": "q2",
+        "prompt": "Teresa идёт один/одна.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "Lucas идёт вместе с ним/ней."
+      },
+      {
+        "id": "q3",
+        "prompt": "План связан с купить растение.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Герою нужно comprar una planta."
+      }
+    ]
+  },
+  {
+    "title_short": "Cambiar la contraseña",
+    "level": "A2",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Ayer Lucía olvidó la contraseña de su correo.",
+        "text_translation_ru": "Вчера Lucía забыла пароль от почты."
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Al principio no sabía qué hacer.",
+        "text_translation_ru": "Сначала он/она не знал(а), что делать."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Después llamó al soporte.",
+        "text_translation_ru": "Потом он/она позвонила в поддержку."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Por eso el problema fue más fácil.",
+        "text_translation_ru": "Поэтому проблема стала проще."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Finalmente recibió un enlace seguro.",
+        "text_translation_ru": "В итоге он/она получила безопасную ссылку."
+      },
+      {
+        "segment_id": "s6",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Lucía guardó la información para la próxima vez.",
+        "text_translation_ru": "Lucía сохранил(а) информацию на следующий раз."
+      }
+    ],
+    "vocab_focus": [
+      "contraseña",
+      "correo",
+      "soporte",
+      "enlace"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "Проблема произошла вчера.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Текст начинается со слова Ayer."
+      },
+      {
+        "id": "q2",
+        "prompt": "Герой ничего не сделал после проблемы.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "После этого герой предпринял конкретное действие."
+      },
+      {
+        "id": "q3",
+        "prompt": "В конце герой получил результат.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "В тексте сказано: Finalmente recibió un enlace seguro."
+      }
+    ]
+  },
+  {
+    "title_short": "Una bicicleta prestada",
+    "level": "A2",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Ayer Andrés tomó prestada una bicicleta.",
+        "text_translation_ru": "Вчера Andrés взял велосипед напрокат."
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Al principio no sabía qué hacer.",
+        "text_translation_ru": "Сначала он/она не знал(а), что делать."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Después notó que la rueda estaba baja.",
+        "text_translation_ru": "Потом он/она заметил, что колесо приспущено."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Por eso el problema fue más fácil.",
+        "text_translation_ru": "Поэтому проблема стала проще."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Finalmente la infló en una tienda cercana.",
+        "text_translation_ru": "В итоге он/она накачал его в ближайшем магазине."
+      },
+      {
+        "segment_id": "s6",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Andrés guardó la información para la próxima vez.",
+        "text_translation_ru": "Andrés сохранил(а) информацию на следующий раз."
+      }
+    ],
+    "vocab_focus": [
+      "bicicleta",
+      "prestada",
+      "rueda",
+      "tienda"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "Проблема произошла вчера.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Текст начинается со слова Ayer."
+      },
+      {
+        "id": "q2",
+        "prompt": "Герой ничего не сделал после проблемы.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "После этого герой предпринял конкретное действие."
+      },
+      {
+        "id": "q3",
+        "prompt": "В конце герой получил результат.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "В тексте сказано: Finalmente la infló en una tienda cercana."
+      }
+    ]
+  },
+  {
+    "title_short": "La receta sin sal",
+    "level": "A2",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Ayer Camila preparó una sopa para su abuela.",
+        "text_translation_ru": "Вчера Camila готовила суп для бабушки."
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Al principio no sabía qué hacer.",
+        "text_translation_ru": "Сначала он/она не знал(а), что делать."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Después leyó la receta dos veces.",
+        "text_translation_ru": "Потом он/она прочитала рецепт два раза."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Por eso el problema fue más fácil.",
+        "text_translation_ru": "Поэтому проблема стала проще."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Finalmente añadió hierbas en lugar de sal.",
+        "text_translation_ru": "В итоге он/она добавила травы вместо соли."
+      },
+      {
+        "segment_id": "s6",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Camila guardó la información para la próxima vez.",
+        "text_translation_ru": "Camila сохранил(а) информацию на следующий раз."
+      }
+    ],
+    "vocab_focus": [
+      "receta",
+      "sopa",
+      "abuela",
+      "hierbas"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "Проблема произошла вчера.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Текст начинается со слова Ayer."
+      },
+      {
+        "id": "q2",
+        "prompt": "Герой ничего не сделал после проблемы.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "После этого герой предпринял конкретное действие."
+      },
+      {
+        "id": "q3",
+        "prompt": "В конце герой получил результат.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "В тексте сказано: Finalmente añadió hierbas en lugar de sal."
+      }
+    ]
+  },
+  {
+    "title_short": "El paquete equivocado",
+    "level": "A2",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Ayer Diego recibió un paquete que no era suyo.",
+        "text_translation_ru": "Вчера Diego получил чужую посылку."
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Al principio no sabía qué hacer.",
+        "text_translation_ru": "Сначала он/она не знал(а), что делать."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Después miró la etiqueta con cuidado.",
+        "text_translation_ru": "Потом он/она внимательно посмотрел на этикетку."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Por eso el problema fue más fácil.",
+        "text_translation_ru": "Поэтому проблема стала проще."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Finalmente lo llevó al vecino correcto.",
+        "text_translation_ru": "В итоге он/она отнёс её нужному соседу."
+      },
+      {
+        "segment_id": "s6",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Diego guardó la información para la próxima vez.",
+        "text_translation_ru": "Diego сохранил(а) информацию на следующий раз."
+      }
+    ],
+    "vocab_focus": [
+      "paquete",
+      "equivocado",
+      "etiqueta",
+      "vecino"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "Проблема произошла вчера.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Текст начинается со слова Ayer."
+      },
+      {
+        "id": "q2",
+        "prompt": "Герой ничего не сделал после проблемы.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "После этого герой предпринял конкретное действие."
+      },
+      {
+        "id": "q3",
+        "prompt": "В конце герой получил результат.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "В тексте сказано: Finalmente lo llevó al vecino correcto."
+      }
+    ]
+  },
+  {
+    "title_short": "Un curso por la noche",
+    "level": "A2",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Ayer Marina quería estudiar fotografía.",
+        "text_translation_ru": "Вчера Marina хотела изучать фотографию."
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Al principio no sabía qué hacer.",
+        "text_translation_ru": "Сначала он/она не знал(а), что делать."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Después comparó tres cursos en línea.",
+        "text_translation_ru": "Потом он/она сравнила три онлайн-курса."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Por eso el problema fue más fácil.",
+        "text_translation_ru": "Поэтому проблема стала проще."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Finalmente eligió uno con clases por la noche.",
+        "text_translation_ru": "В итоге он/она выбрала курс с вечерними занятиями."
+      },
+      {
+        "segment_id": "s6",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Marina guardó la información para la próxima vez.",
+        "text_translation_ru": "Marina сохранил(а) информацию на следующий раз."
+      }
+    ],
+    "vocab_focus": [
+      "curso",
+      "fotografía",
+      "comparó",
+      "noche"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "Проблема произошла вчера.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Текст начинается со слова Ayer."
+      },
+      {
+        "id": "q2",
+        "prompt": "Герой ничего не сделал после проблемы.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "После этого герой предпринял конкретное действие."
+      },
+      {
+        "id": "q3",
+        "prompt": "В конце герой получил результат.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "В тексте сказано: Finalmente eligió uno con clases por la noche."
+      }
+    ]
+  },
+  {
+    "title_short": "La ducha rota",
+    "level": "A2",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Ayer Rafa encontró una fuga en el baño.",
+        "text_translation_ru": "Вчера Rafa обнаружил протечку в ванной."
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Al principio no sabía qué hacer.",
+        "text_translation_ru": "Сначала он/она не знал(а), что делать."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Después cerró el agua primero.",
+        "text_translation_ru": "Потом он/она сначала перекрыл воду."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Por eso el problema fue más fácil.",
+        "text_translation_ru": "Поэтому проблема стала проще."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Finalmente mandó fotos al propietario.",
+        "text_translation_ru": "В итоге он/она отправил фотографии владельцу."
+      },
+      {
+        "segment_id": "s6",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Rafa guardó la información para la próxima vez.",
+        "text_translation_ru": "Rafa сохранил(а) информацию на следующий раз."
+      }
+    ],
+    "vocab_focus": [
+      "ducha",
+      "fuga",
+      "baño",
+      "propietario"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "Проблема произошла вчера.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Текст начинается со слова Ayer."
+      },
+      {
+        "id": "q2",
+        "prompt": "Герой ничего не сделал после проблемы.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "После этого герой предпринял конкретное действие."
+      },
+      {
+        "id": "q3",
+        "prompt": "В конце герой получил результат.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "В тексте сказано: Finalmente mandó fotos al propietario."
+      }
+    ]
+  },
+  {
+    "title_short": "Billetes para el concierto",
+    "level": "A2",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Ayer Valeria quería ir a un concierto pequeño.",
+        "text_translation_ru": "Вчера Valeria хотела пойти на небольшой концерт."
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Al principio no sabía qué hacer.",
+        "text_translation_ru": "Сначала он/она не знал(а), что делать."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Después revisó los horarios del autobús.",
+        "text_translation_ru": "Потом он/она проверила расписание автобусов."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Por eso el problema fue más fácil.",
+        "text_translation_ru": "Поэтому проблема стала проще."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Finalmente compró billetes para la sesión temprana.",
+        "text_translation_ru": "В итоге он/она купила билеты на ранний сеанс."
+      },
+      {
+        "segment_id": "s6",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Valeria guardó la información para la próxima vez.",
+        "text_translation_ru": "Valeria сохранил(а) информацию на следующий раз."
+      }
+    ],
+    "vocab_focus": [
+      "concierto",
+      "horarios",
+      "autobús",
+      "temprana"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "Проблема произошла вчера.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Текст начинается со слова Ayer."
+      },
+      {
+        "id": "q2",
+        "prompt": "Герой ничего не сделал после проблемы.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "После этого герой предпринял конкретное действие."
+      },
+      {
+        "id": "q3",
+        "prompt": "В конце герой получил результат.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "В тексте сказано: Finalmente compró billetes para la sesión temprana."
+      }
+    ]
+  },
+  {
+    "title_short": "Un error en la factura",
+    "level": "A2",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Ayer Sergio vio un cargo extraño en la factura.",
+        "text_translation_ru": "Вчера Sergio увидел странное списание в счёте."
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Al principio no sabía qué hacer.",
+        "text_translation_ru": "Сначала он/она не знал(а), что делать."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Después guardó una captura de pantalla.",
+        "text_translation_ru": "Потом он/она сохранил скриншот."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Por eso el problema fue más fácil.",
+        "text_translation_ru": "Поэтому проблема стала проще."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Finalmente recibió una corrección al día siguiente.",
+        "text_translation_ru": "В итоге он/она получил исправление на следующий день."
+      },
+      {
+        "segment_id": "s6",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Sergio guardó la información para la próxima vez.",
+        "text_translation_ru": "Sergio сохранил(а) информацию на следующий раз."
+      }
+    ],
+    "vocab_focus": [
+      "factura",
+      "cargo",
+      "captura",
+      "corrección"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "Проблема произошла вчера.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Текст начинается со слова Ayer."
+      },
+      {
+        "id": "q2",
+        "prompt": "Герой ничего не сделал после проблемы.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "После этого герой предпринял конкретное действие."
+      },
+      {
+        "id": "q3",
+        "prompt": "В конце герой получил результат.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "В тексте сказано: Finalmente recibió una corrección al día siguiente."
+      }
+    ]
+  },
+  {
+    "title_short": "La visita al piso",
+    "level": "A2",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Ayer Olga visitó un piso luminoso.",
+        "text_translation_ru": "Вчера Olga посмотрела светлую квартиру."
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Al principio no sabía qué hacer.",
+        "text_translation_ru": "Сначала он/она не знал(а), что делать."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Después preguntó por los gastos mensuales.",
+        "text_translation_ru": "Потом он/она спросила о ежемесячных расходах."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Por eso el problema fue más fácil.",
+        "text_translation_ru": "Поэтому проблема стала проще."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Finalmente pidió el contrato antes de decidir.",
+        "text_translation_ru": "В итоге он/она попросила договор перед решением."
+      },
+      {
+        "segment_id": "s6",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Olga guardó la información para la próxima vez.",
+        "text_translation_ru": "Olga сохранил(а) информацию на следующий раз."
+      }
+    ],
+    "vocab_focus": [
+      "piso",
+      "luminoso",
+      "gastos",
+      "contrato"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "Проблема произошла вчера.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Текст начинается со слова Ayer."
+      },
+      {
+        "id": "q2",
+        "prompt": "Герой ничего не сделал после проблемы.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "После этого герой предпринял конкретное действие."
+      },
+      {
+        "id": "q3",
+        "prompt": "В конце герой получил результат.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "В тексте сказано: Finalmente pidió el contrato antes de decidir."
+      }
+    ]
+  },
+  {
+    "title_short": "Un favor en la biblioteca",
+    "level": "A2",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Ayer Miguel buscaba un libro de historia.",
+        "text_translation_ru": "Вчера Miguel искал книгу по истории."
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Al principio no sabía qué hacer.",
+        "text_translation_ru": "Сначала он/она не знал(а), что делать."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Después pidió ayuda a la bibliotecaria.",
+        "text_translation_ru": "Потом он/она попросил помощи у библиотекаря."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Por eso el problema fue más fácil.",
+        "text_translation_ru": "Поэтому проблема стала проще."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Finalmente encontró el libro en la sala tres.",
+        "text_translation_ru": "В итоге он/она нашёл книгу в третьем зале."
+      },
+      {
+        "segment_id": "s6",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Miguel guardó la información para la próxima vez.",
+        "text_translation_ru": "Miguel сохранил(а) информацию на следующий раз."
+      }
+    ],
+    "vocab_focus": [
+      "biblioteca",
+      "historia",
+      "bibliotecaria",
+      "sala"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "Проблема произошла вчера.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Текст начинается со слова Ayer."
+      },
+      {
+        "id": "q2",
+        "prompt": "Герой ничего не сделал после проблемы.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "После этого герой предпринял конкретное действие."
+      },
+      {
+        "id": "q3",
+        "prompt": "В конце герой получил результат.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "В тексте сказано: Finalmente encontró el libro en la sala tres."
+      }
+    ]
+  },
+  {
+    "title_short": "El huerto del edificio",
+    "level": "B1",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Durante varios meses, los vecinos crearon un pequeño huerto en la azotea.",
+        "text_translation_ru": "В течение нескольких месяцев соседи создали маленький огород на крыше."
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Al principio hubo dudas, porque nadie quería añadir más trabajo.",
+        "text_translation_ru": "Сначала были сомнения, потому что никто не хотел добавлять себе работу."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Para organizarse, repartieron turnos de riego.",
+        "text_translation_ru": "Чтобы организоваться, они распределили дежурства по поливу."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "La solución no fue perfecta, pero era fácil de mantener.",
+        "text_translation_ru": "Решение не было идеальным, но его было легко поддерживать."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Con el tiempo, ahora se conocen mejor.",
+        "text_translation_ru": "Со временем теперь они лучше знают друг друга."
+      },
+      {
+        "segment_id": "s6",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "La experiencia mostró que un cambio pequeño puede mejorar una rutina diaria.",
+        "text_translation_ru": "Опыт показал, что маленькое изменение может улучшить ежедневную рутину."
+      }
+    ],
+    "vocab_focus": [
+      "huerto",
+      "azotea",
+      "turnos",
+      "riego"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "В начале у людей были сомнения.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Во втором сегменте говорится: hubo dudas."
+      },
+      {
+        "id": "q2",
+        "prompt": "Решение было сложным и невозможным для поддержки.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "В тексте сказано, что его было легко поддерживать."
+      },
+      {
+        "id": "q3",
+        "prompt": "История показывает пользу небольшого изменения.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Последний сегмент прямо формулирует этот вывод."
+      }
+    ]
+  },
+  {
+    "title_short": "Una ruta más segura",
+    "level": "B1",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Durante varios meses, un grupo de estudiantes pidió un camino iluminado.",
+        "text_translation_ru": "В течение нескольких месяцев группа студентов попросила освещённый маршрут."
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Al principio hubo dudas, porque nadie quería añadir más trabajo.",
+        "text_translation_ru": "Сначала были сомнения, потому что никто не хотел добавлять себе работу."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Para organizarse, presentaron fotos y horarios al ayuntamiento.",
+        "text_translation_ru": "Чтобы организоваться, они представили фотографии и расписание в мэрию."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "La solución no fue perfecta, pero era fácil de mantener.",
+        "text_translation_ru": "Решение не было идеальным, но его было легко поддерживать."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Con el tiempo, la escuela cambió la salida principal.",
+        "text_translation_ru": "Со временем школа изменила главный выход."
+      },
+      {
+        "segment_id": "s6",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "La experiencia mostró que un cambio pequeño puede mejorar una rutina diaria.",
+        "text_translation_ru": "Опыт показал, что маленькое изменение может улучшить ежедневную рутину."
+      }
+    ],
+    "vocab_focus": [
+      "ruta",
+      "segura",
+      "ayuntamiento",
+      "salida"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "В начале у людей были сомнения.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Во втором сегменте говорится: hubo dudas."
+      },
+      {
+        "id": "q2",
+        "prompt": "Решение было сложным и невозможным для поддержки.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "В тексте сказано, что его было легко поддерживать."
+      },
+      {
+        "id": "q3",
+        "prompt": "История показывает пользу небольшого изменения.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Последний сегмент прямо формулирует этот вывод."
+      }
+    ]
+  },
+  {
+    "title_short": "La cafetería sin prisas",
+    "level": "B1",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Durante varios meses, una cafetería redujo el ruido por las tardes.",
+        "text_translation_ru": "В течение нескольких месяцев кафе уменьшило шум по вечерам."
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Al principio hubo dudas, porque nadie quería añadir más trabajo.",
+        "text_translation_ru": "Сначала были сомнения, потому что никто не хотел добавлять себе работу."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Para organizarse, separó una zona para estudiar.",
+        "text_translation_ru": "Чтобы организоваться, они выделило зону для учёбы."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "La solución no fue perfecta, pero era fácil de mantener.",
+        "text_translation_ru": "Решение не было идеальным, но его было легко поддерживать."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Con el tiempo, muchos clientes volvieron entre semana.",
+        "text_translation_ru": "Со временем многие клиенты вернулись в будни."
+      },
+      {
+        "segment_id": "s6",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "La experiencia mostró que un cambio pequeño puede mejorar una rutina diaria.",
+        "text_translation_ru": "Опыт показал, что маленькое изменение может улучшить ежедневную рутину."
+      }
+    ],
+    "vocab_focus": [
+      "cafetería",
+      "ruido",
+      "zona",
+      "clientes"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "В начале у людей были сомнения.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Во втором сегменте говорится: hubo dudas."
+      },
+      {
+        "id": "q2",
+        "prompt": "Решение было сложным и невозможным для поддержки.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "В тексте сказано, что его было легко поддерживать."
+      },
+      {
+        "id": "q3",
+        "prompt": "История показывает пользу небольшого изменения.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Последний сегмент прямо формулирует этот вывод."
+      }
+    ]
+  },
+  {
+    "title_short": "Aprender con intercambio",
+    "level": "B1",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Durante varios meses, Marta practicó español con un vecino jubilado.",
+        "text_translation_ru": "В течение нескольких месяцев Марта практиковала испанский с соседом-пенсионером."
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Al principio hubo dudas, porque nadie quería añadir más trabajo.",
+        "text_translation_ru": "Сначала были сомнения, потому что никто не хотел добавлять себе работу."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Para organizarse, preparaban temas antes de cada charla.",
+        "text_translation_ru": "Чтобы организоваться, они они готовили темы перед каждой беседой."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "La solución no fue perfecta, pero era fácil de mantener.",
+        "text_translation_ru": "Решение не было идеальным, но его было легко поддерживать."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Con el tiempo, ambos ganaron confianza al hablar.",
+        "text_translation_ru": "Со временем оба стали увереннее говорить."
+      },
+      {
+        "segment_id": "s6",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "La experiencia mostró que un cambio pequeño puede mejorar una rutina diaria.",
+        "text_translation_ru": "Опыт показал, что маленькое изменение может улучшить ежедневную рутину."
+      }
+    ],
+    "vocab_focus": [
+      "intercambio",
+      "jubilado",
+      "charla",
+      "confianza"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "В начале у людей были сомнения.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Во втором сегменте говорится: hubo dudas."
+      },
+      {
+        "id": "q2",
+        "prompt": "Решение было сложным и невозможным для поддержки.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "В тексте сказано, что его было легко поддерживать."
+      },
+      {
+        "id": "q3",
+        "prompt": "История показывает пользу небольшого изменения.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Последний сегмент прямо формулирует этот вывод."
+      }
+    ]
+  },
+  {
+    "title_short": "El taller de reparación",
+    "level": "B1",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Durante varios meses, un barrio organizó un taller mensual de reparación.",
+        "text_translation_ru": "В течение нескольких месяцев район организовал ежемесячную мастерскую ремонта."
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Al principio hubo dudas, porque nadie quería añadir más trabajo.",
+        "text_translation_ru": "Сначала были сомнения, потому что никто не хотел добавлять себе работу."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Para organizarse, cada persona llevaba un objeto roto.",
+        "text_translation_ru": "Чтобы организоваться, они каждый приносил сломанную вещь."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "La solución no fue perfecta, pero era fácil de mantener.",
+        "text_translation_ru": "Решение не было идеальным, но его было легко поддерживать."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Con el tiempo, se tiraron menos aparatos a la basura.",
+        "text_translation_ru": "Со временем меньше устройств выбросили в мусор."
+      },
+      {
+        "segment_id": "s6",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "La experiencia mostró que un cambio pequeño puede mejorar una rutina diaria.",
+        "text_translation_ru": "Опыт показал, что маленькое изменение может улучшить ежедневную рутину."
+      }
+    ],
+    "vocab_focus": [
+      "taller",
+      "reparación",
+      "objeto",
+      "basura"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "В начале у людей были сомнения.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Во втором сегменте говорится: hubo dudas."
+      },
+      {
+        "id": "q2",
+        "prompt": "Решение было сложным и невозможным для поддержки.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "В тексте сказано, что его было легко поддерживать."
+      },
+      {
+        "id": "q3",
+        "prompt": "История показывает пользу небольшого изменения.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Последний сегмент прямо формулирует этот вывод."
+      }
+    ]
+  },
+  {
+    "title_short": "Un viaje con presupuesto",
+    "level": "B1",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Durante varios meses, Claudia planeó un viaje con poco dinero.",
+        "text_translation_ru": "В течение нескольких месяцев Клаудия спланировала поездку с небольшим бюджетом."
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Al principio hubo dudas, porque nadie quería añadir más trabajo.",
+        "text_translation_ru": "Сначала были сомнения, потому что никто не хотел добавлять себе работу."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Para organizarse, comparó trenes, hostales y comidas.",
+        "text_translation_ru": "Чтобы организоваться, они сравнила поезда, хостелы и питание."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "La solución no fue perfecta, pero era fácil de mantener.",
+        "text_translation_ru": "Решение не было идеальным, но его было легко поддерживать."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Con el tiempo, disfrutó más porque no improvisó todo.",
+        "text_translation_ru": "Со временем она получила больше удовольствия, потому что не импровизировала во всём."
+      },
+      {
+        "segment_id": "s6",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "La experiencia mostró que un cambio pequeño puede mejorar una rutina diaria.",
+        "text_translation_ru": "Опыт показал, что маленькое изменение может улучшить ежедневную рутину."
+      }
+    ],
+    "vocab_focus": [
+      "presupuesto",
+      "hostales",
+      "comidas",
+      "improvisó"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "В начале у людей были сомнения.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Во втором сегменте говорится: hubo dudas."
+      },
+      {
+        "id": "q2",
+        "prompt": "Решение было сложным и невозможным для поддержки.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "В тексте сказано, что его было легко поддерживать."
+      },
+      {
+        "id": "q3",
+        "prompt": "История показывает пользу небольшого изменения.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Последний сегмент прямо формулирует этот вывод."
+      }
+    ]
+  },
+  {
+    "title_short": "La radio del colegio",
+    "level": "B1",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Durante varios meses, varios alumnos abrieron una radio escolar.",
+        "text_translation_ru": "В течение нескольких месяцев несколько учеников открыли школьное радио."
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Al principio hubo dudas, porque nadie quería añadir más trabajo.",
+        "text_translation_ru": "Сначала были сомнения, потому что никто не хотел добавлять себе работу."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Para organizarse, entrevistaron a profesores y familias.",
+        "text_translation_ru": "Чтобы организоваться, они брали интервью у учителей и семей."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "La solución no fue perfecta, pero era fácil de mantener.",
+        "text_translation_ru": "Решение не было идеальным, но его было легко поддерживать."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Con el tiempo, las noticias del colegio llegaron a más gente.",
+        "text_translation_ru": "Со временем школьные новости дошли до большего числа людей."
+      },
+      {
+        "segment_id": "s6",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "La experiencia mostró que un cambio pequeño puede mejorar una rutina diaria.",
+        "text_translation_ru": "Опыт показал, что маленькое изменение может улучшить ежедневную рутину."
+      }
+    ],
+    "vocab_focus": [
+      "radio",
+      "colegio",
+      "entrevistaron",
+      "noticias"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "В начале у людей были сомнения.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Во втором сегменте говорится: hubo dudas."
+      },
+      {
+        "id": "q2",
+        "prompt": "Решение было сложным и невозможным для поддержки.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "В тексте сказано, что его было легко поддерживать."
+      },
+      {
+        "id": "q3",
+        "prompt": "История показывает пользу небольшого изменения.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Последний сегмент прямо формулирует этот вывод."
+      }
+    ]
+  },
+  {
+    "title_short": "Cuidar una plaza",
+    "level": "B1",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Durante varios meses, los comerciantes limpiaron una plaza olvidada.",
+        "text_translation_ru": "В течение нескольких месяцев продавцы очистили забытую площадь."
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Al principio hubo dudas, porque nadie quería añadir más trabajo.",
+        "text_translation_ru": "Сначала были сомнения, потому что никто не хотел добавлять себе работу."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Para organizarse, colocaron bancos y plantas resistentes.",
+        "text_translation_ru": "Чтобы организоваться, они поставили скамейки и устойчивые растения."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "La solución no fue perfecta, pero era fácil de mantener.",
+        "text_translation_ru": "Решение не было идеальным, но его было легко поддерживать."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Con el tiempo, la plaza volvió a llenarse por la tarde.",
+        "text_translation_ru": "Со временем площадь снова стала заполняться по вечерам."
+      },
+      {
+        "segment_id": "s6",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "La experiencia mostró que un cambio pequeño puede mejorar una rutina diaria.",
+        "text_translation_ru": "Опыт показал, что маленькое изменение может улучшить ежедневную рутину."
+      }
+    ],
+    "vocab_focus": [
+      "comerciantes",
+      "plaza",
+      "bancos",
+      "plantas"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "В начале у людей были сомнения.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Во втором сегменте говорится: hubo dudas."
+      },
+      {
+        "id": "q2",
+        "prompt": "Решение было сложным и невозможным для поддержки.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "В тексте сказано, что его было легко поддерживать."
+      },
+      {
+        "id": "q3",
+        "prompt": "История показывает пользу небольшого изменения.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Последний сегмент прямо формулирует этот вывод."
+      }
+    ]
+  },
+  {
+    "title_short": "La agenda compartida",
+    "level": "B1",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Durante varios meses, un equipo pequeño sufría reuniones duplicadas.",
+        "text_translation_ru": "В течение нескольких месяцев маленькая команда страдала от дублирующихся встреч."
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Al principio hubo dudas, porque nadie quería añadir más trabajo.",
+        "text_translation_ru": "Сначала были сомнения, потому что никто не хотел добавлять себе работу."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Para organizarse, empezó a usar una agenda común.",
+        "text_translation_ru": "Чтобы организоваться, они начала использовать общий календарь."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "La solución no fue perfecta, pero era fácil de mantener.",
+        "text_translation_ru": "Решение не было идеальным, но его было легко поддерживать."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Con el tiempo, redujo errores y discusiones innecesarias.",
+        "text_translation_ru": "Со временем сократила ошибки и ненужные споры."
+      },
+      {
+        "segment_id": "s6",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "La experiencia mostró que un cambio pequeño puede mejorar una rutina diaria.",
+        "text_translation_ru": "Опыт показал, что маленькое изменение может улучшить ежедневную рутину."
+      }
+    ],
+    "vocab_focus": [
+      "agenda",
+      "equipo",
+      "reuniones",
+      "errores"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "В начале у людей были сомнения.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Во втором сегменте говорится: hubo dudas."
+      },
+      {
+        "id": "q2",
+        "prompt": "Решение было сложным и невозможным для поддержки.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "В тексте сказано, что его было легко поддерживать."
+      },
+      {
+        "id": "q3",
+        "prompt": "История показывает пользу небольшого изменения.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Последний сегмент прямо формулирует этот вывод."
+      }
+    ]
+  },
+  {
+    "title_short": "Un club de lectura lento",
+    "level": "B1",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Durante varios meses, Ana abrió un club para leer pocas páginas.",
+        "text_translation_ru": "В течение нескольких месяцев Ана открыла клуб для чтения небольшого числа страниц."
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Al principio hubo dudas, porque nadie quería añadir más trabajo.",
+        "text_translation_ru": "Сначала были сомнения, потому что никто не хотел добавлять себе работу."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Para organizarse, comentaban vocabulario y escenas difíciles.",
+        "text_translation_ru": "Чтобы организоваться, они они обсуждали лексику и сложные сцены."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "La solución no fue perfecta, pero era fácil de mantener.",
+        "text_translation_ru": "Решение не было идеальным, но его было легко поддерживать."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Con el tiempo, los participantes dejaron de abandonar los libros.",
+        "text_translation_ru": "Со временем участники перестали бросать книги."
+      },
+      {
+        "segment_id": "s6",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "La experiencia mostró que un cambio pequeño puede mejorar una rutina diaria.",
+        "text_translation_ru": "Опыт показал, что маленькое изменение может улучшить ежедневную рутину."
+      }
+    ],
+    "vocab_focus": [
+      "club",
+      "lectura",
+      "vocabulario",
+      "abandonar"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "В начале у людей были сомнения.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Во втором сегменте говорится: hubo dudas."
+      },
+      {
+        "id": "q2",
+        "prompt": "Решение было сложным и невозможным для поддержки.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "В тексте сказано, что его было легко поддерживать."
+      },
+      {
+        "id": "q3",
+        "prompt": "История показывает пользу небольшого изменения.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Последний сегмент прямо формулирует этот вывод."
+      }
+    ]
+  },
+  {
+    "title_short": "Reuniones con menos pantalla",
+    "level": "B2",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "El caso empezó cuando una empresa decidió reducir las reuniones por videollamada.",
+        "text_translation_ru": "Случай начался, когда компания решила сократить видеовстречи."
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "La decisión parecía sencilla, pero tenía consecuencias prácticas y simbólicas.",
+        "text_translation_ru": "Решение казалось простым, но имело практические и символические последствия."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "En vez de anunciar solo una intención, pidió que cada reunión tuviera objetivo y resumen.",
+        "text_translation_ru": "Вместо того чтобы объявить только намерение, они попросила, чтобы у каждой встречи была цель и резюме."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Ese detalle cambió la reacción de las personas afectadas.",
+        "text_translation_ru": "Эта деталь изменила реакцию затронутых людей."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Al final, la medida funcionó cuando los jefes también la respetaron.",
+        "text_translation_ru": "В итоге мера сработала, когда руководители тоже её соблюдали."
+      },
+      {
+        "segment_id": "s6",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "El resultado sugiere que una política útil necesita diseño, seguimiento y límites claros.",
+        "text_translation_ru": "Результат показывает, что полезной политике нужны дизайн, контроль и ясные ограничения."
+      }
+    ],
+    "vocab_focus": [
+      "reuniones",
+      "videollamada",
+      "objetivo",
+      "resumen"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "У решения были практические и символические последствия.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Об этом говорится во втором сегменте."
+      },
+      {
+        "id": "q2",
+        "prompt": "Группа ограничилась только объявлением намерения.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "В третьем сегменте сказано: En vez de anunciar solo una intención."
+      },
+      {
+        "id": "q3",
+        "prompt": "Текст делает вывод о необходимости ясных ограничений.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Последний сегмент говорит о límites claros."
+      }
+    ]
+  },
+  {
+    "title_short": "Turismo fuera de temporada",
+    "level": "B2",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "El caso empezó cuando un municipio promovió visitas en meses tranquilos.",
+        "text_translation_ru": "Случай начался, когда муниципалитет продвигал поездки в спокойные месяцы."
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "La decisión parecía sencilla, pero tenía consecuencias prácticas y simbólicas.",
+        "text_translation_ru": "Решение казалось простым, но имело практические и символические последствия."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "En vez de anunciar solo una intención, ofreció rutas pequeñas con guías locales.",
+        "text_translation_ru": "Вместо того чтобы объявить только намерение, они предложил короткие маршруты с местными гидами."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Ese detalle cambió la reacción de las personas afectadas.",
+        "text_translation_ru": "Эта деталь изменила реакцию затронутых людей."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Al final, los ingresos se distribuyeron mejor durante el año.",
+        "text_translation_ru": "В итоге доходы лучше распределились в течение года."
+      },
+      {
+        "segment_id": "s6",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "El resultado sugiere que una política útil necesita diseño, seguimiento y límites claros.",
+        "text_translation_ru": "Результат показывает, что полезной политике нужны дизайн, контроль и ясные ограничения."
+      }
+    ],
+    "vocab_focus": [
+      "turismo",
+      "temporada",
+      "guías",
+      "ingresos"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "У решения были практические и символические последствия.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Об этом говорится во втором сегменте."
+      },
+      {
+        "id": "q2",
+        "prompt": "Группа ограничилась только объявлением намерения.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "В третьем сегменте сказано: En vez de anunciar solo una intención."
+      },
+      {
+        "id": "q3",
+        "prompt": "Текст делает вывод о необходимости ясных ограничений.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Последний сегмент говорит о límites claros."
+      }
+    ]
+  },
+  {
+    "title_short": "Evaluar sin castigar",
+    "level": "B2",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "El caso empezó cuando un instituto cambió parte de sus exámenes por proyectos.",
+        "text_translation_ru": "Случай начался, когда школа заменила часть экзаменов проектами."
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "La decisión parecía sencilla, pero tenía consecuencias prácticas y simbólicas.",
+        "text_translation_ru": "Решение казалось простым, но имело практические и символические последствия."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "En vez de anunciar solo una intención, mantuvo pruebas breves para comprobar conocimientos básicos.",
+        "text_translation_ru": "Вместо того чтобы объявить только намерение, они оставила короткие тесты для проверки базовых знаний."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Ese detalle cambió la reacción de las personas afectadas.",
+        "text_translation_ru": "Эта деталь изменила реакцию затронутых людей."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Al final, la ansiedad bajó sin perder exigencia.",
+        "text_translation_ru": "В итоге тревожность снизилась без потери требований."
+      },
+      {
+        "segment_id": "s6",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "El resultado sugiere que una política útil necesita diseño, seguimiento y límites claros.",
+        "text_translation_ru": "Результат показывает, что полезной политике нужны дизайн, контроль и ясные ограничения."
+      }
+    ],
+    "vocab_focus": [
+      "evaluar",
+      "exámenes",
+      "proyectos",
+      "exigencia"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "У решения были практические и символические последствия.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Об этом говорится во втором сегменте."
+      },
+      {
+        "id": "q2",
+        "prompt": "Группа ограничилась только объявлением намерения.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "В третьем сегменте сказано: En vez de anunciar solo una intención."
+      },
+      {
+        "id": "q3",
+        "prompt": "Текст делает вывод о необходимости ясных ограничений.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Последний сегмент говорит о límites claros."
+      }
+    ]
+  },
+  {
+    "title_short": "El coste de esperar",
+    "level": "B2",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "El caso empezó cuando una comunidad aplazó la reparación del tejado.",
+        "text_translation_ru": "Случай начался, когда жильцы отложили ремонт крыши."
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "La decisión parecía sencilla, pero tenía consecuencias prácticas y simbólicas.",
+        "text_translation_ru": "Решение казалось простым, но имело практические и символические последствия."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "En vez de anunciar solo una intención, aceptó un presupuesto más claro meses después.",
+        "text_translation_ru": "Вместо того чтобы объявить только намерение, они через несколько месяцев согласовала более понятную смету."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Ese detalle cambió la reacción de las personas afectadas.",
+        "text_translation_ru": "Эта деталь изменила реакцию затронутых людей."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Al final, pagó más porque la humedad ya había avanzado.",
+        "text_translation_ru": "В итоге заплатила больше, потому что сырость уже распространилась."
+      },
+      {
+        "segment_id": "s6",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "El resultado sugiere que una política útil necesita diseño, seguimiento y límites claros.",
+        "text_translation_ru": "Результат показывает, что полезной политике нужны дизайн, контроль и ясные ограничения."
+      }
+    ],
+    "vocab_focus": [
+      "coste",
+      "aplazó",
+      "tejado",
+      "humedad"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "У решения были практические и символические последствия.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Об этом говорится во втором сегменте."
+      },
+      {
+        "id": "q2",
+        "prompt": "Группа ограничилась только объявлением намерения.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "В третьем сегменте сказано: En vez de anunciar solo una intención."
+      },
+      {
+        "id": "q3",
+        "prompt": "Текст делает вывод о необходимости ясных ограничений.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Последний сегмент говорит о límites claros."
+      }
+    ]
+  },
+  {
+    "title_short": "Datos para abrir una línea",
+    "level": "B2",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "El caso empezó cuando varios barrios pidieron una nueva línea de autobús.",
+        "text_translation_ru": "Случай начался, когда несколько районов попросили новую автобусную линию."
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "La decisión parecía sencilla, pero tenía consecuencias prácticas y simbólicas.",
+        "text_translation_ru": "Решение казалось простым, но имело практические и символические последствия."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "En vez de anunciar solo una intención, recogieron datos de horarios, esperas y transbordos.",
+        "text_translation_ru": "Вместо того чтобы объявить только намерение, они собрали данные о расписаниях, ожидании и пересадках."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Ese detalle cambió la reacción de las personas afectadas.",
+        "text_translation_ru": "Эта деталь изменила реакцию затронутых людей."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Al final, la propuesta fue más convincente que una queja general.",
+        "text_translation_ru": "В итоге предложение оказалось убедительнее общей жалобы."
+      },
+      {
+        "segment_id": "s6",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "El resultado sugiere que una política útil necesita diseño, seguimiento y límites claros.",
+        "text_translation_ru": "Результат показывает, что полезной политике нужны дизайн, контроль и ясные ограничения."
+      }
+    ],
+    "vocab_focus": [
+      "datos",
+      "línea",
+      "esperas",
+      "transbordos"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "У решения были практические и символические последствия.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Об этом говорится во втором сегменте."
+      },
+      {
+        "id": "q2",
+        "prompt": "Группа ограничилась только объявлением намерения.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "В третьем сегменте сказано: En vez de anunciar solo una intención."
+      },
+      {
+        "id": "q3",
+        "prompt": "Текст делает вывод о необходимости ясных ограничений.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Последний сегмент говорит о límites claros."
+      }
+    ]
+  },
+  {
+    "title_short": "Comprar menos y reparar más",
+    "level": "B2",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "El caso empezó cuando una tienda empezó a ofrecer reparaciones junto a productos nuevos.",
+        "text_translation_ru": "Случай начался, когда магазин начал предлагать ремонт вместе с новыми товарами."
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "La decisión parecía sencilla, pero tenía consecuencias prácticas y simbólicas.",
+        "text_translation_ru": "Решение казалось простым, но имело практические и символические последствия."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "En vez de anunciar solo una intención, explicó qué arreglos merecían la pena.",
+        "text_translation_ru": "Вместо того чтобы объявить только намерение, они объяснил, какой ремонт имеет смысл."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Ese detalle cambió la reacción de las personas afectadas.",
+        "text_translation_ru": "Эта деталь изменила реакцию затронутых людей."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Al final, ganó fidelidad aunque vendió menos unidades.",
+        "text_translation_ru": "В итоге получил лояльность, хотя продал меньше единиц."
+      },
+      {
+        "segment_id": "s6",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "El resultado sugiere que una política útil necesita diseño, seguimiento y límites claros.",
+        "text_translation_ru": "Результат показывает, что полезной политике нужны дизайн, контроль и ясные ограничения."
+      }
+    ],
+    "vocab_focus": [
+      "reparar",
+      "productos",
+      "arreglos",
+      "fidelidad"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "У решения были практические и символические последствия.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Об этом говорится во втором сегменте."
+      },
+      {
+        "id": "q2",
+        "prompt": "Группа ограничилась только объявлением намерения.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "В третьем сегменте сказано: En vez de anunciar solo una intención."
+      },
+      {
+        "id": "q3",
+        "prompt": "Текст делает вывод о необходимости ясных ограничений.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Последний сегмент говорит о límites claros."
+      }
+    ]
+  },
+  {
+    "title_short": "La biblioteca como refugio",
+    "level": "B2",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "El caso empezó cuando una biblioteca amplió horarios durante una ola de calor.",
+        "text_translation_ru": "Случай начался, когда библиотека расширила часы работы во время жары."
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "La decisión parecía sencilla, pero tenía consecuencias prácticas y simbólicas.",
+        "text_translation_ru": "Решение казалось простым, но имело практические и символические последствия."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "En vez de anunciar solo una intención, coordinó voluntarios y agua gratuita.",
+        "text_translation_ru": "Вместо того чтобы объявить только намерение, они организовала волонтёров и бесплатную воду."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Ese detalle cambió la reacción de las personas afectadas.",
+        "text_translation_ru": "Эта деталь изменила реакцию затронутых людей."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Al final, mostró que un servicio cultural también puede ser infraestructura social.",
+        "text_translation_ru": "В итоге показала, что культурная услуга может быть социальной инфраструктурой."
+      },
+      {
+        "segment_id": "s6",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "El resultado sugiere que una política útil necesita diseño, seguimiento y límites claros.",
+        "text_translation_ru": "Результат показывает, что полезной политике нужны дизайн, контроль и ясные ограничения."
+      }
+    ],
+    "vocab_focus": [
+      "biblioteca",
+      "refugio",
+      "calor",
+      "infraestructura"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "У решения были практические и символические последствия.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Об этом говорится во втором сегменте."
+      },
+      {
+        "id": "q2",
+        "prompt": "Группа ограничилась только объявлением намерения.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "В третьем сегменте сказано: En vez de anunciar solo una intención."
+      },
+      {
+        "id": "q3",
+        "prompt": "Текст делает вывод о необходимости ясных ограничений.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Последний сегмент говорит о límites claros."
+      }
+    ]
+  },
+  {
+    "title_short": "Normas claras para teletrabajar",
+    "level": "B2",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "El caso empezó cuando un equipo híbrido tenía malentendidos constantes.",
+        "text_translation_ru": "Случай начался, когда гибридная команда постоянно сталкивалась с недопониманием."
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "La decisión parecía sencilla, pero tenía consecuencias prácticas y simbólicas.",
+        "text_translation_ru": "Решение казалось простым, но имело практические и символические последствия."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "En vez de anunciar solo una intención, definió horarios de respuesta y canales urgentes.",
+        "text_translation_ru": "Вместо того чтобы объявить только намерение, они определила сроки ответа и каналы для срочного."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Ese detalle cambió la reacción de las personas afectadas.",
+        "text_translation_ru": "Эта деталь изменила реакцию затронутых людей."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Al final, la flexibilidad dejó de depender de favores personales.",
+        "text_translation_ru": "В итоге гибкость перестала зависеть от личных одолжений."
+      },
+      {
+        "segment_id": "s6",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "El resultado sugiere que una política útil necesita diseño, seguimiento y límites claros.",
+        "text_translation_ru": "Результат показывает, что полезной политике нужны дизайн, контроль и ясные ограничения."
+      }
+    ],
+    "vocab_focus": [
+      "teletrabajar",
+      "malentendidos",
+      "canales",
+      "flexibilidad"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "У решения были практические и символические последствия.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Об этом говорится во втором сегменте."
+      },
+      {
+        "id": "q2",
+        "prompt": "Группа ограничилась только объявлением намерения.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "В третьем сегменте сказано: En vez de anunciar solo una intención."
+      },
+      {
+        "id": "q3",
+        "prompt": "Текст делает вывод о необходимости ясных ограничений.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Последний сегмент говорит о límites claros."
+      }
+    ]
+  },
+  {
+    "title_short": "Aprender de una queja",
+    "level": "B2",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "El caso empezó cuando un restaurante recibió críticas por tiempos de espera.",
+        "text_translation_ru": "Случай начался, когда ресторан получил критику за время ожидания."
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "La decisión parecía sencilla, pero tenía consecuencias prácticas y simbólicas.",
+        "text_translation_ru": "Решение казалось простым, но имело практические и символические последствия."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "En vez de anunciar solo una intención, separó reservas grandes y mesas rápidas.",
+        "text_translation_ru": "Вместо того чтобы объявить только намерение, они разделил большие брони и быстрые столики."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Ese detalle cambió la reacción de las personas afectadas.",
+        "text_translation_ru": "Эта деталь изменила реакцию затронутых людей."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Al final, la crítica se convirtió en una mejora operativa.",
+        "text_translation_ru": "В итоге критика превратилась в операционное улучшение."
+      },
+      {
+        "segment_id": "s6",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "El resultado sugiere que una política útil necesita diseño, seguimiento y límites claros.",
+        "text_translation_ru": "Результат показывает, что полезной политике нужны дизайн, контроль и ясные ограничения."
+      }
+    ],
+    "vocab_focus": [
+      "queja",
+      "reservas",
+      "mesas",
+      "operativa"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "У решения были практические и символические последствия.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Об этом говорится во втором сегменте."
+      },
+      {
+        "id": "q2",
+        "prompt": "Группа ограничилась только объявлением намерения.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "В третьем сегменте сказано: En vez de anunciar solo una intención."
+      },
+      {
+        "id": "q3",
+        "prompt": "Текст делает вывод о необходимости ясных ограничений.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Последний сегмент говорит о límites claros."
+      }
+    ]
+  },
+  {
+    "title_short": "Una app con límites",
+    "level": "B2",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "El caso empezó cuando un grupo de salud lanzó una app para registrar hábitos.",
+        "text_translation_ru": "Случай начался, когда группа здоровья запустила приложение для привычек."
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "La decisión parecía sencilla, pero tenía consecuencias prácticas y simbólicas.",
+        "text_translation_ru": "Решение казалось простым, но имело практические и символические последствия."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "En vez de anunciar solo una intención, evitó rankings públicos y notificaciones agresivas.",
+        "text_translation_ru": "Вместо того чтобы объявить только намерение, они избежала публичных рейтингов и агрессивных уведомлений."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Ese detalle cambió la reacción de las personas afectadas.",
+        "text_translation_ru": "Эта деталь изменила реакцию затронутых людей."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Al final, más usuarios continuaron porque no se sentían vigilados.",
+        "text_translation_ru": "В итоге больше пользователей продолжили, потому что не чувствовали слежки."
+      },
+      {
+        "segment_id": "s6",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "El resultado sugiere que una política útil necesita diseño, seguimiento y límites claros.",
+        "text_translation_ru": "Результат показывает, что полезной политике нужны дизайн, контроль и ясные ограничения."
+      }
+    ],
+    "vocab_focus": [
+      "app",
+      "hábitos",
+      "rankings",
+      "vigilados"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "У решения были практические и символические последствия.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Об этом говорится во втором сегменте."
+      },
+      {
+        "id": "q2",
+        "prompt": "Группа ограничилась только объявлением намерения.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "В третьем сегменте сказано: En vez de anunciar solo una intención."
+      },
+      {
+        "id": "q3",
+        "prompt": "Текст делает вывод о необходимости ясных ограничений.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Последний сегмент говорит о límites claros."
+      }
+    ]
+  },
+  {
+    "title_short": "La transparencia que llega tarde",
+    "level": "C1",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "La discusión surgió cuando un consejo vecinal publicó las actas después de aprobar el presupuesto.",
+        "text_translation_ru": "Дискуссия возникла, когда районный совет опубликовал протоколы уже после утверждения бюджета."
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Nadie negaba el valor de la iniciativa; el problema estaba en sus condiciones.",
+        "text_translation_ru": "Никто не отрицал ценность инициативы; проблема была в её условиях."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "En la práctica, la información era correcta pero llegó cuando ya no podía influir.",
+        "text_translation_ru": "На практике информация была верной, но пришла тогда, когда уже не могла повлиять."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Esa contradicción obligó a revisar el significado real de la medida.",
+        "text_translation_ru": "Это противоречие заставило пересмотреть реальный смысл меры."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Por eso, la confianza no depende solo de decir la verdad, sino de permitir que esa verdad sea útil.",
+        "text_translation_ru": "Поэтому доверие зависит не только от правды, но и от возможности сделать эту правду полезной."
+      },
+      {
+        "segment_id": "s6",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "El caso recuerda que las buenas intenciones solo se sostienen cuando sus efectos pueden discutirse.",
+        "text_translation_ru": "Случай напоминает, что добрые намерения устойчивы только тогда, когда их последствия можно обсуждать."
+      }
+    ],
+    "vocab_focus": [
+      "transparencia",
+      "actas",
+      "presupuesto",
+      "confianza"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "Текст утверждает, что сама инициатива не имела никакой ценности.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "Во втором сегменте сказано, что её ценность никто не отрицал."
+      },
+      {
+        "id": "q2",
+        "prompt": "Проблема была связана с условиями и последствиями меры.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Об этом говорится во втором и последнем сегментах."
+      },
+      {
+        "id": "q3",
+        "prompt": "Автор делает нюансированный вывод, а не просто отвергает инициативу.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Текст говорит о пересмотре смысла и обсуждении эффектов."
+      }
+    ]
+  },
+  {
+    "title_short": "Innovar sin borrar memoria",
+    "level": "C1",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "La discusión surgió cuando una fábrica antigua se convirtió en centro cultural.",
+        "text_translation_ru": "Дискуссия возникла, когда старую фабрику превратили в культурный центр."
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Nadie negaba el valor de la iniciativa; el problema estaba en sus condiciones.",
+        "text_translation_ru": "Никто не отрицал ценность инициативы; проблема была в её условиях."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "En la práctica, el proyecto conservó marcas de trabajo en las paredes.",
+        "text_translation_ru": "На практике проект сохранил следы труда на стенах."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Esa contradicción obligó a revisar el significado real de la medida.",
+        "text_translation_ru": "Это противоречие заставило пересмотреть реальный смысл меры."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Por eso, el edificio dejó de ser ruina sin convertirse en decorado vacío.",
+        "text_translation_ru": "Поэтому здание перестало быть руиной, не став пустой декорацией."
+      },
+      {
+        "segment_id": "s6",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "El caso recuerda que las buenas intenciones solo se sostienen cuando sus efectos pueden discutirse.",
+        "text_translation_ru": "Случай напоминает, что добрые намерения устойчивы только тогда, когда их последствия можно обсуждать."
+      }
+    ],
+    "vocab_focus": [
+      "innovar",
+      "memoria",
+      "fábrica",
+      "decorado"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "Текст утверждает, что сама инициатива не имела никакой ценности.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "Во втором сегменте сказано, что её ценность никто не отрицал."
+      },
+      {
+        "id": "q2",
+        "prompt": "Проблема была связана с условиями и последствиями меры.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Об этом говорится во втором и последнем сегментах."
+      },
+      {
+        "id": "q3",
+        "prompt": "Автор делает нюансированный вывод, а не просто отвергает инициативу.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Текст говорит о пересмотре смысла и обсуждении эффектов."
+      }
+    ]
+  },
+  {
+    "title_short": "El algoritmo educado",
+    "level": "C1",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "La discusión surgió cuando una plataforma prometió recomendaciones neutrales.",
+        "text_translation_ru": "Дискуссия возникла, когда платформа пообещала нейтральные рекомендации."
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Nadie negaba el valor de la iniciativa; el problema estaba en sus condiciones.",
+        "text_translation_ru": "Никто не отрицал ценность инициативы; проблема была в её условиях."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "En la práctica, sus criterios premiaban materiales fáciles de consumir.",
+        "text_translation_ru": "На практике её критерии вознаграждали материалы, лёгкие для потребления."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Esa contradicción obligó a revisar el significado real de la medida.",
+        "text_translation_ru": "Это противоречие заставило пересмотреть реальный смысл меры."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Por eso, la neutralidad resultó ser una forma discreta de preferencia.",
+        "text_translation_ru": "Поэтому нейтральность оказалась скрытой формой предпочтения."
+      },
+      {
+        "segment_id": "s6",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "El caso recuerda que las buenas intenciones solo se sostienen cuando sus efectos pueden discutirse.",
+        "text_translation_ru": "Случай напоминает, что добрые намерения устойчивы только тогда, когда их последствия можно обсуждать."
+      }
+    ],
+    "vocab_focus": [
+      "algoritmo",
+      "neutrales",
+      "criterios",
+      "preferencia"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "Текст утверждает, что сама инициатива не имела никакой ценности.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "Во втором сегменте сказано, что её ценность никто не отрицал."
+      },
+      {
+        "id": "q2",
+        "prompt": "Проблема была связана с условиями и последствиями меры.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Об этом говорится во втором и последнем сегментах."
+      },
+      {
+        "id": "q3",
+        "prompt": "Автор делает нюансированный вывод, а не просто отвергает инициативу.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Текст говорит о пересмотре смысла и обсуждении эффектов."
+      }
+    ]
+  },
+  {
+    "title_short": "Conciliar no es desaparecer",
+    "level": "C1",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "La discusión surgió cuando una oficina ofreció flexibilidad a madres y padres.",
+        "text_translation_ru": "Дискуссия возникла, когда офис предложил гибкость родителям."
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Nadie negaba el valor de la iniciativa; el problema estaba en sus condiciones.",
+        "text_translation_ru": "Никто не отрицал ценность инициативы; проблема была в её условиях."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "En la práctica, las promociones seguían ligadas a estar visible hasta tarde.",
+        "text_translation_ru": "На практике повышения всё ещё зависели от видимости до позднего вечера."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Esa contradicción obligó a revisar el significado real de la medida.",
+        "text_translation_ru": "Это противоречие заставило пересмотреть реальный смысл меры."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Por eso, la medida alivió horarios pero no corrigió el criterio de prestigio.",
+        "text_translation_ru": "Поэтому мера облегчила графики, но не исправила критерий престижа."
+      },
+      {
+        "segment_id": "s6",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "El caso recuerda que las buenas intenciones solo se sostienen cuando sus efectos pueden discutirse.",
+        "text_translation_ru": "Случай напоминает, что добрые намерения устойчивы только тогда, когда их последствия можно обсуждать."
+      }
+    ],
+    "vocab_focus": [
+      "conciliar",
+      "flexibilidad",
+      "promociones",
+      "prestigio"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "Текст утверждает, что сама инициатива не имела никакой ценности.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "Во втором сегменте сказано, что её ценность никто не отрицал."
+      },
+      {
+        "id": "q2",
+        "prompt": "Проблема была связана с условиями и последствиями меры.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Об этом говорится во втором и последнем сегментах."
+      },
+      {
+        "id": "q3",
+        "prompt": "Автор делает нюансированный вывод, а не просто отвергает инициативу.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Текст говорит о пересмотре смысла и обсуждении эффектов."
+      }
+    ]
+  },
+  {
+    "title_short": "La ciudad que mide el silencio",
+    "level": "C1",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "La discusión surgió cuando un distrito instaló sensores de ruido.",
+        "text_translation_ru": "Дискуссия возникла, когда район установил датчики шума."
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Nadie negaba el valor de la iniciativa; el problema estaba en sus condiciones.",
+        "text_translation_ru": "Никто не отрицал ценность инициативы; проблема была в её условиях."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "En la práctica, los datos mostraron diferencias entre calles turísticas y residenciales.",
+        "text_translation_ru": "На практике данные показали различия между туристическими и жилыми улицами."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Esa contradicción obligó a revisar el significado real de la medida.",
+        "text_translation_ru": "Это противоречие заставило пересмотреть реальный смысл меры."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Por eso, medir no resolvió el conflicto, pero impidió negarlo.",
+        "text_translation_ru": "Поэтому измерение не решило конфликт, но не позволило его отрицать."
+      },
+      {
+        "segment_id": "s6",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "El caso recuerda que las buenas intenciones solo se sostienen cuando sus efectos pueden discutirse.",
+        "text_translation_ru": "Случай напоминает, что добрые намерения устойчивы только тогда, когда их последствия можно обсуждать."
+      }
+    ],
+    "vocab_focus": [
+      "sensores",
+      "ruido",
+      "residenciales",
+      "conflicto"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "Текст утверждает, что сама инициатива не имела никакой ценности.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "Во втором сегменте сказано, что её ценность никто не отрицал."
+      },
+      {
+        "id": "q2",
+        "prompt": "Проблема была связана с условиями и последствиями меры.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Об этом говорится во втором и последнем сегментах."
+      },
+      {
+        "id": "q3",
+        "prompt": "Автор делает нюансированный вывод, а не просто отвергает инициативу.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Текст говорит о пересмотре смысла и обсуждении эффектов."
+      }
+    ]
+  },
+  {
+    "title_short": "Archivo con derecho a réplica",
+    "level": "C1",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "La discusión surgió cuando un museo digitalizó testimonios de una huelga.",
+        "text_translation_ru": "Дискуссия возникла, когда музей оцифровал свидетельства о забастовке."
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Nadie negaba el valor de la iniciativa; el problema estaba en sus condiciones.",
+        "text_translation_ru": "Никто не отрицал ценность инициативы; проблема была в её условиях."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "En la práctica, invitó a descendientes a corregir nombres y contextos.",
+        "text_translation_ru": "На практике пригласил потомков исправлять имена и контексты."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Esa contradicción obligó a revisar el significado real de la medida.",
+        "text_translation_ru": "Это противоречие заставило пересмотреть реальный смысл меры."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Por eso, el archivo ganó autoridad precisamente porque aceptó revisión.",
+        "text_translation_ru": "Поэтому архив получил авторитет именно потому, что принял пересмотр."
+      },
+      {
+        "segment_id": "s6",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "El caso recuerda que las buenas intenciones solo se sostienen cuando sus efectos pueden discutirse.",
+        "text_translation_ru": "Случай напоминает, что добрые намерения устойчивы только тогда, когда их последствия можно обсуждать."
+      }
+    ],
+    "vocab_focus": [
+      "archivo",
+      "réplica",
+      "testimonios",
+      "revisión"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "Текст утверждает, что сама инициатива не имела никакой ценности.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "Во втором сегменте сказано, что её ценность никто не отрицал."
+      },
+      {
+        "id": "q2",
+        "prompt": "Проблема была связана с условиями и последствиями меры.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Об этом говорится во втором и последнем сегментах."
+      },
+      {
+        "id": "q3",
+        "prompt": "Автор делает нюансированный вывод, а не просто отвергает инициативу.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Текст говорит о пересмотре смысла и обсуждении эффектов."
+      }
+    ]
+  },
+  {
+    "title_short": "Eficiencia con factura oculta",
+    "level": "C1",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "La discusión surgió cuando una cadena optimizó las entregas en treinta minutos.",
+        "text_translation_ru": "Дискуссия возникла, когда сеть оптимизировала доставки до тридцати минут."
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Nadie negaba el valor de la iniciativa; el problema estaba en sus condiciones.",
+        "text_translation_ru": "Никто не отрицал ценность инициативы; проблема была в её условиях."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "En la práctica, trasladó parte del riesgo a repartidores externos.",
+        "text_translation_ru": "На практике переложила часть риска на внешних курьеров."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Esa contradicción obligó a revisar el significado real de la medida.",
+        "text_translation_ru": "Это противоречие заставило пересмотреть реальный смысл меры."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Por eso, la rapidez visible ocultaba una negociación laboral pendiente.",
+        "text_translation_ru": "Поэтому видимая скорость скрывала нерешённые трудовые переговоры."
+      },
+      {
+        "segment_id": "s6",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "El caso recuerda que las buenas intenciones solo se sostienen cuando sus efectos pueden discutirse.",
+        "text_translation_ru": "Случай напоминает, что добрые намерения устойчивы только тогда, когда их последствия можно обсуждать."
+      }
+    ],
+    "vocab_focus": [
+      "eficiencia",
+      "entregas",
+      "riesgo",
+      "laboral"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "Текст утверждает, что сама инициатива не имела никакой ценности.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "Во втором сегменте сказано, что её ценность никто не отрицал."
+      },
+      {
+        "id": "q2",
+        "prompt": "Проблема была связана с условиями и последствиями меры.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Об этом говорится во втором и последнем сегментах."
+      },
+      {
+        "id": "q3",
+        "prompt": "Автор делает нюансированный вывод, а не просто отвергает инициативу.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Текст говорит о пересмотре смысла и обсуждении эффектов."
+      }
+    ]
+  },
+  {
+    "title_short": "La disculpa verificable",
+    "level": "C1",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "La discusión surgió cuando una empresa pidió perdón por usar datos sin permiso.",
+        "text_translation_ru": "Дискуссия возникла, когда компания извинилась за использование данных без разрешения."
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Nadie negaba el valor de la iniciativa; el problema estaba en sus condiciones.",
+        "text_translation_ru": "Никто не отрицал ценность инициативы; проблема была в её условиях."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "En la práctica, publicó una auditoría y un calendario de cambios.",
+        "text_translation_ru": "На практике опубликовала аудит и график изменений."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Esa contradicción obligó a revisar el significado real de la medida.",
+        "text_translation_ru": "Это противоречие заставило пересмотреть реальный смысл меры."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Por eso, la disculpa fue creíble porque podía comprobarse después.",
+        "text_translation_ru": "Поэтому извинение было убедительным, потому что его можно было проверить позже."
+      },
+      {
+        "segment_id": "s6",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "El caso recuerda que las buenas intenciones solo se sostienen cuando sus efectos pueden discutirse.",
+        "text_translation_ru": "Случай напоминает, что добрые намерения устойчивы только тогда, когда их последствия можно обсуждать."
+      }
+    ],
+    "vocab_focus": [
+      "disculpa",
+      "datos",
+      "auditoría",
+      "comprobarse"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "Текст утверждает, что сама инициатива не имела никакой ценности.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "Во втором сегменте сказано, что её ценность никто не отрицал."
+      },
+      {
+        "id": "q2",
+        "prompt": "Проблема была связана с условиями и последствиями меры.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Об этом говорится во втором и последнем сегментах."
+      },
+      {
+        "id": "q3",
+        "prompt": "Автор делает нюансированный вывод, а не просто отвергает инициативу.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Текст говорит о пересмотре смысла и обсуждении эффектов."
+      }
+    ]
+  },
+  {
+    "title_short": "Participar sin quemarse",
+    "level": "C1",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "La discusión surgió cuando un colectivo ciudadano revisaba todos los planes urbanos.",
+        "text_translation_ru": "Дискуссия возникла, когда гражданская группа проверяла все городские планы."
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Nadie negaba el valor de la iniciativa; el problema estaba en sus condiciones.",
+        "text_translation_ru": "Никто не отрицал ценность инициативы; проблема была в её условиях."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "En la práctica, rotó responsabilidades y aceptó no responder a cada documento.",
+        "text_translation_ru": "На практике ротационно распределила обязанности и приняла, что не ответит на каждый документ."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Esa contradicción obligó a revisar el significado real de la medida.",
+        "text_translation_ru": "Это противоречие заставило пересмотреть реальный смысл меры."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Por eso, la sostenibilidad del activismo exigió renunciar a la omnipresencia.",
+        "text_translation_ru": "Поэтому устойчивость активизма потребовала отказа от вездесущности."
+      },
+      {
+        "segment_id": "s6",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "El caso recuerda que las buenas intenciones solo se sostienen cuando sus efectos pueden discutirse.",
+        "text_translation_ru": "Случай напоминает, что добрые намерения устойчивы только тогда, когда их последствия можно обсуждать."
+      }
+    ],
+    "vocab_focus": [
+      "participar",
+      "colectivo",
+      "responsabilidades",
+      "omnipresencia"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "Текст утверждает, что сама инициатива не имела никакой ценности.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "Во втором сегменте сказано, что её ценность никто не отрицал."
+      },
+      {
+        "id": "q2",
+        "prompt": "Проблема была связана с условиями и последствиями меры.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Об этом говорится во втором и последнем сегментах."
+      },
+      {
+        "id": "q3",
+        "prompt": "Автор делает нюансированный вывод, а не просто отвергает инициативу.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Текст говорит о пересмотре смысла и обсуждении эффектов."
+      }
+    ]
+  },
+  {
+    "title_short": "Patrimonio en alquiler",
+    "level": "C1",
+    "segments": [
+      {
+        "segment_id": "s1",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "La discusión surgió cuando un pueblo restauró casas históricas para atraer visitantes.",
+        "text_translation_ru": "Дискуссия возникла, когда посёлок восстановил исторические дома, чтобы привлечь гостей."
+      },
+      {
+        "segment_id": "s2",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Nadie negaba el valor de la iniciativa; el problema estaba en sus condiciones.",
+        "text_translation_ru": "Никто не отрицал ценность инициативы; проблема была в её условиях."
+      },
+      {
+        "segment_id": "s3",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "En la práctica, limitó licencias para evitar expulsar a residentes.",
+        "text_translation_ru": "На практике ограничил лицензии, чтобы не вытеснить жителей."
+      },
+      {
+        "segment_id": "s4",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Esa contradicción obligó a revisar el significado real de la medida.",
+        "text_translation_ru": "Это противоречие заставило пересмотреть реальный смысл меры."
+      },
+      {
+        "segment_id": "s5",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "Por eso, la protección del patrimonio incluyó proteger a quienes lo mantenían vivo.",
+        "text_translation_ru": "Поэтому защита наследия включила защиту тех, кто поддерживал его живым."
+      },
+      {
+        "segment_id": "s6",
+        "speaker_id": "narrator",
+        "speaker_gender": "neutral",
+        "text": "El caso recuerda que las buenas intenciones solo se sostienen cuando sus efectos pueden discutirse.",
+        "text_translation_ru": "Случай напоминает, что добрые намерения устойчивы только тогда, когда их последствия можно обсуждать."
+      }
+    ],
+    "vocab_focus": [
+      "patrimonio",
+      "licencias",
+      "residentes",
+      "proteger"
+    ],
+    "questions": [
+      {
+        "id": "q1",
+        "prompt": "Текст утверждает, что сама инициатива не имела никакой ценности.",
+        "type": "true_false",
+        "correct_answer": "false",
+        "explanation": "Во втором сегменте сказано, что её ценность никто не отрицал."
+      },
+      {
+        "id": "q2",
+        "prompt": "Проблема была связана с условиями и последствиями меры.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Об этом говорится во втором и последнем сегментах."
+      },
+      {
+        "id": "q3",
+        "prompt": "Автор делает нюансированный вывод, а не просто отвергает инициативу.",
+        "type": "true_false",
+        "correct_answer": "true",
+        "explanation": "Текст говорит о пересмотре смысла и обсуждении эффектов."
+      }
+    ]
+  }
+]

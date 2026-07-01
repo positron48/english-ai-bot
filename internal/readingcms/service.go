@@ -8,8 +8,8 @@ import (
 
 // Service orchestrates the local Reading CMS pipeline.
 type Service struct {
-	paths     *Paths
-	store     *Store
+	paths          *Paths
+	store          *Store
 	coverJobs      sync.Map // key: course:text_id -> *coverProgressState
 	coverBatchJobs sync.Map // key: batch_id -> *coverBatchState
 }
@@ -26,11 +26,12 @@ func NewService(repoRoot string) (*Service, error) {
 
 func (s *Service) Paths() *Paths { return s.paths }
 
-func (s *Service) ListDrafts(courseCode, level, status, audio, search string) ([]DraftMeta, error) {
+func (s *Service) ListDrafts(courseCode, level, status, audio, cover, search string) ([]DraftMeta, error) {
 	courseCode = strings.ToLower(strings.TrimSpace(courseCode))
 	level = strings.ToUpper(strings.TrimSpace(level))
 	status = strings.TrimSpace(status)
 	audio = strings.TrimSpace(audio)
+	cover = strings.TrimSpace(cover)
 	search = strings.ToLower(strings.TrimSpace(search))
 	return s.store.ListDrafts(func(d DraftMeta) bool {
 		if courseCode != "" && d.CourseCode != courseCode {
@@ -43,6 +44,9 @@ func (s *Service) ListDrafts(courseCode, level, status, audio, search string) ([
 			return false
 		}
 		if audio != "" && d.AudioStatus != audio {
+			return false
+		}
+		if cover != "" && d.CoverStatus != cover {
 			return false
 		}
 		if search != "" && !strings.Contains(strings.ToLower(d.Title), search) {

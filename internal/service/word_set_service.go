@@ -18,6 +18,7 @@ import (
 type userCardRepoForWordSet interface {
 	CreateUserCard(card *models.UserCard) (int64, error)
 	DeleteUserCardsByWordCardIDForUser(userID, wordCardID int64) (int64, error)
+	CountUserCardsForWord(userID, wordCardID int64) (int, error)
 }
 
 // wordRepoForWordSet is used by WordSetService for word card operations (allows mocks in tests).
@@ -489,6 +490,30 @@ func (s *WordSetService) EnsureTrainingCardsExist(ctx context.Context, wordCardI
 	return nil
 }
 
+// EnsureCardsForWord ensures both training cards and per-direction user_cards exist for
+// wordCardID. Equivalent to calling EnsureTrainingCardsExist followed by EnsureUserCardsForWord,
+// but on the common fast path (training cards already generated) it fetches them once instead of
+// twice — this is the hot path hit on every word-card open, so the extra round trip matters.
+//
+// Matches the existing caller convention (internal/web reading.go / vocab.go): a training-card
+// generation failure is soft — logged and swallowed, leaving trainingCards empty — so callers
+// still get their usual "word/card not found" response instead of a hard 500 on every transient
+// LLM hiccup. Only a failure creating user_cards for cards that DO exist is a hard error.
+func (s *WordSetService) EnsureCardsForWord(ctx context.Context, userID, wordCardID int64) error {
+	trainingCards, err := s.trainingCardRepo.GetTrainingCardsByWordCardID(wordCardID)
+	if err != nil {
+		return fmt.Errorf("failed to check training cards: %w", err)
+	}
+	if len(trainingCards) == 0 {
+		if err := s.EnsureTrainingCardsExist(ctx, wordCardID); err != nil {
+			s.logger.Warn("failed to ensure training cards", zap.Int64("word_card_id", wordCardID), zap.Error(err))
+		} else if trainingCards, err = s.trainingCardRepo.GetTrainingCardsByWordCardID(wordCardID); err != nil {
+			return fmt.Errorf("failed to reload training cards after generation: %w", err)
+		}
+	}
+	return s.ensureUserCardsForTrainingCards(userID, wordCardID, trainingCards)
+}
+
 // EnsureUserCardsForWord creates user_cards for all training_cards of a word
 // Similar to WordService.ensureUserCardsForWord
 func (s *WordSetService) EnsureUserCardsForWord(userID, wordCardID int64) error {
@@ -497,8 +522,21 @@ func (s *WordSetService) EnsureUserCardsForWord(userID, wordCardID int64) error 
 	if err != nil {
 		return fmt.Errorf("failed to get training cards: %w", err)
 	}
+	return s.ensureUserCardsForTrainingCards(userID, wordCardID, trainingCards)
+}
 
+// ensureUserCardsForTrainingCards is EnsureUserCardsForWord given an already-fetched
+// trainingCards list, so callers that just fetched it (EnsureCardsForWord) don't pay for a second
+// identical query.
+func (s *WordSetService) ensureUserCardsForTrainingCards(userID, wordCardID int64, trainingCards []*models.TrainingCard) error {
 	if len(trainingCards) == 0 {
+		return nil
+	}
+
+	// Fast path: skip the per-card create-or-noop loop (up to 2 SELECT-then-INSERT round trips
+	// per training card) when the user already has every (training_card, direction) pair — the
+	// common case on every re-open of an already-learned word.
+	if existing, err := s.userCardRepo.CountUserCardsForWord(userID, wordCardID); err == nil && existing == len(trainingCards)*2 {
 		return nil
 	}
 

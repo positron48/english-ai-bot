@@ -55,6 +55,15 @@ function badgeCover(st) {
   return `<span class="badge ${cls}">${st || 'none'}</span>`;
 }
 
+function badgeGit(item) {
+  const st = item?.git_status || '';
+  if (!st) return '';
+  if (item.is_new_uncommitted) {
+    return ' <span class="badge new-uncommitted">new</span>';
+  }
+  return ` <span class="badge git-dirty">${escapeHtml(st)}</span>`;
+}
+
 function formatCoverDate(iso) {
   if (!iso) return '';
   const d = new Date(iso);
@@ -161,7 +170,7 @@ function renderPublishedTable(texts, total) {
   const course = document.getElementById('pub-course').value || courses[0]?.code || '';
   if (countEl) countEl.textContent = total != null ? `(${total})` : texts.length ? `(${texts.length})` : '';
   if (!texts.length) {
-    wrap.innerHTML = `<p class="meta">Нет текстов в <code>courses/${course === 'es_ru' ? 'spanish' : 'english'}-grammar/reading/</code> для выбранных фильтров. Проверьте course и submodule, или снимите фильтр level/cover.</p>`;
+    wrap.innerHTML = `<p class="meta">Нет текстов в <code>courses/${course === 'es_ru' ? 'spanish' : 'english'}-grammar/reading/</code> для выбранных фильтров. Проверьте course и submodule, или снимите фильтры уровня, картинки и git-статуса.</p>`;
     return;
   }
   const sortKey = document.getElementById('pub-sort')?.value || 'level';
@@ -173,7 +182,7 @@ function renderPublishedTable(texts, total) {
     <tbody>${sorted.map(t => {
       const coverDate = t.cover_generated_at ? `<div class="meta cover-date">${formatCoverDate(t.cover_generated_at)}</div>` : '';
       return `<tr data-id="${t.text_id}" data-course="${escapeHtml(t.course_code || course)}">
-      <td class="title-cell">${escapeHtml(t.title)}${t.in_cms ? ' <span class="badge partial">cms</span>' : ''}</td>
+      <td class="title-cell">${escapeHtml(t.title)}${badgeGit(t)}${t.in_cms ? ' <span class="badge partial">cms</span>' : ''}</td>
       <td>${t.level}</td>
       <td>${badgeAudio(t.audio_status)} <span class="meta">${t.segments_with_audio}/${t.segments_count}</span></td>
       <td>${badgeCover(t.cover_status)}${coverDate}</td>
@@ -869,6 +878,7 @@ async function loadPublished(options = {}) {
     const course = document.getElementById('pub-course').value || courses[0]?.code;
     const level = document.getElementById('pub-level').value;
     const cover = document.getElementById('pub-cover')?.value || '';
+    const git = document.getElementById('pub-git')?.value || '';
     const search = document.getElementById('pub-search')?.value.trim() || '';
     if (course) {
       params.set('course_code', course);
@@ -878,6 +888,7 @@ async function loadPublished(options = {}) {
     localStorage.setItem('reading-cms-pub-sort', sort);
     if (level) params.set('level', level);
     if (cover) params.set('cover', cover);
+    if (git) params.set('git', git);
     if (search) params.set('search', search);
     if (!preserveScroll) wrap.innerHTML = '<p class="meta">Загрузка…</p>';
     const data = await api('/api/published?' + params.toString());
@@ -897,11 +908,13 @@ async function loadDrafts(options = {}) {
     const level = document.getElementById('filter-level').value;
     const status = document.getElementById('filter-status').value;
     const audio = document.getElementById('filter-audio').value;
+    const cover = document.getElementById('filter-cover')?.value || '';
     const search = document.getElementById('filter-search').value.trim();
     if (course) params.set('course_code', course);
     if (level) params.set('level', level);
     if (status) params.set('status', status);
     if (audio) params.set('audio', audio);
+    if (cover) params.set('cover', cover);
     if (search) params.set('search', search);
     const qs = params.toString();
     const data = await api('/api/drafts' + (qs ? '?' + qs : ''));
@@ -916,12 +929,13 @@ async function syncPublishedToCMS(force = false) {
   const course = document.getElementById('pub-course').value || courses[0]?.code;
   const level = document.getElementById('pub-level').value;
   const cover = document.getElementById('pub-cover')?.value || '';
+  const git = document.getElementById('pub-git')?.value || '';
   const search = document.getElementById('pub-search')?.value.trim() || '';
   if (!force && !confirm('Импортировать тексты из course в черновики CMS? Уже импортированные будут пропущены.')) return;
   toast('Импорт из course...');
   const data = await api('/api/published/sync', {
     method: 'POST',
-    body: JSON.stringify({ course_code: course, level, cover, search, force }),
+    body: JSON.stringify({ course_code: course, level, cover, git, search, force }),
   });
   toast(`CMS: +${data.imported} новых, ${data.updated} обновлено, ${data.skipped} пропущено`);
   await loadPublished();
@@ -1199,29 +1213,41 @@ async function copyReadingPrompt(kind) {
 document.getElementById('copy-prompt-generate').addEventListener('click', () => copyReadingPrompt('generate'));
 document.getElementById('copy-prompt-transform').addEventListener('click', () => copyReadingPrompt('transform'));
 
+document.getElementById('import-json-file').addEventListener('change', async (e) => {
+  const file = e.target.files?.[0];
+  if (!file) return;
+  try {
+    document.getElementById('import-json').value = await file.text();
+    toast(`Loaded ${file.name}`);
+  } catch (err) {
+    toast(err.message);
+  }
+});
+
 document.getElementById('import-json-btn').addEventListener('click', async () => {
   const raw = document.getElementById('import-json').value.trim();
   if (!raw) return;
-  let documentJson;
-  try { documentJson = JSON.parse(raw); } catch { toast('Invalid JSON'); return; }
-  toast('JSON import + TTS...');
+  toast('JSON batch import + TTS...');
   try {
-    const data = await api('/api/drafts/import-json', {
+    const data = await api('/api/drafts/import-json-batch', {
       method: 'POST',
       body: JSON.stringify({
         course_code: document.getElementById('import-course').value,
         level: document.getElementById('import-level').value,
         format: document.getElementById('import-format').value,
         title: document.getElementById('import-title').value.trim(),
-        document: documentJson,
+        documents_text: raw,
         with_audio: document.getElementById('json-audio').checked,
         auto_publish: document.getElementById('json-publish').checked,
         sync_bundle: document.getElementById('json-sync-bundle').checked,
       }),
     });
-    toast(`JSON: ${data.draft?.status || 'ok'}`);
-    document.getElementById('import-json').value = '';
-    document.getElementById('import-dialog').close();
+    toast(`JSON batch: ${data.succeeded || 0}/${data.total || 0} ok, ${data.failed || 0} failed`);
+    if (!data.failed) {
+      document.getElementById('import-json').value = '';
+      document.getElementById('import-json-file').value = '';
+      document.getElementById('import-dialog').close();
+    }
     switchTab('drafts');
     await loadDrafts();
     await loadPublished();
@@ -1233,14 +1259,14 @@ document.getElementById('import-json-btn').addEventListener('click', async () =>
 document.getElementById('refresh-drafts').addEventListener('click', loadDrafts);
 document.getElementById('refresh-published').addEventListener('click', loadPublished);
 document.getElementById('pub-sync-cms').addEventListener('click', () => syncPublishedToCMS(false));
-['pub-course','pub-level','pub-cover','pub-sort'].forEach(id => {
+['pub-course','pub-level','pub-cover','pub-git','pub-sort'].forEach(id => {
   document.getElementById(id).addEventListener('change', loadPublished);
 });
 document.getElementById('pub-search').addEventListener('input', () => {
   clearTimeout(window._pubSearchT);
   window._pubSearchT = setTimeout(loadPublished, 300);
 });
-['filter-course','filter-level','filter-status','filter-audio'].forEach(id => {
+['filter-course','filter-level','filter-status','filter-audio','filter-cover'].forEach(id => {
   document.getElementById(id).addEventListener('change', loadDrafts);
 });
 document.getElementById('filter-search').addEventListener('input', () => {

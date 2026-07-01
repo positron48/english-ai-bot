@@ -126,6 +126,23 @@ func (r *UserCardRepository) GetUserCard(id int64) (*models.UserCard, error) {
 	return r.scanUserCard(r.db.QueryRow(query, id))
 }
 
+// CountUserCardsForWord counts how many user_cards a user has across all training_cards of a
+// word_card. Used to fast-path EnsureUserCardsForWord: if the count already equals
+// len(trainingCards)*2 (both directions), every card exists and the per-card create-or-noop loop
+// can be skipped entirely.
+func (r *UserCardRepository) CountUserCardsForWord(userID, wordCardID int64) (int, error) {
+	var count int
+	err := r.db.QueryRow(`
+		SELECT COUNT(*) FROM user_cards uc
+		JOIN training_cards tc ON uc.training_card_id = tc.id
+		WHERE uc.user_id = ? AND tc.word_card_id = ?
+	`, userID, wordCardID).Scan(&count)
+	if err != nil {
+		return 0, fmt.Errorf("failed to count user cards for word: %w", err)
+	}
+	return count, nil
+}
+
 // GetUserCardByTrainingCard gets a user card by user, training card and direction
 func (r *UserCardRepository) GetUserCardByTrainingCard(userID, trainingCardID int64, direction models.CardDirection) (*models.UserCard, error) {
 	query := `SELECT id, user_id, training_card_id, direction, state, ef, reps,

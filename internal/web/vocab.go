@@ -234,39 +234,6 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 		}
 	}
 
-	// Get total count after filtering by mastery_level
-	// Use the same query structure to count filtered results
-	countQueryWithMastery := "SELECT COUNT(*) FROM (" +
-		"SELECT *, " +
-		"CASE " +
-		"WHEN is_known = 1 THEN 'known' " +
-		"WHEN review_state_count = total_cards AND total_reps > 0 THEN 'mastered' " +
-		"WHEN review_state_count > 0 OR learning_state_count > 0 THEN 'learning' " +
-		"ELSE 'new' " +
-		"END as mastery_level_calc " +
-		"FROM (" + queryFromCards + " UNION ALL " + queryFromKnown + ") combined " +
-		") with_mastery"
-	countArgsWithMastery := append(args, argsKnown...)
-	if masteryLevelFilter != "" {
-		allowedLevels := map[string]bool{
-			"new":      true,
-			"learning": true,
-			"mastered": true,
-			"known":    true,
-		}
-		if allowedLevels[masteryLevelFilter] {
-			countQueryWithMastery += " WHERE mastery_level_calc = ?"
-			countArgsWithMastery = append(countArgsWithMastery, masteryLevelFilter)
-		}
-	}
-
-	var totalCount int
-	err := r.db.QueryRow(countQueryWithMastery, countArgsWithMastery...).Scan(&totalCount)
-	if err != nil {
-		r.logger.Error("failed to get vocabulary count with mastery filter", zap.Error(err))
-		totalCount = 0
-	}
-
 	// Add ordering and pagination
 	// Handle special case for mastery_level (calculated field)
 	var orderByClause string
@@ -309,13 +276,16 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 	default:
 		orderByClause = sortBy
 	}
-	baseQuery += " ORDER BY " + orderByClause + " " + sortOrder + " LIMIT ? OFFSET ?"
+	// Wrap with a window-function count so the total (pre-LIMIT) row count comes back in the same
+	// pass instead of running the whole UNION ALL/subquery tree a second time just for COUNT(*).
+	countedQuery := "SELECT *, COUNT(*) OVER() AS total_count FROM (" + baseQuery + ") filtered"
+	countedQuery += " ORDER BY " + orderByClause + " " + sortOrder + " LIMIT ? OFFSET ?"
 	// Combine args from both queries and filter
 	allArgs := append(args, argsKnown...)
 	allArgs = append(allArgs, filterArgs...)
 	allArgs = append(allArgs, limit, offset)
 
-	rows, err := r.db.Query(baseQuery, allArgs...)
+	rows, err := r.db.Query(countedQuery, allArgs...)
 	if err != nil {
 		r.logger.Error("failed to get vocabulary", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
@@ -324,6 +294,7 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 	defer rows.Close()
 
 	var words []VocabWord
+	var totalCount int
 	for rows.Next() {
 		var word VocabWord
 		var totalCards, dueCount, totalReps, reviewCount, reviewStateCount, learningStateCount, newStateCount, isKnown int
@@ -332,6 +303,7 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 		var masteryLevelCalc sql.NullString
 		var masteringScoreStored sql.NullInt64
 		var discardScore sql.NullInt64 // mastering_score_calc alias (same as stored)
+		var rowTotalCount int
 
 		if testHookVocabScanErr != nil {
 			if err := testHookVocabScanErr(); err != nil {
@@ -346,7 +318,7 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 			}
 		}
 		err := rows.Scan(&word.WordCardID, &word.Lemma, &displayWord, &totalCards, &dueCount, &lastReview, &totalReps, &addedAt,
-			&reviewStateCount, &learningStateCount, &newStateCount, &reviewCount, &isKnown, &masteringScoreStored, &masteryLevelCalc, &discardScore)
+			&reviewStateCount, &learningStateCount, &newStateCount, &reviewCount, &isKnown, &masteringScoreStored, &masteryLevelCalc, &discardScore, &rowTotalCount)
 		if testHookVocabScanErrAfter != nil {
 			if hookErr := testHookVocabScanErrAfter(); hookErr != nil {
 				err = hookErr
@@ -356,6 +328,7 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 			r.logger.Error("failed to scan word", zap.Error(err))
 			continue
 		}
+		totalCount = rowTotalCount
 
 		if testHookVocabForceDisplayWordValid {
 			displayWord = sql.NullString{String: "hooked", Valid: true}
@@ -472,14 +445,14 @@ func (r *Router) handleVocabSummary(w http.ResponseWriter, req *http.Request) {
 
 	w.Header().Set("Content-Type", "application/json")
 	_ = json.NewEncoder(w).Encode(map[string]interface{}{
-		"total":           summary.Total,
-		"new":             summary.New,
-		"learning":        summary.Learning,
-		"review":          summary.Review,
-		"review_count":    summary.Review,
-		"mastered":        summary.Mastered,
-		"mastered_count":  summary.Mastered,
-		"known":           summary.Mastered, // backward compat: "изучено" in Practice dictionary card
+		"total":          summary.Total,
+		"new":            summary.New,
+		"learning":       summary.Learning,
+		"review":         summary.Review,
+		"review_count":   summary.Review,
+		"mastered":       summary.Mastered,
+		"mastered_count": summary.Mastered,
+		"known":          summary.Mastered, // backward compat: "изучено" in Practice dictionary card
 	})
 }
 
@@ -623,19 +596,10 @@ func (r *Router) handleVocabDelete(w http.ResponseWriter, req *http.Request) {
 			// Continue anyway
 		}
 
-		// Ensure training cards exist
+		// Ensure training cards + user_cards exist (single training-cards fetch instead of two)
 		wordSetService := r.getWordSetService()
-		if err := wordSetService.EnsureTrainingCardsExist(req.Context(), wordCardID); err != nil {
-			r.logger.Warn("failed to ensure training cards",
-				zap.Int64("word_card_id", wordCardID),
-				zap.Error(err),
-			)
-			// Continue anyway
-		}
-
-		// Create user_cards
-		if err := wordSetService.EnsureUserCardsForWord(userID, wordCardID); err != nil {
-			r.logger.Error("failed to create user cards", zap.Error(err))
+		if err := wordSetService.EnsureCardsForWord(req.Context(), userID, wordCardID); err != nil {
+			r.logger.Error("failed to ensure cards", zap.Int64("word_card_id", wordCardID), zap.Error(err))
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			return
 		}
@@ -716,9 +680,12 @@ func fillVocabCardDetailNeutralAliases(c *VocabCardDetail) {
 // @Failure      500  {string}  string  "Внутренняя ошибка сервера"
 // @Router       /api/vocab/{word}/cards [get]
 func (r *Router) handleVocabWordCards(w http.ResponseWriter, req *http.Request, userID int64, lemma string) {
-	// First, find word_card_id by lemma
+	// First, find word_card_id by lemma, scoped to the learner's course so a shared spelling
+	// across courses on the unified DB can't resolve to another course's word.
+	courseCode := r.requestedCourseCodeForUser(req, userID)
 	var wordCardID int64
-	err := r.db.QueryRow(`SELECT id FROM word_cards WHERE LOWER(word) = LOWER(?)`, lemma).Scan(&wordCardID)
+	err := r.db.QueryRow(`SELECT id FROM word_cards WHERE LOWER(word) = LOWER(?) AND (? = '' OR LOWER(course_code) = LOWER(?))`,
+		lemma, courseCode, courseCode).Scan(&wordCardID)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			w.Header().Set("Content-Type", "application/json")
@@ -733,7 +700,15 @@ func (r *Router) handleVocabWordCards(w http.ResponseWriter, req *http.Request, 
 		return
 	}
 
-	query := `SELECT 
+	r.handleVocabWordCardsByID(w, req, userID, wordCardID, lemma)
+}
+
+// handleVocabWordCardsByID is handleVocabWordCards with word_card_id already resolved, for
+// callers (e.g. reading word-lookup) that already did the lemma/course_code resolution
+// themselves — skips redoing that resolution (course-code lookup + word_cards query) a second
+// time in the same request.
+func (r *Router) handleVocabWordCardsByID(w http.ResponseWriter, req *http.Request, userID, wordCardID int64, lemma string) {
+	query := `SELECT
 		uc.id,
 		uc.training_card_id,
 		uc.direction,

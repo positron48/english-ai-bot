@@ -1,8 +1,12 @@
 package readingcms
 
 import (
+	"bytes"
 	"context"
+	"encoding/json"
+	"errors"
 	"fmt"
+	"io"
 	"strings"
 )
 
@@ -86,6 +90,98 @@ func (s *Service) ImportJSON(ctx context.Context, req ImportJSONRequest) (*Draft
 		partialLog:  "JSON imported; audio incomplete — retry Generate audio",
 		noAudioLog:  "JSON imported; run Generate audio before publish",
 	})
+}
+
+func (s *Service) ImportJSONBatch(ctx context.Context, req ImportJSONBatchRequest) (*ImportJSONBatchResponse, error) {
+	docs, parseErr := parseImportJSONDocuments(req.DocumentsText)
+	if len(docs) == 0 {
+		if parseErr != nil {
+			return nil, parseErr
+		}
+		return nil, fmt.Errorf("no JSON documents found")
+	}
+
+	resp := &ImportJSONBatchResponse{
+		Results: make([]ImportJSONBatchResult, 0, len(docs)+1),
+	}
+	for i, doc := range docs {
+		meta, textDoc, err := s.ImportJSON(ctx, ImportJSONRequest{
+			CourseCode:  req.CourseCode,
+			Level:       req.Level,
+			Format:      req.Format,
+			Title:       req.Title,
+			Document:    doc,
+			WithAudio:   req.WithAudio,
+			AutoPublish: req.AutoPublish,
+			SyncBundle:  req.SyncBundle,
+		})
+		item := ImportJSONBatchResult{Index: i}
+		if err != nil {
+			item.Error = err.Error()
+			resp.Failed++
+		} else {
+			item.Draft = meta
+			item.Document = textDoc
+			resp.Succeeded++
+		}
+		resp.Results = append(resp.Results, item)
+	}
+	if parseErr != nil {
+		resp.Results = append(resp.Results, ImportJSONBatchResult{
+			Index: len(docs),
+			Error: parseErr.Error(),
+		})
+		resp.Failed++
+	}
+	resp.Total = resp.Succeeded + resp.Failed
+	return resp, nil
+}
+
+func parseImportJSONDocuments(input string) ([]json.RawMessage, error) {
+	text := strings.TrimSpace(input)
+	if text == "" {
+		return nil, fmt.Errorf("documents_text is required")
+	}
+
+	dec := json.NewDecoder(strings.NewReader(text))
+	var docs []json.RawMessage
+	for {
+		var raw json.RawMessage
+		if err := dec.Decode(&raw); err != nil {
+			if errors.Is(err, io.EOF) {
+				return docs, nil
+			}
+			if len(docs) == 0 {
+				return nil, err
+			}
+			return docs, err
+		}
+		raw = bytesTrimSpace(raw)
+		if len(raw) == 0 {
+			continue
+		}
+		if raw[0] == '[' {
+			var arr []json.RawMessage
+			if err := json.Unmarshal(raw, &arr); err != nil {
+				if len(docs) == 0 {
+					return nil, err
+				}
+				return docs, err
+			}
+			for _, item := range arr {
+				item = bytesTrimSpace(item)
+				if len(item) > 0 {
+					docs = append(docs, append(json.RawMessage(nil), item...))
+				}
+			}
+			continue
+		}
+		docs = append(docs, append(json.RawMessage(nil), raw...))
+	}
+}
+
+func bytesTrimSpace(b []byte) []byte {
+	return bytes.TrimSpace(b)
 }
 
 func hasNarrator(generated map[string]interface{}) bool {

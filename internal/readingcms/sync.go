@@ -4,7 +4,6 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
-	"strings"
 	"time"
 )
 
@@ -13,7 +12,8 @@ type PublishedSyncRequest struct {
 	CourseCode string `json:"course_code"`
 	Level      string `json:"level,omitempty"`
 	Search     string `json:"search,omitempty"`
-	Cover      string `json:"cover,omitempty"` // none|ready|"" (all)
+	Cover      string `json:"cover,omitempty"` // none|prompt|ready|"" (all)
+	Git        string `json:"git,omitempty"`   // committed|uncommitted|new|changed|"" (all)
 	Force      bool   `json:"force"`           // re-import existing CMS entries
 }
 
@@ -31,19 +31,9 @@ func (s *Service) SyncPublishedToCMS(req PublishedSyncRequest) (*PublishedSyncRe
 	if err != nil {
 		return nil, err
 	}
-	items, err := s.ListPublished(req.CourseCode, req.Level, req.Search, req.Cover)
+	items, err := s.ListPublished(req.CourseCode, req.Level, req.Search, req.Cover, req.Git)
 	if err != nil {
 		return nil, err
-	}
-	coverFilter := strings.TrimSpace(req.Cover)
-	if coverFilter != "" {
-		filtered := items[:0]
-		for _, item := range items {
-			if item.CoverStatus == coverFilter {
-				filtered = append(filtered, item)
-			}
-		}
-		items = filtered
 	}
 
 	res := &PublishedSyncResult{Total: len(items)}

@@ -9,6 +9,7 @@ import (
 	"strings"
 	"time"
 
+	"tgbot-skeleton/internal/cache"
 	"tgbot-skeleton/internal/config"
 
 	"go.uber.org/zap"
@@ -16,8 +17,23 @@ import (
 
 // CourseRepository handles Linglow v2 course and user-course data.
 type CourseRepository struct {
-	db     *sql.DB
-	logger *zap.Logger
+	db       *sql.DB
+	logger   *zap.Logger
+	mapCache cache.Cache
+}
+
+// courseMapCacheTTL is a safety-net expiry on top of explicit invalidation in MapLegacyContent,
+// in case a future write path forgets to invalidate.
+const courseMapCacheTTL = time.Hour
+
+func courseMapCacheKey(courseCode string) string {
+	return "linglow:coursemap:" + courseCode + ":v1"
+}
+
+// SetCourseMapCache wires an optional cache for the static (course-wide) portion of GetCourseMap.
+// c may be nil, which leaves caching disabled.
+func (r *CourseRepository) SetCourseMapCache(c cache.Cache) {
+	r.mapCache = c
 }
 
 var ErrCourseNotFound = errors.New("course not found")
@@ -2355,10 +2371,49 @@ func percent(numerator, denominator int) float64 {
 }
 
 // GetCourseMap returns the Linglow v2 course map with the current user's course enrollment when present.
+// The course-wide structure (course row, districts/locations/modules/items) is cached — it only
+// changes via MapLegacyContent — while the per-user enrollment (UserCourse) is always read live,
+// since it differs per caller and must never be served out of another user's cached response.
 func (r *CourseRepository) GetCourseMap(ctx context.Context, courseCode string, userID int64) (*CourseMap, error) {
 	courseCode = strings.TrimSpace(strings.ToLower(courseCode))
 	if courseCode == "" {
 		return nil, fmt.Errorf("course code is empty")
+	}
+
+	result, err := r.getCourseMapStructure(ctx, courseCode)
+	if err != nil {
+		return nil, err
+	}
+
+	if userID > 0 {
+		var uc CourseMapUserCourse
+		err := r.db.QueryRowContext(ctx, `
+			SELECT id, status
+			FROM user_courses
+			WHERE user_id = ? AND course_id = ?
+		`, userID, result.Course.ID).Scan(&uc.ID, &uc.Status)
+		if err != nil && err != sql.ErrNoRows {
+			return nil, fmt.Errorf("get user course: %w", err)
+		}
+		if err == nil {
+			result.UserCourse = &uc
+		}
+	}
+
+	return result, nil
+}
+
+// getCourseMapStructure fetches (or serves from cache) the course-wide, non-user-specific
+// portion of the course map: the course row plus its districts/locations/modules/items tree.
+func (r *CourseRepository) getCourseMapStructure(ctx context.Context, courseCode string) (*CourseMap, error) {
+	if r.mapCache != nil {
+		if cached, ok := r.mapCache.Get(ctx, courseMapCacheKey(courseCode)); ok {
+			var result CourseMap
+			if err := json.Unmarshal(cached, &result); err == nil {
+				return &result, nil
+			}
+			// Corrupt/incompatible cache entry: fall through and rebuild from the database.
+		}
 	}
 
 	var result CourseMap
@@ -2379,21 +2434,6 @@ func (r *CourseRepository) GetCourseMap(ctx context.Context, courseCode string, 
 		return nil, fmt.Errorf("get course %q: %w", courseCode, err)
 	}
 	result.Course.Slug = result.Course.Code
-
-	if userID > 0 {
-		var uc CourseMapUserCourse
-		err := r.db.QueryRowContext(ctx, `
-			SELECT id, status
-			FROM user_courses
-			WHERE user_id = ? AND course_id = ?
-		`, userID, result.Course.ID).Scan(&uc.ID, &uc.Status)
-		if err != nil && err != sql.ErrNoRows {
-			return nil, fmt.Errorf("get user course: %w", err)
-		}
-		if err == nil {
-			result.UserCourse = &uc
-		}
-	}
 
 	districts, err := r.listCourseDistricts(ctx, result.Course.ID)
 	if err != nil {
@@ -2451,6 +2491,13 @@ func (r *CourseRepository) GetCourseMap(ctx context.Context, courseCode string, 
 	if result.Totals.ByType == nil {
 		result.Totals.ByType = map[string]int{}
 	}
+
+	if r.mapCache != nil {
+		if encoded, err := json.Marshal(&result); err == nil {
+			r.mapCache.Set(ctx, courseMapCacheKey(courseCode), encoded, courseMapCacheTTL)
+		}
+	}
+
 	return &result, nil
 }
 
@@ -2686,6 +2733,9 @@ func (r *CourseRepository) MapLegacyContent(ctx context.Context, courseCode, bun
 	}
 	if err := r.db.QueryRowContext(ctx, `SELECT COUNT(*) FROM learning_items WHERE course_id = ?`, courseID).Scan(&itemsAfter); err != nil {
 		return nil, fmt.Errorf("count learning items after: %w", err)
+	}
+	if r.mapCache != nil {
+		r.mapCache.Delete(ctx, courseMapCacheKey(courseCode))
 	}
 	return &ContentMappingSummary{
 		CourseCode:     courseCode,
