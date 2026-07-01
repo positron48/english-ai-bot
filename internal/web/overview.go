@@ -84,8 +84,8 @@ func (r *Router) runOverviewParts(w http.ResponseWriter, req *http.Request, part
 // handleDashboardOverview aggregates everything the dashboard screen needs into one response.
 func (r *Router) handleDashboardOverview(w http.ResponseWriter, req *http.Request) {
 	r.runOverviewParts(w, req, []overviewPart{
-		{key: "dashboard", handler: r.handleDashboard},
-		{key: "progress", handler: r.handleLinglowProgress},
+		{key: "dashboard", handler: r.handleDashboard, query: map[string]string{"sections": "counts"}},
+		{key: "progress", handler: r.handleLinglowProgress, query: map[string]string{"summary_only": "1"}},
 		{key: "daily_route", handler: r.handleLinglowDailyRoute, query: map[string]string{"limit": "8"}},
 		{key: "continue_chapter", handler: r.handleLearningGrammarContinueChapter},
 		{key: "sentence_today", handler: r.handleSentenceTrainingToday},
@@ -97,7 +97,7 @@ func (r *Router) handleCityOverview(w http.ResponseWriter, req *http.Request) {
 	r.runOverviewParts(w, req, []overviewPart{
 		{key: "grammar_categories", handler: r.handleLearningGrammarCategories},
 		{key: "progress", handler: r.handleLinglowProgress},
-		{key: "course_map", handler: r.handleCourseMap},
+		{key: "course_map", handler: r.handleCourseMap, query: map[string]string{"fields": "districts"}},
 		{key: "word_levels", handler: r.handleLinglowWordLevelProgress},
 	})
 }
@@ -106,7 +106,6 @@ func (r *Router) handleCityOverview(w http.ResponseWriter, req *http.Request) {
 func (r *Router) handleLearningOverview(w http.ResponseWriter, req *http.Request) {
 	r.runOverviewParts(w, req, []overviewPart{
 		{key: "continue_chapter", handler: r.handleLearningGrammarContinueChapter},
-		{key: "settings", handler: r.handleSettings},
 		{key: "verb_upcoming", handler: r.handleVerbTrainingUpcoming},
 		{key: "vocab_summary", handler: r.handleVocabSummary},
 		{key: "sentence_today", handler: r.handleSentenceTrainingToday},
@@ -118,7 +117,7 @@ func (r *Router) handleProgressOverview(w http.ResponseWriter, req *http.Request
 	r.runOverviewParts(w, req, []overviewPart{
 		{key: "stats", handler: r.handleLinglowStats},
 		{key: "progress", handler: r.handleLinglowProgress},
-		{key: "dashboard", handler: r.handleDashboard},
+		{key: "dashboard", handler: r.handleDashboard, query: map[string]string{"sections": "totals"}},
 		{key: "history", handler: r.handleLinglowHistory, query: map[string]string{"days": "7"}},
 	})
 }

@@ -93,6 +93,33 @@ func (r *Router) handleDashboard(w http.ResponseWriter, req *http.Request) {
 	now := time.Now()
 	courseCode := r.requestedCourseCodeForUser(req, userID)
 
+	// The dashboard payload feeds different screens with disjoint needs. `sections` lets each
+	// aggregate pull only what it renders instead of running every query:
+	//   - "counts"  → card-state counts + grammar stats (home screen tiles)
+	//   - "charts"  → total cards, 30-day accuracy, weekly/words-added series (legacy full charts)
+	//   - "totals"  → just total_cards (progress screen renders the series from canonical history)
+	//   - ""(unset) → everything (standalone /api/dashboard, offline cache)
+	sections := req.URL.Query().Get("sections")
+	includeCounts := sections == "" || sections == "counts"
+	includeCharts := sections == "" || sections == "charts"
+	includeTotals := sections == "totals"
+
+	response := map[string]interface{}{}
+
+	if includeCounts {
+		r.dashboardCounts(req, userID, courseCode, now, response)
+	}
+	if includeCharts || includeTotals {
+		r.dashboardCharts(req, userID, now, response, includeCharts)
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(response)
+}
+
+// dashboardCounts fills card-state counts, available-for-training and grammar stats.
+func (r *Router) dashboardCounts(req *http.Request, userID int64, courseCode string, now time.Time, response map[string]interface{}) {
 	newQuery := `SELECT COUNT(*)
 		FROM user_cards uc
 		INNER JOIN training_cards tc ON uc.training_card_id = tc.id
@@ -152,15 +179,52 @@ func (r *Router) handleDashboard(w http.ResponseWriter, req *http.Request) {
 		availableForTraining += newCount
 	}
 
+	// Get grammar statistics if grammar service is available
+	var grammarStats map[string]interface{}
+	if r.grammarService != nil {
+		stats, err := r.grammarServiceForRequest(req, userID).GetGrammarStatistics(req.Context(), userID)
+		if err == nil {
+			grammarStats = map[string]interface{}{
+				"confirmed_level":             stats.ConfirmedLevel,
+				"course_completion_pct":       stats.CourseCompletionPct,
+				"whole_course_completion_pct": stats.WholeCourseCompletionPct,
+				"average_test_score":          stats.AverageTestScore,
+				"passed_chapters":             stats.PassedChapters,
+				"total_chapters":              stats.TotalChapters,
+				"total_chapters_in_course":    stats.TotalChaptersInCourse,
+			}
+		}
+	}
+
+	response["due_count"] = dueCount
+	response["new_count"] = newCount
+	response["learning_count"] = learningCount
+	response["review_count"] = reviewCount
+	response["available_for_training"] = availableForTraining
+	if grammarStats != nil {
+		response["grammar_stats"] = grammarStats
+	}
+}
+
+// dashboardCharts always fills total_cards; when includeSeries is set it additionally computes the
+// (heavier) 30-day accuracy and 7-day weekly / words-added series. The progress screen passes
+// includeSeries=false and renders the series from canonical history instead.
+func (r *Router) dashboardCharts(req *http.Request, userID int64, now time.Time, response map[string]interface{}, includeSeries bool) {
+	courseCode := r.requestedCourseCodeForUser(req, userID)
+
 	totalQuery := `SELECT COUNT(*)
 		FROM user_cards uc
 		WHERE uc.user_id = ?
 		AND (? = '' OR uc.course_code = ? OR uc.course_code IS NULL)`
 	var totalCards int
-	err = r.db.QueryRow(totalQuery, userID, courseCode, courseCode).Scan(&totalCards)
+	err := r.db.QueryRow(totalQuery, userID, courseCode, courseCode).Scan(&totalCards)
 	if err != nil {
 		r.logger.Error("failed to get total cards count", zap.Error(err))
 		totalCards = 0
+	}
+	response["total_cards"] = totalCards
+	if !includeSeries {
+		return
 	}
 
 	// Get accuracy (last 30 days)
@@ -238,42 +302,9 @@ func (r *Router) handleDashboard(w http.ResponseWriter, req *http.Request) {
 		}
 	}
 
-	// Get grammar statistics if grammar service is available
-	var grammarStats map[string]interface{}
-	if r.grammarService != nil {
-		stats, err := r.grammarServiceForRequest(req, userID).GetGrammarStatistics(req.Context(), userID)
-		if err == nil {
-			grammarStats = map[string]interface{}{
-				"confirmed_level":             stats.ConfirmedLevel,
-				"course_completion_pct":       stats.CourseCompletionPct,
-				"whole_course_completion_pct": stats.WholeCourseCompletionPct,
-				"average_test_score":          stats.AverageTestScore,
-				"passed_chapters":             stats.PassedChapters,
-				"total_chapters":              stats.TotalChapters,
-				"total_chapters_in_course":    stats.TotalChaptersInCourse,
-			}
-		}
-	}
-
-	// Return JSON response
-	response := map[string]interface{}{
-		"due_count":              dueCount,
-		"new_count":              newCount,
-		"learning_count":         learningCount,
-		"review_count":           reviewCount,
-		"total_cards":            totalCards,
-		"available_for_training": availableForTraining,
-		"accuracy_percent":       accuracyPercent,
-		"weekly_stats":           weeklyStats,
-		"words_added_stats":      wordsAddedStats,
-	}
-	if grammarStats != nil {
-		response["grammar_stats"] = grammarStats
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(response)
+	response["accuracy_percent"] = accuracyPercent
+	response["weekly_stats"] = weeklyStats
+	response["words_added_stats"] = wordsAddedStats
 }
 
 // handleChat handles AI chat requests

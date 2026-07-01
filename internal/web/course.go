@@ -200,6 +200,22 @@ func (r *Router) handleCourseMap(w http.ResponseWriter, req *http.Request) {
 	}
 
 	w.Header().Set("Content-Type", "application/json")
+	// fields=districts trims the payload to just district code+title (the city map only needs the
+	// code→title mapping); the full locations/modules/items tree is large and otherwise unused there.
+	if req.URL.Query().Get("fields") == "districts" && courseMap != nil {
+		type slimDistrict struct {
+			Code  string `json:"code"`
+			Title string `json:"title"`
+		}
+		slim := make([]slimDistrict, 0, len(courseMap.Districts))
+		for _, d := range courseMap.Districts {
+			slim = append(slim, slimDistrict{Code: d.Code, Title: d.Title})
+		}
+		if err := json.NewEncoder(w).Encode(map[string]interface{}{"districts": slim}); err != nil {
+			r.logger.Error("failed to encode slim course map", zap.Error(err))
+		}
+		return
+	}
 	if err := json.NewEncoder(w).Encode(courseMap); err != nil {
 		r.logger.Error("failed to encode learning course map", zap.Error(err))
 	}
@@ -315,7 +331,15 @@ func (r *Router) handleLinglowProgress(w http.ResponseWriter, req *http.Request)
 		return
 	}
 	explicitCourseCode := req.URL.Query().Get("course_code")
-	progress, err := r.courseRepo.GetProgressForUser(req.Context(), userID, r.defaultCourseCode(), explicitCourseCode)
+	// summary_only skips the by_type/by_district/by_location breakdowns for callers (the dashboard
+	// city card) that render just the header + summary.
+	var progress *repository.CourseProgress
+	var err error
+	if req.URL.Query().Get("summary_only") == "1" {
+		progress, err = r.courseRepo.GetProgressSummaryForUser(req.Context(), userID, r.defaultCourseCode(), explicitCourseCode)
+	} else {
+		progress, err = r.courseRepo.GetProgressForUser(req.Context(), userID, r.defaultCourseCode(), explicitCourseCode)
+	}
 	if err != nil {
 		if errors.Is(err, repository.ErrCourseNotFound) {
 			http.Error(w, "Course not found", http.StatusNotFound)
