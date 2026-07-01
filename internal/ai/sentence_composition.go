@@ -104,6 +104,17 @@ func (s *Service) GenerateSentenceSetForCourse(ctx context.Context, courseCode s
 		if sentence.PromptRU == "" || sentence.ReferenceES == "" {
 			continue
 		}
+		// The native-language prompt must never leak a target-language word. Weaker models
+		// occasionally drop a supplied target lemma (or its inflected form) straight into
+		// `prompt_ru` instead of translating it, which shows the learner the answer. Detect
+		// that and skip the item rather than serve a corrupted exercise.
+		if leaked := leakedTargetWord(sentence.PromptRU, words); leaked != "" {
+			s.logger.Warn("sentence generation leaked target word into native prompt; dropping",
+				zap.String("course", courseCode),
+				zap.String("leaked_word", leaked),
+				zap.String("prompt_ru", sentence.PromptRU))
+			continue
+		}
 		out = append(out, sentence)
 	}
 	if len(out) == 0 {
@@ -160,6 +171,43 @@ func (s *Service) modelOr(modelOverride ...string) string {
 		return modelOverride[0]
 	}
 	return s.model
+}
+
+// leakedTargetWord returns the first supplied target lemma that appears (as a whole word or a
+// clearly inflected form) inside the native-language prompt, or "" if none do. The native prompt
+// is written in a different script/language than the target lemmas, so a lemma root surfacing
+// verbatim in it is an unambiguous leak — never a coincidental substring.
+func leakedTargetWord(promptRU string, words []GenSentenceWord) string {
+	lower := " " + strings.ToLower(promptRU) + " "
+	for _, w := range words {
+		lemma := strings.ToLower(strings.TrimSpace(w.Lemma))
+		if len([]rune(lemma)) < 3 {
+			continue // too short to attribute a Latin-in-Cyrillic match with confidence
+		}
+		root := lemmaRoot(lemma)
+		// Scan every whitespace/punctuation-delimited token of the prompt for one whose
+		// letters start with the lemma root. This catches both the bare lemma and inflected
+		// forms (e.g. "gato"→"gatos", "comer"→"come") without matching mid-word coincidences.
+		for _, tok := range strings.FieldsFunc(lower, func(r rune) bool {
+			return r == ' ' || r == ',' || r == '.' || r == '!' || r == '?' || r == ';' || r == ':' || r == '"' || r == '(' || r == ')'
+		}) {
+			if strings.HasPrefix(tok, root) {
+				return w.Lemma
+			}
+		}
+	}
+	return ""
+}
+
+// lemmaRoot strips a Spanish infinitive ending so a verb lemma matches its conjugated forms,
+// then keeps a short root. Mirrors the heuristic used by the sentence LLM test harness.
+func lemmaRoot(lemma string) string {
+	for _, suf := range []string{"ar", "er", "ir"} {
+		if len(lemma) > 4 && strings.HasSuffix(lemma, suf) {
+			return lemma[:len(lemma)-len(suf)]
+		}
+	}
+	return lemma
 }
 
 func truncateForLog(s string) string {

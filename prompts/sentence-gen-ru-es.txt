@@ -21,6 +21,7 @@ TASK
 
 LANGUAGE
 - `prompt_ru` MUST be written entirely in {{native_lang}}, using ONLY the {{native_lang}} script/alphabet. It MUST NOT contain any {{target_lang}} word, name, or letter — translate every content word into {{native_lang}}. A single {{target_lang}} token leaking into `prompt_ru` makes the item invalid.
+- CRITICAL: the entries in `words` are {{target_lang}} lemmas. They belong ONLY in `reference_es`. In `prompt_ru` you MUST use the `translation` field ({{native_lang}}) for each word — NEVER copy the `lemma`. Example of a FORBIDDEN leak: given {"lemma":"gato","translation":"кот"}, writing "gato пьёт воду" is WRONG; the correct `prompt_ru` is "Кот пьёт воду". If you cannot recall the {{native_lang}} word, drop that word and build a simpler sentence — never fall back to the {{target_lang}} lemma.
 - `reference_es` MUST be written entirely in {{target_lang}}. Never mix languages in a field.
 
 OUTPUT (STRICT)

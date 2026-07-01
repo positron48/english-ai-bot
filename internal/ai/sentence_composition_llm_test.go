@@ -89,8 +89,16 @@ func TestSentenceLLMHarness(t *testing.T) {
 
 	// --- Generation quality report ---
 	usedWordsValid, usedWordsTotal := 0, 0
+	latinLeaks := 0
 	for i, s := range sentences {
 		t.Logf("\n[%d] RU: %s\n    ES: %s\n    used: %v", i+1, s.PromptRU, s.ReferenceES, s.UsedWords)
+		// The RU prompt must contain no Latin letters — any is a leaked Spanish word.
+		if strings.ContainsFunc(s.PromptRU, func(r rune) bool {
+			return (r >= 'a' && r <= 'z') || (r >= 'A' && r <= 'Z')
+		}) {
+			latinLeaks++
+			t.Errorf("[%d] LATIN LEAK in prompt_ru: %q", i+1, s.PromptRU)
+		}
 		refLower := strings.ToLower(s.ReferenceES)
 		for _, uw := range s.UsedWords {
 			usedWordsTotal++
@@ -161,6 +169,7 @@ func TestSentenceLLMHarness(t *testing.T) {
 	n := len(sentences)
 	t.Logf("\n================ METRICS ================")
 	t.Logf("generation: %d sentences (asked %d)", n, count)
+	t.Logf("prompt_ru Latin leaks: %d (must be 0)", latinLeaks)
 	t.Logf("used_words validity: %s", pct(usedWordsValid, usedWordsTotal))
 	t.Logf("grader: correct→star (no false positives): %s", pct(aStar, n))
 	t.Logf("grader: corrupted→detected error:          %s", pct(bNonStar, n))
