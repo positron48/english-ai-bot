@@ -10,7 +10,7 @@ import (
 	"go.uber.org/zap"
 )
 
-// SentenceCompositionRepository persists daily sentence-composition sets, items and
+// SentenceCompositionRepository persists sentence-composition sets, items and
 // per-word participation counters.
 type SentenceCompositionRepository struct {
 	db     *sql.DB
@@ -329,13 +329,14 @@ func (r *SentenceCompositionRepository) ListUserOverviews() ([]UserSetOverview, 
 		       COALESCE(u.subscription_tier, 'free'),
 		       COUNT(*) AS set_count,
 		       CAST(MAX(s.generation_date) AS text) AS last_generation_on,
+		       MAX(s.created_at) AS last_created_at,
 		       COALESCE(SUM(s.star_count), 0),
 		       COALESCE(SUM(s.passed_count), 0),
 		       COALESCE(SUM(s.failed_count), 0)
 		FROM sentence_sets s
 		LEFT JOIN users u ON u.id = s.user_id
 		GROUP BY s.user_id, u.telegram_id, u.telegram_username, u.subscription_tier
-		ORDER BY last_generation_on DESC, s.user_id DESC`)
+		ORDER BY last_created_at DESC, s.user_id DESC`)
 	if err != nil {
 		return nil, fmt.Errorf("list user overviews: %w", err)
 	}
@@ -343,8 +344,9 @@ func (r *SentenceCompositionRepository) ListUserOverviews() ([]UserSetOverview, 
 	var out []UserSetOverview
 	for rows.Next() {
 		var o UserSetOverview
+		var lastCreatedAt sql.NullTime
 		if err := rows.Scan(&o.UserID, &o.TelegramID, &o.TelegramUsername, &o.SubscriptionTier,
-			&o.SetCount, &o.LastGenerationOn, &o.TotalStars, &o.TotalPassed, &o.TotalFailed); err != nil {
+			&o.SetCount, &o.LastGenerationOn, &lastCreatedAt, &o.TotalStars, &o.TotalPassed, &o.TotalFailed); err != nil {
 			return nil, fmt.Errorf("scan user overview: %w", err)
 		}
 		out = append(out, o)

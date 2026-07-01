@@ -1,8 +1,9 @@
 -- Sentence composition: daily Pro training where the user translates LLM-generated
 -- Russian sentences (built from their well-learned words) into the target language,
--- graded teacher-style. One set per user/course/day; words rotate by least participation.
+-- graded teacher-style. Automatic generation is guarded in application code; manual
+-- admin generation may create multiple sets per user/course/day.
 
--- A generated set of sentences for one user/course/day.
+-- A generated set of sentences for one user/course/date.
 CREATE TABLE IF NOT EXISTS sentence_sets (
     id BIGSERIAL PRIMARY KEY,
     user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
@@ -16,7 +17,6 @@ CREATE TABLE IF NOT EXISTS sentence_sets (
     passed_count INTEGER NOT NULL DEFAULT 0,
     failed_count INTEGER NOT NULL DEFAULT 0,
     created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    UNIQUE (user_id, course_code, generation_date),
     CHECK (status IN ('ready','started','completed'))
 );
 

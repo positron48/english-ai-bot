@@ -128,6 +128,47 @@ func TestSentenceComposition_CreateAndRecordAttempt(t *testing.T) {
 	}
 }
 
+func TestSentenceComposition_CreateSet_AllowsMultipleSetsPerDay(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDB(t)
+	repo := NewSentenceCompositionRepository(db, logger)
+	userRepo := NewUserRepository(db, logger)
+	user, _ := userRepo.GetOrCreateUser(7003)
+	const course = "es_ru"
+
+	var wcID int64
+	if err := db.QueryRow(`INSERT INTO word_cards (word, definition, course_code) VALUES ('casa', 'd', ?) RETURNING id`, course).Scan(&wcID); err != nil {
+		t.Fatalf("insert word_card: %v", err)
+	}
+
+	set := &models.SentenceSet{UserID: user.ID, CourseCode: course, GenerationDate: "2026-07-01", Scopes: []string{"es.presente.indicativo"}}
+	items := []models.SentenceItem{
+		{Position: 0, PromptRU: "Это дом", ReferenceES: "Es una casa", WordCardIDs: []int64{wcID}},
+	}
+	firstID, err := repo.CreateSet(set, items, []int64{wcID})
+	if err != nil {
+		t.Fatalf("CreateSet first: %v", err)
+	}
+	secondID, err := repo.CreateSet(set, items, []int64{wcID})
+	if err != nil {
+		t.Fatalf("CreateSet second same day: %v", err)
+	}
+	if secondID == firstID {
+		t.Fatalf("expected distinct set ids, got %d", secondID)
+	}
+
+	latest, err := repo.LatestSet(user.ID, course)
+	if err != nil {
+		t.Fatalf("LatestSet: %v", err)
+	}
+	if latest == nil || latest.ID != secondID {
+		t.Fatalf("expected latest set %d, got %+v", secondID, latest)
+	}
+	if n, _ := repo.ParticipationCount(user.ID, wcID, course); n != 2 {
+		t.Fatalf("expected participation 2, got %d", n)
+	}
+}
+
 func TestOutcomeForErrorCount(t *testing.T) {
 	cases := []struct {
 		errors int

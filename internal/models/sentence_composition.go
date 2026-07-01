@@ -28,7 +28,7 @@ func OutcomeForErrorCount(errors int) string {
 	}
 }
 
-// SentenceSet is one generated daily set of sentences for a user/course.
+// SentenceSet is one generated set of sentences for a user/course/date.
 type SentenceSet struct {
 	ID             int64
 	UserID         int64
