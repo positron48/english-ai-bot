@@ -1,5 +1,6 @@
 import { ref, computed } from 'vue'
 import { apiClient } from '../api/client'
+import { clearMeCache } from './useMe'
 
 const isAuthenticated = ref(false)
 const isAdmin = ref(false)
@@ -143,6 +144,7 @@ export function useAuth() {
 
   const logout = () => {
     apiClient.clearTokens()
+    clearMeCache()
     isAuthenticated.value = false
     isAdmin.value = false
     categories.value = []

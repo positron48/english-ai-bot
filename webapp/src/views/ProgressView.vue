@@ -163,8 +163,9 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { statsClient, type LinglowStats } from '../api/statsClient'
-import { courseClient, type CourseProgress } from '../api/courseClient'
+import { type LinglowStats } from '../api/statsClient'
+import { type CourseProgress } from '../api/courseClient'
+import { apiClient } from '../api/client'
 import { useCourse } from '../composables/useCourse'
 import { useLearningConfig } from '../composables/useLearningConfig'
 import { useLocale } from '../composables/useLocale'
@@ -186,13 +187,13 @@ const progress = ref<CourseProgress | null>(null)
 onMounted(async () => {
   try {
     const code = currentCourseCode.value || undefined
-    const [s, p] = await Promise.all([
-      statsClient.getStats({ courseCode: code }),
-      courseClient.getProgress(code).catch(() => null),
+    // Single aggregated round trip instead of separate stats + progress calls.
+    const [ov] = await Promise.all([
+      apiClient.request<any>(code ? `/api/overview/progress?course_code=${encodeURIComponent(code)}` : '/api/overview/progress'),
       ensureLearningLoaded().catch(() => {}),
     ])
-    stats.value = s
-    progress.value = p
+    stats.value = (ov?.stats as LinglowStats) ?? null
+    progress.value = (ov?.progress as CourseProgress) ?? null
   } catch { /* ignore */ } finally {
     loading.value = false
   }

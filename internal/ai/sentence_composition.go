@@ -109,6 +109,10 @@ func (s *Service) GenerateSentenceSetForCourse(ctx context.Context, courseCode s
 	if len(out) == 0 {
 		return nil, fmt.Errorf("no usable sentences generated")
 	}
+	// The model occasionally overshoots the requested count; hold it to exactly `count`.
+	if count > 0 && len(out) > count {
+		out = out[:count]
+	}
 	return out, nil
 }
 

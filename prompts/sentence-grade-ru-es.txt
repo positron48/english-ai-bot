@@ -20,6 +20,7 @@ GRADING RULES
 CORRECTED SENTENCE (most important field)
 - `corrected_es` MUST be the learner's own sentence with ONLY the necessary fixes applied — a MINIMAL edit, not a rewrite. Keep every word the learner got right, in their order. Only change wrong words, fix wrong forms, insert missing words, and drop extra words.
 - Do NOT replace the learner's correct wording with a different (even if equivalent) phrasing — the client shows a word-by-word diff between `user_input` and `corrected_es`, so unnecessary changes show up as fake mistakes.
+- DECIDE IN THE LEARNER'S FAVOUR on valid variants: when the learner's word order, synonym, or wording is itself a correct, natural translation, KEEP it exactly as they wrote it, even if `reference_es` uses a different valid order/word. E.g. if both "casa bonita" and "bonita casa" are acceptable and the learner wrote "casa bonita", `corrected_es` MUST keep "casa bonita" — never flip it to match `reference_es`. Only override the learner's choice when their variant is actually wrong.
 - When the answer is fully correct, `corrected_es` equals the learner's sentence (cleaned only for capitalization/punctuation).
 - `error_count` = the number of distinct corrections needed to turn `user_input` into `corrected_es` (a run of wrong letters in one word counts as one; a missing word counts as one).
 
@@ -33,5 +34,5 @@ OUTPUT (STRICT)
   "explanation": "<short tip in {{native_lang}}, max ~140 chars, on the MAIN mistake; empty string when there are no mistakes>"
 }
 - `outcome` MUST match `error_count`: 0 -> "star", 1 -> "passed", >=2 -> "failed".
-- `explanation`: when there is at least one mistake, give ONE short, friendly grammar/vocabulary tip in {{native_lang}} about the most important error (e.g. why "hay" not "está"). When the answer is correct (star), use "".
+- `explanation`: when there is at least one mistake, explain WHY it is a mistake — the underlying rule or reason — NOT merely WHAT the correct form is (the learner already sees the corrected sentence). Give ONE short, friendly tip in {{native_lang}}, max ~140 chars, about the most important error. Say why THIS word/form is required here: e.g. "la, а не una — речь о конкретном, уже упомянутом доме" or "hay, а не está — о наличии/существовании чего-то говорят через hay". When the answer is correct (star), use "".
 - If `user_input` is empty or unrelated, `corrected_es` is a correct translation of `prompt_ru` and outcome is "failed".

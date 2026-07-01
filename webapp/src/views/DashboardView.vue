@@ -217,7 +217,7 @@ import { useAuth } from '../composables/useAuth'
 import { apiClient } from '../api/client'
 import { grammarClient } from '../api/grammarClient'
 import { wordTrainingClient } from '../api/wordTrainingClient'
-import { courseClient, CourseProgress, DailyRoute } from '../api/courseClient'
+import { CourseProgress, DailyRoute } from '../api/courseClient'
 import { useCourse } from '../composables/useCourse'
 import { useLearningConfig } from '../composables/useLearningConfig'
 import LgIcon from '../components/linglow/LgIcon.vue'
@@ -243,7 +243,7 @@ const { currentCourse, currentCourseCode } = useCourse()
 
 const linglowProgress = ref<CourseProgress | null>(null)
 const dailyToday = ref<NonNullable<DailyRoute['today']> | null>(null)
-const { continueChapter: lastGrammarChapter, loadContinueChapter } = useGrammarContinueChapter()
+const { continueChapter: lastGrammarChapter, applyContinueChapter } = useGrammarContinueChapter()
 
 // Sentence composition (Pro): daily translation training, surfaced as a path step
 const sentenceAvailable = ref(false)
@@ -345,12 +345,15 @@ const loadData = async () => {
       }
       offlineDashboard.value = true
     } else {
-      [data] = await Promise.all([
-        apiClient.request(currentCourseCode.value ? `/api/dashboard?course_code=${encodeURIComponent(currentCourseCode.value)}` : '/api/dashboard'),
-        courseClient.getProgress(currentCourseCode.value || undefined).then(p => { linglowProgress.value = p }).catch(() => {}),
-        courseClient.getDailyRoute(8, currentCourseCode.value || undefined).then(rt => { dailyToday.value = rt.today || null }).catch(() => {}),
-        loadContinueChapter(),
-      ])
+      // Single aggregated round trip; the individual endpoints are still folded together
+      // server-side (see /api/overview/dashboard).
+      const ov: any = await apiClient.request(
+        currentCourseCode.value ? `/api/overview/dashboard?course_code=${encodeURIComponent(currentCourseCode.value)}` : '/api/overview/dashboard',
+      )
+      data = ov.dashboard || {}
+      if (ov.progress) linglowProgress.value = ov.progress
+      dailyToday.value = ov.daily_route?.today || null
+      applyContinueChapter(ov.continue_chapter)
     }
     stats.value = {
       dueCount: data.due_count || 0,
@@ -433,8 +436,8 @@ async function loadSentenceAvailability() {
 watch(currentCourseCode, () => {
   if (isAuthenticated.value) {
     ensureLearningLoaded().then(() => {
+      // loadData() (aggregate) already hydrates the continue-chapter section.
       loadData()
-      void loadContinueChapter()
     })
   }
 })
@@ -448,7 +451,8 @@ watch(isAuthenticated, (authenticated) => {
 
 onMounted(() => {
   if (isAuthenticated.value) {
-    loadData()
+    // loadData() is already triggered by the immediate isAuthenticated watcher above;
+    // calling it here too doubled every dashboard request on navigation.
     void ensureMe().catch(() => {})
     void loadSentenceAvailability()
     void maybeRunOfflineAutoDownload()

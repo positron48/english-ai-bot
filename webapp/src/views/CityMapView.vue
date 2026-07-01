@@ -49,6 +49,7 @@ import { useCourse } from '../composables/useCourse'
 import { useMe } from '../composables/useMe'
 import { grammarClient } from '../api/grammarClient'
 import { courseClient, type CourseProgressLocation } from '../api/courseClient'
+import { apiClient } from '../api/client'
 import LgActivityIcon from '../components/linglow/LgActivityIcon.vue'
 import LgLoader from '../components/linglow/LgLoader.vue'
 import { wordsPercentForLevel, type WordLevelProgressMap } from '../utils/wordsProgress'
@@ -88,9 +89,9 @@ const conversationPro = ref(false)
 // True once district titles + progress are loaded, so labels render at final width.
 const mapReady = ref(false)
 
-async function loadGrammarProgress() {
+async function loadGrammarProgress(raw?: any) {
   try {
-    const { categories } = await grammarClient.getCategories()
+    const { categories } = raw ?? await grammarClient.getCategories()
     const map: Record<string, { passed: number; total: number; canAccess: boolean }> = {}
     for (const cat of categories) {
       const lv = (cat.level || '').toUpperCase()
@@ -104,9 +105,9 @@ async function loadGrammarProgress() {
   } catch { /* grammar not loaded – all districts stay at lv=1 */ }
 }
 
-async function loadProgress() {
+async function loadProgress(raw?: Awaited<ReturnType<typeof courseClient.getProgress>>) {
   try {
-    const prog = await courseClient.getProgress()
+    const prog = raw ?? await courseClient.getProgress()
     const byLoc = prog.by_location || []
     const masteredWords = byLoc
       .filter(l => l.location_type === 'word_market')
@@ -118,18 +119,18 @@ async function loadProgress() {
   } catch { /* ignore */ }
 }
 
-async function loadDistrictTitles() {
+async function loadDistrictTitles(raw?: any) {
   try {
-    const map = await courseClient.getCourseMap()
+    const map = raw ?? await courseClient.getCourseMap()
     const titles: Record<string, string> = {}
     for (const d of map.districts) titles[d.code] = d.title
     districtTitles.value = titles
   } catch { /* fallback to locale names */ }
 }
 
-async function loadWordLevels() {
+async function loadWordLevels(raw?: any) {
   try {
-    const res = await courseClient.getWordLevelProgress(currentCourseCode.value || undefined)
+    const res = raw ?? await courseClient.getWordLevelProgress(currentCourseCode.value || undefined)
     wordLevels.value = res.levels || {}
   } catch { /* leave empty -> 0% */ }
 }
@@ -321,13 +322,22 @@ function handleCanvasClick(e: MouseEvent) {
 
 onMounted(() => {
   ensureCourseLoaded()
-    .then(() => Promise.all([
-      loadGrammarProgress(),
-      loadProgress(),
-      loadDistrictTitles(),
-      loadWordLevels(),
-      ensureMe().then(() => { conversationPro.value = hasFeature('conversation') }),
-    ]))
+    .then(() => {
+      // Single aggregated round trip instead of four separate map/progress calls.
+      const ovPromise = apiClient
+        .request<any>(currentCourseCode.value ? `/api/overview/city?course_code=${encodeURIComponent(currentCourseCode.value)}` : '/api/overview/city')
+        .then((ov) => Promise.all([
+          loadGrammarProgress(ov.grammar_categories),
+          loadProgress(ov.progress),
+          loadDistrictTitles(ov.course_map),
+          loadWordLevels(ov.word_levels),
+        ]))
+        .catch(() => {})
+      return Promise.all([
+        ovPromise,
+        ensureMe().then(() => { conversationPro.value = hasFeature('conversation') }),
+      ])
+    })
     .finally(() => { mapReady.value = true })
   setTimeout(resize, 50)
   const srcs = [

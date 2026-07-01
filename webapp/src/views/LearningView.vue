@@ -146,6 +146,7 @@ const {
   verbFormsTotalCardsPool,
   showSpanishVerbFormsTraining,
   refreshVerbFormsPoolCount,
+  applyVerbFormsPool,
 } = useSpanishVerbFormsPractice(isOnline)
 const isPro = ref(false)
 const sentenceAvailable = ref(false)
@@ -165,7 +166,7 @@ const vocabBreakdownItems = computed(() => [
   { key: 'known', label: t('training.vocabStatusKnown'), count: vocabStats.value.masteredCount },
 ])
 
-const { continueChapter: lastGrammarChapter, loadContinueChapter } = useGrammarContinueChapter()
+const { continueChapter: lastGrammarChapter, loadContinueChapter, applyContinueChapter } = useGrammarContinueChapter()
 
 interface PracticeMode {
   type: 'words' | 'grammar' | 'reading' | 'conversation'
@@ -236,18 +237,22 @@ async function loadSentenceAvailability() {
   }
 }
 
-async function loadVocabSummary() {
+type VocabSummaryPayload = {
+  total?: number
+  new?: number
+  learning?: number
+  review?: number
+  review_count?: number
+  mastered?: number
+  mastered_count?: number
+}
+
+async function loadVocabSummary(raw?: VocabSummaryPayload) {
   if (isOffline.value) return
   try {
-    const summary = await apiClient.request<{
-      total?: number
-      new?: number
-      learning?: number
-      review?: number
-      review_count?: number
-      mastered?: number
-      mastered_count?: number
-    }>(`/api/vocab/summary${currentCourseCode.value ? `?course_code=${encodeURIComponent(currentCourseCode.value)}` : ''}`)
+    const summary = raw ?? await apiClient.request<VocabSummaryPayload>(
+      `/api/vocab/summary${currentCourseCode.value ? `?course_code=${encodeURIComponent(currentCourseCode.value)}` : ''}`,
+    )
     if (summary) {
       vocabStats.value = {
         total: summary.total ?? 0,
@@ -265,7 +270,21 @@ onMounted(async () => {
   window.addEventListener('online', handleNetworkChange)
   window.addEventListener('offline', handleNetworkChange)
   await ensureCourseLoaded()
-  await Promise.all([loadContinueChapter(), ensureLearningLoaded(), refreshVerbFormsPoolCount(), loadVocabSummary()])
+  // Learning config (health + settings) is a cached singleton; must resolve before the verb-forms
+  // gate can be evaluated. Then one aggregated round trip covers continue-chapter, verb pool and
+  // vocab summary instead of three separate calls.
+  await ensureLearningLoaded()
+  try {
+    const ov: any = await apiClient.request(
+      currentCourseCode.value ? `/api/overview/learning?course_code=${encodeURIComponent(currentCourseCode.value)}` : '/api/overview/learning',
+    )
+    applyContinueChapter(ov.continue_chapter)
+    applyVerbFormsPool(ov.verb_upcoming)
+    await loadVocabSummary(ov.vocab_summary)
+  } catch {
+    // Fall back to individual calls if the aggregate fails.
+    await Promise.all([loadContinueChapter(), refreshVerbFormsPoolCount(), loadVocabSummary()])
+  }
   ensureMe().then(() => {
     isPro.value = hasFeature('conversation')
     void loadSentenceAvailability()

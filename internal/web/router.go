@@ -525,6 +525,12 @@ func (r *Router) setupProtectedRoutes() {
 	r.mux.HandleFunc("/api/linglow/activity", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLinglowActivity)))
 	r.mux.HandleFunc("/api/linglow/stats", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLinglowStats)))
 	r.mux.HandleFunc("/api/me", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleMe)))
+	// Per-screen aggregate endpoints: one round trip that folds together the individual
+	// endpoints each screen used to fan out to (they remain available for other callers).
+	r.mux.HandleFunc("/api/overview/dashboard", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleDashboardOverview)))
+	r.mux.HandleFunc("/api/overview/city", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleCityOverview)))
+	r.mux.HandleFunc("/api/overview/learning", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLearningOverview)))
+	r.mux.HandleFunc("/api/overview/progress", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleProgressOverview)))
 	r.mux.HandleFunc("/api/linglow/lumi-fact", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLumiFact)))
 	r.mux.HandleFunc("/api/linglow/district-extras", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLinglowDistrictExtras)))
 	// District conversations (quest + free chat) are a Pro feature, gated by 'conversation'.

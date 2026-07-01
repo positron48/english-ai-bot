@@ -29,6 +29,19 @@ export function useSpanishVerbFormsPractice(isOnline: Ref<boolean>) {
     }
   }
 
+  // applyVerbFormsPool sets the pool from an already-fetched /api/verb-training/upcoming payload
+  // (used by the aggregate overview endpoint). Assumes learning config is already loaded so the
+  // es/enabled gate can be evaluated; falls back to null when the feature is off.
+  function applyVerbFormsPool(raw: { total_cards?: number } | null | undefined) {
+    const ly = learning.value
+    if (!ly || ly.target_lang?.toLowerCase() !== 'es' || !ly.spanish_verb_forms_enabled) {
+      verbFormsTotalCardsPool.value = null
+    } else {
+      verbFormsTotalCardsPool.value = typeof raw?.total_cards === 'number' ? raw.total_cards : null
+    }
+    verbFormsPoolResolved.value = true
+  }
+
   const showSpanishVerbFormsTraining = computed(
     () =>
       (learning.value?.target_lang || '').toLowerCase() === 'es' &&
@@ -47,6 +60,7 @@ export function useSpanishVerbFormsPractice(isOnline: Ref<boolean>) {
     verbFormsTotalCardsPool,
     showSpanishVerbFormsTraining,
     refreshVerbFormsPoolCount,
+    applyVerbFormsPool,
     openVerbFormsTraining,
   }
 }

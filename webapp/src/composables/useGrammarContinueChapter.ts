@@ -11,14 +11,20 @@ export function useGrammarContinueChapter() {
   const continueChapter = ref<GrammarContinueChapter | null>(null)
   const loading = ref(false)
 
+  // applyContinueChapter hydrates state from an already-fetched payload (same shape as
+  // grammarClient.getContinueChapter returns), used by the aggregate overview endpoints so the
+  // continue-chapter section doesn't need its own network request.
+  const applyContinueChapter = (data: { chapter?: unknown } | null | undefined) => {
+    continueChapter.value = data?.chapter
+      ? toGrammarContinueChapter(data.chapter as any, locale.value)
+      : null
+  }
+
   const loadContinueChapter = async () => {
     loading.value = true
     try {
       const data = await grammarClient.getContinueChapter()
-      const chapter = data?.chapter
-        ? toGrammarContinueChapter(data.chapter, locale.value)
-        : null
-      continueChapter.value = chapter
+      applyContinueChapter(data)
     } catch {
       continueChapter.value = null
     } finally {
@@ -30,5 +36,6 @@ export function useGrammarContinueChapter() {
     continueChapter,
     loading,
     loadContinueChapter,
+    applyContinueChapter,
   }
 }
