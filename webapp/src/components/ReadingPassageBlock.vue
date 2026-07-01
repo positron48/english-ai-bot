@@ -85,7 +85,7 @@
               :class="{ 'sentence-audio-button--stop': activeSegmentId === segment.segment_id }"
               :aria-label="activeSegmentId === segment.segment_id ? 'Остановить' : 'Озвучить предложение'"
               :title="activeSegmentId === segment.segment_id ? 'Остановить' : 'Озвучить предложение'"
-              @click.stop="activeSegmentId === segment.segment_id ? stopCurrentAudio() : playSingleSegment(segment)"
+              @click.stop="activeSegmentId === segment.segment_id ? stopPlayback() : playSingleSegment(segment)"
             >
               <Icon :name="activeSegmentId === segment.segment_id ? 'stop' : 'play'" />
             </button>
@@ -294,6 +294,7 @@ const isAutoplaying = ref(false)
 let currentAudio: HTMLAudioElement | null = null
 let currentAudioFinish: (() => void) | null = null
 let autoplayRun = 0
+let playbackDisposed = false
 
 /** Distinct hues for dialogue speakers (first appearance order). */
 const SPEAKER_ICON_PALETTE = [
@@ -365,23 +366,32 @@ const readingImageUrl = (relPath: string) => {
 
 const isNarrator = (segment: any) => String(segment?.speaker_id || '').toLowerCase() === 'narrator'
 
-const stopCurrentAudio = () => {
+const stopCurrentAudio = (clearActive = true) => {
   const audio = currentAudio
-  if (!audio) return
-  currentAudio = null
-  audio.pause()
-  audio.currentTime = 0
+  if (audio) {
+    currentAudio = null
+    audio.pause()
+    audio.currentTime = 0
+  }
   const finish = currentAudioFinish
   currentAudioFinish = null
   finish?.()
-  activeSegmentId.value = null
+  if (clearActive) {
+    activeSegmentId.value = null
+  }
+}
+
+const stopPlayback = () => {
+  isAutoplaying.value = false
+  autoplayRun += 1
+  stopCurrentAudio()
 }
 
 const playSegmentAudio = async (audioRelPath: string) => {
   const courseCode = getGrammarCourseCode()
   const courseParam = courseCode ? `&course_code=${encodeURIComponent(courseCode)}` : ''
   const url = `/api/learning/reading/audio?path=${encodeURIComponent(audioRelPath)}${courseParam}`
-  stopCurrentAudio()
+  stopCurrentAudio(false)
   const audio = new Audio(url)
   currentAudio = audio
   await new Promise<void>((resolve) => {
@@ -405,20 +415,17 @@ const playSegmentAudio = async (audioRelPath: string) => {
 const playSingleSegment = async (segment: any) => {
   if (!segment?.audio_rel_path) return
   isAutoplaying.value = false
-  autoplayRun += 1
+  const runId = ++autoplayRun
   activeSegmentId.value = segment.segment_id
   await playSegmentAudio(segment.audio_rel_path)
-  if (!isAutoplaying.value) {
+  if (runId === autoplayRun && !isAutoplaying.value) {
     activeSegmentId.value = null
   }
 }
 
 const toggleAutoplay = async () => {
   if (isAutoplaying.value) {
-    isAutoplaying.value = false
-    autoplayRun += 1
-    activeSegmentId.value = null
-    stopCurrentAudio()
+    stopPlayback()
     return
   }
 
@@ -523,17 +530,20 @@ const loadAutoplayPreference = async () => {
   } catch (error) {
     console.error('Failed to load autoplay setting for reading mode:', error)
   }
+  if (playbackDisposed) return
   if (enabled && segments.value.length > 0) {
-    toggleAutoplay()
+    void toggleAutoplay()
   }
 }
 
 onMounted(() => {
-  loadAutoplayPreference()
+  playbackDisposed = false
+  void loadAutoplayPreference()
 })
 
 onBeforeUnmount(() => {
-  stopCurrentAudio()
+  playbackDisposed = true
+  stopPlayback()
 })
 
 const markRead = async () => {
