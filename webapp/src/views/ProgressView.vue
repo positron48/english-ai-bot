@@ -153,7 +153,7 @@
 
       <!-- Legacy detailed progress + activity charts -->
       <div class="prg-charts-wrap">
-        <LgProgressCharts />
+        <LgProgressCharts :dashboard="dashboardData" :history="historyData" external />
       </div>
 
     </template>
@@ -164,7 +164,9 @@
 import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { type LinglowStats } from '../api/statsClient'
-import { type CourseProgress } from '../api/courseClient'
+import { type CourseProgress, courseClient } from '../api/courseClient'
+import { grammarClient } from '../api/grammarClient'
+import { wordsPercentForLevel, type WordLevelProgressMap } from '../utils/wordsProgress'
 import { apiClient } from '../api/client'
 import { useCourse } from '../composables/useCourse'
 import { useLearningConfig } from '../composables/useLearningConfig'
@@ -183,6 +185,14 @@ const { currentLocale } = useLocale()
 const loading = ref(true)
 const stats = ref<LinglowStats | null>(null)
 const progress = ref<CourseProgress | null>(null)
+// Per-CEFR-level grammar (passed/total chapters) and word coverage (mastered/total),
+// the same sources the /city map uses to colour district activity icons.
+const grammarByLevel = ref<Record<string, { passed: number; total: number }>>({})
+const wordLevels = ref<WordLevelProgressMap>({})
+// Dashboard + 7-day history folded into the same aggregate, handed to LgProgressCharts as props
+// so it need not self-fetch /api/dashboard + /api/history again.
+const dashboardData = ref<any>(null)
+const historyData = ref<any>(null)
 
 onMounted(async () => {
   try {
@@ -191,9 +201,25 @@ onMounted(async () => {
     const [ov] = await Promise.all([
       apiClient.request<any>(code ? `/api/overview/progress?course_code=${encodeURIComponent(code)}` : '/api/overview/progress'),
       ensureLearningLoaded().catch(() => {}),
+      grammarClient.getCategories().then(({ categories }) => {
+        const map: Record<string, { passed: number; total: number }> = {}
+        for (const cat of categories) {
+          const lv = (cat.level || '').toUpperCase()
+          if (!lv) continue
+          if (!map[lv]) map[lv] = { passed: 0, total: 0 }
+          map[lv].passed += cat.passed_chapters || 0
+          map[lv].total += cat.total_chapters || 0
+        }
+        grammarByLevel.value = map
+      }).catch(() => {}),
+      courseClient.getWordLevelProgress(code).then((res) => {
+        wordLevels.value = res.levels || {}
+      }).catch(() => {}),
     ])
     stats.value = (ov?.stats as LinglowStats) ?? null
     progress.value = (ov?.progress as CourseProgress) ?? null
+    dashboardData.value = ov?.dashboard ?? null
+    historyData.value = ov?.history ?? null
   } catch { /* ignore */ } finally {
     loading.value = false
   }
@@ -289,19 +315,43 @@ const cefrRank = (code: string) => {
   const i = CEFR_ORDER.indexOf((code || '').toUpperCase())
   return i === -1 ? CEFR_ORDER.length : i
 }
+// Progress for a district's reading spot, from by_location (attempted/total).
+const readingPctForDistrict = (districtCode: string): number | null => {
+  const locs = (progress.value?.by_location || []).filter(
+    l => l.district_code === districtCode && (l.location_type === 'reading_text' || l.location_type === 'reading'),
+  )
+  const total = locs.reduce((s, l) => s + l.total_items, 0)
+  if (total <= 0) return null
+  const done = locs.reduce((s, l) => s + l.attempted_items, 0)
+  return Math.round((done / total) * 100)
+}
+
 const districtItems = computed(() => {
   const rows = [...(progress.value?.by_district || [])].sort(
     (a, b) => cefrRank(a.level_code) - cefrRank(b.level_code),
   )
   return rows.map((d) => {
-    const pct = Math.round(d.progress_percent)
+    const level = (d.level_code || '').toUpperCase()
+    // Combine the same per-activity signals /city uses to colour district icons,
+    // instead of the raw learning_items count (which lumps the whole vocabulary
+    // into A0 and drowns real progress).
+    const parts: number[] = []
+    const g = grammarByLevel.value[level]
+    if (g && g.total > 0) parts.push(Math.round((g.passed / g.total) * 100))
+    const w = wordLevels.value[level]
+    if (w && w.total > 0) parts.push(wordsPercentForLevel(wordLevels.value, level))
+    const readingPct = readingPctForDistrict(d.district_code)
+    if (readingPct !== null) parts.push(readingPct)
+
+    const pct = parts.length > 0 ? Math.round(parts.reduce((s, p) => s + p, 0) / parts.length) : 0
+    const started = pct > 0 || d.attempted_items > 0
     let status = ''
     let fill = DISTRICT_FILLS[3]
     if (pct >= 75) { status = t('progress.distExcellent'); fill = DISTRICT_FILLS[0] }
     else if (pct >= 40) { status = t('progress.distGood'); fill = DISTRICT_FILLS[1] }
     else if (pct >= 10) { status = t('progress.distInProgress'); fill = DISTRICT_FILLS[2] }
-    else if (d.attempted_items > 0) { status = t('progress.distJustStarted') }
-    return { key: d.district_code || String(d.district_id), name: d.title, status, pct, fill, locked: d.attempted_items === 0 && pct === 0 }
+    else if (started) { status = t('progress.distJustStarted') }
+    return { key: d.district_code || String(d.district_id), name: d.title, status, pct, fill, locked: !started }
   })
 })
 
