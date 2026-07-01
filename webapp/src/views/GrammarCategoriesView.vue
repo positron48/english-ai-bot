@@ -94,7 +94,7 @@
         <div class="stat-item level-item">
           <div class="stat-label">{{ t('dashboard.level') }}</div>
           <div class="level-badge-compact" :class="levelBadgeClass">
-            {{ statistics.confirmed_level || t('common.notStarted') }}
+            {{ statistics.confirmed_level || 'A0' }}
           </div>
         </div>
         
@@ -720,7 +720,8 @@ onMounted(() => {
     width: 100%;
     min-width: 0;
     flex-direction: row-reverse;
-    justify-content: flex-end;
+    justify-content: space-between;
+    gap: 8px;
   }
   
   .percentage-circle-small-wrapper {
@@ -745,6 +746,10 @@ onMounted(() => {
     font-size: 10px;
     min-width: auto;
     text-align: left;
+    white-space: normal;
+    overflow-wrap: anywhere;
+    line-height: 1.2;
+    flex: 1 1 auto;
   }
 }
 

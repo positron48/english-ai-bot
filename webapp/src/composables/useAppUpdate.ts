@@ -7,6 +7,7 @@ interface QantrixAndroid {
   getAppVersion?: () => string
   checkLatestVersion?: () => void
   startUpdateDownload?: (apkUrl: string) => void
+  cancelUpdateDownload?: () => void
   setSystemBarsColor?: (color: string) => void
 }
 
@@ -19,6 +20,9 @@ interface UpdateCheckResult {
 interface DownloadState {
   state?: 'downloading' | 'installing' | 'error'
   error?: string
+  bytesDownloaded?: number
+  bytesTotal?: number
+  progress?: number
 }
 
 type DownloadStatus = 'idle' | 'downloading' | 'installing' | 'error'
@@ -26,6 +30,7 @@ type DownloadStatus = 'idle' | 'downloading' | 'installing' | 'error'
 const SKIP_KEY = 'appUpdate.skippedVersion'
 const SNOOZE_KEY = 'appUpdate.snoozeUntil'
 const SNOOZE_MS = 24 * 60 * 60 * 1000
+const DOWNLOAD_TIMEOUT_MS = 120000
 
 // Module-level (singleton) state so the startup check in App.vue and the manual
 // check in SettingsView share one source of truth.
@@ -38,11 +43,41 @@ const checking = ref(false)
 const upToDate = ref(false)
 const downloadStatus = ref<DownloadStatus>('idle')
 const errorMessage = ref('')
+const downloadProgress = ref<number | null>(null)
+const downloadBytesDownloaded = ref<number | null>(null)
+const downloadBytesTotal = ref<number | null>(null)
+const canCancelDownload = ref(false)
 
 let pendingResolve: ((value: UpdateCheckResult) => void) | null = null
 let bridgeReady = false
+let downloadTimeout: ReturnType<typeof setTimeout> | null = null
 
 const bridge = (): QantrixAndroid | undefined => (window as any).QantrixAndroid
+
+const clearDownloadTimeout = () => {
+  if (downloadTimeout) {
+    clearTimeout(downloadTimeout)
+    downloadTimeout = null
+  }
+}
+
+const resetDownloadProgress = () => {
+  downloadProgress.value = null
+  downloadBytesDownloaded.value = null
+  downloadBytesTotal.value = null
+}
+
+const startDownloadTimeout = () => {
+  if (downloadTimeout) return
+  downloadTimeout = setTimeout(() => {
+    if (downloadStatus.value === 'downloading') {
+      downloadStatus.value = 'error'
+      errorMessage.value = 'download_timeout'
+      resetDownloadProgress()
+    }
+    downloadTimeout = null
+  }, DOWNLOAD_TIMEOUT_MS)
+}
 
 const readSnoozeUntil = (): number => {
   const raw = localStorage.getItem(SNOOZE_KEY)
@@ -63,11 +98,24 @@ const ensureBridgeCallbacks = () => {
     const state = payload?.state
     if (state === 'downloading') {
       downloadStatus.value = 'downloading'
+      startDownloadTimeout()
+      const progress = Number(payload?.progress)
+      downloadProgress.value = Number.isFinite(progress)
+        ? Math.max(0, Math.min(100, Math.round(progress)))
+        : null
+      const downloaded = Number(payload?.bytesDownloaded)
+      const total = Number(payload?.bytesTotal)
+      downloadBytesDownloaded.value = Number.isFinite(downloaded) && downloaded >= 0 ? downloaded : null
+      downloadBytesTotal.value = Number.isFinite(total) && total > 0 ? total : null
     } else if (state === 'installing') {
+      clearDownloadTimeout()
       downloadStatus.value = 'installing'
+      downloadProgress.value = 100
     } else if (state === 'error') {
+      clearDownloadTimeout()
       downloadStatus.value = 'error'
       errorMessage.value = payload?.error || 'download_failed'
+      resetDownloadProgress()
     }
   }
 }
@@ -115,7 +163,20 @@ export const useAppUpdate = () => {
     if (!api?.startUpdateDownload || !apkUrl.value) return
     downloadStatus.value = 'downloading'
     errorMessage.value = ''
+    resetDownloadProgress()
+    canCancelDownload.value = typeof api.cancelUpdateDownload === 'function'
+    clearDownloadTimeout()
+    startDownloadTimeout()
     api.startUpdateDownload(apkUrl.value)
+  }
+
+  const cancelDownload = () => {
+    const api = bridge()
+    api?.cancelUpdateDownload?.()
+    clearDownloadTimeout()
+    downloadStatus.value = 'idle'
+    errorMessage.value = ''
+    resetDownloadProgress()
   }
 
   // manual: triggered from Settings — ignores skip/snooze and surfaces the
@@ -149,6 +210,7 @@ export const useAppUpdate = () => {
       }
 
       downloadStatus.value = 'idle'
+      resetDownloadProgress()
       modalVisible.value = true
     } finally {
       checking.value = false
@@ -163,9 +225,14 @@ export const useAppUpdate = () => {
     checking: computed(() => checking.value),
     upToDate: computed(() => upToDate.value),
     downloadStatus: computed(() => downloadStatus.value),
+    downloadProgress: computed(() => downloadProgress.value),
+    downloadBytesDownloaded: computed(() => downloadBytesDownloaded.value),
+    downloadBytesTotal: computed(() => downloadBytesTotal.value),
+    canCancelDownload: computed(() => canCancelDownload.value),
     errorMessage: computed(() => errorMessage.value),
     checkForUpdate,
     installUpdate,
+    cancelDownload,
     skipVersion,
     snooze24h,
     dismiss,

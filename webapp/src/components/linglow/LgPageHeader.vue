@@ -54,13 +54,19 @@ import LgStreakBadge from './LgStreakBadge.vue'
   left: 0;
   z-index: 1;
 }
-.lg-header-title-wrap { flex: 1; text-align: center; }
+.lg-header-title-wrap {
+  flex: 1;
+  min-width: 0;
+  text-align: center;
+  padding: 0 48px;
+}
 .lg-header-title {
   font-family: 'Lora', serif;
   font-weight: 700;
   font-size: 20px;
   color: var(--text);
   line-height: 1.2;
+  overflow-wrap: anywhere;
 }
 .lg-header-right { position: absolute; right: 0; z-index: 1; }
 .lg-header-subtitle {
@@ -68,5 +74,9 @@ import LgStreakBadge from './LgStreakBadge.vue'
   font-size: 12px;
   color: var(--subtext);
   margin-top: 4px;
+}
+@media (max-width: 360px) {
+  .lg-header-title-wrap { padding: 0 42px; }
+  .lg-header-title { font-size: 18px; }
 }
 </style>

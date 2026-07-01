@@ -12,14 +12,16 @@ const setEmbeddedUserAgent = () => {
 // window.__onUpdateCheckResult callback the composable registers.
 const installBridge = (reply: { latestVersion?: string; apkUrl?: string; error?: string }) => {
   const startUpdateDownload = vi.fn()
+  const cancelUpdateDownload = vi.fn()
   ;(window as any).QantrixAndroid = {
     getAppVersion: () => '0.12.10',
     checkLatestVersion: () => {
       ;(window as any).__onUpdateCheckResult?.(reply)
     },
     startUpdateDownload,
+    cancelUpdateDownload,
   }
-  return { startUpdateDownload }
+  return { startUpdateDownload, cancelUpdateDownload }
 }
 
 // Each test gets a fresh module so the singleton state does not leak.
@@ -36,6 +38,7 @@ describe('useAppUpdate', () => {
   })
 
   afterEach(() => {
+    vi.useRealTimers()
     delete (window as any).QantrixAndroid
     delete (window as any).__onUpdateCheckResult
     delete (window as any).__onUpdateDownload
@@ -112,6 +115,54 @@ describe('useAppUpdate', () => {
     await u.checkForUpdate({ manual: false })
     u.installUpdate()
     expect(startUpdateDownload).toHaveBeenCalledWith('https://example/app.apk')
+  })
+
+  it('tracks native download progress', async () => {
+    installBridge({
+      latestVersion: '0.12.49',
+      apkUrl: 'https://example/app.apk',
+    })
+    const u = await freshUseAppUpdate()
+    await u.checkForUpdate({ manual: false })
+    u.installUpdate()
+    ;(window as any).__onUpdateDownload?.({
+      state: 'downloading',
+      bytesDownloaded: 45,
+      bytesTotal: 100,
+      progress: 45,
+    })
+    expect(u.downloadStatus.value).toBe('downloading')
+    expect(u.downloadProgress.value).toBe(45)
+    expect(u.downloadBytesDownloaded.value).toBe(45)
+    expect(u.downloadBytesTotal.value).toBe(100)
+  })
+
+  it('marks download as failed when native bridge never finishes', async () => {
+    vi.useFakeTimers()
+    installBridge({
+      latestVersion: '0.12.49',
+      apkUrl: 'https://example/app.apk',
+    })
+    const u = await freshUseAppUpdate()
+    await u.checkForUpdate({ manual: false })
+    u.installUpdate()
+    vi.advanceTimersByTime(120_000)
+    expect(u.downloadStatus.value).toBe('error')
+    expect(u.errorMessage.value).toBe('download_timeout')
+  })
+
+  it('cancels native download when supported', async () => {
+    const { cancelUpdateDownload } = installBridge({
+      latestVersion: '0.12.49',
+      apkUrl: 'https://example/app.apk',
+    })
+    const u = await freshUseAppUpdate()
+    await u.checkForUpdate({ manual: false })
+    u.installUpdate()
+    expect(u.canCancelDownload.value).toBe(true)
+    u.cancelDownload()
+    expect(cancelUpdateDownload).toHaveBeenCalled()
+    expect(u.downloadStatus.value).toBe('idle')
   })
 
   it('is a no-op outside the embedded app', async () => {

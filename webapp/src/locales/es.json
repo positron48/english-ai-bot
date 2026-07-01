@@ -44,6 +44,8 @@
     "checkForUpdates": "Buscar actualizaciones",
     "checking": "Comprobando…",
     "downloading": "Descargando…",
+    "downloadProgress": "{percent}% descargado",
+    "downloadTimeout": "La descarga está tardando demasiado. Revisa la conexión e inténtalo de nuevo.",
     "installing": "Instalando…",
     "installFailed": "No se pudo descargar la actualización. Inténtalo de nuevo.",
     "upToDate": "Tienes la última versión",

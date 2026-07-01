@@ -12,6 +12,8 @@ import android.graphics.Color;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.webkit.JavascriptInterface;
 import android.webkit.CookieManager;
 import android.webkit.WebResourceRequest;
@@ -44,6 +46,19 @@ public class MainActivity extends Activity {
     private int lastInsetBottom = 0;
     private long updateDownloadId = -1;
     private BroadcastReceiver downloadReceiver;
+    private final Handler downloadProgressHandler = new Handler(Looper.getMainLooper());
+    private final Runnable downloadProgressPoller = new Runnable() {
+        @Override
+        public void run() {
+            if (updateDownloadId == -1) {
+                return;
+            }
+            pollUpdateDownloadProgress();
+            if (updateDownloadId != -1) {
+                downloadProgressHandler.postDelayed(this, 1000);
+            }
+        }
+    };
 
     @Override
     @SuppressLint("SetJavaScriptEnabled")
@@ -102,6 +117,7 @@ public class MainActivity extends Activity {
 
     @Override
     protected void onDestroy() {
+        downloadProgressHandler.removeCallbacks(downloadProgressPoller);
         if (downloadReceiver != null) {
             try {
                 unregisterReceiver(downloadReceiver);
@@ -161,6 +177,11 @@ public class MainActivity extends Activity {
         @JavascriptInterface
         public void startUpdateDownload(String apkUrl) {
             runOnUiThread(() -> beginUpdateDownload(apkUrl));
+        }
+
+        @JavascriptInterface
+        public void cancelUpdateDownload() {
+            runOnUiThread(MainActivity.this::cancelUpdateDownload);
         }
     }
 
@@ -246,9 +267,21 @@ public class MainActivity extends Activity {
             DownloadManager manager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
             updateDownloadId = manager.enqueue(request);
             reportDownloadState("downloading", null);
+            downloadProgressHandler.removeCallbacks(downloadProgressPoller);
+            downloadProgressHandler.post(downloadProgressPoller);
         } catch (Exception e) {
             reportDownloadState("error", e.getClass().getSimpleName());
         }
+    }
+
+    private void cancelUpdateDownload() {
+        if (updateDownloadId == -1) {
+            return;
+        }
+        DownloadManager manager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+        manager.remove(updateDownloadId);
+        updateDownloadId = -1;
+        downloadProgressHandler.removeCallbacks(downloadProgressPoller);
     }
 
     private void registerDownloadReceiver() {
@@ -274,6 +307,7 @@ public class MainActivity extends Activity {
     }
 
     private void onUpdateDownloadComplete(long id) {
+        downloadProgressHandler.removeCallbacks(downloadProgressPoller);
         DownloadManager manager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
         DownloadManager.Query query = new DownloadManager.Query().setFilterById(id);
         try (Cursor cursor = manager.query(query)) {
@@ -284,6 +318,7 @@ public class MainActivity extends Activity {
             int statusCol = cursor.getColumnIndex(DownloadManager.COLUMN_STATUS);
             int status = cursor.getInt(statusCol);
             if (status != DownloadManager.STATUS_SUCCESSFUL) {
+                updateDownloadId = -1;
                 reportDownloadState("error", "status_" + status);
                 return;
             }
@@ -300,15 +335,50 @@ public class MainActivity extends Activity {
         install.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
         install.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         reportDownloadState("installing", null);
+        updateDownloadId = -1;
         startActivity(install);
     }
 
     private void reportDownloadState(String state, String error) {
+        reportDownloadState(state, error, -1, -1);
+    }
+
+    private void pollUpdateDownloadProgress() {
+        DownloadManager manager = (DownloadManager) getSystemService(DOWNLOAD_SERVICE);
+        DownloadManager.Query query = new DownloadManager.Query().setFilterById(updateDownloadId);
+        try (Cursor cursor = manager.query(query)) {
+            if (cursor == null || !cursor.moveToFirst()) {
+                return;
+            }
+            int status = cursor.getInt(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_STATUS));
+            if (status == DownloadManager.STATUS_FAILED) {
+                updateDownloadId = -1;
+                downloadProgressHandler.removeCallbacks(downloadProgressPoller);
+                reportDownloadState("error", "status_" + status);
+                return;
+            }
+            long downloaded = cursor.getLong(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_BYTES_DOWNLOADED_SO_FAR));
+            long total = cursor.getLong(cursor.getColumnIndexOrThrow(DownloadManager.COLUMN_TOTAL_SIZE_BYTES));
+            reportDownloadState("downloading", null, downloaded, total);
+        } catch (Exception ignored) {
+            // Progress is best-effort; completion receiver still reports final state.
+        }
+    }
+
+    private void reportDownloadState(String state, String error, long bytesDownloaded, long bytesTotal) {
         StringBuilder sb = new StringBuilder();
         sb.append("window.__onUpdateDownload && window.__onUpdateDownload({\"state\":\"")
                 .append(jsEscape(state)).append("\"");
         if (error != null) {
             sb.append(",\"error\":\"").append(jsEscape(error)).append("\"");
+        }
+        if (bytesDownloaded >= 0) {
+            sb.append(",\"bytesDownloaded\":").append(bytesDownloaded);
+        }
+        if (bytesTotal > 0) {
+            sb.append(",\"bytesTotal\":").append(bytesTotal);
+            int progress = Math.max(0, Math.min(100, Math.round((bytesDownloaded * 100f) / bytesTotal)));
+            sb.append(",\"progress\":").append(progress);
         }
         sb.append("})");
         evalJs(sb.toString());

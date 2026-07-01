@@ -44,6 +44,8 @@
     "checkForUpdates": "Check for updates",
     "checking": "Checking…",
     "downloading": "Downloading…",
+    "downloadProgress": "{percent}% downloaded",
+    "downloadTimeout": "The download is taking too long. Check your connection and try again.",
     "installing": "Installing…",
     "installFailed": "Failed to download the update. Please try again.",
     "upToDate": "You have the latest version",

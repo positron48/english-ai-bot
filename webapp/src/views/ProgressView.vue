@@ -61,7 +61,7 @@
           <div class="prg-card-title">{{ t('progress.districtsTitle') }}</div>
           <div class="prg-card-sub" style="margin-bottom:12px">{{ t('progress.districtsSub') }}</div>
           <div class="prg-districts-list">
-            <div v-for="(d, i) in districtItems" :key="i" class="prg-district-row" :style="{ opacity: d.locked ? 0.5 : 1 }">
+            <div v-for="d in districtItems" :key="d.key" class="prg-district-row" :style="{ opacity: d.locked ? 0.5 : 1 }">
               <div class="prg-district-head">
                 <span class="prg-district-name">{{ d.name }}</span>
                 <span class="prg-district-status">{{ d.locked ? '🔒' : d.status }}</span>
@@ -301,7 +301,7 @@ const districtItems = computed(() => {
     else if (pct >= 40) { status = t('progress.distGood'); fill = DISTRICT_FILLS[1] }
     else if (pct >= 10) { status = t('progress.distInProgress'); fill = DISTRICT_FILLS[2] }
     else if (d.attempted_items > 0) { status = t('progress.distJustStarted') }
-    return { name: d.title, status, pct, fill, locked: d.attempted_items === 0 && pct === 0 }
+    return { key: d.district_code || String(d.district_id), name: d.title, status, pct, fill, locked: d.attempted_items === 0 && pct === 0 }
   })
 })
 
@@ -588,8 +588,8 @@ const improvements = computed(() => {
   box-shadow: var(--shadow-card);
 }
 .prg-ach-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
-.prg-ach-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; }
-.prg-ach-item { text-align: center; }
+.prg-ach-grid { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 6px; }
+.prg-ach-item { text-align: center; min-width: 0; }
 .prg-ach-item--locked { opacity: 0.52; }
 .prg-ach-bubble {
   width: 48px; height: 48px; margin: 0 auto 5px; border-radius: 50%;
@@ -598,6 +598,11 @@ const improvements = computed(() => {
 }
 .prg-ach-emoji { font-size: 13px; line-height: 1; }
 .prg-ach-val { font-family: 'Lora', serif; font-size: 10px; font-weight: 700; color: var(--text); line-height: 1; margin-top: 1px; }
-.prg-ach-title { font-family: 'Inter', sans-serif; font-size: 9px; font-weight: 600; color: var(--text); margin-top: 2px; line-height: 1.25; }
-.prg-ach-sub { font-family: 'Inter', sans-serif; font-size: 8.5px; color: var(--subtext); line-height: 1.25; margin-top: 1px; }
+.prg-ach-title { font-family: 'Inter', sans-serif; font-size: 9px; font-weight: 600; color: var(--text); margin-top: 2px; line-height: 1.25; overflow-wrap: anywhere; }
+.prg-ach-sub { font-family: 'Inter', sans-serif; font-size: 8.5px; color: var(--subtext); line-height: 1.25; margin-top: 1px; overflow-wrap: anywhere; }
+@media (max-width: 380px) {
+  .prg-achievements-card { padding: 14px 12px; }
+  .prg-ach-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px 6px; }
+  .prg-ach-bubble { width: 42px; height: 42px; }
+}
 </style>
