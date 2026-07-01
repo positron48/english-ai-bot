@@ -36,6 +36,13 @@ var lumiFactContexts = map[string]bool{
 	"practice": true, "progress": true, "city": true,
 }
 
+var ErrInvalidLumiFact = errors.New("invalid lumi fact")
+
+// IsValidLumiContext reports whether context is accepted by the DB constraint.
+func IsValidLumiContext(context string) bool {
+	return lumiFactContexts[strings.TrimSpace(strings.ToLower(context))]
+}
+
 // NormalizeLumiContext maps unknown contexts to "general".
 func NormalizeLumiContext(context string) string {
 	context = strings.TrimSpace(strings.ToLower(context))
@@ -47,7 +54,7 @@ func NormalizeLumiContext(context string) string {
 
 // GetDailyFact returns the fact of the day for (course, context, locale),
 // rotating to the least recently shown fact at the first request of a day.
-// Fallback order: exact context → general; course → any course ('').
+// Fallback order: exact context → general; course → any course (”).
 func (r *LumiFactRepository) GetDailyFact(ctx context.Context, courseCode, factContext, locale string) (*LumiFact, error) {
 	factContext = NormalizeLumiContext(factContext)
 	today := time.Now().Format("2006-01-02")
@@ -210,19 +217,77 @@ func (r *LumiFactRepository) BulkInsert(ctx context.Context, courseCode, factCon
 	if locale == "" {
 		locale = "ru"
 	}
-	inserted := 0
+	facts := make([]LumiFact, 0, len(bodies))
 	for _, body := range bodies {
 		body = strings.TrimSpace(body)
 		if body == "" {
 			continue
 		}
-		if _, err := r.db.ExecContext(ctx, `
-			INSERT INTO lumi_facts (course_code, context, locale, body, created_by)
-			VALUES (?, ?, ?, ?, ?)
-		`, courseCode, factContext, locale, body, nullableID(createdBy)); err != nil {
+		facts = append(facts, LumiFact{
+			CourseCode: courseCode,
+			Context:    factContext,
+			Locale:     locale,
+			Body:       body,
+			Status:     "active",
+		})
+	}
+	return r.BulkInsertFacts(ctx, facts, createdBy)
+}
+
+// BulkInsertFacts adds structured facts in one transaction.
+func (r *LumiFactRepository) BulkInsertFacts(ctx context.Context, facts []LumiFact, createdBy int64) (int, error) {
+	if len(facts) == 0 {
+		return 0, nil
+	}
+	normalized := make([]LumiFact, 0, len(facts))
+	for i, fact := range facts {
+		fact.CourseCode = strings.TrimSpace(strings.ToLower(fact.CourseCode))
+		fact.Context = strings.TrimSpace(strings.ToLower(fact.Context))
+		if fact.Context == "" {
+			fact.Context = "general"
+		}
+		if !IsValidLumiContext(fact.Context) {
+			return 0, fmt.Errorf("%w: fact #%d: invalid context %q", ErrInvalidLumiFact, i+1, fact.Context)
+		}
+		fact.Locale = strings.TrimSpace(strings.ToLower(fact.Locale))
+		if fact.Locale == "" {
+			fact.Locale = "ru"
+		}
+		if fact.Locale != "ru" && fact.Locale != "en" && fact.Locale != "es" {
+			return 0, fmt.Errorf("%w: fact #%d: invalid locale %q", ErrInvalidLumiFact, i+1, fact.Locale)
+		}
+		fact.Status = strings.TrimSpace(strings.ToLower(fact.Status))
+		if fact.Status == "" {
+			fact.Status = "active"
+		}
+		if fact.Status != "active" && fact.Status != "archived" {
+			return 0, fmt.Errorf("%w: fact #%d: invalid status %q", ErrInvalidLumiFact, i+1, fact.Status)
+		}
+		fact.Body = strings.TrimSpace(fact.Body)
+		if fact.Body == "" {
+			return 0, fmt.Errorf("%w: fact #%d: body is required", ErrInvalidLumiFact, i+1)
+		}
+		normalized = append(normalized, fact)
+	}
+
+	tx, err := r.db.BeginTx(ctx, nil)
+	if err != nil {
+		return 0, fmt.Errorf("begin lumi facts insert: %w", err)
+	}
+	defer tx.Rollback()
+
+	inserted := 0
+	for _, fact := range normalized {
+		if _, err := tx.ExecContext(ctx, `
+			INSERT INTO lumi_facts (course_code, context, locale, body, status, created_by)
+			VALUES (?, ?, ?, ?, ?, ?)
+		`, fact.CourseCode, fact.Context, fact.Locale, fact.Body, fact.Status, nullableID(createdBy)); err != nil {
 			return inserted, fmt.Errorf("insert lumi fact: %w", err)
 		}
 		inserted++
+	}
+	if err := tx.Commit(); err != nil {
+		return inserted, fmt.Errorf("commit lumi facts insert: %w", err)
 	}
 	return inserted, nil
 }

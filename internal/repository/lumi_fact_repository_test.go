@@ -67,3 +67,70 @@ func TestLumiFactRepository_RotationAndFallback(t *testing.T) {
 		t.Fatalf("expected nil after archiving, got %+v", f5)
 	}
 }
+
+func TestLumiFactRepository_BulkInsertFactsDefaultsAndValidation(t *testing.T) {
+	conn := testutil.SetupTestDB(t)
+	repo := NewLumiFactRepository(conn)
+	ctx := context.Background()
+
+	if _, err := conn.Exec(`DELETE FROM lumi_facts`); err != nil {
+		t.Fatalf("clear: %v", err)
+	}
+
+	n, err := repo.BulkInsertFacts(ctx, []LumiFact{
+		{CourseCode: " ES_RU ", Body: " defaulted fact "},
+		{CourseCode: "", Context: "grammar", Locale: "ru", Body: "archived fact", Status: "archived"},
+	}, 0)
+	if err != nil {
+		t.Fatalf("BulkInsertFacts: %v", err)
+	}
+	if n != 2 {
+		t.Fatalf("inserted = %d, want 2", n)
+	}
+
+	facts, total, err := repo.List(ctx, LumiFactFilter{})
+	if err != nil {
+		t.Fatalf("List: %v", err)
+	}
+	if total != 2 || len(facts) != 2 {
+		t.Fatalf("got total=%d len=%d, want 2", total, len(facts))
+	}
+	byBody := map[string]LumiFact{}
+	for _, fact := range facts {
+		byBody[fact.Body] = fact
+	}
+	if f := byBody["defaulted fact"]; f.CourseCode != "es_ru" || f.Context != "general" || f.Locale != "ru" || f.Status != "active" {
+		t.Fatalf("defaulted fact = %+v", f)
+	}
+	if f := byBody["archived fact"]; f.Status != "archived" || f.Context != "grammar" {
+		t.Fatalf("archived fact = %+v", f)
+	}
+}
+
+func TestLumiFactRepository_BulkInsertFactsRejectsInvalidAtomically(t *testing.T) {
+	conn := testutil.SetupTestDB(t)
+	repo := NewLumiFactRepository(conn)
+	ctx := context.Background()
+
+	if _, err := conn.Exec(`DELETE FROM lumi_facts`); err != nil {
+		t.Fatalf("clear: %v", err)
+	}
+
+	n, err := repo.BulkInsertFacts(ctx, []LumiFact{
+		{CourseCode: "es_ru", Context: "general", Locale: "ru", Body: "valid"},
+		{CourseCode: "es_ru", Context: "district", Locale: "ru", Body: "invalid"},
+	}, 0)
+	if err == nil {
+		t.Fatal("expected invalid context error")
+	}
+	if n != 0 {
+		t.Fatalf("inserted = %d, want 0", n)
+	}
+	_, total, err := repo.List(ctx, LumiFactFilter{})
+	if err != nil {
+		t.Fatalf("List: %v", err)
+	}
+	if total != 0 {
+		t.Fatalf("total = %d, want 0", total)
+	}
+}

@@ -696,6 +696,7 @@ func (r *Router) setupProtectedRoutes() {
 	r.mux.HandleFunc("/api/admin/content-reports", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminContentReports))))
 	r.mux.HandleFunc("/api/admin/content-reports/", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminContentReportByID))))
 	r.mux.HandleFunc("/api/admin/linglow/srs-readiness", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminLinglowSRSReadiness))))
+	r.mux.HandleFunc("/api/admin/lumi-facts/prompt-template", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminLumiFactsPromptTemplate))))
 	r.mux.HandleFunc("/api/admin/lumi-facts", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminLumiFacts))))
 
 	// Grammar admin routes (require full_access)
