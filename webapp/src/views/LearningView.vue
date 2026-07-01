@@ -226,6 +226,12 @@ const handleNetworkChange = () => {
   isOffline.value = typeof navigator !== 'undefined' && navigator.onLine === false
 }
 
+// applySentenceToday sets availability from the aggregate's sentence_today part (available=true
+// already implies the feature is enabled), so the initial load needs no separate /me + /today.
+function applySentenceToday(today: { available?: boolean; remaining?: number } | null | undefined) {
+  sentenceAvailable.value = !!today?.available && (today?.remaining ?? 0) > 0
+}
+
 async function loadSentenceAvailability() {
   if (isOffline.value) { sentenceAvailable.value = false; return }
   if (!hasFeature('sentence_composition')) { sentenceAvailable.value = false; return }
@@ -281,13 +287,14 @@ onMounted(async () => {
     applyContinueChapter(ov.continue_chapter)
     applyVerbFormsPool(ov.verb_upcoming)
     await loadVocabSummary(ov.vocab_summary)
+    applySentenceToday(ov.sentence_today)
   } catch {
     // Fall back to individual calls if the aggregate fails.
-    await Promise.all([loadContinueChapter(), refreshVerbFormsPoolCount(), loadVocabSummary()])
+    await Promise.all([loadContinueChapter(), refreshVerbFormsPoolCount(), loadVocabSummary(), loadSentenceAvailability()])
   }
+  // /me is client-cached; only needed here for the Pro-gated conversation entry point.
   ensureMe().then(() => {
     isPro.value = hasFeature('conversation')
-    void loadSentenceAvailability()
   })
 })
 

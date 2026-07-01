@@ -228,13 +228,10 @@ import LgStreakBadge from '../components/linglow/LgStreakBadge.vue'
 import LgCourseSwitcher from '../components/linglow/LgCourseSwitcher.vue'
 import LgActivityIcon from '../components/linglow/LgActivityIcon.vue'
 import { useStats } from '../composables/useStats'
-import { useMe } from '../composables/useMe'
-import { sentenceClient } from '../api/sentenceClient'
 import { useGrammarContinueChapter } from '../composables/useGrammarContinueChapter'
 import { maybeRunOfflineAutoDownload } from '../composables/useOfflineAutoDownload'
 
 const { t } = useI18n()
-const { ensureMe } = useMe()
 const { streakDays, ensureStatsLoaded, refreshStats } = useStats()
 ensureStatsLoaded()
 const { targetLangDisplay, ensureLearningLoaded } = useLearningConfig()
@@ -354,6 +351,7 @@ const loadData = async () => {
       if (ov.progress) linglowProgress.value = ov.progress
       dailyToday.value = ov.daily_route?.today || null
       applyContinueChapter(ov.continue_chapter)
+      applySentenceToday(ov.sentence_today)
     }
     stats.value = {
       dueCount: data.due_count || 0,
@@ -417,19 +415,17 @@ const getGrammarPercentageColor = (percent: number): string => {
   return '#ef4444' // red
 }
 
-async function loadSentenceAvailability() {
-  const me = await ensureMe().catch(() => null)
-  if (!me?.features?.sentence_composition) {
+// applySentenceToday sets sentence-training availability from the aggregate's sentence_today part
+// (available=true already implies the user has the feature and a set was generated), avoiding a
+// separate /me + /today round trip.
+function applySentenceToday(today: { available?: boolean; remaining?: number } | null | undefined) {
+  if (!today || !today.available) {
     sentenceAvailable.value = false
+    sentenceRemaining.value = 0
     return
   }
-  try {
-    const today = await sentenceClient.today(currentCourseCode.value)
-    sentenceAvailable.value = !!today.available && (today.remaining ?? 0) > 0
-    sentenceRemaining.value = today.remaining ?? 0
-  } catch {
-    sentenceAvailable.value = false
-  }
+  sentenceRemaining.value = today.remaining ?? 0
+  sentenceAvailable.value = (today.remaining ?? 0) > 0
 }
 
 
@@ -451,10 +447,8 @@ watch(isAuthenticated, (authenticated) => {
 
 onMounted(() => {
   if (isAuthenticated.value) {
-    // loadData() is already triggered by the immediate isAuthenticated watcher above;
-    // calling it here too doubled every dashboard request on navigation.
-    void ensureMe().catch(() => {})
-    void loadSentenceAvailability()
+    // loadData() (triggered by the immediate isAuthenticated watcher) is the single aggregate
+    // round trip; sentence availability is folded into it, so no separate /me or /today here.
     void maybeRunOfflineAutoDownload()
   }
 })

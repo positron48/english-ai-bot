@@ -949,6 +949,8 @@ func (r *Router) handleTrainingAnswer(w http.ResponseWriter, req *http.Request) 
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		return
 	}
+	// Answering a card changes its SRS state → invalidate cached vocab-summary counts.
+	defer r.BumpUserCache(userID)
 
 	if err := req.ParseForm(); err != nil {
 		http.Error(w, "Invalid form data", http.StatusBadRequest)

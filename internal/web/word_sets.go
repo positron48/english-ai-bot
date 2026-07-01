@@ -618,6 +618,8 @@ func (r *Router) handleLearningWordsSetStudyLearn(w http.ResponseWriter, req *ht
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		return
 	}
+	// Adding a word to learning changes vocabulary counts (and may add verb cards).
+	defer r.BumpUserCache(userID)
 
 	// Extract set ID from path
 	path := strings.TrimPrefix(req.URL.Path, "/api/learning/words/sets/")
@@ -702,6 +704,8 @@ func (r *Router) handleLearningWordsSetStudyKnow(w http.ResponseWriter, req *htt
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		return
 	}
+	// Marking a word known changes vocabulary counts.
+	defer r.BumpUserCache(userID)
 
 	// Extract set ID from path
 	path := strings.TrimPrefix(req.URL.Path, "/api/learning/words/sets/")

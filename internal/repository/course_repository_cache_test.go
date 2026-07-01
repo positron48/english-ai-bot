@@ -14,12 +14,13 @@ import (
 // with its cache dependency (hit/miss, invalidation) without needing a real Redis instance.
 type fakeCourseMapCache struct {
 	store       map[string][]byte
+	counters    map[string]int64
 	setCalls    []string
 	deleteCalls []string
 }
 
 func newFakeCourseMapCache() *fakeCourseMapCache {
-	return &fakeCourseMapCache{store: map[string][]byte{}}
+	return &fakeCourseMapCache{store: map[string][]byte{}, counters: map[string]int64{}}
 }
 
 func (f *fakeCourseMapCache) Get(_ context.Context, key string) ([]byte, bool) {
@@ -35,6 +36,11 @@ func (f *fakeCourseMapCache) Set(_ context.Context, key string, value []byte, _ 
 func (f *fakeCourseMapCache) Delete(_ context.Context, key string) {
 	delete(f.store, key)
 	f.deleteCalls = append(f.deleteCalls, key)
+}
+
+func (f *fakeCourseMapCache) Incr(_ context.Context, key string) (int64, bool) {
+	f.counters[key]++
+	return f.counters[key], true
 }
 
 // TestCourseRepository_GetCourseMap_CachesStructureNotUserCourse verifies that the expensive

@@ -97,18 +97,23 @@ const wordsChartCanvas = ref<HTMLCanvasElement | null>(null)
 let chartInstance: Chart | null = null
 let wordsChartInstance: Chart | null = null
 
+const props = defineProps<{
+  // When the parent screen already fetched these via an aggregate endpoint, pass them in to
+  // avoid a duplicate /api/dashboard + /history round trip. Omitted → self-fetch (standalone use).
+  dashboard?: any
+  history?: LinglowHistory | null
+  // When true, the parent owns data loading (props arrive asynchronously): skip the self-fetch
+  // entirely and just render whatever the `dashboard` watch pushes in.
+  external?: boolean
+}>()
+
 const formatPercent = (value: number): string => value.toFixed(1)
 
-const loadData = async () => {
-  apiClient.loadTokens()
-  try {
-    let history: LinglowHistory | null = null
-    const [data] = await Promise.all([
-      apiClient.request('/api/dashboard') as Promise<any>,
-      courseClient.getHistory({ courseCode: currentCourseCode.value || undefined, days: 7 }).then(h => { history = h }).catch(() => {}),
-    ])
-    // On the unified Linglow DB the legacy charts are empty; fall back to canonical history.
-    let weekly = data.weekly_stats || []
+// applyData folds a dashboard payload plus optional canonical history into the chart refs.
+const applyData = (data: any, history: LinglowHistory | null) => {
+  if (!data) return
+  // On the unified Linglow DB the legacy charts are empty; fall back to canonical history.
+  let weekly = data.weekly_stats || []
     let wordsAdded = data.words_added_stats || []
     let accuracy = data.accuracy_percent || 0
     if (history) {
@@ -122,14 +127,33 @@ const loadData = async () => {
         accuracy = (history as LinglowHistory).accuracy_percent
       }
     }
-    totalCards.value = data.total_cards || 0
-    accuracyPercent.value = accuracy
-    weeklyStats.value = weekly
-    wordsAddedStats.value = wordsAdded
+  totalCards.value = data.total_cards || 0
+  accuracyPercent.value = accuracy
+  weeklyStats.value = weekly
+  wordsAddedStats.value = wordsAdded
+}
+
+const loadData = async () => {
+  // Parent owns loading (aggregate endpoint) — never self-fetch; the props watch applies data.
+  if (props.external) {
+    if (props.dashboard) applyData(props.dashboard, props.history ?? null)
+    return
+  }
+  apiClient.loadTokens()
+  try {
+    let history: LinglowHistory | null = null
+    const [data] = await Promise.all([
+      apiClient.request('/api/dashboard') as Promise<any>,
+      courseClient.getHistory({ courseCode: currentCourseCode.value || undefined, days: 7 }).then(h => { history = h }).catch(() => {}),
+    ])
+    applyData(data, history)
   } catch (error) {
     console.error('Failed to load progress charts:', error)
   }
 }
+
+// Re-apply when the parent pushes fresh aggregate data.
+watch(() => props.dashboard, (d) => { if (d) applyData(d, props.history ?? null) })
 
 watch(() => weeklyStats.value, async (newStats) => {
   if (newStats && newStats.length > 0) {

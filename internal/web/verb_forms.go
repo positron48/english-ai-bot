@@ -467,6 +467,8 @@ func (r *Router) handleVerbTrainingAnswer(w http.ResponseWriter, req *http.Reque
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		return
 	}
+	// Answering a verb card changes the pool/queue → invalidate cached verb-upcoming counts.
+	defer r.BumpUserCache(userID)
 	webVerbSessionsMu.RLock()
 	state := webVerbSessions[userID]
 	webVerbSessionsMu.RUnlock()
@@ -588,29 +590,39 @@ func (r *Router) handleVerbTrainingUpcoming(w http.ResponseWriter, req *http.Req
 		r.writeVerbTrainingDisabled(w)
 		return
 	}
-	// Materialize user_verb_cards from global verb_training_cards + user vocabulary before counting.
-	// Without this, upcoming stays at total_cards=0 until POST /start even when sync/import succeeded.
-	r.ensureVerbFormUserCardsForUser(req.Context(), userID)
-	repo := repository.NewVerbFormsRepository(r.db, r.logger)
-	queue, err := repo.GetVerbQueue(userID, time.Now(), r.config.Training.VerbFormsMaxCards, r.config.Training.VerbFormsMaxNew)
+	courseCode := r.requestedCourseCodeForUser(req, userID)
+	// Cache the whole payload per user+course. On a hit we skip the expensive materialization
+	// write (ensureVerbFormUserCardsForUser) and the queue/count queries entirely; any vocab or
+	// verb-training change bumps the user's cache generation so the next request recomputes.
+	body, err := r.cachedUserBytes(req.Context(), userID, "verbupcoming", courseCode, func() ([]byte, error) {
+		// Materialize user_verb_cards from global verb_training_cards + user vocabulary before
+		// counting. Without this, upcoming stays at total_cards=0 until POST /start even when
+		// sync/import succeeded.
+		r.ensureVerbFormUserCardsForUser(req.Context(), userID)
+		repo := repository.NewVerbFormsRepository(r.db, r.logger)
+		queue, err := repo.GetVerbQueue(userID, time.Now(), r.config.Training.VerbFormsMaxCards, r.config.Training.VerbFormsMaxNew)
+		if err != nil {
+			return nil, err
+		}
+		totalCards, err := repo.CountUserVerbClozeCards(userID)
+		if err != nil {
+			return nil, err
+		}
+		return json.Marshal(map[string]interface{}{
+			"due":             len(queue),
+			"total_cards":     totalCards,
+			"max_per_session": r.config.Training.VerbFormsMaxCards,
+			"enabled":         true,
+			"pool_ready":      totalCards > 0,
+		})
+	})
 	if err != nil {
-		http.Error(w, "Internal server error", http.StatusInternalServerError)
-		return
-	}
-	totalCards, err := repo.CountUserVerbClozeCards(userID)
-	if err != nil {
-		r.logger.Error("count user verb cloze cards", zap.Error(err))
+		r.logger.Error("verb training upcoming", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
 	w.Header().Set("Content-Type", "application/json")
-	_ = json.NewEncoder(w).Encode(map[string]interface{}{
-		"due":             len(queue),
-		"total_cards":     totalCards,
-		"max_per_session": r.config.Training.VerbFormsMaxCards,
-		"enabled":         true,
-		"pool_ready":      totalCards > 0,
-	})
+	_, _ = w.Write(body)
 }
 
 func (r *Router) handleInternalVerbTrainingPending(w http.ResponseWriter, req *http.Request) {

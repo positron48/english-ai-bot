@@ -436,24 +436,29 @@ func (r *Router) handleVocabSummary(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	courseCode := r.requestedCourseCodeForUser(req, userID)
-	summary, err := r.queryVocabSummary(userID, courseCode)
+	body, err := r.cachedUserBytes(req.Context(), userID, "vocabsummary", courseCode, func() ([]byte, error) {
+		summary, err := r.queryVocabSummary(userID, courseCode)
+		if err != nil {
+			return nil, err
+		}
+		return json.Marshal(map[string]interface{}{
+			"total":          summary.Total,
+			"new":            summary.New,
+			"learning":       summary.Learning,
+			"review":         summary.Review,
+			"review_count":   summary.Review,
+			"mastered":       summary.Mastered,
+			"mastered_count": summary.Mastered,
+			"known":          summary.Mastered, // backward compat: "изучено" in Practice dictionary card
+		})
+	})
 	if err != nil {
 		r.logger.Error("failed to get vocab summary", zap.Error(err), zap.Int64("user_id", userID))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
-
 	w.Header().Set("Content-Type", "application/json")
-	_ = json.NewEncoder(w).Encode(map[string]interface{}{
-		"total":          summary.Total,
-		"new":            summary.New,
-		"learning":       summary.Learning,
-		"review":         summary.Review,
-		"review_count":   summary.Review,
-		"mastered":       summary.Mastered,
-		"mastered_count": summary.Mastered,
-		"known":          summary.Mastered, // backward compat: "изучено" in Practice dictionary card
-	})
+	_, _ = w.Write(body)
 }
 
 // @Failure      500  {string}  string  "Внутренняя ошибка сервера"
@@ -549,6 +554,7 @@ func (r *Router) handleVocabDelete(w http.ResponseWriter, req *http.Request) {
 	}
 
 	if req.Method == http.MethodPost && action == "delete" {
+		defer r.BumpUserCache(userID)
 		// Perform deletion by word_card_id
 		rowsAffected, err := userCardRepo.DeleteUserCardsByWordCardIDForUser(userID, wordCardID)
 		if err != nil {
@@ -570,6 +576,7 @@ func (r *Router) handleVocabDelete(w http.ResponseWriter, req *http.Request) {
 	}
 
 	if req.Method == http.MethodPost && action == "mark_known" {
+		defer r.BumpUserCache(userID)
 		// Mark word as known and remove user_cards
 		wordSetService := r.getWordSetService()
 		if err := wordSetService.MarkKnown(userID, wordCardID); err != nil {
@@ -589,6 +596,7 @@ func (r *Router) handleVocabDelete(w http.ResponseWriter, req *http.Request) {
 	}
 
 	if req.Method == http.MethodPost && action == "move_to_training" {
+		defer r.BumpUserCache(userID)
 		// Remove known status and create user_cards
 		userWordKnowledgeRepo := repository.NewUserWordKnowledgeRepository(r.db, r.logger)
 		if err := userWordKnowledgeRepo.RemoveKnown(userID, wordCardID); err != nil {

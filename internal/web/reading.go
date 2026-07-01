@@ -470,6 +470,8 @@ func (r *Router) handleReadingWordLookup(w http.ResponseWriter, req *http.Reques
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			return
 		}
+		// Clicking an unknown word adds it to learning → invalidate cached vocabulary counts.
+		r.BumpUserCache(userID)
 	}
 
 	r.handleVocabWordCardsByID(w, req, userID, wordCardID, canonicalLemma)

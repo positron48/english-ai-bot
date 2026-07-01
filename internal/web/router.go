@@ -110,6 +110,7 @@ type Router struct {
 	bot                               *tgbotapi.BotAPI
 	authMiddleware                    *AuthMiddleware
 	otpRepo                           *repository.WebOTPRepository
+	cache                             cache.Cache
 	courseRepo                        *repository.CourseRepository
 	linglowEventRepo                  *repository.LinglowEventRepository
 	linglowSRSMirrorRepo              *repository.LinglowSRSMirrorRepository
@@ -346,8 +347,10 @@ func (r *Router) SetOTPRepo(otpRepo *repository.WebOTPRepository) {
 }
 
 // SetCourseMapCache wires an optional cache used to avoid recomputing the (course-wide, static)
-// portion of the Linglow course map on every request. c may be nil.
+// portion of the Linglow course map on every request, and to cache per-user count queries
+// (vocab summary, verb pool) behind generation-based invalidation. c may be nil.
 func (r *Router) SetCourseMapCache(c cache.Cache) {
+	r.cache = c
 	if r.courseRepo != nil {
 		r.courseRepo.SetCourseMapCache(c)
 	}
