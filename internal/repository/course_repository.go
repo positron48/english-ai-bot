@@ -858,6 +858,17 @@ func (r *CourseRepository) GetReviewQueueForUserWithSRSRead(ctx context.Context,
 }
 
 func (r *CourseRepository) GetProgressForUser(ctx context.Context, userID int64, defaultCourseCode, explicitCourseCode string) (*CourseProgress, error) {
+	return r.getProgressForUser(ctx, userID, defaultCourseCode, explicitCourseCode, false)
+}
+
+// GetProgressSummaryForUser returns only the course header + summary totals, skipping the
+// by_type/by_district/by_location breakdowns. Callers that render just the summary (e.g. the
+// dashboard city card) avoid three per-course aggregation queries.
+func (r *CourseRepository) GetProgressSummaryForUser(ctx context.Context, userID int64, defaultCourseCode, explicitCourseCode string) (*CourseProgress, error) {
+	return r.getProgressForUser(ctx, userID, defaultCourseCode, explicitCourseCode, true)
+}
+
+func (r *CourseRepository) getProgressForUser(ctx context.Context, userID int64, defaultCourseCode, explicitCourseCode string, summaryOnly bool) (*CourseProgress, error) {
 	if userID == 0 {
 		return nil, fmt.Errorf("user id is empty")
 	}
@@ -906,10 +917,14 @@ func (r *CourseRepository) GetProgressForUser(ctx context.Context, userID int64,
 	progress.Summary.ProgressPercent = percent(progress.Summary.AttemptedItems+progress.Summary.MasteredItems, progress.Summary.TotalItems)
 	progress.Summary.AccuracyPercent = percent(progress.Summary.CorrectCount, progress.Summary.AttemptCount)
 
-	progress.ByType, err = r.listProgressByType(ctx, userCourse.ID, courseMap.Course.ID)
-	if err != nil {
-		return nil, err
+	// ByType is not consumed by any client screen; keep the field as an empty array for response
+	// shape stability but skip its aggregation query.
+	progress.ByType = []CourseProgressType{}
+
+	if summaryOnly {
+		return progress, nil
 	}
+
 	progress.ByDistrict, err = r.listProgressByDistrict(ctx, userCourse.ID, courseMap.Course.ID)
 	if err != nil {
 		return nil, err
@@ -1282,39 +1297,6 @@ func (r *CourseRepository) getSRSShadowMasteryReport(ctx context.Context, userID
 		report.AverageDifference = diffTotal / float64(report.ComparedCount)
 	}
 	return report, nil
-}
-
-func (r *CourseRepository) listProgressByType(ctx context.Context, userCourseID, courseID int64) ([]CourseProgressType, error) {
-	rows, err := r.db.QueryContext(ctx, `
-		SELECT
-			li.item_type,
-			COUNT(DISTINCT li.id) AS total_items,
-			COUNT(DISTINCT ea.learning_item_id) AS attempted_items,
-			COUNT(DISTINCT CASE WHEN si.state = 'mastered' THEN si.learning_item_id END) AS mastered_items
-		FROM learning_items li
-		LEFT JOIN exercise_attempts ea ON ea.learning_item_id = li.id AND ea.user_course_id = ?
-		LEFT JOIN srs_items si ON si.learning_item_id = li.id AND si.user_course_id = ?
-		WHERE li.course_id = ? AND li.status = 'published'
-		GROUP BY li.item_type
-		ORDER BY li.item_type
-	`, userCourseID, userCourseID, courseID)
-	if err != nil {
-		return nil, fmt.Errorf("list progress by type: %w", err)
-	}
-	defer rows.Close()
-	out := []CourseProgressType{}
-	for rows.Next() {
-		var row CourseProgressType
-		if err := rows.Scan(&row.Type, &row.TotalItems, &row.AttemptedItems, &row.MasteredItems); err != nil {
-			return nil, fmt.Errorf("scan progress type: %w", err)
-		}
-		row.ProgressPercent = percent(row.AttemptedItems+row.MasteredItems, row.TotalItems)
-		out = append(out, row)
-	}
-	if err := rows.Err(); err != nil {
-		return nil, fmt.Errorf("iterate progress types: %w", err)
-	}
-	return out, nil
 }
 
 func (r *CourseRepository) listProgressByDistrict(ctx context.Context, userCourseID, courseID int64) ([]CourseProgressDistrict, error) {

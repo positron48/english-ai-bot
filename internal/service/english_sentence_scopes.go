@@ -1,7 +1,6 @@
 package service
 
 import (
-	"sort"
 	"strings"
 
 	"tgbot-skeleton/internal/repository"
@@ -275,10 +274,4 @@ func englishLevelOrder(level string) int {
 	default:
 		return -1
 	}
-}
-
-func sortedEnglishScopesForTest(scopes []string) []string {
-	out := append([]string(nil), scopes...)
-	sort.Strings(out)
-	return out
 }
