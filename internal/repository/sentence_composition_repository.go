@@ -306,6 +306,81 @@ func scanSentenceItem(row rowScanner) (*models.SentenceItem, error) {
 	return &it, nil
 }
 
+// UserSetOverview is a per-user summary of sentence-composition activity for the admin list.
+type UserSetOverview struct {
+	UserID           int64  `json:"user_id"`
+	TelegramID       int64  `json:"telegram_id"`
+	TelegramUsername string `json:"telegram_username"`
+	SubscriptionTier string `json:"subscription_tier"`
+	SetCount         int    `json:"set_count"`
+	LastGenerationOn string `json:"last_generation_on"`
+	TotalStars       int    `json:"total_stars"`
+	TotalPassed      int    `json:"total_passed"`
+	TotalFailed      int    `json:"total_failed"`
+}
+
+// ListUserOverviews returns one row per user that has at least one sentence set, ordered by
+// most recent activity. Used by the admin "results by users" screen.
+func (r *SentenceCompositionRepository) ListUserOverviews() ([]UserSetOverview, error) {
+	rows, err := r.db.Query(`
+		SELECT s.user_id,
+		       COALESCE(u.telegram_id, 0),
+		       COALESCE(u.telegram_username, ''),
+		       COALESCE(u.subscription_tier, 'free'),
+		       COUNT(*) AS set_count,
+		       CAST(MAX(s.generation_date) AS text) AS last_generation_on,
+		       COALESCE(SUM(s.star_count), 0),
+		       COALESCE(SUM(s.passed_count), 0),
+		       COALESCE(SUM(s.failed_count), 0)
+		FROM sentence_sets s
+		LEFT JOIN users u ON u.id = s.user_id
+		GROUP BY s.user_id, u.telegram_id, u.telegram_username, u.subscription_tier
+		ORDER BY last_generation_on DESC, s.user_id DESC`)
+	if err != nil {
+		return nil, fmt.Errorf("list user overviews: %w", err)
+	}
+	defer rows.Close()
+	var out []UserSetOverview
+	for rows.Next() {
+		var o UserSetOverview
+		if err := rows.Scan(&o.UserID, &o.TelegramID, &o.TelegramUsername, &o.SubscriptionTier,
+			&o.SetCount, &o.LastGenerationOn, &o.TotalStars, &o.TotalPassed, &o.TotalFailed); err != nil {
+			return nil, fmt.Errorf("scan user overview: %w", err)
+		}
+		out = append(out, o)
+	}
+	return out, rows.Err()
+}
+
+// ListSetsByUser returns a user's sets across all courses, most recent first (capped by limit).
+func (r *SentenceCompositionRepository) ListSetsByUser(userID int64, limit int) ([]*models.SentenceSet, error) {
+	if limit <= 0 {
+		limit = 50
+	}
+	rows, err := r.db.Query(`
+		SELECT id, user_id, course_code, CAST(generation_date AS text), COALESCE(scopes_json::text, '[]'),
+		       status, started_at, completed_at, star_count, passed_count, failed_count, created_at
+		FROM sentence_sets
+		WHERE user_id = ?
+		ORDER BY generation_date DESC, id DESC
+		LIMIT ?`, userID, limit)
+	if err != nil {
+		return nil, fmt.Errorf("list sets by user: %w", err)
+	}
+	defer rows.Close()
+	var out []*models.SentenceSet
+	for rows.Next() {
+		s, err := scanSentenceSet(rows)
+		if err != nil {
+			return nil, err
+		}
+		if s != nil {
+			out = append(out, s)
+		}
+	}
+	return out, rows.Err()
+}
+
 // ParticipationCount returns the stored participation counter for one word (testing/inspection).
 func (r *SentenceCompositionRepository) ParticipationCount(userID, wordCardID int64, courseCode string) (int, error) {
 	var n int

@@ -118,6 +118,7 @@ type Router struct {
 	speakingSessionRepo               *repository.SpeakingSessionRepository
 	conversationRepo                  *repository.ConversationRepository
 	speakingEvaluator                 *service.SpeakingEvaluatorService
+	sentenceWorker                    *service.SentenceCompositionWorker
 	botToken                          string
 	webTrainingHandler                *WebTrainingHandler
 	rateLimiter                       *RateLimiter
@@ -331,6 +332,12 @@ func (r *Router) pronunciationServiceForLang(targetLang string) pronunciationSer
 // SetSpeakingEvaluator sets the speaking evaluation service.
 func (r *Router) SetSpeakingEvaluator(evaluator *service.SpeakingEvaluatorService) {
 	r.speakingEvaluator = evaluator
+}
+
+// SetSentenceComposition wires the daily sentence-composition worker so the admin can
+// inspect results and force-generate sets on demand. May be nil when the feature is disabled.
+func (r *Router) SetSentenceComposition(worker *service.SentenceCompositionWorker) {
+	r.sentenceWorker = worker
 }
 
 // SetOTPRepo sets the OTP repository
@@ -679,6 +686,10 @@ func (r *Router) setupProtectedRoutes() {
 	r.mux.HandleFunc("/api/admin/conversations/tasks/", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminConversationTaskByID))))
 	r.mux.HandleFunc("/api/admin/conversations/import", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminConversationImport))))
 	r.mux.HandleFunc("/api/admin/conversations/prompt-template", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminConversationPromptTemplate))))
+
+	// Sentence-composition admin routes (require full_access): inspect per-user results and force generation.
+	r.mux.HandleFunc("/api/admin/sentence-composition/users", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminSentenceCompositionUsers))))
+	r.mux.HandleFunc("/api/admin/sentence-composition/users/", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminSentenceCompositionUserDetail))))
 	r.mux.HandleFunc("/api/admin/conversations/npcs/", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminConversationNPCImage))))
 	r.mux.HandleFunc("/api/admin/media/upload", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminMediaUpload))))
 	r.mux.HandleFunc(r.mediaPublicBasePath()+"/", r.handleMediaServe)

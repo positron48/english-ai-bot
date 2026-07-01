@@ -93,6 +93,16 @@
         <Icon name="warning" class="admin-sidebar-icon" />
         <span>Content Reports</span>
       </router-link>
+      <router-link
+        v-if="can('full_access')"
+        to="/sentence-composition"
+        class="admin-sidebar-item"
+        :class="{ active: $route.path === '/sentence-composition' }"
+        @click="isMobile && handleCloseSidebar()"
+      >
+        <Icon name="edit" class="admin-sidebar-icon" />
+        <span>Составление предложений</span>
+      </router-link>
       <router-link 
         v-if="can('word_sets.read')"
         to="/word-sets" 

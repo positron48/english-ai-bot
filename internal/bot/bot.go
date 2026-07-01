@@ -505,6 +505,7 @@ func New(cfg *config.Config, log *zap.Logger) (*Bot, error) {
 	webRouter.SetTTSCircuitBreaker(ttsCbService)
 	speakingEvaluator := service.NewSpeakingEvaluatorService(cfg, log)
 	webRouter.SetSpeakingEvaluator(speakingEvaluator)
+	webRouter.SetSentenceComposition(sentenceWorker)
 
 	b := &Bot{
 		api:                  bot,

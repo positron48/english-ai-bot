@@ -39,6 +39,11 @@ const router = createRouter({
           component: () => import('../views/AdminContentReportsView.vue')
         },
         {
+          path: 'sentence-composition',
+          name: 'AdminSentenceComposition',
+          component: () => import('../views/AdminSentenceCompositionView.vue')
+        },
+        {
           path: 'grammar',
           name: 'AdminGrammar',
           component: () => import('../views/AdminGrammarView.vue')

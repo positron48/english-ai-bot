@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"strings"
 	"time"
 
@@ -143,17 +144,54 @@ func (w *SentenceCompositionWorker) generateForUser(ctx context.Context, user *m
 		}
 	}
 
+	_, err = w.generateSet(ctx, user, courseCode, today)
+	return err
+}
+
+// ForceGenerateForUser generates a fresh set for one user regardless of the daily
+// regeneration guard (admin-triggered). It still requires Pro tier, a resolvable course
+// with both prompts registered, and enough well-learned words. Returns the new set id.
+func (w *SentenceCompositionWorker) ForceGenerateForUser(ctx context.Context, userID int64) (int64, error) {
+	user, err := w.userRepo.GetUserByID(userID)
+	if err != nil {
+		return 0, err
+	}
+	if user == nil {
+		return 0, fmt.Errorf("user %d not found", userID)
+	}
+	if !models.ParseUserTier(string(user.SubscriptionTier)).AtLeast(models.TierPro) {
+		return 0, fmt.Errorf("user %d is not Pro", userID)
+	}
+	courseCode, err := w.courseRepo.ResolveCurrentCourseCode(ctx, user.ID, w.defaultCode)
+	if err != nil || courseCode == "" {
+		return 0, fmt.Errorf("cannot resolve course for user %d", userID)
+	}
+	if !w.aiService.HasSentencePromptsForCourse(courseCode) {
+		return 0, fmt.Errorf("sentence prompts not configured for course %q", courseCode)
+	}
+	loc, err := time.LoadLocation(user.Timezone)
+	if err != nil {
+		loc = time.UTC
+	}
+	today := time.Now().In(loc).Format("2006-01-02")
+	return w.generateSet(ctx, user, courseCode, today)
+}
+
+// generateSet builds and persists one sentence set for the user/course, bumping word-usage
+// counters. It performs no regeneration-guard checks — the caller decides whether to generate.
+// Returns the new set id, or 0 when there are not enough well-learned words yet.
+func (w *SentenceCompositionWorker) generateSet(ctx context.Context, user *models.User, courseCode, today string) (int64, error) {
 	// Select least-used well-learned words.
 	candidates, err := w.repo.SelectCandidateWords(user.ID, courseCode, w.cfg.MasteringThreshold, w.wordsPerSet())
 	if err != nil {
-		return err
+		return 0, err
 	}
 	minWords := w.cfg.MinWords
 	if minWords <= 0 {
 		minWords = 12
 	}
 	if len(candidates) < minWords {
-		return nil // not enough well-learned words yet
+		return 0, nil // not enough well-learned words yet
 	}
 
 	// Resolve grammar tenses the user has unlocked.
@@ -172,7 +210,7 @@ func (w *SentenceCompositionWorker) generateForUser(ctx context.Context, user *m
 		if w.cbService != nil {
 			_ = w.cbService.RecordFailure(err.Error())
 		}
-		return err
+		return 0, err
 	}
 	if w.cbService != nil {
 		_ = w.cbService.RecordSuccess()
@@ -206,15 +244,16 @@ func (w *SentenceCompositionWorker) generateForUser(ctx context.Context, user *m
 		GenerationDate: today,
 		Scopes:         scopes,
 	}
-	if _, err := w.repo.CreateSet(set, items, usedIDs); err != nil {
-		return err
+	setID, err := w.repo.CreateSet(set, items, usedIDs)
+	if err != nil {
+		return 0, err
 	}
 	w.logger.Info("sentence set generated",
 		zap.Int64("user_id", user.ID),
 		zap.String("course", courseCode),
 		zap.String("date", today),
 		zap.Int("sentences", len(items)))
-	return nil
+	return setID, nil
 }
 
 func (w *SentenceCompositionWorker) resolveScopes(user *models.User, courseCode string) []string {
