@@ -19,16 +19,18 @@ import (
 // It honours the regeneration guard: a previous set that was never started (status "ready")
 // blocks generating a new one, so we never spend LLM budget on sets the user ignored.
 type SentenceCompositionWorker struct {
-	aiService   *ai.Service
-	repo        *repository.SentenceCompositionRepository
-	userRepo    *repository.UserRepository
-	courseRepo  *repository.CourseRepository
-	cbService   circuitBreakerForWorker
-	cfg         config.SentenceCompositionConfig
-	learning    config.LearningConfig
-	defaultCode string
-	logger      *zap.Logger
-	stopChan    chan struct{}
+	aiService       *ai.Service
+	repo            *repository.SentenceCompositionRepository
+	userRepo        *repository.UserRepository
+	courseRepo      *repository.CourseRepository
+	cbService       circuitBreakerForWorker
+	cfg             config.SentenceCompositionConfig
+	learning        config.LearningConfig
+	grammarByBundle map[string]*repository.GrammarContentRepository
+	grammarAttempts *repository.GrammarAttemptRepository
+	defaultCode     string
+	logger          *zap.Logger
+	stopChan        chan struct{}
 }
 
 func NewSentenceCompositionWorker(
@@ -39,20 +41,24 @@ func NewSentenceCompositionWorker(
 	cbService circuitBreakerForWorker,
 	cfg config.SentenceCompositionConfig,
 	learning config.LearningConfig,
+	grammarByBundle map[string]*repository.GrammarContentRepository,
+	grammarAttempts *repository.GrammarAttemptRepository,
 	defaultCourseCode string,
 	logger *zap.Logger,
 ) *SentenceCompositionWorker {
 	return &SentenceCompositionWorker{
-		aiService:   aiService,
-		repo:        repo,
-		userRepo:    userRepo,
-		courseRepo:  courseRepo,
-		cbService:   cbService,
-		cfg:         cfg,
-		learning:    learning,
-		defaultCode: defaultCourseCode,
-		logger:      logger,
-		stopChan:    make(chan struct{}),
+		aiService:       aiService,
+		repo:            repo,
+		userRepo:        userRepo,
+		courseRepo:      courseRepo,
+		cbService:       cbService,
+		cfg:             cfg,
+		learning:        learning,
+		grammarByBundle: grammarByBundle,
+		grammarAttempts: grammarAttempts,
+		defaultCode:     defaultCourseCode,
+		logger:          logger,
+		stopChan:        make(chan struct{}),
 	}
 }
 
@@ -196,6 +202,11 @@ func (w *SentenceCompositionWorker) generateSet(ctx context.Context, user *model
 
 	// Resolve grammar tenses the user has unlocked.
 	scopes := w.resolveScopes(user, courseCode)
+	if strings.EqualFold(learningForCourseCode(w.learning, courseCode).TargetLang, "en") && len(scopes) == 0 {
+		w.logger.Info("sentence set skipped: english grammar scopes unavailable",
+			zap.Int64("user_id", user.ID), zap.String("course", courseCode))
+		return 0, nil
+	}
 
 	words := make([]ai.GenSentenceWord, 0, len(candidates))
 	lemmaToID := make(map[string]int64, len(candidates))
@@ -262,7 +273,43 @@ func (w *SentenceCompositionWorker) resolveScopes(user *models.User, courseCode 
 	if strings.TrimSpace(user.SettingsJSON) != "" {
 		_ = json.Unmarshal([]byte(user.SettingsJSON), &settings)
 	}
+	if strings.EqualFold(lc.TargetLang, "en") {
+		return w.resolveEnglishScopes(user.ID, courseCode)
+	}
 	return ResolveVerbScopes(&settings, lc)
+}
+
+func (w *SentenceCompositionWorker) resolveEnglishScopes(userID int64, courseCode string) []string {
+	if w.grammarAttempts == nil {
+		return nil
+	}
+	bundleID := targetLangFromCourseCode(courseCode)
+	if bundleID == "" {
+		bundleID = "en"
+	}
+	contentRepo := w.grammarByBundle[strings.ToLower(bundleID)]
+	if contentRepo == nil {
+		return nil
+	}
+	sections, err := contentRepo.GetSections()
+	if err != nil {
+		w.logger.Warn("sentence english scopes: load sections failed",
+			zap.Int64("user_id", userID), zap.String("course", courseCode), zap.Error(err))
+		return nil
+	}
+	progress, err := w.grammarAttempts.GetAllChapterProgress(userID)
+	if err != nil {
+		w.logger.Warn("sentence english scopes: load chapter progress failed",
+			zap.Int64("user_id", userID), zap.String("course", courseCode), zap.Error(err))
+		return nil
+	}
+	placement, err := w.grammarAttempts.GetPlacementTestResult(userID)
+	if err != nil {
+		w.logger.Warn("sentence english scopes: load placement failed",
+			zap.Int64("user_id", userID), zap.String("course", courseCode), zap.Error(err))
+		return nil
+	}
+	return ResolveEnglishSentenceScopes(sections, placement, progress)
 }
 
 func (w *SentenceCompositionWorker) wordsPerSet() int {
@@ -294,9 +341,20 @@ func learningForCourseCode(fallback config.LearningConfig, courseCode string) co
 	return lc
 }
 
+func targetLangFromCourseCode(courseCode string) string {
+	parts := strings.SplitN(strings.ToLower(strings.TrimSpace(courseCode)), "_", 2)
+	if len(parts) != 2 {
+		return ""
+	}
+	return strings.TrimSpace(parts[0])
+}
+
 // humanizeScopes turns verb scope ids like "es.presente.indicativo" into readable
 // "presente (indicativo)" hints for the generation prompt.
 func humanizeScopes(scopes []string) []string {
+	if len(scopes) > 0 && strings.HasPrefix(strings.ToLower(strings.TrimSpace(scopes[0])), "en.") {
+		return EnglishSentenceScopeLabels(scopes)
+	}
 	out := make([]string, 0, len(scopes))
 	for _, s := range scopes {
 		parts := strings.Split(s, ".")

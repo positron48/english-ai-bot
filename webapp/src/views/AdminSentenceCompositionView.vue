@@ -9,12 +9,17 @@
           <button :disabled="loadingUsers" @click="loadUsers">
             {{ loadingUsers ? 'Загрузка…' : 'Обновить' }}
           </button>
+          <select v-model="courseFilter" class="course-filter">
+            <option value="">Все курсы</option>
+            <option v-for="course in courseOptions" :key="course" :value="course">{{ course }}</option>
+          </select>
           <span v-if="!enabled" class="warn">Режим выключен (SENTENCE_COMPOSITION_ENABLED=false) — генерация недоступна.</span>
         </div>
-        <table v-if="users.length" class="grid">
+        <table v-if="filteredUsers.length" class="grid">
           <thead>
             <tr>
               <th>Пользователь</th>
+              <th>Курс</th>
               <th>Тариф</th>
               <th>Наборов</th>
               <th>Последний</th>
@@ -23,11 +28,12 @@
             </tr>
           </thead>
           <tbody>
-            <tr v-for="u in users" :key="u.user_id">
+            <tr v-for="u in filteredUsers" :key="`${u.user_id}:${u.course_code}`">
               <td>
                 <span class="mono">#{{ u.user_id }}</span>
                 <span v-if="u.telegram_username"> @{{ u.telegram_username }}</span>
               </td>
+              <td class="mono">{{ u.course_code }}</td>
               <td>{{ u.subscription_tier }}</td>
               <td>{{ u.set_count }}</td>
               <td>{{ u.last_generation_on }}</td>
@@ -78,7 +84,7 @@
             <tr>
               <th>#</th>
               <th>Русский</th>
-              <th>Эталон (ES)</th>
+              <th>Эталон ({{ targetLabel(set.course_code) }})</th>
               <th>Ответ пользователя</th>
               <th>Итог</th>
               <th>Объяснение</th>
@@ -106,11 +112,12 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { computed, onMounted, ref } from 'vue'
 import { apiClient } from '../api/client'
 
 interface UserOverview {
   user_id: number
+  course_code: string
   telegram_id: number
   telegram_username: string
   subscription_tier: string
@@ -149,6 +156,14 @@ interface SetRow {
 const enabled = ref(true)
 const users = ref<UserOverview[]>([])
 const loadingUsers = ref(false)
+const courseFilter = ref('')
+const courseOptions = computed(() => {
+  return Array.from(new Set(users.value.map(u => u.course_code).filter(Boolean))).sort()
+})
+const filteredUsers = computed(() => {
+  if (!courseFilter.value) return users.value
+  return users.value.filter(u => u.course_code === courseFilter.value)
+})
 
 const selectedUser = ref<UserOverview | null>(null)
 const sets = ref<SetRow[]>([])
@@ -225,6 +240,11 @@ function outcomeClass(it: Item) {
   return ''
 }
 
+function targetLabel(courseCode: string) {
+  const target = (courseCode || '').split('_')[0]
+  return target ? target.toUpperCase() : 'target'
+}
+
 onMounted(loadUsers)
 </script>
 
@@ -249,6 +269,13 @@ button {
 }
 button.primary { background: var(--accent-color, #3b82f6); color: #fff; border-color: transparent; }
 button:disabled { opacity: 0.6; cursor: default; }
+.course-filter {
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-primary);
+  color: var(--text-primary);
+}
 .grid { width: 100%; border-collapse: collapse; margin-top: 12px; }
 .grid th, .grid td {
   text-align: left;

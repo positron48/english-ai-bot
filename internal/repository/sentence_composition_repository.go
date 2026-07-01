@@ -309,6 +309,7 @@ func scanSentenceItem(row rowScanner) (*models.SentenceItem, error) {
 // UserSetOverview is a per-user summary of sentence-composition activity for the admin list.
 type UserSetOverview struct {
 	UserID           int64  `json:"user_id"`
+	CourseCode       string `json:"course_code"`
 	TelegramID       int64  `json:"telegram_id"`
 	TelegramUsername string `json:"telegram_username"`
 	SubscriptionTier string `json:"subscription_tier"`
@@ -319,11 +320,12 @@ type UserSetOverview struct {
 	TotalFailed      int    `json:"total_failed"`
 }
 
-// ListUserOverviews returns one row per user that has at least one sentence set, ordered by
-// most recent activity. Used by the admin "results by users" screen.
+// ListUserOverviews returns one row per user/course that has at least one sentence set,
+// ordered by most recent activity. Used by the admin "results by users" screen.
 func (r *SentenceCompositionRepository) ListUserOverviews() ([]UserSetOverview, error) {
 	rows, err := r.db.Query(`
 		SELECT s.user_id,
+		       s.course_code,
 		       COALESCE(u.telegram_id, 0),
 		       COALESCE(u.telegram_username, ''),
 		       COALESCE(u.subscription_tier, 'free'),
@@ -335,7 +337,7 @@ func (r *SentenceCompositionRepository) ListUserOverviews() ([]UserSetOverview, 
 		       COALESCE(SUM(s.failed_count), 0)
 		FROM sentence_sets s
 		LEFT JOIN users u ON u.id = s.user_id
-		GROUP BY s.user_id, u.telegram_id, u.telegram_username, u.subscription_tier
+		GROUP BY s.user_id, s.course_code, u.telegram_id, u.telegram_username, u.subscription_tier
 		ORDER BY last_created_at DESC, s.user_id DESC`)
 	if err != nil {
 		return nil, fmt.Errorf("list user overviews: %w", err)
@@ -345,7 +347,7 @@ func (r *SentenceCompositionRepository) ListUserOverviews() ([]UserSetOverview, 
 	for rows.Next() {
 		var o UserSetOverview
 		var lastCreatedAt sql.NullTime
-		if err := rows.Scan(&o.UserID, &o.TelegramID, &o.TelegramUsername, &o.SubscriptionTier,
+		if err := rows.Scan(&o.UserID, &o.CourseCode, &o.TelegramID, &o.TelegramUsername, &o.SubscriptionTier,
 			&o.SetCount, &o.LastGenerationOn, &lastCreatedAt, &o.TotalStars, &o.TotalPassed, &o.TotalFailed); err != nil {
 			return nil, fmt.Errorf("scan user overview: %w", err)
 		}

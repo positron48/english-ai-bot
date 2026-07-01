@@ -395,22 +395,9 @@ func New(cfg *config.Config, log *zap.Logger) (*Bot, error) {
 	)
 	notificationService.SetSiteURL(cfg.WebApp.PublicURL)
 
-	// Create daily sentence-composition worker (Pro feature; off unless explicitly enabled).
+	// Create daily sentence-composition worker after grammar repositories are wired below:
+	// English sentence generation derives allowed tenses from grammar progress.
 	var sentenceWorker *service.SentenceCompositionWorker
-	if cfg.SentenceComposition.Enabled {
-		sentenceRepo := repository.NewSentenceCompositionRepository(conn, log)
-		sentenceWorker = service.NewSentenceCompositionWorker(
-			aiService,
-			sentenceRepo,
-			userRepo,
-			courseRepo,
-			cbService,
-			cfg.SentenceComposition,
-			cfg.Learning,
-			defaultCourseCode,
-			log,
-		)
-	}
 
 	// Create web repositories
 	otpRepo := repository.NewWebOTPRepository(conn, log)
@@ -454,6 +441,9 @@ func New(cfg *config.Config, log *zap.Logger) (*Bot, error) {
 	grammarServicesByBundle := map[string]*service.GrammarService{
 		cfg.Learning.GrammarBundleID: grammarService, // primary bundle from config
 	}
+	grammarContentByBundle := map[string]*repository.GrammarContentRepository{
+		strings.ToLower(cfg.Learning.GrammarBundleID): grammarContentRepo,
+	}
 	allBundleIDs := availableGrammarBundleIDs(cfg.Learning.ContentSource, conn)
 	for _, bundleID := range allBundleIDs {
 		if bundleID == cfg.Learning.GrammarBundleID {
@@ -482,6 +472,25 @@ func New(cfg *config.Config, log *zap.Logger) (*Bot, error) {
 		altSvc.SetTrainingPackRepository(altPackRepo)
 		altSvc.SetSRSRepository(grammarSRSRepo)
 		grammarServicesByBundle[bundleID] = altSvc
+		grammarContentByBundle[strings.ToLower(bundleID)] = altContentRepo
+	}
+
+	// Create daily sentence-composition worker (Pro feature; off unless explicitly enabled).
+	if cfg.SentenceComposition.Enabled {
+		sentenceRepo := repository.NewSentenceCompositionRepository(conn, log)
+		sentenceWorker = service.NewSentenceCompositionWorker(
+			aiService,
+			sentenceRepo,
+			userRepo,
+			courseRepo,
+			cbService,
+			cfg.SentenceComposition,
+			cfg.Learning,
+			grammarContentByBundle,
+			grammarAttemptRepo,
+			defaultCourseCode,
+			log,
+		)
 	}
 
 	// Create web router
