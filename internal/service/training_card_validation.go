@@ -8,8 +8,13 @@ import (
 	"tgbot-skeleton/internal/models"
 )
 
-// englishTargetUsesToInfinitive is true when the learned (target) language is English — verb
+// EnglishTargetUsesToInfinitive is true when the learned (target) language is English — verb
 // distractors are expected as "to …". For Spanish, French, etc. this rule does not apply.
+func EnglishTargetUsesToInfinitive(targetLang string) bool {
+	return englishTargetUsesToInfinitive(targetLang)
+}
+
+// englishTargetUsesToInfinitive is the internal helper used by validation and normalization.
 func englishTargetUsesToInfinitive(targetLang string) bool {
 	return strings.EqualFold(strings.TrimSpace(targetLang), "en")
 }

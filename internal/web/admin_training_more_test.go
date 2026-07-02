@@ -95,6 +95,31 @@ func TestHandleAdminTraining_Generate_FormData(t *testing.T) {
 	}
 }
 
+func TestHandleAdminTraining_Generate_SpanishVerb_NoToPrefixWithEnglishConfig(t *testing.T) {
+	router, db, adminUserID := setupAdminTrainingTest(t)
+	router.config.Learning.TargetLang = "en"
+	router.config.Learning.NativeLang = "ru"
+
+	wordRepo := repository.NewWordRepository(db.GetConnection(), zap.NewNop())
+	if err := wordRepo.SaveWordCard("factchequear", "verificar", "es_ru"); err != nil {
+		t.Fatalf("create word card: %v", err)
+	}
+
+	response := `{"word_en":"factchequear","transcription":"faktʃekeˈaɾ","senses":[{"pos":"verb","display_word":"factchequear","word_ru":"проверять факты","meaning_en":"verificar informacion","example_en":"Hay que factchequear la noticia.","example_ru":"Нужно проверить факты в новости.","distractors_ru":["подтверждать","отрицать","сомневаться"],"distractors_en":["confirmar","negar","dudar"],"hint":"verificar"}]}`
+	router.aiService = setupAdminAIService(t, response)
+
+	req := httptest.NewRequest(http.MethodPost, "/api/admin/training/factchequear/generate", bytes.NewBufferString(`{"constraints":"verb"}`))
+	req.Header.Set("Content-Type", "application/json")
+	req = setAdminTrainingUserContext(req, adminUserID)
+	w := httptest.NewRecorder()
+
+	router.handleAdminTraining(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Fatalf("expected 200 for Spanish verb without 'to ' distractors, got %d: %s", w.Code, w.Body.String())
+	}
+}
+
 func TestHandleAdminTraining_Generate_ValidationFailsMeaningTarget(t *testing.T) {
 	router, _, adminUserID := setupAdminTrainingTest(t)
 	response := `{"word_en":"casa","transcription":"kasa","senses":[{"pos":"noun","display_word":"casa","word_ru":"дом","meaning_en":"дом","example_en":"La casa es grande.","example_ru":"Дом большой.","distractors_ru":["квартира","жилище","здание"],"distractors_en":["hogar","edificio","vivienda"],"hint":"home"}]}`

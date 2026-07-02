@@ -443,18 +443,26 @@ func (r *Router) handleAdminTraining(w http.ResponseWriter, req *http.Request) {
 		if lemma == "" {
 			lemma = strings.TrimSpace(wordEN)
 		}
-		validationWordCard := &models.WordCard{Word: lemma}
-		validationError := service.ValidateTrainingCardResponse(r.config.Learning.TargetLang, validationWordCard, &trainingResp)
+		targetLang := service.TargetLangForCourse(courseCode, r.config.Learning.TargetLang)
+		validationWordCard := &models.WordCard{Word: lemma, CourseCode: courseCode}
+		validationError := service.ValidateTrainingCardResponse(targetLang, validationWordCard, &trainingResp)
 		if validationError != "" {
 			http.Error(w, "LLM validation failed: "+validationError, http.StatusBadRequest)
 			return
 		}
 
 		sense := trainingResp.Senses[0]
+		pos := sense.POS
+		distractorsTarget := service.NormalizeTargetVerbDisplays(targetLang, pos, sense.DistractorsEN)
+		displayWord := sense.DisplayWord
+		if displayWord == "" {
+			displayWord = trainingResp.WordEN
+		}
+		displayWord = service.NormalizeTargetVerbDisplay(targetLang, pos, displayWord)
 
 		// Convert distractors to JSON strings
 		distractorsRUJSON, _ := json.Marshal(sense.DistractorsRU)
-		distractorsENJSON, _ := json.Marshal(sense.DistractorsEN)
+		distractorsENJSON, _ := json.Marshal(distractorsTarget)
 
 		// Return generated card data (not saved to DB yet)
 		w.Header().Set("Content-Type", "application/json")
@@ -465,8 +473,8 @@ func (r *Router) handleAdminTraining(w http.ResponseWriter, req *http.Request) {
 				"word_en":        trainingResp.WordEN,
 				"word_target":    trainingResp.WordTarget,
 				"transcription":  trainingResp.Transcription,
-				"pos":            sense.POS,
-				"display_word":   sense.DisplayWord,
+				"pos":            pos,
+				"display_word":   displayWord,
 				"word_ru":        sense.WordRU,
 				"word_native":    sense.WordNative,
 				"meaning_en":     sense.MeaningEN,
@@ -1343,7 +1351,9 @@ func (r *Router) handleAdminWord(w http.ResponseWriter, req *http.Request) {
 			http.Error(w, "LLM returned empty transcription; please retry AI fill", http.StatusBadRequest)
 			return
 		}
-		if !validAdminDefinitionNative(wordInfo.DefinitionRU, r.config.Learning.NativeLang, r.config.Learning.TargetLang) {
+		cardTargetLang := service.TargetLangForCourse(existingCard.CourseCode, r.config.Learning.TargetLang)
+		cardNativeLang := service.NativeLangForCourse(existingCard.CourseCode, r.config.Learning.NativeLang)
+		if !validAdminDefinitionNative(wordInfo.DefinitionRU, cardNativeLang, cardTargetLang) {
 			http.Error(w, "LLM returned definition_native in unexpected language; please retry AI fill", http.StatusBadRequest)
 			return
 		}
@@ -1369,7 +1379,7 @@ func (r *Router) handleAdminWord(w http.ResponseWriter, req *http.Request) {
 		// Determine display_en (English verbs use "to ...", other targets keep bare infinitive)
 		displayEN := wordInfo.Lemma
 		if models.IsVerbPOS(wordInfo.POS) && wordInfo.VerbForms != nil && wordInfo.VerbForms.V1 != "" {
-			if strings.EqualFold(r.config.Learning.TargetLang, "en") {
+			if service.EnglishTargetUsesToInfinitive(cardTargetLang) {
 				displayEN = "to " + wordInfo.VerbForms.V1
 			} else {
 				displayEN = wordInfo.VerbForms.V1

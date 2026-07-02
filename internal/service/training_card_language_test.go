@@ -31,3 +31,32 @@ func TestNormalizeTargetVerbDisplay(t *testing.T) {
 		}
 	})
 }
+
+func TestTargetLangForCourse(t *testing.T) {
+	tests := []struct {
+		course   string
+		fallback string
+		want     string
+	}{
+		{course: "es_ru", fallback: "en", want: "es"},
+		{course: "en_ru", fallback: "es", want: "en"},
+		{course: "", fallback: "en", want: "en"},
+		{course: "garbage", fallback: "en", want: "en"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.course, func(t *testing.T) {
+			if got := TargetLangForCourse(tt.course, tt.fallback); got != tt.want {
+				t.Fatalf("TargetLangForCourse(%q, %q) = %q, want %q", tt.course, tt.fallback, got, tt.want)
+			}
+		})
+	}
+}
+
+func TestNativeLangForCourse(t *testing.T) {
+	if got := NativeLangForCourse("es_ru", "en"); got != "ru" {
+		t.Fatalf("got %q, want ru", got)
+	}
+	if got := NativeLangForCourse("", "en"); got != "en" {
+		t.Fatalf("got %q, want en", got)
+	}
+}

@@ -239,6 +239,29 @@ func TestValidateTrainingCardResponse_R3_VerbWithoutToPrefix(t *testing.T) {
 	}
 }
 
+func TestValidateTrainingCardResponse_SpanishVerb_NoToPrefixRequired(t *testing.T) {
+	wordCard := &models.WordCard{
+		Word: "factchequear",
+	}
+	resp := &models.TrainingCardResponse{
+		WordEN: "factchequear",
+		Senses: []models.TrainingCardSense{
+			{
+				POS:           "verb",
+				WordRU:        "проверять факты",
+				MeaningEN:     "verificar informacion",
+				DistractorsEN: []string{"confirmar", "negar", "dudar"},
+				DistractorsRU: []string{"подтверждать", "отрицать", "сомневаться"},
+			},
+		},
+	}
+
+	errorMsg := ValidateTrainingCardResponse("es", wordCard, resp)
+	if errorMsg != "" {
+		t.Errorf("Expected no validation error for Spanish verb distractors without 'to ', got: %s", errorMsg)
+	}
+}
+
 func TestValidateTrainingCardResponse_R4_NonVerbWithToPrefix(t *testing.T) {
 	wordCard := &models.WordCard{
 		Word: "test",
