@@ -506,7 +506,8 @@ func TestGapCoverageHandleCoverBatch(t *testing.T) {
 	}
 	var out map[string]interface{}
 	decodeJSONBody(t, rec, &out)
-	if out["started"] != true || int(out["total"].(float64)) != 1 {
+	// total counts operations, not texts: one text without a saved prompt = prompt + image = 2 ops.
+	if out["started"] != true || int(out["total"].(float64)) != 2 {
 		t.Fatalf("batch response=%v", out)
 	}
 

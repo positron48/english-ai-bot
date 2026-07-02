@@ -2,6 +2,7 @@ const API = '';
 
 let courses = [];
 let currentDraftId = null;
+let activeBatchJob = null;
 
 async function api(path, opts = {}) {
   const res = await fetch(API + path, {
@@ -22,6 +23,31 @@ function toast(msg) {
   el.textContent = msg;
   el.classList.remove('hidden');
   setTimeout(() => el.classList.add('hidden'), 4000);
+}
+
+function updateBatchButton(state = {}) {
+  const btn = document.getElementById('open-batch-modal');
+  if (!btn) return;
+  if (!activeBatchJob) {
+    btn.textContent = 'Batch covers';
+    btn.classList.remove('primary');
+    btn.title = '';
+    return;
+  }
+  const pct = Number.isFinite(state.percent) ? state.percent : activeBatchJob.lastPercent || 0;
+  const running = state.running !== undefined ? !!state.running : activeBatchJob.running;
+  const done = state.done !== undefined ? !!state.done : activeBatchJob.done;
+  activeBatchJob.lastPercent = pct;
+  activeBatchJob.running = running;
+  activeBatchJob.done = done;
+  if (done) {
+    btn.textContent = state.error ? 'Batch: ошибки' : 'Batch: готово';
+    btn.title = state.error || 'Открыть результат batch';
+  } else {
+    btn.textContent = `Batch ${pct}%`;
+    btn.title = activeBatchJob.lastStatus || 'Открыть прогресс batch';
+  }
+  btn.classList.add('primary');
 }
 
 function fillCourseSelects() {
@@ -433,6 +459,7 @@ function openCoverProgressDialog(opts) {
   const percentEl = document.getElementById('cover-progress-percent');
   const stagesEl = document.getElementById('cover-progress-stages');
   const closeBtn = document.getElementById('cover-progress-close');
+  dlg.classList.toggle('cover-progress-dialog--batch', batchMode);
 
   if (batchMode) {
     titleEl.textContent = 'Batch: генерация обложек';
@@ -469,9 +496,22 @@ function openCoverProgressDialog(opts) {
     stages: defaultStages,
     running: true,
   });
-  closeBtn.disabled = true;
-  closeBtn.onclick = () => dlg.close();
-  dlg.showModal();
+  closeBtn.disabled = !batchMode;
+  closeBtn.textContent = batchMode ? 'Свернуть' : 'Закрыть';
+  closeBtn.onclick = () => {
+    dlg.close();
+    if (batchMode && activeBatchJob?.batchId === batchId && activeBatchJob.done) {
+      activeBatchJob = null;
+      updateBatchButton();
+    }
+  };
+  if (!dlg.open) {
+    if (batchMode) {
+      dlg.show();
+    } else {
+      dlg.showModal();
+    }
+  }
   return ui;
 }
 
@@ -495,6 +535,7 @@ function renderCoverBatchProgress(ui, b) {
   const total = b.total || 0;
   const cur = b.current || 0;
   const phaseLabel = batchPhaseLabel(b.phase);
+  const eta = formatBatchETA(b);
   let batchStatus = '';
   if (b.done) {
     if (b.error) {
@@ -506,16 +547,20 @@ function renderCoverBatchProgress(ui, b) {
     batchStatus = phaseLabel;
   } else if (b.current_text_id) {
     const title = (b.current_text_title || '').trim();
-    batchStatus = `${phaseLabel}: текст ${cur} из ${total} — ${b.current_text_id}${title ? ` — ${title}` : ''}`;
+    batchStatus = `${phaseLabel}: ${cur} из ${total} — ${b.current_text_id}${title ? ` — ${title}` : ''}${eta}`;
   } else if (phaseLabel) {
-    batchStatus = phaseLabel;
+    batchStatus = `${phaseLabel}${eta}`;
   } else {
-    batchStatus = total > 0 ? `Текст ${cur} из ${total}` : 'Запуск batch…';
+    batchStatus = total > 0 ? `${cur} из ${total}${eta}` : 'Запуск batch…';
   }
   if (batchStatus && batchStatus !== ui.lastBatchStatus) {
     ui.lastBatchStatus = batchStatus;
     ui.batchStatusEl.textContent = batchStatus;
+    if (activeBatchJob?.batchId === ui.batchId) {
+      activeBatchJob.lastStatus = batchStatus;
+    }
   }
+  if (activeBatchJob?.batchId === ui.batchId) updateBatchButton(b);
   if (b.log !== undefined) syncCoverProgressLog(ui, b.log);
   if (b.current_text_id && b.current_text_id !== ui.lastCurrentTextId) {
     ui.lastCurrentTextId = b.current_text_id;
@@ -530,6 +575,24 @@ function renderCoverBatchProgress(ui, b) {
     curP.running = true;
   }
   renderCoverProgress(ui, curP);
+}
+
+function formatBatchETA(b) {
+  const remaining = Number(b?.remaining) || 0;
+  const eta = Number(b?.eta_seconds) || 0;
+  if (remaining <= 0 || b?.done) return '';
+  if (eta <= 0) return ` · осталось ${remaining} · ETA считаю…`;
+  return ` · осталось ${remaining} · ETA ${formatDuration(eta)}`;
+}
+
+function formatDuration(seconds) {
+  seconds = Math.max(0, Math.round(Number(seconds) || 0));
+  const h = Math.floor(seconds / 3600);
+  const m = Math.floor((seconds % 3600) / 60);
+  const s = seconds % 60;
+  if (h > 0) return `${h}ч ${String(m).padStart(2, '0')}м`;
+  if (m > 0) return `${m}м ${String(s).padStart(2, '0')}с`;
+  return `${s}с`;
 }
 
 function finishCoverBatchProgressDialog(ui, b, isError, errMsg) {
@@ -549,6 +612,10 @@ function finishCoverBatchProgressDialog(ui, b, isError, errMsg) {
     ui.barEl.style.width = '100%';
     ui.percentEl.textContent = '100%';
   }
+  if (ui.batchMode) {
+    ui.closeBtn.disabled = false;
+    ui.closeBtn.textContent = 'Закрыть';
+  }
 }
 
 function startCoverBatchProgressPoll(batchId, ui, onDone) {
@@ -566,6 +633,15 @@ function startCoverBatchProgressPoll(batchId, ui, onDone) {
       /* ignore poll errors */
     }
   }, 1000);
+}
+
+function showActiveBatchProgress() {
+  if (!activeBatchJob?.ui) {
+    openDialog('batch-dialog');
+    return;
+  }
+  const dlg = activeBatchJob.ui.dlg;
+  if (dlg && !dlg.open) dlg.show();
 }
 
 function classifyCoverLogLine(line) {
@@ -760,27 +836,44 @@ function coverImageUrl(kind, textId, courseCode, relPath) {
   return `/api/images/${encodeURIComponent(textId)}/${encodeURIComponent(file)}`;
 }
 
+function coverModalSequence(kind, textId) {
+  const wrap = tableWrapEl(kind === 'draft' ? 'draft' : 'pub');
+  const rows = Array.from(wrap?.querySelectorAll('tbody tr') || []);
+  const items = rows.map(row => ({
+    kind,
+    textId: row.dataset.id || '',
+    courseCode: row.dataset.course || '',
+  })).filter(x => x.textId);
+  const index = items.findIndex(x => x.textId === textId);
+  return { items, index };
+}
+
 function openCoverModal(kind, textId, courseCode, prefetched) {
   const dlg = document.getElementById('cover-dialog');
   const titleEl = document.getElementById('cover-dialog-title');
   const bodyEl = document.getElementById('cover-dialog-body');
-  titleEl.textContent = textId;
-  dlg.showModal();
+  if (!dlg.open) dlg.showModal();
 
   const render = (item, doc) => {
-    const thumb = item.cover_thumb_rel_path || '';
+    const seq = coverModalSequence(kind, textId);
+    const prev = seq.index > 0 ? seq.items[seq.index - 1] : null;
+    const next = seq.index >= 0 && seq.index < seq.items.length - 1 ? seq.items[seq.index + 1] : null;
+    titleEl.textContent = textId;
     const hero = item.cover_hero_rel_path || '';
-    const thumbUrl = coverImageUrl(kind === 'draft' ? 'draft' : 'course', textId, courseCode, thumb);
     const heroUrl = coverImageUrl(kind === 'draft' ? 'draft' : 'course', textId, courseCode, hero);
     const ts = Date.now();
     const promptVal = item.cover_image_prompt || '';
     const ruText = readingTextRu(doc);
     bodyEl.innerHTML = `
+      <div class="cover-modal-nav">
+        <button type="button" class="btn" id="cover-modal-prev" ${prev ? '' : 'disabled'}>←</button>
+        <span class="meta">${seq.index >= 0 ? `${seq.index + 1} / ${seq.items.length}` : ''}</span>
+        <button type="button" class="btn" id="cover-modal-next" ${next ? '' : 'disabled'}>→</button>
+      </div>
       <div class="cover-modal-status">Статус: ${escapeHtml(item.cover_status || 'none')}</div>
       <div class="cover-modal-images">
-        ${thumbUrl ? `<figure><figcaption>Thumb</figcaption><img src="${thumbUrl}?t=${ts}" alt="thumb" /></figure>` : ''}
         ${heroUrl ? `<figure><figcaption>Hero</figcaption><img class="hero" src="${heroUrl}?t=${ts}" alt="hero" /></figure>` : ''}
-        ${!thumbUrl && !heroUrl && promptVal ? '<p class="meta cover-modal-no-image">Картинки ещё нет — промпт сохранён, можно сгенерировать через ComfyUI.</p>' : ''}
+        ${!heroUrl && promptVal ? '<p class="meta cover-modal-no-image">Картинки ещё нет — промпт сохранён, можно сгенерировать через ComfyUI.</p>' : ''}
       </div>
       ${ruText ? `<div class="cover-modal-ru">${escapeHtml(ruText)}</div>` : ''}
       <label class="cover-modal-prompt-label" for="cover-modal-prompt">Промпт для картинки</label>
@@ -791,6 +884,21 @@ function openCoverModal(kind, textId, courseCode, prefetched) {
         ${(item.cover_status === 'ready') ? '<button type="button" class="btn danger" id="cover-modal-del">Удалить обложку</button>' : ''}
       </div>
     `;
+    const openNeighbor = (target) => {
+      if (!target) return;
+      openCoverModal(target.kind, target.textId, target.courseCode);
+    };
+    document.getElementById('cover-modal-prev').onclick = () => openNeighbor(prev);
+    document.getElementById('cover-modal-next').onclick = () => openNeighbor(next);
+    dlg.onkeydown = (e) => {
+      if (e.key === 'ArrowLeft' && prev) {
+        e.preventDefault();
+        openNeighbor(prev);
+      } else if (e.key === 'ArrowRight' && next) {
+        e.preventDefault();
+        openNeighbor(next);
+      }
+    };
     document.getElementById('cover-modal-comfy').onclick = async () => {
       const prompt = document.getElementById('cover-modal-prompt').value;
       const data = await generateCoverFromPrompt(kind === 'draft' ? 'draft' : 'pub', textId, courseCode, prompt);
@@ -805,8 +913,14 @@ function openCoverModal(kind, textId, courseCode, prefetched) {
     const delBtn = document.getElementById('cover-modal-del');
     if (delBtn) {
       delBtn.onclick = async () => {
-        dlg.close();
+        const target = next || prev;
         await deleteCover(kind === 'draft' ? 'draft' : 'pub', textId, courseCode);
+        if (target) {
+          openCoverModal(target.kind, target.textId, target.courseCode);
+          return;
+        }
+        const loaded = await loadCoverModalData(kind, textId, courseCode);
+        render(loaded.item, loaded.doc);
       };
     }
   };
@@ -1315,6 +1429,10 @@ document.getElementById('btn-cover').addEventListener('click', async () => {
 });
 document.getElementById('cover-batch-form').addEventListener('submit', async (e) => {
   e.preventDefault();
+  if (activeBatchJob?.running) {
+    showActiveBatchProgress();
+    return;
+  }
   const courseCode = document.getElementById('cover-batch-course').value;
   try {
     const data = await api('/api/covers/batch', {
@@ -1323,6 +1441,7 @@ document.getElementById('cover-batch-form').addEventListener('submit', async (e)
         course_code: courseCode,
         level: document.getElementById('cover-batch-level').value,
         force: document.getElementById('cover-batch-force').checked,
+        skip_prompts: document.getElementById('cover-batch-skip-prompts').checked,
       }),
     });
     document.getElementById('batch-dialog').close();
@@ -1334,14 +1453,30 @@ document.getElementById('cover-batch-form').addEventListener('submit', async (e)
     });
     let poll = null;
     let finished = false;
+    activeBatchJob = {
+      batchId: data.batch_id,
+      ui,
+      poll: null,
+      running: true,
+      done: false,
+      lastPercent: 0,
+      lastStatus: '',
+    };
+    updateBatchButton({ percent: 0, running: true, done: false });
     const finish = async (b) => {
       if (finished) return;
       finished = true;
       if (poll) clearInterval(poll);
       poll = null;
+      if (activeBatchJob?.batchId === data.batch_id) {
+        activeBatchJob.poll = null;
+        activeBatchJob.running = false;
+        activeBatchJob.done = true;
+      }
       const failed = Number(b?.failed) || 0;
       finishCoverBatchProgressDialog(ui, b, failed > 0 || !!b?.error, b?.error);
       ui.closeBtn.disabled = false;
+      updateBatchButton({ ...b, running: false, done: true });
       toast(failed > 0
         ? `Batch: ${b.completed || 0} ok, ${b.failed} fail`
         : `Batch done: ${b.completed || 0} ok, ${b.skipped || 0} skip`);
@@ -1349,6 +1484,7 @@ document.getElementById('cover-batch-form').addEventListener('submit', async (e)
       await reloadListPreservingScroll('pub', batchScrollState);
     };
     poll = startCoverBatchProgressPoll(data.batch_id, ui, finish);
+    activeBatchJob.poll = poll;
   } catch (err) {
     toast(err.message);
   }
@@ -1414,7 +1550,13 @@ function openDialog(id) {
 
 document.getElementById('open-generate-modal').addEventListener('click', () => openDialog('generate-dialog'));
 document.getElementById('open-import-modal').addEventListener('click', () => openDialog('import-dialog'));
-document.getElementById('open-batch-modal').addEventListener('click', () => openDialog('batch-dialog'));
+document.getElementById('open-batch-modal').addEventListener('click', () => {
+  if (activeBatchJob) {
+    showActiveBatchProgress();
+    return;
+  }
+  openDialog('batch-dialog');
+});
 
 document.querySelectorAll('[data-close]').forEach(btn => {
   btn.addEventListener('click', () => {

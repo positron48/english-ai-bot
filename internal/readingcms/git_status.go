@@ -12,7 +12,7 @@ func (s *Service) gitStatusesForCourseTexts(course Course, idx *readingIndex) ma
 		return nil
 	}
 	args := []string{
-		"-C", s.paths.RepoRoot,
+		"-C", course.GrammarDir,
 		"status",
 		"--porcelain=v1",
 		"-z",
@@ -20,16 +20,32 @@ func (s *Service) gitStatusesForCourseTexts(course Course, idx *readingIndex) ma
 		"--",
 	}
 	textIDByRelPath := make(map[string]string, len(idx.Texts))
+	textIDByAssetDir := make(map[string]string, len(idx.Texts))
 	for textID, rel := range idx.Texts {
-		repoRel := courseTextRepoRelPath(course, rel)
+		repoRel := courseTextGitRelPath(rel)
 		if repoRel == "" {
 			continue
 		}
 		repoRel = filepath.ToSlash(repoRel)
 		args = append(args, repoRel)
 		textIDByRelPath[repoRel] = textID
+		if course.CourseDir != "" {
+			textIDByRelPath[filepath.ToSlash(filepath.Join(course.CourseDir, filepath.FromSlash(repoRel)))] = textID
+		}
+
+		assetDir := courseTextAssetsGitRelPath(textID)
+		if assetDir == "" {
+			continue
+		}
+		assetDir = filepath.ToSlash(assetDir)
+		args = append(args, assetDir)
+		textIDByAssetDir[strings.TrimRight(assetDir, "/")+"/"] = textID
+		if course.CourseDir != "" {
+			rootRelAssetDir := filepath.ToSlash(filepath.Join(course.CourseDir, filepath.FromSlash(assetDir)))
+			textIDByAssetDir[strings.TrimRight(rootRelAssetDir, "/")+"/"] = textID
+		}
 	}
-	if len(textIDByRelPath) == 0 {
+	if len(textIDByRelPath) == 0 && len(textIDByAssetDir) == 0 {
 		return nil
 	}
 	out, err := exec.Command("git", args...).Output()
@@ -48,21 +64,37 @@ func (s *Service) gitStatusesForCourseTexts(course Course, idx *readingIndex) ma
 		}
 		textID := textIDByRelPath[path]
 		if textID == "" {
+			for assetDir, id := range textIDByAssetDir {
+				if strings.HasPrefix(path, assetDir) {
+					textID = id
+					break
+				}
+			}
+		}
+		if textID == "" {
 			continue
 		}
 		if st := classifyGitStatus(xy); st != "" {
-			statusByTextID[textID] = st
+			statusByTextID[textID] = mergeGitStatus(statusByTextID[textID], st)
 		}
 	}
 	return statusByTextID
 }
 
-func courseTextRepoRelPath(course Course, indexRelPath string) string {
+func courseTextGitRelPath(indexRelPath string) string {
 	rel := strings.TrimSpace(indexRelPath)
 	if rel == "" || strings.Contains(rel, "..") || strings.HasPrefix(rel, "/") {
 		return ""
 	}
-	return filepath.Join(course.CourseDir, "reading", filepath.FromSlash(rel))
+	return filepath.Join("reading", filepath.FromSlash(rel))
+}
+
+func courseTextAssetsGitRelPath(textID string) string {
+	textID = strings.TrimSpace(textID)
+	if textID == "" || strings.Contains(textID, "..") || strings.ContainsAny(textID, `/\`) {
+		return ""
+	}
+	return filepath.Join("assets", "reading", textID)
 }
 
 func classifyGitStatus(xy string) string {
@@ -88,6 +120,32 @@ func classifyGitStatus(xy string) string {
 		return "conflict"
 	}
 	return ""
+}
+
+func mergeGitStatus(existing, next string) string {
+	if gitStatusRank(next) > gitStatusRank(existing) {
+		return next
+	}
+	return existing
+}
+
+func gitStatusRank(st string) int {
+	switch st {
+	case "conflict":
+		return 7
+	case "untracked", "added":
+		return 6
+	case "renamed", "copied":
+		return 5
+	case "modified":
+		return 4
+	case "deleted":
+		return 3
+	case "":
+		return 0
+	default:
+		return 1
+	}
 }
 
 func isNewUncommittedGitStatus(st string) bool {

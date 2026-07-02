@@ -174,8 +174,9 @@ type PromptRequest struct {
 
 // CoverBatchRequest triggers cover generation for published texts in a course.
 type CoverBatchRequest struct {
-	CourseCode string `json:"course_code"`
-	Level      string `json:"level,omitempty"`
-	Force      bool   `json:"force"`
-	Limit      int    `json:"limit,omitempty"`
+	CourseCode  string `json:"course_code"`
+	Level       string `json:"level,omitempty"`
+	Force       bool   `json:"force"`
+	SkipPrompts bool   `json:"skip_prompts,omitempty"`
+	Limit       int    `json:"limit,omitempty"`
 }

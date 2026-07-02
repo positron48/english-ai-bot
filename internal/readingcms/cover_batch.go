@@ -31,6 +31,8 @@ type CoverBatchProgressView struct {
 	Completed       int               `json:"completed"`
 	Skipped         int               `json:"skipped"`
 	Failed          int               `json:"failed"`
+	Remaining       int               `json:"remaining"`
+	ETASeconds      int               `json:"eta_seconds"`
 	Percent         int               `json:"percent"`
 	CurrentTextID   string            `json:"current_text_id"`
 	CurrentTitle    string            `json:"current_text_title"`
@@ -53,6 +55,8 @@ type coverBatchState struct {
 	iFailed       int
 	currentTextID string
 	currentTitle  string
+	skipPrompts   bool
+	startedAt     time.Time
 	lines         []string
 	running       bool
 	done          bool
@@ -105,7 +109,7 @@ func batchPhaseDone(completed, skipped, failed int) int {
 	return completed + skipped + failed
 }
 
-func batchPercentTwoPhase(total, phaseDone1, phaseDone2, current int, currentPercent int, running, done bool, errMsg string) int {
+func batchPercent(total, doneOps int, done bool, errMsg string) int {
 	if total <= 0 {
 		if done && errMsg == "" {
 			return 100
@@ -115,15 +119,10 @@ func batchPercentTwoPhase(total, phaseDone1, phaseDone2, current int, currentPer
 	if done && errMsg == "" {
 		return 100
 	}
-	weight := float64(phaseDone1 + phaseDone2)
-	if running && current > 0 {
-		cp := currentPercent
-		if cp < 1 {
-			cp = 1
-		}
-		weight += float64(cp) / 100.0
+	if doneOps < 0 {
+		doneOps = 0
 	}
-	p := int(weight / float64(2*total) * 100)
+	p := int(float64(doneOps) / float64(total) * 100)
 	if p > 99 && !done {
 		return 99
 	}
@@ -131,6 +130,34 @@ func batchPercentTwoPhase(total, phaseDone1, phaseDone2, current int, currentPer
 		return 100
 	}
 	return p
+}
+
+func batchETA(total, doneOps int, startedAt time.Time, running, done bool) (remaining, etaSeconds int) {
+	if total <= 0 {
+		return 0, 0
+	}
+	if doneOps < 0 {
+		doneOps = 0
+	}
+	if doneOps > total {
+		doneOps = total
+	}
+	remaining = total - doneOps
+	if remaining < 0 {
+		remaining = 0
+	}
+	if done || !running || doneOps <= 0 || startedAt.IsZero() {
+		return remaining, 0
+	}
+	elapsed := time.Since(startedAt).Seconds()
+	if elapsed <= 0 {
+		return remaining, 0
+	}
+	left := float64(remaining) / (float64(doneOps) / elapsed)
+	if left < 0 {
+		left = 0
+	}
+	return remaining, int(left + 0.5)
 }
 
 func (s *coverBatchState) view(svc *Service) CoverBatchProgressView {
@@ -152,19 +179,20 @@ func (s *coverBatchState) view(svc *Service) CoverBatchProgressView {
 	iFailed := s.iFailed
 	currentTextID := s.currentTextID
 	currentTitle := s.currentTitle
+	startedAt := s.startedAt
 	s.mu.Unlock()
 
 	var cur CoverProgressView
-	currentPercent := 0
 	if currentTextID != "" {
 		if v, ok := svc.CoverProgress(courseCode, currentTextID); ok {
 			cur = v
-			currentPercent = v.Percent
 		}
 	}
 	phaseDone1 := batchPhaseDone(pCompleted, pSkipped, pFailed)
 	phaseDone2 := batchPhaseDone(iCompleted, iSkipped, iFailed)
-	percent := batchPercentTwoPhase(total, phaseDone1, phaseDone2, current, currentPercent, running, done, errMsg)
+	doneOps := phaseDone1 + phaseDone2
+	percent := batchPercent(total, doneOps, done, errMsg)
+	remaining, etaSeconds := batchETA(total, doneOps, startedAt, running, done)
 
 	return CoverBatchProgressView{
 		BatchID:         batchID,
@@ -178,6 +206,8 @@ func (s *coverBatchState) view(svc *Service) CoverBatchProgressView {
 		Completed:       pCompleted + iCompleted,
 		Skipped:         pSkipped + iSkipped,
 		Failed:          pFailed + iFailed,
+		Remaining:       remaining,
+		ETASeconds:      etaSeconds,
 		Percent:         percent,
 		CurrentTextID:   currentTextID,
 		CurrentTitle:    currentTitle,
@@ -221,33 +251,100 @@ func (s *Service) planCoverBatchTexts(courseCode, level string, limit int) ([]st
 	return filtered, nil
 }
 
+type coverBatchPlan struct {
+	course    Course
+	idx       *readingIndex
+	promptIDs []string
+	imageIDs  []string
+	totalOps  int
+}
+
+func (s *Service) planCoverBatchWork(req CoverBatchRequest) (*coverBatchPlan, error) {
+	course, err := s.paths.Course(req.CourseCode)
+	if err != nil {
+		return nil, err
+	}
+	idx, err := loadReadingIndex(course.GrammarDir)
+	if err != nil {
+		return nil, err
+	}
+	textIDs, err := s.planCoverBatchTexts(course.Code, req.Level, req.Limit)
+	if err != nil {
+		return nil, err
+	}
+	plan := &coverBatchPlan{course: course, idx: idx}
+	for _, textID := range textIDs {
+		doc, err := readTextFile(course.GrammarDir, idx, textID)
+		if err != nil {
+			continue
+		}
+		ready := CoverStats(doc, course.GrammarDir) == CoverReady
+		prompt := strings.TrimSpace(doc.CoverImagePrompt)
+		if req.SkipPrompts {
+			if req.Force {
+				if prompt != "" {
+					plan.imageIDs = append(plan.imageIDs, textID)
+				}
+				continue
+			}
+			if !ready && prompt != "" {
+				plan.imageIDs = append(plan.imageIDs, textID)
+			}
+			continue
+		}
+		if req.Force {
+			plan.promptIDs = append(plan.promptIDs, textID)
+			plan.imageIDs = append(plan.imageIDs, textID)
+			continue
+		}
+		if ready {
+			continue
+		}
+		if prompt == "" {
+			plan.promptIDs = append(plan.promptIDs, textID)
+		}
+		plan.imageIDs = append(plan.imageIDs, textID)
+	}
+	plan.totalOps = len(plan.promptIDs) + len(plan.imageIDs)
+	return plan, nil
+}
+
 // StartCoverBatch plans texts and runs cover generation in the background.
 func (s *Service) StartCoverBatch(req CoverBatchRequest) (batchID string, total int, err error) {
 	courseCode := strings.ToLower(strings.TrimSpace(req.CourseCode))
 	if courseCode == "" {
 		return "", 0, errInvalid("course_code required")
 	}
-	textIDs, err := s.planCoverBatchTexts(courseCode, req.Level, req.Limit)
+	req.CourseCode = courseCode
+	plan, err := s.planCoverBatchWork(req)
 	if err != nil {
 		return "", 0, err
 	}
-	if len(textIDs) == 0 {
+	if plan.totalOps == 0 {
 		return "", 0, errInvalid("no texts to process")
 	}
 	batchID = newBatchID(courseCode)
 	st := &coverBatchState{
-		batchID:    batchID,
-		courseCode: courseCode,
-		phase:      coverBatchPhasePrompts,
-		total:      len(textIDs),
-		running:    true,
+		batchID:     batchID,
+		courseCode:  courseCode,
+		phase:       coverBatchPhasePrompts,
+		total:       plan.totalOps,
+		skipPrompts: req.SkipPrompts,
+		startedAt:   time.Now(),
+		running:     true,
 	}
-	st.appendLine(fmt.Sprintf("[batch] started: course=%s total=%d force=%v level=%s (2 phases: prompts → stop llama → images)",
-		courseCode, len(textIDs), req.Force, strings.TrimSpace(req.Level)))
+	if req.SkipPrompts {
+		st.phase = coverBatchPhaseImages
+		st.appendLine(fmt.Sprintf("[batch] started: course=%s total=%d force=%v level=%s skip_prompts=true (images from saved prompts)",
+			courseCode, plan.totalOps, req.Force, strings.TrimSpace(req.Level)))
+	} else {
+		st.appendLine(fmt.Sprintf("[batch] started: course=%s total=%d prompts=%d images=%d force=%v level=%s",
+			courseCode, plan.totalOps, len(plan.promptIDs), len(plan.imageIDs), req.Force, strings.TrimSpace(req.Level)))
+	}
 	s.coverBatchJobs.Store(batchID, st)
 
-	go s.runCoverBatch(context.Background(), st, req, textIDs)
-	return batchID, len(textIDs), nil
+	go s.runCoverBatch(context.Background(), st, req, plan)
+	return batchID, plan.totalOps, nil
 }
 
 func stopLocalLLM(repoRoot string) error {
@@ -260,94 +357,84 @@ func stopLocalLLM(repoRoot string) error {
 	return cmd.Run()
 }
 
-func (s *Service) runCoverBatch(ctx context.Context, st *coverBatchState, req CoverBatchRequest, textIDs []string) {
+func (s *Service) runCoverBatch(ctx context.Context, st *coverBatchState, req CoverBatchRequest, plan *coverBatchPlan) {
 	var runErr error
 	defer func() { st.finish(runErr) }()
 
-	course, err := s.paths.Course(req.CourseCode)
-	if err != nil {
-		runErr = err
-		st.appendLine("[batch] error: " + err.Error())
+	if plan == nil || plan.totalOps == 0 {
+		runErr = errInvalid("no texts to process")
+		st.appendLine("[batch] error: " + runErr.Error())
 		return
 	}
-	idx, err := loadReadingIndex(course.GrammarDir)
-	if err != nil {
-		runErr = err
-		st.appendLine("[batch] error: " + err.Error())
-		return
-	}
+	course := plan.course
+	idx := plan.idx
 
 	sink := func(line string) { st.appendLine(line) }
+	op := 0
 
-	// Phase 1: LLM prompts only.
-	st.setPhase(coverBatchPhasePrompts)
-	st.appendLine("[batch] phase 1/2: generating and saving cover prompts (LLM)")
-	for i, textID := range textIDs {
-		doc, err := readTextFile(course.GrammarDir, idx, textID)
-		if err != nil {
-			st.mu.Lock()
-			st.pFailed++
-			st.mu.Unlock()
-			st.appendLine(fmt.Sprintf("[batch:prompts] !! %s: read failed: %v", textID, err))
-			continue
-		}
-		title := strings.TrimSpace(doc.Title)
-		if title == "" {
-			title = textID
-		}
-		st.setCurrent(i+1, textID, title)
-		st.appendHeader("prompts", i+1, len(textIDs), textID, title)
-
-		if !req.Force && CoverStats(doc, course.GrammarDir) == CoverReady {
-			st.mu.Lock()
-			st.pSkipped++
-			st.mu.Unlock()
-			st.appendLine("skip: cover already ready")
-			continue
-		}
-		if !req.Force && strings.TrimSpace(doc.CoverImagePrompt) != "" {
-			st.mu.Lock()
-			st.pSkipped++
-			st.mu.Unlock()
-			st.appendLine("skip: cover_image_prompt already set")
-			continue
-		}
-
-		jobLog, err := s.runCoverPromptScript(ctx, course.Code, course.GrammarDir, textID, req.Force, sink)
-		if err != nil {
-			st.mu.Lock()
-			st.pFailed++
-			st.mu.Unlock()
-			st.appendLine(fmt.Sprintf("[batch:prompts] !! %s failed: %v", textID, err))
-			if strings.TrimSpace(jobLog) != "" {
-				st.appendLine(jobLog)
-			}
-			continue
-		}
-		st.mu.Lock()
-		st.pCompleted++
-		st.mu.Unlock()
-		st.appendLine(fmt.Sprintf("[batch:prompts] -> ok %s", textID))
-		updated, rerr := readTextFile(course.GrammarDir, idx, textID)
-		if rerr == nil {
-			_ = s.syncPublishedCoverToDraft(textID, updated, course.GrammarDir)
-		}
-		s.coverProgressUnregister(course.Code, textID)
-	}
-
-	st.setPhase(coverBatchPhaseStoppingLLM)
-	st.setCurrent(0, "", "")
-	st.appendLine("[batch] stopping local llama.cpp to free memory before ComfyUI phase…")
-	if err := stopLocalLLM(s.paths.RepoRoot); err != nil {
-		st.appendLine("[batch] warning: stop-local-llm: " + err.Error())
+	if req.SkipPrompts {
+		st.appendLine("[batch] skipping prompt phase; using saved cover_image_prompt values")
 	} else {
-		st.appendLine("[batch] llama.cpp stopped")
+		// Phase 1: LLM prompts only.
+		st.setPhase(coverBatchPhasePrompts)
+		st.appendLine(fmt.Sprintf("[batch] phase 1/2: generating and saving cover prompts (LLM), total=%d", len(plan.promptIDs)))
+		for i, textID := range plan.promptIDs {
+			doc, err := readTextFile(course.GrammarDir, idx, textID)
+			if err != nil {
+				st.mu.Lock()
+				st.pFailed++
+				st.mu.Unlock()
+				st.appendLine(fmt.Sprintf("[batch:prompts] !! %s: read failed: %v", textID, err))
+				continue
+			}
+			title := strings.TrimSpace(doc.Title)
+			if title == "" {
+				title = textID
+			}
+			op++
+			st.setCurrent(op, textID, title)
+			st.appendHeader("prompts", i+1, len(plan.promptIDs), textID, title)
+
+			jobLog, err := s.runCoverPromptScript(ctx, course.Code, course.GrammarDir, textID, req.Force, sink)
+			if err != nil {
+				st.mu.Lock()
+				st.pFailed++
+				st.mu.Unlock()
+				st.appendLine(fmt.Sprintf("[batch:prompts] !! %s failed: %v", textID, err))
+				if strings.TrimSpace(jobLog) != "" {
+					st.appendLine(jobLog)
+				}
+				continue
+			}
+			st.mu.Lock()
+			st.pCompleted++
+			st.mu.Unlock()
+			st.appendLine(fmt.Sprintf("[batch:prompts] -> ok %s", textID))
+			updated, rerr := readTextFile(course.GrammarDir, idx, textID)
+			if rerr == nil {
+				_ = s.syncPublishedCoverToDraft(textID, updated, course.GrammarDir)
+			}
+			s.coverProgressUnregister(course.Code, textID)
+		}
+
+		st.setPhase(coverBatchPhaseStoppingLLM)
+		st.setCurrent(0, "", "")
+		st.appendLine("[batch] stopping local llama.cpp to free memory before ComfyUI phase…")
+		if err := stopLocalLLM(s.paths.RepoRoot); err != nil {
+			st.appendLine("[batch] warning: stop-local-llm: " + err.Error())
+		} else {
+			st.appendLine("[batch] llama.cpp stopped")
+		}
 	}
 
 	// Phase 2: ComfyUI images from saved prompts.
 	st.setPhase(coverBatchPhaseImages)
-	st.appendLine("[batch] phase 2/2: generating images from saved prompts (ComfyUI)")
-	for i, textID := range textIDs {
+	if req.SkipPrompts {
+		st.appendLine(fmt.Sprintf("[batch] phase 1/1: generating images from saved prompts (ComfyUI), total=%d", len(plan.imageIDs)))
+	} else {
+		st.appendLine(fmt.Sprintf("[batch] phase 2/2: generating images from saved prompts (ComfyUI), total=%d", len(plan.imageIDs)))
+	}
+	for i, textID := range plan.imageIDs {
 		doc, err := readTextFile(course.GrammarDir, idx, textID)
 		if err != nil {
 			st.mu.Lock()
@@ -360,17 +447,10 @@ func (s *Service) runCoverBatch(ctx context.Context, st *coverBatchState, req Co
 		if title == "" {
 			title = textID
 		}
-		st.setCurrent(i+1, textID, title)
-		st.appendHeader("images", i+1, len(textIDs), textID, title)
+		op++
+		st.setCurrent(op, textID, title)
+		st.appendHeader("images", i+1, len(plan.imageIDs), textID, title)
 
-		if !req.Force && CoverStats(doc, course.GrammarDir) == CoverReady {
-			st.mu.Lock()
-			st.iSkipped++
-			st.mu.Unlock()
-			st.appendLine("skip: cover already ready")
-			_ = s.syncPublishedCoverToDraft(textID, doc, course.GrammarDir)
-			continue
-		}
 		prompt := strings.TrimSpace(doc.CoverImagePrompt)
 		if prompt == "" {
 			st.mu.Lock()

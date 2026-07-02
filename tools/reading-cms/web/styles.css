@@ -248,11 +248,12 @@ textarea.mono { width: 100%; font-family: ui-monospace, Menlo, monospace; font-s
 
 .cover-modal { padding: 16px; }
 .cover-modal header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
+.cover-modal-nav { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
 .cover-modal-images { display: flex; gap: 16px; flex-wrap: wrap; margin: 12px 0; }
 .cover-modal-images figure { margin: 0; }
 .cover-modal-images figcaption { font-size: 0.75rem; color: #9aa8bc; margin-bottom: 4px; }
 .cover-modal-images img { max-width: 160px; border-radius: 8px; display: block; }
-.cover-modal-images img.hero { max-width: 100%; max-height: 280px; object-fit: contain; }
+.cover-modal-images img.hero { max-width: 100%; max-height: 420px; object-fit: contain; }
 .cover-modal-status { color: #9aa8bc; font-size: 0.85rem; }
 .cover-modal-ru {
   margin: 12px 0;
@@ -442,6 +443,13 @@ textarea.mono { width: 100%; font-family: ui-monospace, Menlo, monospace; font-s
   max-width: 95vw;
   max-height: 92vh;
   overflow: hidden;
+}
+#cover-progress-dialog.cover-progress-dialog--batch {
+  position: fixed;
+  inset: auto 18px 18px auto;
+  width: min(620px, calc(100vw - 36px));
+  max-height: min(82vh, 720px);
+  margin: 0;
 }
 
 .detail { padding: 16px; }

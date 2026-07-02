@@ -37,18 +37,18 @@
             <option>A0</option><option>A1</option><option>A2</option>
             <option>B1</option><option>B2</option><option>C1</option>
           </select>
+          <select id="pub-git" aria-label="Git status">
+            <option value="">Git: любой статус</option>
+            <option value="committed">Git: закоммиченные</option>
+            <option value="uncommitted">Git: незакоммиченные</option>
+            <option value="new">Git: новые незакоммиченные</option>
+            <option value="changed">Git: изменённые незакоммиченные</option>
+          </select>
           <select id="pub-cover" aria-label="Cover">
             <option value="">Любая картинка</option>
             <option value="none">Без картинки</option>
             <option value="prompt">Промпт без картинки</option>
             <option value="ready">С картинкой</option>
-          </select>
-          <select id="pub-git" aria-label="Git status">
-            <option value="">Любой git-статус</option>
-            <option value="committed">Закоммиченные</option>
-            <option value="uncommitted">Незакоммиченные</option>
-            <option value="new">Новые незакоммиченные</option>
-            <option value="changed">Изменённые незакоммиченные</option>
           </select>
           <select id="pub-sort" aria-label="Sort">
             <option value="level">Сортировка: уровень</option>
@@ -206,6 +206,7 @@
             <option>B1</option><option>B2</option><option>C1</option>
           </select>
         </label>
+        <label class="checkbox full"><input id="cover-batch-skip-prompts" type="checkbox" /> Только картинки по готовым промптам</label>
         <label class="checkbox full"><input id="cover-batch-force" type="checkbox" /> Regenerate existing</label>
         <div class="form-actions full">
           <button type="submit" class="btn primary">Запустить batch</button>

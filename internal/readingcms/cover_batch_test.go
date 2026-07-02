@@ -2,6 +2,8 @@ package readingcms
 
 import (
 	"context"
+	"os"
+	"path/filepath"
 	"strings"
 	"testing"
 	"time"
@@ -13,27 +15,23 @@ func TestBatchPhaseDone(t *testing.T) {
 	}
 }
 
-func TestBatchPercentTwoPhase(t *testing.T) {
+func TestBatchPercent(t *testing.T) {
 	cases := []struct {
-		name           string
-		total          int
-		phaseDone1     int
-		phaseDone2     int
-		current        int
-		currentPercent int
-		running        bool
-		done           bool
-		errMsg         string
-		want           int
+		name    string
+		total   int
+		doneOps int
+		done    bool
+		errMsg  string
+		want    int
 	}{
-		{"empty", 0, 0, 0, 0, 0, false, false, "", 0},
-		{"done", 5, 5, 5, 0, 0, false, true, "", 100},
-		{"half first phase one at 50", 4, 1, 0, 2, 50, true, false, "", 18},
-		{"first phase done", 3, 3, 0, 0, 0, false, false, "", 50},
+		{"empty", 0, 0, false, "", 0},
+		{"done", 5, 5, true, "", 100},
+		{"one of four ignores current operation", 4, 1, false, "", 25},
+		{"two of three", 3, 2, false, "", 66},
 	}
 	for _, tc := range cases {
 		t.Run(tc.name, func(t *testing.T) {
-			got := batchPercentTwoPhase(tc.total, tc.phaseDone1, tc.phaseDone2, tc.current, tc.currentPercent, tc.running, tc.done, tc.errMsg)
+			got := batchPercent(tc.total, tc.doneOps, tc.done, tc.errMsg)
 			if got != tc.want {
 				t.Fatalf("got %d want %d", got, tc.want)
 			}
@@ -123,6 +121,71 @@ func TestPlanCoverBatchTexts(t *testing.T) {
 	}
 }
 
+func TestPlanCoverBatchWorkSkipsReadyAndSplitsPhases(t *testing.T) {
+	svc, _ := setupCoverService(t)
+	readyID := "batch_ready"
+	promptID := "batch_prompt_existing"
+	missingID := "batch_prompt_missing"
+	for _, tc := range []struct {
+		id     string
+		title  string
+		prompt string
+		ready  bool
+	}{
+		{readyID, "Ready", "ready prompt", true},
+		{promptID, "Prompt", "saved prompt", false},
+		{missingID, "Missing", "", false},
+	} {
+		doc := &TextDocument{
+			ID: tc.id, Title: tc.title, Level: "A2", TargetLanguage: "es",
+			CoverImagePrompt: tc.prompt,
+			ReadingPassage:   map[string]interface{}{"segments": []interface{}{}},
+		}
+		if tc.ready {
+			doc.CoverThumbRelPath = "assets/reading/" + tc.id + "/cover_thumb.webp"
+			doc.CoverHeroRelPath = "assets/reading/" + tc.id + "/cover_hero.webp"
+		}
+		seedPublishedDoc(t, svc, tc.id, doc)
+		if tc.ready {
+			course, err := svc.paths.Course("es_ru")
+			if err != nil {
+				t.Fatal(err)
+			}
+			dir := filepath.Join(course.GrammarDir, "assets", "reading", tc.id)
+			if err := os.MkdirAll(dir, 0o755); err != nil {
+				t.Fatal(err)
+			}
+			for _, name := range []string{"cover_thumb.webp", "cover_hero.webp"} {
+				if err := os.WriteFile(filepath.Join(dir, name), []byte("mock"), 0o644); err != nil {
+					t.Fatal(err)
+				}
+			}
+		}
+	}
+
+	plan, err := svc.planCoverBatchWork(CoverBatchRequest{CourseCode: "es_ru", Level: "A2"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if strings.Join(plan.promptIDs, ",") != missingID {
+		t.Fatalf("promptIDs=%v", plan.promptIDs)
+	}
+	if strings.Join(plan.imageIDs, ",") != promptID+","+missingID {
+		t.Fatalf("imageIDs=%v", plan.imageIDs)
+	}
+	if plan.totalOps != 3 {
+		t.Fatalf("totalOps=%d", plan.totalOps)
+	}
+
+	plan, err = svc.planCoverBatchWork(CoverBatchRequest{CourseCode: "es_ru", Level: "A2", SkipPrompts: true})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(plan.promptIDs) != 0 || strings.Join(plan.imageIDs, ",") != promptID || plan.totalOps != 1 {
+		t.Fatalf("promptIDs=%v imageIDs=%v totalOps=%d", plan.promptIDs, plan.imageIDs, plan.totalOps)
+	}
+}
+
 func TestStartCoverBatchPromptPhaseMock(t *testing.T) {
 	svc, _ := setupCoverService(t)
 	textID := "batch_prompt_only"
@@ -137,7 +200,7 @@ func TestStartCoverBatchPromptPhaseMock(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if total != 1 || batchID == "" {
+	if total != 2 || batchID == "" {
 		t.Fatalf("batchID=%q total=%d", batchID, total)
 	}
 
@@ -158,7 +221,7 @@ func TestStartCoverBatchPromptPhaseMock(t *testing.T) {
 	if !ok {
 		t.Fatal("batch progress missing")
 	}
-	if view.Total != 1 {
+	if view.Total != 2 {
 		t.Fatalf("total=%d", view.Total)
 	}
 	if !strings.Contains(view.Log, "[batch] started") {
@@ -175,6 +238,63 @@ func TestStartCoverBatchPromptPhaseMock(t *testing.T) {
 	}
 	if strings.TrimSpace(doc.CoverImagePrompt) == "" {
 		t.Fatal("expected prompt after batch phase 1")
+	}
+}
+
+func TestStartCoverBatchSkipPromptsMock(t *testing.T) {
+	svc, _ := setupCoverService(t)
+	textID := "batch_skip_prompts"
+	seedPublishedDoc(t, svc, textID, &TextDocument{
+		ID: textID, Title: "Batch Images", Level: "A2", TargetLanguage: "es",
+		CoverImagePrompt: "saved watercolor prompt",
+		ReadingPassage: map[string]interface{}{
+			"segments": []map[string]interface{}{{"text": "Hola"}},
+		},
+	})
+
+	batchID, total, err := svc.StartCoverBatch(CoverBatchRequest{CourseCode: "es_ru", Limit: 1, SkipPrompts: true})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if total != 1 || batchID == "" {
+		t.Fatalf("batchID=%q total=%d", batchID, total)
+	}
+
+	deadline := time.Now().Add(45 * time.Second)
+	for time.Now().Before(deadline) {
+		view, ok := svc.CoverBatchProgress(batchID)
+		if !ok {
+			t.Fatal("batch job missing")
+		}
+		if view.Done {
+			break
+		}
+		time.Sleep(100 * time.Millisecond)
+	}
+	view, ok := svc.CoverBatchProgress(batchID)
+	if !ok {
+		t.Fatal("batch progress missing")
+	}
+	if !view.Done || view.Error != "" {
+		t.Fatalf("done=%v error=%q log=%q", view.Done, view.Error, view.Log)
+	}
+	if view.Completed != 1 || view.Percent != 100 {
+		t.Fatalf("completed=%d percent=%d", view.Completed, view.Percent)
+	}
+	if !strings.Contains(view.Log, "skip_prompts=true") || strings.Contains(view.Log, "phase 1/2") {
+		t.Fatalf("log=%q", view.Log)
+	}
+
+	course, err := svc.paths.Course("es_ru")
+	if err != nil {
+		t.Fatal(err)
+	}
+	doc, err := readTextFile(course.GrammarDir, mustLoadIndex(t, course.GrammarDir), textID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if CoverStats(doc, course.GrammarDir) != CoverReady {
+		t.Fatalf("expected ready cover, got %s", CoverStats(doc, course.GrammarDir))
 	}
 }
 
@@ -199,7 +319,7 @@ func TestGenerateCoverBatchWrapper(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-	if total != 1 {
+	if total != 2 {
 		t.Fatalf("total=%d", total)
 	}
 }
