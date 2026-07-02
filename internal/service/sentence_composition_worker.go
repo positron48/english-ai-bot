@@ -120,12 +120,11 @@ func (w *SentenceCompositionWorker) generateForUser(ctx context.Context, user *m
 		return nil
 	}
 
-	// Resolve the user's current course; only generate when the course has both prompts.
-	courseCode, err := w.courseRepo.ResolveCurrentCourseCode(ctx, user.ID, w.defaultCode)
-	if err != nil || courseCode == "" {
-		return nil
+	courseCodes, err := w.sentenceCourseCodesForUser(ctx, user.ID)
+	if err != nil {
+		return err
 	}
-	if !w.aiService.HasSentencePromptsForCourse(courseCode) {
+	if len(courseCodes) == 0 {
 		return nil
 	}
 
@@ -136,22 +135,60 @@ func (w *SentenceCompositionWorker) generateForUser(ctx context.Context, user *m
 	}
 	today := time.Now().In(loc).Format("2006-01-02")
 
-	// Regeneration guard.
-	latest, err := w.repo.LatestSet(user.ID, courseCode)
-	if err != nil {
-		return err
-	}
-	if latest != nil {
-		if latest.GenerationDate == today {
-			return nil // already generated today
+	for _, courseCode := range courseCodes {
+		if !w.aiService.HasSentencePromptsForCourse(courseCode) {
+			continue
 		}
-		if latest.Status == models.SentenceSetReady {
-			return nil // previous set never consumed — don't waste budget
-		}
-	}
 
-	_, err = w.generateSet(ctx, user, courseCode, today)
-	return err
+		// Regeneration guard is per user/course.
+		latest, err := w.repo.LatestSet(user.ID, courseCode)
+		if err != nil {
+			return err
+		}
+		if latest != nil {
+			if latest.GenerationDate == today {
+				continue // already generated today
+			}
+			if latest.Status == models.SentenceSetReady {
+				continue // previous set never consumed — don't waste budget
+			}
+		}
+
+		if _, err := w.generateSet(ctx, user, courseCode, today); err != nil {
+			w.logger.Warn("sentence worker: course generation failed",
+				zap.Int64("user_id", user.ID), zap.String("course", courseCode), zap.Error(err))
+		}
+	}
+	return nil
+}
+
+func (w *SentenceCompositionWorker) sentenceCourseCodesForUser(ctx context.Context, userID int64) ([]string, error) {
+	courses, err := w.courseRepo.ListCoursesForUser(ctx, userID, w.defaultCode)
+	if err != nil {
+		courseCode, resolveErr := w.courseRepo.ResolveCurrentCourseCode(ctx, userID, w.defaultCode)
+		if resolveErr != nil || strings.TrimSpace(courseCode) == "" {
+			return nil, err
+		}
+		return []string{strings.ToLower(strings.TrimSpace(courseCode))}, nil
+	}
+	out := make([]string, 0, len(courses))
+	seen := map[string]bool{}
+	for _, course := range courses {
+		if course.UserCourseID == nil {
+			continue
+		}
+		status := strings.ToLower(strings.TrimSpace(course.UserStatus))
+		if status != "" && status != "active" && status != "completed" {
+			continue
+		}
+		code := strings.ToLower(strings.TrimSpace(course.Code))
+		if code == "" || seen[code] {
+			continue
+		}
+		out = append(out, code)
+		seen[code] = true
+	}
+	return out, nil
 }
 
 // ForceGenerateForUser generates a fresh set for one user regardless of the daily
