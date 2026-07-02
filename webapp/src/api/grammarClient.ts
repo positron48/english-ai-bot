@@ -104,7 +104,7 @@ function chapterPoolQuestions(chapterPayload: any): any[] {
 }
 
 async function requireMeta(): Promise<OfflineGrammarMeta> {
-  const meta = await getOfflineMeta()
+  const meta = await getOfflineMeta(activeCourseCode())
   if (!meta) throw new OfflineGrammarUnavailableError()
   return meta
 }
@@ -137,6 +137,10 @@ export function setGrammarCourse(courseCode: string): void {
 
 function grammarCourseParam(): string {
   return _grammarCourseCode ? `?course_code=${encodeURIComponent(_grammarCourseCode)}` : ''
+}
+
+function activeCourseCode(): string {
+  return _grammarCourseCode
 }
 
 /** Current course code, as set via setGrammarCourse(). Used by other clients
@@ -201,7 +205,7 @@ function isChapterStudied(meta: OfflineGrammarMeta, chapterID: string): boolean 
 }
 
 async function filterTrainingQuestionsByStudiedChapters(questions: any[]): Promise<any[]> {
-  const meta = await getOfflineMeta()
+  const meta = await getOfflineMeta(activeCourseCode())
   if (!meta) return questions
   return questions.filter((q) => {
     const chapterID = q?.chapter_id
@@ -228,7 +232,7 @@ async function updateLocalProgress(scope: 'chapter' | 'category', scopeID: strin
     const section = meta.sections.find((item) => item.section_id === scopeID)
     if (section) section.category_test_score = Math.max(section.category_test_score || 0, result.score || 0)
   }
-  await setOfflineMeta(meta)
+  await setOfflineMeta(meta, activeCourseCode())
 }
 
 function buildStatistics(meta: OfflineGrammarMeta) {
@@ -255,7 +259,7 @@ async function gradeOfflineTest(scope: 'chapter' | 'category', scopeID: string, 
   for (const item of answers) {
     const chapterID = scope === 'chapter' ? scopeID : item.chapter_id
     if (!chapterID) continue
-    const chapterPayload = await getStoredChapter(chapterID)
+    const chapterPayload = await getStoredChapter(chapterID, activeCourseCode())
     const question = questionsByID(chapterPayload).get(item.question_id)
     if (!question) continue
     const isCorrect = item.answer !== null && item.answer !== undefined && compareAnswers(item.answer, question.correct_answer, question.type)
@@ -283,6 +287,7 @@ async function queueOfflineAttempt(scope: 'chapter' | 'category', scopeID: strin
     : `offline-${Date.now()}-${Math.random().toString(16).slice(2)}`
   const attempt: QueuedGrammarAttempt = {
     client_attempt_id: id,
+    course_code: activeCourseCode(),
     scope,
     scope_id: scopeID,
     answers,
@@ -319,10 +324,10 @@ function trainingQuestionsFromChapterPayload(payload: any): any[] {
 }
 
 async function getOfflineTrainingQuestionPool(): Promise<any[]> {
-  const trainingQuestions = await getTrainingQuestions()
+  const trainingQuestions = await getTrainingQuestions(activeCourseCode())
   const pool = trainingQuestions.length > 0
     ? trainingQuestions
-    : (await getStoredChapters()).flatMap(trainingQuestionsFromChapterPayload)
+    : (await getStoredChapters(activeCourseCode())).flatMap(trainingQuestionsFromChapterPayload)
   return filterTrainingQuestionsByStudiedChapters(pool)
 }
 
@@ -332,6 +337,7 @@ async function queueOfflineTrainingAttempt(questionID: string, answer: any, resu
     : `offline-training-${Date.now()}-${Math.random().toString(16).slice(2)}`
   await enqueueTrainingAttempt({
     client_attempt_id: id,
+    course_code: activeCourseCode(),
     question_id: questionID,
     answer,
     created_at: new Date().toISOString(),
@@ -341,9 +347,9 @@ async function queueOfflineTrainingAttempt(questionID: string, answer: any, resu
 
 export const grammarClient = {
   async getOfflineStatus(): Promise<OfflineStatus> {
-    const meta = await getOfflineMeta()
-    const downloadedChapters = await countStoredChapters()
-    const pendingAttempts = (await queueCount()) + (await trainingQueueCount())
+    const meta = await getOfflineMeta(activeCourseCode())
+    const downloadedChapters = await countStoredChapters(activeCourseCode())
+    const pendingAttempts = (await queueCount(activeCourseCode())) + (await trainingQueueCount(activeCourseCode()))
     return {
       ready: !!meta && downloadedChapters >= (meta.total_chapters || 0),
       downloading: false,
@@ -356,12 +362,12 @@ export const grammarClient = {
   },
 
   async getOfflineDebugState(): Promise<any> {
-    const meta = await getOfflineMeta()
-    const downloadedChapters = await countStoredChapters()
-    const storedChapters = await getStoredChapters()
-    const trainingQuestions = await getTrainingQuestions()
+    const meta = await getOfflineMeta(activeCourseCode())
+    const downloadedChapters = await countStoredChapters(activeCourseCode())
+    const storedChapters = await getStoredChapters(activeCourseCode())
+    const trainingQuestions = await getTrainingQuestions(activeCourseCode())
     const fallbackTrainingQuestions = storedChapters.flatMap(trainingQuestionsFromChapterPayload)
-    const pendingAttempts = (await queueCount()) + (await trainingQueueCount())
+    const pendingAttempts = (await queueCount(activeCourseCode())) + (await trainingQueueCount(activeCourseCode()))
     const sections = meta?.sections || []
     const accessibleSections = sections
       .filter((section) => section.chapters.length > 0 || computeSectionAccess(meta!, section.section_id))
@@ -389,33 +395,33 @@ export const grammarClient = {
   },
 
   async preload(onProgress?: (done: number, total: number) => void): Promise<OfflineStatus> {
-    const manifest = await apiClient.request<OfflineGrammarMeta>('/api/learning/grammar/offline/manifest')
+    const manifest = await apiClient.request<OfflineGrammarMeta>(`/api/learning/grammar/offline/manifest${grammarCourseParam()}`)
     const meta = { ...manifest, downloaded_at: new Date().toISOString() }
-    await setOfflineMeta(meta)
+    await setOfflineMeta(meta, activeCourseCode())
     const chapters = meta.sections.flatMap((section) => section.chapters)
     let done = 0
     onProgress?.(done, chapters.length)
     for (const chapter of chapters) {
       const payload = await apiClient.request<any>(chapter.download_url)
-      await setStoredChapter(chapter.chapter_id, payload)
+      await setStoredChapter(chapter.chapter_id, payload, activeCourseCode())
       done++
       onProgress?.(done, chapters.length)
     }
     const trainingURL = (manifest as any)?.training_pack?.download_url
     if (trainingURL) {
       const trainingPack = await apiClient.request<any>(trainingURL)
-      await setTrainingQuestions(trainingPack?.questions || [])
+      await setTrainingQuestions(trainingPack?.questions || [], activeCourseCode())
     }
     return this.getOfflineStatus()
   },
 
   async clear(): Promise<void> {
-    await clearOfflineGrammar()
+    await clearOfflineGrammar(activeCourseCode())
   },
 
   async syncQueuedAttempts(): Promise<number> {
     if (isBrowserOffline()) return 0
-    const attempts = await getQueuedAttempts()
+    const attempts = await getQueuedAttempts(activeCourseCode())
     let synced = 0
     if (attempts.length > 0) {
       let response: any
@@ -436,7 +442,7 @@ export const grammarClient = {
       }
       if (synced > 0) clearCategoriesCache()
     }
-    const trainingAttempts = await getQueuedTrainingAttempts()
+    const trainingAttempts = await getQueuedTrainingAttempts(activeCourseCode())
     if (trainingAttempts.length > 0) {
       let trainingResponse: any
       try {
@@ -602,7 +608,7 @@ export const grammarClient = {
     return offlineFallback(
       () => apiClient.request(`/api/learning/grammar/chapters/${chapterID}${grammarCourseParam()}`),
       async () => {
-        const payload = await getStoredChapter(chapterID)
+        const payload = await getStoredChapter(chapterID, activeCourseCode())
         if (!payload) throw new OfflineGrammarUnavailableError('Chapter is not available offline')
         if (!computeChapterAccess(await requireMeta(), chapterID)) throw new OfflineGrammarUnavailableError('Chapter is locked offline')
         return payload
@@ -614,7 +620,7 @@ export const grammarClient = {
     return offlineFallback(
       () => apiClient.request(`/api/learning/grammar/chapters/${chapterID}${grammarCourseParam()}`),
       async () => {
-        const payload = await getStoredChapter(chapterID)
+        const payload = await getStoredChapter(chapterID, activeCourseCode())
         if (!payload) throw new OfflineGrammarUnavailableError('Chapter is not available offline')
         const meta = await requireMeta()
         let sectionMeta: any = payload.section
@@ -654,7 +660,7 @@ export const grammarClient = {
     return offlineFallback(
       () => apiClient.request(`/api/learning/grammar/chapters/${chapterID}/test${grammarCourseParam()}`),
       async () => {
-        const payload = await getStoredChapter(chapterID)
+        const payload = await getStoredChapter(chapterID, activeCourseCode())
         if (!payload) throw new OfflineGrammarUnavailableError('Chapter test is not available offline')
         if (!computeChapterAccess(await requireMeta(), chapterID)) throw new OfflineGrammarUnavailableError('Chapter test is locked offline')
         const num = Number(payload?.chapter?.chapter_test?.num_questions || 10)
@@ -677,7 +683,7 @@ export const grammarClient = {
         const seen = new Set<string>()
         const perChapter: Array<{ chapterID: string; questions: any[] }> = []
         for (const chapter of section.chapters) {
-          const payload = await getStoredChapter(chapter.chapter_id)
+          const payload = await getStoredChapter(chapter.chapter_id, activeCourseCode())
           const questions = shuffle(chapterPoolQuestions(payload))
           perChapter.push({ chapterID: chapter.chapter_id, questions })
           for (const question of questions.slice(0, 2)) {
@@ -708,7 +714,7 @@ export const grammarClient = {
         const candidates: any[] = []
         for (const section of meta.sections) {
           for (const chapter of section.chapters) {
-            const payload = await getStoredChapter(chapter.chapter_id)
+            const payload = await getStoredChapter(chapter.chapter_id, activeCourseCode())
             for (const question of chapterPoolQuestions(payload)) {
               candidates.push(sanitizeQuestionForTest({
                 ...question,
@@ -766,7 +772,7 @@ export const grammarClient = {
     for (const [compoundID, answer] of Object.entries(answersMap)) {
       const [chapterID, questionID] = compoundID.includes(':') ? compoundID.split(/:(.*)/s).filter(Boolean) : ['', compoundID]
       if (!chapterID || !questionID) continue
-      const payload = await getStoredChapter(chapterID)
+      const payload = await getStoredChapter(chapterID, activeCourseCode())
       const question = questionsByID(payload).get(questionID)
       if (!question) continue
       const isCorrect = answer !== null && answer !== undefined && compareAnswers(answer, question.correct_answer, question.type)
@@ -793,7 +799,7 @@ export const grammarClient = {
           for (const chapter of section.chapters) chapter.can_access = true
         }
       }
-      await setOfflineMeta(meta)
+      await setOfflineMeta(meta, activeCourseCode())
     }
     return {
       score,
