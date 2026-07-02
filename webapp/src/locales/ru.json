@@ -497,7 +497,8 @@
     "correctAnswer": "Правильно",
     "outcomeStar": "Без ошибок",
     "outcomePassed": "Зачёт",
-    "outcomeFailed": "Не зачтено"
+    "outcomeFailed": "Не зачтено",
+    "voiceInput": "Голосовой ввод"
   },
   "learning": {
     "title": "Обучение",

@@ -492,7 +492,8 @@
     "correctAnswer": "Correcto",
     "outcomeStar": "Sin errores",
     "outcomePassed": "Aprobado",
-    "outcomeFailed": "No aprobado"
+    "outcomeFailed": "No aprobado",
+    "voiceInput": "Entrada de voz"
   },
   "learning": {
     "title": "Aprendizaje",

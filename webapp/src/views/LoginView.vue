@@ -494,6 +494,9 @@ const verifyOTP = async () => {
 .otp-digit {
   width: 48px;
   height: 56px;
+  padding: 0;
+  box-sizing: border-box;
+  line-height: 1;
   text-align: center;
   font-size: 24px;
   font-weight: 600;
@@ -502,6 +505,8 @@ const verifyOTP = async () => {
   background-color: var(--input-bg);
   color: var(--text);
   transition: all 0.2s;
+  appearance: none;
+  -webkit-appearance: none;
 }
 
 .otp-digit:focus {

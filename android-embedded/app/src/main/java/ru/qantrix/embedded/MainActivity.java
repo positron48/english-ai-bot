@@ -1,5 +1,6 @@
 package ru.qantrix.embedded;
 
+import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.DownloadManager;
@@ -7,6 +8,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.net.Uri;
@@ -14,6 +16,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
+import android.speech.RecognitionListener;
+import android.speech.RecognizerIntent;
+import android.speech.SpeechRecognizer;
 import android.webkit.JavascriptInterface;
 import android.webkit.CookieManager;
 import android.webkit.WebResourceRequest;
@@ -36,15 +41,20 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 
 public class MainActivity extends Activity {
     private static final String LATEST_RELEASE_API =
             "https://api.github.com/repos/positron48/english-ai-bot/releases/latest";
 
+    private static final int REQ_RECORD_AUDIO = 4201;
+
     private WebView webView;
     private int lastInsetTop = 0;
     private int lastInsetBottom = 0;
     private long updateDownloadId = -1;
+    private SpeechRecognizer speechRecognizer;
+    private String pendingSpeechLang;
     private BroadcastReceiver downloadReceiver;
     private final Handler downloadProgressHandler = new Handler(Looper.getMainLooper());
     private final Runnable downloadProgressPoller = new Runnable() {
@@ -117,6 +127,7 @@ public class MainActivity extends Activity {
 
     @Override
     protected void onDestroy() {
+        releaseSpeechRecognizer();
         downloadProgressHandler.removeCallbacks(downloadProgressPoller);
         if (downloadReceiver != null) {
             try {
@@ -183,6 +194,130 @@ public class MainActivity extends Activity {
         public void cancelUpdateDownload() {
             runOnUiThread(MainActivity.this::cancelUpdateDownload);
         }
+
+        @JavascriptInterface
+        public boolean speechRecognitionAvailable() {
+            return SpeechRecognizer.isRecognitionAvailable(MainActivity.this);
+        }
+
+        @JavascriptInterface
+        public void startSpeechRecognition(String lang) {
+            runOnUiThread(() -> beginSpeechRecognition(lang));
+        }
+
+        @JavascriptInterface
+        public void stopSpeechRecognition() {
+            runOnUiThread(MainActivity.this::stopSpeechRecognitionInternal);
+        }
+    }
+
+    // --- Native speech recognition -----------------------------------------
+    // The Android System WebView does not expose the Web Speech API, so we bridge
+    // to android.speech.SpeechRecognizer and report results back to the web layer
+    // via window.__onSpeechResult / window.__onSpeechState.
+
+    private void beginSpeechRecognition(String lang) {
+        pendingSpeechLang = lang;
+        if (checkSelfPermission(Manifest.permission.RECORD_AUDIO) != PackageManager.PERMISSION_GRANTED) {
+            requestPermissions(new String[]{Manifest.permission.RECORD_AUDIO}, REQ_RECORD_AUDIO);
+            return;
+        }
+        launchSpeechRecognizer(lang);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == REQ_RECORD_AUDIO) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                launchSpeechRecognizer(pendingSpeechLang);
+            } else {
+                reportSpeechResult(null, "permission_denied");
+            }
+        }
+    }
+
+    private void launchSpeechRecognizer(String lang) {
+        releaseSpeechRecognizer();
+        if (!SpeechRecognizer.isRecognitionAvailable(this)) {
+            reportSpeechResult(null, "unavailable");
+            return;
+        }
+        speechRecognizer = SpeechRecognizer.createSpeechRecognizer(this);
+        speechRecognizer.setRecognitionListener(new RecognitionListener() {
+            @Override public void onReadyForSpeech(Bundle params) {
+                evalJs("window.__onSpeechState && window.__onSpeechState('listening')");
+            }
+            @Override public void onBeginningOfSpeech() { }
+            @Override public void onRmsChanged(float rmsdB) { }
+            @Override public void onBufferReceived(byte[] buffer) { }
+            @Override public void onEndOfSpeech() { }
+            @Override public void onError(int error) {
+                reportSpeechResult(null, "error_" + error);
+            }
+            @Override public void onResults(Bundle results) {
+                ArrayList<String> matches =
+                        results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION);
+                String text = (matches != null && !matches.isEmpty()) ? matches.get(0) : "";
+                reportSpeechResult(text, null);
+            }
+            @Override public void onPartialResults(Bundle partialResults) { }
+            @Override public void onEvent(int eventType, Bundle params) { }
+        });
+
+        Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
+        intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,
+                RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
+        if (lang != null && !lang.isEmpty()) {
+            intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE, lang);
+        }
+        intent.putExtra(RecognizerIntent.EXTRA_MAX_RESULTS, 1);
+        try {
+            speechRecognizer.startListening(intent);
+        } catch (Exception e) {
+            reportSpeechResult(null, e.getClass().getSimpleName());
+        }
+    }
+
+    private void stopSpeechRecognitionInternal() {
+        if (speechRecognizer != null) {
+            try {
+                speechRecognizer.stopListening();
+            } catch (Exception ignored) {
+                // Best effort; results/error listener still fires.
+            }
+        }
+    }
+
+    private void releaseSpeechRecognizer() {
+        if (speechRecognizer != null) {
+            try {
+                speechRecognizer.destroy();
+            } catch (Exception ignored) {
+                // Ignore teardown failures.
+            }
+            speechRecognizer = null;
+        }
+    }
+
+    private void reportSpeechResult(String text, String error) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("window.__onSpeechResult && window.__onSpeechResult({");
+        boolean hasField = false;
+        if (text != null) {
+            sb.append("\"transcript\":\"").append(jsEscape(text)).append("\"");
+            hasField = true;
+        }
+        if (error != null) {
+            if (hasField) {
+                sb.append(",");
+            }
+            sb.append("\"error\":\"").append(jsEscape(error)).append("\"");
+        }
+        sb.append("})");
+        evalJs(sb.toString());
+        evalJs("window.__onSpeechState && window.__onSpeechState('ended')");
+        releaseSpeechRecognizer();
     }
 
     // Queries the GitHub "latest release" API and reports {latestVersion, apkUrl, error}

@@ -92,8 +92,58 @@ const showNetworkToast = (kind: 'offline' | 'online') => {
   // offline toast stays until dismissed or until online event fires
 }
 
-const handleOffline = () => showNetworkToast('offline')
-const handleOnline = () => showNetworkToast('online')
+// The browser 'online' event is unreliable (especially on mobile / PWA /
+// captive portals): it may never fire even after connectivity returns, and
+// navigator.onLine only reflects the network interface, not real reachability.
+// So while we believe we're offline we actively poll /health to detect the
+// moment the connection actually comes back.
+let connectivityPollTimer: ReturnType<typeof setInterval> | null = null
+let isOfflineState = false
+
+const probeConnectivity = async (): Promise<boolean> => {
+  try {
+    const res = await fetch('/health', { method: 'GET', cache: 'no-store' })
+    return res.ok
+  } catch {
+    return false
+  }
+}
+
+const stopConnectivityPolling = () => {
+  if (connectivityPollTimer) {
+    clearInterval(connectivityPollTimer)
+    connectivityPollTimer = null
+  }
+}
+
+const startConnectivityPolling = () => {
+  if (connectivityPollTimer) return
+  connectivityPollTimer = setInterval(async () => {
+    if (await probeConnectivity()) {
+      handleOnline()
+    }
+  }, 5000)
+}
+
+const handleOffline = () => {
+  isOfflineState = true
+  showNetworkToast('offline')
+  startConnectivityPolling()
+}
+
+const handleOnline = () => {
+  if (!isOfflineState) return
+  isOfflineState = false
+  stopConnectivityPolling()
+  showNetworkToast('online')
+}
+
+// When the tab regains focus/visibility, re-check immediately instead of
+// waiting for the next poll tick or an event that may never come.
+const recheckConnectivity = async () => {
+  if (!isOfflineState) return
+  if (await probeConnectivity()) handleOnline()
+}
 
 const updateThemeMetaColor = () => {
   const bg = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim() || '#F8F1E4'
@@ -122,6 +172,13 @@ onMounted(() => {
 
   window.addEventListener('offline', handleOffline)
   window.addEventListener('online', handleOnline)
+  window.addEventListener('focus', recheckConnectivity)
+  document.addEventListener('visibilitychange', recheckConnectivity)
+
+  // If we booted while already offline, start polling right away.
+  if (typeof navigator !== 'undefined' && navigator.onLine === false) {
+    handleOffline()
+  }
 
   mounted.value = true
   updateThemeMetaColor()
@@ -144,6 +201,9 @@ onMounted(() => {
 onUnmounted(() => {
   window.removeEventListener('offline', handleOffline)
   window.removeEventListener('online', handleOnline)
+  window.removeEventListener('focus', recheckConnectivity)
+  document.removeEventListener('visibilitychange', recheckConnectivity)
+  stopConnectivityPolling()
   hideNetworkToast()
 })
 

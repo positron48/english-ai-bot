@@ -497,7 +497,8 @@
     "correctAnswer": "Correct",
     "outcomeStar": "No mistakes",
     "outcomePassed": "Passed",
-    "outcomeFailed": "Not passed"
+    "outcomeFailed": "Not passed",
+    "voiceInput": "Voice input"
   },
   "learning": {
     "title": "Learning",

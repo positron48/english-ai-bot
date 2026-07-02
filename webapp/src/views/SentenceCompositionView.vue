@@ -53,6 +53,18 @@
           @keydown.ctrl.enter="submit"
           @input="markInput"
         />
+        <button
+          v-if="voiceSupported"
+          type="button"
+          class="sc-mic"
+          :class="{ 'sc-mic--active': voiceListening }"
+          :disabled="grading || !!result"
+          :aria-label="t('sentence.voiceInput')"
+          :title="t('sentence.voiceInput')"
+          @click="toggleVoice"
+        >
+          🎤
+        </button>
       </section>
 
       <!-- result -->
@@ -115,12 +127,23 @@ import { sentenceClient, type SentenceGrade, type SentenceItem, type SentenceSet
 import { useCourse } from '../composables/useCourse'
 import { useMe } from '../composables/useMe'
 import { useLearningConfig } from '../composables/useLearningConfig'
+import { useSpeechRecognition } from '../composables/useSpeechRecognition'
 
 const router = useRouter()
 const { t } = useI18n()
 const { currentCourseCode } = useCourse()
 const { ensureMe, hasFeature } = useMe()
-const { targetLangDisplay } = useLearningConfig()
+const { learning, targetLangDisplay } = useLearningConfig()
+
+// Voice input: dictate the answer in the target language when the device/browser
+// supports speech recognition.
+const { supported: voiceSupported, listening: voiceListening, start: toggleVoice } = useSpeechRecognition({
+  lang: () => learning.value?.target_lang ?? 'en',
+  onFinalTranscript: (text) => {
+    input.value = input.value ? `${input.value.trimEnd()} ${text}` : text
+    markInput()
+  },
+})
 
 const loading = ref(true)
 const available = ref(false)
@@ -305,13 +328,42 @@ onMounted(async () => {
 
 /* answer field */
 .sc-answer {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
   border-radius: 16px;
   background: var(--input-bg, var(--card-bg));
   border: 1px solid var(--input-border, var(--border));
   box-shadow: var(--shadow-soft);
   padding: 16px;
 }
+.sc-mic {
+  flex: 0 0 auto;
+  width: 44px;
+  height: 44px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  line-height: 1;
+  border: 0;
+  border-radius: 12px;
+  background: var(--surface-2, rgba(0, 0, 0, 0.05));
+  color: var(--text);
+  cursor: pointer;
+  transition: background 0.15s, transform 0.15s;
+}
+.sc-mic:disabled { opacity: 0.4; cursor: default; }
+.sc-mic--active {
+  background: var(--salvia, #4caf50);
+  animation: micPulse 1.2s ease-in-out infinite;
+}
+@keyframes micPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.12); }
+}
 .sc-answer-input {
+  flex: 1 1 auto;
   width: 100%;
   min-height: 48px;
   border: 0;
