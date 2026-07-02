@@ -78,6 +78,8 @@ type Service struct {
 	conversationCorrectionPrompts map[string]string // course_code -> error correction prompt (Prompt B)
 	conversationNPCPrompts        map[string]string // course_code -> in-character NPC reply prompt (Prompt C)
 	conversationModel             string            // optional model override for NPC conversations ("" = use model)
+	pictureQuestPrompts           map[string]string // course_code -> picture quest task evaluation prompt
+	pictureLumiPrompts            map[string]string // course_code -> Lumi reply prompt for picture quests
 	sentenceGenPrompts            map[string]string // course_code -> daily sentence-set generation prompt
 	sentenceGradePrompts          map[string]string // course_code -> per-sentence grading prompt
 	logger              *zap.Logger
@@ -211,6 +213,46 @@ func (s *Service) ConversationNPCPromptForCourse(courseCode string) string {
 		return p
 	}
 	return ""
+}
+
+// SetPictureQuestPromptForCourse registers the picture-quest task evaluation prompt.
+func (s *Service) SetPictureQuestPromptForCourse(courseCode, prompt string) {
+	if s.pictureQuestPrompts == nil {
+		s.pictureQuestPrompts = make(map[string]string)
+	}
+	s.pictureQuestPrompts[courseCode] = strings.ReplaceAll(prompt, "\\n", "\n")
+}
+
+// PictureQuestPromptForCourse returns the picture-quest evaluation base prompt for a course.
+func (s *Service) PictureQuestPromptForCourse(courseCode string) string {
+	if p, ok := s.pictureQuestPrompts[courseCode]; ok && p != "" {
+		return p
+	}
+	return ""
+}
+
+// SetPictureLumiPromptForCourse registers the Lumi reply prompt for picture description quests.
+func (s *Service) SetPictureLumiPromptForCourse(courseCode, prompt string) {
+	if s.pictureLumiPrompts == nil {
+		s.pictureLumiPrompts = make(map[string]string)
+	}
+	s.pictureLumiPrompts[courseCode] = strings.ReplaceAll(prompt, "\\n", "\n")
+}
+
+// PictureLumiPromptForCourse returns the Lumi reply base prompt for a course.
+func (s *Service) PictureLumiPromptForCourse(courseCode string) string {
+	if p, ok := s.pictureLumiPrompts[courseCode]; ok && p != "" {
+		return p
+	}
+	return ""
+}
+
+// HasPictureQuestPrompts reports whether the picture-quest prompts (plus the shared correction
+// prompt) are registered for a course.
+func (s *Service) HasPictureQuestPrompts(courseCode string) bool {
+	return s.PictureQuestPromptForCourse(courseCode) != "" &&
+		s.PictureLumiPromptForCourse(courseCode) != "" &&
+		s.ConversationCorrectionPromptForCourse(courseCode) != ""
 }
 
 // HasSplitConversationPrompts reports whether all three split prompts are registered for a course.

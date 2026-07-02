@@ -34,6 +34,11 @@ const router = createRouter({
           component: () => import('../views/AdminConversationsView.vue')
         },
         {
+          path: 'picture-quests',
+          name: 'AdminPictureQuests',
+          component: () => import('../views/AdminPictureQuestsView.vue')
+        },
+        {
           path: 'content-reports',
           name: 'AdminContentReports',
           component: () => import('../views/AdminContentReportsView.vue')

@@ -511,7 +511,9 @@
     "speaking": "Говорение",
     "speakingDescription": "Практика произношения с оценкой и обратной связью (Pro)",
     "conversation": "Общение",
-    "conversationDescription": "Разговорная практика с ИИ-собеседником"
+    "conversationDescription": "Разговорная практика с ИИ-собеседником",
+    "pictureQuest": "Опиши картинку",
+    "pictureQuestDescription": "Расскажи Луми, что ты видишь"
   },
   "speaking": {
     "title": "Говорение",
@@ -981,5 +983,13 @@
     "exerciseCounter": "{current} из {total}",
     "repeatWordsDone": "Слова на сегодня повторены",
     "readTextTitled": "Прочитай: {title}"
+  },
+  "pictureQuest": {
+    "title": "Опиши картинку",
+    "listSub": "Опиши Луми, что изображено на картинке. Задания открываются по уровням районов города.",
+    "noQuests": "Пока нет доступных картинок",
+    "tapToExpand": "Нажми, чтобы увеличить",
+    "backToList": "К списку картинок",
+    "placeholder": "Опиши, что ты видишь…"
   }
 }

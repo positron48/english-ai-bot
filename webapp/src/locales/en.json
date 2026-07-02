@@ -511,7 +511,9 @@
     "speaking": "Speaking",
     "speakingDescription": "Pronunciation practice with AI feedback (Pro)",
     "conversation": "Conversation",
-    "conversationDescription": "Live chat practice with an AI partner"
+    "conversationDescription": "Live chat practice with an AI partner",
+    "pictureQuest": "Describe the picture",
+    "pictureQuestDescription": "Tell Lumi what you see"
   },
   "speaking": {
     "title": "Speaking",
@@ -981,5 +983,13 @@
     "exerciseCounter": "{current} of {total}",
     "repeatWordsDone": "Today’s words reviewed",
     "readTextTitled": "Read: {title}"
+  },
+  "pictureQuest": {
+    "title": "Describe the picture",
+    "listSub": "Describe to Lumi what is in the picture. Quests unlock with your city district levels.",
+    "noQuests": "No pictures available yet",
+    "tapToExpand": "Tap to expand",
+    "backToList": "Back to pictures",
+    "placeholder": "Describe what you see…"
   }
 }

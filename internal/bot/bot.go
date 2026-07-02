@@ -301,6 +301,7 @@ func New(cfg *config.Config, log *zap.Logger) (*Bot, error) {
 	defaultCourseCode := repository.CourseCodeForLearning(cfg.Learning)
 	// Register split NPC conversation prompts for the default course.
 	loadSplitConversationPrompts(aiService, defaultCourseCode, cfg.Learning, log)
+	loadPictureQuestPrompts(aiService, defaultCourseCode, cfg.Learning, log)
 	loadSentenceCompositionPrompts(aiService, defaultCourseCode, cfg.Learning, log)
 	wordServices := map[string]*service.WordService{defaultCourseCode: wordService}
 	if courseCodes, cErr := courseRepo.ListActiveCourseCodes(context.Background()); cErr != nil {
@@ -870,8 +871,30 @@ func registerCoursePrompts(aiService *ai.Service, courseCode string, lc config.L
 		aiService.SetConversationPromptForCourse(courseCode, p)
 	}
 	loadSplitConversationPrompts(aiService, courseCode, lc, log)
+	loadPictureQuestPrompts(aiService, courseCode, lc, log)
 	loadSentenceCompositionPrompts(aiService, courseCode, lc, log)
 	return nil
+}
+
+// loadPictureQuestPrompts registers the picture-description quest prompts (task eval + Lumi reply)
+// for a course. Corrections reuse the conversation correction prompt. Missing files are logged and
+// skipped (the feature stays unavailable for that course until both prompts exist).
+func loadPictureQuestPrompts(aiService *ai.Service, courseCode string, lc config.LearningConfig, log *zap.Logger) {
+	questFile := fmt.Sprintf("prompts/picture-quest-%s.txt", lc.Pair)
+	if p, err := ai.LoadRenderedPromptFile(questFile, lc.NativeLang, lc.TargetLang, lc.Pair); err != nil {
+		log.Warn("failed to load picture quest prompt",
+			zap.String("course_code", courseCode), zap.String("file", questFile), zap.Error(err))
+	} else {
+		aiService.SetPictureQuestPromptForCourse(courseCode, p)
+	}
+
+	lumiFile := fmt.Sprintf("prompts/picture-lumi-%s.txt", lc.Pair)
+	if p, err := ai.LoadRenderedPromptFile(lumiFile, lc.NativeLang, lc.TargetLang, lc.Pair); err != nil {
+		log.Warn("failed to load picture lumi prompt",
+			zap.String("course_code", courseCode), zap.String("file", lumiFile), zap.Error(err))
+	} else {
+		aiService.SetPictureLumiPromptForCourse(courseCode, p)
+	}
 }
 
 // loadSentenceCompositionPrompts registers the daily sentence-composition generation and

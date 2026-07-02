@@ -36,7 +36,7 @@ func (r *Router) mediaPublicBasePath() string {
 	return "/api/media"
 }
 
-// handleAdminMediaUpload handles POST /api/admin/media/upload?type=npc|quest.
+// handleAdminMediaUpload handles POST /api/admin/media/upload?type=npc|quest|picture.
 // Accepts a multipart "file" field, saves it under MEDIA_DIR/<type>/<random>.<ext>,
 // and returns the public URL.
 func (r *Router) handleAdminMediaUpload(w http.ResponseWriter, req *http.Request) {
@@ -45,8 +45,8 @@ func (r *Router) handleAdminMediaUpload(w http.ResponseWriter, req *http.Request
 		return
 	}
 	kind := strings.TrimSpace(req.URL.Query().Get("type"))
-	if kind != "npc" && kind != "quest" {
-		http.Error(w, "type must be npc or quest", http.StatusBadRequest)
+	if kind != "npc" && kind != "quest" && kind != "picture" {
+		http.Error(w, "type must be npc, quest or picture", http.StatusBadRequest)
 		return
 	}
 	if err := req.ParseMultipartForm(maxMediaUploadBytes); err != nil {

@@ -504,7 +504,9 @@
     "reading": "Textos de lectura",
     "readingDescription": "Textos cortos con audio y tarjetas de palabras",
     "conversation": "Conversación",
-    "conversationDescription": "Práctica de conversación con un compañero IA"
+    "conversationDescription": "Práctica de conversación con un compañero IA",
+    "pictureQuest": "Describe la imagen",
+    "pictureQuestDescription": "Cuéntale a Lumi lo que ves"
   },
   "reading": {
     "title": "Textos de lectura",
@@ -942,5 +944,13 @@
     "exerciseCounter": "{current} de {total}",
     "repeatWordsDone": "Palabras de hoy repasadas",
     "readTextTitled": "Lee: {title}"
+  },
+  "pictureQuest": {
+    "title": "Describe la imagen",
+    "listSub": "Descríbele a Lumi lo que hay en la imagen. Las misiones se desbloquean con los niveles de los distritos.",
+    "noQuests": "Aún no hay imágenes disponibles",
+    "tapToExpand": "Toca para ampliar",
+    "backToList": "Volver a las imágenes",
+    "placeholder": "Describe lo que ves…"
   }
 }

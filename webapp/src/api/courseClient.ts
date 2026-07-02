@@ -400,6 +400,32 @@ export interface ConversationScenarioSummary {
   all_tasks_done: boolean
 }
 
+export interface PictureQuestSummary {
+  code: string
+  title: string
+  cefr_level: string
+  image_url: string
+  tasks: ConversationTask[]
+  session_status: string
+  quest_passed: boolean
+  all_tasks_done: boolean
+}
+
+export interface PictureQuestSessionState {
+  session_id: number
+  quest_code: string
+  title: string
+  cefr_level: string
+  image_url: string
+  opening_line: string
+  messages: ConversationMessage[]
+  tasks: ConversationTask[]
+  turn_count: number
+  max_turns: number
+  status: string
+  quest_passed: boolean
+}
+
 export interface ConversationCorrection {
   original: string
   corrected: string
@@ -537,7 +563,39 @@ export const courseClient = {
     })
   },
 
-  uploadAdminMedia(file: File, type: 'npc' | 'quest'): Promise<{ url: string }> {
+  listPictureQuests(districtCode: string, courseCode?: string): Promise<{ quests: PictureQuestSummary[] }> {
+    const p = new URLSearchParams({ district_code: districtCode })
+    if (courseCode) p.set('course_code', courseCode)
+    return apiClient.request(`/api/linglow/picture-quests?${p.toString()}`)
+  },
+  startPictureQuestSession(questCode: string, courseCode?: string): Promise<PictureQuestSessionState> {
+    return apiClient.request('/api/linglow/picture-quests/sessions', {
+      method: 'POST',
+      body: JSON.stringify({ quest_code: questCode, course_code: courseCode }),
+    })
+  },
+  getPictureQuestSession(sessionId: number): Promise<PictureQuestSessionState> {
+    return apiClient.request(`/api/linglow/picture-quests/sessions/${sessionId}`)
+  },
+  postPictureQuestMessage(sessionId: number, text: string): Promise<ConversationTurnResult> {
+    return apiClient.request(`/api/linglow/picture-quests/sessions/${sessionId}/message`, {
+      method: 'POST',
+      body: JSON.stringify({ text }),
+    })
+  },
+  endPictureQuestSession(sessionId: number, status?: string): Promise<{ status: string }> {
+    return apiClient.request(`/api/linglow/picture-quests/sessions/${sessionId}/end`, {
+      method: 'POST',
+      body: JSON.stringify({ status }),
+    })
+  },
+  resetPictureQuestSession(sessionId: number): Promise<PictureQuestSessionState> {
+    return apiClient.request(`/api/linglow/picture-quests/sessions/${sessionId}/reset`, {
+      method: 'POST',
+    })
+  },
+
+  uploadAdminMedia(file: File, type: 'npc' | 'quest' | 'picture'): Promise<{ url: string }> {
     const fd = new FormData()
     fd.append('file', file)
     return apiClient.request(`/api/admin/media/upload?type=${encodeURIComponent(type)}`, {

@@ -118,6 +118,7 @@ type Router struct {
 	speakingCatalogRepo               *repository.SpeakingCatalogRepository
 	speakingSessionRepo               *repository.SpeakingSessionRepository
 	conversationRepo                  *repository.ConversationRepository
+	pictureQuestRepo                  *repository.PictureQuestRepository
 	speakingEvaluator                 *service.SpeakingEvaluatorService
 	sentenceWorker                    *service.SentenceCompositionWorker
 	botToken                          string
@@ -175,6 +176,7 @@ func NewRouter(
 		r.speakingCatalogRepo = repository.NewSpeakingCatalogRepository(db)
 		r.speakingSessionRepo = repository.NewSpeakingSessionRepository(db)
 		r.conversationRepo = repository.NewConversationRepository(db, logger)
+		r.pictureQuestRepo = repository.NewPictureQuestRepository(db, logger)
 	}
 
 	// Setup routes
@@ -547,6 +549,10 @@ func (r *Router) setupProtectedRoutes() {
 	r.mux.HandleFunc("/api/linglow/conversation/scenarios", appAPIMiddleware.Wrap(auth.RequireAuth(r.RequireFeature("conversation")(r.handleLinglowConversationScenarios))))
 	r.mux.HandleFunc("/api/linglow/conversation/sessions", appAPIMiddleware.Wrap(auth.RequireAuth(r.RequireFeature("conversation")(r.handleLinglowConversationSessions))))
 	r.mux.HandleFunc("/api/linglow/conversation/sessions/", appAPIMiddleware.Wrap(auth.RequireAuth(r.RequireFeature("conversation")(r.handleLinglowConversationSessionByID))))
+	// Picture description quests (chat with Lumi about a picture) are a Pro feature.
+	r.mux.HandleFunc("/api/linglow/picture-quests", appAPIMiddleware.Wrap(auth.RequireAuth(r.RequireFeature("picture_description")(r.handleLinglowPictureQuests))))
+	r.mux.HandleFunc("/api/linglow/picture-quests/sessions", appAPIMiddleware.Wrap(auth.RequireAuth(r.RequireFeature("picture_description")(r.handleLinglowPictureQuestSessions))))
+	r.mux.HandleFunc("/api/linglow/picture-quests/sessions/", appAPIMiddleware.Wrap(auth.RequireAuth(r.RequireFeature("picture_description")(r.handleLinglowPictureQuestSessionByID))))
 	r.mux.HandleFunc("/api/vocab", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleVocab)))
 	r.mux.HandleFunc("/api/vocab/summary", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleVocabSummary)))
 	r.mux.HandleFunc("/api/vocab/", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleVocabDelete)))
@@ -689,6 +695,8 @@ func (r *Router) setupProtectedRoutes() {
 	r.mux.HandleFunc("/api/admin/conversations/tasks/", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminConversationTaskByID))))
 	r.mux.HandleFunc("/api/admin/conversations/import", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminConversationImport))))
 	r.mux.HandleFunc("/api/admin/conversations/prompt-template", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminConversationPromptTemplate))))
+	r.mux.HandleFunc("/api/admin/picture-quests", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminPictureQuests))))
+	r.mux.HandleFunc("/api/admin/picture-quests/", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminPictureQuestByID))))
 
 	// Sentence-composition admin routes (require full_access): inspect per-user results and force generation.
 	r.mux.HandleFunc("/api/admin/sentence-composition/users", appAPIMiddleware.Wrap(adminAuth(r.RequirePermission(PermissionFullAccess)(r.handleAdminSentenceCompositionUsers))))

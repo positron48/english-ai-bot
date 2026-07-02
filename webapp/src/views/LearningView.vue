@@ -149,6 +149,7 @@ const {
   applyVerbFormsPool,
 } = useSpanishVerbFormsPractice(isOnline)
 const isPro = ref(false)
+const isPicturePro = ref(false)
 const sentenceAvailable = ref(false)
 const vocabStatsLoaded = ref(false)
 const vocabStats = ref({
@@ -216,6 +217,17 @@ const modes = computed(() => {
       desc: t('learning.conversationDescription'),
       art: '/app/linglow/city/level3.jpg',
       to: '/learning/conversations',
+      disabled: isOffline.value,
+    })
+  }
+  if (isPicturePro.value) {
+    items.push({
+      type: 'conversation',
+      bg: 'rgba(45,107,58,0.10)',
+      title: t('learning.pictureQuest'),
+      desc: t('learning.pictureQuestDescription'),
+      art: '/app/linglow/city/level2.jpg',
+      to: '/learning/picture-quests',
       disabled: isOffline.value,
     })
   }
@@ -295,6 +307,7 @@ onMounted(async () => {
   // /me is client-cached; only needed here for the Pro-gated conversation entry point.
   ensureMe().then(() => {
     isPro.value = hasFeature('conversation')
+    isPicturePro.value = hasFeature('picture_description')
   })
 })
 

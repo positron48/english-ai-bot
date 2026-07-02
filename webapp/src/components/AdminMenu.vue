@@ -85,6 +85,16 @@
       </router-link>
       <router-link
         v-if="can('full_access')"
+        to="/picture-quests"
+        class="admin-sidebar-item"
+        :class="{ active: $route.path.startsWith('/picture-quests') }"
+        @click="isMobile && handleCloseSidebar()"
+      >
+        <Icon name="magic" class="admin-sidebar-icon" />
+        <span>Картинки</span>
+      </router-link>
+      <router-link
+        v-if="can('full_access')"
         to="/content-reports"
         class="admin-sidebar-item"
         :class="{ active: $route.path === '/content-reports' }"
