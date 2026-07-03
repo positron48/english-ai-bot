@@ -23,6 +23,7 @@
           <div class="prg-metrics-grid">
             <div v-for="m in metrics" :key="m.label" class="prg-metric-cell">
               <LgActivityIcon v-if="m.type" :type="m.type" status="green" :size="40" />
+              <span v-else-if="m.lgicon" class="prg-metric-lgicon"><LgIcon :name="m.lgicon" :s="38" /></span>
               <span v-else class="prg-metric-icon">{{ m.icon }}</span>
               <div class="prg-metric-val">{{ m.value }}</div>
               <div class="prg-metric-label">{{ m.label }}</div>
@@ -300,12 +301,20 @@ const weekCells = computed(() => {
   return cells
 })
 
-const metrics = computed(() => {
+interface ProgressMetric {
+  icon: string
+  type?: 'grammar' | 'words' | 'reading' | 'conversation'
+  lgicon?: string
+  value: string
+  label: string
+  sub: string
+}
+const metrics = computed<ProgressMetric[]>(() => {
   const m = stats.value?.month
   return [
-    { icon: '⏱', value: String(m?.active_minutes ?? 0), label: (t as any)('progress.metricMinutes', m?.active_minutes ?? 0), sub: t('progress.metricMinutesSub') },
-    { icon: '',  type: 'words' as const,       value: String(m?.words_learned ?? 0),  label: (t as any)('progress.metricWords', m?.words_learned ?? 0),   sub: t('progress.metricWordsSub') },
-    { icon: '',  type: 'reading' as const,     value: String(m?.texts_read ?? 0),     label: (t as any)('progress.metricTexts', m?.texts_read ?? 0),   sub: t('progress.metricTextsSub') },
+    { icon: '', lgicon: 'clock', value: String(m?.active_minutes ?? 0), label: (t as any)('progress.metricMinutes', m?.active_minutes ?? 0), sub: t('progress.metricMinutesSub') },
+    { icon: '', type: 'words',   value: String(m?.words_learned ?? 0),  label: (t as any)('progress.metricWords', m?.words_learned ?? 0),   sub: t('progress.metricWordsSub') },
+    { icon: '', type: 'reading', value: String(m?.texts_read ?? 0),     label: (t as any)('progress.metricTexts', m?.texts_read ?? 0),   sub: t('progress.metricTextsSub') },
   ]
 })
 
@@ -524,6 +533,8 @@ const improvements = computed(() => {
   border-color: rgba(255,255,255,0.06);
 }
 .prg-metric-icon { font-size: 15px; line-height: 1; }
+.prg-metric-lgicon { display: inline-flex; color: #2d6b3a; }
+:root[data-theme="dark"] .prg-metric-lgicon { color: #6bbf7e; }
 .prg-metric-val { font-family: 'Lora', serif; font-size: 19px; font-weight: 600; color: var(--text); margin-top: 4px; line-height: 1; }
 .prg-metric-label { font-family: 'Inter', sans-serif; font-size: 9px; color: var(--subtext); line-height: 1.3; margin-top: 2px; }
 .prg-metric-sub { font-family: 'Inter', sans-serif; font-size: 9px; color: var(--subtext); line-height: 1.3; }

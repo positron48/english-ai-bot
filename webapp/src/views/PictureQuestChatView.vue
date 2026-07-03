@@ -107,6 +107,12 @@
           :placeholder="t('pictureQuest.placeholder')"
           @keyup.enter="send"
         />
+        <VoiceMicButton
+          :lang="targetLang || 'en'"
+          :disabled="sending"
+          :label="t('sentence.voiceInput')"
+          @transcript="onVoiceTranscript"
+        />
         <button class="chat-send" type="button" :disabled="sending || !input.trim()" @click="send">
           <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
@@ -148,6 +154,7 @@ import LgSpeechBubble from '../components/linglow/LgSpeechBubble.vue'
 import LgButton from '../components/linglow/LgButton.vue'
 import LgLumi from '../components/linglow/LgLumi.vue'
 import PictureHintSheet from '../components/PictureHintSheet.vue'
+import VoiceMicButton from '../components/VoiceMicButton.vue'
 import { getHintSections } from '../constants/pictureHintPhrasebook'
 import { useCourse } from '../composables/useCourse'
 import { showAlert, showConfirm } from '../composables/useDialog'
@@ -177,6 +184,11 @@ const sendError = ref(false)
 
 function focusComposer() {
   nextTick(() => composerInput.value?.focus())
+}
+
+function onVoiceTranscript(text: string) {
+  input.value = input.value ? `${input.value.trimEnd()} ${text}` : text
+  focusComposer()
 }
 
 const headerTitle = computed(() => session.value?.title || t('pictureQuest.title'))
