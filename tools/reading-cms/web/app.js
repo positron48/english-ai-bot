@@ -869,6 +869,7 @@ function openCoverModal(kind, textId, courseCode, prefetched) {
         <button type="button" class="btn" id="cover-modal-prev" ${prev ? '' : 'disabled'}>←</button>
         <span class="meta">${seq.index >= 0 ? `${seq.index + 1} / ${seq.items.length}` : ''}</span>
         <button type="button" class="btn" id="cover-modal-next" ${next ? '' : 'disabled'}>→</button>
+        ${(item.cover_status === 'ready') ? '<button type="button" class="btn danger cover-modal-del-top" id="cover-modal-del">Удалить обложку</button>' : ''}
       </div>
       <div class="cover-modal-status">Статус: ${escapeHtml(item.cover_status || 'none')}</div>
       <div class="cover-modal-images">
@@ -881,7 +882,6 @@ function openCoverModal(kind, textId, courseCode, prefetched) {
       <div class="cover-modal-actions">
         <button type="button" class="btn primary" id="cover-modal-comfy">Сгенерировать (ComfyUI)</button>
         <button type="button" class="btn" id="cover-modal-regen">Перегенерировать (LLM + ComfyUI)</button>
-        ${(item.cover_status === 'ready') ? '<button type="button" class="btn danger" id="cover-modal-del">Удалить обложку</button>' : ''}
       </div>
     `;
     const openNeighbor = (target) => {

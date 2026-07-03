@@ -15,6 +15,7 @@ from reading_cover_prompt import (  # noqa: E402
     extract_leading_sentences,
     extract_scene_candidates,
     finalize_cover_prompt,
+    ensure_no_text_directive,
     parse_image_prompt,
     plain_text_from_doc,
     split_sentences,
@@ -83,8 +84,11 @@ class ReadingCoverPromptTest(unittest.TestCase):
         msg = build_cover_prompt_messages("TITLE: La letra ñ\n…", "es", "La letra ñ")[0]["content"]
         self.assertIn("Title: La letra ñ", msg)
         self.assertIn("Example:", msg)
+        self.assertIn("Do not include any visible text", msg)
+        self.assertIn("letters", msg)
+        self.assertIn("numbers", msg)
         self.assertIn("Output:", msg)
-        self.assertLess(len(msg), 700)
+        self.assertLess(len(msg), 1000)
 
     def test_parse_image_prompt_json(self):
         raw = '```json\n{"image_prompt": "Two friends sharing tapas at a small cafe table"}\n```'
@@ -123,6 +127,14 @@ class ReadingCoverPromptTest(unittest.TestCase):
         out = finalize_cover_prompt("a family cooking dinner in a bright kitchen")
         self.assertIn("casual watercolor", out.lower())
         self.assertIn("bright kitchen", out)
+        self.assertIn("no text", out.lower())
+        self.assertIn("no letters", out.lower())
+
+    def test_ensure_no_text_directive(self):
+        out = ensure_no_text_directive("a street market")
+        self.assertIn("a street market", out)
+        self.assertIn("no text", out.lower())
+        self.assertEqual(ensure_no_text_directive("a market, no text"), "a market, no text")
 
     def test_build_cover_prompt_mock(self):
         doc = {

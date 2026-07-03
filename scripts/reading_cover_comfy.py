@@ -19,6 +19,11 @@ if str(_REPO_SCRIPTS) not in sys.path:
 
 from reading_cover_log import log  # noqa: E402
 
+NO_TEXT_NEGATIVE_PROMPT = (
+    "text, words, letters, numbers, readable text, captions, subtitles, labels, signs, signage, "
+    "poster text, menu text, document text, book page text, screen text, map labels, logo, watermark"
+)
+
 
 def comfyui_url() -> str:
     explicit = os.getenv("COMFYUI_URL", "").strip()
@@ -62,11 +67,22 @@ def inject_prompt(workflow: dict, prompt: str, checkpoint: str) -> dict:
     if "__CHECKPOINT__" in raw:
         raw = raw.replace("__CHECKPOINT__", json.dumps(ckpt)[1:-1])
     out = json.loads(raw)
-    # Randomize KSampler seed when present.
+    negative_node_ids = set()
     for node in out.values():
+        if isinstance(node, dict) and node.get("class_type") == "KSampler":
+            negative = (node.get("inputs") or {}).get("negative")
+            if isinstance(negative, list) and negative:
+                negative_node_ids.add(str(negative[0]))
+    # Randomize KSampler seed when present.
+    for node_id, node in out.items():
         if isinstance(node, dict) and node.get("class_type") == "KSampler":
             inputs = node.setdefault("inputs", {})
             inputs["seed"] = random.randint(0, 2**31 - 1)
+        if isinstance(node, dict) and str(node_id) in negative_node_ids and node.get("class_type") == "CLIPTextEncode":
+            inputs = node.setdefault("inputs", {})
+            text = str(inputs.get("text") or "").strip()
+            if text and NO_TEXT_NEGATIVE_PROMPT not in text:
+                inputs["text"] = text + ", " + NO_TEXT_NEGATIVE_PROMPT
     return out
 
 

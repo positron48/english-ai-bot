@@ -27,6 +27,10 @@ MAX_SOURCE_CHARS_COMPACT = 260
 _SENTENCE_SPLIT_RE = re.compile(r"(?<=[.!?…])\s+")
 
 DEFAULT_COVER_STYLE_PREFIX = "casual watercolor illustration, "
+NO_TEXT_DIRECTIVE = (
+    "no text, no words, no letters, no numbers, no signs, no labels, "
+    "no captions, no logos, no watermark"
+)
 
 MOCK_SCENE_PROMPT = "two people at a small cafe table on a quiet street"
 
@@ -35,7 +39,7 @@ _IMAGE_PROMPT_KEYS = ("image_prompt", "prompt", "cover_image_prompt")
 _COVER_FEWSHOT_EXAMPLE = (
     "Example:\n"
     "Title: Tapas\n"
-    'Output: {"image_prompt": "Two friends sharing tapas at a Spanish bar."}'
+    'Output: {"image_prompt": "Two friends sharing tapas at a Spanish bar, no text, no signs, no labels."}'
 )
 
 
@@ -52,6 +56,15 @@ def normalize_scene_text(scene: str) -> str:
     return " ".join((scene or "").split()).strip().rstrip(".,;")
 
 
+def ensure_no_text_directive(prompt: str) -> str:
+    text = normalize_scene_text(prompt)
+    if not text:
+        return ""
+    if "no text" in text.lower():
+        return text
+    return text + ", " + NO_TEXT_DIRECTIVE
+
+
 def finalize_cover_prompt(scene_prompt: str) -> str:
     """Prepend ComfyUI style prefix; optional READING_COVER_STYLE_SUFFIX env only."""
     scene = normalize_scene_text(scene_prompt)
@@ -61,7 +74,7 @@ def finalize_cover_prompt(scene_prompt: str) -> str:
     suffix = cover_style_suffix()
     if prefix and not prefix.endswith((" ", ",")):
         prefix = prefix + " "
-    parts = [prefix, scene]
+    parts = [prefix, ensure_no_text_directive(scene)]
     if suffix:
         suf = suffix if suffix.startswith(",") else ", " + suffix
         parts.append(suf)
@@ -152,6 +165,9 @@ def build_cover_prompt_messages(source_text: str, target_lang: str, title: str =
                 f"Title: {topic}\n"
                 f"Passage language: {lang}\n"
                 f"Passage:\n{source_text}\n"
+                "Rules: Return a visual scene only. Do not include any visible text, words, letters, "
+                "numbers, signs, labels, captions, logos, documents, book pages, screens, maps, posters, "
+                "menus, forms, or readable markings in the image.\n"
                 "Output:"
             ),
         }

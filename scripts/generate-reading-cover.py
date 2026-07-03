@@ -16,7 +16,7 @@ if str(SCRIPTS) not in sys.path:
     sys.path.insert(0, str(SCRIPTS))
 
 from reading_cover_log import log, log_comfy_prompt, log_stage  # noqa: E402
-from reading_cover_prompt import build_cover_prompt  # noqa: E402
+from reading_cover_prompt import build_cover_prompt, ensure_no_text_directive  # noqa: E402
 from reading_cover_resize import resize_cover_assets  # noqa: E402
 
 
@@ -71,7 +71,7 @@ def render_cover_for_doc(
     force: bool = True,
 ) -> str:
     """ComfyUI + resize + JSON update using a ready-made image prompt (no LLM)."""
-    image_prompt = " ".join((image_prompt or "").split()).strip()
+    image_prompt = ensure_no_text_directive(image_prompt)
     if not image_prompt:
         raise ValueError("image_prompt is required")
     doc = json.loads(json_path.read_text(encoding="utf-8"))

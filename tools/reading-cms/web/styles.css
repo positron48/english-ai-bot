@@ -249,6 +249,7 @@ textarea.mono { width: 100%; font-family: ui-monospace, Menlo, monospace; font-s
 .cover-modal { padding: 16px; }
 .cover-modal header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
 .cover-modal-nav { display: flex; align-items: center; gap: 10px; margin-bottom: 10px; }
+.cover-modal-del-top { margin-left: auto; }
 .cover-modal-images { display: flex; gap: 16px; flex-wrap: wrap; margin: 12px 0; }
 .cover-modal-images figure { margin: 0; }
 .cover-modal-images figcaption { font-size: 0.75rem; color: #9aa8bc; margin-bottom: 4px; }
