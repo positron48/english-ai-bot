@@ -41,7 +41,7 @@
             <td><span :class="['status-badge', report.status]">{{ report.status }}</span></td>
             <td>{{ report.source_type }}</td>
             <td>{{ report.report_category || '—' }}</td>
-            <td>{{ report.word || report.grammar_question_id || '—' }}</td>
+            <td class="word-cell">{{ report.word || report.grammar_question_id || '—' }}</td>
             <td class="comment-cell">{{ truncateComment(report.comment_text) }}</td>
             <td>{{ report.user_id }}</td>
             <td>{{ formatDate(report.created_at) }}</td>
@@ -68,7 +68,7 @@
             <div v-if="selectedReport.word_category"><b>Category:</b> {{ selectedReport.word_category }}</div>
             <div v-if="selectedReport.grammar_chapter_id"><b>Chapter:</b> {{ selectedReport.grammar_chapter_id }}</div>
             <div v-if="selectedReport.theory_block_id"><b>Theory block:</b> {{ selectedReport.theory_block_id }}</div>
-            <div v-if="selectedReport.grammar_question_id"><b>Question:</b> {{ selectedReport.grammar_question_id }}</div>
+            <div v-if="selectedReport.grammar_question_id" class="word-cell"><b>Question:</b> {{ selectedReport.grammar_question_id }}</div>
             <div v-if="selectedReport.comment_text" class="comment-full"><b>Comment:</b> {{ selectedReport.comment_text }}</div>
           </div>
 
@@ -217,6 +217,7 @@ void loadReports()
 .reports-table { width: 100%; border-collapse: collapse; }
 .reports-table th, .reports-table td { padding: 8px; border-bottom: 1px solid var(--border-primary); text-align: left; }
 .comment-cell { max-width: 360px; white-space: normal; word-break: break-word; color: var(--text-secondary); }
+.word-cell { max-width: 260px; white-space: normal; overflow-wrap: anywhere; word-break: break-word; }
 .clickable-row { cursor: pointer; }
 .clickable-row:hover { background: var(--bg-secondary); }
 .status-badge { padding: 2px 8px; border-radius: 10px; font-size: 12px; }
