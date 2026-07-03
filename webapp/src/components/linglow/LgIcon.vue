@@ -133,6 +133,20 @@
       <circle cx="12" cy="12" r="5" :stroke="c" stroke-width="2" fill="none" />
       <path d="M12 2V4M12 20V22M2 12H4M20 12H22M5.6 5.6L7 7M17 17L18.4 18.4M18.4 5.6L17 7M7 17L5.6 18.4" :stroke="c" stroke-width="2" stroke-linecap="round" />
     </template>
+    <template v-else-if="name === 'palette'">
+      <path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.926 0 1.648-.746 1.648-1.688 0-.437-.18-.835-.437-1.125-.29-.289-.438-.652-.438-1.125a1.64 1.64 0 0 1 1.668-1.668h1.996c3.051 0 5.555-2.503 5.555-5.554C21.965 6.012 17.461 2 12 2z" :stroke="c" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+      <circle cx="6.5" cy="12.5" r="1" :fill="c" />
+      <circle cx="8.5" cy="7.5" r="1" :fill="c" />
+      <circle cx="13.5" cy="6.5" r="1" :fill="c" />
+      <circle cx="17.5" cy="10.5" r="1" :fill="c" />
+    </template>
+    <template v-else-if="name === 'ruler'">
+      <path d="M21.3 15.3a2.4 2.4 0 0 1 0 3.4l-2.6 2.6a2.4 2.4 0 0 1-3.4 0L2.7 8.7a2.41 2.41 0 0 1 0-3.4l2.6-2.6a2.41 2.41 0 0 1 3.4 0Z" :stroke="c" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+      <path d="m14.5 12.5 2-2M11.5 9.5l2-2M8.5 6.5l2-2M17.5 15.5l2-2" :stroke="c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+    </template>
+    <template v-else-if="name === 'hash'">
+      <path d="M4 9h16M4 15h16M10 3 8 21M16 3l-2 18" :stroke="c" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+    </template>
   </svg>
 </template>
 

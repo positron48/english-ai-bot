@@ -39,7 +39,7 @@ const ES_RU: HintSection[] = [
     ],
   },
   {
-    key: 'colors', title: 'Цвета', icon: 'sparkles',
+    key: 'colors', title: 'Цвета', icon: 'palette',
     entries: [
       { term: 'rojo', gloss: 'красный' },
       { term: 'azul', gloss: 'синий' },
@@ -57,7 +57,7 @@ const ES_RU: HintSection[] = [
     ],
   },
   {
-    key: 'sizes', title: 'Размеры и форма', icon: 'bar',
+    key: 'sizes', title: 'Размеры и форма', icon: 'ruler',
     entries: [
       { term: 'grande', gloss: 'большой' },
       { term: 'pequeño', gloss: 'маленький' },
@@ -72,7 +72,7 @@ const ES_RU: HintSection[] = [
     ],
   },
   {
-    key: 'quantity', title: 'Количество', icon: 'hamburger',
+    key: 'quantity', title: 'Количество', icon: 'hash',
     entries: [
       { term: 'uno', gloss: 'один' },
       { term: 'dos', gloss: 'два' },
@@ -120,7 +120,7 @@ const EN_RU: HintSection[] = [
     ],
   },
   {
-    key: 'colors', title: 'Цвета', icon: 'sparkles',
+    key: 'colors', title: 'Цвета', icon: 'palette',
     entries: [
       { term: 'red', gloss: 'красный' },
       { term: 'blue', gloss: 'синий' },
@@ -138,7 +138,7 @@ const EN_RU: HintSection[] = [
     ],
   },
   {
-    key: 'sizes', title: 'Размеры и форма', icon: 'bar',
+    key: 'sizes', title: 'Размеры и форма', icon: 'ruler',
     entries: [
       { term: 'big', gloss: 'большой' },
       { term: 'small', gloss: 'маленький' },
@@ -152,7 +152,7 @@ const EN_RU: HintSection[] = [
     ],
   },
   {
-    key: 'quantity', title: 'Количество', icon: 'hamburger',
+    key: 'quantity', title: 'Количество', icon: 'hash',
     entries: [
       { term: 'one', gloss: 'один' },
       { term: 'two', gloss: 'два' },

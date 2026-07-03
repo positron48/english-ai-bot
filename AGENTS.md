@@ -20,13 +20,20 @@ Notes:
   Vault/ExternalSecret-based access — none of that is set up for this project;
   the `kubectl exec` into `english-postgres` above is the working path.
 
-## No emoji in the UI
+## Icons: Lucide only, no emoji
+
+The project's icon pack is **[Lucide](https://lucide.dev)** (ISC license — free for
+commercial use). Both icon components — `webapp/src/components/linglow/LgIcon.vue`
+(the Linglow UI set) and `webapp/src/components/Icon.vue` (older/admin) — hold
+hand-inlined Lucide glyphs (24×24 viewBox, stroke-width 2, round caps). When you need
+a new icon, copy the SVG paths from lucide.dev into `LgIcon.vue` as a new
+`name === '<lucide-name>'` branch (keep the Lucide name), then reference it via
+`<LgIcon name="…">`. Don't pull in another icon library.
 
 Never use emoji (colorful pictographs like 📍🎨💬) anywhere in the product UI —
-neither in Vue templates nor in data/config that renders into the UI. Use the
-monochrome `LgIcon` set (`webapp/src/components/linglow/LgIcon.vue`) instead; add a
-new icon glyph there if none fits. Plain typographic glyphs (arrows →↑↓, ✓, ×) are
-fine. This keeps the interface visually consistent across themes and platforms.
+neither in Vue templates nor in data/config that renders into the UI. Plain
+typographic glyphs (arrows →↑↓, ✓, ×) are fine. This keeps the interface visually
+consistent across themes and platforms.
 
 ## Spanish verb-forms binaries in the `linglow` image
 
