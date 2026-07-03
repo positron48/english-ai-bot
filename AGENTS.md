@@ -20,6 +20,12 @@ Notes:
   Vault/ExternalSecret-based access — none of that is set up for this project;
   the `kubectl exec` into `english-postgres` above is the working path.
 
+## Mascot name: always "Lumi"
+
+The mascot is always written **`Lumi`** — in every language, including Russian UI
+text. Never transliterate it (not «Луми», not «Люми»). It stays Latin-script "Lumi"
+in glosses, prompts, help text and locale strings.
+
 ## Icons: Lucide only, no emoji
 
 The project's icon pack is **[Lucide](https://lucide.dev)** (ISC license — free for

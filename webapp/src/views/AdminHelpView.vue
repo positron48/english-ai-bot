@@ -6,15 +6,15 @@
     <nav class="toc">
       <strong>Разделы</strong>
       <ul>
-        <li><a href="#lumi-facts">Lumi Facts — факты от Люми</a></li>
+        <li><a href="#lumi-facts">Lumi Facts — факты от Lumi</a></li>
       </ul>
     </nav>
 
     <!-- ===================== LUMI FACTS ===================== -->
     <section id="lumi-facts" class="help-section">
-      <h2>Lumi Facts — факты от Люми</h2>
+      <h2>Lumi Facts — факты от Lumi</h2>
       <p class="section-desc">
-        Lumi Facts — небольшие познавательные карточки, которые Люми показывает пользователю
+        Lumi Facts — небольшие познавательные карточки, которые Lumi показывает пользователю
         на разных экранах приложения. Каждый день пользователь видит новый факт.
       </p>
 

@@ -327,8 +327,10 @@ onMounted(loadForRoute)
 .chat-reset:active { opacity: 0.7; }
 
 /* picture panel */
-.pq-image { position: relative; flex-shrink: 0; cursor: zoom-in; }
-.pq-img { width: 100%; max-height: 220px; object-fit: cover; border-radius: 14px; display: block; }
+/* Show the whole picture: fill the block width for large images, or its natural
+   1:1 size when it's narrower than the block — never crop to a strip. */
+.pq-image { position: relative; flex-shrink: 0; cursor: zoom-in; width: fit-content; max-width: 100%; margin: 0 auto; }
+.pq-img { max-width: 100%; height: auto; border-radius: 14px; display: block; }
 .pq-image-hint {
   position: absolute; right: 8px; bottom: 8px;
   padding: 2px 8px; border-radius: 10px;
