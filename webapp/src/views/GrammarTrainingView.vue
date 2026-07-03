@@ -53,11 +53,11 @@
 
         <div v-if="result" class="feedback-section">
         <div v-if="result.correct" class="feedback-badge feedback-success">
-          <span class="feedback-icon">✓</span>
+          <span class="feedback-icon"><LgIcon name="check" :s="16" /></span>
           <span class="feedback-text">{{ feedbackHeadline }}</span>
         </div>
         <div v-else class="feedback-badge feedback-error">
-          <span class="feedback-icon">✗</span>
+          <span class="feedback-icon"><LgIcon name="x" :s="16" /></span>
           <span class="feedback-text">{{ feedbackHeadline }}</span>
         </div>
         <div v-if="result.explanation" class="feedback-explanation">{{ result.explanation }}</div>
@@ -144,6 +144,7 @@ import { useRouter } from 'vue-router'
 import { apiClient } from '../api/client'
 import { grammarClient } from '../api/grammarClient'
 import LgPageHeader from '../components/linglow/LgPageHeader.vue'
+import LgIcon from '../components/linglow/LgIcon.vue'
 import { contentReportClient } from '../api/contentReportClient'
 import GrammarQuestion from '../components/GrammarQuestion.vue'
 import TrainingSessionCompletion from '../components/TrainingSessionCompletion.vue'

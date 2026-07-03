@@ -49,14 +49,14 @@
             <div class="npc-card-meta">
               {{ placeLabel(npc.placeType) }} · {{ npc.level }}
               <span v-if="npc.questTotal" class="npc-tag">{{ npc.completedCount }}/{{ npc.questTotal }}</span>
-              <span v-if="npc.allDone" class="npc-tag npc-tag--perfect">★ {{ t('chat.completed100') }}</span>
+              <span v-if="npc.allDone" class="npc-tag npc-tag--perfect"><LgIcon name="star-filled" :s="11" /> {{ t('chat.completed100') }}</span>
             </div>
             <div v-if="npc.questTotal > 1" class="npc-bar-track">
               <div class="npc-bar-fill" :style="{ width: npc.pct + '%' }" />
             </div>
           </div>
-          <span v-if="npc.allDone" class="npc-done npc-done--perfect">★</span>
-          <span v-else-if="npc.allPassed || npc.hasCompletedQuests" class="npc-done">✓</span>
+          <span v-if="npc.allDone" class="npc-done npc-done--perfect"><LgIcon name="star-filled" :s="16" /></span>
+          <span v-else-if="npc.allPassed || npc.hasCompletedQuests" class="npc-done"><LgIcon name="check" :s="16" /></span>
           <span v-else class="npc-arrow">›</span>
         </button>
       </section>
@@ -72,6 +72,7 @@ import { courseClient } from '../api/courseClient'
 import type { CourseMapDistrict } from '../api/courseClient'
 import { grammarClient } from '../api/grammarClient'
 import LgActivityIcon from '../components/linglow/LgActivityIcon.vue'
+import LgIcon from '../components/linglow/LgIcon.vue'
 import LgLoader from '../components/linglow/LgLoader.vue'
 import LgPageHeader from '../components/linglow/LgPageHeader.vue'
 import { useCourse } from '../composables/useCourse'

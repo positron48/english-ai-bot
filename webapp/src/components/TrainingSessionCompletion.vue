@@ -37,7 +37,7 @@
         <div v-if="accuracyPercentage < 10 && percentageAnimationComplete" class="failure-container">
           <div class="failure-rain">
             <div v-for="i in 12" :key="i" class="failure-item" :style="getFailureItemStyle()">
-              <span class="failure-emoji">💩</span>
+              <span class="failure-emoji"><LgIcon name="frown" :s="22" /></span>
             </div>
           </div>
         </div>
@@ -78,6 +78,7 @@
 import { computed, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useAudio } from '../composables/useAudio'
+import LgIcon from './linglow/LgIcon.vue'
 
 const props = withDefaults(defineProps<{
   totalCards: number

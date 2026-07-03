@@ -66,6 +66,10 @@ function mapLang(code: string): string {
   return LANG_MAP[code] ?? code
 }
 
+function capitalizeFirst(text: string): string {
+  return text.charAt(0).toLocaleUpperCase() + text.slice(1)
+}
+
 export function useSpeechRecognition(options: {
   lang: () => string
   onFinalTranscript: (text: string) => void
@@ -79,7 +83,7 @@ export function useSpeechRecognition(options: {
     const w = window as any
     w.__onSpeechResult = (res: { transcript?: string; error?: string }) => {
       if (res && res.transcript && res.transcript.trim()) {
-        options.onFinalTranscript(res.transcript.trim())
+        options.onFinalTranscript(capitalizeFirst(res.transcript.trim()))
       }
     }
     w.__onSpeechState = (state: string) => {
@@ -134,7 +138,7 @@ export function useSpeechRecognition(options: {
         const r = e.results[i]
         if (r.isFinal) finalText += r[0].transcript
       }
-      if (finalText.trim()) options.onFinalTranscript(finalText.trim())
+      if (finalText.trim()) options.onFinalTranscript(capitalizeFirst(finalText.trim()))
     }
     rec.onerror = () => { listening.value = false }
     rec.onend = () => {

@@ -40,11 +40,11 @@
             <div class="pq-card-meta">
               {{ quest.cefr_level }}
               <span v-if="quest.tasks.length" class="pq-tag">{{ completedCount(quest) }}/{{ quest.tasks.length }}</span>
-              <span v-if="quest.all_tasks_done" class="pq-tag pq-tag--perfect">★ {{ t('chat.completed100') }}</span>
+              <span v-if="quest.all_tasks_done" class="pq-tag pq-tag--perfect"><LgIcon name="star-filled" :s="11" /> {{ t('chat.completed100') }}</span>
             </div>
           </div>
-          <span v-if="quest.all_tasks_done" class="pq-done pq-done--perfect">★</span>
-          <span v-else-if="quest.quest_passed" class="pq-done">✓</span>
+          <span v-if="quest.all_tasks_done" class="pq-done pq-done--perfect"><LgIcon name="star-filled" :s="16" /></span>
+          <span v-else-if="quest.quest_passed" class="pq-done"><LgIcon name="check" :s="16" /></span>
           <span v-else class="pq-arrow">›</span>
         </button>
       </section>
@@ -60,6 +60,7 @@ import { courseClient } from '../api/courseClient'
 import type { CourseMapDistrict, PictureQuestSummary } from '../api/courseClient'
 import { grammarClient } from '../api/grammarClient'
 import LgActivityIcon from '../components/linglow/LgActivityIcon.vue'
+import LgIcon from '../components/linglow/LgIcon.vue'
 import LgLoader from '../components/linglow/LgLoader.vue'
 import LgPageHeader from '../components/linglow/LgPageHeader.vue'
 import { useCourse } from '../composables/useCourse'

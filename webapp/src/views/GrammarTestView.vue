@@ -34,7 +34,7 @@
             <div v-if="accuracyPercentage < 10 && percentageAnimationComplete" class="failure-container">
               <div class="failure-rain">
                 <div v-for="i in 12" :key="i" class="failure-item" :style="getFailureItemStyle(i)">
-                  <span class="failure-emoji">💩</span>
+                  <span class="failure-emoji"><LgIcon name="frown" :s="22" /></span>
                 </div>
               </div>
             </div>
@@ -66,7 +66,7 @@
           <div class="result-header">
             <span class="result-number">{{ t('grammar.question') }} {{ index + 1 }}</span>
             <span class="result-status" :class="{ 'correct': item.correct, 'incorrect': !item.correct }">
-              {{ item.correct ? '✓ ' + t('grammar.correct') : '✗ ' + t('grammar.failed') }}
+              <LgIcon :name="item.correct ? 'check' : 'x'" :s="13" /> {{ item.correct ? t('grammar.correct') : t('grammar.failed') }}
             </span>
             <span v-if="item.correct" class="result-toggle" aria-hidden="true">
               <span class="result-chevron" :class="{ 'expanded': isResultExpanded(item, index) }"></span>
@@ -219,6 +219,7 @@ import { grammarClient } from '../api/grammarClient'
 import GrammarQuestion from '../components/GrammarQuestion.vue'
 import ConfirmModal from '../components/ConfirmModal.vue'
 import ContentReportDialog from '../components/ContentReportDialog.vue'
+import LgIcon from '../components/linglow/LgIcon.vue'
 import { contentReportClient } from '../api/contentReportClient'
 import {
   GRAMMAR_TEST_REPORT_CATEGORIES,

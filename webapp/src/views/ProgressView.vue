@@ -64,7 +64,7 @@
             <div v-for="d in districtItems" :key="d.key" class="prg-district-row" :style="{ opacity: d.locked ? 0.5 : 1 }">
               <div class="prg-district-head">
                 <span class="prg-district-name">{{ d.name }}</span>
-                <span class="prg-district-status">{{ d.locked ? '🔒' : d.status }}</span>
+                <span class="prg-district-status"><LgIcon v-if="d.locked" name="lock" :s="13" /><template v-else>{{ d.status }}</template></span>
               </div>
               <div class="prg-bar-track">
                 <div class="prg-bar-fill" :style="{ width: d.pct + '%', background: d.fill }" />
@@ -135,9 +135,9 @@
         <div class="prg-ach-grid">
           <div v-for="(a, i) in achievements" :key="i" class="prg-ach-item" :class="{ 'prg-ach-item--locked': a.locked }">
             <div class="prg-ach-bubble">
-              <span v-if="a.locked" class="prg-ach-emoji">🔒</span>
+              <span v-if="a.locked" class="prg-ach-emoji"><LgIcon name="lock" :s="22" /></span>
               <template v-else>
-                <span class="prg-ach-emoji">{{ a.icon }}</span>
+                <span class="prg-ach-emoji"><LgIcon :name="a.icon" :s="24" /></span>
                 <span v-if="a.val" class="prg-ach-val">{{ a.val }}</span>
               </template>
             </div>
@@ -171,6 +171,7 @@ import { apiClient } from '../api/client'
 import { useCourse } from '../composables/useCourse'
 import { useLearningConfig } from '../composables/useLearningConfig'
 import { useLocale } from '../composables/useLocale'
+import LgIcon from '../components/linglow/LgIcon.vue'
 import LgLumiFact from '../components/linglow/LgLumiFact.vue'
 import LgLumi from '../components/linglow/LgLumi.vue'
 import LgActivityIcon from '../components/linglow/LgActivityIcon.vue'
@@ -392,11 +393,11 @@ const strongSkill = computed(() => {
 const skillPct = computed(() => strongSkill.value?.pct ?? 0)
 
 const ACH_META: Record<string, { icon: string; title: string; sub: string }> = {
-  streak:    { icon: '🔥', title: 'progress.achStreak',    sub: 'progress.achStreakSub' },
-  reader:    { icon: '📚', title: 'progress.achReader',    sub: 'progress.achReaderSub' },
-  collector: { icon: '🌿', title: 'progress.achCollector', sub: 'progress.achCollectorSub' },
-  explorer:  { icon: '🏙', title: 'progress.achExplorer',  sub: 'progress.achExplorerSub' },
-  expert:    { icon: '👑', title: 'progress.achExpert',    sub: 'progress.achExpertSub' },
+  streak:    { icon: 'flame',     title: 'progress.achStreak',    sub: 'progress.achStreakSub' },
+  reader:    { icon: 'book-open', title: 'progress.achReader',    sub: 'progress.achReaderSub' },
+  collector: { icon: 'sprout',    title: 'progress.achCollector', sub: 'progress.achCollectorSub' },
+  explorer:  { icon: 'building',  title: 'progress.achExplorer',  sub: 'progress.achExplorerSub' },
+  expert:    { icon: 'crown',     title: 'progress.achExpert',    sub: 'progress.achExpertSub' },
 }
 const achievements = computed(() => {
   return (stats.value?.achievements || []).map((a) => {

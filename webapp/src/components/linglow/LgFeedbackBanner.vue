@@ -1,7 +1,7 @@
 <template>
   <div class="lg-feedback" :class="correct ? 'lg-feedback--ok' : 'lg-feedback--bad'">
     <div class="lg-feedback-main">
-      <span class="lg-feedback-leaf">🌿</span>
+      <span class="lg-feedback-leaf"><LgIcon name="sprout" :s="18" /></span>
       <span class="lg-feedback-msg"><slot>{{ message }}</slot></span>
     </div>
     <div v-if="correct && points" class="lg-feedback-points">+{{ points }} ✦</div>
@@ -9,6 +9,8 @@
 </template>
 
 <script setup lang="ts">
+import LgIcon from './LgIcon.vue'
+
 defineProps<{
   correct: boolean
   message?: string

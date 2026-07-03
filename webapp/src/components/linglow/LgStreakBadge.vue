@@ -1,12 +1,13 @@
 <template>
   <div class="lg-streak">
-    <span class="lg-streak-fire">🔥</span>
+    <span class="lg-streak-fire"><LgIcon name="flame" :s="16" /></span>
     <span class="lg-streak-n">{{ compact ? n : (t as any)('lg.streakDays', n, { n }) }}</span>
   </div>
 </template>
 
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
+import LgIcon from './LgIcon.vue'
 
 withDefaults(defineProps<{ n: number; compact?: boolean }>(), { compact: false })
 const { t } = useI18n()

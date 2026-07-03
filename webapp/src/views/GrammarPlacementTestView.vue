@@ -87,7 +87,7 @@
             <span class="result-number">{{ t('grammar.question') }} {{ index + 1 }}</span>
             <span v-if="item.placement_chapter_title" class="result-chapter">{{ t('common.from') }}: {{ item.placement_chapter_title }}</span>
             <span class="result-status" :class="{ 'correct': item.correct, 'incorrect': !item.correct }">
-              {{ item.correct ? '✓ ' + t('grammar.correct') : '✗ ' + t('grammar.failed') }}
+              <LgIcon :name="item.correct ? 'check' : 'x'" :s="13" /> {{ item.correct ? t('grammar.correct') : t('grammar.failed') }}
             </span>
             <span v-if="item.correct" class="result-toggle" aria-hidden="true">
               <span class="result-chevron" :class="{ 'expanded': isResultExpanded(item, index) }"></span>
@@ -210,6 +210,7 @@ import { marked } from 'marked'
 import { grammarClient } from '../api/grammarClient'
 import GrammarQuestion from '../components/GrammarQuestion.vue'
 import ConfirmModal from '../components/ConfirmModal.vue'
+import LgIcon from '../components/linglow/LgIcon.vue'
 
 const { t, locale } = useI18n()
 const router = useRouter()

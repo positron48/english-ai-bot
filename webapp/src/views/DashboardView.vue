@@ -53,7 +53,7 @@
             :class="{ 'lg-path-row--done': step.done }"
           >
             <div class="lg-icon-box" :class="{ 'lg-icon-box--done': step.done }">
-              <template v-if="step.done">✓</template>
+              <template v-if="step.done"><LgIcon name="check" :s="20" /></template>
               <LgActivityIcon v-else :type="step.type" status="green" :size="40" />
             </div>
             <div class="lg-path-row-text">

@@ -46,15 +46,15 @@
                 <div class="chat-card-meta">
                   {{ placeLabel(g.placeType) }} · {{ g.level }}
                   <span v-if="g.questTotal" class="chat-tag">{{ g.completedCount }}/{{ g.questTotal }}</span>
-                  <span v-if="g.allDone" class="chat-tag chat-tag--perfect">★ {{ t('chat.completed100') }}</span>
-                  <span v-if="g.locked" class="chat-tag chat-tag--locked">🔒 {{ t('chat.locked') }}</span>
+                  <span v-if="g.allDone" class="chat-tag chat-tag--perfect"><LgIcon name="star-filled" :s="11" /> {{ t('chat.completed100') }}</span>
+                  <span v-if="g.locked" class="chat-tag chat-tag--locked"><LgIcon name="lock" :s="11" /> {{ t('chat.locked') }}</span>
                 </div>
                 <div v-if="g.questTotal > 1" class="npc-bar-track">
                   <div class="npc-bar-fill" :style="{ width: g.pct + '%' }" />
                 </div>
               </div>
-              <span v-if="g.allDone" class="chat-done chat-done--perfect">★</span>
-              <span v-else-if="g.allPassed || g.hasCompletedQuests" class="chat-done">✓</span>
+              <span v-if="g.allDone" class="chat-done chat-done--perfect"><LgIcon name="star-filled" :s="16" /></span>
+              <span v-else-if="g.allPassed || g.hasCompletedQuests" class="chat-done"><LgIcon name="check" :s="16" /></span>
               <svg
                 v-else-if="g.expandable"
                 class="npc-chevron"
@@ -72,7 +72,7 @@
               type="button"
               :title="t('chat.freeChat')"
               @click="openScenario(g.freeScenario.code)"
-            >💬</button>
+            ><LgIcon name="message-circle" :s="18" /></button>
           </div>
 
           <!-- quest chain -->
@@ -95,13 +95,13 @@
                 <span class="npc-step-title">{{ s.title }}</span>
                 <span class="npc-step-meta">
                   <span class="chat-tag">{{ t('chat.quest') }}</span>
-                  <span v-if="s.locked && s.cooldown_until" class="npc-cooldown">⏱ {{ formatCooldown(s.cooldown_until) }}</span>
+                  <span v-if="s.locked && s.cooldown_until" class="npc-cooldown"><LgIcon name="clock" :s="11" /> {{ formatCooldown(s.cooldown_until) }}</span>
                 </span>
               </span>
               <span class="npc-step-state">
-                <template v-if="scenarioQuestPerfect(s)">★</template>
-                <template v-else-if="scenarioQuestPassed(s)">✓</template>
-                <template v-else-if="s.locked">🔒</template>
+                <template v-if="scenarioQuestPerfect(s)"><LgIcon name="star-filled" :s="14" /></template>
+                <template v-else-if="scenarioQuestPassed(s)"><LgIcon name="check" :s="14" /></template>
+                <template v-else-if="s.locked"><LgIcon name="lock" :s="14" /></template>
                 <template v-else>›</template>
               </span>
             </button>
@@ -127,7 +127,7 @@
               class="chat-task"
               :class="{ 'chat-task--done': task.completed, 'chat-task--optional': !task.required }"
             >
-              <span class="chat-task-check">{{ task.completed ? '✓' : '○' }}</span>
+              <span class="chat-task-check"><LgIcon :name="task.completed ? 'check' : 'circle'" :s="14" /></span>
               <span class="chat-task-label">{{ task.title }}</span>
               <span v-if="!task.required" class="chat-task-opt">{{ t('chat.optional') }}</span>
             </div>
@@ -165,15 +165,15 @@
           <!-- transient send error (styled notice, not a chat bubble) -->
           <div v-if="sendError" class="chat-error" role="alert">
             <span>{{ t('chat.errorSend') }}</span>
-            <button class="chat-error-dismiss" type="button" @click="sendError = false">✕</button>
+            <button class="chat-error-dismiss" type="button" @click="sendError = false"><LgIcon name="x" :s="14" /></button>
           </div>
 
           <!-- completion / budget banners -->
           <div v-if="questPassed" class="chat-banner chat-banner--win" :class="{ 'chat-banner--perfect': allTasksDone }">
             <LgLumi pose="clapping" :size="48" />
             <div class="chat-banner-text">
-              <span v-if="allTasksDone">★ {{ t('chat.questPerfect') }}</span>
-              <span v-else>✓ {{ t('chat.questComplete') }}</span>
+              <span v-if="allTasksDone"><LgIcon name="star-filled" :s="14" /> {{ t('chat.questPerfect') }}</span>
+              <span v-else><LgIcon name="check" :s="14" /> {{ t('chat.questComplete') }}</span>
             </div>
             <div v-if="status === 'open' && !allTasksDone" class="chat-banner-hint">{{ t('chat.questOptionalHint') }}</div>
             <div v-else-if="status === 'open'" class="chat-banner-hint">{{ t('chat.questCompleteHint') }}</div>
@@ -194,6 +194,12 @@
             type="text"
             :placeholder="t('chat.placeholder')"
             @keyup.enter="send"
+          />
+          <VoiceMicButton
+            :lang="learning?.target_lang ?? 'en'"
+            :disabled="sending"
+            :label="t('sentence.voiceInput')"
+            @transcript="onVoiceTranscript"
           />
           <button class="chat-send" type="button" :disabled="sending || !input.trim()" @click="send">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
@@ -221,15 +227,26 @@ import {
 import { buildNpcGroups, scenarioQuestPassed, scenarioQuestPerfect } from '../utils/conversations'
 import type { NpcGroup } from '../utils/conversations'
 import LgPageHeader from '../components/linglow/LgPageHeader.vue'
+import LgIcon from '../components/linglow/LgIcon.vue'
 import LgActivityIcon from '../components/linglow/LgActivityIcon.vue'
 import LgSpeechBubble from '../components/linglow/LgSpeechBubble.vue'
 import LgButton from '../components/linglow/LgButton.vue'
 import LgLumi from '../components/linglow/LgLumi.vue'
+import VoiceMicButton from '../components/VoiceMicButton.vue'
 import { useCourse } from '../composables/useCourse'
+import { useLearningConfig } from '../composables/useLearningConfig'
 import { showAlert, showConfirm } from '../composables/useDialog'
 
 const { t } = useI18n()
 const { currentCourseCode, ensureCourseLoaded } = useCourse()
+const { learning, ensureLearningLoaded } = useLearningConfig()
+ensureLearningLoaded()
+
+// Voice input: dictate a chat reply in the target language.
+const onVoiceTranscript = (text: string) => {
+  input.value = input.value ? `${input.value.trimEnd()} ${text}` : text
+  focusComposer()
+}
 const route = useRoute()
 const router = useRouter()
 

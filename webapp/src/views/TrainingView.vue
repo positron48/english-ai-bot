@@ -351,7 +351,7 @@
           <Icon name="lightbulb" class="example-icon" />
         </button>
         <div v-else-if="exampleUsageShown" class="example example-usage">
-          {{ currentCard?.example_target || currentCard?.example_en || feedback?.example_target || feedback?.example || '' }}
+          <ClickableText :text="currentCard?.example_target || currentCard?.example_en || feedback?.example_target || feedback?.example || ''" />
         </div>
       </div>
 
@@ -361,14 +361,14 @@
           <div class="success-particles">
             <div v-for="i in 12" :key="i" class="success-particle" :style="getSuccessParticleStyle(i)"></div>
           </div>
-          <span class="feedback-icon">✓</span>
+          <span class="feedback-icon"><Icon name="check" /></span>
           <span class="feedback-text">{{ currentEncouragingPhrase }}</span>
         </div>
         
         <!-- For incorrect answers: spell = letters reorder in block above; type/cards = hint/example -->
         <template v-if="!feedback.is_correct">
-          <div v-if="feedback.hint" class="hint">{{ feedback.hint }}</div>
-          <div v-if="feedback.example" class="example">{{ feedback.example }}</div>
+          <div v-if="feedback.hint" class="hint"><ClickableText :text="feedback.hint" /></div>
+          <div v-if="feedback.example" class="example"><ClickableText :text="feedback.example" /></div>
           <div class="feedback-badge feedback-error">
             <div 
               v-if="waitingDelay" 
@@ -419,7 +419,7 @@
         </template>
         
         <!-- For correct answers: show example after notification -->
-        <div v-if="feedback.is_correct && feedback.example" class="example">{{ feedback.example }}</div>
+        <div v-if="feedback.is_correct && feedback.example" class="example"><ClickableText :text="feedback.example" /></div>
         
         <!-- Circular progress for correct answers delay (if any) -->
         <div 
@@ -498,6 +498,7 @@ import { useAudio } from '../composables/useAudio'
 import { useLocale } from '../composables/useLocale'
 import { Chart, registerables } from 'chart.js'
 import Icon from '../components/Icon.vue'
+import ClickableText from '../components/ClickableText.vue'
 import LgLoader from '../components/linglow/LgLoader.vue'
 import TrainingSessionCompletion from '../components/TrainingSessionCompletion.vue'
 import ContentReportDialog from '../components/ContentReportDialog.vue'

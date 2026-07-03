@@ -120,7 +120,7 @@
                 :style="getSuccessParticleStyle(i)"
               ></div>
             </div>
-            <span class="feedback-icon">✓</span>
+            <span class="feedback-icon"><Icon name="check" /></span>
             <span class="feedback-text">{{ encouragingPhrase }}</span>
           </div>
           <template v-else>

@@ -22,7 +22,7 @@
             @click="pick(c.code)"
           >
             {{ c.title }}
-            <span v-if="c.code === currentCourseCode" class="lg-topbar-check">✓</span>
+            <span v-if="c.code === currentCourseCode" class="lg-topbar-check"><LgIcon name="check" :s="14" /></span>
           </button>
         </div>
       </div>
@@ -36,6 +36,7 @@
 <script setup lang="ts">
 import { onMounted, onUnmounted, ref } from 'vue'
 import { useCourse } from '../../composables/useCourse'
+import LgIcon from './LgIcon.vue'
 
 withDefaults(defineProps<{ full?: boolean }>(), { full: false })
 

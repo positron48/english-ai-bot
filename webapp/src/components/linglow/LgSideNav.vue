@@ -2,7 +2,7 @@
   <nav class="lg-sidenav">
     <div class="lg-sidenav-logo">
       <span class="lg-sidenav-logo-text">Linglow</span>
-      <span class="lg-sidenav-logo-leaf">🌿</span>
+      <span class="lg-sidenav-logo-leaf"><LgIcon name="sprout" :s="18" c="var(--salvia, currentColor)" /></span>
     </div>
     <div class="lg-sidenav-items">
       <router-link

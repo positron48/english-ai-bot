@@ -69,6 +69,66 @@
     <template v-else-if="name === 'moon'">
       <path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z" :fill="c" />
     </template>
+    <!-- Glyphs below are adapted from Lucide (https://lucide.dev, ISC license). -->
+    <template v-else-if="name === 'lock'">
+      <rect x="3" y="11" width="18" height="11" rx="2" :stroke="c" stroke-width="2" fill="none" />
+      <path d="M7 11V7a5 5 0 0 1 10 0v4" :stroke="c" stroke-width="2" fill="none" stroke-linecap="round" />
+    </template>
+    <template v-else-if="name === 'flame'">
+      <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z" :stroke="c" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+    </template>
+    <template v-else-if="name === 'book-open'">
+      <path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" :stroke="c" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+      <path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" :stroke="c" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+    </template>
+    <template v-else-if="name === 'sprout'">
+      <path d="M7 20h10" :stroke="c" stroke-width="2" stroke-linecap="round" />
+      <path d="M12 20c0-4.5 1.5-8 6-9.5.5 3-1 8.5-6 9.5z" :stroke="c" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+      <path d="M12 20c0-5.5-2-9.5-7-11-.5 3.5.5 10 7 11z" :stroke="c" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+      <path d="M12 9c0-2.5 1-4.5 3-6" :stroke="c" stroke-width="2" fill="none" stroke-linecap="round" />
+    </template>
+    <template v-else-if="name === 'building'">
+      <rect x="4" y="2" width="16" height="20" rx="2" :stroke="c" stroke-width="2" fill="none" />
+      <path d="M9 22v-4h6v4M8 6h.01M16 6h.01M12 6h.01M12 10h.01M12 14h.01M16 10h.01M16 14h.01M8 10h.01M8 14h.01" :stroke="c" stroke-width="2" stroke-linecap="round" />
+    </template>
+    <template v-else-if="name === 'crown'">
+      <path d="M11.56 3.7a.5.5 0 0 1 .88 0l2.61 4.98a1 1 0 0 0 1.46.36l3.6-2.55a.5.5 0 0 1 .78.52l-1.92 9.02a1 1 0 0 1-.98.8H5.99a1 1 0 0 1-.97-.8L3.1 6.99a.5.5 0 0 1 .78-.5l3.6 2.55a1 1 0 0 0 1.46-.36z" :stroke="c" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+      <path d="M5 21h14" :stroke="c" stroke-width="2" stroke-linecap="round" />
+    </template>
+    <template v-else-if="name === 'party-popper'">
+      <path d="M5.8 11.3 2 22l10.7-3.79" :stroke="c" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+      <path d="M4 3h.01M22 8h.01M15 2h.01M22 20h.01" :stroke="c" stroke-width="2" stroke-linecap="round" />
+      <path d="M22 2 15.86 3.53a2 2 0 0 0-1.57 1.57L14 8M9.17 4.24a2 2 0 0 1 .24 2.53l-.44.65M16 16l.66-.44a2 2 0 0 1 2.53.24" :stroke="c" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+      <path d="M11.36 6.64a1.2 1.2 0 0 1 1.71 0l4.29 4.29a1.2 1.2 0 0 1 0 1.71l-4.94 4.94a6 6 0 0 1-6-6z" :stroke="c" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+    </template>
+    <template v-else-if="name === 'lightbulb'">
+      <path d="M15 14c.2-1 .7-1.7 1.5-2.5A7 7 0 1 0 5 6c0 2 .5 3.3 1.5 4.5.8.8 1.3 1.5 1.5 2.5" :stroke="c" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+      <path d="M9 18h6M10 22h4" :stroke="c" stroke-width="2" stroke-linecap="round" />
+    </template>
+    <template v-else-if="name === 'message-circle'">
+      <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8z" :stroke="c" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+    </template>
+    <template v-else-if="name === 'sparkles'">
+      <path d="M12 3l1.9 5.8a2 2 0 0 0 1.3 1.3L21 12l-5.8 1.9a2 2 0 0 0-1.3 1.3L12 21l-1.9-5.8a2 2 0 0 0-1.3-1.3L3 12l5.8-1.9a2 2 0 0 0 1.3-1.3z" :stroke="c" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+      <path d="M5 3v4M3 5h4M19 17v4M17 19h4" :stroke="c" stroke-width="2" stroke-linecap="round" />
+    </template>
+    <template v-else-if="name === 'sparkle'">
+      <path d="M12 3l1.9 5.8a2 2 0 0 0 1.3 1.3L21 12l-5.8 1.9a2 2 0 0 0-1.3 1.3L12 21l-1.9-5.8a2 2 0 0 0-1.3-1.3L3 12l5.8-1.9a2 2 0 0 0 1.3-1.3z" :stroke="c" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+    </template>
+    <template v-else-if="name === 'circle'">
+      <circle cx="12" cy="12" r="9" :stroke="c" stroke-width="2" fill="none" />
+    </template>
+    <template v-else-if="name === 'frown'">
+      <circle cx="12" cy="12" r="9" :stroke="c" stroke-width="2" fill="none" />
+      <path d="M16 16s-1.5-2-4-2-4 2-4 2" :stroke="c" stroke-width="2" fill="none" stroke-linecap="round" />
+      <path d="M9 9h.01M15 9h.01" :stroke="c" stroke-width="2" stroke-linecap="round" />
+    </template>
+    <template v-else-if="name === 'star'">
+      <path d="M11.53 3.05a.5.5 0 0 1 .94 0l2 5.05a.5.5 0 0 0 .44.32l5.42.36a.5.5 0 0 1 .29.89l-4.18 3.47a.5.5 0 0 0-.16.52l1.34 5.26a.5.5 0 0 1-.76.55L12.28 17a.5.5 0 0 0-.56 0l-4.58 2.92a.5.5 0 0 1-.76-.55l1.34-5.26a.5.5 0 0 0-.16-.52L3.38 9.67a.5.5 0 0 1 .29-.89l5.42-.36a.5.5 0 0 0 .44-.32z" :stroke="c" stroke-width="2" fill="none" stroke-linejoin="round" />
+    </template>
+    <template v-else-if="name === 'star-filled'">
+      <path d="M11.53 3.05a.5.5 0 0 1 .94 0l2 5.05a.5.5 0 0 0 .44.32l5.42.36a.5.5 0 0 1 .29.89l-4.18 3.47a.5.5 0 0 0-.16.52l1.34 5.26a.5.5 0 0 1-.76.55L12.28 17a.5.5 0 0 0-.56 0l-4.58 2.92a.5.5 0 0 1-.76-.55l1.34-5.26a.5.5 0 0 0-.16-.52L3.38 9.67a.5.5 0 0 1 .29-.89l5.42-.36a.5.5 0 0 0 .44-.32z" :fill="c" />
+    </template>
     <template v-else-if="name === 'sun'">
       <circle cx="12" cy="12" r="5" :stroke="c" stroke-width="2" fill="none" />
       <path d="M12 2V4M12 20V22M2 12H4M20 12H22M5.6 5.6L7 7M17 17L18.4 18.4M18.4 5.6L17 7M7 17L5.6 18.4" :stroke="c" stroke-width="2" stroke-linecap="round" />

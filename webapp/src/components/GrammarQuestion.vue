@@ -128,7 +128,7 @@
       >
         <div class="choice-content">
           <span v-html="renderMarkdown(choice.text)"></span>
-          <span v-if="answered && choice.id === correctAnswer" class="check-icon">✓</span>
+          <span v-if="answered && choice.id === correctAnswer" class="check-icon"><Icon name="check" /></span>
         </div>
         <!-- Show feedback inside incorrect selected choice -->
         <div 
@@ -164,8 +164,8 @@
       </div>
       <!-- Show correct/incorrect indicator for fill_blank after check -->
       <div v-if="answered && showAnswers" class="fill-blank-feedback" :class="{ 'correct': isCorrect, 'incorrect': !isCorrect }">
-        <span v-if="isCorrect" class="feedback-icon">✓</span>
-        <span v-else class="feedback-icon">✗</span>
+        <span v-if="isCorrect" class="feedback-icon"><Icon name="check" /></span>
+        <span v-else class="feedback-icon"><Icon name="close" /></span>
         <span v-if="isCorrect" class="feedback-text">{{ t('grammar.correct') }}</span>
         <span v-else class="feedback-text">{{ t('grammar.wrong') }}</span>
       </div>
@@ -216,7 +216,7 @@
       >
         <div class="choice-content">
           <span v-html="renderMarkdown(choice.text)"></span>
-          <span v-if="answered && choice.id === correctAnswer" class="check-icon">✓</span>
+          <span v-if="answered && choice.id === correctAnswer" class="check-icon"><Icon name="check" /></span>
         </div>
         <!-- Show feedback inside incorrect selected choice -->
         <div 
@@ -278,6 +278,7 @@ import { ref, computed, watch, nextTick } from 'vue'
 import { marked } from 'marked'
 import { useI18n } from 'vue-i18n'
 import GrammarTheoryExamples from './GrammarTheoryExamples.vue'
+import Icon from './Icon.vue'
 
 export interface TheoryChapterContext {
   categoryTitle: string

@@ -30,7 +30,7 @@
             class="chat-task"
             :class="{ 'chat-task--done': task.completed, 'chat-task--optional': !task.required }"
           >
-            <span class="chat-task-check">{{ task.completed ? '✓' : '○' }}</span>
+            <span class="chat-task-check"><LgIcon :name="task.completed ? 'check' : 'circle'" :s="14" /></span>
             <span class="chat-task-label">{{ task.title }}</span>
             <span v-if="!task.required" class="chat-task-opt">{{ t('chat.optional') }}</span>
           </div>
@@ -67,15 +67,15 @@
         <!-- transient send error -->
         <div v-if="sendError" class="chat-error" role="alert">
           <span>{{ t('chat.errorSend') }}</span>
-          <button class="chat-error-dismiss" type="button" @click="sendError = false">✕</button>
+          <button class="chat-error-dismiss" type="button" @click="sendError = false"><LgIcon name="x" :s="14" /></button>
         </div>
 
         <!-- completion / budget banners -->
         <div v-if="questPassed" class="chat-banner chat-banner--win" :class="{ 'chat-banner--perfect': allTasksDone }">
           <LgLumi :pose="allTasksDone ? 'star' : 'clapping'" :size="48" />
           <div class="chat-banner-text">
-            <span v-if="allTasksDone">★ {{ t('chat.questPerfect') }}</span>
-            <span v-else>✓ {{ t('chat.questComplete') }}</span>
+            <span v-if="allTasksDone"><LgIcon name="star-filled" :s="14" /> {{ t('chat.questPerfect') }}</span>
+            <span v-else><LgIcon name="check" :s="14" /> {{ t('chat.questComplete') }}</span>
           </div>
           <div v-if="status === 'open' && !allTasksDone" class="chat-banner-hint">{{ t('chat.questOptionalHint') }}</div>
           <div v-else-if="status === 'open'" class="chat-banner-hint">{{ t('chat.questCompleteHint') }}</div>
@@ -107,7 +107,7 @@
       <!-- full-screen picture overlay -->
       <div v-if="imageExpanded && session.image_url" class="pq-overlay" @click="imageExpanded = false">
         <img :src="session.image_url" alt="" class="pq-overlay-img" />
-        <button class="pq-overlay-close" type="button">✕</button>
+        <button class="pq-overlay-close" type="button"><LgIcon name="x" :s="18" /></button>
       </div>
     </template>
     <div v-else class="chat-loading">{{ loadError || t('chat.notAvailable') }}</div>
@@ -125,6 +125,7 @@ import {
   type ConversationTask,
 } from '../api/courseClient'
 import LgPageHeader from '../components/linglow/LgPageHeader.vue'
+import LgIcon from '../components/linglow/LgIcon.vue'
 import LgSpeechBubble from '../components/linglow/LgSpeechBubble.vue'
 import LgButton from '../components/linglow/LgButton.vue'
 import LgLumi from '../components/linglow/LgLumi.vue'

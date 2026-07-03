@@ -106,7 +106,7 @@
             :disabled="isRead || markingRead"
             @click="markRead"
           >
-            <span>✓</span>
+            <Icon name="check" />
             <span>{{ isRead ? t('reading.alreadyRead') : t('reading.markRead') }}</span>
           </button>
           <button
@@ -141,7 +141,7 @@
         </div>
         <div v-if="quizDone" class="feedback-section">
           <div class="feedback-badge" :class="quizCorrectCount >= passThreshold ? 'feedback-success' : 'feedback-error'">
-            <span class="feedback-icon">{{ quizCorrectCount >= passThreshold ? '✓' : '✗' }}</span>
+            <span class="feedback-icon"><Icon :name="quizCorrectCount >= passThreshold ? 'check' : 'close'" /></span>
             <span class="feedback-text">{{ t('reading.quizResult', { percent: quizPercent, correct: quizCorrectCount, total: quizQuestions.length }) }}</span>
           </div>
         </div>

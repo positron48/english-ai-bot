@@ -85,8 +85,9 @@ const textareaRef = ref<HTMLTextAreaElement | null>(null)
 const route = useRoute()
 const router = useRouter()
 
+// Monochrome UI: a text language code instead of a flag emoji.
 const targetLangFlag = computed(() =>
-  learning.value?.target_lang === 'es' ? '🇪🇸' : '🇬🇧'
+  (learning.value?.target_lang ?? 'en').toUpperCase()
 )
 
 const chatWelcome = computed(() => {

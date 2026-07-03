@@ -13,7 +13,7 @@
         @click="pick(l.code)"
       >
         {{ l.label }}
-        <span v-if="l.code === currentLocale" class="lg-lang-check">✓</span>
+        <span v-if="l.code === currentLocale" class="lg-lang-check"><LgIcon name="check" :s="14" /></span>
       </button>
     </div>
   </div>
@@ -23,6 +23,7 @@
 import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { AVAILABLE_LOCALES, type SupportedLocale } from '../../i18n'
 import { useLocale } from '../../composables/useLocale'
+import LgIcon from './LgIcon.vue'
 
 const { currentLocale, setLocale } = useLocale()
 

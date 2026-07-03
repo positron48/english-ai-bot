@@ -4,7 +4,7 @@
     <div>
       <div class="lg-lumi-tip-head">
         <span class="lg-lumi-tip-title">{{ title || t('lg.lumiTip') }}</span>
-        <span>✨</span>
+        <span><LgIcon name="sparkles" :s="16" /></span>
       </div>
       <p class="lg-lumi-tip-text"><slot>{{ text }}</slot></p>
     </div>
@@ -14,6 +14,7 @@
 <script setup lang="ts">
 import { useI18n } from 'vue-i18n'
 import LgLumi from './LgLumi.vue'
+import LgIcon from './LgIcon.vue'
 
 withDefaults(defineProps<{
   text?: string

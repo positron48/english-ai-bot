@@ -6,19 +6,19 @@
 
     <!-- No set available -->
     <div v-else-if="!available && !finished" class="sc-card sc-state-card">
-      <div class="sc-empty-icon">🌱</div>
+      <div class="sc-empty-icon"><LgIcon name="sprout" :s="40" c="var(--salvia, currentColor)" /></div>
       <p class="sc-empty-text">{{ t('sentence.noSet') }}</p>
       <button class="sc-next" type="button" @click="goBack">{{ t('common.back') }}</button>
     </div>
 
     <!-- Completed -->
     <div v-else-if="finished" class="sc-card sc-summary">
-      <div class="sc-empty-icon">🎉</div>
+      <div class="sc-empty-icon"><LgIcon name="party-popper" :s="40" c="var(--salvia, currentColor)" /></div>
       <h2 class="sc-summary-title">{{ t('sentence.doneTitle') }}</h2>
       <div class="sc-summary-stats">
-        <div class="sc-stat sc-stat--star"><span class="sc-stat-num">{{ setState.stars }}</span>★</div>
-        <div class="sc-stat sc-stat--passed"><span class="sc-stat-num">{{ setState.passed }}</span>✓</div>
-        <div class="sc-stat sc-stat--failed"><span class="sc-stat-num">{{ setState.failed }}</span>✗</div>
+        <div class="sc-stat sc-stat--star"><span class="sc-stat-num">{{ setState.stars }}</span><LgIcon name="star-filled" :s="16" /></div>
+        <div class="sc-stat sc-stat--passed"><span class="sc-stat-num">{{ setState.passed }}</span><LgIcon name="check" :s="16" /></div>
+        <div class="sc-stat sc-stat--failed"><span class="sc-stat-num">{{ setState.failed }}</span><LgIcon name="x" :s="16" /></div>
       </div>
       <button class="sc-next" type="button" @click="goBack">{{ t('common.back') }}</button>
     </div>
@@ -35,7 +35,7 @@
 
       <!-- task -->
       <section class="sc-task">
-        <div class="sc-task-icon">💡</div>
+        <div class="sc-task-icon"><LgIcon name="lightbulb" :s="22" /></div>
         <div>
           <h1 class="sc-task-title">{{ current.prompt_ru }}</h1>
           <p class="sc-task-sub">{{ t('sentence.taskSubtitle', { lang: targetLangDisplay }) }}</p>
@@ -53,18 +53,12 @@
           @keydown.ctrl.enter="submit"
           @input="markInput"
         />
-        <button
-          v-if="voiceSupported"
-          type="button"
-          class="sc-mic"
-          :class="{ 'sc-mic--active': voiceListening }"
+        <VoiceMicButton
+          :lang="learning?.target_lang ?? 'en'"
           :disabled="grading || !!result"
-          :aria-label="t('sentence.voiceInput')"
-          :title="t('sentence.voiceInput')"
-          @click="toggleVoice"
-        >
-          🎤
-        </button>
+          :label="t('sentence.voiceInput')"
+          @transcript="onVoiceTranscript"
+        />
       </section>
 
       <!-- result -->
@@ -75,9 +69,9 @@
           :class="`sc-result-card--${result.outcome}`"
         >
           <div class="sc-result-title">
-            <template v-if="result.outcome === 'star'"><span class="sc-star">★</span> {{ t('sentence.outcomeStar') }}</template>
-            <template v-else-if="result.outcome === 'passed'">✓ {{ t('sentence.outcomePassed') }}</template>
-            <template v-else>✗ {{ t('sentence.outcomeFailed') }}</template>
+            <template v-if="result.outcome === 'star'"><span class="sc-star"><LgIcon name="star-filled" :s="16" /></span> {{ t('sentence.outcomeStar') }}</template>
+            <template v-else-if="result.outcome === 'passed'"><LgIcon name="check" :s="16" /> {{ t('sentence.outcomePassed') }}</template>
+            <template v-else><LgIcon name="x" :s="16" /> {{ t('sentence.outcomeFailed') }}</template>
           </div>
           <SentenceGrading
             v-if="result.error_count > 0"
@@ -88,7 +82,7 @@
 
         <!-- correct answer -->
         <section class="sc-success-card">
-          <div class="sc-success-icon">✓</div>
+          <div class="sc-success-icon"><LgIcon name="check" :s="18" /></div>
           <div>
             <div class="sc-success-label">{{ t('sentence.correctAnswer') }}:</div>
             <div class="sc-success-answer">{{ result.corrected_es }}</div>
@@ -97,7 +91,7 @@
 
         <!-- explanation -->
         <section v-if="result.explanation" class="sc-explanation-card">
-          <div class="sc-explanation-icon">💡</div>
+          <div class="sc-explanation-icon"><LgIcon name="lightbulb" :s="22" /></div>
           <div class="sc-explanation-text">{{ result.explanation }}</div>
         </section>
 
@@ -122,12 +116,13 @@ import { computed, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import LgPageHeader from '../components/linglow/LgPageHeader.vue'
+import LgIcon from '../components/linglow/LgIcon.vue'
 import SentenceGrading from '../components/SentenceGrading.vue'
 import { sentenceClient, type SentenceGrade, type SentenceItem, type SentenceSetState } from '../api/sentenceClient'
 import { useCourse } from '../composables/useCourse'
 import { useMe } from '../composables/useMe'
 import { useLearningConfig } from '../composables/useLearningConfig'
-import { useSpeechRecognition } from '../composables/useSpeechRecognition'
+import VoiceMicButton from '../components/VoiceMicButton.vue'
 
 const router = useRouter()
 const { t } = useI18n()
@@ -137,13 +132,10 @@ const { learning, targetLangDisplay } = useLearningConfig()
 
 // Voice input: dictate the answer in the target language when the device/browser
 // supports speech recognition.
-const { supported: voiceSupported, listening: voiceListening, start: toggleVoice } = useSpeechRecognition({
-  lang: () => learning.value?.target_lang ?? 'en',
-  onFinalTranscript: (text) => {
-    input.value = input.value ? `${input.value.trimEnd()} ${text}` : text
-    markInput()
-  },
-})
+const onVoiceTranscript = (text: string) => {
+  input.value = input.value ? `${input.value.trimEnd()} ${text}` : text
+  markInput()
+}
 
 const loading = ref(true)
 const available = ref(false)
@@ -336,31 +328,6 @@ onMounted(async () => {
   border: 1px solid var(--input-border, var(--border));
   box-shadow: var(--shadow-soft);
   padding: 16px;
-}
-.sc-mic {
-  flex: 0 0 auto;
-  width: 44px;
-  height: 44px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-size: 20px;
-  line-height: 1;
-  border: 0;
-  border-radius: 12px;
-  background: var(--surface-2, rgba(0, 0, 0, 0.05));
-  color: var(--text);
-  cursor: pointer;
-  transition: background 0.15s, transform 0.15s;
-}
-.sc-mic:disabled { opacity: 0.4; cursor: default; }
-.sc-mic--active {
-  background: var(--salvia, #4caf50);
-  animation: micPulse 1.2s ease-in-out infinite;
-}
-@keyframes micPulse {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(1.12); }
 }
 .sc-answer-input {
   flex: 1 1 auto;
