@@ -184,7 +184,10 @@
     "dailyTasks": "Daily tasks",
     "taskReviewWords": "Review {n} district words",
     "taskReadText": "Read a text",
-    "taskChat": "Practice a dialogue with AI"
+    "taskChat": "Practice a dialogue with AI",
+    "areaPicture": "Picture descriptions",
+    "areaMetaPicture": "Describe a picture by voice or text",
+    "ctaOpen": "Open"
   },
   "adminLinglowSRS": {
     "title": "Linglow SRS",
@@ -998,6 +1001,8 @@
     "archiveEmpty": "You haven’t completed any pictures yet.",
     "randomQuest": "Random picture",
     "allDoneMain": "All available pictures are completed.",
-    "hintTitle": "Helpful words"
+    "hintTitle": "Helpful words",
+    "categoriesSub": "Pick a district level — its pictures open inside.",
+    "picturesCount": "{n} picture | {n} pictures"
   }
 }

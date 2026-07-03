@@ -551,6 +551,7 @@ func (r *Router) setupProtectedRoutes() {
 	r.mux.HandleFunc("/api/linglow/conversation/sessions/", appAPIMiddleware.Wrap(auth.RequireAuth(r.RequireFeature("conversation")(r.handleLinglowConversationSessionByID))))
 	// Picture description quests (chat with Lumi about a picture) are a Pro feature.
 	r.mux.HandleFunc("/api/linglow/picture-quests", appAPIMiddleware.Wrap(auth.RequireAuth(r.RequireFeature("picture_description")(r.handleLinglowPictureQuests))))
+	r.mux.HandleFunc("/api/linglow/picture-quests/districts", appAPIMiddleware.Wrap(auth.RequireAuth(r.RequireFeature("picture_description")(r.handleLinglowPictureQuestDistricts))))
 	r.mux.HandleFunc("/api/linglow/picture-quests/sessions", appAPIMiddleware.Wrap(auth.RequireAuth(r.RequireFeature("picture_description")(r.handleLinglowPictureQuestSessions))))
 	r.mux.HandleFunc("/api/linglow/picture-quests/sessions/", appAPIMiddleware.Wrap(auth.RequireAuth(r.RequireFeature("picture_description")(r.handleLinglowPictureQuestSessionByID))))
 	r.mux.HandleFunc("/api/vocab", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleVocab)))

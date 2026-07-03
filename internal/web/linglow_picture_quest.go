@@ -117,6 +117,90 @@ func (r *Router) handleLinglowPictureQuests(w http.ResponseWriter, req *http.Req
 	writeJSON(w, map[string]interface{}{"quests": out})
 }
 
+// handleLinglowPictureQuestDistricts lists the districts that have picture content, with
+// per-district total/passed counts. Used by the categories screen so the learner picks a
+// district level (locked ones are blocked client-side via grammar access).
+// @Summary      Районы с квестами «опиши картинку»
+// @Tags         Linglow
+// @Produce      json
+// @Success      200  {object}  map[string]interface{}
+// @Router       /api/linglow/picture-quests/districts [get]
+func (r *Router) handleLinglowPictureQuestDistricts(w http.ResponseWriter, req *http.Request) {
+	if req.Method != http.MethodGet {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+	userID := getUserIDFromContext(req.Context())
+	if userID == 0 {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+	if r.pictureQuestRepo == nil {
+		http.Error(w, "Picture quests are not available", http.StatusServiceUnavailable)
+		return
+	}
+	ctx := req.Context()
+	courseCode := r.conversationCourseCode(ctx, userID, req.URL.Query().Get("course_code"))
+	courseID, userCourseID, _, err := r.resolveConversationCourse(ctx, userID, courseCode)
+	if err != nil {
+		if errors.Is(err, sql.ErrNoRows) {
+			http.Error(w, "Course not found", http.StatusNotFound)
+			return
+		}
+		r.logger.Error("picture quest districts course resolve", zap.Error(err))
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+
+	rows, err := r.db.QueryContext(ctx, `
+		SELECT d.code, d.level_code, d.title, q.code
+		FROM districts d
+		JOIN picture_quests q ON q.district_id = d.id AND q.status = 'active'
+		WHERE d.course_id = ?
+		ORDER BY d.sort_order, d.id`, courseID)
+	if err != nil {
+		r.logger.Error("list picture quest districts", zap.Error(err))
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	defer rows.Close()
+
+	passed, _ := r.pictureQuestRepo.PassedQuestCodes(ctx, userCourseID, courseID)
+
+	type districtAgg struct {
+		Code      string `json:"code"`
+		LevelCode string `json:"level_code"`
+		Title     string `json:"title"`
+		Total     int    `json:"total"`
+		Passed    int    `json:"passed"`
+	}
+	order := make([]string, 0)
+	byCode := make(map[string]*districtAgg)
+	for rows.Next() {
+		var dCode, levelCode, title, questCode string
+		if err := rows.Scan(&dCode, &levelCode, &title, &questCode); err != nil {
+			r.logger.Error("scan picture quest district", zap.Error(err))
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
+			return
+		}
+		agg := byCode[dCode]
+		if agg == nil {
+			agg = &districtAgg{Code: dCode, LevelCode: levelCode, Title: title}
+			byCode[dCode] = agg
+			order = append(order, dCode)
+		}
+		agg.Total++
+		if passed[questCode] {
+			agg.Passed++
+		}
+	}
+	out := make([]*districtAgg, 0, len(order))
+	for _, code := range order {
+		out = append(out, byCode[code])
+	}
+	writeJSON(w, map[string]interface{}{"course_code": courseCode, "districts": out})
+}
+
 // pictureQuestProgressFlags derives mandatory-pass and 100% completion for a quest.
 func (r *Router) pictureQuestProgressFlags(ctx context.Context, userCourseID int64, quest *repository.PictureQuest, tasks []repository.PictureQuestTask) (questPassed, fullyDone bool) {
 	var sessionID int64

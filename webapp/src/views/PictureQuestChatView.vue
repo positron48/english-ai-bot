@@ -203,7 +203,7 @@ const nativeLang = computed(() => currentCourse.value?.native_language || 'ru')
 const hasHints = computed(() => getHintSections(targetLang.value, nativeLang.value).length > 0)
 
 function goBack() {
-  router.push({ name: 'PictureQuestList' })
+  router.push({ name: 'PictureQuestCategories' })
 }
 
 async function scrollToBottom() {

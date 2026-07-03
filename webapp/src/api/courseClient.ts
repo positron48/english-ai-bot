@@ -411,6 +411,14 @@ export interface PictureQuestSummary {
   all_tasks_done: boolean
 }
 
+export interface PictureQuestDistrict {
+  code: string
+  level_code: string
+  title: string
+  total: number
+  passed: number
+}
+
 export interface PictureQuestSessionState {
   session_id: number
   quest_code: string
@@ -568,6 +576,12 @@ export const courseClient = {
     if (courseCode) p.set('course_code', courseCode)
     if (archive) p.set('archive', 'true')
     return apiClient.request(`/api/linglow/picture-quests?${p.toString()}`)
+  },
+  listPictureQuestDistricts(courseCode?: string): Promise<{ districts: PictureQuestDistrict[] }> {
+    const p = new URLSearchParams()
+    if (courseCode) p.set('course_code', courseCode)
+    const qs = p.toString()
+    return apiClient.request(`/api/linglow/picture-quests/districts${qs ? '?' + qs : ''}`)
   },
   startPictureQuestSession(questCode: string, courseCode?: string): Promise<PictureQuestSessionState> {
     return apiClient.request('/api/linglow/picture-quests/sessions', {

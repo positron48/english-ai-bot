@@ -3,7 +3,7 @@
     <LgPageHeader
       :title="t('pictureQuest.archiveTitle')"
       :show-back="true"
-      @back="router.push({ name: 'PictureQuestList' })"
+      @back="router.push({ name: 'PictureQuestDistrict', params: { districtCode } })"
     />
 
     <LgLoader v-if="loading" />
@@ -52,21 +52,22 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useRouter } from 'vue-router'
-import type { PictureQuestSummary } from '../api/courseClient'
+import { useRoute, useRouter } from 'vue-router'
+import { courseClient, type PictureQuestSummary } from '../api/courseClient'
 import LgActivityIcon from '../components/linglow/LgActivityIcon.vue'
 import LgIcon from '../components/linglow/LgIcon.vue'
 import LgLoader from '../components/linglow/LgLoader.vue'
 import LgPageHeader from '../components/linglow/LgPageHeader.vue'
 import { useCourse } from '../composables/useCourse'
 import { useMe } from '../composables/useMe'
-import { loadPictureQuestsFlat } from '../composables/usePictureQuests'
 
 const { t } = useI18n()
+const route = useRoute()
 const router = useRouter()
 const { currentCourseCode, ensureCourseLoaded } = useCourse()
 const { ensureMe, hasFeature } = useMe()
 
+const districtCode = computed(() => String(route.params.districtCode || ''))
 const loading = ref(true)
 const isPro = ref(false)
 const loadError = ref('')
@@ -96,9 +97,10 @@ onMounted(async () => {
   try {
     await ensureCourseLoaded()
     await ensureMe()
-    const res = await loadPictureQuestsFlat(currentCourseCode.value, hasFeature('picture_description'), true)
-    isPro.value = res.isPro
-    quests.value = res.quests
+    isPro.value = hasFeature('picture_description')
+    if (!isPro.value) return
+    const res = await courseClient.listPictureQuests(districtCode.value, currentCourseCode.value || undefined, true)
+    quests.value = res.quests || []
   } catch (e: any) {
     const msg = String(e?.message || '')
     loadError.value = msg.includes('403') ? t('chat.requiresPro') : t('chat.notAvailable')

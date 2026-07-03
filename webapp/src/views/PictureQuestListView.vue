@@ -1,9 +1,9 @@
 <template>
   <div class="pq-page">
     <LgPageHeader
-      :title="t('pictureQuest.title')"
+      :title="districtTitle || t('pictureQuest.title')"
       :show-back="true"
-      @back="router.push('/learning')"
+      @back="router.push({ name: 'PictureQuestCategories' })"
     />
 
     <div class="pq-sub">{{ t('pictureQuest.listSub') }}</div>
@@ -49,7 +49,7 @@
         <button v-if="hasMore" type="button" class="pq-more" @click="page++">
           {{ t('pictureQuest.loadMore') }}
         </button>
-        <router-link :to="{ name: 'PictureQuestArchive' }" class="pq-archive-link">
+        <router-link :to="{ name: 'PictureQuestDistrictArchive', params: { districtCode } }" class="pq-archive-link">
           {{ t('pictureQuest.viewArchive') }} →
         </router-link>
       </div>
@@ -60,20 +60,23 @@
 <script setup lang="ts">
 import { computed, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useRouter } from 'vue-router'
-import type { PictureQuestSummary } from '../api/courseClient'
+import { useRoute, useRouter } from 'vue-router'
+import { courseClient, type PictureQuestSummary } from '../api/courseClient'
 import LgActivityIcon from '../components/linglow/LgActivityIcon.vue'
 import LgIcon from '../components/linglow/LgIcon.vue'
 import LgLoader from '../components/linglow/LgLoader.vue'
 import LgPageHeader from '../components/linglow/LgPageHeader.vue'
 import { useCourse } from '../composables/useCourse'
 import { useMe } from '../composables/useMe'
-import { loadPictureQuestsFlat } from '../composables/usePictureQuests'
 
 const { t } = useI18n()
+const route = useRoute()
 const router = useRouter()
 const { currentCourseCode, ensureCourseLoaded } = useCourse()
 const { ensureMe, hasFeature } = useMe()
+
+const districtCode = computed(() => String(route.params.districtCode || ''))
+const districtTitle = ref('')
 
 const loading = ref(true)
 const isPro = ref(false)
@@ -104,9 +107,15 @@ onMounted(async () => {
   try {
     await ensureCourseLoaded()
     await ensureMe()
-    const res = await loadPictureQuestsFlat(currentCourseCode.value, hasFeature('picture_description'), false)
-    isPro.value = res.isPro
-    quests.value = res.quests
+    isPro.value = hasFeature('picture_description')
+    if (!isPro.value) return
+    const courseCode = currentCourseCode.value || undefined
+    const [res, map] = await Promise.all([
+      courseClient.listPictureQuests(districtCode.value, courseCode, false),
+      courseClient.getCourseMap(courseCode).catch(() => null),
+    ])
+    quests.value = res.quests || []
+    districtTitle.value = map?.districts?.find(d => d.code === districtCode.value)?.title || ''
   } catch (e: any) {
     const msg = String(e?.message || '')
     loadError.value = msg.includes('403') ? t('chat.requiresPro') : t('chat.notAvailable')

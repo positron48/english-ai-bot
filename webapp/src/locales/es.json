@@ -184,7 +184,10 @@
     "dailyTasks": "Tareas del día",
     "taskReviewWords": "Repasa {n} palabras del distrito",
     "taskReadText": "Lee un texto",
-    "taskChat": "Practica un diálogo con la IA"
+    "taskChat": "Practica un diálogo con la IA",
+    "areaPicture": "Describir imágenes",
+    "areaMetaPicture": "Describe una imagen por voz o texto",
+    "ctaOpen": "Abrir"
   },
   "adminLinglowSRS": {
     "title": "Linglow SRS",
@@ -959,6 +962,8 @@
     "archiveEmpty": "Aún no has completado ninguna imagen.",
     "randomQuest": "Imagen aleatoria",
     "allDoneMain": "Todas las imágenes disponibles están completadas.",
-    "hintTitle": "Palabras de ayuda"
+    "hintTitle": "Palabras de ayuda",
+    "categoriesSub": "Elige el nivel del distrito: sus imágenes se abren dentro.",
+    "picturesCount": "{n} imagen | {n} imágenes"
   }
 }

@@ -84,13 +84,19 @@ const router = createRouter({
         },
         {
           path: 'learning/picture-quests',
-          name: 'PictureQuestList',
+          name: 'PictureQuestCategories',
+          component: () => import('../views/PictureQuestCategoriesView.vue'),
+          meta: { requiresAuth: true, navTab: 'practice' }
+        },
+        {
+          path: 'learning/picture-quests/district/:districtCode',
+          name: 'PictureQuestDistrict',
           component: () => import('../views/PictureQuestListView.vue'),
           meta: { requiresAuth: true, navTab: 'practice' }
         },
         {
-          path: 'learning/picture-quests/archive',
-          name: 'PictureQuestArchive',
+          path: 'learning/picture-quests/district/:districtCode/archive',
+          name: 'PictureQuestDistrictArchive',
           component: () => import('../views/PictureQuestArchiveView.vue'),
           meta: { requiresAuth: true, navTab: 'practice' }
         },

@@ -68,6 +68,7 @@ const router = useRouter()
 const { currentCourseCode, ensureCourseLoaded } = useCourse()
 const { ensureMe, hasFeature } = useMe()
 const conversationPro = ref(false)
+const picturePro = ref(false)
 
 const courseMap = ref<CourseMap | null>(null)
 const progress = ref<CourseProgress | null>(null)
@@ -185,13 +186,26 @@ const areas = computed(() => {
       action: () => router.push({ name: 'PlaceChatList', params: { districtCode: districtCode.value } }),
     })
   }
+  if (picturePro.value) {
+    list.push({
+      type: 'conversation' as const,
+      status: 'gray',
+      label: t('city.areaPicture'), color: '#2d6b3a',
+      meta: t('city.areaMetaPicture'),
+      pct: null, cta: t('city.ctaOpen'),
+      action: () => router.push({ name: 'PictureQuestDistrict', params: { districtCode: districtCode.value } }),
+    })
+  }
   return list
 })
 
 onMounted(async () => {
   try {
     await ensureCourseLoaded()
-    ensureMe().then(() => { conversationPro.value = hasFeature('conversation') })
+    ensureMe().then(() => {
+      conversationPro.value = hasFeature('conversation')
+      picturePro.value = hasFeature('picture_description')
+    })
     const wpCourse = courseCode.value || currentCourseCode.value || undefined
     const [map, prog, grammarData, wp] = await Promise.all([
       courseClient.getCourseMap(courseCode.value),
