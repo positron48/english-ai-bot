@@ -40,15 +40,63 @@ import VocabWordCardsDetail, { type VocabCardsAPIResponse } from './VocabWordCar
 // Renders a plain sentence with every word clickable: a click resolves the word through
 // /api/reading/word-lookup (which lemmatizes surface forms and adds the word to training,
 // same behaviour as clicking a word in a reading text) and opens the dictionary card modal.
-const props = defineProps<{ text: string }>()
+// `exclude` is the word being trained: opening its own card would spoil the answer, so the
+// occurrence closest to it (exact match first, then Levenshtein distance to catch inflected
+// forms) is rendered as plain text.
+const props = defineProps<{ text: string; exclude?: string }>()
 
 const { t } = useI18n()
 
+const levenshtein = (a: string, b: string): number => {
+  if (a === b) return 0
+  const m = a.length
+  const n = b.length
+  if (m === 0 || n === 0) return m + n
+  let prev = Array.from({ length: n + 1 }, (_, j) => j)
+  for (let i = 1; i <= m; i++) {
+    const cur = [i]
+    for (let j = 1; j <= n; j++) {
+      cur[j] = Math.min(
+        prev[j] + 1,
+        cur[j - 1] + 1,
+        prev[j - 1] + (a[i - 1] === b[j - 1] ? 0 : 1),
+      )
+    }
+    prev = cur
+  }
+  return prev[n]
+}
+
 const tokens = computed(() => {
   const parts = (props.text || '').split(/([\p{L}\p{M}'’-]+)/u)
-  return parts
+  const list = parts
     .filter((p) => p !== '')
     .map((p) => ({ text: p, word: /[\p{L}]{2,}/u.test(p) }))
+
+  // Multi-word targets ("to go", "echar de menos"): match tokens against each target word.
+  const targetWords = (props.exclude || '')
+    .toLowerCase()
+    .split(/[^\p{L}\p{M}'’-]+/u)
+    .filter((w) => /[\p{L}]{2,}/u.test(w))
+  if (targetWords.length > 0) {
+    const exact = list.filter((tk) => tk.word && targetWords.includes(tk.text.toLowerCase()))
+    if (exact.length > 0) {
+      for (const tk of exact) tk.word = false
+    } else {
+      let best = -1
+      let bestDist = Infinity
+      list.forEach((tk, i) => {
+        if (!tk.word) return
+        const d = Math.min(...targetWords.map((w) => levenshtein(tk.text.toLowerCase(), w)))
+        if (d < bestDist) {
+          bestDist = d
+          best = i
+        }
+      })
+      if (best >= 0) list[best].word = false
+    }
+  }
+  return list
 })
 
 const selectedIdx = ref(-1)

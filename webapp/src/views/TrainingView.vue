@@ -351,7 +351,7 @@
           <Icon name="lightbulb" class="example-icon" />
         </button>
         <div v-else-if="exampleUsageShown" class="example example-usage">
-          <ClickableText :text="currentCard?.example_target || currentCard?.example_en || feedback?.example_target || feedback?.example || ''" />
+          <ClickableText :text="currentCard?.example_target || currentCard?.example_en || feedback?.example_target || feedback?.example || ''" :exclude="hintExcludedWord" />
         </div>
       </div>
 
@@ -367,8 +367,8 @@
         
         <!-- For incorrect answers: spell = letters reorder in block above; type/cards = hint/example -->
         <template v-if="!feedback.is_correct">
-          <div v-if="feedback.hint" class="hint"><ClickableText :text="feedback.hint" /></div>
-          <div v-if="feedback.example" class="example"><ClickableText :text="feedback.example" /></div>
+          <div v-if="feedback.hint" class="hint"><ClickableText :text="feedback.hint" :exclude="hintExcludedWord" /></div>
+          <div v-if="feedback.example" class="example"><ClickableText :text="feedback.example" :exclude="hintExcludedWord" /></div>
           <div class="feedback-badge feedback-error">
             <div 
               v-if="waitingDelay" 
@@ -419,7 +419,7 @@
         </template>
         
         <!-- For correct answers: show example after notification -->
-        <div v-if="feedback.is_correct && feedback.example" class="example"><ClickableText :text="feedback.example" /></div>
+        <div v-if="feedback.is_correct && feedback.example" class="example"><ClickableText :text="feedback.example" :exclude="hintExcludedWord" /></div>
         
         <!-- Circular progress for correct answers delay (if any) -->
         <div 
@@ -613,6 +613,20 @@ interface Feedback {
 }
 
 const sessionActive = ref(false)
+
+// The trained word in the target language: hints/examples must not open its own
+// dictionary card (that would spoil the answer), so ClickableText excludes it.
+const hintExcludedWord = computed(() => {
+  const card = currentCard.value
+  return (
+    card?.word_target ||
+    card?.display_target ||
+    card?.word_en ||
+    card?.display_word ||
+    feedback.value?.correct_answer ||
+    ''
+  )
+})
 const loading = ref(false)
 const currentCard = ref<Card | null>(null)
 const optionsShown = ref(false)
