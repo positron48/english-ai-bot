@@ -991,6 +991,12 @@
     "noQuests": "No pictures available yet",
     "tapToExpand": "Tap to expand",
     "backToList": "Back to pictures",
-    "placeholder": "Describe what you see…"
+    "placeholder": "Describe what you see…",
+    "loadMore": "Show more",
+    "viewArchive": "Completed",
+    "archiveTitle": "Completed pictures",
+    "archiveEmpty": "You haven’t completed any pictures yet.",
+    "randomQuest": "Random picture",
+    "allDoneMain": "All available pictures are completed."
   }
 }

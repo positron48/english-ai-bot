@@ -952,6 +952,12 @@
     "noQuests": "Aún no hay imágenes disponibles",
     "tapToExpand": "Toca para ampliar",
     "backToList": "Volver a las imágenes",
-    "placeholder": "Describe lo que ves…"
+    "placeholder": "Describe lo que ves…",
+    "loadMore": "Mostrar más",
+    "viewArchive": "Completadas",
+    "archiveTitle": "Imágenes completadas",
+    "archiveEmpty": "Aún no has completado ninguna imagen.",
+    "randomQuest": "Imagen aleatoria",
+    "allDoneMain": "Todas las imágenes disponibles están completadas."
   }
 }

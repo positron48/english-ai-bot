@@ -13,7 +13,7 @@
       <button class="btn btn-primary" :disabled="!selectedCourseCode" @click="newQuest">+ Новый квест</button>
       <button class="btn" :disabled="!selectedCourseCode" @click="openImport">Импорт JSON</button>
       <button class="btn" :disabled="!selectedCourseCode" @click="openPrompt">Промпт для генерации</button>
-      <button class="btn" :disabled="!selectedCourseCode" @click="load">Обновить</button>
+      <button class="btn" :disabled="!selectedCourseCode" @click="load()">Обновить</button>
     </div>
 
     <div v-if="coursesError" class="error">{{ coursesError }}</div>
@@ -49,7 +49,12 @@
           <div class="pq-row">
             <button class="pq-expand" :class="{ open: expanded.has(q.id) }" @click="toggleExpand(q.id)" title="Задания">▶</button>
             <img v-if="q.image_url" :src="q.image_url" class="pq-thumb" alt="" />
-            <div v-else class="pq-thumb pq-thumb--empty">—</div>
+            <label v-else class="pq-thumb pq-thumb--empty" :class="{ busy: uploadingId === q.id }" title="Загрузить картинку">
+              <span v-if="uploadingId === q.id">…</span>
+              <span v-else>＋</span>
+              <input type="file" accept="image/png,image/jpeg,image/webp" style="display:none"
+                :disabled="uploadingId === q.id" @change="uploadPictureForQuest(q, $event)" />
+            </label>
             <div class="pq-main">
               <span class="pq-title">{{ q.title }}</span>
               <span class="badge" :class="'badge--' + q.status">{{ q.status }}</span>
@@ -184,7 +189,7 @@
           Квест с таким же <span class="mono">code</span> в курсе <span class="mono">{{ selectedCourseCode }}</span>
           будет перезаписан вместе с заданиями.
         </p>
-        <textarea v-model="importText" class="inp code-area" rows="16" placeholder='{ "code": "...", "title": "...", "image_description": "...", "tasks": [ ... ] }'></textarea>
+        <textarea ref="importArea" v-model="importText" class="inp code-area" rows="16" placeholder='{ "code": "...", "title": "...", "image_description": "...", "tasks": [ ... ] }'></textarea>
         <div v-if="importError" class="error">{{ importError }}</div>
         <div class="modal-actions">
           <button class="btn" @click="importOpen = false">Отмена</button>
@@ -288,6 +293,8 @@ const importOpen = ref(false)
 const importText = ref('')
 const importError = ref<string | null>(null)
 const importing = ref(false)
+const importArea = ref<HTMLTextAreaElement | null>(null)
+const uploadingId = ref<number | null>(null)
 
 const promptOpen = ref(false)
 const promptText = ref('')
@@ -441,6 +448,30 @@ function openImport() {
   importText.value = ''
   importError.value = null
   importOpen.value = true
+  nextTick(() => importArea.value?.focus())
+}
+
+// One-click image upload straight from the list row (no edit modal). Uploads the file,
+// then PUTs the quest with the new image_url and patches the row in place so the list
+// doesn't reload or jump.
+async function uploadPictureForQuest(q: AdminPictureQuest, event: Event) {
+  const input = event.target as HTMLInputElement
+  const file = input.files?.[0]
+  if (!file) return
+  uploadingId.value = q.id
+  try {
+    const res = await courseClient.uploadAdminMedia(file, 'picture')
+    await apiClient.request(
+      `/api/admin/picture-quests/${q.id}?course_code=${encodeURIComponent(selectedCourseCode.value)}`,
+      { method: 'PUT', body: JSON.stringify({ ...q, image_url: res.url }) },
+    )
+    q.image_url = res.url
+  } catch (e: any) {
+    await showAlert(e?.message || 'Не удалось загрузить изображение')
+  } finally {
+    uploadingId.value = null
+    input.value = ''
+  }
 }
 
 async function doImport() {
@@ -454,13 +485,13 @@ async function doImport() {
   }
   importing.value = true
   try {
-    const res: { created?: boolean, task_count?: number } = await apiClient.request(
+    await apiClient.request(
       `/api/admin/picture-quests/import?course_code=${encodeURIComponent(selectedCourseCode.value)}`,
       { method: 'POST', body: JSON.stringify(parsed) },
     )
     importOpen.value = false
+    // Silent refresh: keep current filter/sort/page, no success popup, no jump.
     await load(true)
-    await showAlert(`${res.created ? 'Создан' : 'Обновлён'} квест, заданий: ${res.task_count ?? 0}`)
   } catch (e: any) {
     importError.value = e?.message || 'Не удалось импортировать'
   } finally {
@@ -533,7 +564,9 @@ textarea.inp { resize: vertical; font-family: inherit; }
 .pq-expand { border: none; background: none; cursor: pointer; color: var(--text-secondary); font-size: 11px; padding: 2px 4px; transition: transform 0.15s; flex-shrink: 0; }
 .pq-expand.open { transform: rotate(90deg); }
 .pq-thumb { width: 40px; height: 40px; border-radius: 6px; object-fit: cover; flex-shrink: 0; }
-.pq-thumb--empty { display: flex; align-items: center; justify-content: center; background: var(--bg-primary); color: var(--text-secondary); font-size: 14px; }
+.pq-thumb--empty { display: flex; align-items: center; justify-content: center; background: var(--bg-primary); color: var(--text-secondary); font-size: 18px; cursor: pointer; border: 1px dashed var(--border-primary); }
+.pq-thumb--empty:hover { border-color: #2d6b3a; color: #2d6b3a; }
+.pq-thumb--empty.busy { cursor: default; opacity: 0.6; }
 .pq-main { display: flex; align-items: center; gap: 8px; min-width: 0; flex: 1; }
 .pq-title { font-weight: 600; font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .pq-id { font-size: 11px; color: var(--text-secondary); }

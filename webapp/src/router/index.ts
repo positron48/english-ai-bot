@@ -89,6 +89,12 @@ const router = createRouter({
           meta: { requiresAuth: true, navTab: 'practice' }
         },
         {
+          path: 'learning/picture-quests/archive',
+          name: 'PictureQuestArchive',
+          component: () => import('../views/PictureQuestArchiveView.vue'),
+          meta: { requiresAuth: true, navTab: 'practice' }
+        },
+        {
           path: 'learning/picture-quests/:questCode',
           name: 'PictureQuestChat',
           component: () => import('../views/PictureQuestChatView.vue'),

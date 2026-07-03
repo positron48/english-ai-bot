@@ -1,12 +1,10 @@
 <template>
   <div class="pq-page">
     <LgPageHeader
-      :title="t('pictureQuest.title')"
+      :title="t('pictureQuest.archiveTitle')"
       :show-back="true"
-      @back="router.push('/learning')"
+      @back="router.push({ name: 'PictureQuestList' })"
     />
-
-    <div class="pq-sub">{{ t('pictureQuest.listSub') }}</div>
 
     <LgLoader v-if="loading" />
     <div v-else-if="!isPro" class="pq-empty">{{ t('chat.requiresPro') }}</div>
@@ -18,7 +16,7 @@
         </button>
       </div>
 
-      <div v-if="!quests.length" class="pq-empty">{{ t('pictureQuest.allDoneMain') }}</div>
+      <div v-if="!quests.length" class="pq-empty">{{ t('pictureQuest.archiveEmpty') }}</div>
       <div v-else class="pq-list">
         <button
           v-for="quest in pagedQuests"
@@ -28,30 +26,24 @@
           @click="openQuest(quest)"
         >
           <img v-if="quest.image_url" :src="quest.image_url" class="pq-thumb" alt="" />
-          <LgActivityIcon
-            v-else
-            type="conversation"
-            :status="quest.quest_passed ? 'yellow' : 'orange'"
-            :size="24"
-          />
+          <LgActivityIcon v-else type="conversation" status="green" :size="24" />
           <div class="pq-card-body">
             <div class="pq-card-title">{{ quest.title }}</div>
             <div class="pq-card-meta">
               {{ quest.cefr_level }}
               <span v-if="quest.tasks.length" class="pq-tag">{{ completedCount(quest) }}/{{ quest.tasks.length }}</span>
+              <span v-if="quest.all_tasks_done" class="pq-tag pq-tag--perfect"><LgIcon name="star-filled" :s="11" /> {{ t('chat.completed100') }}</span>
             </div>
           </div>
-          <span class="pq-arrow">›</span>
+          <span v-if="quest.all_tasks_done" class="pq-done pq-done--perfect"><LgIcon name="star-filled" :s="16" /></span>
+          <span v-else class="pq-done"><LgIcon name="check" :s="16" /></span>
         </button>
       </div>
 
-      <div class="pq-footer">
-        <button v-if="hasMore" type="button" class="pq-more" @click="page++">
+      <div v-if="hasMore" class="pq-footer">
+        <button type="button" class="pq-more" @click="page++">
           {{ t('pictureQuest.loadMore') }}
         </button>
-        <router-link :to="{ name: 'PictureQuestArchive' }" class="pq-archive-link">
-          {{ t('pictureQuest.viewArchive') }} →
-        </router-link>
       </div>
     </template>
   </div>
@@ -104,7 +96,7 @@ onMounted(async () => {
   try {
     await ensureCourseLoaded()
     await ensureMe()
-    const res = await loadPictureQuestsFlat(currentCourseCode.value, hasFeature('picture_description'), false)
+    const res = await loadPictureQuestsFlat(currentCourseCode.value, hasFeature('picture_description'), true)
     isPro.value = res.isPro
     quests.value = res.quests
   } catch (e: any) {
@@ -118,13 +110,6 @@ onMounted(async () => {
 
 <style scoped>
 .pq-page { padding-bottom: 24px; }
-.pq-sub {
-  padding: 0 16px 12px;
-  font-size: 13px;
-  line-height: 1.4;
-  color: var(--subtext);
-  text-align: center;
-}
 .pq-empty {
   padding: 40px 16px;
   text-align: center;
@@ -134,7 +119,7 @@ onMounted(async () => {
 .pq-toolbar {
   display: flex;
   justify-content: flex-end;
-  padding: 0 16px 8px;
+  padding: 8px 16px;
 }
 .pq-random {
   display: inline-flex;
@@ -169,12 +154,12 @@ onMounted(async () => {
   align-items: center;
   gap: 12px;
   padding: 12px 14px;
-  border: 1px solid var(--border);
+  border: 1px dashed var(--border);
   border-radius: 14px;
   background: var(--card-bg);
-  box-shadow: var(--shadow-card);
   cursor: pointer;
   text-align: left;
+  opacity: 0.92;
 }
 .pq-card-body { flex: 1; min-width: 0; }
 .pq-card-title {
@@ -202,17 +187,21 @@ onMounted(async () => {
   background: rgba(45,107,58,0.12);
   color: #2d6b3a;
 }
-.pq-arrow {
-  color: var(--subtext);
-  font-size: 22px;
-  line-height: 1;
+.pq-tag--perfect {
+  background: rgba(200,168,75,0.22);
+  color: #9a7b1e;
+}
+.pq-done {
+  display: inline-flex;
+  color: #2d6b3a;
+}
+.pq-done--perfect {
+  color: #c8a84b;
+  text-shadow: 0 1px 4px rgba(200,168,75,0.35);
 }
 .pq-footer {
   display: flex;
-  align-items: center;
   justify-content: center;
-  gap: 16px;
-  flex-wrap: wrap;
   padding: 18px 16px 0;
 }
 .pq-more {
@@ -225,9 +214,4 @@ onMounted(async () => {
   font-size: 14px;
 }
 .pq-more:hover { border-color: #2d6b3a; color: #2d6b3a; }
-.pq-archive-link {
-  font-size: 13px;
-  color: var(--subtext);
-  text-decoration: underline;
-}
 </style>

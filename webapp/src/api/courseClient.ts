@@ -563,9 +563,10 @@ export const courseClient = {
     })
   },
 
-  listPictureQuests(districtCode: string, courseCode?: string): Promise<{ quests: PictureQuestSummary[] }> {
+  listPictureQuests(districtCode: string, courseCode?: string, archive = false): Promise<{ quests: PictureQuestSummary[] }> {
     const p = new URLSearchParams({ district_code: districtCode })
     if (courseCode) p.set('course_code', courseCode)
+    if (archive) p.set('archive', 'true')
     return apiClient.request(`/api/linglow/picture-quests?${p.toString()}`)
   },
   startPictureQuestSession(questCode: string, courseCode?: string): Promise<PictureQuestSessionState> {

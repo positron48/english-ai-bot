@@ -45,6 +45,9 @@ func (r *Router) handleLinglowPictureQuests(w http.ResponseWriter, req *http.Req
 		http.Error(w, "district_code is required", http.StatusBadRequest)
 		return
 	}
+	// archive=true returns only passed quests; otherwise only not-yet-passed ones,
+	// so the main list never eagerly loads finished cards.
+	archive := strings.EqualFold(strings.TrimSpace(req.URL.Query().Get("archive")), "true")
 	ctx := req.Context()
 	courseCode := r.conversationCourseCode(ctx, userID, req.URL.Query().Get("course_code"))
 	courseID, userCourseID, _, err := r.resolveConversationCourse(ctx, userID, courseCode)
@@ -87,6 +90,10 @@ func (r *Router) handleLinglowPictureQuests(w http.ResponseWriter, req *http.Req
 			return
 		}
 		questPassed, fullyDone := r.pictureQuestProgressFlags(ctx, userCourseID, q, tasks)
+		// Split active list vs archive: passed quests live only in the archive.
+		if questPassed != archive {
+			continue
+		}
 		sessionStatus := ""
 		switch {
 		case fullyDone:
