@@ -997,6 +997,7 @@
     "archiveTitle": "Completed pictures",
     "archiveEmpty": "You haven’t completed any pictures yet.",
     "randomQuest": "Random picture",
-    "allDoneMain": "All available pictures are completed."
+    "allDoneMain": "All available pictures are completed.",
+    "hintTitle": "Helpful words"
   }
 }

@@ -958,6 +958,7 @@
     "archiveTitle": "Imágenes completadas",
     "archiveEmpty": "Aún no has completado ninguna imagen.",
     "randomQuest": "Imagen aleatoria",
-    "allDoneMain": "Todas las imágenes disponibles están completadas."
+    "allDoneMain": "Todas las imágenes disponibles están completadas.",
+    "hintTitle": "Palabras de ayuda"
   }
 }

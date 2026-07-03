@@ -19,6 +19,16 @@
         <div v-if="session.image_url" class="pq-image" @click="imageExpanded = true">
           <img :src="session.image_url" alt="" class="pq-img" />
           <span class="pq-image-hint">{{ t('pictureQuest.tapToExpand') }}</span>
+          <button
+            v-if="hasHints"
+            class="pq-hint-btn"
+            type="button"
+            :title="t('pictureQuest.hintTitle')"
+            :aria-label="t('pictureQuest.hintTitle')"
+            @click.stop="hintOpen = true"
+          >
+            <LgIcon name="lightbulb" :s="18" />
+          </button>
         </div>
 
         <!-- task checklist -->
@@ -109,6 +119,14 @@
         <img :src="session.image_url" alt="" class="pq-overlay-img" />
         <button class="pq-overlay-close" type="button"><LgIcon name="x" :s="18" /></button>
       </div>
+
+      <!-- vocabulary hint sheet (tied to the course language, not the UI locale) -->
+      <PictureHintSheet
+        v-if="hintOpen"
+        :target-lang="targetLang"
+        :native-lang="nativeLang"
+        @close="hintOpen = false"
+      />
     </template>
     <div v-else class="chat-loading">{{ loadError || t('chat.notAvailable') }}</div>
   </div>
@@ -129,11 +147,13 @@ import LgIcon from '../components/linglow/LgIcon.vue'
 import LgSpeechBubble from '../components/linglow/LgSpeechBubble.vue'
 import LgButton from '../components/linglow/LgButton.vue'
 import LgLumi from '../components/linglow/LgLumi.vue'
+import PictureHintSheet from '../components/PictureHintSheet.vue'
+import { getHintSections } from '../constants/pictureHintPhrasebook'
 import { useCourse } from '../composables/useCourse'
 import { showAlert, showConfirm } from '../composables/useDialog'
 
 const { t } = useI18n()
-const { currentCourseCode, ensureCourseLoaded } = useCourse()
+const { currentCourse, currentCourseCode, ensureCourseLoaded } = useCourse()
 const route = useRoute()
 const router = useRouter()
 
@@ -149,6 +169,7 @@ const questPassed = ref(false)
 const budgetExhausted = ref(false)
 const status = ref('open')
 const imageExpanded = ref(false)
+const hintOpen = ref(false)
 const scrollEl = ref<HTMLElement | null>(null)
 const composerInput = ref<HTMLInputElement | null>(null)
 const loadError = ref('')
@@ -163,6 +184,11 @@ const headerTitle = computed(() => session.value?.title || t('pictureQuest.title
 // the session only truly ends when status flips to completed or budget runs out.
 const canSend = computed(() => status.value === 'open' && !budgetExhausted.value)
 const allTasksDone = computed(() => tasks.value.length > 0 && tasks.value.every(t => t.completed))
+
+// Hint sheet is driven by the course languages (target + native), never the UI locale.
+const targetLang = computed(() => currentCourse.value?.target_language || '')
+const nativeLang = computed(() => currentCourse.value?.native_language || 'ru')
+const hasHints = computed(() => getHintSections(targetLang.value, nativeLang.value).length > 0)
 
 function goBack() {
   router.push({ name: 'PictureQuestList' })
@@ -297,6 +323,15 @@ onMounted(loadForRoute)
   background: rgba(0,0,0,0.55); color: #fff;
   font-family: 'Inter', sans-serif; font-size: 10px;
 }
+.pq-hint-btn {
+  position: absolute; right: 8px; top: 8px;
+  width: 34px; height: 34px; border-radius: 50%; border: none;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: rgba(255,255,255,0.92); color: #b8860b; cursor: pointer;
+  box-shadow: 0 1px 6px rgba(0,0,0,0.25);
+}
+.pq-hint-btn:active { transform: scale(0.94); }
+:root[data-theme="dark"] .pq-hint-btn { background: rgba(40,40,40,0.9); color: #e8c15a; }
 
 /* full-screen overlay */
 .pq-overlay {
