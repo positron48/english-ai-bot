@@ -102,7 +102,7 @@
       <path d="M11.36 6.64a1.2 1.2 0 0 1 1.71 0l4.29 4.29a1.2 1.2 0 0 1 0 1.71l-4.94 4.94a6 6 0 0 1-6-6z" :stroke="c" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
     </template>
     <template v-else-if="name === 'lightbulb'">
-      <path d="M15 14c.2-1 .7-1.7 1.5-2.5A7 7 0 1 0 5 6c0 2 .5 3.3 1.5 4.5.8.8 1.3 1.5 1.5 2.5" :stroke="c" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+      <path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5" :stroke="c" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
       <path d="M9 18h6M10 22h4" :stroke="c" stroke-width="2" stroke-linecap="round" />
     </template>
     <template v-else-if="name === 'message-circle'">
