@@ -229,7 +229,13 @@ func (r *CourseRepository) GetStatsForUser(ctx context.Context, userID int64, de
 		}
 	}
 
-	// Words learned this month: word SRS items that reached review/mastered.
+	// Words learned: word SRS items that reached review/mastered in the last 30 days.
+	// Rolling window (not calendar month) so the counter doesn't reset on the 1st; an
+	// explicitly requested historical month keeps calendar semantics.
+	wordsLearnedSince := monthStart
+	if month == now.Format("2006-01") {
+		wordsLearnedSince = now.AddDate(0, 0, -30).Format("2006-01-02")
+	}
 	if err := r.db.QueryRowContext(ctx, `
 		SELECT COUNT(*)
 		FROM srs_items si
@@ -237,7 +243,7 @@ func (r *CourseRepository) GetStatsForUser(ctx context.Context, userID int64, de
 		WHERE si.user_course_id = ? AND li.item_type = 'word'
 			AND si.state IN ('review', 'mastered')
 			AND si.updated_at >= CAST(? AS date)
-	`, userCourse.ID, monthStart).Scan(&stats.Month.WordsLearned); err != nil {
+	`, userCourse.ID, wordsLearnedSince).Scan(&stats.Month.WordsLearned); err != nil {
 		return nil, fmt.Errorf("stats words learned: %w", err)
 	}
 

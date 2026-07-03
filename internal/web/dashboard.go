@@ -97,7 +97,7 @@ func (r *Router) handleDashboard(w http.ResponseWriter, req *http.Request) {
 	// aggregate pull only what it renders instead of running every query:
 	//   - "counts"  → card-state counts + grammar stats (home screen tiles)
 	//   - "charts"  → total cards, 30-day accuracy, weekly/words-added series (legacy full charts)
-	//   - "totals"  → just total_cards (progress screen renders the series from canonical history)
+	//   - "totals"  → total_cards + words-added series (progress screen renders the rest from canonical history)
 	//   - ""(unset) → everything (standalone /api/dashboard, offline cache)
 	sections := req.URL.Query().Get("sections")
 	includeCounts := sections == "" || sections == "counts"
@@ -206,9 +206,9 @@ func (r *Router) dashboardCounts(req *http.Request, userID int64, courseCode str
 	}
 }
 
-// dashboardCharts always fills total_cards; when includeSeries is set it additionally computes the
-// (heavier) 30-day accuracy and 7-day weekly / words-added series. The progress screen passes
-// includeSeries=false and renders the series from canonical history instead.
+// dashboardCharts always fills total_cards and the 7-day words-added series; when includeSeries is
+// set it additionally computes the (heavier) 30-day accuracy and 7-day weekly series. The progress
+// screen passes includeSeries=false and renders those from canonical history instead.
 func (r *Router) dashboardCharts(req *http.Request, userID int64, now time.Time, response map[string]interface{}, includeSeries bool) {
 	courseCode := r.requestedCourseCodeForUser(req, userID)
 
@@ -223,6 +223,37 @@ func (r *Router) dashboardCharts(req *http.Request, userID int64, now time.Time,
 		totalCards = 0
 	}
 	response["total_cards"] = totalCards
+
+	// Words added by day (last 7 days) is cheap (indexed user_cards.created_at) and is the only
+	// series the progress screen cannot rebuild from canonical history (srs_items appear on first
+	// training, not on card add), so it is always included.
+	weekAgo := now.AddDate(0, 0, -7)
+	wordsAddedStatsQuery := `SELECT
+		CAST(DATE(uc.created_at) AS TEXT) as day,
+		COUNT(*) as words_added
+		FROM user_cards uc
+		INNER JOIN training_cards tc ON uc.training_card_id = tc.id
+		INNER JOIN word_cards wc ON tc.word_card_id = wc.id
+		WHERE uc.user_id = ? AND uc.created_at >= ?
+		GROUP BY DATE(uc.created_at)
+		ORDER BY day ASC`
+	wordsRows, err := r.db.Query(wordsAddedStatsQuery, userID, weekAgo)
+	var wordsAddedStats []map[string]interface{}
+	if err == nil {
+		defer wordsRows.Close()
+		for wordsRows.Next() {
+			var day string
+			var wordsAdded int
+			if err := wordsRows.Scan(&day, &wordsAdded); err == nil {
+				wordsAddedStats = append(wordsAddedStats, map[string]interface{}{
+					"day":         day,
+					"words_added": wordsAdded,
+				})
+			}
+		}
+	}
+	response["words_added_stats"] = wordsAddedStats
+
 	if !includeSeries {
 		return
 	}
@@ -276,35 +307,8 @@ func (r *Router) dashboardCharts(req *http.Request, userID int64, now time.Time,
 		}
 	}
 
-	// Get words added stats by day (last 7 days, exclude orphaned cards)
-	wordsAddedStatsQuery := `SELECT 
-		CAST(DATE(uc.created_at) AS TEXT) as day,
-		COUNT(*) as words_added
-		FROM user_cards uc
-		INNER JOIN training_cards tc ON uc.training_card_id = tc.id
-		INNER JOIN word_cards wc ON tc.word_card_id = wc.id
-		WHERE uc.user_id = ? AND uc.created_at >= ?
-		GROUP BY DATE(uc.created_at)
-		ORDER BY day ASC`
-	wordsRows, err := r.db.Query(wordsAddedStatsQuery, userID, weekAgoForDaily)
-	var wordsAddedStats []map[string]interface{}
-	if err == nil {
-		defer wordsRows.Close()
-		for wordsRows.Next() {
-			var day string
-			var wordsAdded int
-			if err := wordsRows.Scan(&day, &wordsAdded); err == nil {
-				wordsAddedStats = append(wordsAddedStats, map[string]interface{}{
-					"day":         day,
-					"words_added": wordsAdded,
-				})
-			}
-		}
-	}
-
 	response["accuracy_percent"] = accuracyPercent
 	response["weekly_stats"] = weeklyStats
-	response["words_added_stats"] = wordsAddedStats
 }
 
 // handleChat handles AI chat requests

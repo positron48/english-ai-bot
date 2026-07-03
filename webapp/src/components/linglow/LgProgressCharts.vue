@@ -111,7 +111,8 @@ const formatPercent = (value: number): string => value.toFixed(1)
 
 // applyData folds a dashboard payload plus optional canonical history into the chart refs.
 const applyData = (data: any, history: LinglowHistory | null) => {
-  if (!data) return
+  // The aggregate endpoint silently omits failed parts; render from history alone if needed.
+  data = data || {}
   // On the unified Linglow DB the legacy charts are empty; fall back to canonical history.
   let weekly = data.weekly_stats || []
     let wordsAdded = data.words_added_stats || []
@@ -136,7 +137,7 @@ const applyData = (data: any, history: LinglowHistory | null) => {
 const loadData = async () => {
   // Parent owns loading (aggregate endpoint) — never self-fetch; the props watch applies data.
   if (props.external) {
-    if (props.dashboard) applyData(props.dashboard, props.history ?? null)
+    if (props.dashboard || props.history) applyData(props.dashboard, props.history ?? null)
     return
   }
   apiClient.loadTokens()
@@ -153,7 +154,9 @@ const loadData = async () => {
 }
 
 // Re-apply when the parent pushes fresh aggregate data.
-watch(() => props.dashboard, (d) => { if (d) applyData(d, props.history ?? null) })
+watch(() => [props.dashboard, props.history], () => {
+  if (props.dashboard || props.history) applyData(props.dashboard, props.history ?? null)
+})
 
 watch(() => weeklyStats.value, async (newStats) => {
   if (newStats && newStats.length > 0) {

@@ -64,6 +64,62 @@ func TestHandleDashboardOverview_AggregatesParts(t *testing.T) {
 	}
 }
 
+// TestHandleProgressOverview_DashboardIncludesWordsAdded guards the progress screen's
+// words-added chart: the dashboard part is fetched with sections=totals, which must still
+// include the words_added_stats series (it cannot be rebuilt from canonical history).
+func TestHandleProgressOverview_DashboardIncludesWordsAdded(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo := setupDashboardTestDB(t)
+
+	user, err := userRepo.GetOrCreateUser(778900)
+	if err != nil {
+		t.Fatalf("Failed to create user: %v", err)
+	}
+
+	cfg := &config.Config{
+		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
+	}
+	jwtService, _ := NewJWTService(cfg, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
+
+	router := NewRouter(logger, cfg, db, nil, nil, nil, nil)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+
+	req := httptest.NewRequest("GET", "/api/overview/progress", nil)
+	req = req.WithContext(context.WithValue(req.Context(), userIDKey, user.ID))
+	w := httptest.NewRecorder()
+
+	router.handleProgressOverview(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Fatalf("Expected status 200, got %d", w.Code)
+	}
+
+	var response map[string]json.RawMessage
+	if err := json.NewDecoder(w.Body).Decode(&response); err != nil {
+		t.Fatalf("Failed to decode aggregate response: %v", err)
+	}
+	dash, ok := response["dashboard"]
+	if !ok {
+		t.Fatalf("aggregate response missing 'dashboard' part: %v", response)
+	}
+	var dashObj map[string]interface{}
+	if err := json.Unmarshal(dash, &dashObj); err != nil {
+		t.Fatalf("dashboard part is not a JSON object: %v", err)
+	}
+	if _, ok := dashObj["total_cards"]; !ok {
+		t.Errorf("dashboard part should contain total_cards, got %v", dashObj)
+	}
+	if _, ok := dashObj["words_added_stats"]; !ok {
+		t.Errorf("dashboard part (sections=totals) should contain words_added_stats, got %v", dashObj)
+	}
+	if _, ok := dashObj["weekly_stats"]; ok {
+		t.Errorf("dashboard part (sections=totals) should not compute weekly_stats, got %v", dashObj)
+	}
+}
+
 func TestHandleDashboardOverview_WrongMethod(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db, userRepo := setupDashboardTestDB(t)
