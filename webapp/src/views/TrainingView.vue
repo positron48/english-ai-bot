@@ -188,6 +188,12 @@
               >
                 <Icon name="check" class="type-submit-icon" />
               </button>
+              <VoiceMicButton
+                :lang="learning?.target_lang ?? 'en'"
+                :disabled="!!feedback || answering"
+                :label="t('sentence.voiceInput')"
+                @transcript="onTrainingVoiceTranscript"
+              />
             </template>
           </div>
         </div>
@@ -283,12 +289,20 @@
             @click="spellAddLetterByIndex(i)"
           >{{ ch }}</button>
         </div>
-        <button
-          v-if="!feedback && !answering"
-          type="button"
-          class="btn btn-secondary spell-skip"
-          @click="skipSpellAnswer"
-        >{{ t('training.skip') || 'Пропустить' }}</button>
+        <div class="spell-actions-row">
+          <button
+            v-if="!feedback && !answering"
+            type="button"
+            class="btn btn-secondary spell-skip"
+            @click="skipSpellAnswer"
+          >{{ t('training.skip') || 'Пропустить' }}</button>
+          <VoiceMicButton
+            v-if="!feedback && !answering"
+            :lang="learning?.target_lang ?? 'en'"
+            :label="t('sentence.voiceInput')"
+            @transcript="onTrainingVoiceTranscript"
+          />
+        </div>
         <div
           v-if="showSpellHintButton && spellHintEligible && !(feedback && !feedback.is_correct)"
           class="type-hint-button-wrapper spell-hint-button-wrapper"
@@ -499,6 +513,7 @@ import { useLocale } from '../composables/useLocale'
 import { Chart, registerables } from 'chart.js'
 import Icon from '../components/Icon.vue'
 import ClickableText from '../components/ClickableText.vue'
+import VoiceMicButton from '../components/VoiceMicButton.vue'
 import LgLoader from '../components/linglow/LgLoader.vue'
 import TrainingSessionCompletion from '../components/TrainingSessionCompletion.vue'
 import ContentReportDialog from '../components/ContentReportDialog.vue'
@@ -511,7 +526,7 @@ import { useCourse } from '../composables/useCourse'
 import { useSpanishVerbFormsPractice } from '../composables/useSpanishVerbFormsPractice'
 
 const { t, tm, locale } = useI18n()
-const { ensureLearningLoaded } = useLearningConfig()
+const { ensureLearningLoaded, learning } = useLearningConfig()
 const { currentCourseCode } = useCourse()
 
 const isOnline = ref(typeof navigator === 'undefined' ? true : navigator.onLine)
@@ -929,6 +944,32 @@ const spellHintDisplay = computed(() => {
 })
 
 // For spell keyboard: first unused index with this letter
+// Voice answer for type/spell challenges: the transcript fills the text input, or picks the
+// spell letters in order (auto-submitting when all letters are placed, same as tapping them).
+const onTrainingVoiceTranscript = (raw: string) => {
+  const card = currentCard.value
+  if (!card || feedback.value || answering.value) return
+  let word = raw.trim().toLowerCase()
+  const prefix = (card.prefix ?? '').trim().toLowerCase()
+  if (prefix && word.startsWith(`${prefix} `)) word = word.slice(prefix.length).trim()
+  if (!word) return
+  if (card.type === 'type') {
+    typeAnswerText.value = word
+    return
+  }
+  if (card.type === 'spell' && card.letters?.length) {
+    while (spellAnswerLetters.value.length > 0) {
+      spellRemoveLetterAt(spellAnswerLetters.value.length - 1)
+    }
+    for (const ch of word.replace(/\s+/g, '')) {
+      const idx = spellFirstUnusedIndexForLetter(ch)
+      if (idx < 0) break
+      spellAddLetterByIndex(idx)
+      if (feedback.value || answering.value) break
+    }
+  }
+}
+
 function spellFirstUnusedIndexForLetter(ch: string): number {
   const letters = currentCard.value?.letters ?? []
   const used = spellUsedIndices.value
@@ -3205,6 +3246,17 @@ const handleTimerMouseLeave = () => {
 }
 .spell-skip {
   margin-top: 8px;
+}
+.spell-actions-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+.spell-actions-row .voice-mic {
+  margin-top: 8px;
+  width: 36px;
+  height: 36px;
 }
 .spell-hint-button-wrapper {
   margin-top: 10px;

@@ -818,7 +818,8 @@
     "alertRemoveFailed": "Failed to remove word from training",
     "alertLoadCardsFailed": "Failed to load cards",
     "alertMarkKnownFailed": "Failed to mark word as known",
-    "alertMoveTrainingFailed": "Failed to move word to training"
+    "alertMoveTrainingFailed": "Failed to move word to training",
+    "lookupWord": "Look up “{query}”"
   },
   "grammar": {
     "courseTitle": "Grammar Course",

@@ -44,6 +44,12 @@
         <p v-else>
           {{ t('vocab.noWordsInVocabulary') }}
         </p>
+        <template v-if="searchQuery && isLookupCandidate">
+          <button type="button" class="lookup-btn" :disabled="lookupLoading" @click="lookupWord">
+            {{ lookupLoading ? (lookupGenerating ? t('reading.wordGenerating') : t('common.loading')) : t('vocab.lookupWord', { query: searchQuery.trim() }) }}
+          </button>
+          <p v-if="lookupError" class="lookup-error">{{ lookupError }}</p>
+        </template>
       </div>
       
       <div v-else>
@@ -138,6 +144,7 @@
       <div class="modal-content modal-large">
         <VocabWordCardsDetail
           :lemma="selectedWord"
+          :preloaded="lookupPreloaded"
           :list-mastering-score="selectedWordMasteringScore"
           @close="closeCardsModal"
           @vocab-changed="loadVocab"
@@ -390,6 +397,7 @@ const alphabetSections = computed(() => {
 const showCards = (lemma: string) => {
   const wordFromList = words.value.find((w) => w.lemma === lemma)
   selectedWordMasteringScore.value = wordFromList != null ? wordFromList.mastering_score : null
+  lookupPreloaded.value = null
   selectedWord.value = lemma
   showCardsModal.value = true
 }
@@ -398,6 +406,54 @@ const closeCardsModal = () => {
   showCardsModal.value = false
   selectedWord.value = ''
   selectedWordMasteringScore.value = null
+  lookupPreloaded.value = null
+}
+
+// Dictionary lookup for a word not in the user's vocabulary: resolves surface forms and
+// generates the card via LLM when missing (same endpoint as clicking a word while reading;
+// it also adds the word to training server-side).
+const lookupPreloaded = ref<any>(null)
+const lookupLoading = ref(false)
+const lookupGenerating = ref(false)
+const lookupError = ref('')
+let lookupGeneratingTimer: ReturnType<typeof setTimeout> | null = null
+
+const isLookupCandidate = computed(() => /^[\p{L}\p{M}'’-]+( [\p{L}\p{M}'’-]+)?$/u.test(searchQuery.value.trim()))
+
+const lookupWord = async () => {
+  const query = searchQuery.value.trim()
+  if (!query || lookupLoading.value) return
+  lookupLoading.value = true
+  lookupGenerating.value = false
+  lookupError.value = ''
+  if (lookupGeneratingTimer) clearTimeout(lookupGeneratingTimer)
+  lookupGeneratingTimer = setTimeout(() => { lookupGenerating.value = true }, 600)
+  try {
+    const data: any = await apiClient.request(`/api/reading/word-lookup?lemma=${encodeURIComponent(query)}`)
+    lookupPreloaded.value = data
+    selectedWordMasteringScore.value = null
+    selectedWord.value = data.lemma || query
+    showCardsModal.value = true
+  } catch (error: any) {
+    console.error('Word lookup failed', error)
+    const status = typeof error?.status === 'number' ? error.status : 0
+    if (error?.isNetworkError) {
+      lookupError.value = t('reading.wordLookupNetwork')
+    } else if (status === 404) {
+      lookupError.value = t('reading.wordNotFound')
+    } else if (status >= 500) {
+      lookupError.value = t('reading.wordLookupServerError')
+    } else {
+      lookupError.value = t('reading.wordLookupFailed')
+    }
+  } finally {
+    if (lookupGeneratingTimer) {
+      clearTimeout(lookupGeneratingTimer)
+      lookupGeneratingTimer = null
+    }
+    lookupLoading.value = false
+    lookupGenerating.value = false
+  }
 }
 
 const handleKeydown = (event: KeyboardEvent) => {
@@ -516,6 +572,24 @@ onUnmounted(() => {
   text-align: center;
   padding: 60px 20px;
   color: var(--text-secondary);
+}
+
+.lookup-btn {
+  margin-top: 12px;
+  padding: 10px 18px;
+  border: 1px solid var(--border-primary, rgba(0, 0, 0, 0.15));
+  border-radius: 10px;
+  background: var(--card-bg, transparent);
+  color: var(--text-primary, inherit);
+  cursor: pointer;
+}
+.lookup-btn:disabled {
+  opacity: 0.6;
+  cursor: default;
+}
+.lookup-error {
+  margin-top: 10px;
+  color: var(--error-color, #d9534f);
 }
 
 .words-list {

@@ -818,7 +818,8 @@
     "alertRemoveFailed": "Не удалось убрать слово из тренировки",
     "alertLoadCardsFailed": "Не удалось загрузить карточки",
     "alertMarkKnownFailed": "Не удалось отметить слово как известное",
-    "alertMoveTrainingFailed": "Не удалось вернуть слово в тренировку"
+    "alertMoveTrainingFailed": "Не удалось вернуть слово в тренировку",
+    "lookupWord": "Показать перевод «{query}»"
   },
   "grammar": {
     "courseTitle": "Курс грамматики",
