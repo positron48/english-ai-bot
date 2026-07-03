@@ -21,54 +21,94 @@
     <div v-else-if="error" class="error">{{ error }}</div>
     <div v-else-if="selectedCourseCode && !quests.length" class="empty-message">Квестов нет.</div>
 
-    <!-- QUEST LIST -->
-    <div v-if="!loading && quests.length" class="scenario-list">
-      <div v-for="q in quests" :key="q.id" class="scenario-card">
-        <div class="scenario-head">
-          <div class="quest-head-left">
-            <img v-if="q.image_url" :src="q.image_url" class="quest-thumb" alt="" />
-            <div>
-              <span class="scenario-title">{{ q.title }}</span>
+    <!-- TOOLBAR: filter + sort -->
+    <div v-if="!loading && quests.length" class="pq-toolbar">
+      <label>Статус:
+        <select v-model="statusFilter" class="level-select">
+          <option value="">все</option>
+          <option value="draft">draft</option>
+          <option value="active">active</option>
+          <option value="locked">locked</option>
+          <option value="archived">archived</option>
+        </select>
+      </label>
+      <label>Сортировка по id:
+        <select v-model="sortDir" class="level-select">
+          <option value="asc">по возрастанию ↑</option>
+          <option value="desc">по убыванию ↓</option>
+        </select>
+      </label>
+      <span class="pq-count">Найдено: {{ filteredQuests.length }}</span>
+    </div>
+
+    <!-- QUEST LIST (compact) -->
+    <div v-if="!loading && quests.length" class="pq-list">
+      <div v-if="!filteredQuests.length" class="empty-message">Нет квестов с выбранным статусом.</div>
+      <template v-else>
+        <div v-for="q in pagedQuests" :key="q.id" class="pq-card">
+          <div class="pq-row">
+            <button class="pq-expand" :class="{ open: expanded.has(q.id) }" @click="toggleExpand(q.id)" title="Задания">▶</button>
+            <img v-if="q.image_url" :src="q.image_url" class="pq-thumb" alt="" />
+            <div v-else class="pq-thumb pq-thumb--empty">—</div>
+            <div class="pq-main">
+              <span class="pq-title">{{ q.title }}</span>
               <span class="badge" :class="'badge--' + q.status">{{ q.status }}</span>
+              <span class="pq-id mono">#{{ q.id }}</span>
+            </div>
+            <span class="pq-tasks-count">{{ q.tasks.length }} заданий</span>
+            <div class="pq-actions">
+              <button
+                v-if="q.status === 'draft' && q.image_url"
+                class="btn btn-sm btn-primary"
+                :disabled="publishingId === q.id"
+                @click="publishQuest(q)"
+              >{{ publishingId === q.id ? '…' : 'Опубликовать' }}</button>
+              <button class="btn btn-sm" @click="editQuest(q)">Изменить</button>
+              <button class="btn btn-sm btn-danger" @click="removeQuest(q)">Удалить</button>
             </div>
           </div>
-          <div class="scenario-actions">
-            <button class="btn btn-sm" @click="editQuest(q)">Изменить</button>
-            <button class="btn btn-sm btn-danger" @click="removeQuest(q)">Удалить</button>
-          </div>
-        </div>
-        <div class="scenario-meta mono">
-          {{ q.code }} · {{ q.cefr_level }}
-          · {{ q.max_turns }} ходов · {{ q.token_budget }} токенов · order {{ q.sort_order }}
-        </div>
-        <div class="scenario-meta description">{{ q.image_description }}</div>
 
-        <!-- tasks -->
-        <div class="tasks-block">
-          <div class="tasks-head">
-            <span>Задания квеста ({{ q.tasks.length }})</span>
-            <button class="btn btn-sm" @click="newTask(q)">+ Задание</button>
+          <!-- expanded: meta + tasks -->
+          <div v-if="expanded.has(q.id)" class="pq-details">
+            <div class="scenario-meta mono">
+              {{ q.code }} · {{ q.cefr_level }}
+              · {{ q.max_turns }} ходов · {{ q.token_budget }} токенов · order {{ q.sort_order }}
+            </div>
+            <div v-if="q.image_description" class="scenario-meta description">{{ q.image_description }}</div>
+            <div class="tasks-block">
+              <div class="tasks-head">
+                <span>Задания квеста ({{ q.tasks.length }})</span>
+                <button class="btn btn-sm" @click="newTask(q)">+ Задание</button>
+              </div>
+              <table v-if="q.tasks.length" class="tasks-table">
+                <thead>
+                  <tr><th>code</th><th>Название</th><th>Критерий выполнения</th><th>req</th><th>ord</th><th></th></tr>
+                </thead>
+                <tbody>
+                  <tr v-for="t in q.tasks" :key="t.id">
+                    <td class="mono">{{ t.code }}</td>
+                    <td>{{ t.title }}</td>
+                    <td class="criteria">{{ t.completion_criteria }}</td>
+                    <td>{{ t.is_required ? '✓' : '—' }}</td>
+                    <td>{{ t.sort_order }}</td>
+                    <td class="nowrap">
+                      <button class="btn btn-xs" @click="editTask(q, t)">ред.</button>
+                      <button class="btn btn-xs btn-danger" @click="removeTask(q, t)">×</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
-          <table v-if="q.tasks.length" class="tasks-table">
-            <thead>
-              <tr><th>code</th><th>Название</th><th>Критерий выполнения</th><th>req</th><th>ord</th><th></th></tr>
-            </thead>
-            <tbody>
-              <tr v-for="t in q.tasks" :key="t.id">
-                <td class="mono">{{ t.code }}</td>
-                <td>{{ t.title }}</td>
-                <td class="criteria">{{ t.completion_criteria }}</td>
-                <td>{{ t.is_required ? '✓' : '—' }}</td>
-                <td>{{ t.sort_order }}</td>
-                <td class="nowrap">
-                  <button class="btn btn-xs" @click="editTask(q, t)">ред.</button>
-                  <button class="btn btn-xs btn-danger" @click="removeTask(q, t)">×</button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
         </div>
-      </div>
+
+        <!-- PAGINATION -->
+        <div v-if="totalPages > 1" class="pq-pagination">
+          <button class="btn btn-sm" :disabled="page <= 1" @click="page--">← Назад</button>
+          <span class="pq-page-info">Стр. {{ page }} из {{ totalPages }}</span>
+          <button class="btn btn-sm" :disabled="page >= totalPages" @click="page++">Вперёд →</button>
+        </div>
+      </template>
     </div>
 
     <!-- QUEST EDIT MODAL -->
@@ -171,7 +211,7 @@
 </template>
 
 <script setup lang="ts">
-import { nextTick, onMounted, ref, watch } from 'vue'
+import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { apiClient } from '../api/client'
 import { showAlert, showConfirm } from '../composables/useDialog'
 import { courseClient, type CourseSummary } from '../api/courseClient'
@@ -207,6 +247,39 @@ const levels = ref<LevelOption[]>([])
 const loading = ref(false)
 const error = ref<string | null>(null)
 const saving = ref(false)
+const publishingId = ref<number | null>(null)
+
+// list controls
+const statusFilter = ref('')
+const sortDir = ref<'asc' | 'desc'>('asc')
+const page = ref(1)
+const pageSize = 20
+const expanded = ref<Set<number>>(new Set())
+
+const filteredQuests = computed(() => {
+  const arr = quests.value.filter(q => !statusFilter.value || q.status === statusFilter.value)
+  arr.sort((a, b) => sortDir.value === 'asc' ? a.id - b.id : b.id - a.id)
+  return arr
+})
+const totalPages = computed(() => Math.max(1, Math.ceil(filteredQuests.value.length / pageSize)))
+const pagedQuests = computed(() => {
+  const start = (page.value - 1) * pageSize
+  return filteredQuests.value.slice(start, start + pageSize)
+})
+
+// keep page in range when the filtered set shrinks
+watch([filteredQuests, totalPages], () => {
+  if (page.value > totalPages.value) page.value = totalPages.value
+})
+// reset to first page when the user changes filter/sort
+watch([statusFilter, sortDir], () => { page.value = 1 })
+
+function toggleExpand(id: number) {
+  const next = new Set(expanded.value)
+  if (next.has(id)) next.delete(id)
+  else next.add(id)
+  expanded.value = next
+}
 
 const questForm = ref<Partial<AdminPictureQuest> & { id?: number } | null>(null)
 const taskForm = ref<(Partial<AdminPictureTask> & { id?: number, questId: number }) | null>(null)
@@ -221,9 +294,11 @@ const promptText = ref('')
 const promptArea = ref<HTMLTextAreaElement | null>(null)
 const copied = ref(false)
 
-async function load() {
+async function load(silent = false) {
   if (!selectedCourseCode.value) return
-  loading.value = true
+  // Silent refresh (after save/delete) keeps the list rendered so it doesn't
+  // flash/jump — only the initial/course-change load shows the spinner.
+  if (!silent) loading.value = true
   error.value = null
   try {
     const data: { quests?: AdminPictureQuest[], levels?: LevelOption[] } =
@@ -281,7 +356,7 @@ async function saveQuest() {
     const url = `/api/admin/picture-quests${f.id ? '/' + f.id : ''}?course_code=${encodeURIComponent(selectedCourseCode.value)}`
     await apiClient.request(url, { method: f.id ? 'PUT' : 'POST', body: JSON.stringify(f) })
     questForm.value = null
-    await load()
+    await load(true)
   } catch (e: any) {
     await showAlert(e?.message || 'Не удалось сохранить')
   } finally {
@@ -289,11 +364,30 @@ async function saveQuest() {
   }
 }
 
+async function publishQuest(q: AdminPictureQuest) {
+  if (!q.image_url) {
+    await showAlert('Нельзя опубликовать квест без картинки')
+    return
+  }
+  publishingId.value = q.id
+  try {
+    await apiClient.request(
+      `/api/admin/picture-quests/${q.id}?course_code=${encodeURIComponent(selectedCourseCode.value)}`,
+      { method: 'PUT', body: JSON.stringify({ ...q, status: 'active' }) },
+    )
+    q.status = 'active'
+  } catch (e: any) {
+    await showAlert(e?.message || 'Не удалось опубликовать')
+  } finally {
+    publishingId.value = null
+  }
+}
+
 async function removeQuest(q: AdminPictureQuest) {
   if (!await showConfirm(`Удалить квест «${q.title}» и все его задания/сессии?`)) return
   try {
     await apiClient.request(`/api/admin/picture-quests/${q.id}`, { method: 'DELETE' })
-    await load()
+    await load(true)
   } catch (e: any) {
     await showAlert(e?.message || 'Не удалось удалить')
   }
@@ -325,7 +419,7 @@ async function saveTask() {
       await apiClient.request(`/api/admin/picture-quests/${f.questId}/tasks`, { method: 'POST', body })
     }
     taskForm.value = null
-    await load()
+    await load(true)
   } catch (e: any) {
     await showAlert(e?.message || 'Не удалось сохранить')
   } finally {
@@ -337,7 +431,7 @@ async function removeTask(_q: AdminPictureQuest, t: AdminPictureTask) {
   if (!await showConfirm(`Удалить задание «${t.title}»?`)) return
   try {
     await apiClient.request(`/api/admin/picture-quests/tasks/${t.id}`, { method: 'DELETE' })
-    await load()
+    await load(true)
   } catch (e: any) {
     await showAlert(e?.message || 'Не удалось удалить')
   }
@@ -365,7 +459,7 @@ async function doImport() {
       { method: 'POST', body: JSON.stringify(parsed) },
     )
     importOpen.value = false
-    await load()
+    await load(true)
     await showAlert(`${res.created ? 'Создан' : 'Обновлён'} квест, заданий: ${res.task_count ?? 0}`)
   } catch (e: any) {
     importError.value = e?.message || 'Не удалось импортировать'
@@ -401,7 +495,7 @@ async function copyPrompt() {
   setTimeout(() => { copied.value = false }, 1500)
 }
 
-watch(selectedCourseCode, () => { quests.value = []; load() })
+watch(selectedCourseCode, () => { quests.value = []; page.value = 1; expanded.value = new Set(); load() })
 
 onMounted(async () => {
   try {
@@ -427,15 +521,32 @@ textarea.inp { resize: vertical; font-family: inherit; }
 .loading, .empty-message { padding: 24px; color: var(--text-secondary); }
 .error { padding: 12px; color: #c0392b; }
 
-.scenario-list { display: flex; flex-direction: column; gap: 14px; }
-.scenario-card { border: 1px solid var(--border-primary); border-radius: 10px; padding: 14px; background: var(--bg-secondary); }
-.scenario-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
-.quest-head-left { display: flex; align-items: center; gap: 10px; }
-.quest-thumb { width: 56px; height: 56px; border-radius: 8px; object-fit: cover; flex-shrink: 0; }
-.scenario-title { font-weight: 600; font-size: 15px; margin-right: 8px; }
+/* toolbar */
+.pq-toolbar { display: flex; align-items: center; gap: 16px; margin-bottom: 12px; flex-wrap: wrap; }
+.pq-toolbar label { display: flex; align-items: center; gap: 6px; font-size: 13px; color: var(--text-secondary); }
+.pq-count { font-size: 12px; color: var(--text-secondary); margin-left: auto; }
+
+/* compact list */
+.pq-list { display: flex; flex-direction: column; gap: 6px; }
+.pq-card { border: 1px solid var(--border-primary); border-radius: 8px; background: var(--bg-secondary); }
+.pq-row { display: flex; align-items: center; gap: 10px; padding: 8px 10px; }
+.pq-expand { border: none; background: none; cursor: pointer; color: var(--text-secondary); font-size: 11px; padding: 2px 4px; transition: transform 0.15s; flex-shrink: 0; }
+.pq-expand.open { transform: rotate(90deg); }
+.pq-thumb { width: 40px; height: 40px; border-radius: 6px; object-fit: cover; flex-shrink: 0; }
+.pq-thumb--empty { display: flex; align-items: center; justify-content: center; background: var(--bg-primary); color: var(--text-secondary); font-size: 14px; }
+.pq-main { display: flex; align-items: center; gap: 8px; min-width: 0; flex: 1; }
+.pq-title { font-weight: 600; font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pq-id { font-size: 11px; color: var(--text-secondary); }
+.pq-tasks-count { font-size: 12px; color: var(--text-secondary); white-space: nowrap; flex-shrink: 0; }
+.pq-actions { display: flex; gap: 6px; flex-shrink: 0; }
+.pq-details { border-top: 1px solid var(--border-primary); padding: 10px 12px; }
+
+/* pagination */
+.pq-pagination { display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 12px; }
+.pq-page-info { font-size: 12px; color: var(--text-secondary); }
+
 .scenario-meta { font-size: 12px; color: var(--text-secondary); margin: 6px 0 10px; }
 .scenario-meta.description { white-space: pre-wrap; }
-.scenario-actions { display: flex; gap: 6px; flex-shrink: 0; }
 
 .badge { display: inline-block; padding: 1px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; margin-right: 5px; }
 .badge--active { background: rgba(45,107,58,0.15); color: #2d6b3a; }
