@@ -142,9 +142,6 @@ func (p *pictureQuestPayload) toInput(courseCode string) (repository.AdminPictur
 	if in.Code == "" || in.Title == "" || in.CEFRLevel == "" {
 		return in, errors.New("code, title and cefr_level are required")
 	}
-	if in.ImageURL == "" {
-		return in, errors.New("image_url is required — upload the picture first")
-	}
 	if in.ImageDescription == "" {
 		return in, errors.New("image_description is required — it is the ground truth the model judges the learner against")
 	}
@@ -158,6 +155,10 @@ func (p *pictureQuestPayload) toInput(courseCode string) (repository.AdminPictur
 	switch in.Status {
 	case "draft", "active", "locked", "archived":
 	default:
+		in.Status = "draft"
+	}
+	// A quest can be saved without a picture, but it must not go live imageless.
+	if in.ImageURL == "" && in.Status == "active" {
 		in.Status = "draft"
 	}
 	return in, nil
