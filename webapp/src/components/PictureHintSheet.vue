@@ -12,7 +12,7 @@
       <div v-else class="hint-body">
         <section v-for="s in sections" :key="s.key" class="hint-section">
           <div class="hint-section-head">
-            <span class="hint-section-icon">{{ s.icon }}</span>
+            <span class="hint-section-icon"><LgIcon :name="s.icon" :s="16" /></span>
             <span class="hint-section-title">{{ s.title }}</span>
           </div>
           <div class="hint-grid">
@@ -74,7 +74,7 @@ const sheetTitle = computed(() => getHintSheetTitle(props.nativeLang))
 .hint-body { overflow-y: auto; padding: 14px 18px 24px; display: flex; flex-direction: column; gap: 18px; }
 .hint-empty { padding: 40px; text-align: center; color: var(--subtext); }
 .hint-section-head { display: flex; align-items: center; gap: 8px; margin-bottom: 10px; }
-.hint-section-icon { font-size: 18px; }
+.hint-section-icon { display: inline-flex; color: #2d6b3a; }
 .hint-section-title {
   font-family: 'Inter', sans-serif; font-size: 13px; font-weight: 700;
   text-transform: uppercase; letter-spacing: 0.04em; color: var(--subtext);

@@ -20,6 +20,14 @@ Notes:
   Vault/ExternalSecret-based access — none of that is set up for this project;
   the `kubectl exec` into `english-postgres` above is the working path.
 
+## No emoji in the UI
+
+Never use emoji (colorful pictographs like 📍🎨💬) anywhere in the product UI —
+neither in Vue templates nor in data/config that renders into the UI. Use the
+monochrome `LgIcon` set (`webapp/src/components/linglow/LgIcon.vue`) instead; add a
+new icon glyph there if none fits. Plain typographic glyphs (arrows →↑↓, ✓, ×) are
+fine. This keeps the interface visually consistent across themes and platforms.
+
 ## Spanish verb-forms binaries in the `linglow` image
 
 Dockerfile ships `/app/import_spanish_verbs`, `/app/backfill_word_verb_links`,

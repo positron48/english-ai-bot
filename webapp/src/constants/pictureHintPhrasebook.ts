@@ -10,7 +10,7 @@ export interface HintEntry {
 export interface HintSection {
   key: string
   title: string // in the native language
-  icon: string  // emoji, locale-neutral
+  icon: string  // LgIcon name (monochrome), locale-neutral — no emoji
   entries: HintEntry[]
 }
 
@@ -18,7 +18,7 @@ type NativeMap = Record<string, HintSection[]>
 
 const ES_RU: HintSection[] = [
   {
-    key: 'location', title: 'Расположение', icon: '📍',
+    key: 'location', title: 'Расположение', icon: 'map-pin',
     entries: [
       { term: 'arriba', gloss: 'сверху / вверху' },
       { term: 'abajo', gloss: 'снизу / внизу' },
@@ -39,7 +39,7 @@ const ES_RU: HintSection[] = [
     ],
   },
   {
-    key: 'colors', title: 'Цвета', icon: '🎨',
+    key: 'colors', title: 'Цвета', icon: 'sparkles',
     entries: [
       { term: 'rojo', gloss: 'красный' },
       { term: 'azul', gloss: 'синий' },
@@ -57,7 +57,7 @@ const ES_RU: HintSection[] = [
     ],
   },
   {
-    key: 'sizes', title: 'Размеры и форма', icon: '📐',
+    key: 'sizes', title: 'Размеры и форма', icon: 'bar',
     entries: [
       { term: 'grande', gloss: 'большой' },
       { term: 'pequeño', gloss: 'маленький' },
@@ -72,7 +72,7 @@ const ES_RU: HintSection[] = [
     ],
   },
   {
-    key: 'quantity', title: 'Количество', icon: '🔢',
+    key: 'quantity', title: 'Количество', icon: 'hamburger',
     entries: [
       { term: 'uno', gloss: 'один' },
       { term: 'dos', gloss: 'два' },
@@ -84,7 +84,7 @@ const ES_RU: HintSection[] = [
     ],
   },
   {
-    key: 'phrases', title: 'Полезные фразы', icon: '💬',
+    key: 'phrases', title: 'Полезные фразы', icon: 'message-circle',
     entries: [
       { term: 'hay', gloss: 'есть / имеется' },
       { term: 'veo…', gloss: 'я вижу…' },
@@ -99,7 +99,7 @@ const ES_RU: HintSection[] = [
 
 const EN_RU: HintSection[] = [
   {
-    key: 'location', title: 'Расположение', icon: '📍',
+    key: 'location', title: 'Расположение', icon: 'map-pin',
     entries: [
       { term: 'above', gloss: 'сверху / над' },
       { term: 'below', gloss: 'снизу / под' },
@@ -120,7 +120,7 @@ const EN_RU: HintSection[] = [
     ],
   },
   {
-    key: 'colors', title: 'Цвета', icon: '🎨',
+    key: 'colors', title: 'Цвета', icon: 'sparkles',
     entries: [
       { term: 'red', gloss: 'красный' },
       { term: 'blue', gloss: 'синий' },
@@ -138,7 +138,7 @@ const EN_RU: HintSection[] = [
     ],
   },
   {
-    key: 'sizes', title: 'Размеры и форма', icon: '📐',
+    key: 'sizes', title: 'Размеры и форма', icon: 'bar',
     entries: [
       { term: 'big', gloss: 'большой' },
       { term: 'small', gloss: 'маленький' },
@@ -152,7 +152,7 @@ const EN_RU: HintSection[] = [
     ],
   },
   {
-    key: 'quantity', title: 'Количество', icon: '🔢',
+    key: 'quantity', title: 'Количество', icon: 'hamburger',
     entries: [
       { term: 'one', gloss: 'один' },
       { term: 'two', gloss: 'два' },
@@ -164,7 +164,7 @@ const EN_RU: HintSection[] = [
     ],
   },
   {
-    key: 'phrases', title: 'Полезные фразы', icon: '💬',
+    key: 'phrases', title: 'Полезные фразы', icon: 'message-circle',
     entries: [
       { term: 'there is / there are', gloss: 'есть / имеется' },
       { term: 'I can see…', gloss: 'я вижу…' },
