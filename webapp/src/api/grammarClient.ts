@@ -136,25 +136,43 @@ export function setGrammarCourse(courseCode: string): void {
 }
 
 function grammarCourseParam(): string {
-  return _grammarCourseCode ? `?course_code=${encodeURIComponent(_grammarCourseCode)}` : ''
+  const code = getActiveCourseCode()
+  return code ? `?course_code=${encodeURIComponent(code)}` : ''
+}
+
+const COURSE_CACHE_KEY = 'linglow.courseCache.v1'
+
+/** Active course code: in-memory selection, then localStorage cache (survives refresh before ensureCourseLoaded). */
+export function getActiveCourseCode(): string {
+  const live = _grammarCourseCode.trim()
+  if (live) return live
+  if (typeof localStorage === 'undefined') return ''
+  try {
+    const raw = localStorage.getItem(COURSE_CACHE_KEY)
+    if (!raw) return ''
+    const parsed = JSON.parse(raw) as { currentCourseCode?: string }
+    return String(parsed.currentCourseCode || '').trim()
+  } catch {
+    return ''
+  }
 }
 
 /** Append course_code to a URL for multi-course API calls (reading word lookup, training, etc.). */
 export function withCourseCode(url: string, courseCode?: string): string {
-  const code = (courseCode ?? _grammarCourseCode).trim()
+  const code = (courseCode ?? getActiveCourseCode()).trim()
   if (!code) return url
   const sep = url.includes('?') ? '&' : '?'
   return `${url}${sep}course_code=${encodeURIComponent(code)}`
 }
 
 function activeCourseCode(): string {
-  return _grammarCourseCode
+  return getActiveCourseCode()
 }
 
 /** Current course code, as set via setGrammarCourse(). Used by other clients
  *  (e.g. TTS, reading audio) that need to request resources for the active course. */
 export function getGrammarCourseCode(): string {
-  return _grammarCourseCode
+  return getActiveCourseCode()
 }
 
 function clearCategoriesCache() {

@@ -432,3 +432,87 @@ func TestHandleVocabWordCards_DBGetWordCardIDFails(t *testing.T) {
 		t.Errorf("Expected status 500 when get word card ID fails in handleVocabWordCards, got %d: %s", w.Code, w.Body.String())
 	}
 }
+
+func TestHandleVocabDelete_Cards_CourseScopedHomograph(t *testing.T) {
+	logger := zap.NewNop()
+	db, userRepo := setupVocabCardsTestDB(t)
+	user, err := userRepo.GetOrCreateUser(353536)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+	courseRepo := repository.NewCourseRepository(db, logger)
+	if _, err := courseRepo.SelectCurrentCourse(context.Background(), user.ID, "en_ru"); err != nil {
+		t.Fatalf("SelectCurrentCourse: %v", err)
+	}
+
+	_, err = db.Exec(`INSERT INTO word_cards (id, word, definition, course_code) VALUES (10, 'nevada', 'US state', 'en_ru')`)
+	if err != nil {
+		t.Fatalf("insert en nevada: %v", err)
+	}
+	_, err = db.Exec(`INSERT INTO word_cards (id, word, definition, course_code) VALUES (11, 'nevada', 'nevada en español', 'es_ru')`)
+	if err != nil {
+		t.Fatalf("insert es nevada: %v", err)
+	}
+	for _, row := range []struct {
+		id int64
+		ru string
+		en string
+	}{
+		{10, "Невада", "US state of Nevada"},
+		{11, "снежная", "nevada (nieve)"},
+	} {
+		_, err = db.Exec(`INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en) VALUES (?, ?, 0, ?, ?)`,
+			row.id, "nevada", row.ru, row.en)
+		if err != nil {
+			t.Fatalf("insert training card %d: %v", row.id, err)
+		}
+	}
+	var esTrainingID int64
+	if err := db.QueryRow(`SELECT id FROM training_cards WHERE word_card_id = 11`).Scan(&esTrainingID); err != nil {
+		t.Fatalf("training id: %v", err)
+	}
+	_, err = db.Exec(`INSERT INTO user_cards (user_id, training_card_id, direction, state, ef) VALUES (?, ?, 'ru_en', 'new', 2.5)`,
+		user.ID, esTrainingID)
+	if err != nil {
+		t.Fatalf("user card: %v", err)
+	}
+
+	cfg := &config.Config{
+		WebApp: config.WebAppConfig{JWTSecret: "test-secret", JWTTTLHours: 24, RefreshTTLHours: 720},
+		Learning: config.LearningConfig{NativeLang: "ru", TargetLang: "en", GrammarBundleID: "en"},
+	}
+	jwtService, _ := NewJWTService(cfg, logger)
+	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
+	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
+	router := NewRouter(logger, cfg, db, nil, nil, nil, nil)
+	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
+	router.authMiddleware = authMiddleware
+	router.courseRepo = courseRepo
+
+	req := httptest.NewRequest(http.MethodGet, "/api/vocab/nevada/cards?course_code=es_ru", nil)
+	req = req.WithContext(context.WithValue(req.Context(), userIDKey, user.ID))
+	w := httptest.NewRecorder()
+	router.handleVocabDelete(w, req)
+	if w.Code != http.StatusOK {
+		t.Fatalf("status=%d body=%s", w.Code, w.Body.String())
+	}
+	var response map[string]interface{}
+	if err := json.NewDecoder(w.Body).Decode(&response); err != nil {
+		t.Fatalf("decode: %v", err)
+	}
+	if response["word_card_id"] != float64(11) {
+		t.Fatalf("word_card_id=%v want 11 (es_ru)", response["word_card_id"])
+	}
+	cards, ok := response["cards"].([]interface{})
+	if !ok || len(cards) == 0 {
+		t.Fatalf("expected cards, got %#v", response["cards"])
+	}
+	first, ok := cards[0].(map[string]interface{})
+	if !ok {
+		t.Fatalf("card shape: %#v", cards[0])
+	}
+	meaning, _ := first["meaning_en"].(string)
+	if meaning == "US state of Nevada" {
+		t.Fatalf("got English-course meaning %q for es_ru request", meaning)
+	}
+}

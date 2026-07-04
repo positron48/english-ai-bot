@@ -71,8 +71,11 @@ func TestCourseAdminCoverage_CourseHelperNilPaths(t *testing.T) {
 		t.Fatalf("nil router current course = %q", got)
 	}
 	req := httptest.NewRequest(http.MethodGet, "/?course_code=en_ru", nil)
-	if got := nilRouter.requestedCourseCodeForUser(req, 1); got != "" {
-		t.Fatalf("nil router requested course = %q", got)
+	if got := nilRouter.requestedCourseCodeForUser(req, 1); got != "en_ru" {
+		t.Fatalf("nil router requested course with explicit param = %q, want en_ru", got)
+	}
+	if got := nilRouter.requestedCourseCodeForUser(httptest.NewRequest(http.MethodGet, "/", nil), 1); got != "" {
+		t.Fatalf("nil router requested course without param = %q", got)
 	}
 
 	router, userID := setupCourseAdminCoverageRouter(t, config.DefaultLearningConfig(), config.LinglowConfig{})
@@ -87,11 +90,14 @@ func TestCourseAdminCoverage_CourseHelperNilPaths(t *testing.T) {
 	if got := router.currentCourseCodeForUser(ctx, userID); got != "" {
 		t.Fatalf("nil courseRepo current course = %q", got)
 	}
-	if got := router.requestedCourseCodeForUser(req, userID); got != "" {
-		t.Fatalf("nil courseRepo requested course = %q", got)
+	if got := router.requestedCourseCodeForUser(req, userID); got != "en_ru" {
+		t.Fatalf("nil courseRepo requested course with explicit param = %q, want en_ru", got)
 	}
-	if got := router.requestedCourseCodeForUser(req, 0); got != "" {
-		t.Fatalf("userID 0 requested course = %q", got)
+	if got := router.requestedCourseCodeForUser(httptest.NewRequest(http.MethodGet, "/", nil), userID); got != "" {
+		t.Fatalf("nil courseRepo requested course without param = %q", got)
+	}
+	if got := router.requestedCourseCodeForUser(req, 0); got != "en_ru" {
+		t.Fatalf("userID 0 requested course with explicit param = %q, want en_ru", got)
 	}
 }
 

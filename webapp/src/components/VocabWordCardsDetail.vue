@@ -184,6 +184,7 @@
 import { ref, computed, watch, onUnmounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiClient } from '../api/client'
+import { withCourseCode } from '../api/grammarClient'
 import { spanishVerbSubjectPronoun } from '../utils/spanishVerbPronouns'
 import { showAlert } from '../composables/useDialog'
 import { useAudio } from '../composables/useAudio'
@@ -387,10 +388,14 @@ async function loadCards() {
 
   try {
     const pre = props.preloaded
-    if (pre && pre.lemma === lemma) {
+    const preLemma = pre?.lemma?.trim().toLowerCase()
+    const wantLemma = lemma.toLowerCase()
+    if (pre && preLemma === wantLemma) {
       applyPayload(pre)
     } else {
-      const data: VocabCardsAPIResponse = await apiClient.request(`/api/vocab/${encodeURIComponent(lemma)}/cards`)
+      const data: VocabCardsAPIResponse = await apiClient.request(
+        withCourseCode(`/api/vocab/${encodeURIComponent(lemma)}/cards`),
+      )
       if (gen !== loadGen || props.lemma !== lemma) return
       applyPayload(data)
     }
@@ -578,7 +583,7 @@ const markKnown = async () => {
   processingAction.value = true
   try {
     const formData = new FormData()
-    await apiClient.requestFormData(`/api/vocab/${encodeURIComponent(props.lemma)}/mark_known`, formData)
+    await apiClient.requestFormData(withCourseCode(`/api/vocab/${encodeURIComponent(props.lemma)}/mark_known`), formData)
     emit('close')
     emit('vocabChanged')
   } catch (error) {
@@ -594,7 +599,7 @@ const moveToTraining = async () => {
   processingAction.value = true
   try {
     const formData = new FormData()
-    await apiClient.requestFormData(`/api/vocab/${encodeURIComponent(props.lemma)}/move_to_training`, formData)
+    await apiClient.requestFormData(withCourseCode(`/api/vocab/${encodeURIComponent(props.lemma)}/move_to_training`), formData)
     emit('close')
     emit('vocabChanged')
   } catch (error) {
@@ -614,7 +619,7 @@ const deleteWord = async () => {
   if (!props.lemma) return
   try {
     const formData = new FormData()
-    await apiClient.requestFormData(`/api/vocab/${encodeURIComponent(props.lemma)}/delete`, formData)
+    await apiClient.requestFormData(withCourseCode(`/api/vocab/${encodeURIComponent(props.lemma)}/delete`), formData)
     showDeleteConfirm.value = false
     emit('close')
     emit('vocabChanged')

@@ -20,11 +20,14 @@ import { computed, onMounted, ref } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { apiClient } from '../api/client'
+import { withCourseCode } from '../api/grammarClient'
+import { useCourse } from '../composables/useCourse'
 import ReadingPassageBlock from '../components/ReadingPassageBlock.vue'
 import LgLoader from '../components/linglow/LgLoader.vue'
 
 const route = useRoute()
 const { t } = useI18n()
+const { ensureCourseLoaded } = useCourse()
 
 const textId = computed(() => route.params.textId as string)
 const loading = ref(true)
@@ -38,12 +41,13 @@ onMounted(async () => {
   loading.value = true
   error.value = null
   try {
+    await ensureCourseLoaded()
     const data: {
       block?: any
       category_id?: string
       cover_hero_rel_path?: string
       reading_progress?: { is_read?: boolean }
-    } = await apiClient.request(`/api/learning/reading/texts/${textId.value}`)
+    } = await apiClient.request(withCourseCode(`/api/learning/reading/texts/${textId.value}`))
     block.value = data.block ?? null
     coverHeroRelPath.value = String(data.cover_hero_rel_path || '').trim()
     readingIsRead.value = !!data.reading_progress?.is_read

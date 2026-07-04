@@ -108,6 +108,50 @@ func TestWordRepository_ListWordCardsAdminForCourseCanonicalMappingOverridesLega
 	}
 }
 
+func TestWordRepository_ListWordCardsAdminForCourse_SingleCourseDisplayWhenTagged(t *testing.T) {
+	db, repo := setupWordAdminTestDB(t)
+	if err := repo.SaveWordCard("dual-link-word", "definition", "es_ru"); err != nil {
+		t.Fatal(err)
+	}
+	var wordCardID int64
+	if err := db.QueryRow(`SELECT id FROM word_cards WHERE word = 'dual-link-word'`).Scan(&wordCardID); err != nil {
+		t.Fatal(err)
+	}
+	var enCourseID, esCourseID int64
+	if err := db.QueryRow(`SELECT id FROM courses WHERE code = 'en_ru'`).Scan(&enCourseID); err != nil {
+		t.Fatal(err)
+	}
+	if err := db.QueryRow(`SELECT id FROM courses WHERE code = 'es_ru'`).Scan(&esCourseID); err != nil {
+		t.Fatal(err)
+	}
+	for _, courseID := range []int64{enCourseID, esCourseID} {
+		if _, err := db.Exec(`
+			INSERT INTO learning_items (course_id, item_type, source_kind, source_id, title, status)
+			VALUES (?, 'word', 'word_card', ?, 'dual-link-word', 'published')
+		`, courseID, fmt.Sprintf("%d", wordCardID)); err != nil {
+			t.Fatal(err)
+		}
+	}
+
+	cards, err := repo.ListWordCardsAdminForCourse("es_ru", nil, false, nil, "", "", 10, 0, "word", "asc")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(cards) != 1 {
+		t.Fatalf("Spanish list = %+v, want one row", cards)
+	}
+	if len(cards[0].CourseCodes) != 1 || cards[0].CourseCodes[0] != "es_ru" {
+		t.Fatalf("course_codes = %v, want [es_ru] only", cards[0].CourseCodes)
+	}
+	englishCards, err := repo.ListWordCardsAdminForCourse("en_ru", nil, false, nil, "", "", 10, 0, "word", "asc")
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(englishCards) != 0 {
+		t.Fatalf("English list = %+v, want empty when word_cards.course_code is es_ru", englishCards)
+	}
+}
+
 func TestWordRepository_ListWordCardsAdmin_WithSearch(t *testing.T) {
 	_, repo := setupWordAdminTestDB(t)
 

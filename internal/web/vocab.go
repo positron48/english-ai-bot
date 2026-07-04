@@ -502,9 +502,8 @@ func (r *Router) handleVocabDelete(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	// Find word_card_id by lemma (only if we have a valid action or no action)
-	var wordCardID int64
-	err := r.db.QueryRow(`SELECT id FROM word_cards WHERE LOWER(word) = LOWER(?)`, lemma).Scan(&wordCardID)
+	// Find word_card_id by lemma, scoped to the learner's course on multi-course DBs.
+	wordCardID, err := r.resolveWordCardIDForUser(req, userID, lemma)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			w.Header().Set("Content-Type", "application/json")
@@ -690,10 +689,7 @@ func fillVocabCardDetailNeutralAliases(c *VocabCardDetail) {
 func (r *Router) handleVocabWordCards(w http.ResponseWriter, req *http.Request, userID int64, lemma string) {
 	// First, find word_card_id by lemma, scoped to the learner's course so a shared spelling
 	// across courses on the unified DB can't resolve to another course's word.
-	courseCode := r.requestedCourseCodeForUser(req, userID)
-	var wordCardID int64
-	err := r.db.QueryRow(`SELECT id FROM word_cards WHERE LOWER(word) = LOWER(?) AND (? = '' OR LOWER(course_code) = LOWER(?))`,
-		lemma, courseCode, courseCode).Scan(&wordCardID)
+	wordCardID, err := r.resolveWordCardIDForUser(req, userID, lemma)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			w.Header().Set("Content-Type", "application/json")
@@ -709,6 +705,18 @@ func (r *Router) handleVocabWordCards(w http.ResponseWriter, req *http.Request, 
 	}
 
 	r.handleVocabWordCardsByID(w, req, userID, wordCardID, lemma)
+}
+
+// resolveWordCardIDForUser finds word_cards.id for lemma within the request/user course scope.
+func (r *Router) resolveWordCardIDForUser(req *http.Request, userID int64, lemma string) (int64, error) {
+	courseCode := r.requestedCourseCodeForUser(req, userID)
+	var wordCardID int64
+	err := r.db.QueryRow(`SELECT id FROM word_cards WHERE LOWER(word) = LOWER(?) AND (? = '' OR LOWER(course_code) = LOWER(?))`,
+		lemma, courseCode, courseCode).Scan(&wordCardID)
+	if err != nil {
+		return 0, err
+	}
+	return wordCardID, nil
 }
 
 // handleVocabWordCardsByID is handleVocabWordCards with word_card_id already resolved, for

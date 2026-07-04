@@ -196,6 +196,7 @@ import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { apiClient } from '../api/client'
 import { getGrammarCourseCode, withCourseCode } from '../api/grammarClient'
+import { useCourse } from '../composables/useCourse'
 import { useAudio } from '../composables/useAudio'
 import { useSettings } from '../composables/useSettings'
 import Icon from './Icon.vue'
@@ -219,6 +220,7 @@ const emit = defineEmits<{
 }>()
 
 const { t } = useI18n()
+const { currentCourseCode } = useCourse()
 const router = useRouter()
 const { settings } = useSettings()
 const { playSuccess, playFail } = useAudio()
@@ -493,7 +495,7 @@ const onTokenClick = async (event: MouseEvent, token: any, segment: any) => {
 
   try {
     const data: VocabCardsAPIResponse = await apiClient.request(
-      withCourseCode(`/api/reading/word-lookup?lemma=${encodeURIComponent(token.lemma)}`),
+      withCourseCode(`/api/reading/word-lookup?lemma=${encodeURIComponent(token.lemma)}`, currentCourseCode.value),
     )
     modalLemma.value = data.lemma || token.lemma
     modalPreloaded.value = data

@@ -977,12 +977,15 @@ func (r *WordRepository) listWordCardsAdmin(courseCode string, includeCourseInfo
 			  COALESCE(tts.audio_rel_path, '') as tts_audio_rel_path`
 	if includeCourseInfo {
 		query += `,
-			  COALESCE((
-			    SELECT STRING_AGG(DISTINCT c.code, ',' ORDER BY c.code)
-			    FROM learning_items li
-			    JOIN courses c ON c.id = li.course_id
-			    WHERE li.source_kind = 'word_card' AND li.source_id = CAST(wc.id AS TEXT)
-			  ), COALESCE(wc.course_code, '')) AS course_codes`
+			  CASE
+			    WHEN NULLIF(TRIM(wc.course_code), '') IS NOT NULL THEN TRIM(wc.course_code)
+			    ELSE COALESCE((
+			      SELECT STRING_AGG(DISTINCT c.code, ',' ORDER BY c.code)
+			      FROM learning_items li
+			      JOIN courses c ON c.id = li.course_id
+			      WHERE li.source_kind = 'word_card' AND li.source_id = CAST(wc.id AS TEXT)
+			    ), '')
+			  END AS course_codes`
 	}
 	query += `,
 			  CAST(wc.created_at AS TEXT) as created_at,
@@ -996,23 +999,44 @@ func (r *WordRepository) listWordCardsAdmin(courseCode string, includeCourseInfo
 	args := []interface{}{}
 	conditions := []string{}
 	if courseCode != "" {
-		conditions = append(conditions, `(EXISTS (
-			SELECT 1
-			FROM learning_items li
-			JOIN courses c ON c.id = li.course_id
-			WHERE li.source_kind = 'word_card'
-			  AND li.source_id = CAST(wc.id AS TEXT)
-			  AND c.code = ?
-		) OR (
-			wc.course_code = ?
-			AND NOT EXISTS (
+		conditions = append(conditions, `(
+			EXISTS (
 				SELECT 1
 				FROM learning_items li
+				JOIN courses c ON c.id = li.course_id
 				WHERE li.source_kind = 'word_card'
 				  AND li.source_id = CAST(wc.id AS TEXT)
+				  AND c.code = ?
+			) OR (
+				wc.course_code = ?
+				AND NOT EXISTS (
+					SELECT 1
+					FROM learning_items li
+					WHERE li.source_kind = 'word_card'
+					  AND li.source_id = CAST(wc.id AS TEXT)
+				)
 			)
-		))`)
-		args = append(args, courseCode, courseCode)
+		) AND NOT (
+			NULLIF(TRIM(wc.course_code), '') IS NOT NULL
+			AND LOWER(wc.course_code) != LOWER(?)
+			AND EXISTS (
+				SELECT 1
+				FROM learning_items li
+				JOIN courses c ON c.id = li.course_id
+				WHERE li.source_kind = 'word_card'
+				  AND li.source_id = CAST(wc.id AS TEXT)
+				  AND LOWER(c.code) = LOWER(?)
+			)
+			AND EXISTS (
+				SELECT 1
+				FROM learning_items li
+				JOIN courses c ON c.id = li.course_id
+				WHERE li.source_kind = 'word_card'
+				  AND li.source_id = CAST(wc.id AS TEXT)
+				  AND LOWER(c.code) = LOWER(wc.course_code)
+			)
+		)`)
+		args = append(args, courseCode, courseCode, courseCode, courseCode)
 	}
 
 	// Filter by user if specified - use subquery to avoid duplicates from JOIN
@@ -1202,23 +1226,44 @@ func (r *WordRepository) CountWordCardsAdminForCourse(courseCode string, filterU
 	args := []interface{}{}
 	conditions := []string{}
 	if courseCode != "" {
-		conditions = append(conditions, `(EXISTS (
-			SELECT 1
-			FROM learning_items li
-			JOIN courses c ON c.id = li.course_id
-			WHERE li.source_kind = 'word_card'
-			  AND li.source_id = CAST(wc.id AS TEXT)
-			  AND c.code = ?
-		) OR (
-			wc.course_code = ?
-			AND NOT EXISTS (
+		conditions = append(conditions, `(
+			EXISTS (
 				SELECT 1
 				FROM learning_items li
+				JOIN courses c ON c.id = li.course_id
 				WHERE li.source_kind = 'word_card'
 				  AND li.source_id = CAST(wc.id AS TEXT)
+				  AND c.code = ?
+			) OR (
+				wc.course_code = ?
+				AND NOT EXISTS (
+					SELECT 1
+					FROM learning_items li
+					WHERE li.source_kind = 'word_card'
+					  AND li.source_id = CAST(wc.id AS TEXT)
+				)
 			)
-		))`)
-		args = append(args, courseCode, courseCode)
+		) AND NOT (
+			NULLIF(TRIM(wc.course_code), '') IS NOT NULL
+			AND LOWER(wc.course_code) != LOWER(?)
+			AND EXISTS (
+				SELECT 1
+				FROM learning_items li
+				JOIN courses c ON c.id = li.course_id
+				WHERE li.source_kind = 'word_card'
+				  AND li.source_id = CAST(wc.id AS TEXT)
+				  AND LOWER(c.code) = LOWER(?)
+			)
+			AND EXISTS (
+				SELECT 1
+				FROM learning_items li
+				JOIN courses c ON c.id = li.course_id
+				WHERE li.source_kind = 'word_card'
+				  AND li.source_id = CAST(wc.id AS TEXT)
+				  AND LOWER(c.code) = LOWER(wc.course_code)
+			)
+		)`)
+		args = append(args, courseCode, courseCode, courseCode, courseCode)
 	}
 
 	// Filter by user if specified
