@@ -17,7 +17,7 @@
       <div ref="scrollEl" class="chat-thread">
         <!-- the picture is the core content: persistent panel, tap to expand full-screen -->
         <div v-if="session.image_url" class="pq-image" @click="imageExpanded = true">
-          <img :src="session.image_url" alt="" class="pq-img" />
+          <img :src="mediaUrl(session.image_url)" alt="" class="pq-img" />
           <span class="pq-image-hint">{{ t('pictureQuest.tapToExpand') }}</span>
           <button
             v-if="hasHints"
@@ -122,7 +122,7 @@
 
       <!-- full-screen picture overlay -->
       <div v-if="imageExpanded && session.image_url" class="pq-overlay" @click="imageExpanded = false">
-        <img :src="session.image_url" alt="" class="pq-overlay-img" />
+        <img :src="mediaUrl(session.image_url)" alt="" class="pq-overlay-img" />
         <button class="pq-overlay-close" type="button"><LgIcon name="x" :s="18" /></button>
       </div>
 
@@ -158,6 +158,7 @@ import VoiceMicButton from '../components/VoiceMicButton.vue'
 import { getHintSections } from '../constants/pictureHintPhrasebook'
 import { useCourse } from '../composables/useCourse'
 import { showAlert, showConfirm } from '../composables/useDialog'
+import { mediaUrl } from '../utils/mediaUrl'
 
 const { t } = useI18n()
 const { currentCourse, currentCourseCode, ensureCourseLoaded } = useCourse()

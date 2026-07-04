@@ -53,7 +53,7 @@
               :class="{ 'pq-thumb-upload--empty': !q.image_url, busy: uploadingId === q.id }"
               :title="q.image_url ? 'Заменить картинку' : 'Загрузить картинку'"
             >
-              <img v-if="q.image_url" :src="q.image_url" class="pq-thumb" alt="" />
+              <img v-if="q.image_url" :src="mediaUrl(q.image_url)" class="pq-thumb" alt="" />
               <span v-if="uploadingId === q.id" class="pq-thumb-state">…</span>
               <span v-else-if="!q.image_url" class="pq-thumb-state">＋</span>
               <span v-else class="pq-thumb-replace">↻</span>
@@ -153,7 +153,7 @@
               <input type="file" accept="image/png,image/jpeg,image/webp" style="display:none" @change="uploadPicture($event)" />
             </label>
           </div>
-          <img v-if="questForm.image_url" :src="questForm.image_url" class="image-preview" alt="" />
+          <img v-if="questForm.image_url" :src="mediaUrl(questForm.image_url)" class="image-preview" alt="" />
         </label>
         <label class="full">Описание картинки (инструкция для ИИ, на англ. — ВСЕ факты: объекты, цвета, количество, расположение)
           <textarea v-model="questForm.image_description" class="inp" rows="5"></textarea>
@@ -225,6 +225,7 @@ import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { apiClient } from '../api/client'
 import { showAlert, showConfirm } from '../composables/useDialog'
 import { courseClient, type CourseSummary } from '../api/courseClient'
+import { mediaUrl } from '../utils/mediaUrl'
 
 interface AdminPictureTask {
   id: number

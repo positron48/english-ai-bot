@@ -30,7 +30,7 @@
         >
           <img
             v-if="npc.npcImageUrl"
-            :src="npc.npcImageUrl"
+            :src="mediaUrl(npc.npcImageUrl)"
             class="npc-avatar"
             alt=""
           />
@@ -80,6 +80,7 @@ import { useMe } from '../composables/useMe'
 import { buildNpcGroups } from '../utils/conversations'
 import type { NpcGroup } from '../utils/conversations'
 import { buildGrammarLevelAccess, isDistrictUnlocked } from '../utils/districtUnlock'
+import { mediaUrl } from '../utils/mediaUrl'
 
 interface DistrictNpcGroup {
   district: CourseMapDistrict

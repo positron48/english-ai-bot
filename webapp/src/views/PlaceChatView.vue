@@ -27,7 +27,7 @@
             >
               <img
                 v-if="g.npcImageUrl"
-                :src="g.npcImageUrl"
+                :src="mediaUrl(g.npcImageUrl)"
                 class="npc-avatar"
                 alt=""
               />
@@ -135,7 +135,7 @@
 
           <!-- quest image banner -->
           <div v-if="session.image_url" class="chat-quest-image">
-            <img :src="session.image_url" alt="" class="chat-quest-img" />
+            <img :src="mediaUrl(session.image_url)" alt="" class="chat-quest-img" />
           </div>
 
           <template v-for="(m, i) in messages" :key="i">
@@ -226,6 +226,7 @@ import {
 } from '../api/courseClient'
 import { buildNpcGroups, scenarioQuestPassed, scenarioQuestPerfect } from '../utils/conversations'
 import type { NpcGroup } from '../utils/conversations'
+import { mediaUrl } from '../utils/mediaUrl'
 import LgPageHeader from '../components/linglow/LgPageHeader.vue'
 import LgIcon from '../components/linglow/LgIcon.vue'
 import LgActivityIcon from '../components/linglow/LgActivityIcon.vue'

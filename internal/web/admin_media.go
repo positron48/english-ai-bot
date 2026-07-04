@@ -126,6 +126,11 @@ func (r *Router) handleMediaServe(w http.ResponseWriter, req *http.Request) {
 		http.NotFound(w, req)
 		return
 	}
+	if info, err := os.Stat(target); err != nil || info.IsDir() {
+		w.Header().Set("Cache-Control", "no-store")
+		http.NotFound(w, req)
+		return
+	}
 
 	w.Header().Set("Cache-Control", "public, max-age=31536000, immutable")
 	http.ServeFile(w, req, target)

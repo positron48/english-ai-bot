@@ -30,7 +30,7 @@
           :key="npcCode"
           class="npc-avatar-card"
         >
-          <img v-if="npcImages[npcCode]" :src="npcImages[npcCode]" class="npc-avatar-img" alt="" />
+          <img v-if="npcImages[npcCode]" :src="mediaUrl(npcImages[npcCode])" class="npc-avatar-img" alt="" />
           <div v-else class="npc-avatar-placeholder">?</div>
           <div class="npc-avatar-code">{{ npcCode }}</div>
           <label class="btn btn-xs file-btn">
@@ -134,7 +134,7 @@
               <input type="file" accept="image/png,image/jpeg,image/webp" style="display:none" @change="uploadQuestImage($event)" />
             </label>
           </div>
-          <img v-if="scenarioForm.image_url" :src="scenarioForm.image_url" class="image-preview" alt="" />
+          <img v-if="scenarioForm.image_url" :src="mediaUrl(scenarioForm.image_url)" class="image-preview" alt="" />
         </label>
         <label class="full">NPC персона (инструкция для ИИ)
           <textarea v-model="scenarioForm.npc_persona" class="inp" rows="2"></textarea>
@@ -209,6 +209,7 @@ import { nextTick, onMounted, ref, watch } from 'vue'
 import { apiClient } from '../api/client'
 import { showAlert, showConfirm } from '../composables/useDialog'
 import { courseClient, type CourseSummary } from '../api/courseClient'
+import { mediaUrl } from '../utils/mediaUrl'
 
 interface AdminTask {
   id: number

@@ -25,7 +25,7 @@
           type="button"
           @click="openQuest(quest)"
         >
-          <img v-if="quest.image_url" :src="quest.image_url" class="pq-thumb" alt="" />
+          <img v-if="quest.image_url" :src="mediaUrl(quest.image_url)" class="pq-thumb" alt="" />
           <LgActivityIcon v-else type="conversation" status="green" :size="24" />
           <div class="pq-card-body">
             <div class="pq-card-title">{{ quest.title }}</div>
@@ -58,6 +58,7 @@ import LgActivityIcon from '../components/linglow/LgActivityIcon.vue'
 import LgIcon from '../components/linglow/LgIcon.vue'
 import LgLoader from '../components/linglow/LgLoader.vue'
 import LgPageHeader from '../components/linglow/LgPageHeader.vue'
+import { mediaUrl } from '../utils/mediaUrl'
 import { useCourse } from '../composables/useCourse'
 import { useMe } from '../composables/useMe'
 

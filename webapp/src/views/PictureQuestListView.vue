@@ -27,7 +27,7 @@
           type="button"
           @click="openQuest(quest)"
         >
-          <img v-if="quest.image_url" :src="quest.image_url" class="pq-thumb" alt="" />
+          <img v-if="quest.image_url" :src="mediaUrl(quest.image_url)" class="pq-thumb" alt="" />
           <LgActivityIcon
             v-else
             type="conversation"
@@ -68,6 +68,7 @@ import LgLoader from '../components/linglow/LgLoader.vue'
 import LgPageHeader from '../components/linglow/LgPageHeader.vue'
 import { useCourse } from '../composables/useCourse'
 import { useMe } from '../composables/useMe'
+import { mediaUrl } from '../utils/mediaUrl'
 
 const { t } = useI18n()
 const route = useRoute()
