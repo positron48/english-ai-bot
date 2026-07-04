@@ -5,7 +5,6 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	"math"
 	"strings"
 
 	"tgbot-skeleton/internal/models"
@@ -14,22 +13,41 @@ import (
 // CEFR levels tracked by Linglow city districts and mastery progression.
 var masteryLevelOrder = []string{"A0", "A1", "A2", "B1", "B2", "C1"}
 
-var masteryWordMinTarget = map[string]int{
-	"A0": 40,
-	"A1": 80,
-	"A2": 120,
-	"B1": 160,
-	"B2": 200,
-	"C1": 240,
+// Cumulative mastered/known word counts required to complete each CEFR band.
+var masteryWordCumulativeThreshold = map[string]int{
+	"A0": 150,
+	"A1": 350,
+	"A2": 700,
+	"B1": 1300,
+	"B2": 2500,
+	"C1": 5000,
 }
 
 var masteryReadingTarget = map[string]int{
-	"A0": 3,
-	"A1": 4,
-	"A2": 5,
-	"B1": 6,
-	"B2": 8,
-	"C1": 8,
+	"A0": 10,
+	"A1": 20,
+	"A2": 30,
+	"B1": 40,
+	"B2": 40,
+	"C1": 40,
+}
+
+var masteryConversationTarget = map[string]int{
+	"A0": 5,
+	"A1": 20,
+	"A2": 20,
+	"B1": 20,
+	"B2": 20,
+	"C1": 20,
+}
+
+var masteryPictureTarget = map[string]int{
+	"A0": 5,
+	"A1": 20,
+	"A2": 20,
+	"B1": 20,
+	"B2": 20,
+	"C1": 20,
 }
 
 // CourseMastery is the unified course progress model shared by dashboard, progress,
@@ -68,11 +86,10 @@ type CourseMasteryRemainder struct {
 }
 
 type masteryRawData struct {
-	grammarTarget map[string]int
-	grammarDone   map[string]int
-	wordTotal     map[string]int
-	wordMastered  map[string]int
-	readingTotal  map[string]int
+	grammarTarget     map[string]int
+	grammarDone       map[string]int
+	wordMasteredTotal int
+	readingTotal      map[string]int
 	readingDone   map[string]int
 	convTotal     map[string]int
 	convDone      map[string]int
@@ -99,23 +116,45 @@ func nextMasteryLevel(code string) string {
 	return masteryLevelOrder[idx+1]
 }
 
-func wordTargetForLevel(level string, total int) int {
-	if total <= 0 {
+func wordPrevCumulativeThreshold(level string) int {
+	idx := masteryLevelIndex(level)
+	if idx <= 0 {
 		return 0
 	}
-	minT := masteryWordMinTarget[strings.ToUpper(level)]
-	if minT <= 0 {
-		minT = 40
+	return masteryWordCumulativeThreshold[masteryLevelOrder[idx-1]]
+}
+
+func wordCumulativeThreshold(level string) int {
+	return masteryWordCumulativeThreshold[strings.ToUpper(strings.TrimSpace(level))]
+}
+
+// wordBandMetrics maps total mastered/known words to progress within one CEFR band.
+// Example: 400 total → A0/A1 at 100%, A2 at (400-350)/(700-350).
+func wordBandMetrics(level string, totalMastered int) (done, bandSize int, percent float64) {
+	prev := wordPrevCumulativeThreshold(level)
+	cum := wordCumulativeThreshold(level)
+	bandSize = cum - prev
+	if bandSize <= 0 {
+		return 0, 0, 0
 	}
-	adaptive := int(math.Ceil(float64(total) * 0.35))
-	target := adaptive
-	if minT > target {
-		target = minT
+	progress := totalMastered - prev
+	if progress < 0 {
+		progress = 0
 	}
-	if target > total {
-		target = total
+	if progress > bandSize {
+		progress = bandSize
 	}
-	return target
+	done = progress
+	percent = float64(done) * 100 / float64(bandSize)
+	if percent > 100 {
+		percent = 100
+	}
+	return done, bandSize, percent
+}
+
+func wordUnlockCumulative(totalMastered int, level string) bool {
+	cum := wordCumulativeThreshold(level)
+	return cum > 0 && totalMastered >= cum
 }
 
 func cappedTarget(configured, available int) int {
@@ -210,10 +249,6 @@ func grammarUnlock(done, target int) bool {
 	return target > 0 && done >= target
 }
 
-func wordUnlock(mastered, target int) bool {
-	return target > 0 && mastered >= target
-}
-
 func unlockProgressPercent(grammarDone, grammarTarget, wordMastered, wordTarget int) float64 {
 	g := metricPercent(grammarDone, grammarTarget)
 	w := metricPercent(wordMastered, wordTarget)
@@ -248,9 +283,7 @@ func (r *CourseRepository) BuildCourseMastery(ctx context.Context, userID, cours
 	for i, level := range masteryLevelOrder {
 		gTarget := raw.grammarTarget[level]
 		gDone := raw.grammarDone[level]
-		wTotal := raw.wordTotal[level]
-		wMastered := raw.wordMastered[level]
-		wTarget := wordTargetForLevel(level, wTotal)
+		wDone, wBand, wPct := wordBandMetrics(level, raw.wordMasteredTotal)
 
 		readTotal := raw.readingTotal[level]
 		readTarget := cappedTarget(masteryReadingTarget[level], readTotal)
@@ -260,14 +293,14 @@ func (r *CourseRepository) BuildCourseMastery(ctx context.Context, userID, cours
 		}
 
 		convTotal := raw.convTotal[level]
-		convTarget := cappedTarget(3, convTotal)
+		convTarget := cappedTarget(masteryConversationTarget[level], convTotal)
 		convDone := raw.convDone[level]
 		if convDone > convTarget && convTarget > 0 {
 			convDone = convTarget
 		}
 
 		picTotal := raw.pictureTotal[level]
-		picTarget := cappedTarget(3, picTotal)
+		picTarget := cappedTarget(masteryPictureTarget[level], picTotal)
 		picDone := raw.pictureDone[level]
 		if picDone > picTarget && picTarget > 0 {
 			picDone = picTarget
@@ -275,7 +308,13 @@ func (r *CourseRepository) BuildCourseMastery(ctx context.Context, userID, cours
 
 		metrics := map[string]CourseMasteryMetric{
 			"grammar": buildMasteryMetric(gDone, gTarget, gTarget, gTarget > 0),
-			"words":   buildMasteryMetric(wMastered, wTotal, wTarget, wTotal > 0),
+			"words": {
+				Done:     wDone,
+				Total:    wBand,
+				Target:   wBand,
+				Percent:  wPct,
+				Included: wBand > 0,
+			},
 			"reading": buildMasteryMetric(readDone, readTotal, readTarget, readTotal > 0),
 		}
 		if pro && hasConversation {
@@ -289,14 +328,13 @@ func (r *CourseRepository) BuildCourseMastery(ctx context.Context, userID, cours
 			metrics["picture"] = buildMasteryMetric(picDone, picTotal, picTarget, false)
 		}
 
-		canOpenNext := grammarUnlock(gDone, gTarget) || wordUnlock(wMastered, wTarget)
+		canOpenNext := grammarUnlock(gDone, gTarget) || wordUnlockCumulative(raw.wordMasteredTotal, level)
 		unlocked := i == 0
 		if !unlocked {
 			prev := masteryLevelOrder[i-1]
 			prevTarget := raw.grammarTarget[prev]
 			prevDone := raw.grammarDone[prev]
-			prevWordTarget := wordTargetForLevel(prev, raw.wordTotal[prev])
-			prevCanOpen := grammarUnlock(prevDone, prevTarget) || wordUnlock(raw.wordMastered[prev], prevWordTarget)
+			prevCanOpen := grammarUnlock(prevDone, prevTarget) || wordUnlockCumulative(raw.wordMasteredTotal, prev)
 			unlocked = prevCanOpen || levelUnlockedViaPlacement(level, raw.placementMax)
 		}
 
@@ -451,8 +489,6 @@ func (r *CourseRepository) loadMasteryRawData(ctx context.Context, userID, cours
 	out := &masteryRawData{
 		grammarTarget: make(map[string]int),
 		grammarDone:   make(map[string]int),
-		wordTotal:     make(map[string]int),
-		wordMastered:  make(map[string]int),
 		readingTotal:  make(map[string]int),
 		readingDone:   make(map[string]int),
 		convTotal:     make(map[string]int),
@@ -507,7 +543,7 @@ func (r *CourseRepository) loadMasteryRawData(ctx context.Context, userID, cours
 		}
 	}
 
-	if err := r.scanWordMasteryByLevel(ctx, userID, courseCode, out); err != nil {
+	if err := r.loadTotalMasteredWords(ctx, userID, courseCode, out); err != nil {
 		return nil, err
 	}
 
@@ -587,50 +623,28 @@ func (r *CourseRepository) loadMasteryRawData(ctx context.Context, userID, cours
 	return out, nil
 }
 
-func (r *CourseRepository) scanWordMasteryByLevel(ctx context.Context, userID int64, courseCode string, out *masteryRawData) error {
+func (r *CourseRepository) loadTotalMasteredWords(ctx context.Context, userID int64, courseCode string, out *masteryRawData) error {
+	courseCode = strings.ToLower(strings.TrimSpace(courseCode))
+	if userID == 0 || courseCode == "" {
+		return nil
+	}
 	const q = `
-SELECT upper(COALESCE(NULLIF(ws.level_code, ''), NULLIF(cat.level_code, ''), root.level_code, 'A0')) AS level,
-       COUNT(DISTINCT wsi.word_card_id) AS total,
-       COUNT(DISTINCT CASE
-           WHEN uwk.word_card_id IS NOT NULL OR COALESCE(uwm.mastering_score, 0) >= 80
-           THEN wsi.word_card_id END) AS mastered
-FROM word_sets ws
-LEFT JOIN word_set_categories cat ON cat.id = ws.category_id
-LEFT JOIN word_set_categories root ON root.id = cat.parent_id
-JOIN word_set_items wsi ON wsi.word_set_id = ws.id
-LEFT JOIN (
-    SELECT DISTINCT word_card_id FROM user_word_knowledge WHERE user_id = ? AND status = 'known'
-) uwk ON uwk.word_card_id = wsi.word_card_id
-LEFT JOIN (
-    SELECT word_card_id, MAX(mastering_score) AS mastering_score
-    FROM user_word_mastering
-    WHERE user_id = ?
-    GROUP BY word_card_id
-) uwm ON uwm.word_card_id = wsi.word_card_id
-WHERE LOWER(ws.course_code) = ? AND COALESCE(ws.is_published, 1) = 1
-GROUP BY 1`
-	rows, err := r.db.QueryContext(ctx, q, userID, userID, strings.ToLower(strings.TrimSpace(courseCode)))
-	if err != nil {
-		return fmt.Errorf("word mastery by level: %w", err)
+SELECT COUNT(DISTINCT word_card_id) FROM (
+    SELECT uwk.word_card_id
+    FROM user_word_knowledge uwk
+    JOIN word_cards wc ON wc.id = uwk.word_card_id
+    WHERE uwk.user_id = ? AND uwk.status = 'known'
+      AND LOWER(COALESCE(wc.course_code, '')) = ?
+    UNION
+    SELECT uwm.word_card_id
+    FROM user_word_mastering uwm
+    WHERE uwm.user_id = ? AND COALESCE(uwm.mastering_score, 0) >= 80
+      AND LOWER(COALESCE(uwm.course_code, '')) = ?
+) mastered_words`
+	if err := r.db.QueryRowContext(ctx, q, userID, courseCode, userID, courseCode).Scan(&out.wordMasteredTotal); err != nil {
+		return fmt.Errorf("total mastered words: %w", err)
 	}
-	defer rows.Close()
-	for rows.Next() {
-		var level sql.NullString
-		var total, mastered int
-		if err := rows.Scan(&level, &total, &mastered); err != nil {
-			return err
-		}
-		if !level.Valid {
-			continue
-		}
-		lv := strings.ToUpper(strings.TrimSpace(level.String))
-		if lv == "" {
-			continue
-		}
-		out.wordTotal[lv] = total
-		out.wordMastered[lv] = mastered
-	}
-	return rows.Err()
+	return nil
 }
 
 // GetUserTier loads the subscription tier for mastery feature weighting.

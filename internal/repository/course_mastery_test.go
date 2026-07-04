@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
+	"math"
 	"testing"
 
 	"tgbot-skeleton/internal/config"
@@ -13,28 +14,51 @@ import (
 	"go.uber.org/zap"
 )
 
-func TestWordTargetForLevel(t *testing.T) {
+func TestWordBandMetrics(t *testing.T) {
 	t.Parallel()
 	cases := []struct {
-		level  string
-		total  int
-		target int
+		level   string
+		total   int
+		done    int
+		band    int
+		percent float64
 	}{
-		{"A0", 100, 40},
-		{"A0", 20, 20},
-		{"A1", 200, 80},
-		{"A2", 300, 120},
-		{"B1", 400, 160},
-		{"C1", 1000, 350},
+		{"A0", 0, 0, 150, 0},
+		{"A0", 75, 75, 150, 50},
+		{"A0", 150, 150, 150, 100},
+		{"A0", 400, 150, 150, 100},
+		{"A1", 400, 200, 200, 100},
+		{"A2", 400, 50, 350, 50.0 / 350.0 * 100},
+		{"B1", 1300, 600, 600, 100},
 	}
 	for _, tc := range cases {
 		tc := tc
-		t.Run(tc.level, func(t *testing.T) {
+		t.Run(fmt.Sprintf("%s_%d", tc.level, tc.total), func(t *testing.T) {
 			t.Parallel()
-			if got := wordTargetForLevel(tc.level, tc.total); got != tc.target {
-				t.Fatalf("wordTargetForLevel(%s, %d) = %d, want %d", tc.level, tc.total, got, tc.target)
+			done, band, pct := wordBandMetrics(tc.level, tc.total)
+			if done != tc.done || band != tc.band {
+				t.Fatalf("wordBandMetrics(%s, %d) = (%d, %d), want (%d, %d)", tc.level, tc.total, done, band, tc.done, tc.band)
+			}
+			if math.Abs(pct-tc.percent) > 0.01 {
+				t.Fatalf("wordBandMetrics(%s, %d) percent = %v, want %v", tc.level, tc.total, pct, tc.percent)
 			}
 		})
+	}
+}
+
+func TestWordUnlockCumulative(t *testing.T) {
+	t.Parallel()
+	if wordUnlockCumulative(149, "A0") {
+		t.Fatal("149 should not unlock A0")
+	}
+	if !wordUnlockCumulative(150, "A0") {
+		t.Fatal("150 should unlock A0")
+	}
+	if !wordUnlockCumulative(400, "A1") {
+		t.Fatal("400 should unlock A1")
+	}
+	if wordUnlockCumulative(400, "A2") {
+		t.Fatal("400 should not unlock A2")
 	}
 }
 
@@ -42,10 +66,10 @@ func TestWeightedMasteryPercent_FreeIgnoresProMetrics(t *testing.T) {
 	t.Parallel()
 	metrics := map[string]CourseMasteryMetric{
 		"grammar":      {Percent: 100, Target: 10, Included: true},
-		"words":        {Percent: 0, Target: 40, Included: true},
-		"reading":      {Percent: 0, Target: 3, Included: true},
-		"conversation": {Percent: 0, Target: 3, Included: false},
-		"picture":      {Percent: 0, Target: 3, Included: false},
+		"words":        {Percent: 0, Target: 150, Included: true},
+		"reading":      {Percent: 0, Target: 10, Included: true},
+		"conversation": {Percent: 0, Target: 5, Included: false},
+		"picture":      {Percent: 0, Target: 5, Included: false},
 	}
 	got := weightedMasteryPercent(metrics, false, true, true)
 	want := 45.0
@@ -58,10 +82,10 @@ func TestWeightedMasteryPercent_ProIncludesConversationPicture(t *testing.T) {
 	t.Parallel()
 	metrics := map[string]CourseMasteryMetric{
 		"grammar":      {Percent: 100, Target: 10, Included: true},
-		"words":        {Percent: 100, Target: 40, Included: true},
-		"reading":      {Percent: 100, Target: 3, Included: true},
-		"conversation": {Percent: 100, Target: 3, Included: true},
-		"picture":      {Percent: 100, Target: 3, Included: true},
+		"words":        {Percent: 100, Target: 150, Included: true},
+		"reading":      {Percent: 100, Target: 10, Included: true},
+		"conversation": {Percent: 100, Target: 5, Included: true},
+		"picture":      {Percent: 100, Target: 5, Included: true},
 	}
 	got := weightedMasteryPercent(metrics, true, true, true)
 	if got < 99.9 || got > 100.1 {
@@ -130,31 +154,14 @@ func TestBuildCourseMastery_WordUnlockWithMasteringScore(t *testing.T) {
 	}
 	courseID, userCourseID := insertMasteryCourseFixture(t, conn, user.ID)
 
-	var rootCatID int64
-	if err := conn.QueryRow(`
-		INSERT INTO word_set_categories (parent_id, name, description, level_code, is_published, sort_order, course_code)
-		VALUES (NULL, 'Mastery A0', 'A0', 'A0', 1, 99, 'es_ru') RETURNING id`).Scan(&rootCatID); err != nil {
-		t.Fatalf("root category: %v", err)
-	}
-	var wordSetID int64
-	if err := conn.QueryRow(`
-		INSERT INTO word_sets (category_id, title, description, is_published, sort_order, course_code)
-		VALUES (?, 'Mastery Set', 'set', 1, 1, 'es_ru') RETURNING id`, rootCatID).Scan(&wordSetID); err != nil {
-		t.Fatalf("set: %v", err)
-	}
-	for i := 1; i <= 50; i++ {
+	for i := 1; i <= 150; i++ {
 		var cardID int64
 		word := fmt.Sprintf("lemma%d", i)
-		if err := conn.QueryRow(`INSERT INTO word_cards (word, definition) VALUES (?, 'def') RETURNING id`, word).Scan(&cardID); err != nil {
+		if err := conn.QueryRow(`INSERT INTO word_cards (word, definition, course_code) VALUES (?, 'def', 'es_ru') RETURNING id`, word).Scan(&cardID); err != nil {
 			t.Fatalf("card: %v", err)
 		}
-		if _, err := conn.Exec(`INSERT INTO word_set_items (word_set_id, word_card_id, sort_order) VALUES (?, ?, ?)`, wordSetID, cardID, i); err != nil {
-			t.Fatalf("item: %v", err)
-		}
-		if i <= 40 {
-			if _, err := conn.Exec(`INSERT INTO user_word_mastering (user_id, word_card_id, mastering_score, course_code) VALUES (?, ?, 85, 'es_ru')`, user.ID, cardID); err != nil {
-				t.Fatalf("mastering: %v", err)
-			}
+		if _, err := conn.Exec(`INSERT INTO user_word_mastering (user_id, word_card_id, mastering_score, course_code) VALUES (?, ?, 85, 'es_ru')`, user.ID, cardID); err != nil {
+			t.Fatalf("mastering: %v", err)
 		}
 	}
 
@@ -169,8 +176,8 @@ func TestBuildCourseMastery_WordUnlockWithMasteringScore(t *testing.T) {
 	if !lv.CanOpenNext {
 		t.Fatalf("expected word unlock, words=%+v", lv.Metrics["words"])
 	}
-	if lv.Metrics["words"].Done < 40 {
-		t.Fatalf("mastered words = %d", lv.Metrics["words"].Done)
+	if lv.Metrics["words"].Percent != 100 {
+		t.Fatalf("A0 words percent = %v, want 100", lv.Metrics["words"].Percent)
 	}
 }
 
@@ -188,14 +195,14 @@ func TestBuildCourseMastery_ReadingTargetCapped(t *testing.T) {
 	if _, err := conn.Exec(`INSERT INTO reading_categories (category_id, title, level, sort_order, text_ids) VALUES ('mastery.read.a0', 'A0 Read', 'A0', 1, '[]')`); err != nil {
 		t.Fatalf("category: %v", err)
 	}
-	for i := 0; i < 10; i++ {
+	for i := 0; i < 15; i++ {
 		textID := fmt.Sprintf("mastery.read.a0.%d", i)
 		if _, err := conn.Exec(`
 			INSERT INTO reading_texts (text_id, category_id, title, level, target_language, reading_passage)
 			VALUES (?, 'mastery.read.a0', ?, 'A0', 'es', 'texto')`, textID, textID); err != nil {
 			t.Fatalf("text: %v", err)
 		}
-		if i < 3 {
+		if i < 10 {
 			if _, err := conn.Exec(`INSERT INTO reading_text_progress (user_id, chapter_id) VALUES (?, ?)`, user.ID, textID); err != nil {
 				t.Fatalf("progress: %v", err)
 			}
@@ -207,8 +214,8 @@ func TestBuildCourseMastery_ReadingTargetCapped(t *testing.T) {
 		t.Fatalf("BuildCourseMastery: %v", err)
 	}
 	read := MasteryLevelByCode(mastery, "A0").Metrics["reading"]
-	if read.Target != 3 {
-		t.Fatalf("reading target = %d, want 3", read.Target)
+	if read.Target != 10 {
+		t.Fatalf("reading target = %d, want 10", read.Target)
 	}
 	if read.Percent != 100 {
 		t.Fatalf("reading percent = %v, want 100", read.Percent)
@@ -243,6 +250,9 @@ func TestBuildCourseMastery_ProWeightsIncludeConversation(t *testing.T) {
 	freeConv := MasteryLevelByCode(freeMastery, "A0").Metrics["conversation"]
 	if freeConv.Included {
 		t.Fatal("free user should not include conversation in weights")
+	}
+	if freeConv.Target != 1 {
+		t.Fatalf("conversation target capped to available = %d, want 1", freeConv.Target)
 	}
 
 	proMastery, err := repo.BuildCourseMastery(ctx, user.ID, courseID, userCourseID, "es_ru", "es", models.TierPro)
