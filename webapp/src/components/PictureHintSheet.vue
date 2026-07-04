@@ -53,6 +53,57 @@
               </div>
             </div>
 
+            <div v-else-if="s.key === 'sizes'" class="size-board">
+              <div class="size-panel size-panel--scale">
+                <div v-if="sizeEntry(s.entries, 'big').term" class="size-demo size-demo--big">
+                  <span></span>
+                  <b>{{ sizeEntry(s.entries, 'big').term }}</b>
+                  <small>{{ sizeEntry(s.entries, 'big').gloss }}</small>
+                </div>
+                <div v-if="sizeEntry(s.entries, 'small').term" class="size-demo size-demo--small">
+                  <span></span>
+                  <b>{{ sizeEntry(s.entries, 'small').term }}</b>
+                  <small>{{ sizeEntry(s.entries, 'small').gloss }}</small>
+                </div>
+              </div>
+
+              <div class="size-panel size-panel--lines">
+                <div v-if="sizeEntry(s.entries, 'long').term" class="size-line size-line--long">
+                  <span></span>
+                  <b>{{ sizeEntry(s.entries, 'long').term }}</b>
+                  <small>{{ sizeEntry(s.entries, 'long').gloss }}</small>
+                </div>
+                <div v-if="sizeEntry(s.entries, 'short').term" class="size-line size-line--short">
+                  <span></span>
+                  <b>{{ sizeEntry(s.entries, 'short').term }}</b>
+                  <small>{{ sizeEntry(s.entries, 'short').gloss }}</small>
+                </div>
+              </div>
+
+              <div class="size-panel size-panel--dimensions">
+                <div v-for="item in sizeSummary(s.entries)" :key="item.key" class="size-token" :class="`size-token--${item.key}`">
+                  <span></span>
+                  <b>{{ item.entry.term }}</b>
+                  <small>{{ item.entry.gloss }}</small>
+                </div>
+              </div>
+            </div>
+
+            <div v-else-if="s.key === 'quantity'" class="quantity-board">
+              <div
+                v-for="item in quantityItems(s.entries)"
+                :key="item.key"
+                class="quantity-card"
+                :class="`quantity-card--${item.key}`"
+              >
+                <div class="quantity-dots" aria-hidden="true">
+                  <span v-for="n in item.count" :key="n"></span>
+                </div>
+                <b>{{ item.entry.term }}</b>
+                <small>{{ item.entry.gloss }}</small>
+              </div>
+            </div>
+
             <div v-else class="hint-grid">
               <div v-for="(e, i) in s.entries" :key="i" class="hint-chip">
                 <span class="hint-term">{{ e.term }}</span>
@@ -94,6 +145,41 @@ const LOCATION_TERMS: Record<string, string[]> = {
   inside: ['dentro de', 'inside'],
 }
 
+const LOCATION_SCHEME_KEYS = new Set(['top', 'bottom', 'left', 'right', 'center', 'foreground', 'background'])
+
+const SIZE_TERMS: Record<string, string[]> = {
+  big: ['grande', 'big'],
+  small: ['pequeño', 'small'],
+  long: ['largo', 'long'],
+  short: ['corto', 'short'],
+  tall: ['alto', 'tall'],
+  low: ['bajo'],
+  wide: ['ancho', 'wide'],
+  narrow: ['estrecho', 'narrow'],
+  round: ['redondo', 'round'],
+  square: ['cuadrado', 'square'],
+}
+
+const QUANTITY_TERMS: Record<string, string[]> = {
+  one: ['uno', 'one'],
+  two: ['dos', 'two'],
+  three: ['tres', 'three'],
+  many: ['muchos', 'many'],
+  few: ['pocos', 'few'],
+  some: ['algunos', 'some'],
+  several: ['varios', 'several'],
+}
+
+const QUANTITY_COUNTS: Record<string, number> = {
+  one: 1,
+  two: 2,
+  three: 3,
+  many: 9,
+  few: 2,
+  some: 4,
+  several: 6,
+}
+
 const COLOR_VALUES: Record<string, string> = {
   rojo: '#d94b45',
   red: '#d94b45',
@@ -131,6 +217,28 @@ function locationEntry(entries: HintEntry[], key: string): HintEntry {
 function locationSummary(entries: HintEntry[]) {
   return ['top', 'bottom', 'left', 'right', 'center', 'front', 'behind', 'next', 'between', 'inside']
     .map(key => ({ key, entry: locationEntry(entries, key) }))
+    .filter(item => item.entry.term && !LOCATION_SCHEME_KEYS.has(item.key))
+}
+
+function sizeEntry(entries: HintEntry[], key: string): HintEntry {
+  const terms = SIZE_TERMS[key] || []
+  return entries.find(e => terms.includes(e.term.toLowerCase())) || emptyEntry
+}
+
+function sizeSummary(entries: HintEntry[]) {
+  return ['tall', 'low', 'wide', 'narrow', 'round', 'square']
+    .map(key => ({ key, entry: sizeEntry(entries, key) }))
+    .filter(item => item.entry.term)
+}
+
+function quantityEntry(entries: HintEntry[], key: string): HintEntry {
+  const terms = QUANTITY_TERMS[key] || []
+  return entries.find(e => terms.includes(e.term.toLowerCase())) || emptyEntry
+}
+
+function quantityItems(entries: HintEntry[]) {
+  return ['one', 'two', 'three', 'many', 'few', 'some', 'several']
+    .map(key => ({ key, entry: quantityEntry(entries, key), count: QUANTITY_COUNTS[key] || 1 }))
     .filter(item => item.entry.term)
 }
 
@@ -323,6 +431,159 @@ function colorBorder(term: string): string {
   line-height: 1.2;
 }
 
+.size-board {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+.size-panel,
+.quantity-card {
+  min-width: 0;
+  border-radius: 12px;
+  background: var(--card-bg);
+  border: 1px solid var(--border, rgba(0,0,0,0.06));
+}
+.size-panel {
+  min-height: 132px;
+  padding: 10px;
+}
+.size-panel--scale {
+  position: relative;
+  display: flex;
+  align-items: end;
+  justify-content: space-around;
+  gap: 8px;
+}
+.size-demo {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+  min-width: 0;
+}
+.size-demo span {
+  display: block;
+  border-radius: 50%;
+  background: #4c88c2;
+  box-shadow: inset 0 -10px 18px rgba(0,0,0,0.10);
+}
+.size-demo--big span { width: 58px; height: 58px; }
+.size-demo--small span { width: 28px; height: 28px; background: #e8a24c; }
+.size-panel--lines {
+  display: grid;
+  align-content: center;
+  gap: 12px;
+}
+.size-line {
+  display: grid;
+  gap: 4px;
+}
+.size-line span {
+  display: block;
+  height: 12px;
+  border-radius: 999px;
+  background: #2d6b3a;
+}
+.size-line--long span { width: 100%; }
+.size-line--short span { width: 46%; }
+.size-panel--dimensions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 7px;
+}
+.size-token {
+  display: grid;
+  grid-template-rows: 42px auto auto;
+  justify-items: center;
+  align-items: end;
+  gap: 3px;
+  min-width: 0;
+  padding: 5px;
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--bg) 65%, transparent);
+}
+.size-token span {
+  display: block;
+  background: #6f8fcb;
+  border: 1px solid rgba(0,0,0,0.06);
+}
+.size-token--tall span { width: 22px; height: 40px; border-radius: 7px; }
+.size-token--low span { width: 34px; height: 20px; border-radius: 7px; }
+.size-token--wide span { width: 42px; height: 22px; border-radius: 7px; }
+.size-token--narrow span { width: 18px; height: 38px; border-radius: 7px; }
+.size-token--round span { width: 34px; height: 34px; border-radius: 50%; background: #e983a9; }
+.size-token--square span { width: 32px; height: 32px; border-radius: 5px; background: #8a5bd6; }
+.size-demo b,
+.size-line b,
+.size-token b,
+.quantity-card b {
+  color: #2d6b3a;
+  font-family: 'Inter', sans-serif;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1.15;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+.size-demo small,
+.size-line small,
+.size-token small,
+.quantity-card small {
+  color: var(--subtext);
+  font-family: 'Inter', sans-serif;
+  font-size: 10px;
+  line-height: 1.15;
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.quantity-board {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(104px, 1fr));
+  gap: 9px;
+}
+.quantity-card {
+  display: grid;
+  grid-template-rows: 54px auto auto;
+  justify-items: center;
+  align-items: center;
+  gap: 3px;
+  padding: 9px 8px 8px;
+}
+.quantity-dots {
+  display: grid;
+  grid-template-columns: repeat(3, 12px);
+  grid-auto-rows: 12px;
+  gap: 4px;
+  align-content: center;
+  justify-content: center;
+  width: 54px;
+  height: 54px;
+  border-radius: 12px;
+  background:
+    linear-gradient(180deg, rgba(45,107,58,0.08), rgba(76,136,194,0.08)),
+    var(--bg);
+  border: 1px solid var(--border, rgba(0,0,0,0.06));
+}
+.quantity-dots span {
+  display: block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background: #4c88c2;
+}
+.quantity-card--one .quantity-dots,
+.quantity-card--two .quantity-dots,
+.quantity-card--few .quantity-dots {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.quantity-card--two .quantity-dots,
+.quantity-card--few .quantity-dots { gap: 6px; }
+.quantity-card--many .quantity-dots span { width: 10px; height: 10px; background: #2d6b3a; }
+.quantity-card--some .quantity-dots span { background: #e8a24c; }
+.quantity-card--several .quantity-dots span { background: #8a5bd6; }
+
 @media (max-width: 520px) {
   .hint-body { padding: 12px 14px 18px; gap: 16px; }
   .location-card { grid-template-columns: 1fr; }
@@ -330,5 +591,9 @@ function colorBorder(term: string): string {
   .location-frame { min-height: 126px; }
   .location-pairs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .color-palette { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+  .size-board { grid-template-columns: 1fr; }
+  .size-panel { min-height: 118px; }
+  .size-panel--dimensions { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .quantity-board { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 }
 </style>
