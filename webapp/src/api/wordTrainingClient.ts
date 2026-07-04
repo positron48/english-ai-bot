@@ -255,7 +255,7 @@ export const wordTrainingClient = {
   },
 
   async preload(): Promise<WordTrainingOfflineStatus> {
-    const pack = await apiClient.request<OfflineWordTrainingPack>('/api/training/offline/pack')
+    const pack = await apiClient.request<OfflineWordTrainingPack>(withCourse('/api/training/offline/pack'))
     const queue = pack.queue?.length ? pack.queue : (pack.cards || []).map((card) => ({ ...card, type: 'card' as const }))
     await setWordTrainingPack({
       ...pack,

@@ -29,13 +29,28 @@ func (r *Router) learningConfigForUser(ctx context.Context, userID int64) config
 	return lc
 }
 
+// targetLangForOptions resolves the target language for multiple-choice generation.
+// Explicit courseCode (session or ?course_code= from the UI) wins over the persisted user course.
+func (r *Router) targetLangForOptions(ctx context.Context, userID int64, courseCode string) string {
+	if strings.TrimSpace(courseCode) != "" {
+		return learningConfigForCourse(r.config.Learning, courseCode).TargetLang
+	}
+	return r.learningConfigForUser(ctx, userID).TargetLang
+}
+
+// optionsServiceForCourse returns multiple-choice option generation scoped to courseCode when
+// provided (session / request), otherwise to the user's persisted course.
+func (r *Router) optionsServiceForCourse(ctx context.Context, userID int64, courseCode string) optionsServiceInterface {
+	if svc, ok := r.optionsService.(*service.OptionsService); ok {
+		return svc.ForTargetLang(r.targetLangForOptions(ctx, userID, courseCode))
+	}
+	return r.optionsService
+}
+
 // optionsServiceForUser returns multiple-choice option generation scoped to the user's course
 // target language (critical on Linglow unified where server default is en but user may study es).
 func (r *Router) optionsServiceForUser(ctx context.Context, userID int64) optionsServiceInterface {
-	if svc, ok := r.optionsService.(*service.OptionsService); ok {
-		return svc.ForTargetLang(r.learningConfigForUser(ctx, userID).TargetLang)
-	}
-	return r.optionsService
+	return r.optionsServiceForCourse(ctx, userID, "")
 }
 
 func (r *Router) defaultCourseCode() string {

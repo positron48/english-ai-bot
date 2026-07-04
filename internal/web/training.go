@@ -387,8 +387,13 @@ func (r *Router) showTrainingCard(w http.ResponseWriter, req *http.Request, stat
 	state.ShownAt = time.Now()
 	state.OptionsShownAt = nil
 
-	// Generate options (course-scoped target lang so Spanish verbs don't get English "to ")
-	options, correctAnswer, err := r.optionsServiceForUser(req.Context(), state.UserID).GenerateOptions(card, models.DefaultOptionCount, sessionWords, sessionWordENs, sessionWordRUs)
+	// Generate options using the session/request course (UI source of truth), not only the
+	// persisted user course — otherwise Linglow es_ru training keeps English "to " prefixes.
+	courseCode := state.CourseCode
+	if courseCode == "" {
+		courseCode = r.requestedCourseCodeForUser(req, state.UserID)
+	}
+	options, correctAnswer, err := r.optionsServiceForCourse(req.Context(), state.UserID, courseCode).GenerateOptions(card, models.DefaultOptionCount, sessionWords, sessionWordENs, sessionWordRUs)
 	if err != nil {
 		r.logger.Error("failed to generate options", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
