@@ -1,5 +1,5 @@
 <template>
-  <span class="ct">
+  <span class="ct" :class="{ 'ct--subtle-underline': subtleUnderline }">
     <template v-for="(tk, i) in tokens" :key="i">
       <span
         v-if="tk.word"
@@ -43,7 +43,7 @@ import VocabWordCardsDetail, { type VocabCardsAPIResponse } from './VocabWordCar
 // `exclude` is the word being trained: opening its own card would spoil the answer, so the
 // occurrence closest to it (exact match first, then Levenshtein distance to catch inflected
 // forms) is rendered as plain text.
-const props = defineProps<{ text: string; exclude?: string }>()
+const props = defineProps<{ text: string; exclude?: string; subtleUnderline?: boolean }>()
 
 const { t } = useI18n()
 
@@ -171,6 +171,9 @@ const onWordClick = async (word: string, idx: number) => {
 .ct-word {
   cursor: pointer;
   border-bottom: 1px dashed currentColor;
+}
+.ct--subtle-underline .ct-word {
+  border-bottom-color: color-mix(in srgb, currentColor 22%, transparent);
 }
 .ct-word:hover,
 .ct-word--selected {

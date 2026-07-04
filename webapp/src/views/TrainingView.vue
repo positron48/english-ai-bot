@@ -365,7 +365,7 @@
           <Icon name="lightbulb" class="example-icon" />
         </button>
         <div v-else-if="exampleUsageShown" class="example example-usage">
-          <ClickableText :text="currentCard?.example_target || currentCard?.example_en || feedback?.example_target || feedback?.example || ''" :exclude="hintExcludedWord" />
+          <ClickableText :text="currentCard?.example_target || currentCard?.example_en || feedback?.example_target || feedback?.example || ''" :exclude="hintExcludedWord" subtle-underline />
         </div>
       </div>
 
@@ -382,7 +382,7 @@
         <!-- For incorrect answers: spell = letters reorder in block above; type/cards = hint/example -->
         <template v-if="!feedback.is_correct">
           <div v-if="feedback.hint" class="hint"><ClickableText :text="feedback.hint" :exclude="hintExcludedWord" /></div>
-          <div v-if="feedback.example" class="example"><ClickableText :text="feedback.example" :exclude="hintExcludedWord" /></div>
+          <div v-if="feedback.example" class="example"><ClickableText :text="feedback.example" :exclude="hintExcludedWord" subtle-underline /></div>
           <div class="feedback-badge feedback-error">
             <div 
               v-if="waitingDelay" 
@@ -433,7 +433,7 @@
         </template>
         
         <!-- For correct answers: show example after notification -->
-        <div v-if="feedback.is_correct && feedback.example" class="example"><ClickableText :text="feedback.example" :exclude="hintExcludedWord" /></div>
+        <div v-if="feedback.is_correct && feedback.example" class="example"><ClickableText :text="feedback.example" :exclude="hintExcludedWord" subtle-underline /></div>
         
         <!-- Circular progress for correct answers delay (if any) -->
         <div 
