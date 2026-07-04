@@ -48,10 +48,15 @@
         <div v-for="q in pagedQuests" :key="q.id" class="pq-card">
           <div class="pq-row">
             <button class="pq-expand" :class="{ open: expanded.has(q.id) }" @click="toggleExpand(q.id)" title="Задания">▶</button>
-            <img v-if="q.image_url" :src="q.image_url" class="pq-thumb" alt="" />
-            <label v-else class="pq-thumb pq-thumb--empty" :class="{ busy: uploadingId === q.id }" title="Загрузить картинку">
-              <span v-if="uploadingId === q.id">…</span>
-              <span v-else>＋</span>
+            <label
+              class="pq-thumb-upload"
+              :class="{ 'pq-thumb-upload--empty': !q.image_url, busy: uploadingId === q.id }"
+              :title="q.image_url ? 'Заменить картинку' : 'Загрузить картинку'"
+            >
+              <img v-if="q.image_url" :src="q.image_url" class="pq-thumb" alt="" />
+              <span v-if="uploadingId === q.id" class="pq-thumb-state">…</span>
+              <span v-else-if="!q.image_url" class="pq-thumb-state">＋</span>
+              <span v-else class="pq-thumb-replace">↻</span>
               <input type="file" accept="image/png,image/jpeg,image/webp" style="display:none"
                 :disabled="uploadingId === q.id" @change="uploadPictureForQuest(q, $event)" />
             </label>
@@ -563,10 +568,15 @@ textarea.inp { resize: vertical; font-family: inherit; }
 .pq-row { display: flex; align-items: center; gap: 10px; padding: 8px 10px; }
 .pq-expand { border: none; background: none; cursor: pointer; color: var(--text-secondary); font-size: 11px; padding: 2px 4px; transition: transform 0.15s; flex-shrink: 0; }
 .pq-expand.open { transform: rotate(90deg); }
-.pq-thumb { width: 40px; height: 40px; border-radius: 6px; object-fit: cover; flex-shrink: 0; }
-.pq-thumb--empty { display: flex; align-items: center; justify-content: center; background: var(--bg-primary); color: var(--text-secondary); font-size: 18px; cursor: pointer; border: 1px dashed var(--border-primary); }
-.pq-thumb--empty:hover { border-color: #2d6b3a; color: #2d6b3a; }
-.pq-thumb--empty.busy { cursor: default; opacity: 0.6; }
+.pq-thumb-upload { position: relative; width: 40px; height: 40px; border-radius: 6px; flex-shrink: 0; cursor: pointer; overflow: hidden; border: 1px solid transparent; box-sizing: border-box; }
+.pq-thumb-upload:hover { border-color: #2d6b3a; }
+.pq-thumb-upload.busy { cursor: default; opacity: 0.6; }
+.pq-thumb-upload--empty { display: flex; align-items: center; justify-content: center; background: var(--bg-primary); color: var(--text-secondary); font-size: 18px; border: 1px dashed var(--border-primary); }
+.pq-thumb-upload--empty:hover { border-color: #2d6b3a; color: #2d6b3a; }
+.pq-thumb { width: 100%; height: 100%; object-fit: cover; display: block; }
+.pq-thumb-state { line-height: 1; }
+.pq-thumb-replace { position: absolute; right: 2px; bottom: 2px; width: 16px; height: 16px; border-radius: 999px; display: flex; align-items: center; justify-content: center; background: rgba(0,0,0,0.68); color: #fff; font-size: 12px; line-height: 1; opacity: 0; transition: opacity 0.15s; }
+.pq-thumb-upload:hover .pq-thumb-replace { opacity: 1; }
 .pq-main { display: flex; align-items: center; gap: 8px; min-width: 0; flex: 1; }
 .pq-title { font-weight: 600; font-size: 14px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .pq-id { font-size: 11px; color: var(--text-secondary); }
