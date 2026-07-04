@@ -1,5 +1,7 @@
 import type { CourseMastery, CourseMasteryLevel, CourseMasteryMetric } from '../api/courseClient'
 
+export const masteryCefrOrder = ['A0', 'A1', 'A2', 'B1', 'B2', 'C1'] as const
+
 export type ActivityStatus = 'gray' | 'orange' | 'yellow' | 'green'
 
 /** Map a mastery metric percent to the city-map activity icon colour. */
@@ -14,6 +16,15 @@ export function formatLevelPath(current?: string, next?: string): string {
   const cur = (current || 'A0').toUpperCase()
   const nxt = (next || '').toUpperCase()
   return nxt ? `${cur} → ${nxt}` : cur
+}
+
+/** Dashboard header path: progress completing the open studying level (e.g. A1 → A2). */
+export function masteryStudyingPath(mastery: CourseMastery | null | undefined): string {
+  const studying = (mastery?.current_level_code || '').toUpperCase()
+  if (!studying) return ''
+  const idx = masteryCefrOrder.indexOf(studying as (typeof masteryCefrOrder)[number])
+  if (idx <= 0) return formatLevelPath(studying)
+  return formatLevelPath(masteryCefrOrder[idx - 1], studying)
 }
 
 export function masteryLevelByCode(mastery: CourseMastery | null | undefined, levelCode: string): CourseMasteryLevel | null {

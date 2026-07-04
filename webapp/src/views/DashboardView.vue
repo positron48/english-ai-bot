@@ -231,7 +231,7 @@ import LgCourseSwitcher from '../components/linglow/LgCourseSwitcher.vue'
 import LgActivityIcon from '../components/linglow/LgActivityIcon.vue'
 import { useStats } from '../composables/useStats'
 import { useGrammarContinueChapter } from '../composables/useGrammarContinueChapter'
-import { formatLevelPath } from '../utils/masteryDisplay'
+import { masteryStudyingPath } from '../utils/masteryDisplay'
 
 const { t } = useI18n()
 const { streakDays, ensureStatsLoaded, refreshStats } = useStats()
@@ -244,11 +244,7 @@ const linglowProgress = ref<CourseProgress | null>(null)
 const dailyToday = ref<NonNullable<DailyRoute['today']> | null>(null)
 const { continueChapter: lastGrammarChapter, applyContinueChapter } = useGrammarContinueChapter()
 
-const masteryPath = computed(() => {
-  const m = linglowProgress.value?.mastery
-  if (!m?.current_level_code) return ''
-  return formatLevelPath(m.current_level_code, m.next_level_code)
-})
+const masteryPath = computed(() => masteryStudyingPath(linglowProgress.value?.mastery))
 const masteryProgressPct = computed(() => {
   const m = linglowProgress.value?.mastery
   if (m) return Math.round(m.progress_percent || 0)
@@ -257,7 +253,7 @@ const masteryProgressPct = computed(() => {
 const masteryRemainderText = computed(() => {
   const m = linglowProgress.value?.mastery
   const rem = m?.remainder
-  if (!rem || !m?.next_level_code) return ''
+  if (!rem || !m?.current_level_code) return ''
   const parts: string[] = []
   if (rem.grammar_remaining > 0) {
     parts.push((t as any)('mastery.remainderGrammar', rem.grammar_remaining, { n: rem.grammar_remaining }))
