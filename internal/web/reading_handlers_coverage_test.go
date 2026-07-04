@@ -331,6 +331,16 @@ func TestReadingHandlersCoverage(t *testing.T) {
 		if err != nil || found {
 			t.Fatalf("not found with course: found=%v err=%v", found, err)
 		}
+		enNevadaID := insertReadingWordCard(t, db, "nevada", "en_ru")
+		esNevadaID := insertReadingWordCard(t, db, "nevada", "es_ru")
+		lemma, id, found, err = router.findReadingWordCardByInput("nevada", "es_ru")
+		if err != nil || !found || id != esNevadaID {
+			t.Fatalf("es_ru homograph: (%q,%d,%v,%v) want es card %d", lemma, id, found, err, esNevadaID)
+		}
+		lemma, id, found, err = router.findReadingWordCardByInput("nevada", "en_ru")
+		if err != nil || !found || id != enNevadaID {
+			t.Fatalf("en_ru homograph: (%q,%d,%v,%v) want en card %d", lemma, id, found, err, enNevadaID)
+		}
 		globalID := insertReadingWordCard(t, db, "travel", "")
 		_, err = db.Exec(`INSERT INTO word_forms (word_card_id, form) VALUES (?, ?)`, globalID, "travels")
 		if err != nil {

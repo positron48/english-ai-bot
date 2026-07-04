@@ -139,6 +139,14 @@ function grammarCourseParam(): string {
   return _grammarCourseCode ? `?course_code=${encodeURIComponent(_grammarCourseCode)}` : ''
 }
 
+/** Append course_code to a URL for multi-course API calls (reading word lookup, training, etc.). */
+export function withCourseCode(url: string, courseCode?: string): string {
+  const code = (courseCode ?? _grammarCourseCode).trim()
+  if (!code) return url
+  const sep = url.includes('?') ? '&' : '?'
+  return `${url}${sep}course_code=${encodeURIComponent(code)}`
+}
+
 function activeCourseCode(): string {
   return _grammarCourseCode
 }

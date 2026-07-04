@@ -35,6 +35,7 @@
 import { computed, onUnmounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiClient } from '../api/client'
+import { withCourseCode } from '../api/grammarClient'
 import VocabWordCardsDetail, { type VocabCardsAPIResponse } from './VocabWordCardsDetail.vue'
 
 // Renders a plain sentence with every word clickable: a click resolves the word through
@@ -139,7 +140,7 @@ const onWordClick = async (word: string, idx: number) => {
 
   try {
     const data: VocabCardsAPIResponse = await apiClient.request(
-      `/api/reading/word-lookup?lemma=${encodeURIComponent(word)}`,
+      withCourseCode(`/api/reading/word-lookup?lemma=${encodeURIComponent(word)}`),
     )
     modalLemma.value = data.lemma || word
     modalPreloaded.value = data

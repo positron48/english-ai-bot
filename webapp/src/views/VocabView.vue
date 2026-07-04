@@ -158,6 +158,7 @@
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiClient } from '../api/client'
+import { withCourseCode } from '../api/grammarClient'
 import { courseClient, LinglowWordItem } from '../api/courseClient'
 import { useCourse } from '../composables/useCourse'
 import VocabWordCardsDetail from '../components/VocabWordCardsDetail.vue'
@@ -429,7 +430,7 @@ const lookupWord = async () => {
   if (lookupGeneratingTimer) clearTimeout(lookupGeneratingTimer)
   lookupGeneratingTimer = setTimeout(() => { lookupGenerating.value = true }, 600)
   try {
-    const data: any = await apiClient.request(`/api/reading/word-lookup?lemma=${encodeURIComponent(query)}`)
+    const data: any = await apiClient.request(withCourseCode(`/api/reading/word-lookup?lemma=${encodeURIComponent(query)}`))
     lookupPreloaded.value = data
     selectedWordMasteringScore.value = null
     selectedWord.value = data.lemma || query
