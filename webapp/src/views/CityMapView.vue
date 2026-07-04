@@ -47,12 +47,11 @@ import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useCourse } from '../composables/useCourse'
 import { useMe } from '../composables/useMe'
-import { grammarClient } from '../api/grammarClient'
-import { courseClient, type CourseProgressLocation } from '../api/courseClient'
+import { courseClient, type CourseProgress, type CourseProgressLocation } from '../api/courseClient'
 import { apiClient } from '../api/client'
 import LgActivityIcon from '../components/linglow/LgActivityIcon.vue'
 import LgLoader from '../components/linglow/LgLoader.vue'
-import { wordsPercentForLevel, type WordLevelProgressMap } from '../utils/wordsProgress'
+import { districtMapLevel, masteryLevelByCode, metricForLevel, metricPercentToStatus } from '../utils/masteryDisplay'
 
 const { t } = useI18n()
 const router = useRouter()
@@ -78,43 +77,20 @@ const DIST_DEFS = [
     poly: [[99.91,58.05],[100,100],[45.79,99.88],[41.4,90.11],[52.15,83.08],[60.09,78.19],[60,73.3]] },
 ]
 
-// Grammar categories keyed by CEFR level (e.g. "A0" → [{passed_chapters, total_chapters, can_access}])
-const grammarByLevel = ref<Record<string, { passed: number; total: number; canAccess: boolean }>>({})
-const courseProgress = ref<{ masteredItems: number; byLocation: CourseProgressLocation[] }>({ masteredItems: 0, byLocation: [] })
 // District titles from course API keyed by district code
 const districtTitles = ref<Record<string, string>>({})
-// Per-CEFR-level word coverage (mastered/total) from the legacy vocab.
-const wordLevels = ref<WordLevelProgressMap>({})
+const courseProgress = ref<{ mastery: CourseProgress['mastery']; byLocation: CourseProgressLocation[] }>({ mastery: undefined, byLocation: [] })
 const conversationPro = ref(false)
+const picturePro = ref(false)
 // True once district titles + progress are loaded, so labels render at final width.
 const mapReady = ref(false)
-
-async function loadGrammarProgress(raw?: any) {
-  try {
-    const { categories } = raw ?? await grammarClient.getCategories()
-    const map: Record<string, { passed: number; total: number; canAccess: boolean }> = {}
-    for (const cat of categories) {
-      const lv = (cat.level || '').toUpperCase()
-      if (!lv) continue
-      if (!map[lv]) map[lv] = { passed: 0, total: 0, canAccess: false }
-      map[lv].passed += cat.passed_chapters || 0
-      map[lv].total += cat.total_chapters || 0
-      if (cat.can_access) map[lv].canAccess = true
-    }
-    grammarByLevel.value = map
-  } catch { /* grammar not loaded – all districts stay at lv=1 */ }
-}
 
 async function loadProgress(raw?: Awaited<ReturnType<typeof courseClient.getProgress>>) {
   try {
     const prog = raw ?? await courseClient.getProgress()
-    const byLoc = prog.by_location || []
-    const masteredWords = byLoc
-      .filter(l => l.location_type === 'word_market')
-      .reduce((s, l) => s + l.mastered_items, 0)
     courseProgress.value = {
-      masteredItems: masteredWords,
-      byLocation: byLoc,
+      mastery: prog.mastery,
+      byLocation: prog.by_location || [],
     }
   } catch { /* ignore */ }
 }
@@ -128,99 +104,32 @@ async function loadDistrictTitles(raw?: any) {
   } catch { /* fallback to locale names */ }
 }
 
-async function loadWordLevels(raw?: any) {
-  try {
-    const res = raw ?? await courseClient.getWordLevelProgress(currentCourseCode.value || undefined)
-    wordLevels.value = res.levels || {}
-  } catch { /* leave empty -> 0% */ }
-}
-
-// Compute lv for a district from grammar progress:
-// 1 = no grammar access, 2 = access but 0 passed, 3 = <50% passed, 4 = ≥50% passed, 5 = 100% passed
-function districtLv(cefrLevel: string): number {
-  const g = grammarByLevel.value[cefrLevel]
-  if (!g || !g.canAccess) return 1
-  if (g.total === 0) return 2
-  if (g.passed === 0) return 2
-  if (g.passed >= g.total) return 5
-  if (g.passed >= g.total * 0.5) return 4
-  return 3
-}
-
-function pctToStatus(pct: number): 'gray' | 'orange' | 'yellow' | 'green' {
-  if (pct <= 0) return 'gray'
-  if (pct < 34) return 'orange'
-  if (pct < 67) return 'yellow'
-  return 'green'
-}
-
-function grammarStatus(cefrLevel: string): 'gray' | 'orange' | 'yellow' | 'green' {
-  const g = grammarByLevel.value[cefrLevel]
-  if (!g || !g.canAccess || g.total === 0) return 'gray'
-  return pctToStatus(Math.round((g.passed / g.total) * 100))
-}
-
-// Per-level mastered words vs. total for the level (shared with the district page).
-function wordsStatus(cefrLevel: string): 'gray' | 'orange' | 'yellow' | 'green' {
-  return pctToStatus(wordsPercentForLevel(wordLevels.value, cefrLevel))
-}
-
-function readingStatus(distCode: string): 'gray' | 'orange' | 'yellow' | 'green' {
-  const locs = courseProgress.value.byLocation.filter(
-    l => l.district_code === distCode && (l.location_type === 'reading_text' || l.location_type === 'reading')
-  )
-  const total = locs.reduce((s, l) => s + l.total_items, 0)
-  const done = locs.reduce((s, l) => s + l.attempted_items, 0)
-  if (total === 0) return 'gray'
-  return pctToStatus(Math.round((done / total) * 100))
-}
-
-function conversationStatus(distCode: string): 'gray' | 'orange' | 'yellow' | 'green' {
-  const locs = courseProgress.value.byLocation.filter(
-    l => l.district_code === distCode && l.location_type === 'conversation'
-  )
-  const total = locs.reduce((s, l) => s + l.total_items, 0)
-  const done = locs.reduce((s, l) => s + l.attempted_items, 0)
-  if (total === 0) return 'gray'
-  return pctToStatus(Math.round((done / total) * 100))
-}
-
-const STATUS_SCORE: Record<string, number> = { gray: 0, orange: 1, yellow: 2, green: 3 }
 type ActivityType = 'grammar' | 'words' | 'reading' | 'conversation'
 type ActivityStatus = 'gray' | 'orange' | 'yellow' | 'green'
 
 // Derived district list with computed lv — reactively updates when grammarByLevel changes
 const CITY_DISTS = computed(() =>
   DIST_DEFS.map(d => {
-    const locked = districtLv(d.cefrLevel) <= 1
+    const mastery = courseProgress.value.mastery
+    const mLv = masteryLevelByCode(mastery, d.cefrLevel)
+    const locked = !mLv?.unlocked
+    const metricStatus = (key: string) => metricPercentToStatus(metricForLevel(mastery, d.cefrLevel, key)?.percent || 0)
     const acts: Array<{ type: ActivityType; status: ActivityStatus }> = [
-      { type: 'grammar', status: grammarStatus(d.cefrLevel) },
-      { type: 'words', status: wordsStatus(d.cefrLevel) },
-      { type: 'reading', status: readingStatus(d.id) },
+      { type: 'grammar', status: metricStatus('grammar') },
+      { type: 'words', status: metricStatus('words') },
+      { type: 'reading', status: metricStatus('reading') },
     ]
-    if (conversationPro.value) {
-      acts.push({ type: 'conversation', status: conversationStatus(d.id) })
+    if (conversationPro.value && metricForLevel(mastery, d.cefrLevel, 'conversation')?.included) {
+      acts.push({ type: 'conversation', status: metricStatus('conversation') })
     }
-    let lv: number
-    if (locked) {
-      lv = 1
-    } else {
-      const score = acts.reduce((s, a) => s + (STATUS_SCORE[a.status] ?? 0), 0)
-      const allGreen = acts.every(a => a.status === 'green')
-      if (allGreen) lv = 5
-      else if (score >= 5) lv = 4        // e.g. yellow+yellow+orange or better
-      else if (score >= 2) lv = 3        // anything started
-      else lv = 2                         // unlocked but nothing done
-    }
+    const lv = locked ? 1 : districtMapLevel(mastery, d.cefrLevel)
     return { ...d, name: districtTitles.value[d.id] || d.id, lv, acts }
   })
 )
 
-// Re-render canvas when grammar data arrives
-watch(grammarByLevel, () => renderCity())
-watch(courseProgress, () => renderCity())
+// Re-render canvas when progress data arrives
+watch(() => courseProgress.value.mastery, () => renderCity())
 watch(districtTitles, () => renderCity())
-watch(wordLevels, () => renderCity())
 watch(conversationPro, () => renderCity())
 
 // ─── Canvas rendering ───────────────────────────────────────────────────────
@@ -327,15 +236,16 @@ onMounted(() => {
       const ovPromise = apiClient
         .request<any>(currentCourseCode.value ? `/api/overview/city?course_code=${encodeURIComponent(currentCourseCode.value)}` : '/api/overview/city')
         .then((ov) => Promise.all([
-          loadGrammarProgress(ov.grammar_categories),
           loadProgress(ov.progress),
           loadDistrictTitles(ov.course_map),
-          loadWordLevels(ov.word_levels),
         ]))
         .catch(() => {})
       return Promise.all([
         ovPromise,
-        ensureMe().then(() => { conversationPro.value = hasFeature('conversation') }),
+        ensureMe().then(() => {
+          conversationPro.value = hasFeature('conversation')
+          picturePro.value = hasFeature('picture_description')
+        }),
       ])
     })
     .finally(() => { mapReady.value = true })

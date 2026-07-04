@@ -187,6 +187,7 @@
     "taskChat": "Потренируй диалог с ИИ",
     "areaPicture": "Описание картинок",
     "areaMetaPicture": "Опиши картинку голосом или текстом",
+    "areaMetaPicturePct": "{pct}% пройдено",
     "ctaOpen": "Открыть"
   },
   "adminLinglowSRS": {
@@ -987,6 +988,11 @@
     "exerciseCounter": "{current} из {total}",
     "repeatWordsDone": "Слова на сегодня повторены",
     "readTextTitled": "Прочитай: {title}"
+  },
+  "mastery": {
+    "remainderGrammar": "ещё {n} по грамматике | ещё {n} по грамматике | ещё {n} по грамматике",
+    "remainderWords": "ещё {n} слово | ещё {n} слова | ещё {n} слов",
+    "levelUnlockReady": "Уровень почти открыт"
   },
   "pictureQuest": {
     "title": "Опиши картинку",

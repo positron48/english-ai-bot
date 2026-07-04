@@ -271,6 +271,7 @@ type CourseProgress struct {
 	Course     CourseMapCourse          `json:"course"`
 	UserCourse CourseMapUserCourse      `json:"user_course"`
 	Summary    CourseProgressSummary    `json:"summary"`
+	Mastery    *CourseMastery           `json:"mastery,omitempty"`
 	ByType     []CourseProgressType     `json:"by_type"`
 	ByDistrict []CourseProgressDistrict `json:"by_district"`
 	ByLocation []CourseProgressLocation `json:"by_location"`
@@ -920,6 +921,13 @@ func (r *CourseRepository) getProgressForUser(ctx context.Context, userID int64,
 	// ByType is not consumed by any client screen; keep the field as an empty array for response
 	// shape stability but skip its aggregation query.
 	progress.ByType = []CourseProgressType{}
+
+	tier := r.GetUserTier(ctx, userID)
+	mastery, err := r.BuildCourseMastery(ctx, userID, courseMap.Course.ID, userCourse.ID, courseCode, courseMap.Course.TargetLanguage, tier)
+	if err != nil {
+		return nil, fmt.Errorf("build course mastery: %w", err)
+	}
+	progress.Mastery = mastery
 
 	if summaryOnly {
 		return progress, nil

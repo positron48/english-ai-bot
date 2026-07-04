@@ -187,6 +187,7 @@
     "taskChat": "Practica un diálogo con la IA",
     "areaPicture": "Describir imágenes",
     "areaMetaPicture": "Describe una imagen por voz o texto",
+    "areaMetaPicturePct": "{pct}% completado",
     "ctaOpen": "Abrir"
   },
   "adminLinglowSRS": {
@@ -948,6 +949,11 @@
     "exerciseCounter": "{current} de {total}",
     "repeatWordsDone": "Palabras de hoy repasadas",
     "readTextTitled": "Lee: {title}"
+  },
+  "mastery": {
+    "remainderGrammar": "{n} más de gramática | {n} más de gramática",
+    "remainderWords": "{n} palabra más | {n} palabras más",
+    "levelUnlockReady": "Casi listo para el siguiente nivel"
   },
   "pictureQuest": {
     "title": "Describe la imagen",

@@ -30,9 +30,11 @@
           </div>
           <div v-if="linglowProgress" class="lg-city-card-progress">
             <div class="lg-city-card-progress-label">
-              {{ Math.round(linglowProgress.summary.progress_percent) }}% · {{ linglowProgress.summary.attempted_items }} {{ t('city.items') }}
+              <span v-if="masteryPath">{{ masteryPath }}</span>
+              <span v-else>{{ Math.round(linglowProgress.summary.progress_percent) }}%</span>
             </div>
-            <LgProgressBar :pct="linglowProgress.summary.progress_percent" :h="4" />
+            <LgProgressBar :pct="masteryProgressPct" :h="4" />
+            <div v-if="masteryRemainderText" class="lg-city-card-progress-sub">{{ masteryRemainderText }}</div>
           </div>
         </div>
       </router-link>
@@ -229,7 +231,7 @@ import LgCourseSwitcher from '../components/linglow/LgCourseSwitcher.vue'
 import LgActivityIcon from '../components/linglow/LgActivityIcon.vue'
 import { useStats } from '../composables/useStats'
 import { useGrammarContinueChapter } from '../composables/useGrammarContinueChapter'
-import { maybeRunOfflineAutoDownload } from '../composables/useOfflineAutoDownload'
+import { formatLevelPath } from '../utils/masteryDisplay'
 
 const { t } = useI18n()
 const { streakDays, ensureStatsLoaded, refreshStats } = useStats()
@@ -241,6 +243,31 @@ const { currentCourse, currentCourseCode } = useCourse()
 const linglowProgress = ref<CourseProgress | null>(null)
 const dailyToday = ref<NonNullable<DailyRoute['today']> | null>(null)
 const { continueChapter: lastGrammarChapter, applyContinueChapter } = useGrammarContinueChapter()
+
+const masteryPath = computed(() => {
+  const m = linglowProgress.value?.mastery
+  if (!m?.current_level_code) return ''
+  return formatLevelPath(m.current_level_code, m.next_level_code)
+})
+const masteryProgressPct = computed(() => {
+  const m = linglowProgress.value?.mastery
+  if (m) return Math.round(m.progress_percent || 0)
+  return Math.round(linglowProgress.value?.summary.progress_percent || 0)
+})
+const masteryRemainderText = computed(() => {
+  const m = linglowProgress.value?.mastery
+  const rem = m?.remainder
+  if (!rem || !m?.next_level_code) return ''
+  const parts: string[] = []
+  if (rem.grammar_remaining > 0) {
+    parts.push((t as any)('mastery.remainderGrammar', rem.grammar_remaining, { n: rem.grammar_remaining }))
+  }
+  if (rem.words_remaining > 0) {
+    parts.push((t as any)('mastery.remainderWords', rem.words_remaining, { n: rem.words_remaining }))
+  }
+  if (parts.length === 0) return t('mastery.levelUnlockReady')
+  return parts.join(' · ')
+})
 
 // Sentence composition (Pro): daily translation training, surfaced as a path step
 const sentenceAvailable = ref(false)
@@ -625,6 +652,12 @@ onMounted(() => {
   font-size: 11px;
   color: var(--subtext);
   margin-bottom: 5px;
+}
+.lg-city-card-progress-sub {
+  font-size: 10px;
+  color: var(--subtext);
+  margin-top: 4px;
+  line-height: 1.35;
 }
 
 /* ─── Today path ─── */

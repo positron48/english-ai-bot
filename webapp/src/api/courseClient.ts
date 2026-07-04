@@ -180,6 +180,36 @@ export interface ReviewQueue {
   generated_at: string
 }
 
+export interface CourseMasteryMetric {
+  done: number
+  total: number
+  target: number
+  percent: number
+  included: boolean
+}
+
+export interface CourseMasteryLevel {
+  level_code: string
+  unlocked: boolean
+  current: boolean
+  mastery_percent: number
+  can_open_next: boolean
+  metrics: Record<string, CourseMasteryMetric>
+}
+
+export interface CourseMasteryRemainder {
+  grammar_remaining: number
+  words_remaining: number
+}
+
+export interface CourseMastery {
+  current_level_code: string
+  next_level_code?: string
+  progress_percent: number
+  levels: CourseMasteryLevel[]
+  remainder?: CourseMasteryRemainder
+}
+
 export interface CourseProgress {
   course: CourseMap['course']
   user_course: {
@@ -196,6 +226,7 @@ export interface CourseProgress {
     progress_percent: number
     accuracy_percent: number
   }
+  mastery?: CourseMastery
   by_type: Array<{
     type: string
     total_items: number

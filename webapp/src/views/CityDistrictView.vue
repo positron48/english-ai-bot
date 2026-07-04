@@ -55,12 +55,11 @@ import { courseClient, type CourseMap, type CourseProgress } from '../api/course
 import { useLocale } from '../composables/useLocale'
 import { useCourse } from '../composables/useCourse'
 import { useMe } from '../composables/useMe'
-import { grammarClient } from '../api/grammarClient'
+import { metricForLevel, metricPercentToStatus } from '../utils/masteryDisplay'
 import LgPageHeader from '../components/linglow/LgPageHeader.vue'
 import LgLumiFact from '../components/linglow/LgLumiFact.vue'
 import LgActivityIcon from '../components/linglow/LgActivityIcon.vue'
 import LgLoader from '../components/linglow/LgLoader.vue'
-import { wordsPercentForLevel, type WordLevelProgressMap } from '../utils/wordsProgress'
 
 const { t } = useI18n()
 const route = useRoute()
@@ -72,7 +71,6 @@ const picturePro = ref(false)
 
 const courseMap = ref<CourseMap | null>(null)
 const progress = ref<CourseProgress | null>(null)
-const grammarCategories = ref<any[]>([])
 const loading = ref(true)
 const courseCode = computed(() => (typeof route.query.course_code === 'string' ? route.query.course_code : undefined))
 const districtCode = computed(() => String(route.params.districtCode || ''))
@@ -82,45 +80,11 @@ const district = computed(() => {
   return dists.find(d => d.code === districtCode.value) || null
 })
 
-// Per-type progress for this district's locations
-const typeProgress = computed(() => {
-  const locs = (progress.value?.by_location || []).filter(l => l.district_code === districtCode.value)
-  const out: Record<string, { attempted: number; total: number; pct: number }> = {}
-  for (const loc of locs) {
-    const key = loc.location_type || 'other'
-    if (!out[key]) out[key] = { attempted: 0, total: 0, pct: 0 }
-    out[key].attempted += loc.attempted_items
-    out[key].total += loc.total_items
-  }
-  for (const key of Object.keys(out)) {
-    const e = out[key]
-    e.pct = e.total > 0 ? Math.round((e.attempted / e.total) * 100) : 0
-  }
-  return out
-})
-
-const wordLevels = ref<WordLevelProgressMap>({})
-const wordsPct = computed(() => wordsPercentForLevel(wordLevels.value, districtLevelCode.value))
-const grammarPct = computed(() => {
-  const lv = districtLevelCode.value
-  if (!lv || !grammarCategories.value.length) return 0
-  const cats = grammarCategories.value.filter(c => String(c.level || '').toUpperCase() === lv)
-  if (!cats.length) return 0
-  const total = cats.reduce((s: number, c: any) => s + (c.total_chapters || 0), 0)
-  const passed = cats.reduce((s: number, c: any) => s + (c.passed_chapters || 0), 0)
-  return total > 0 ? Math.round((passed / total) * 100) : 0
-})
-const readingPct = computed(() => {
-  const r = typeProgress.value['reading_text'] || typeProgress.value['reading']
-  return r ? r.pct : 0
-})
-const chatPct = computed(() => {
-  const c = typeProgress.value['conversation']
-  return c ? c.pct : 0
-})
-// Level code for the district (e.g. "A0", "A1") — used to filter grammar categories
+// Level code for the district (e.g. "A0", "A1")
 const districtLevelCode = computed(() => district.value?.level_code?.toUpperCase() || '')
 const districtLevelQuery = computed(() => districtLevelCode.value ? { level: districtLevelCode.value } : {})
+
+const metricPct = (key: string) => Math.round(metricForLevel(progress.value?.mastery, districtLevelCode.value, key)?.percent || 0)
 
 const { currentLocale } = useLocale()
 const districtDesc = computed(() => {
@@ -142,57 +106,51 @@ interface AreaItem {
 }
 
 const areas = computed(() => {
-  function pctToStatus(pct: number): 'gray' | 'orange' | 'yellow' | 'green' {
-    if (pct <= 0) return 'gray'
-    if (pct < 34) return 'orange'
-    if (pct < 67) return 'yellow'
-    return 'green'
-  }
   const list: AreaItem[] = [
     {
       type: 'grammar' as const,
-      status: pctToStatus(grammarPct.value),
+      status: metricPercentToStatus(metricPct('grammar')),
       label: t('city.areaGrammar'), color: '#2d6b3a',
-      meta: t('city.areaMetaGrammar', { pct: grammarPct.value }),
-      pct: grammarPct.value, cta: t('city.ctaContinue'),
+      meta: t('city.areaMetaGrammar', { pct: metricPct('grammar') }),
+      pct: metricPct('grammar'), cta: t('city.ctaContinue'),
       action: () => router.push({ name: 'LearningGrammar', query: districtLevelQuery.value }),
     },
     {
       type: 'words' as const,
-      status: pctToStatus(wordsPct.value),
+      status: metricPercentToStatus(metricPct('words')),
       label: t('city.areaWords'), color: '#2d6b3a',
-      meta: t('city.areaMetaWords', { pct: wordsPct.value }),
-      pct: wordsPct.value, cta: t('city.ctaContinue'),
+      meta: t('city.areaMetaWords', { pct: metricPct('words') }),
+      pct: metricPct('words'), cta: t('city.ctaContinue'),
       action: () => router.push({ name: 'WordSets', query: districtLevelQuery.value }),
     },
     {
       type: 'reading' as const,
-      status: pctToStatus(readingPct.value),
+      status: metricPercentToStatus(metricPct('reading')),
       label: t('city.areaReading'), color: '#c8a84b',
-      meta: t('city.areaMetaReading', { pct: readingPct.value }),
-      pct: readingPct.value, cta: t('city.ctaRead'),
+      meta: t('city.areaMetaReading', { pct: metricPct('reading') }),
+      pct: metricPct('reading'), cta: t('city.ctaRead'),
       action: () => router.push({ name: 'ReadingCategories', query: districtLevelQuery.value }),
     },
   ]
-  // Conversations are a Pro feature: show the chat area (with progress colour) only to Pro users;
-  // hide it entirely otherwise.
-  if (conversationPro.value) {
+  const convMetric = metricForLevel(progress.value?.mastery, districtLevelCode.value, 'conversation')
+  if (conversationPro.value && convMetric?.included) {
     list.push({
       type: 'conversation' as const,
-      status: pctToStatus(chatPct.value),
+      status: metricPercentToStatus(metricPct('conversation')),
       label: t('city.areaChat'), color: '#2d6b3a',
-      meta: t('city.areaMetaChat', { pct: chatPct.value }),
-      pct: chatPct.value, cta: t('city.ctaPractice'),
+      meta: t('city.areaMetaChat', { pct: metricPct('conversation') }),
+      pct: metricPct('conversation'), cta: t('city.ctaPractice'),
       action: () => router.push({ name: 'PlaceChatList', params: { districtCode: districtCode.value } }),
     })
   }
-  if (picturePro.value) {
+  const picMetric = metricForLevel(progress.value?.mastery, districtLevelCode.value, 'picture')
+  if (picturePro.value && picMetric?.included) {
     list.push({
       type: 'conversation' as const,
-      status: 'gray',
+      status: metricPercentToStatus(metricPct('picture')),
       label: t('city.areaPicture'), color: '#2d6b3a',
-      meta: t('city.areaMetaPicture'),
-      pct: null, cta: t('city.ctaOpen'),
+      meta: t('city.areaMetaPicturePct', { pct: metricPct('picture') }),
+      pct: metricPct('picture'), cta: t('city.ctaOpen'),
       action: () => router.push({ name: 'PictureQuestDistrict', params: { districtCode: districtCode.value } }),
     })
   }
@@ -206,17 +164,12 @@ onMounted(async () => {
       conversationPro.value = hasFeature('conversation')
       picturePro.value = hasFeature('picture_description')
     })
-    const wpCourse = courseCode.value || currentCourseCode.value || undefined
-    const [map, prog, grammarData, wp] = await Promise.all([
+    const [map, prog] = await Promise.all([
       courseClient.getCourseMap(courseCode.value),
       courseClient.getProgress(courseCode.value),
-      grammarClient.getCategories().catch(() => ({ categories: [] })),
-      courseClient.getWordLevelProgress(wpCourse).catch(() => ({ levels: {} })),
     ])
     courseMap.value = map
     progress.value = prog
-    grammarCategories.value = grammarData.categories || []
-    wordLevels.value = wp.levels || {}
   } catch { /* ignore */ } finally {
     loading.value = false
   }
