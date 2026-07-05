@@ -21,13 +21,11 @@
         </div>
         <div class="word-summary">
           <span v-if="selectedMorphText">{{ selectedMorphText }}</span>
-          <span v-if="listMasteringScore !== null && listMasteringScore !== undefined" class="mastering-score-inline" :title="t('vocab.scoreLabel') + ' 0–100'">
-            <span class="mastery-dot-inline" :style="{ backgroundColor: masteryColor(listMasteringScore) }" />
-            {{ listMasteringScore }}
+          <span v-if="displayMasteringScore !== null && displayMasteringScore !== undefined" class="mastering-score-inline" :title="t('vocab.scoreLabel') + ' 0–100'">
+            <span class="mastery-dot-inline" :style="{ backgroundColor: masteryColor(displayMasteringScore) }" />
+            {{ displayMasteringScore }}
           </span>
-          <span>{{ t('vocab.cards', totalCards, { n: totalCards }) }}</span>
-          <span v-if="totalDue > 0">{{ t('vocab.due', totalDue, { n: totalDue }) }}</span>
-          <span v-if="lastReview" :title="formatDateAbsolute(lastReview)">{{ t('vocab.last') }} {{ formatDateRelative(lastReview) }}</span>
+          <span v-if="masteryLevel">{{ t(`vocab.${masteryLevel}`) }}</span>
         </div>
       </div>
       <button type="button" class="btn-close" @click="onCloseClick">&times;</button>
@@ -50,29 +48,6 @@
             </div>
             <div v-if="senseGroup.example_target || senseGroup.example_en" class="example">
               <strong>{{ t('vocab.example') }}:</strong> {{ senseGroup.example_target || senseGroup.example_en }}
-            </div>
-          </div>
-          <div class="directions-simple">
-            <div v-for="directionCard in senseGroup.directions" :key="directionCard.direction" class="direction-item-simple">
-              <div class="direction-header-simple">
-                <span class="direction-badge" :class="`direction-${directionCard.direction}`">
-                  {{ directionCard.direction === 'ru_en' ? 'RU→EN' : 'EN→RU' }}
-                </span>
-                <span :class="['state-badge', `state-${directionCard.state}`]">{{ directionCard.state }}</span>
-                <span
-                  class="srs-info-wrap"
-                  @click.prevent
-                  @mouseenter="(e: MouseEvent) => showSrsTooltip(e, directionCard)"
-                  @mouseleave="hideSrsTooltip"
-                >
-                  <Icon name="info" class="srs-info-icon" />
-                </span>
-              </div>
-              <div class="direction-stats-simple">
-                <span v-if="directionCard.reps > 0" :title="t('vocab.reps')">{{ t('vocab.reps') }} {{ directionCard.reps }}</span>
-                <span v-else-if="directionCard.review_count > 0" :title="t('vocab.reviews')">{{ t('vocab.reviews') }} {{ directionCard.review_count }}</span>
-                <span v-if="directionCard.next_due_at" :title="`${t('vocab.due')}: ${formatDateAbsolute(directionCard.next_due_at)}`">{{ t('vocab.due') }}: {{ formatDateRelative(directionCard.next_due_at) }}</span>
-              </div>
             </div>
           </div>
         </div>
@@ -141,30 +116,6 @@
         </button>
       </div>
     </div>
-
-    <Teleport to="body">
-      <div
-        v-if="srsTooltipCard"
-        class="srs-tooltip srs-tooltip-fixed"
-        :style="srsTooltipStyle"
-        @mouseenter="keepSrsTooltip"
-        @mouseleave="hideSrsTooltip(true)"
-      >
-        <div class="srs-tooltip-title">{{ t('vocab.srsTooltipTitle') }}</div>
-        <div class="srs-tooltip-row"><span>{{ t('vocab.srsState') }}:</span> {{ srsTooltipCard.state }}</div>
-        <div class="srs-tooltip-row"><span>{{ t('vocab.srsEf') }}:</span> {{ formatSrsNumber(srsTooltipCard.ef) }}</div>
-        <div class="srs-tooltip-row"><span>{{ t('vocab.srsReps') }}:</span> {{ srsTooltipCard.reps }} <span v-if="srsTooltipCard.state === 'learning'" class="srs-tooltip-hint" :title="t('vocab.srsRepsNote')">(?)</span></div>
-        <div class="srs-tooltip-row"><span>{{ t('vocab.srsIntervalDays') }}:</span> {{ srsTooltipCard.interval_days }}<template v-if="srsTooltipCard.state === 'learning'"> → <span class="srs-tooltip-step">{{ t('vocab.srsStepInterval') }}: {{ getStepIntervalDays(srsTooltipCard.direction, srsTooltipCard.learning_step) }} {{ getStepIntervalDays(srsTooltipCard.direction, srsTooltipCard.learning_step) === 1 ? t('vocab.srsDay') : t('vocab.srsDays') }}</span></template></div>
-        <div class="srs-tooltip-row"><span>{{ t('vocab.srsLearningStep') }}:</span> {{ srsTooltipCard.learning_step }}</div>
-        <div class="srs-tooltip-row"><span>{{ t('vocab.srsLapseCount') }}:</span> {{ srsTooltipCard.lapse_count }}</div>
-        <div class="srs-tooltip-row"><span>{{ t('vocab.srsNextDueAt') }}:</span> {{ formatDateAbsolute(srsTooltipCard.next_due_at) }}</div>
-        <div class="srs-tooltip-row"><span>{{ t('vocab.srsLastReviewAt') }}:</span> {{ formatDateAbsolute(srsTooltipCard.last_review_at) }}</div>
-        <div class="srs-tooltip-row"><span>{{ t('vocab.srsLastQuality') }}:</span> {{ srsTooltipCard.last_quality != null ? srsTooltipCard.last_quality : '—' }}</div>
-        <div v-if="srsTooltipCard.last_quality === 0 || srsTooltipCard.last_quality === 1" class="srs-tooltip-reason">{{ t('vocab.srsQualityHardReason') }}</div>
-        <div class="srs-tooltip-row"><span>{{ t('vocab.srsCreatedAt') }}:</span> {{ formatDateAbsolute(srsTooltipCard.created_at ?? null) }}</div>
-        <div class="srs-tooltip-row"><span>{{ t('vocab.srsUpdatedAt') }}:</span> {{ formatDateAbsolute(srsTooltipCard.updated_at ?? null) }}</div>
-      </div>
-    </Teleport>
 
     <div v-if="showDeleteConfirm" class="modal modal-nested" @click.self="showDeleteConfirm = false">
       <div class="modal-content modal-small">
