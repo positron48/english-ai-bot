@@ -1,8 +1,6 @@
 <template>
   <div class="word-sets-view">
-    <section class="section-hero section-hero--wordsets">
-      <h1>{{ pageTitle }}</h1>
-    </section>
+    <h1>{{ pageTitle }}</h1>
     
     <div class="content-section">
       <div v-if="loading" class="loading">{{ t('common.loading') }}</div>
@@ -352,25 +350,14 @@ const getProgressClass = (percent: number): string => {
   overflow-x: hidden;
   width: 100%;
   box-sizing: border-box;
-}
-
-.section-hero {
-  min-height: 132px;
-  display: flex;
-  align-items: flex-end;
-  margin-bottom: 24px;
-  padding: 22px 24px;
-  border-radius: 16px;
-  overflow: hidden;
   background:
-    linear-gradient(90deg, color-mix(in srgb, var(--card-bg) 96%, transparent) 0%, color-mix(in srgb, var(--card-bg) 78%, transparent) 48%, color-mix(in srgb, var(--card-bg) 12%, transparent) 100%),
-    url('/app/linglow/art/bg-word-cards.jpg') center / cover no-repeat,
-    var(--card-bg);
-  box-shadow: var(--shadow-card, 0 8px 24px rgba(0,0,0,0.08));
+    linear-gradient(180deg, color-mix(in srgb, var(--bg-primary) 22%, transparent) 0%, var(--bg-primary) 380px),
+    linear-gradient(90deg, color-mix(in srgb, var(--bg-primary) 96%, transparent) 0%, color-mix(in srgb, var(--bg-primary) 78%, transparent) 48%, color-mix(in srgb, var(--bg-primary) 20%, transparent) 100%),
+    url('/app/linglow/art/bg-word-cards.jpg') top center / 100% auto no-repeat;
 }
 
-.section-hero h1 {
-  margin: 0;
+.word-sets-view h1 {
+  margin-bottom: 24px;
   word-wrap: break-word;
   overflow-wrap: break-word;
   color: var(--text-primary);

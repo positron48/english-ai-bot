@@ -1,8 +1,6 @@
 <template>
   <div class="vocab">
-    <section class="vocab-hero">
-      <h1>{{ t('lg.myDictionary') }}</h1>
-    </section>
+    <h1 class="vocab-title">{{ t('lg.myDictionary') }}</h1>
 
     <div class="vocab-header">
       <div class="header-controls">
@@ -487,25 +485,14 @@ onUnmounted(() => {
   padding: 10px;
   max-width: 1200px;
   margin: 0 auto;
-}
-
-.vocab-hero {
-  min-height: 132px;
-  display: flex;
-  align-items: flex-end;
-  margin-bottom: 18px;
-  padding: 22px 24px;
-  border-radius: 16px;
-  overflow: hidden;
   background:
-    linear-gradient(90deg, color-mix(in srgb, var(--card-bg) 96%, transparent) 0%, color-mix(in srgb, var(--card-bg) 78%, transparent) 48%, color-mix(in srgb, var(--card-bg) 12%, transparent) 100%),
-    url('/app/linglow/art/bg-dictionary.jpg') center / cover no-repeat,
-    var(--card-bg);
-  box-shadow: var(--shadow-card, 0 8px 24px rgba(0,0,0,0.08));
+    linear-gradient(180deg, color-mix(in srgb, var(--bg-primary) 22%, transparent) 0%, var(--bg-primary) 380px),
+    linear-gradient(90deg, color-mix(in srgb, var(--bg-primary) 96%, transparent) 0%, color-mix(in srgb, var(--bg-primary) 78%, transparent) 48%, color-mix(in srgb, var(--bg-primary) 20%, transparent) 100%),
+    url('/app/linglow/art/bg-dictionary.jpg') top center / 100% auto no-repeat;
 }
 
-.vocab-hero h1 {
-  margin: 0;
+.vocab-title {
+  margin: 0 0 18px;
   color: var(--text-primary);
 }
 

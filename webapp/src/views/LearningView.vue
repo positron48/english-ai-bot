@@ -482,10 +482,22 @@ onUnmounted(() => {
   text-decoration: none;
   position: relative;
   overflow: hidden;
-  background:
-    linear-gradient(90deg, color-mix(in srgb, var(--card-bg) 96%, transparent) 0%, color-mix(in srgb, var(--card-bg) 86%, transparent) 54%, color-mix(in srgb, var(--card-bg) 18%, transparent) 100%),
-    url('../assets/linglow/art/bg-dictionary-440.jpg') right center / auto 100% no-repeat,
-    var(--card-bg);
+  background: var(--card-bg);
+}
+.practice-dict::after {
+  content: "";
+  position: absolute;
+  inset: 0 0 0 auto;
+  width: 62%;
+  background: url('../assets/linglow/art/bg-dictionary-440.jpg') right center / cover no-repeat;
+  opacity: 0.42;
+  -webkit-mask-image: linear-gradient(to right, transparent 0%, transparent 12%, black 62%);
+  mask-image: linear-gradient(to right, transparent 0%, transparent 12%, black 62%);
+  pointer-events: none;
+}
+.practice-dict > * {
+  position: relative;
+  z-index: 1;
 }
 .practice-dict-left { flex: 1; }
 .practice-dict-emoji { font-size: 24px; line-height: 1; }

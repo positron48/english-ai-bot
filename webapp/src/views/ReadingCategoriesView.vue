@@ -1,8 +1,6 @@
 <template>
   <div class="reading-categories">
-    <section class="section-hero section-hero--reading">
-      <h1 class="page-title">{{ t('reading.title') }}</h1>
-    </section>
+    <h1 class="page-title">{{ t('reading.title') }}</h1>
     <LgLoader v-if="loading" />
     <div v-else-if="error">{{ error }}</div>
     <div v-else-if="categories.length === 0" class="empty">{{ t('reading.noTexts') }}</div>
@@ -111,22 +109,16 @@ onMounted(async () => {
 </script>
 
 <style scoped>
-.reading-categories { max-width: 1100px; margin: 0 auto; padding: 20px; }
-.section-hero {
-  min-height: 132px;
-  display: flex;
-  align-items: flex-end;
-  margin-bottom: 1rem;
-  padding: 22px 24px;
-  border-radius: 16px;
-  overflow: hidden;
+.reading-categories {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 20px;
   background:
-    linear-gradient(90deg, color-mix(in srgb, var(--card-bg) 96%, transparent) 0%, color-mix(in srgb, var(--card-bg) 78%, transparent) 48%, color-mix(in srgb, var(--card-bg) 12%, transparent) 100%),
-    url('/app/linglow/art/bg-reading.jpg') center / cover no-repeat,
-    var(--card-bg);
-  box-shadow: var(--shadow-card, 0 8px 24px rgba(0,0,0,0.08));
+    linear-gradient(180deg, color-mix(in srgb, var(--bg-primary) 22%, transparent) 0%, var(--bg-primary) 380px),
+    linear-gradient(90deg, color-mix(in srgb, var(--bg-primary) 96%, transparent) 0%, color-mix(in srgb, var(--bg-primary) 78%, transparent) 48%, color-mix(in srgb, var(--bg-primary) 20%, transparent) 100%),
+    url('/app/linglow/art/bg-reading.jpg') top center / 100% auto no-repeat;
 }
-.page-title { margin: 0; color: var(--text-primary); }
+.page-title { margin: 0 0 1rem; color: var(--text-primary); }
 .grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }
 .card { text-align: left; color: var(--text-primary); border: 2px solid var(--border-primary); border-radius: 10px; padding: 16px; background: var(--card-bg); cursor: pointer; font: inherit; }
 .card--locked { opacity: 0.55; cursor: default; }
