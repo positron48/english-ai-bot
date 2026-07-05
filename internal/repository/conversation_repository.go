@@ -447,11 +447,11 @@ func (r *ConversationRepository) LatestPassedScenarioCodes(ctx context.Context, 
 	return out, rows.Err()
 }
 
-// PassedAtByScenarioCode returns the latest pass/completion time per scenario code.
+// PassedAtByScenarioCode returns the first pass/completion time per scenario code.
 // Cooldown windows start when mandatory tasks are done, not only after optional farewell.
 func (r *ConversationRepository) PassedAtByScenarioCode(ctx context.Context, userCourseID, courseID int64) (map[string]time.Time, error) {
 	rows, err := r.db.QueryContext(ctx, `
-		SELECT code, MAX(ts) FROM (
+		SELECT code, MIN(ts) FROM (
 			SELECT sc.code AS code, sess.completed_at AS ts
 			FROM conversation_sessions sess
 			JOIN conversation_scenarios sc ON sc.id = sess.scenario_id

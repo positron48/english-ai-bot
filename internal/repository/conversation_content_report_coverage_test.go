@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"testing"
+	"time"
 
 	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/testutil"
@@ -149,6 +150,25 @@ func TestConversationRepository_ProgressAndNPC(t *testing.T) {
 	passedAt, err := repo.PassedAtByScenarioCode(ctx, fx.userCourseID, courseID)
 	if err != nil || passedAt["test_cafe"].IsZero() {
 		t.Fatalf("PassedAtByScenarioCode: %v err=%v", passedAt, err)
+	}
+	firstPassAt := time.Date(2026, 1, 2, 3, 4, 5, 0, time.UTC)
+	if _, err := conn.Exec(`
+		UPDATE exercise_attempts
+		SET answered_at = ?
+		WHERE user_course_id = ? AND mode = 'chat' AND result_json->>'scenario_code' = ?`,
+		firstPassAt, fx.userCourseID, "test_cafe"); err != nil {
+		t.Fatalf("backdate first pass: %v", err)
+	}
+	replay, _, err := repo.StartSession(ctx, fx.userCourseID, fx.scenarioID)
+	if err != nil {
+		t.Fatalf("StartSession replay: %v", err)
+	}
+	if err := repo.RecordQuestCompletion(ctx, fx.userCourseID, sql.NullInt64{}, "test_cafe", replay.ID); err != nil {
+		t.Fatalf("RecordQuestCompletion replay: %v", err)
+	}
+	passedAt, err = repo.PassedAtByScenarioCode(ctx, fx.userCourseID, courseID)
+	if err != nil || !passedAt["test_cafe"].Equal(firstPassAt) {
+		t.Fatalf("PassedAtByScenarioCode should keep first pass after replay: %v err=%v", passedAt, err)
 	}
 	ever, err := repo.ScenarioEverPassed(ctx, fx.userCourseID, "test_cafe")
 	if err != nil || !ever {
