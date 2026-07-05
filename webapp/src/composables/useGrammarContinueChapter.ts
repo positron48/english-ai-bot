@@ -6,10 +6,11 @@ import {
   toGrammarContinueChapter,
 } from '../utils/grammarContinueChapter'
 
+const continueChapter = ref<GrammarContinueChapter | null>(null)
+const loading = ref(false)
+
 export function useGrammarContinueChapter() {
   const { locale } = useI18n()
-  const continueChapter = ref<GrammarContinueChapter | null>(null)
-  const loading = ref(false)
 
   // applyContinueChapter hydrates state from an already-fetched payload (same shape as
   // grammarClient.getContinueChapter returns), used by the aggregate overview endpoints so the

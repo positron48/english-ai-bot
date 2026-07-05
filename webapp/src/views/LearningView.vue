@@ -67,8 +67,11 @@
       </router-link>
     </div>
 
-    <!-- Mode grid 2×2 -->
-    <div class="practice-modes">
+    <!-- Mode grid 2×2 (+ optional Pro modes) -->
+    <div
+      class="practice-modes"
+      :class="{ 'practice-modes--extended': conversationPro || picturePro }"
+    >
       <router-link
         v-for="mode in modes"
         :key="mode.title"
@@ -91,7 +94,8 @@
       <div class="practice-dict-left">
         <div class="practice-dict-emoji"><LgActivityIcon type="reading" status="green" :size="28" /></div>
         <div class="practice-dict-title">{{ t('lg.myDictionary') }}</div>
-        <div v-if="vocabStatsLoaded && vocabStats.total > 0" class="practice-dict-stats">
+        <div class="practice-dict-body" :class="{ 'practice-dict-body--stats': showDictionaryStats }">
+          <div v-show="showDictionaryStats" class="practice-dict-stats">
           <div class="practice-dict-stats__head">
             <span class="practice-dict-stats__total">
               {{ vocabStats.total }} {{ (t as any)('common.words', vocabStats.total) }}
@@ -108,8 +112,9 @@
               <span class="practice-dict-stats__label">{{ item.label }}</span>
             </div>
           </div>
+          </div>
+          <div v-show="!showDictionaryStats" class="practice-dict-sub">{{ t('lg.myDictionarySub') }}</div>
         </div>
-        <div v-else class="practice-dict-sub">{{ t('lg.myDictionarySub') }}</div>
       </div>
       <LgIcon name="chevron-right" :s="16" c="var(--text-muted)" />
     </router-link>
@@ -134,6 +139,11 @@ import { useSpanishVerbFormsPractice } from '../composables/useSpanishVerbFormsP
 import { apiClient } from '../api/client'
 import { useCachedOverviewScreen } from '../composables/useCachedOverviewScreen'
 import { useLocale } from '../composables/useLocale'
+import {
+  syncPracticeProGatesFromMeCache,
+  usePracticeScreenState,
+  type VocabSummaryPayload,
+} from '../composables/usePracticeScreenState'
 import { sentenceClient } from '../api/sentenceClient'
 import artWords from '../assets/linglow/art/bg-word-cards-440.jpg'
 import artGrammar from '../assets/linglow/art/bg-grammar-440.jpg'
@@ -143,6 +153,17 @@ const { t } = useI18n()
 const { ensureMe, hasFeature } = useMe()
 const { currentCourseCode, ensureCourseLoaded } = useCourse()
 const { currentLocale } = useLocale()
+syncPracticeProGatesFromMeCache()
+const {
+  vocabStats,
+  vocabStatsLoaded,
+  sentenceAvailable,
+  conversationPro,
+  picturePro,
+  applyVocabSummary,
+  applySentenceToday,
+  resetPracticeScreenState,
+} = usePracticeScreenState()
 const isOffline = ref(typeof navigator !== 'undefined' && navigator.onLine === false)
 const isOnline = computed(() => !isOffline.value)
 const {
@@ -150,18 +171,9 @@ const {
   showSpanishVerbFormsTraining,
   refreshVerbFormsPoolCount,
   applyVerbFormsPool,
+  resetVerbFormsPool,
 } = useSpanishVerbFormsPractice(isOnline)
-const isPro = ref(false)
-const isPicturePro = ref(false)
-const sentenceAvailable = ref(false)
-const vocabStatsLoaded = ref(false)
-const vocabStats = ref({
-  total: 0,
-  newCount: 0,
-  learningCount: 0,
-  reviewCount: 0,
-  masteredCount: 0,
-})
+const showDictionaryStats = computed(() => vocabStatsLoaded.value && vocabStats.value.total > 0)
 
 const vocabBreakdownItems = computed(() => [
   { key: 'new', label: t('training.vocabStatusNew'), count: vocabStats.value.newCount },
@@ -175,11 +187,11 @@ const { continueChapter: lastGrammarChapter, loadContinueChapter, applyContinueC
 function applyLearningOverview(ov: any) {
   applyContinueChapter(ov?.continue_chapter)
   applyVerbFormsPool(ov?.verb_upcoming)
-  void loadVocabSummary(ov?.vocab_summary)
+  applyVocabSummary(ov?.vocab_summary)
   applySentenceToday(ov?.sentence_today)
 }
 
-const { load: loadLearningCache } = useCachedOverviewScreen<any>({
+const { load: loadLearningCache, hydrateFromCache } = useCachedOverviewScreen<any>({
   screenKey: 'learning',
   courseCode: currentCourseCode,
   locale: currentLocale,
@@ -193,10 +205,11 @@ const { load: loadLearningCache } = useCachedOverviewScreen<any>({
 
 async function loadLearningData(force = false) {
   await loadLearningCache(force)
-  ensureMe().then(() => {
-    isPro.value = hasFeature('conversation')
-    isPicturePro.value = hasFeature('picture_description')
-  })
+  const meProfile = await ensureMe()
+  if (meProfile?.features) {
+    conversationPro.value = !!meProfile.features.conversation
+    picturePro.value = !!meProfile.features.picture_description
+  }
 }
 
 interface PracticeMode {
@@ -239,7 +252,7 @@ const modes = computed(() => {
       disabled: isOffline.value,
     },
   ]
-  if (isPro.value) {
+  if (conversationPro.value) {
     items.push({
       type: 'conversation',
       bg: 'rgba(45,107,58,0.10)',
@@ -250,7 +263,7 @@ const modes = computed(() => {
       disabled: isOffline.value,
     })
   }
-  if (isPicturePro.value) {
+  if (picturePro.value) {
     items.push({
       type: 'conversation',
       bg: 'rgba(45,107,58,0.10)',
@@ -270,29 +283,21 @@ const handleNetworkChange = () => {
 
 // applySentenceToday sets availability from the aggregate's sentence_today part (available=true
 // already implies the feature is enabled), so the initial load needs no separate /me + /today.
-function applySentenceToday(today: { available?: boolean; remaining?: number } | null | undefined) {
-  sentenceAvailable.value = !!today?.available && (today?.remaining ?? 0) > 0
-}
-
 async function loadSentenceAvailability() {
-  if (isOffline.value) { sentenceAvailable.value = false; return }
-  if (!hasFeature('sentence_composition')) { sentenceAvailable.value = false; return }
+  if (isOffline.value) {
+    sentenceAvailable.value = false
+    return
+  }
+  if (!hasFeature('sentence_composition')) {
+    sentenceAvailable.value = false
+    return
+  }
   try {
     const today = await sentenceClient.today(currentCourseCode.value)
-    sentenceAvailable.value = !!today.available && (today.remaining ?? 0) > 0
+    applySentenceToday(today)
   } catch {
     sentenceAvailable.value = false
   }
-}
-
-type VocabSummaryPayload = {
-  total?: number
-  new?: number
-  learning?: number
-  review?: number
-  review_count?: number
-  mastered?: number
-  mastered_count?: number
 }
 
 async function loadVocabSummary(raw?: VocabSummaryPayload) {
@@ -301,29 +306,34 @@ async function loadVocabSummary(raw?: VocabSummaryPayload) {
     const summary = raw ?? await apiClient.request<VocabSummaryPayload>(
       `/api/vocab/summary${currentCourseCode.value ? `?course_code=${encodeURIComponent(currentCourseCode.value)}` : ''}`,
     )
-    if (summary) {
-      vocabStats.value = {
-        total: summary.total ?? 0,
-        newCount: summary.new ?? 0,
-        learningCount: summary.learning ?? 0,
-        reviewCount: summary.review ?? summary.review_count ?? 0,
-        masteredCount: summary.mastered ?? summary.mastered_count ?? 0,
-      }
-    }
-    vocabStatsLoaded.value = true
+    applyVocabSummary(summary)
   } catch { /* ignore */ }
 }
 
-onMounted(async () => {
+void ensureCourseLoaded().then(() => {
+  if (currentCourseCode.value) void hydrateFromCache()
+})
+
+watch(currentCourseCode, (code, prev) => {
+  if (!code) return
+  if (prev && prev !== code) {
+    resetPracticeScreenState()
+    resetVerbFormsPool()
+  }
+  void hydrateFromCache()
+})
+
+onMounted(() => {
   window.addEventListener('online', handleNetworkChange)
   window.addEventListener('offline', handleNetworkChange)
-  await ensureCourseLoaded()
-  await ensureLearningLoaded()
-  try {
-    await loadLearningData()
-  } catch {
-    await Promise.all([loadContinueChapter(), refreshVerbFormsPoolCount(), loadVocabSummary(), loadSentenceAvailability()])
-  }
+  void (async () => {
+    await Promise.all([ensureCourseLoaded(), ensureLearningLoaded()])
+    try {
+      await loadLearningData()
+    } catch {
+      await Promise.all([loadContinueChapter(), refreshVerbFormsPoolCount(), loadVocabSummary(), loadSentenceAvailability()])
+    }
+  })()
 })
 
 watch(currentCourseCode, async () => {
@@ -396,6 +406,10 @@ onUnmounted(() => {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 7px;
+  min-height: 231px;
+}
+.practice-modes--extended {
+  min-height: 350px;
 }
 .practice-mode {
   position: relative;
@@ -473,6 +487,12 @@ onUnmounted(() => {
   font-weight: 600;
   color: var(--text);
   margin-top: 4px;
+}
+.practice-dict-body {
+  margin-top: 2px;
+}
+.practice-dict-body--stats {
+  min-height: 88px;
 }
 .practice-dict-sub {
   font-size: 11px;
