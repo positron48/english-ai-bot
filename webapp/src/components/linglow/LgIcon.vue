@@ -1,5 +1,5 @@
 <template>
-  <svg :width="s" :height="s" viewBox="0 0 24 24" fill="none">
+  <svg :width="w ?? s" :height="h ?? s" viewBox="0 0 24 24" fill="none">
     <template v-if="name === 'home'">
       <path d="M3 12L12 4L21 12V20C21 20.6 20.6 21 20 21H15V16H9V21H4C3.4 21 3 20.6 3 20V12Z" :fill="c" />
     </template>
@@ -154,6 +154,8 @@
 withDefaults(defineProps<{
   name: string
   s?: number
+  w?: number
+  h?: number
   c?: string
 }>(), { s: 22, c: 'currentColor' })
 </script>

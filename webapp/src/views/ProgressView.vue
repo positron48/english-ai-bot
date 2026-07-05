@@ -24,7 +24,7 @@
           <div class="prg-metrics-grid">
             <div v-for="m in metrics" :key="m.label" class="prg-metric-cell">
               <LgActivityIcon v-if="m.type" :type="m.type" status="green" :size="40" />
-              <span v-else-if="m.lgicon" class="prg-metric-lgicon"><LgIcon :name="m.lgicon" :s="38" /></span>
+              <span v-else-if="m.lgicon" class="prg-metric-lgicon"><LgIcon :name="m.lgicon" :w="30" :h="38" /></span>
               <span v-else class="prg-metric-icon">{{ m.icon }}</span>
               <div class="prg-metric-val">{{ m.value }}</div>
               <div class="prg-metric-label">{{ m.label }}</div>
