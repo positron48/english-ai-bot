@@ -1,0 +1,2102 @@
+[
+  {
+    "code": "mesa_taza_libro_manzana_llaves",
+    "title": "Стол с чашкой, книгой, яблоком и ключами",
+    "cefr_level": "A0",
+    "image_url": "",
+    "image_description": "A light wooden table viewed from above. On the left there is one white cup. In the center there is one closed blue book. On the right there is one red apple with one green leaf. In front of the book there is one small set of two silver keys. The background is plain and there are no people.",
+    "max_turns": 30,
+    "token_budget": 40000,
+    "sort_order": 10,
+    "status": "draft",
+    "tasks": [
+      {
+        "code": "main_objects",
+        "title": "Назови главное",
+        "completion_criteria": "Task is complete when the learner, in English, names cup, book, apple, and keys; mentions the table. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 0
+      },
+      {
+        "code": "actions",
+        "title": "Опиши действие",
+        "completion_criteria": "Task is complete when the learner, in English, mentions that there are no people in the scene. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 1
+      },
+      {
+        "code": "colors_numbers",
+        "title": "Добавь цвета и числа",
+        "completion_criteria": "Task is complete when the learner, in English, mentions at least two colors: white cup, blue book, red apple, silver keys. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 2
+      },
+      {
+        "code": "layout",
+        "title": "Опиши расположение",
+        "completion_criteria": "Task is complete when the learner, in English, mentions where at least two objects are: cup on the left, book in the center, apple on the right, or keys in front; optionally the apple has a green leaf. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": false,
+        "sort_order": 3
+      }
+    ],
+    "course_code": "en_ru"
+  },
+  {
+    "code": "habitacion_cama_lampara_ventana",
+    "title": "Комната с кроватью, лампой и окном",
+    "cefr_level": "A0",
+    "image_url": "",
+    "image_description": "A small tidy bedroom in daylight. A blue bed is on the left wall. A yellow lamp stands on a brown bedside table next to the bed. A square window with white curtains is above the table. A green rug lies on the floor in front of the bed. No people are in the room.",
+    "max_turns": 30,
+    "token_budget": 40000,
+    "sort_order": 20,
+    "status": "draft",
+    "tasks": [
+      {
+        "code": "main_objects",
+        "title": "Назови главное",
+        "completion_criteria": "Task is complete when the learner, in English, names the bed, lamp, window, and room. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 0
+      },
+      {
+        "code": "actions",
+        "title": "Опиши действие",
+        "completion_criteria": "Task is complete when the learner, in English, mentions that there are no people in the room. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 1
+      },
+      {
+        "code": "colors_numbers",
+        "title": "Добавь цвета и числа",
+        "completion_criteria": "Task is complete when the learner, in English, mentions at least two colors: blue bed, yellow lamp, brown table, green rug, or white curtains. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 2
+      },
+      {
+        "code": "layout",
+        "title": "Опиши расположение",
+        "completion_criteria": "Task is complete when the learner, in English, mentions where the bed, lamp, or window is located; optionally the green rug is on the floor. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": false,
+        "sort_order": 3
+      }
+    ],
+    "course_code": "en_ru"
+  },
+  {
+    "code": "gato_silla_pelota",
+    "title": "Кот на стуле рядом с мячом",
+    "cefr_level": "A0",
+    "image_url": "",
+    "image_description": "A simple room with one orange cat sitting on a wooden chair. The chair is in the center. A small blue ball is on the floor to the right of the chair. The cat has a long tail and looks forward. The floor is light beige and the wall is plain.",
+    "max_turns": 30,
+    "token_budget": 40000,
+    "sort_order": 30,
+    "status": "draft",
+    "tasks": [
+      {
+        "code": "main_objects",
+        "title": "Назови главное",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the cat, chair, and ball. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 0
+      },
+      {
+        "code": "actions",
+        "title": "Опиши действие",
+        "completion_criteria": "Task is complete when the learner, in English, mentions that the cat is on the chair. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 1
+      },
+      {
+        "code": "colors_numbers",
+        "title": "Добавь цвета и числа",
+        "completion_criteria": "Task is complete when the learner, in English, mentions at least one color: orange cat, blue ball, wooden chair, or beige floor. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 2
+      },
+      {
+        "code": "layout",
+        "title": "Опиши расположение",
+        "completion_criteria": "Task is complete when the learner, in English, mentions that the ball is to the right of the chair. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": false,
+        "sort_order": 3
+      }
+    ],
+    "course_code": "en_ru"
+  },
+  {
+    "code": "nina_globo_rojo",
+    "title": "Девочка с красным шаром",
+    "cefr_level": "A0",
+    "image_url": "",
+    "image_description": "A young girl stands in the center of a sunny park. She is wearing a yellow dress and blue shoes. She holds one red balloon in her right hand. There is green grass under her feet and a small tree behind her. The sky is light blue.",
+    "max_turns": 30,
+    "token_budget": 40000,
+    "sort_order": 40,
+    "status": "draft",
+    "tasks": [
+      {
+        "code": "main_objects",
+        "title": "Назови главное",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the girl and the red balloon. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 0
+      },
+      {
+        "code": "actions",
+        "title": "Опиши действие",
+        "completion_criteria": "Task is complete when the learner, in English, mentions that the girl is holding the balloon. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 1
+      },
+      {
+        "code": "colors_numbers",
+        "title": "Добавь цвета и числа",
+        "completion_criteria": "Task is complete when the learner, in English, mentions at least two colors: red balloon, yellow dress, blue shoes, green grass, or blue sky. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 2
+      },
+      {
+        "code": "layout",
+        "title": "Опиши расположение",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the tree behind the girl. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": false,
+        "sort_order": 3
+      }
+    ],
+    "course_code": "en_ru"
+  },
+  {
+    "code": "desayuno_pan_leche_banana",
+    "title": "Завтрак на столе",
+    "cefr_level": "A0",
+    "image_url": "",
+    "image_description": "A breakfast table with one white plate holding two slices of brown bread, one glass of white milk, and one yellow banana. The plate is in the center, the glass is on the left, and the banana is on the right. The table is light wood. There are no people.",
+    "max_turns": 30,
+    "token_budget": 40000,
+    "sort_order": 50,
+    "status": "draft",
+    "tasks": [
+      {
+        "code": "main_objects",
+        "title": "Назови главное",
+        "completion_criteria": "Task is complete when the learner, in English, mentions bread, milk, and banana. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 0
+      },
+      {
+        "code": "actions",
+        "title": "Опиши действие",
+        "completion_criteria": "Task is complete when the learner, in English, mentions that there are no people and that breakfast is on the table. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 1
+      },
+      {
+        "code": "colors_numbers",
+        "title": "Добавь цвета и числа",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the quantities (two slices of bread, one glass of milk, or one banana) and at least two colors: brown bread, white milk, yellow banana, white plate. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 2
+      },
+      {
+        "code": "layout",
+        "title": "Опиши расположение",
+        "completion_criteria": "Task is complete when the learner, in English, mentions where the glass or banana is. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": false,
+        "sort_order": 3
+      }
+    ],
+    "course_code": "en_ru"
+  },
+  {
+    "code": "parada_autobus_un_autobus",
+    "title": "Автобусная остановка",
+    "cefr_level": "A0",
+    "image_url": "",
+    "image_description": "A city bus stop on a clear day. One blue bus is stopped on the right side. Two people wait under a small gray shelter on the left. A bus stop sign stands beside the shelter. The road is dark gray and the sky is light blue.",
+    "max_turns": 30,
+    "token_budget": 40000,
+    "sort_order": 60,
+    "status": "draft",
+    "tasks": [
+      {
+        "code": "main_objects",
+        "title": "Назови главное",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the bus, bus stop, and people. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 0
+      },
+      {
+        "code": "actions",
+        "title": "Опиши действие",
+        "completion_criteria": "Task is complete when the learner, in English, mentions that the bus is stopped or that people are waiting at the stop. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 1
+      },
+      {
+        "code": "colors_numbers",
+        "title": "Добавь цвета и числа",
+        "completion_criteria": "Task is complete when the learner, in English, mentions that two people are waiting and at least one color such as blue bus, gray shelter, or blue sky. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 2
+      },
+      {
+        "code": "layout",
+        "title": "Опиши расположение",
+        "completion_criteria": "Task is complete when the learner, in English, mentions where the bus or shelter is: bus on the right, people under the shelter on the left. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": false,
+        "sort_order": 3
+      }
+    ],
+    "course_code": "en_ru"
+  },
+  {
+    "code": "tienda_frutas_colores",
+    "title": "Магазин фруктов",
+    "cefr_level": "A0",
+    "image_url": "",
+    "image_description": "A small fruit shop with three red apples in a basket on the left, four green pears in a basket in the center, and five orange oranges in a basket on the right. A smiling seller stands behind the baskets. The counter is brown and the wall is light cream.",
+    "max_turns": 30,
+    "token_budget": 40000,
+    "sort_order": 70,
+    "status": "draft",
+    "tasks": [
+      {
+        "code": "main_objects",
+        "title": "Назови главное",
+        "completion_criteria": "Task is complete when the learner, in English, mentions apples, pears, and oranges. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 0
+      },
+      {
+        "code": "actions",
+        "title": "Опиши действие",
+        "completion_criteria": "Task is complete when the learner, in English, mentions at least two fruit colors: red apples, green pears, orange oranges. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 1
+      },
+      {
+        "code": "colors_numbers",
+        "title": "Добавь цвета и числа",
+        "completion_criteria": "Task is complete when the learner, in English, mentions at least one number of fruit: three apples, four pears, or five oranges. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 2
+      },
+      {
+        "code": "layout",
+        "title": "Опиши расположение",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the seller behind the baskets. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": false,
+        "sort_order": 3
+      }
+    ],
+    "course_code": "en_ru"
+  },
+  {
+    "code": "parque_sol_arbol_banco_perro",
+    "title": "Солнечный парк",
+    "cefr_level": "A0",
+    "image_url": "",
+    "image_description": "A sunny park with one tall green tree on the left, one brown bench in the center, and one small brown dog sitting on the grass near the bench. The sun is in the upper right corner. The grass is green and the sky is blue.",
+    "max_turns": 30,
+    "token_budget": 40000,
+    "sort_order": 80,
+    "status": "draft",
+    "tasks": [
+      {
+        "code": "main_objects",
+        "title": "Назови главное",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the tree, bench, and dog. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 0
+      },
+      {
+        "code": "actions",
+        "title": "Опиши действие",
+        "completion_criteria": "Task is complete when the learner, in English, mentions that the park is sunny. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 1
+      },
+      {
+        "code": "colors_numbers",
+        "title": "Добавь цвета и числа",
+        "completion_criteria": "Task is complete when the learner, in English, mentions at least two colors: green tree/grass, brown bench/dog, blue sky. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 2
+      },
+      {
+        "code": "layout",
+        "title": "Опиши расположение",
+        "completion_criteria": "Task is complete when the learner, in English, mentions where the dog is: near the bench or on the grass. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": false,
+        "sort_order": 3
+      }
+    ],
+    "course_code": "en_ru"
+  },
+  {
+    "code": "familia_cocina_cena",
+    "title": "Семья готовит ужин",
+    "cefr_level": "A1",
+    "image_url": "",
+    "image_description": "A warm kitchen in the evening. A mother cuts red tomatoes at the counter, a father stirs soup in a silver pot on the stove, and a child washes green lettuce at the sink. A round table has three white plates and a loaf of bread. Yellow light comes from a ceiling lamp.",
+    "max_turns": 30,
+    "token_budget": 40000,
+    "sort_order": 90,
+    "status": "draft",
+    "tasks": [
+      {
+        "code": "main_objects",
+        "title": "Назови главное",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the family members in the kitchen. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 0
+      },
+      {
+        "code": "actions",
+        "title": "Опиши действие",
+        "completion_criteria": "Task is complete when the learner, in English, mentions at least two actions: cutting tomatoes, stirring soup, washing lettuce. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 1
+      },
+      {
+        "code": "colors_numbers",
+        "title": "Добавь цвета и числа",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the food items: tomatoes, soup, lettuce, bread, or plates. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 2
+      },
+      {
+        "code": "layout",
+        "title": "Опиши расположение",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the evening kitchen light. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": false,
+        "sort_order": 3
+      }
+    ],
+    "course_code": "en_ru"
+  },
+  {
+    "code": "alumno_mochila_manana",
+    "title": "Ученик собирает рюкзак",
+    "cefr_level": "A1",
+    "image_url": "",
+    "image_description": "A school student is packing a red backpack in a bedroom in the morning. A blue notebook, a yellow pencil, a green book, and a white lunch box are on the desk. The student is putting the notebook into the backpack. Sunlight enters through the window.",
+    "max_turns": 30,
+    "token_budget": 40000,
+    "sort_order": 100,
+    "status": "draft",
+    "tasks": [
+      {
+        "code": "main_objects",
+        "title": "Назови главное",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the student and the backpack. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 0
+      },
+      {
+        "code": "actions",
+        "title": "Опиши действие",
+        "completion_criteria": "Task is complete when the learner, in English, mentions that it is morning or sunny through the window. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 1
+      },
+      {
+        "code": "colors_numbers",
+        "title": "Добавь цвета и числа",
+        "completion_criteria": "Task is complete when the learner, in English, mentions at least three school items: notebook, pencil, book, lunch box, backpack. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 2
+      },
+      {
+        "code": "layout",
+        "title": "Опиши расположение",
+        "completion_criteria": "Task is complete when the learner, in English, mentions that the notebook is being put into the backpack. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": false,
+        "sort_order": 3
+      }
+    ],
+    "course_code": "en_ru"
+  },
+  {
+    "code": "cafe_dos_visitantes",
+    "title": "Маленькое кафе",
+    "cefr_level": "A1",
+    "image_url": "",
+    "image_description": "A small cafe with two visitors sitting at a round table. One visitor drinks coffee from a white cup, and the other has a glass of orange juice. A waiter stands beside the table holding a small menu. There are two wooden chairs and a green plant near the window.",
+    "max_turns": 30,
+    "token_budget": 40000,
+    "sort_order": 110,
+    "status": "draft",
+    "tasks": [
+      {
+        "code": "main_objects",
+        "title": "Назови главное",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the cafe and two visitors. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 0
+      },
+      {
+        "code": "actions",
+        "title": "Опиши действие",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the drinks: coffee and orange juice. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 1
+      },
+      {
+        "code": "colors_numbers",
+        "title": "Добавь цвета и числа",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the waiter and the menu. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 2
+      },
+      {
+        "code": "layout",
+        "title": "Опиши расположение",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the chairs or the green plant near the window. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": false,
+        "sort_order": 3
+      }
+    ],
+    "course_code": "en_ru"
+  },
+  {
+    "code": "persona_compra_boleto_taquilla",
+    "title": "Билет в кассе",
+    "cefr_level": "A1",
+    "image_url": "",
+    "image_description": "A person is buying a ticket at a station ticket office. The customer stands in front of a glass window and gives money to a cashier. The cashier sits behind the window and holds a small paper ticket. A blue sign above the window shows a ticket symbol but no readable words.",
+    "max_turns": 30,
+    "token_budget": 40000,
+    "sort_order": 120,
+    "status": "draft",
+    "tasks": [
+      {
+        "code": "main_objects",
+        "title": "Назови главное",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the customer and the cashier. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 0
+      },
+      {
+        "code": "actions",
+        "title": "Опиши действие",
+        "completion_criteria": "Task is complete when the learner, in English, mentions that the person is buying or receiving a ticket. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 1
+      },
+      {
+        "code": "colors_numbers",
+        "title": "Добавь цвета и числа",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the money and the glass window. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 2
+      },
+      {
+        "code": "layout",
+        "title": "Опиши расположение",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the blue sign above the window. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": false,
+        "sort_order": 3
+      }
+    ],
+    "course_code": "en_ru"
+  },
+  {
+    "code": "patio_ninos_juegan_pelota",
+    "title": "Дети играют во дворе",
+    "cefr_level": "A1",
+    "image_url": "",
+    "image_description": "A courtyard between apartment buildings in the afternoon. Three children are playing with a red ball. One child kicks the ball, one child runs, and one child waits near a small tree. A gray bench stands by the wall. The ground is light brown.",
+    "max_turns": 30,
+    "token_budget": 40000,
+    "sort_order": 130,
+    "status": "draft",
+    "tasks": [
+      {
+        "code": "main_objects",
+        "title": "Назови главное",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the courtyard and children. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 0
+      },
+      {
+        "code": "actions",
+        "title": "Опиши действие",
+        "completion_criteria": "Task is complete when the learner, in English, mentions that there are three children. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 1
+      },
+      {
+        "code": "colors_numbers",
+        "title": "Добавь цвета и числа",
+        "completion_criteria": "Task is complete when the learner, in English, mentions at least two actions: kicking, running, or waiting. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 2
+      },
+      {
+        "code": "layout",
+        "title": "Опиши расположение",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the red ball or the gray bench. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": false,
+        "sort_order": 3
+      }
+    ],
+    "course_code": "en_ru"
+  },
+  {
+    "code": "playa_sombrilla_toalla_mar",
+    "title": "Пляжный отдых",
+    "cefr_level": "A1",
+    "image_url": "",
+    "image_description": "A sunny beach with a blue sea in the background. A large yellow umbrella stands on the sand. A red towel lies under the umbrella. A pair of green sandals is next to the towel. Small waves touch the shore and there are no people.",
+    "max_turns": 30,
+    "token_budget": 40000,
+    "sort_order": 140,
+    "status": "draft",
+    "tasks": [
+      {
+        "code": "main_objects",
+        "title": "Назови главное",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the beach, sea, umbrella, and towel. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 0
+      },
+      {
+        "code": "actions",
+        "title": "Опиши действие",
+        "completion_criteria": "Task is complete when the learner, in English, mentions that it is sunny or a beach scene. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 1
+      },
+      {
+        "code": "colors_numbers",
+        "title": "Добавь цвета и числа",
+        "completion_criteria": "Task is complete when the learner, in English, mentions at least two colors: blue sea, yellow umbrella, red towel, green sandals. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 2
+      },
+      {
+        "code": "layout",
+        "title": "Опиши расположение",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the sandals next to the towel. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": false,
+        "sort_order": 3
+      }
+    ],
+    "course_code": "en_ru"
+  },
+  {
+    "code": "medico_paciente_consulta",
+    "title": "В кабинете врача",
+    "cefr_level": "A1",
+    "image_url": "",
+    "image_description": "A doctor is listening to a patient in a clinic office. The doctor wears a white coat and uses a stethoscope on the patient chest. The patient sits on a chair and holds one hand on their stomach. A desk with a computer and a blue folder is behind them.",
+    "max_turns": 30,
+    "token_budget": 40000,
+    "sort_order": 150,
+    "status": "draft",
+    "tasks": [
+      {
+        "code": "main_objects",
+        "title": "Назови главное",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the doctor and patient. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 0
+      },
+      {
+        "code": "actions",
+        "title": "Опиши действие",
+        "completion_criteria": "Task is complete when the learner, in English, mentions that the doctor uses a stethoscope. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 1
+      },
+      {
+        "code": "colors_numbers",
+        "title": "Добавь цвета и числа",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the clinic office or medical setting. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 2
+      },
+      {
+        "code": "layout",
+        "title": "Опиши расположение",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the computer or blue folder on the desk. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": false,
+        "sort_order": 3
+      }
+    ],
+    "course_code": "en_ru"
+  },
+  {
+    "code": "turista_mapa_metro",
+    "title": "Турист у метро",
+    "cefr_level": "A1",
+    "image_url": "",
+    "image_description": "A tourist stands near a metro entrance in a city street. The tourist wears a green jacket and looks at a paper map. A blue metro sign is on the left. Two arrows on the map are visible but no words are readable. Tall buildings and a crosswalk are behind the tourist.",
+    "max_turns": 30,
+    "token_budget": 40000,
+    "sort_order": 160,
+    "status": "draft",
+    "tasks": [
+      {
+        "code": "main_objects",
+        "title": "Назови главное",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the tourist and map. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 0
+      },
+      {
+        "code": "actions",
+        "title": "Опиши действие",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the metro entrance or metro sign. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 1
+      },
+      {
+        "code": "colors_numbers",
+        "title": "Добавь цвета и числа",
+        "completion_criteria": "Task is complete when the learner, in English, mentions that the tourist is looking at the map. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 2
+      },
+      {
+        "code": "layout",
+        "title": "Опиши расположение",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the buildings or crosswalk behind the tourist. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": false,
+        "sort_order": 3
+      }
+    ],
+    "course_code": "en_ru"
+  },
+  {
+    "code": "picnic_lago_perro_pajaros",
+    "title": "Пикник у озера",
+    "cefr_level": "A2",
+    "image_url": "",
+    "image_description": "A family picnic near a calm lake on a warm afternoon. A red blanket lies on the grass with a basket, sandwiches, apples, and a bottle of water. A brown dog sits beside the blanket. Three small birds stand near the lake. Two people are sitting and eating while one person pours water into a cup.",
+    "max_turns": 30,
+    "token_budget": 40000,
+    "sort_order": 170,
+    "status": "draft",
+    "tasks": [
+      {
+        "code": "main_objects",
+        "title": "Назови главное",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the picnic by the lake. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 0
+      },
+      {
+        "code": "actions",
+        "title": "Опиши действие",
+        "completion_criteria": "Task is complete when the learner, in English, mentions food or drink on the blanket: sandwiches, apples, basket, or water. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 1
+      },
+      {
+        "code": "colors_numbers",
+        "title": "Добавь цвета и числа",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the dog and the birds. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 2
+      },
+      {
+        "code": "layout",
+        "title": "Опиши расположение",
+        "completion_criteria": "Task is complete when the learner, in English, mentions at least one action: sitting, eating, or pouring water. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": false,
+        "sort_order": 3
+      }
+    ],
+    "course_code": "en_ru"
+  },
+  {
+    "code": "mercado_manana_verduras",
+    "title": "Рынок утром",
+    "cefr_level": "A2",
+    "image_url": "",
+    "image_description": "A morning street market with two vegetable sellers and three customers. On the left table there are red tomatoes and green cucumbers. On the right table there are orange carrots and brown potatoes. Small price cards are beside the vegetables, but the numbers are simple: 2, 3, and 5. One customer holds a cloth bag.",
+    "max_turns": 30,
+    "token_budget": 40000,
+    "sort_order": 180,
+    "status": "draft",
+    "tasks": [
+      {
+        "code": "main_objects",
+        "title": "Назови главное",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the morning market with sellers and customers. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 0
+      },
+      {
+        "code": "actions",
+        "title": "Опиши действие",
+        "completion_criteria": "Task is complete when the learner, in English, mentions at least three vegetables: tomatoes, cucumbers, carrots, potatoes. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 1
+      },
+      {
+        "code": "colors_numbers",
+        "title": "Добавь цвета и числа",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the price cards or visible numbers. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 2
+      },
+      {
+        "code": "layout",
+        "title": "Опиши расположение",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the customer with a cloth bag. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": false,
+        "sort_order": 3
+      }
+    ],
+    "course_code": "en_ru"
+  },
+  {
+    "code": "apartamento_mudanza_cajas",
+    "title": "Квартира перед переездом",
+    "cefr_level": "A2",
+    "image_url": "",
+    "image_description": "An apartment room before moving. Five cardboard boxes are on the floor: two closed boxes near the door and three open boxes near a sofa. A small table is wrapped in plastic. A woman tapes a box while a man carries a chair. A rolled blue rug is beside the window.",
+    "max_turns": 30,
+    "token_budget": 40000,
+    "sort_order": 190,
+    "status": "draft",
+    "tasks": [
+      {
+        "code": "main_objects",
+        "title": "Назови главное",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the apartment and moving boxes. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 0
+      },
+      {
+        "code": "actions",
+        "title": "Опиши действие",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the number or placement of boxes. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 1
+      },
+      {
+        "code": "colors_numbers",
+        "title": "Добавь цвета и числа",
+        "completion_criteria": "Task is complete when the learner, in English, mentions at least one moving action: taping a box or carrying a chair. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 2
+      },
+      {
+        "code": "layout",
+        "title": "Опиши расположение",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the wrapped table or rolled blue rug. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": false,
+        "sort_order": 3
+      }
+    ],
+    "course_code": "en_ru"
+  },
+  {
+    "code": "ciclista_repara_rueda",
+    "title": "Велосипедист чинит колесо",
+    "cefr_level": "A2",
+    "image_url": "",
+    "image_description": "A cyclist is repairing a bicycle wheel on a city sidewalk. The bicycle is black and turned upside down. The front wheel is loose. A small pump, a wrench, and a gray patch kit are on the ground. The cyclist wears a red helmet and looks focused.",
+    "max_turns": 30,
+    "token_budget": 40000,
+    "sort_order": 200,
+    "status": "draft",
+    "tasks": [
+      {
+        "code": "main_objects",
+        "title": "Назови главное",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the cyclist and bicycle. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 0
+      },
+      {
+        "code": "actions",
+        "title": "Опиши действие",
+        "completion_criteria": "Task is complete when the learner, in English, mentions that the cyclist is repairing a wheel. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 1
+      },
+      {
+        "code": "colors_numbers",
+        "title": "Добавь цвета и числа",
+        "completion_criteria": "Task is complete when the learner, in English, mentions at least two tools: pump, wrench, patch kit. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 2
+      },
+      {
+        "code": "layout",
+        "title": "Опиши расположение",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the red helmet or black bicycle. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": false,
+        "sort_order": 3
+      }
+    ],
+    "course_code": "en_ru"
+  },
+  {
+    "code": "familia_ropa_tienda",
+    "title": "Семья выбирает одежду",
+    "cefr_level": "A2",
+    "image_url": "",
+    "image_description": "A family is choosing clothes in a clothing store. A mother holds a blue jacket, a father looks at a price tag on a green sweater, and a child tries on a red hat. A rack behind them has shirts in three sizes: small, medium, and large. A mirror stands on the right.",
+    "max_turns": 30,
+    "token_budget": 40000,
+    "sort_order": 210,
+    "status": "draft",
+    "tasks": [
+      {
+        "code": "main_objects",
+        "title": "Назови главное",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the family in a clothing store. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 0
+      },
+      {
+        "code": "actions",
+        "title": "Опиши действие",
+        "completion_criteria": "Task is complete when the learner, in English, mentions at least three clothing items: jacket, sweater, hat, shirts. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 1
+      },
+      {
+        "code": "colors_numbers",
+        "title": "Добавь цвета и числа",
+        "completion_criteria": "Task is complete when the learner, in English, mentions colors of clothes. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 2
+      },
+      {
+        "code": "layout",
+        "title": "Опиши расположение",
+        "completion_criteria": "Task is complete when the learner, in English, mentions sizes or the mirror. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": false,
+        "sort_order": 3
+      }
+    ],
+    "course_code": "en_ru"
+  },
+  {
+    "code": "oficina_colegas_computadores",
+    "title": "Офис с коллегами",
+    "cefr_level": "A2",
+    "image_url": "",
+    "image_description": "A modern office with four colleagues working at computers. Two people sit at desks with laptops, one person talks on a headset, and one person writes notes on a tablet. There is a printer near the wall and a clock showing 10:00. The desks are white and the chairs are black.",
+    "max_turns": 30,
+    "token_budget": 40000,
+    "sort_order": 220,
+    "status": "draft",
+    "tasks": [
+      {
+        "code": "main_objects",
+        "title": "Назови главное",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the office and colleagues. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 0
+      },
+      {
+        "code": "actions",
+        "title": "Опиши действие",
+        "completion_criteria": "Task is complete when the learner, in English, mentions computers or laptops. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 1
+      },
+      {
+        "code": "colors_numbers",
+        "title": "Добавь цвета и числа",
+        "completion_criteria": "Task is complete when the learner, in English, mentions at least two work actions: typing, headset call, writing notes. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 2
+      },
+      {
+        "code": "layout",
+        "title": "Опиши расположение",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the printer or the clock showing 10:00. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": false,
+        "sort_order": 3
+      }
+    ],
+    "course_code": "en_ru"
+  },
+  {
+    "code": "aeropuerto_maletas_tablero",
+    "title": "Аэропорт и чемоданы",
+    "cefr_level": "A2",
+    "image_url": "",
+    "image_description": "An airport hall with passengers and luggage. Three passengers stand under a large departure board. The board shows two times: 09:30 and 11:15, but no readable flight names. There are four suitcases: a red suitcase, a blue suitcase, and two gray suitcases. One passenger points at the board.",
+    "max_turns": 30,
+    "token_budget": 40000,
+    "sort_order": 230,
+    "status": "draft",
+    "tasks": [
+      {
+        "code": "main_objects",
+        "title": "Назови главное",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the airport hall and passengers. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 0
+      },
+      {
+        "code": "actions",
+        "title": "Опиши действие",
+        "completion_criteria": "Task is complete when the learner, in English, mentions suitcases or luggage with colors/numbers. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 1
+      },
+      {
+        "code": "colors_numbers",
+        "title": "Добавь цвета и числа",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the departure board with times. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 2
+      },
+      {
+        "code": "layout",
+        "title": "Опиши расположение",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the passenger pointing at the board. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": false,
+        "sort_order": 3
+      }
+    ],
+    "course_code": "en_ru"
+  },
+  {
+    "code": "parque_invierno_nieve_muneco",
+    "title": "Зимний парк",
+    "cefr_level": "A2",
+    "image_url": "",
+    "image_description": "A winter park covered with white snow. Two children build a snowman in the center. The snowman has a carrot nose, a blue scarf, and a black hat. Snow is falling lightly. Bare trees and a frozen pond are in the background.",
+    "max_turns": 30,
+    "token_budget": 40000,
+    "sort_order": 240,
+    "status": "draft",
+    "tasks": [
+      {
+        "code": "main_objects",
+        "title": "Назови главное",
+        "completion_criteria": "Task is complete when the learner, in English, mentions winter park and snow. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 0
+      },
+      {
+        "code": "actions",
+        "title": "Опиши действие",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the two children and snowman. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 1
+      },
+      {
+        "code": "colors_numbers",
+        "title": "Добавь цвета и числа",
+        "completion_criteria": "Task is complete when the learner, in English, mentions at least two snowman details: carrot nose, blue scarf, black hat. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 2
+      },
+      {
+        "code": "layout",
+        "title": "Опиши расположение",
+        "completion_criteria": "Task is complete when the learner, in English, mentions falling snow or frozen pond. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": false,
+        "sort_order": 3
+      }
+    ],
+    "course_code": "en_ru"
+  },
+  {
+    "code": "cola_policlinica_documentos",
+    "title": "Очередь в поликлинике",
+    "cefr_level": "A2",
+    "image_url": "",
+    "image_description": "A clinic waiting area with a line of five people. A nurse sits at a reception desk and checks documents. One older man holds a cane, one woman holds a blue folder, and a child sits on a chair looking tired. A poster with a red cross hangs on the wall.",
+    "max_turns": 30,
+    "token_budget": 40000,
+    "sort_order": 250,
+    "status": "draft",
+    "tasks": [
+      {
+        "code": "main_objects",
+        "title": "Назови главное",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the clinic waiting area and line. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 0
+      },
+      {
+        "code": "actions",
+        "title": "Опиши действие",
+        "completion_criteria": "Task is complete when the learner, in English, mentions that five people are waiting. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 1
+      },
+      {
+        "code": "colors_numbers",
+        "title": "Добавь цвета и числа",
+        "completion_criteria": "Task is complete when the learner, in English, mentions documents or the blue folder. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 2
+      },
+      {
+        "code": "layout",
+        "title": "Опиши расположение",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the nurse, tired child, cane, or red-cross poster. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": false,
+        "sort_order": 3
+      }
+    ],
+    "course_code": "en_ru"
+  },
+  {
+    "code": "estudiantes_proyecto_biblioteca",
+    "title": "Студенты обсуждают проект",
+    "cefr_level": "B1",
+    "image_url": "",
+    "image_description": "A quiet library where four students discuss a group project at a large table. One student points to a laptop screen, one takes notes in a notebook, one holds a stack of books, and one listens with arms crossed. A poster board with colored sticky notes stands behind them. Bookshelves fill the background.",
+    "max_turns": 30,
+    "token_budget": 40000,
+    "sort_order": 260,
+    "status": "draft",
+    "tasks": [
+      {
+        "code": "main_objects",
+        "title": "Назови главное",
+        "completion_criteria": "Task is complete when the learner, in English, mentions students discussing a project in a library. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 0
+      },
+      {
+        "code": "actions",
+        "title": "Опиши действие",
+        "completion_criteria": "Task is complete when the learner, in English, describes at least two roles or actions among pointing, note-taking, holding books, listening. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 1
+      },
+      {
+        "code": "colors_numbers",
+        "title": "Добавь цвета и числа",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the laptop and poster board with sticky notes. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 2
+      },
+      {
+        "code": "layout",
+        "title": "Опиши расположение",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the bookshelves or quiet library setting. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": false,
+        "sort_order": 3
+      }
+    ],
+    "course_code": "en_ru"
+  },
+  {
+    "code": "vecinos_proteccion_agua",
+    "title": "Соседи после протечки",
+    "cefr_level": "B1",
+    "image_url": "",
+    "image_description": "An apartment hallway after a water leak. Water is on the floor near a doorway. Three neighbors help: one holds a bucket, one uses a mop, and one calls someone on a phone. A wet ceiling stain is visible above the door. Towels are spread on the floor. Everyone looks worried but cooperative.",
+    "max_turns": 30,
+    "token_budget": 40000,
+    "sort_order": 270,
+    "status": "draft",
+    "tasks": [
+      {
+        "code": "main_objects",
+        "title": "Назови главное",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the water leak in an apartment hallway. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 0
+      },
+      {
+        "code": "actions",
+        "title": "Опиши действие",
+        "completion_criteria": "Task is complete when the learner, in English, mentions at least two helping actions: holding a bucket, mopping, calling, using towels. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 1
+      },
+      {
+        "code": "colors_numbers",
+        "title": "Добавь цвета и числа",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the wet ceiling stain or water on the floor. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 2
+      },
+      {
+        "code": "layout",
+        "title": "Опиши расположение",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the worried but cooperative mood. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": false,
+        "sort_order": 3
+      }
+    ],
+    "course_code": "en_ru"
+  },
+  {
+    "code": "excursion_ciudad_antigua",
+    "title": "Экскурсия по старому городу",
+    "cefr_level": "B1",
+    "image_url": "",
+    "image_description": "A guided tour in an old city square during the day. A guide with a red umbrella speaks to six tourists. Behind them are stone arches, a small clock tower, and a narrow cobblestone street. One tourist takes a photo and another reads a brochure.",
+    "max_turns": 30,
+    "token_budget": 40000,
+    "sort_order": 280,
+    "status": "draft",
+    "tasks": [
+      {
+        "code": "main_objects",
+        "title": "Назови главное",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the guided tour in an old city. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 0
+      },
+      {
+        "code": "actions",
+        "title": "Опиши действие",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the guide and six tourists. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 1
+      },
+      {
+        "code": "colors_numbers",
+        "title": "Добавь цвета и числа",
+        "completion_criteria": "Task is complete when the learner, in English, mentions old architecture: stone arches, clock tower, or cobblestone street. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 2
+      },
+      {
+        "code": "layout",
+        "title": "Опиши расположение",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the photo-taking tourist or brochure. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": false,
+        "sort_order": 3
+      }
+    ],
+    "course_code": "en_ru"
+  },
+  {
+    "code": "voluntarios_limpian_rio",
+    "title": "Волонтёры убирают берег реки",
+    "cefr_level": "B1",
+    "image_url": "",
+    "image_description": "Five volunteers clean a riverbank on a cloudy morning. Two volunteers collect plastic bottles into a blue bag, one picks up paper with gloves, one holds a checklist, and one separates cans into a green box. The river is on the right and trees are behind the group.",
+    "max_turns": 30,
+    "token_budget": 40000,
+    "sort_order": 290,
+    "status": "draft",
+    "tasks": [
+      {
+        "code": "main_objects",
+        "title": "Назови главное",
+        "completion_criteria": "Task is complete when the learner, in English, mentions volunteers cleaning a riverbank. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 0
+      },
+      {
+        "code": "actions",
+        "title": "Опиши действие",
+        "completion_criteria": "Task is complete when the learner, in English, mentions at least two types of trash or containers: plastic bottles, paper, cans, blue bag, green box. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 1
+      },
+      {
+        "code": "colors_numbers",
+        "title": "Добавь цвета и числа",
+        "completion_criteria": "Task is complete when the learner, in English, mentions at least two actions among collecting, picking up, checking, separating. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 2
+      },
+      {
+        "code": "layout",
+        "title": "Опиши расположение",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the cloudy morning, river, or trees. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": false,
+        "sort_order": 3
+      }
+    ],
+    "course_code": "en_ru"
+  },
+  {
+    "code": "familia_planifica_vacaciones",
+    "title": "Семья планирует отпуск",
+    "cefr_level": "B1",
+    "image_url": "",
+    "image_description": "A family plans a vacation at a dining table in the evening. A map, a laptop with a beach photo, three brochures, and a notebook are on the table. The mother points to the map, the father writes a budget number, and a teenager shows a mountain brochure. A child looks at the beach photo.",
+    "max_turns": 30,
+    "token_budget": 40000,
+    "sort_order": 300,
+    "status": "draft",
+    "tasks": [
+      {
+        "code": "main_objects",
+        "title": "Назови главное",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the family planning a vacation. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 0
+      },
+      {
+        "code": "actions",
+        "title": "Опиши действие",
+        "completion_criteria": "Task is complete when the learner, in English, mentions planning objects: map, laptop, brochures, notebook, or budget. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 1
+      },
+      {
+        "code": "colors_numbers",
+        "title": "Добавь цвета и числа",
+        "completion_criteria": "Task is complete when the learner, in English, mentions at least two preferences or destinations shown: beach and mountains. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 2
+      },
+      {
+        "code": "layout",
+        "title": "Опиши расположение",
+        "completion_criteria": "Task is complete when the learner, in English, mentions who is pointing, writing, showing, or looking. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": false,
+        "sort_order": 3
+      }
+    ],
+    "course_code": "en_ru"
+  },
+  {
+    "code": "taller_reparacion_bicicleta",
+    "title": "Ремонт велосипеда в мастерской",
+    "cefr_level": "B1",
+    "image_url": "",
+    "image_description": "A small bicycle workshop with a mechanic repairing a red bicycle on a stand. The mechanic tightens the chain with a tool. A spare tire leans against the wall, and drawers with labeled parts are behind the workbench. Oil, a wrench, and a screwdriver lie on the table.",
+    "max_turns": 30,
+    "token_budget": 40000,
+    "sort_order": 310,
+    "status": "draft",
+    "tasks": [
+      {
+        "code": "main_objects",
+        "title": "Назови главное",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the bicycle workshop and red bicycle. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 0
+      },
+      {
+        "code": "actions",
+        "title": "Опиши действие",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the mechanic repairing or tightening the chain. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 1
+      },
+      {
+        "code": "colors_numbers",
+        "title": "Добавь цвета и числа",
+        "completion_criteria": "Task is complete when the learner, in English, mentions at least two tools or parts: spare tire, oil, wrench, screwdriver, chain. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 2
+      },
+      {
+        "code": "layout",
+        "title": "Опиши расположение",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the workbench or drawers with parts. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": false,
+        "sort_order": 3
+      }
+    ],
+    "course_code": "en_ru"
+  },
+  {
+    "code": "entrevista_trabajo_joven",
+    "title": "Собеседование",
+    "cefr_level": "B1",
+    "image_url": "",
+    "image_description": "A young man is in a job interview in a bright office. He sits across from two interviewers at a table. He wears a blue shirt and holds a resume. One interviewer reads the resume, and the other takes notes. A glass of water and a small plant are on the table. The young man looks nervous but polite.",
+    "max_turns": 30,
+    "token_budget": 40000,
+    "sort_order": 320,
+    "status": "draft",
+    "tasks": [
+      {
+        "code": "main_objects",
+        "title": "Назови главное",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the job interview and participants. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 0
+      },
+      {
+        "code": "actions",
+        "title": "Опиши действие",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the resume and note-taking or reading. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 1
+      },
+      {
+        "code": "colors_numbers",
+        "title": "Добавь цвета и числа",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the young man emotions: nervous but polite. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 2
+      },
+      {
+        "code": "layout",
+        "title": "Опиши расположение",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the office table details such as water or plant. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": false,
+        "sort_order": 3
+      }
+    ],
+    "course_code": "en_ru"
+  },
+  {
+    "code": "repartidor_lluvia_paquete",
+    "title": "Курьер под дождём",
+    "cefr_level": "B1",
+    "image_url": "",
+    "image_description": "A courier delivers a package on a rainy city street. The courier wears a yellow raincoat and carries a brown box. Rain falls heavily, and puddles cover the sidewalk. A customer waits under a dark doorway holding an umbrella. Cars pass in the wet street behind them.",
+    "max_turns": 30,
+    "token_budget": 40000,
+    "sort_order": 330,
+    "status": "draft",
+    "tasks": [
+      {
+        "code": "main_objects",
+        "title": "Назови главное",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the courier delivering a package. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 0
+      },
+      {
+        "code": "actions",
+        "title": "Опиши действие",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the heavy rain, puddles, or wet street. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 1
+      },
+      {
+        "code": "colors_numbers",
+        "title": "Добавь цвета и числа",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the customer under the doorway with an umbrella. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 2
+      },
+      {
+        "code": "layout",
+        "title": "Опиши расположение",
+        "completion_criteria": "Task is complete when the learner, in English, mentions colors such as yellow raincoat or brown box. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": false,
+        "sort_order": 3
+      }
+    ],
+    "course_code": "en_ru"
+  },
+  {
+    "code": "estacion_noche_tren_retrasado",
+    "title": "Вечерний вокзал",
+    "cefr_level": "B1",
+    "image_url": "",
+    "image_description": "An evening train station with travelers waiting because a train is delayed. A large board shows 21:40 and a red delay symbol but no readable words. Four passengers sit with suitcases on a bench. One passenger checks a phone, another sleeps, and a station worker points toward the platform.",
+    "max_turns": 30,
+    "token_budget": 40000,
+    "sort_order": 340,
+    "status": "draft",
+    "tasks": [
+      {
+        "code": "main_objects",
+        "title": "Назови главное",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the evening train station and delayed train situation. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 0
+      },
+      {
+        "code": "actions",
+        "title": "Опиши действие",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the board showing 21:40 and a delay symbol. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 1
+      },
+      {
+        "code": "colors_numbers",
+        "title": "Добавь цвета и числа",
+        "completion_criteria": "Task is complete when the learner, in English, mentions passengers waiting with suitcases. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 2
+      },
+      {
+        "code": "layout",
+        "title": "Опиши расположение",
+        "completion_criteria": "Task is complete when the learner, in English, mentions at least two actions: checking phone, sleeping, pointing, sitting. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": false,
+        "sort_order": 3
+      }
+    ],
+    "course_code": "en_ru"
+  },
+  {
+    "code": "coworking_discusion_proyecto",
+    "title": "Обсуждение проекта в коворкинге",
+    "cefr_level": "B2",
+    "image_url": "",
+    "image_description": "A coworking space where a team of five discusses a project around a white table. A designer shows a tablet mockup, a developer points at code on a laptop, a manager writes priorities on sticky notes, and two teammates compare charts. Coffee cups and charging cables are on the table. The mood is focused and collaborative.",
+    "max_turns": 30,
+    "token_budget": 40000,
+    "sort_order": 350,
+    "status": "draft",
+    "tasks": [
+      {
+        "code": "main_objects",
+        "title": "Назови главное",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the coworking project discussion and team. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 0
+      },
+      {
+        "code": "actions",
+        "title": "Опиши действие",
+        "completion_criteria": "Task is complete when the learner, in English, describes at least three roles or contributions: tablet mockup, code, priorities, charts. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 1
+      },
+      {
+        "code": "colors_numbers",
+        "title": "Добавь цвета и числа",
+        "completion_criteria": "Task is complete when the learner, in English, mentions collaboration or focused mood. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 2
+      },
+      {
+        "code": "layout",
+        "title": "Опиши расположение",
+        "completion_criteria": "Task is complete when the learner, in English, mentions table details like coffee cups or charging cables. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": false,
+        "sort_order": 3
+      }
+    ],
+    "course_code": "en_ru"
+  },
+  {
+    "code": "plaza_festival_ciudad",
+    "title": "Фестиваль на городской площади",
+    "cefr_level": "B2",
+    "image_url": "",
+    "image_description": "A city square during a cultural festival in late afternoon. A small stage with musicians is in the center, colorful flags hang above the crowd, and food stalls line both sides. About twenty people watch, dance, or buy snacks. A fountain and old town hall are visible in the background.",
+    "max_turns": 30,
+    "token_budget": 40000,
+    "sort_order": 360,
+    "status": "draft",
+    "tasks": [
+      {
+        "code": "main_objects",
+        "title": "Назови главное",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the festival in a city square. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 0
+      },
+      {
+        "code": "actions",
+        "title": "Опиши действие",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the stage, musicians, flags, and crowd. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 1
+      },
+      {
+        "code": "colors_numbers",
+        "title": "Добавь цвета и числа",
+        "completion_criteria": "Task is complete when the learner, in English, mentions at least two activities: watching, dancing, buying snacks. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 2
+      },
+      {
+        "code": "layout",
+        "title": "Опиши расположение",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the fountain or old town hall. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": false,
+        "sort_order": 3
+      }
+    ],
+    "course_code": "en_ru"
+  },
+  {
+    "code": "discusion_presupuesto_familia",
+    "title": "Семейный спор о бюджете",
+    "cefr_level": "B2",
+    "image_url": "",
+    "image_description": "A family has a tense budget discussion in a kitchen at night. Bills, a calculator, and a notebook with numbers lie on the table. One parent points at the bills, another crosses their arms, and a teenager looks upset while holding a phone. A younger child sits quietly with a glass of milk.",
+    "max_turns": 30,
+    "token_budget": 40000,
+    "sort_order": 370,
+    "status": "draft",
+    "tasks": [
+      {
+        "code": "main_objects",
+        "title": "Назови главное",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the family budget argument in the kitchen. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 0
+      },
+      {
+        "code": "actions",
+        "title": "Опиши действие",
+        "completion_criteria": "Task is complete when the learner, in English, mentions evidence of money planning: bills, calculator, notebook with numbers. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 1
+      },
+      {
+        "code": "colors_numbers",
+        "title": "Добавь цвета и числа",
+        "completion_criteria": "Task is complete when the learner, in English, describes at least two emotions or body language details: tense, crossed arms, upset, quiet. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 2
+      },
+      {
+        "code": "layout",
+        "title": "Опиши расположение",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the phone or glass of milk. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": false,
+        "sort_order": 3
+      }
+    ],
+    "course_code": "en_ru"
+  },
+  {
+    "code": "museo_arte_moderno_visitantes",
+    "title": "Музей современного искусства",
+    "cefr_level": "B2",
+    "image_url": "",
+    "image_description": "A modern art museum gallery with three visitors looking at a large abstract painting. The painting has red circles, black lines, and blue rectangles on a white canvas. One visitor smiles, one tilts their head in confusion, and one writes notes. A small sculpture made of silver cubes stands on a pedestal nearby.",
+    "max_turns": 30,
+    "token_budget": 40000,
+    "sort_order": 380,
+    "status": "draft",
+    "tasks": [
+      {
+        "code": "main_objects",
+        "title": "Назови главное",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the modern art museum gallery. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 0
+      },
+      {
+        "code": "actions",
+        "title": "Опиши действие",
+        "completion_criteria": "Task is complete when the learner, in English, describes the abstract painting with shapes and colors. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 1
+      },
+      {
+        "code": "colors_numbers",
+        "title": "Добавь цвета и числа",
+        "completion_criteria": "Task is complete when the learner, in English, mentions different visitor reactions: smiling, confusion, note-taking. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 2
+      },
+      {
+        "code": "layout",
+        "title": "Опиши расположение",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the silver cube sculpture. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": false,
+        "sort_order": 3
+      }
+    ],
+    "course_code": "en_ru"
+  },
+  {
+    "code": "rueda_prensa_deporte",
+    "title": "Пресс-конференция после матча",
+    "cefr_level": "B2",
+    "image_url": "",
+    "image_description": "A press conference after a sports match. A tired coach and a smiling player sit behind microphones at a long table. Four journalists face them; two hold cameras, one records audio, and one raises a hand to ask a question. A scoreboard behind them shows 2-1 without team names.",
+    "max_turns": 30,
+    "token_budget": 40000,
+    "sort_order": 390,
+    "status": "draft",
+    "tasks": [
+      {
+        "code": "main_objects",
+        "title": "Назови главное",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the post-match press conference. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 0
+      },
+      {
+        "code": "actions",
+        "title": "Опиши действие",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the coach, player, journalists, and microphones. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 1
+      },
+      {
+        "code": "colors_numbers",
+        "title": "Добавь цвета и числа",
+        "completion_criteria": "Task is complete when the learner, in English, describes at least two media actions: cameras, audio recording, raised hand question. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 2
+      },
+      {
+        "code": "layout",
+        "title": "Опиши расположение",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the 2-1 scoreboard or emotions of coach/player. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": false,
+        "sort_order": 3
+      }
+    ],
+    "course_code": "en_ru"
+  },
+  {
+    "code": "reunion_vecinos_parque_nuevo",
+    "title": "Собрание о новом парке",
+    "cefr_level": "B2",
+    "image_url": "",
+    "image_description": "Residents discuss a proposed new park at a community meeting. A city planner points to a large map showing trees, paths, and a playground. Ten residents sit in rows; some raise hands, one person frowns, and another takes notes. A poster shows a before-and-after sketch of an empty lot becoming green space.",
+    "max_turns": 30,
+    "token_budget": 40000,
+    "sort_order": 400,
+    "status": "draft",
+    "tasks": [
+      {
+        "code": "main_objects",
+        "title": "Назови главное",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the community meeting about a new park. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 0
+      },
+      {
+        "code": "actions",
+        "title": "Опиши действие",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the city planner and map with trees, paths, playground. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 1
+      },
+      {
+        "code": "colors_numbers",
+        "title": "Добавь цвета и числа",
+        "completion_criteria": "Task is complete when the learner, in English, describes mixed resident reactions or participation. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 2
+      },
+      {
+        "code": "layout",
+        "title": "Опиши расположение",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the before-and-after poster. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": false,
+        "sort_order": 3
+      }
+    ],
+    "course_code": "en_ru"
+  },
+  {
+    "code": "startup_app_inversor",
+    "title": "Презентация стартапа",
+    "cefr_level": "B2",
+    "image_url": "",
+    "image_description": "A startup team presents a mobile app to an investor in a meeting room. A screen shows a simple app dashboard with charts and buttons but no readable text. Three team members stand near the screen: one speaks, one controls a laptop, and one holds a prototype phone. The investor sits at the table with a notebook and a serious expression.",
+    "max_turns": 30,
+    "token_budget": 40000,
+    "sort_order": 410,
+    "status": "draft",
+    "tasks": [
+      {
+        "code": "main_objects",
+        "title": "Назови главное",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the startup pitch to an investor. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 0
+      },
+      {
+        "code": "actions",
+        "title": "Опиши действие",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the app dashboard, laptop, and prototype phone. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 1
+      },
+      {
+        "code": "colors_numbers",
+        "title": "Добавь цвета и числа",
+        "completion_criteria": "Task is complete when the learner, in English, describes roles: speaker, laptop controller, investor with notebook. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 2
+      },
+      {
+        "code": "layout",
+        "title": "Опиши расположение",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the serious investor expression. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": false,
+        "sort_order": 3
+      }
+    ],
+    "course_code": "en_ru"
+  },
+  {
+    "code": "calle_despues_lluvia_reparacion_trafico",
+    "title": "Улица после сильного дождя",
+    "cefr_level": "B2",
+    "image_url": "",
+    "image_description": "A city street after heavy rain with traffic and repair work. A large puddle covers part of the road, two cars wait in a slow line, and a bus is stopped behind them. Two workers in orange vests repair a blocked drain with tools. Wet leaves and broken branches are near the curb.",
+    "max_turns": 30,
+    "token_budget": 40000,
+    "sort_order": 420,
+    "status": "draft",
+    "tasks": [
+      {
+        "code": "main_objects",
+        "title": "Назови главное",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the street after heavy rain. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 0
+      },
+      {
+        "code": "actions",
+        "title": "Опиши действие",
+        "completion_criteria": "Task is complete when the learner, in English, mentions traffic: cars waiting and bus stopped. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 1
+      },
+      {
+        "code": "colors_numbers",
+        "title": "Добавь цвета и числа",
+        "completion_criteria": "Task is complete when the learner, in English, mentions repair workers fixing a blocked drain. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 2
+      },
+      {
+        "code": "layout",
+        "title": "Опиши расположение",
+        "completion_criteria": "Task is complete when the learner, in English, mentions consequences such as puddle, wet leaves, or broken branches. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": false,
+        "sort_order": 3
+      }
+    ],
+    "course_code": "en_ru"
+  },
+  {
+    "code": "juicio_abogados_testigo",
+    "title": "Судебное заседание",
+    "cefr_level": "C1",
+    "image_url": "",
+    "image_description": "A formal courtroom hearing is in progress. A judge sits at a raised desk, two lawyers stand at separate tables, and a witness sits in a witness chair beside a microphone. One lawyer presents a document, the other reviews notes. A court clerk types on a computer, and several observers sit quietly in the back rows.",
+    "max_turns": 30,
+    "token_budget": 40000,
+    "sort_order": 430,
+    "status": "draft",
+    "tasks": [
+      {
+        "code": "main_objects",
+        "title": "Назови главное",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the formal courtroom hearing. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 0
+      },
+      {
+        "code": "actions",
+        "title": "Опиши действие",
+        "completion_criteria": "Task is complete when the learner, in English, identifies roles: judge, lawyers, witness, clerk, observers. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 1
+      },
+      {
+        "code": "colors_numbers",
+        "title": "Добавь цвета и числа",
+        "completion_criteria": "Task is complete when the learner, in English, describes procedural actions: presenting document, reviewing notes, typing, witness at microphone. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 2
+      },
+      {
+        "code": "layout",
+        "title": "Опиши расположение",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the formal seating arrangement or quiet observers. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": false,
+        "sort_order": 3
+      }
+    ],
+    "course_code": "en_ru"
+  },
+  {
+    "code": "debate_politico_estudio_tv",
+    "title": "Политические дебаты в телестудии",
+    "cefr_level": "C1",
+    "image_url": "",
+    "image_description": "A television studio hosts political debates. Two candidates stand at separate podiums under bright studio lights. A moderator sits between them with question cards. A large screen behind them shows a split red-and-blue background with no readable slogans. One candidate gestures firmly, while the other listens with a skeptical expression. Cameras and a small audience are visible.",
+    "max_turns": 30,
+    "token_budget": 40000,
+    "sort_order": 440,
+    "status": "draft",
+    "tasks": [
+      {
+        "code": "main_objects",
+        "title": "Назови главное",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the TV political debate. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 0
+      },
+      {
+        "code": "actions",
+        "title": "Опиши действие",
+        "completion_criteria": "Task is complete when the learner, in English, identifies candidates, moderator, podiums, cameras, and audience. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 1
+      },
+      {
+        "code": "colors_numbers",
+        "title": "Добавь цвета и числа",
+        "completion_criteria": "Task is complete when the learner, in English, contrasts the candidates body language or expressions. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 2
+      },
+      {
+        "code": "layout",
+        "title": "Опиши расположение",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the red-and-blue screen without slogans. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": false,
+        "sort_order": 3
+      }
+    ],
+    "course_code": "en_ru"
+  },
+  {
+    "code": "conferencia_cientifica_poster",
+    "title": "Научная конференция",
+    "cefr_level": "C1",
+    "image_url": "",
+    "image_description": "A scientific conference poster session. A researcher explains a poster with diagrams, charts, and a simple molecule drawing to three attendees. One attendee asks a question, another points at a graph, and the third records notes on a tablet. The poster board has colored sections but no readable text. Name badges and coffee cups are visible.",
+    "max_turns": 30,
+    "token_budget": 40000,
+    "sort_order": 450,
+    "status": "draft",
+    "tasks": [
+      {
+        "code": "main_objects",
+        "title": "Назови главное",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the scientific conference poster session. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 0
+      },
+      {
+        "code": "actions",
+        "title": "Опиши действие",
+        "completion_criteria": "Task is complete when the learner, in English, identifies the researcher and three attendees. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 1
+      },
+      {
+        "code": "colors_numbers",
+        "title": "Добавь цвета и числа",
+        "completion_criteria": "Task is complete when the learner, in English, describes abstract materials: diagrams, charts, molecule drawing, graph. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 2
+      },
+      {
+        "code": "layout",
+        "title": "Опиши расположение",
+        "completion_criteria": "Task is complete when the learner, in English, mentions questions, pointing, tablet notes, badges, or coffee cups. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": false,
+        "sort_order": 3
+      }
+    ],
+    "course_code": "en_ru"
+  },
+  {
+    "code": "negociacion_contrato_sala",
+    "title": "Переговоры о контракте",
+    "cefr_level": "C1",
+    "image_url": "",
+    "image_description": "A contract negotiation takes place in a glass-walled meeting room. Two business teams sit on opposite sides of a long table. Printed contracts, a laptop with a spreadsheet, and pens are on the table. One negotiator highlights a clause, another whispers to a colleague, and a third offers a handshake that is not yet accepted. The atmosphere is cautious and strategic.",
+    "max_turns": 30,
+    "token_budget": 40000,
+    "sort_order": 460,
+    "status": "draft",
+    "tasks": [
+      {
+        "code": "main_objects",
+        "title": "Назови главное",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the contract negotiation in a meeting room. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 0
+      },
+      {
+        "code": "actions",
+        "title": "Опиши действие",
+        "completion_criteria": "Task is complete when the learner, in English, identifies two teams and negotiation materials: contracts, spreadsheet, pens. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 1
+      },
+      {
+        "code": "colors_numbers",
+        "title": "Добавь цвета и числа",
+        "completion_criteria": "Task is complete when the learner, in English, describes strategic actions: highlighting clause, whispering, offered handshake not accepted. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 2
+      },
+      {
+        "code": "layout",
+        "title": "Опиши расположение",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the cautious atmosphere. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": false,
+        "sort_order": 3
+      }
+    ],
+    "course_code": "en_ru"
+  },
+  {
+    "code": "redaccion_noticias_urgente",
+    "title": "Редакция во время срочного выпуска",
+    "cefr_level": "C1",
+    "image_url": "",
+    "image_description": "A busy newsroom during a breaking news broadcast. Editors work at computers, a producer points at a wall screen with a map and alert icons, and a presenter adjusts a microphone before going live. Papers, headphones, and coffee cups cover the desks. A digital clock shows 18:05. People look pressured and focused.",
+    "max_turns": 30,
+    "token_budget": 40000,
+    "sort_order": 470,
+    "status": "draft",
+    "tasks": [
+      {
+        "code": "main_objects",
+        "title": "Назови главное",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the breaking-news newsroom. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 0
+      },
+      {
+        "code": "actions",
+        "title": "Опиши действие",
+        "completion_criteria": "Task is complete when the learner, in English, identifies roles and actions: editors, producer, presenter, computers, microphone. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 1
+      },
+      {
+        "code": "colors_numbers",
+        "title": "Добавь цвета и числа",
+        "completion_criteria": "Task is complete when the learner, in English, mentions urgent visual cues: wall screen with map and alert icons, clock 18:05. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 2
+      },
+      {
+        "code": "layout",
+        "title": "Опиши расположение",
+        "completion_criteria": "Task is complete when the learner, in English, describes pressure and focus plus desk clutter. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": false,
+        "sort_order": 3
+      }
+    ],
+    "course_code": "en_ru"
+  },
+  {
+    "code": "ciudad_futura_transporte_energia_ecologia",
+    "title": "Город будущего",
+    "cefr_level": "C1",
+    "image_url": "",
+    "image_description": "A future city with clean transport, renewable energy, and green spaces. Electric buses move on a quiet road, small autonomous pods use a separate lane, and cyclists ride beside a tree-lined path. Solar panels cover rooftops, wind turbines stand near the river, and vertical gardens grow on tall buildings. The sky is clear and the air looks clean.",
+    "max_turns": 30,
+    "token_budget": 40000,
+    "sort_order": 480,
+    "status": "draft",
+    "tasks": [
+      {
+        "code": "main_objects",
+        "title": "Назови главное",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the future city and its clean transport. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 0
+      },
+      {
+        "code": "actions",
+        "title": "Опиши действие",
+        "completion_criteria": "Task is complete when the learner, in English, mentions at least two transport types: electric buses, autonomous pods, cyclists. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 1
+      },
+      {
+        "code": "colors_numbers",
+        "title": "Добавь цвета и числа",
+        "completion_criteria": "Task is complete when the learner, in English, mentions energy or ecology elements: solar panels, wind turbines, vertical gardens, trees, clean air. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 2
+      },
+      {
+        "code": "layout",
+        "title": "Опиши расположение",
+        "completion_criteria": "Task is complete when the learner, in English, makes a comparison or hypothesis based only on the visible sustainable design. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": false,
+        "sort_order": 3
+      }
+    ],
+    "course_code": "en_ru"
+  },
+  {
+    "code": "restauradores_cuadro_danado",
+    "title": "Реставраторы и повреждённая картина",
+    "cefr_level": "C1",
+    "image_url": "",
+    "image_description": "Two art restorers work carefully on a damaged old painting in a conservation studio. The painting shows a faded portrait with a torn corner and dark cracks. One restorer uses a tiny brush under a magnifying lamp, while the other documents damage on a tablet. Cotton swabs, pigment jars, gloves, and a color chart lie on the table.",
+    "max_turns": 30,
+    "token_budget": 40000,
+    "sort_order": 490,
+    "status": "draft",
+    "tasks": [
+      {
+        "code": "main_objects",
+        "title": "Назови главное",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the restoration studio and damaged painting. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 0
+      },
+      {
+        "code": "actions",
+        "title": "Опиши действие",
+        "completion_criteria": "Task is complete when the learner, in English, describes visible damage: faded portrait, torn corner, dark cracks. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 1
+      },
+      {
+        "code": "colors_numbers",
+        "title": "Добавь цвета и числа",
+        "completion_criteria": "Task is complete when the learner, in English, mentions restoration process: tiny brush, magnifying lamp, tablet documentation. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 2
+      },
+      {
+        "code": "layout",
+        "title": "Опиши расположение",
+        "completion_criteria": "Task is complete when the learner, in English, mentions tools or materials such as cotton swabs, pigment jars, gloves, color chart. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": false,
+        "sort_order": 3
+      }
+    ],
+    "course_code": "en_ru"
+  },
+  {
+    "code": "encuentro_internacional_clima",
+    "title": "Международная встреча о климате",
+    "cefr_level": "C1",
+    "image_url": "",
+    "image_description": "An international climate meeting in a conference hall. Delegates from different countries sit around a circular table with nameplates and small flags, but no readable country names. A speaker points to a screen showing a world map, rising temperature line, and flood icon. Translators sit in booths behind glass. Some delegates take notes, while others discuss quietly.",
+    "max_turns": 30,
+    "token_budget": 40000,
+    "sort_order": 500,
+    "status": "draft",
+    "tasks": [
+      {
+        "code": "main_objects",
+        "title": "Назови главное",
+        "completion_criteria": "Task is complete when the learner, in English, mentions the international climate meeting. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 0
+      },
+      {
+        "code": "actions",
+        "title": "Опиши действие",
+        "completion_criteria": "Task is complete when the learner, in English, identifies delegates, speaker, translators, circular table, flags/nameplates. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 1
+      },
+      {
+        "code": "colors_numbers",
+        "title": "Добавь цвета и числа",
+        "completion_criteria": "Task is complete when the learner, in English, describes climate evidence on the screen: world map, rising temperature line, flood icon. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": true,
+        "sort_order": 2
+      },
+      {
+        "code": "layout",
+        "title": "Опиши расположение",
+        "completion_criteria": "Task is complete when the learner, in English, mentions notes, quiet discussion, or translation booths. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "is_required": false,
+        "sort_order": 3
+      }
+    ],
+    "course_code": "en_ru"
+  }
+]

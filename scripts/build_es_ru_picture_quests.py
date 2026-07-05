@@ -1,9 +1,10 @@
 #!/usr/bin/env python3
-"""Build es_ru picture quests JSON from original git source.
+"""Build es_ru and en_ru picture quests JSON from original git source.
 
 Loads /tmp/orig_pq.json, keeps Russian titles, fixes misaligned
-completion_criteria for five quests, embeds Spanish criteria,
-and writes resources/picture_quests/es_ru_picture_quests_50.json.
+completion_criteria for five quests, writes:
+  - resources/picture_quests/es_ru_picture_quests_50.json (Spanish criteria)
+  - resources/picture_quests/en_ru_picture_quests_50.json (English criteria)
 """
 
 from __future__ import annotations
@@ -14,7 +15,8 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 INPUT_PATH = Path("/tmp/orig_pq.json")
-OUTPUT_PATH = REPO_ROOT / "resources/picture_quests/es_ru_picture_quests_50.json"
+OUTPUT_ES_PATH = REPO_ROOT / "resources/picture_quests/es_ru_picture_quests_50.json"
+OUTPUT_EN_PATH = REPO_ROOT / "resources/picture_quests/en_ru_picture_quests_50.json"
 
 CRITERIA_FIXES: dict[str, dict[str, str]] = {
   "mesa_taza_libro_manzana_llaves": {
@@ -258,7 +260,7 @@ def apply_criteria_fixes(quest: dict) -> None:
             task["completion_criteria"] = fixes[task_code]
 
 
-def build_quest(quest: dict) -> dict:
+def build_es_quest(quest: dict) -> dict:
     out = dict(quest)
     out["course_code"] = "es_ru"
     tasks = []
@@ -278,47 +280,99 @@ def build_quest(quest: dict) -> dict:
     return out
 
 
-def verify_output(quests: list[dict]) -> None:
+def build_en_quest(quest: dict) -> dict:
+    fixed = json.loads(json.dumps(quest))
+    apply_criteria_fixes(fixed)
+    out = dict(fixed)
+    out["course_code"] = "en_ru"
+    tasks = []
+    for task in fixed["tasks"]:
+        criteria = task["completion_criteria"].replace("in Spanish", "in English")
+        tasks.append({
+            "code": task["code"],
+            "title": task["title"],
+            "completion_criteria": criteria,
+            "is_required": task["is_required"],
+            "sort_order": task["sort_order"],
+        })
+    out["tasks"] = tasks
+    return out
+
+
+def verify_russian_titles(quests: list[dict]) -> None:
+    for quest in quests:
+        if not quest.get("title") or not any("\u0400" <= ch <= "\u04FF" for ch in quest["title"]):
+            raise ValueError(f"Quest {quest['code']} title is not Russian: {quest.get('title')!r}")
+        for task in quest["tasks"]:
+            if not task.get("title") or not any("\u0400" <= ch <= "\u04FF" for ch in task["title"]):
+                raise ValueError(f"Quest {quest['code']} task {task['code']} title is not Russian")
+
+
+def verify_es_output(quests: list[dict]) -> None:
     if len(quests) != 50:
         raise ValueError(f"Expected 50 quests, got {len(quests)}")
+    verify_russian_titles(quests)
     for quest in quests:
         if quest.get("course_code") != "es_ru":
             raise ValueError(f"Quest {quest['code']} missing course_code es_ru")
-        if not quest.get("title") or not any("\u0400" <= ch <= "\u04FF" for ch in quest["title"]):
-            raise ValueError(f"Quest {quest['code']} title is not Russian: {quest.get('title')!r}")
         for task in quest["tasks"]:
             criteria = task["completion_criteria"]
             if not criteria.startswith("La tarea se completa cuando el alumno, en español,"):
                 raise ValueError(f"Quest {quest['code']} task {task['code']} criteria not Spanish prefix")
             if not criteria.endswith("Se aceptan errores gramaticales menores si el significado es claro."):
                 raise ValueError(f"Quest {quest['code']} task {task['code']} criteria missing Spanish suffix")
-            if not task.get("title") or not any("\u0400" <= ch <= "\u04FF" for ch in task["title"]):
-                raise ValueError(f"Quest {quest['code']} task {task['code']} title is not Russian")
-    print(f"Verified {len(quests)} quests, {sum(len(q['tasks']) for q in quests)} tasks")
+    print(f"Verified es_ru: {len(quests)} quests, {sum(len(q['tasks']) for q in quests)} tasks")
+
+
+def verify_en_output(quests: list[dict]) -> None:
+    if len(quests) != 50:
+        raise ValueError(f"Expected 50 quests, got {len(quests)}")
+    verify_russian_titles(quests)
+    for quest in quests:
+        if quest.get("course_code") != "en_ru":
+            raise ValueError(f"Quest {quest['code']} missing course_code en_ru")
+        for task in quest["tasks"]:
+            criteria = task["completion_criteria"]
+            if "in Spanish" in criteria:
+                raise ValueError(f"Quest {quest['code']} task {task['code']} still references Spanish")
+            if not criteria.startswith("Task is complete when the learner, in English,"):
+                raise ValueError(f"Quest {quest['code']} task {task['code']} criteria not English prefix")
+    print(f"Verified en_ru: {len(quests)} quests, {sum(len(q['tasks']) for q in quests)} tasks")
+
+
+def load_source() -> list[dict]:
+    if INPUT_PATH.exists():
+        with INPUT_PATH.open(encoding="utf-8") as f:
+            return json.load(f)
+    raise FileNotFoundError(
+        f"Input not found: {INPUT_PATH}. "
+        "Export the English-criteria source with:\n"
+        "  git show 0efe4a43:resources/picture_quests/es_ru_picture_quests_50.json > /tmp/orig_pq.json"
+    )
 
 
 def main() -> int:
-    if not INPUT_PATH.exists():
-        print(f"Input not found: {INPUT_PATH}", file=sys.stderr)
+    try:
+        source = load_source()
+    except FileNotFoundError as exc:
+        print(str(exc), file=sys.stderr)
         return 1
 
-    with INPUT_PATH.open(encoding="utf-8") as f:
-        source = json.load(f)
+    built_es = [build_es_quest(q) for q in source]
+    built_en = [build_en_quest(q) for q in source]
+    verify_es_output(built_es)
+    verify_en_output(built_en)
 
-    # Apply English fixes in-memory for traceability (Spanish already reflects fixes)
-    working = json.loads(json.dumps(source))
-    for quest in working:
-        apply_criteria_fixes(quest)
-
-    built = [build_quest(q) for q in source]
-    verify_output(built)
-
-    OUTPUT_PATH.parent.mkdir(parents=True, exist_ok=True)
-    with OUTPUT_PATH.open("w", encoding="utf-8") as f:
-        json.dump(built, f, ensure_ascii=False, indent=2)
+    OUTPUT_ES_PATH.parent.mkdir(parents=True, exist_ok=True)
+    with OUTPUT_ES_PATH.open("w", encoding="utf-8") as f:
+        json.dump(built_es, f, ensure_ascii=False, indent=2)
+        f.write("\n")
+    with OUTPUT_EN_PATH.open("w", encoding="utf-8") as f:
+        json.dump(built_en, f, ensure_ascii=False, indent=2)
         f.write("\n")
 
-    print(f"Wrote {OUTPUT_PATH}")
+    print(f"Wrote {OUTPUT_ES_PATH}")
+    print(f"Wrote {OUTPUT_EN_PATH}")
     fixed_codes = sorted(CRITERIA_FIXES.keys())
     print(f"Criteria alignment fixes applied for: {', '.join(fixed_codes)}")
     return 0

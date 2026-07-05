@@ -193,6 +193,7 @@
           Вставьте JSON одного квеста или массива квестов с заданиями (структура — как из кнопки «Промпт для генерации»).
           Квесты с тем же <span class="mono">code</span> в курсе <span class="mono">{{ selectedCourseCode }}</span>
           будут перезаписаны вместе с заданиями.
+          Пустой <span class="mono">image_url</span> в JSON не затирает уже загруженную картинку.
         </p>
         <textarea ref="importArea" v-model="importText" class="inp code-area" rows="16" placeholder='{ "code": "...", "title": "...", "tasks": [ ... ] } или [ { ... }, { ... } ]'></textarea>
         <div v-if="importError" class="error">{{ importError }}</div>

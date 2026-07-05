@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"strings"
 )
 
 // AdminPictureQuestRow is one quest as shown in the admin list (joined with district codes).
@@ -228,6 +229,7 @@ func (r *PictureQuestRepository) ImportQuest(ctx context.Context, in AdminPictur
 		`SELECT id FROM picture_quests WHERE course_id = ? AND code = ?`, courseID, in.Code).Scan(&existingID)
 	switch {
 	case scanErr == nil:
+		in = r.mergeImportQuestFields(ctx, existingID, in)
 		if err := r.UpdateQuest(ctx, existingID, in); err != nil {
 			return 0, false, err
 		}
@@ -246,6 +248,22 @@ func (r *PictureQuestRepository) ImportQuest(ctx context.Context, in AdminPictur
 		return 0, false, err
 	}
 	return id, created, nil
+}
+
+// mergeImportQuestFields keeps admin-uploaded media when JSON import leaves image_url empty.
+func (r *PictureQuestRepository) mergeImportQuestFields(ctx context.Context, existingID int64, in AdminPictureQuestInput) AdminPictureQuestInput {
+	if strings.TrimSpace(in.ImageURL) != "" {
+		return in
+	}
+	var existingURL string
+	if err := r.db.QueryRowContext(ctx, `SELECT image_url FROM picture_quests WHERE id = ?`, existingID).Scan(&existingURL); err != nil {
+		return in
+	}
+	if strings.TrimSpace(existingURL) == "" {
+		return in
+	}
+	in.ImageURL = existingURL
+	return in
 }
 
 // replaceQuestTasks deletes the quest's existing tasks and inserts the provided set in one tx.
