@@ -634,32 +634,17 @@ func (r *Router) handleVocabDelete(w http.ResponseWriter, req *http.Request) {
 
 // VocabCardDetail represents detailed information about a user card
 type VocabCardDetail struct {
-	ID             int64      `json:"id"`
-	TrainingCardID int64      `json:"training_card_id"`
-	Direction      string     `json:"direction"`
-	State          string     `json:"state"`
-	EF             float64    `json:"ef"`
-	Reps           int        `json:"reps"`
-	IntervalDays   int        `json:"interval_days"`
-	LearningStep   int        `json:"learning_step"`
-	LapseCount     int        `json:"lapse_count"`
-	NextDueAt      *time.Time `json:"next_due_at"`
-	LastReviewAt   *time.Time `json:"last_review_at"`
-	LastQuality    *int       `json:"last_quality"`
-	CreatedAt      time.Time  `json:"created_at"`
-	UpdatedAt      time.Time  `json:"updated_at"`
-	WordRU         string     `json:"word_ru"`
-	WordNative     string     `json:"word_native"`
-	MeaningEN      string     `json:"meaning_en"`
-	MeaningTarget  string     `json:"meaning_target"`
-	ExampleEN      string     `json:"example_en"`
-	ExampleTarget  string     `json:"example_target"`
-	ExampleRU      string     `json:"example_ru"`
-	ExampleNative  string     `json:"example_native"`
-	Transcription  string     `json:"transcription"`
-	SenseIndex     int        `json:"sense_index"`
-	POS            *string    `json:"pos,omitempty"`
-	ReviewCount    int        `json:"review_count"` // Count of review events
+	WordRU        string  `json:"word_ru"`
+	WordNative    string  `json:"word_native"`
+	MeaningEN     string  `json:"meaning_en"`
+	MeaningTarget string  `json:"meaning_target"`
+	ExampleEN     string  `json:"example_en"`
+	ExampleTarget string  `json:"example_target"`
+	ExampleRU     string  `json:"example_ru"`
+	ExampleNative string  `json:"example_native"`
+	Transcription string  `json:"transcription"`
+	SenseIndex    int     `json:"sense_index"`
+	POS           *string `json:"pos,omitempty"`
 }
 
 func fillVocabCardDetailNeutralAliases(c *VocabCardDetail) {
@@ -725,34 +710,19 @@ func (r *Router) resolveWordCardIDForUser(req *http.Request, userID int64, lemma
 // time in the same request.
 func (r *Router) handleVocabWordCardsByID(w http.ResponseWriter, req *http.Request, userID, wordCardID int64, lemma string) {
 	query := `SELECT
-		uc.id,
-		uc.training_card_id,
-		uc.direction,
-		uc.state,
-		uc.ef,
-		uc.reps,
-		uc.interval_days,
-		uc.learning_step,
-		uc.lapse_count,
-		substr(CAST(uc.next_due_at AS TEXT), 1, 19) as next_due_at,
-		substr(CAST(uc.last_review_at AS TEXT), 1, 19) as last_review_at,
-		uc.last_quality,
-		substr(CAST(uc.created_at AS TEXT), 1, 19) as created_at,
-		substr(CAST(uc.updated_at AS TEXT), 1, 19) as updated_at,
 		tc.word_ru,
 		tc.meaning_en,
 		COALESCE(tc.example_en, '') as example_en,
 		COALESCE(tc.example_ru, '') as example_ru,
 		COALESCE(tc.transcription, '') as transcription,
 		tc.sense_index,
-		tc.pos,
-		(SELECT COUNT(*) FROM review_events re WHERE re.user_card_id = uc.id) as review_count
-	FROM user_cards uc
-	JOIN training_cards tc ON uc.training_card_id = tc.id
-	WHERE uc.user_id = ? AND tc.word_card_id = ?
-	ORDER BY tc.sense_index, uc.direction`
+		tc.pos
+	FROM training_cards tc
+	WHERE tc.word_card_id = ?
+	GROUP BY tc.sense_index, tc.word_ru, tc.meaning_en, tc.example_en, tc.example_ru, tc.transcription, tc.pos
+	ORDER BY tc.sense_index`
 
-	rows, err := r.db.Query(query, userID, wordCardID)
+	rows, err := r.db.Query(query, wordCardID)
 	if err != nil {
 		r.logger.Error("failed to get word cards", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
@@ -763,26 +733,9 @@ func (r *Router) handleVocabWordCardsByID(w http.ResponseWriter, req *http.Reque
 	var cards []VocabCardDetail
 	for rows.Next() {
 		var card VocabCardDetail
-		var createdAt, updatedAt string
-		var nextDueAt, lastReviewAt sql.NullString
-		var lastQuality sql.NullInt64
 
 		var pos sql.NullString
 		err := rows.Scan(
-			&card.ID,
-			&card.TrainingCardID,
-			&card.Direction,
-			&card.State,
-			&card.EF,
-			&card.Reps,
-			&card.IntervalDays,
-			&card.LearningStep,
-			&card.LapseCount,
-			&nextDueAt,
-			&lastReviewAt,
-			&lastQuality,
-			&createdAt,
-			&updatedAt,
 			&card.WordRU,
 			&card.MeaningEN,
 			&card.ExampleEN,
@@ -790,7 +743,6 @@ func (r *Router) handleVocabWordCardsByID(w http.ResponseWriter, req *http.Reque
 			&card.Transcription,
 			&card.SenseIndex,
 			&pos,
-			&card.ReviewCount,
 		)
 		if pos.Valid {
 			card.POS = &pos.String
@@ -800,152 +752,17 @@ func (r *Router) handleVocabWordCardsByID(w http.ResponseWriter, req *http.Reque
 			continue
 		}
 
-		if t, err := parseDateTime(createdAt); err == nil && t != nil {
-			card.CreatedAt = *t
-		}
-		if t, err := parseDateTime(updatedAt); err == nil && t != nil {
-			card.UpdatedAt = *t
-		}
-
-		if nextDueAt.Valid && nextDueAt.String != "" {
-			if t, err := parseDateTime(nextDueAt.String); err == nil && t != nil {
-				card.NextDueAt = t
-			}
-		}
-		if lastReviewAt.Valid && lastReviewAt.String != "" {
-			if t, err := parseDateTime(lastReviewAt.String); err == nil && t != nil {
-				card.LastReviewAt = t
-			}
-		}
-		if lastQuality.Valid {
-			q := int(lastQuality.Int64)
-			card.LastQuality = &q
-		}
-
 		fillVocabCardDetailNeutralAliases(&card)
 		cards = append(cards, card)
 	}
 
-	// If no user_cards found, check if word is marked as "known" and return training_cards directly
 	if len(cards) == 0 {
-		// Check if word is marked as known
-		var isKnown bool
-		err := r.db.QueryRow(`
-			SELECT COUNT(*) > 0 FROM user_word_knowledge 
-			WHERE user_id = ? AND word_card_id = ? AND status = 'known'
-		`, userID, wordCardID).Scan(&isKnown)
-
-		if err != nil {
-			r.logger.Error("failed to check known status", zap.Error(err))
-		}
-
-		if isKnown {
-			// Get training cards directly for known words without user_cards
-			trainingQuery := `SELECT 
-				tc.id,
-				tc.word_ru,
-				tc.meaning_en,
-				COALESCE(tc.example_en, '') as example_en,
-				COALESCE(tc.example_ru, '') as example_ru,
-				COALESCE(tc.transcription, '') as transcription,
-				tc.sense_index,
-				tc.pos,
-				substr(CAST(tc.created_at AS TEXT), 1, 19) as created_at
-			FROM training_cards tc
-			WHERE tc.word_card_id = ?
-			ORDER BY tc.sense_index`
-
-			if testHookVocabTrainingQueryErr != nil {
-				if err := testHookVocabTrainingQueryErr(); err != nil {
-					r.logger.Error("failed to get training cards", zap.Error(err))
-					http.Error(w, "Internal server error", http.StatusInternalServerError)
-					return
-				}
-			}
-			var trainingRows *sql.Rows
-			if testHookVocabTrainingQueryFail {
-				err = fmt.Errorf("injected training query error")
-			} else {
-				trainingRows, err = r.db.Query(trainingQuery, wordCardID)
-			}
-			if err != nil {
-				r.logger.Error("failed to get training cards", zap.Error(err))
-				http.Error(w, "Internal server error", http.StatusInternalServerError)
-				return
-			}
-			defer trainingRows.Close()
-
-			for trainingRows.Next() {
-				var trainingCardID int64
-				var wordRU, meaningEN, exampleEN, exampleRU, transcription string
-				var senseIndex int
-				var pos sql.NullString
-				var createdAt string
-
-				err := trainingRows.Scan(
-					&trainingCardID,
-					&wordRU,
-					&meaningEN,
-					&exampleEN,
-					&exampleRU,
-					&transcription,
-					&senseIndex,
-					&pos,
-					&createdAt,
-				)
-				if err != nil {
-					r.logger.Error("failed to scan training card", zap.Error(err))
-					continue
-				}
-
-				// Create cards for both directions (ru_en and en_ru)
-				directions := []string{"ru_en", "en_ru"}
-				for _, direction := range directions {
-					card := VocabCardDetail{
-						ID:             0, // No user_card_id for known words without user_cards
-						TrainingCardID: trainingCardID,
-						Direction:      direction,
-						State:          "new",
-						EF:             2.5,
-						Reps:           0,
-						IntervalDays:   0,
-						LearningStep:   0,
-						LapseCount:     0,
-						WordRU:         wordRU,
-						MeaningEN:      meaningEN,
-						ExampleEN:      exampleEN,
-						ExampleRU:      exampleRU,
-						Transcription:  transcription,
-						SenseIndex:     senseIndex,
-						ReviewCount:    0,
-					}
-
-					if pos.Valid {
-						card.POS = &pos.String
-					}
-
-					if createdAt != "" {
-						if t, err := parseDateTime(createdAt); err == nil && t != nil {
-							card.CreatedAt = *t
-							card.UpdatedAt = *t
-						}
-					}
-
-					fillVocabCardDetailNeutralAliases(&card)
-					cards = append(cards, card)
-				}
-			}
-		}
-
-		// If still no cards found, return not found
-		if len(cards) == 0 {
-			w.Header().Set("Content-Type", "application/json")
-			w.WriteHeader(http.StatusNotFound)
-			json.NewEncoder(w).Encode(map[string]interface{}{
-				"error": "Word not found",
-			})
-			return
-		}
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusNotFound)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"error": "Word not found",
+		})
+		return
 	}
 
 	// Get word card info (pos, noun_gender, opposite_gender_word, verb_forms_json) for morphology display
@@ -981,14 +798,11 @@ func (r *Router) handleVocabWordCardsByID(w http.ResponseWriter, req *http.Reque
 	}
 	morph := buildCompactMorphFromWordCard(r.config.Learning.TargetLang, &wc, wc.POS)
 
-	// Check if word has user_cards and is marked as known
 	var hasUserCards bool
-	// Check if cards have valid user_card IDs (ID > 0 means real user_card, ID = 0 means known word without user_cards)
-	for _, card := range cards {
-		if card.ID > 0 {
-			hasUserCards = true
-			break
-		}
+	err = r.db.QueryRow(`SELECT COUNT(*) > 0 FROM user_cards uc JOIN training_cards tc ON uc.training_card_id = tc.id WHERE uc.user_id = ? AND tc.word_card_id = ?`, userID, wordCardID).Scan(&hasUserCards)
+	if err != nil {
+		r.logger.Warn("failed to check user cards status", zap.Error(err))
+		hasUserCards = false
 	}
 
 	var isKnown bool
@@ -998,14 +812,52 @@ func (r *Router) handleVocabWordCardsByID(w http.ResponseWriter, req *http.Reque
 		r.logger.Warn("failed to check known status", zap.Error(err))
 		isKnown = false
 	}
+	var masteringScore int
+	if isKnown {
+		masteringScore = 100
+	} else {
+		var stored sql.NullInt64
+		if err := r.db.QueryRow(`SELECT mastering_score FROM user_word_mastering WHERE user_id = ? AND word_card_id = ?`, userID, wordCardID).Scan(&stored); err == nil && stored.Valid {
+			masteringScore = int(stored.Int64)
+		} else if err != nil && err != sql.ErrNoRows {
+			r.logger.Warn("failed to get word mastering score", zap.Error(err))
+		}
+	}
+	masteryLevel := "new"
+	if isKnown {
+		masteryLevel = "known"
+	} else if hasUserCards {
+		var reviewStateCount, learningStateCount, totalCards, totalReps int
+		if err := r.db.QueryRow(`
+			SELECT
+				COUNT(CASE WHEN uc.state = 'review' THEN 1 END),
+				COUNT(CASE WHEN uc.state = 'learning' THEN 1 END),
+				COUNT(*),
+				COALESCE(SUM(uc.reps), 0)
+			FROM user_cards uc
+			JOIN training_cards tc ON uc.training_card_id = tc.id
+			WHERE uc.user_id = ? AND tc.word_card_id = ?
+		`, userID, wordCardID).Scan(&reviewStateCount, &learningStateCount, &totalCards, &totalReps); err == nil {
+			switch {
+			case reviewStateCount == totalCards && totalReps > 0:
+				masteryLevel = "mastered"
+			case reviewStateCount > 0 || learningStateCount > 0:
+				masteryLevel = "learning"
+			}
+		} else {
+			r.logger.Warn("failed to get word mastery level", zap.Error(err))
+		}
+	}
 
 	// Build response
 	response := map[string]interface{}{
-		"lemma":          lemma,
-		"word_card_id":   wordCardID,
-		"cards":          cards,
-		"has_user_cards": hasUserCards,
-		"is_known":       isKnown,
+		"lemma":            lemma,
+		"word_card_id":     wordCardID,
+		"cards":            cards,
+		"has_user_cards":   hasUserCards,
+		"is_known":         isKnown,
+		"mastery_level":    masteryLevel,
+		"mastering_score":  masteringScore,
 	}
 
 	// Add verb forms if present

@@ -480,7 +480,11 @@ func (r *Router) handleReadingWordLookup(w http.ResponseWriter, req *http.Reques
 	}
 	if !isKnown {
 		wordSetService := r.getWordSetService()
-		if err := wordSetService.EnsureCardsForWord(req.Context(), userID, wordCardID); err != nil {
+		nativeHint := ""
+		if readingInputContainsCyrillic(lemma) {
+			nativeHint = strings.TrimSpace(lemma)
+		}
+		if err := wordSetService.EnsureCardsForWordWithNativeHint(req.Context(), userID, wordCardID, nativeHint); err != nil {
 			r.logger.Error("reading word lookup: failed to ensure cards", zap.Int64("user_id", userID), zap.Int64("word_card_id", wordCardID), zap.Error(err))
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			return

@@ -327,6 +327,10 @@ func (s *WordSetService) tryLinkVerbLemma(wordCardID int64, lemma string) {
 // EnsureTrainingCardsExist ensures training cards exist for a word card
 // Uses the same logic as training worker
 func (s *WordSetService) EnsureTrainingCardsExist(ctx context.Context, wordCardID int64) error {
+	return s.ensureTrainingCardsExist(ctx, wordCardID, "")
+}
+
+func (s *WordSetService) ensureTrainingCardsExist(ctx context.Context, wordCardID int64, nativeLookupHint string) error {
 	// Check if training cards already exist
 	trainingCards, err := s.trainingCardRepo.GetTrainingCardsByWordCardID(wordCardID)
 	if err != nil {
@@ -356,9 +360,16 @@ func (s *WordSetService) EnsureTrainingCardsExist(ctx context.Context, wordCardI
 	var trainingResp models.TrainingCardResponse
 	var response string
 	var validationError string
+	trainingContext := BuildTrainingCardNativeHintInstruction(nativeLookupHint, s.learning.NativeLang)
+	generateTraining := func(modelOverride ...string) (string, error) {
+		if trainingContext != "" {
+			return s.aiService.GenerateTrainingCardForCourseWithContext(ctx, wordCard.Word, wordCard.CourseCode, trainingContext, modelOverride...)
+		}
+		return s.aiService.GenerateTrainingCardForCourse(ctx, wordCard.Word, wordCard.CourseCode, modelOverride...)
+	}
 
 	// First attempt with default model
-	response, err = s.aiService.GenerateTrainingCardForCourse(ctx, wordCard.Word, wordCard.CourseCode)
+	response, err = generateTraining()
 	if err != nil {
 		return fmt.Errorf("LLM generation failed: %w", err)
 	}
@@ -392,7 +403,7 @@ func (s *WordSetService) EnsureTrainingCardsExist(ctx context.Context, wordCardI
 			)
 
 			// Try with high model
-			response, err = s.aiService.GenerateTrainingCardForCourse(ctx, wordCard.Word, wordCard.CourseCode, s.modelHigh)
+			response, err = generateTraining(s.modelHigh)
 			if err != nil {
 				s.logger.Warn("LLM generation with high model failed, using original validation error",
 					zap.String("word", wordCard.Word),
@@ -509,12 +520,18 @@ func (s *WordSetService) EnsureTrainingCardsExist(ctx context.Context, wordCardI
 // still get their usual "word/card not found" response instead of a hard 500 on every transient
 // LLM hiccup. Only a failure creating user_cards for cards that DO exist is a hard error.
 func (s *WordSetService) EnsureCardsForWord(ctx context.Context, userID, wordCardID int64) error {
+	return s.EnsureCardsForWordWithNativeHint(ctx, userID, wordCardID, "")
+}
+
+// EnsureCardsForWordWithNativeHint is like EnsureCardsForWord but passes the learner's original
+// native-language lookup token into training-card generation (e.g. RU "капуста" for ES "col").
+func (s *WordSetService) EnsureCardsForWordWithNativeHint(ctx context.Context, userID, wordCardID int64, nativeLookupHint string) error {
 	trainingCards, err := s.trainingCardRepo.GetTrainingCardsByWordCardID(wordCardID)
 	if err != nil {
 		return fmt.Errorf("failed to check training cards: %w", err)
 	}
 	if len(trainingCards) == 0 {
-		if err := s.EnsureTrainingCardsExist(ctx, wordCardID); err != nil {
+		if err := s.ensureTrainingCardsExist(ctx, wordCardID, nativeLookupHint); err != nil {
 			s.logger.Warn("failed to ensure training cards", zap.Int64("word_card_id", wordCardID), zap.Error(err))
 		} else if trainingCards, err = s.trainingCardRepo.GetTrainingCardsByWordCardID(wordCardID); err != nil {
 			return fmt.Errorf("failed to reload training cards after generation: %w", err)

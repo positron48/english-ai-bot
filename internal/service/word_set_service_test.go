@@ -288,6 +288,46 @@ func TestEnsureTrainingCardsExist(t *testing.T) {
 	}
 }
 
+func TestEnsureTrainingCardsExist_WithNativeLookupHint(t *testing.T) {
+	var capturedBody string
+	transport := rtFunc(func(req *http.Request) (*http.Response, error) {
+		body, _ := io.ReadAll(req.Body)
+		capturedBody = string(body)
+		resp := ai.ChatResponse{
+			Choices: []ai.Choice{{Message: ai.Message{Content: `{"word_en":"col","lemma":"col","transcription":"kol","senses":[{"pos":"noun","word_ru":"капуста","meaning_en":"cabbage","example_en":"La col es verde.","example_ru":"Капуста зелёная.","distractors_ru":["морковь","лук","салат"],"distractors_en":["zanahoria","cebolla","lechuga"],"hint":"verdura"}]}`}}},
+		}
+		return newJSONHTTPResponse(http.StatusOK, resp), nil
+	})
+
+	svc, wordRepo, trainingCardRepo, _, _, _, _, cleanup := newWordSetService(t, transport)
+	defer cleanup()
+
+	pos := "noun"
+	cardID, err := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "col", Definition: "", POS: &pos})
+	if err != nil {
+		t.Fatalf("UpsertWordCardLemma error: %v", err)
+	}
+
+	if err := svc.ensureTrainingCardsExist(context.Background(), cardID, "капуста"); err != nil {
+		t.Fatalf("ensureTrainingCardsExist error: %v", err)
+	}
+
+	if !strings.Contains(capturedBody, "капуста") || !strings.Contains(capturedBody, "NATIVE LOOKUP HINT") {
+		t.Fatalf("expected native lookup hint in LLM request, body=%q", capturedBody)
+	}
+
+	cards, err := trainingCardRepo.GetTrainingCardsByWordCardID(cardID)
+	if err != nil {
+		t.Fatalf("GetTrainingCardsByWordCardID error: %v", err)
+	}
+	if len(cards) != 1 {
+		t.Fatalf("expected 1 training card, got %d", len(cards))
+	}
+	if cards[0].WordRU != "капуста" {
+		t.Fatalf("expected LLM word_ru unchanged in DB, got %q", cards[0].WordRU)
+	}
+}
+
 func TestEnsureTrainingCardsExist_WordCardNotFound(t *testing.T) {
 	svc, _, _, _, _, _, _, cleanup := newWordSetService(t, nil)
 	defer cleanup()

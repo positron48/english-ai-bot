@@ -573,6 +573,16 @@ func (s *Service) GenerateTrainingCard(ctx context.Context, word string, modelOv
 // training prompt otherwise. Use this so courses in a different target language (e.g. Spanish)
 // aren't validated against the default (English) training prompt.
 func (s *Service) GenerateTrainingCardForCourse(ctx context.Context, word, courseCode string, modelOverride ...string) (string, error) {
+	return s.generateTrainingCardForCourse(ctx, word, courseCode, "", modelOverride...)
+}
+
+// GenerateTrainingCardForCourseWithContext behaves like GenerateTrainingCardForCourse but inserts
+// contextBlock (e.g. native lookup hint) between the training prompt and the target word token.
+func (s *Service) GenerateTrainingCardForCourseWithContext(ctx context.Context, word, courseCode, contextBlock string, modelOverride ...string) (string, error) {
+	return s.generateTrainingCardForCourse(ctx, word, courseCode, contextBlock, modelOverride...)
+}
+
+func (s *Service) generateTrainingCardForCourse(ctx context.Context, word, courseCode, contextBlock string, modelOverride ...string) (string, error) {
 	trainingPrompt := s.trainingPromptForCourse(courseCode)
 	if trainingPrompt == "" {
 		return "", fmt.Errorf("training prompt not set")
@@ -582,6 +592,9 @@ func (s *Service) GenerateTrainingCardForCourse(ctx context.Context, word, cours
 	userMessage := strings.TrimSpace(trainingPrompt)
 	if !strings.HasSuffix(userMessage, "\n") {
 		userMessage += "\n"
+	}
+	if strings.TrimSpace(contextBlock) != "" {
+		userMessage += strings.TrimSpace(contextBlock) + "\n\n"
 	}
 	userMessage += strings.TrimSpace(word)
 

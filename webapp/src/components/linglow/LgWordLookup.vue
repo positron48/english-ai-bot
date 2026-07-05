@@ -2,6 +2,9 @@
   <section class="lg-word-lookup">
     <form class="lg-word-lookup-form" @submit.prevent="submit">
       <div class="lg-word-lookup-field">
+        <span class="lg-word-lookup-icon" aria-hidden="true">
+          <LgIcon name="book-open" :s="16" c="var(--subtext)" />
+        </span>
         <input
           v-model="query"
           type="text"
@@ -19,17 +22,17 @@
           :aria-label="t('dashboard.wordLookupClear')"
           @click="clearQuery"
         >
-          <LgIcon name="x" :s="16" c="var(--subtext)" />
+          <LgIcon name="x" :s="14" c="var(--subtext)" />
+        </button>
+        <button
+          type="submit"
+          class="lg-word-lookup-btn"
+          :disabled="!canSubmit"
+          :aria-label="t('dashboard.wordLookupSubmit')"
+        >
+          <LgIcon name="chevron-right" :s="16" c="var(--subtext)" />
         </button>
       </div>
-      <button
-        type="submit"
-        class="lg-word-lookup-btn"
-        :disabled="!canSubmit"
-        :aria-label="t('dashboard.wordLookupSubmit')"
-      >
-        <LgIcon name="book-open" :s="18" c="var(--text)" />
-      </button>
     </form>
     <p v-if="inlineError" class="lg-word-lookup-error">{{ inlineError }}</p>
 
@@ -106,35 +109,37 @@ const submit = async () => {
 
 <style scoped>
 .lg-word-lookup {
-  border: 1px solid var(--border);
-  border-radius: 18px;
-  background: var(--card-bg);
-  box-shadow: var(--shadow-card);
-  padding: 12px 14px;
-  margin-bottom: 10px;
+  padding: 0 4px;
+  margin-top: -4px;
+  margin-bottom: -2px;
 }
 
 .lg-word-lookup-form {
-  display: flex;
-  gap: 8px;
-  align-items: stretch;
+  display: block;
 }
 
 .lg-word-lookup-field {
-  flex: 1;
-  min-width: 0;
   display: flex;
   align-items: center;
-  gap: 4px;
-  min-height: 42px;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  background: var(--input-bg, var(--card-bg));
-  padding: 0 8px 0 12px;
+  gap: 6px;
+  min-height: 34px;
+  padding: 0 2px;
+  border: none;
+  border-bottom: 1px solid color-mix(in srgb, var(--border) 70%, transparent);
+  border-radius: 0;
+  background: transparent;
+  transition: border-color 0.15s ease;
 }
 
 .lg-word-lookup-field:focus-within {
-  border-color: var(--dorado, #c9a227);
+  border-bottom-color: color-mix(in srgb, var(--dorado, #c9a227) 55%, var(--border));
+}
+
+.lg-word-lookup-icon {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  opacity: 0.55;
 }
 
 .lg-word-lookup-input {
@@ -143,9 +148,15 @@ const submit = async () => {
   border: none;
   background: transparent;
   color: var(--text);
-  font-size: 16px;
+  font-size: 15px;
   line-height: 1.25;
-  padding: 10px 0;
+  padding: 6px 0;
+  margin-bottom: 0;
+}
+
+.lg-word-lookup-input::placeholder {
+  color: var(--subtext);
+  opacity: 0.65;
 }
 
 .lg-word-lookup-input:focus {
@@ -156,45 +167,43 @@ const submit = async () => {
   opacity: 0.6;
 }
 
-.lg-word-lookup-clear {
+.lg-word-lookup-clear,
+.lg-word-lookup-btn {
   flex-shrink: 0;
-  width: 28px;
-  height: 28px;
+  width: 26px;
+  height: 26px;
   border: none;
-  border-radius: 8px;
+  border-radius: 6px;
   background: transparent;
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
-}
-
-.lg-word-lookup-clear:disabled {
-  opacity: 0.45;
-  cursor: not-allowed;
-}
-
-.lg-word-lookup-btn {
-  width: 42px;
-  flex-shrink: 0;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  background: var(--card-bg);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
   padding: 0;
+  opacity: 0.55;
+  transition: opacity 0.15s ease, background-color 0.15s ease;
 }
 
+.lg-word-lookup-clear:hover:not(:disabled),
+.lg-word-lookup-btn:hover:not(:disabled) {
+  opacity: 0.85;
+  background: color-mix(in srgb, var(--border) 35%, transparent);
+}
+
+.lg-word-lookup-btn:not(:disabled) {
+  opacity: 0.75;
+}
+
+.lg-word-lookup-clear:disabled,
 .lg-word-lookup-btn:disabled {
-  opacity: 0.45;
+  opacity: 0.25;
   cursor: not-allowed;
 }
 
 .lg-word-lookup-error {
-  margin: 8px 0 0;
-  font-size: 13px;
+  margin: 6px 0 0;
+  padding: 0 2px;
+  font-size: 12px;
   color: var(--color-danger, #c0392b);
 }
 

@@ -15,7 +15,15 @@
         <div class="prg-summary-overlay1" />
         <div class="prg-summary-overlay2" />
         <img :src="mapCityImg" alt="" class="prg-summary-map" aria-hidden="true" />
-        <div class="prg-summary-lumi">
+        <a
+          v-if="isAdmin"
+          href="/app/admin"
+          class="prg-summary-lumi prg-summary-lumi--link"
+          :aria-label="t('navigation.admin')"
+        >
+          <LgLumi :size="66" pose="proud" />
+        </a>
+        <div v-else class="prg-summary-lumi">
           <LgLumi :size="66" pose="proud" />
         </div>
         <div class="prg-summary-body">
@@ -185,7 +193,7 @@ const { t } = useI18n()
 const { currentCourseCode } = useCourse()
 const { targetLangDisplay, ensureLearningLoaded } = useLearningConfig()
 const { currentLocale } = useLocale()
-const { isAuthenticated } = useAuth()
+const { isAuthenticated, isAdmin } = useAuth()
 
 const stats = ref<LinglowStats | null>(null)
 const progress = ref<CourseProgress | null>(null)
@@ -466,6 +474,21 @@ const improvements = computed(() => {
 :root[data-theme="dark"] .prg-summary-map { opacity: 0.38; }
 .prg-summary-lumi {
   position: absolute; right: 6px; top: -18px; z-index: 3; pointer-events: none;
+}
+.prg-summary-lumi--link {
+  pointer-events: auto;
+  color: inherit;
+  text-decoration: none;
+  cursor: default;
+  -webkit-tap-highlight-color: transparent;
+}
+.prg-summary-lumi--link:focus {
+  outline: none;
+}
+.prg-summary-lumi--link:focus-visible {
+  outline: 2px solid color-mix(in srgb, var(--dorado, #c9a227) 45%, transparent);
+  outline-offset: 2px;
+  border-radius: 12px;
 }
 .prg-summary-body {
   position: relative; z-index: 2;

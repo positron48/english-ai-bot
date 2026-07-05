@@ -628,7 +628,6 @@ onMounted(() => {
   background: var(--card-bg);
   box-shadow: var(--shadow-card);
   text-decoration: none;
-  margin-bottom: 10px;
 }
 .lg-city-card-bg {
   position: absolute;
@@ -685,7 +684,6 @@ onMounted(() => {
 /* ─── Today path ─── */
 .lg-path-wrap {
   position: relative;
-  margin-bottom: 10px;
 }
 .lg-path-lumi {
   position: absolute;
@@ -758,7 +756,7 @@ onMounted(() => {
 .dashboard-content {
   display: flex;
   flex-direction: column;
-  gap: 24px;
+  gap: 12px;
 }
 
 .lg-cache-refresh-hint {
@@ -766,10 +764,6 @@ onMounted(() => {
   font-size: 12px;
   color: var(--text-muted);
   text-align: center;
-}
-
-.dashboard-lumi-fact {
-  margin-bottom: 32px;
 }
 
 /* Stats Grid */
@@ -869,7 +863,7 @@ onMounted(() => {
 
 /* Grammar Statistics Section */
 .grammar-stats-section {
-  margin-top: 8px;
+  margin-top: 0;
 }
 
 .grammar-stats-link {
