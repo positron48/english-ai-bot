@@ -27,13 +27,14 @@ import lumiWithSpeech from '../../assets/linglow/art/lumi-with-speech-baloon.png
 import lumiMessage from '../../assets/linglow/art/lumi-message-baloon.png'
 import lumiWithFire from '../../assets/linglow/art/lumi-with-fire-card.png'
 import lumiWithBookPointer from '../../assets/linglow/art/lumi-with-book-and-pointer.png'
+import lumiWithWordCard from '../../assets/linglow/art/lumi-with-word-card-casa.png'
 
 const props = withDefaults(defineProps<{
   size?: number
   pose?: 'default' | 'welcome' | 'book' | 'pencil' | 'writes' | 'map' | 'teacher'
     | 'thumbs-up' | 'clapping' | 'hugging' | 'proud' | 'dreaming' | 'quizzical'
     | 'hearing' | 'point' | 'pointer' | 'star' | 'heart' | 'cup' | 'speech'
-    | 'message' | 'fire' | 'book-pointer'
+    | 'message' | 'fire' | 'book-pointer' | 'word-card'
 }>(), { size: 80, pose: 'welcome' })
 
 // PNG files have ~20% whitespace on each side; render 1.6x larger and pull in with negative margin
@@ -74,6 +75,7 @@ const src = computed(() => {
     case 'message':      return lumiMessage
     case 'fire':         return lumiWithFire
     case 'book-pointer': return lumiWithBookPointer
+    case 'word-card':    return lumiWithWordCard
     case 'happy':        return lumiHappy
     default:             return lumiWelcome
   }

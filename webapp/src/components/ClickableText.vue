@@ -13,9 +13,10 @@
   <Teleport to="body">
     <div v-if="modalVisible" class="ct-modal-overlay" @click.self="closeModal">
       <div class="ct-modal-panel">
-        <div v-if="lookupLoading" class="ct-modal-loading">
-          {{ lookupGenerating ? t('reading.wordGenerating') : t('common.loading') }}
-        </div>
+        <LgLumiCardLoading
+          v-if="lookupLoading"
+          :message="lookupGenerating ? t('reading.wordGenerating') : t('common.loading')"
+        />
         <div v-else-if="lookupError" class="ct-modal-error">
           <p class="ct-modal-error-text">{{ lookupError }}</p>
           <button type="button" class="ct-modal-close-btn" @click="closeModal">{{ t('common.close') }}</button>
@@ -36,6 +37,7 @@ import { computed, onUnmounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiClient } from '../api/client'
 import { withCourseCode } from '../api/grammarClient'
+import LgLumiCardLoading from './linglow/LgLumiCardLoading.vue'
 import VocabWordCardsDetail, { type VocabCardsAPIResponse } from './VocabWordCardsDetail.vue'
 
 // Renders a plain sentence with every word clickable: a click resolves the word through

@@ -399,7 +399,10 @@
     "chartCardsAdded": "Добавлено карточек",
     "chartAccuracyTooltip": "Точность: {percent}% ({correct} правильных)",
     "chartCardsTooltip": "Карточки: {total} пройдено",
-    "chartCardsAddedTooltip": "Добавлено карточек: {count}"
+    "chartCardsAddedTooltip": "Добавлено карточек: {count}",
+    "wordLookupTitle": "Узнать слово",
+    "wordLookupPlaceholder": "Введите слово…",
+    "wordLookupSubmit": "Показать словарную карточку"
   },
   "training": {
     "title": "Тренировка",

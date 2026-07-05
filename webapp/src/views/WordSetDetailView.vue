@@ -46,7 +46,7 @@
             <button @click="closeWordModal" class="btn-close">&times;</button>
           </div>
           
-          <div v-if="loadingCard" class="loading">{{ t('wordSets.loadingCard') }}</div>
+          <LgLumiCardLoading v-if="loadingCard" :message="t('wordSets.loadingCard')" />
           <div v-else-if="currentTrainingCard" class="word-card-content">
             <div class="word-display">
               <h2>{{ currentTrainingCard.display_target || currentTrainingCard.display_word || currentTrainingCard.word_target || currentTrainingCard.word_en || selectedWord?.display_target || selectedWord?.display_word || selectedWord?.word }}</h2>
@@ -116,6 +116,7 @@ import { apiClient } from '../api/client'
 import { showAlert } from '../composables/useDialog'
 import { useAudio } from '../composables/useAudio'
 import Icon from '../components/Icon.vue'
+import LgLumiCardLoading from '../components/linglow/LgLumiCardLoading.vue'
 
 interface WordSet {
   id: number

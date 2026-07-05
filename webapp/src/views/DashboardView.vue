@@ -21,6 +21,7 @@
 
     <div v-else class="dashboard-content">
       <p v-if="refreshing" class="lg-cache-refresh-hint">{{ t('common.updating') }}</p>
+      <LgWordLookup />
       <!-- Ciudad Luminaria card -->
       <router-link to="/city" class="lg-city-card">
         <div class="lg-city-card-bg" />
@@ -229,6 +230,7 @@ import LgProgressBar from '../components/linglow/LgProgressBar.vue'
 import LgLumiFact from '../components/linglow/LgLumiFact.vue'
 import LgStreakBadge from '../components/linglow/LgStreakBadge.vue'
 import LgCourseSwitcher from '../components/linglow/LgCourseSwitcher.vue'
+import LgWordLookup from '../components/linglow/LgWordLookup.vue'
 import LgActivityIcon from '../components/linglow/LgActivityIcon.vue'
 import { useStats } from '../composables/useStats'
 import { useGrammarContinueChapter } from '../composables/useGrammarContinueChapter'

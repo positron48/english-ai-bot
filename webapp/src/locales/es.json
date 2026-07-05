@@ -394,7 +394,10 @@
     "chartCardsAdded": "Tarjetas añadidas",
     "chartAccuracyTooltip": "Precisión: {percent}% ({correct} correctas)",
     "chartCardsTooltip": "Tarjetas: {total} entrenadas",
-    "chartCardsAddedTooltip": "Tarjetas añadidas: {count}"
+    "chartCardsAddedTooltip": "Tarjetas añadidas: {count}",
+    "wordLookupTitle": "Buscar palabra",
+    "wordLookupPlaceholder": "Introduce una palabra…",
+    "wordLookupSubmit": "Mostrar tarjeta del diccionario"
   },
   "training": {
     "title": "Entrenamiento",
