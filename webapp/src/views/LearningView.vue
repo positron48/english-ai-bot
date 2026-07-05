@@ -132,6 +132,8 @@ import { useGrammarContinueChapter } from '../composables/useGrammarContinueChap
 import { ensureLearningLoaded } from '../composables/useLearningConfig'
 import { useSpanishVerbFormsPractice } from '../composables/useSpanishVerbFormsPractice'
 import { apiClient } from '../api/client'
+import { useCachedOverviewScreen } from '../composables/useCachedOverviewScreen'
+import { useLocale } from '../composables/useLocale'
 import { sentenceClient } from '../api/sentenceClient'
 import artWords from '../assets/linglow/art/bg-word-cards-440.jpg'
 import artGrammar from '../assets/linglow/art/bg-grammar-440.jpg'
@@ -140,6 +142,7 @@ import artReading from '../assets/linglow/art/bg-read-440.jpg'
 const { t } = useI18n()
 const { ensureMe, hasFeature } = useMe()
 const { currentCourseCode, ensureCourseLoaded } = useCourse()
+const { currentLocale } = useLocale()
 const isOffline = ref(typeof navigator !== 'undefined' && navigator.onLine === false)
 const isOnline = computed(() => !isOffline.value)
 const {
@@ -168,6 +171,33 @@ const vocabBreakdownItems = computed(() => [
 ])
 
 const { continueChapter: lastGrammarChapter, loadContinueChapter, applyContinueChapter } = useGrammarContinueChapter()
+
+function applyLearningOverview(ov: any) {
+  applyContinueChapter(ov?.continue_chapter)
+  applyVerbFormsPool(ov?.verb_upcoming)
+  void loadVocabSummary(ov?.vocab_summary)
+  applySentenceToday(ov?.sentence_today)
+}
+
+const { load: loadLearningCache } = useCachedOverviewScreen<any>({
+  screenKey: 'learning',
+  courseCode: currentCourseCode,
+  locale: currentLocale,
+  fetcher: async () => apiClient.request(
+    currentCourseCode.value
+      ? `/api/overview/learning?course_code=${encodeURIComponent(currentCourseCode.value)}`
+      : '/api/overview/learning',
+  ),
+  applyPayload: (ov) => applyLearningOverview(ov),
+})
+
+async function loadLearningData(force = false) {
+  await loadLearningCache(force)
+  ensureMe().then(() => {
+    isPro.value = hasFeature('conversation')
+    isPicturePro.value = hasFeature('picture_description')
+  })
+}
 
 interface PracticeMode {
   type: 'words' | 'grammar' | 'reading' | 'conversation'
@@ -288,34 +318,17 @@ onMounted(async () => {
   window.addEventListener('online', handleNetworkChange)
   window.addEventListener('offline', handleNetworkChange)
   await ensureCourseLoaded()
-  // Learning config (health + settings) is a cached singleton; must resolve before the verb-forms
-  // gate can be evaluated. Then one aggregated round trip covers continue-chapter, verb pool and
-  // vocab summary instead of three separate calls.
   await ensureLearningLoaded()
   try {
-    const ov: any = await apiClient.request(
-      currentCourseCode.value ? `/api/overview/learning?course_code=${encodeURIComponent(currentCourseCode.value)}` : '/api/overview/learning',
-    )
-    applyContinueChapter(ov.continue_chapter)
-    applyVerbFormsPool(ov.verb_upcoming)
-    await loadVocabSummary(ov.vocab_summary)
-    applySentenceToday(ov.sentence_today)
+    await loadLearningData()
   } catch {
-    // Fall back to individual calls if the aggregate fails.
     await Promise.all([loadContinueChapter(), refreshVerbFormsPoolCount(), loadVocabSummary(), loadSentenceAvailability()])
   }
-  // /me is client-cached; only needed here for the Pro-gated conversation entry point.
-  ensureMe().then(() => {
-    isPro.value = hasFeature('conversation')
-    isPicturePro.value = hasFeature('picture_description')
-  })
 })
 
 watch(currentCourseCode, async () => {
   await ensureLearningLoaded()
-  await refreshVerbFormsPoolCount()
-  await loadVocabSummary()
-  await loadSentenceAvailability()
+  await loadLearningData(true)
 })
 
 watch(isOffline, async (offline) => {

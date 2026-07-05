@@ -2,6 +2,8 @@ import { createRouter, createWebHistory } from 'vue-router'
 import { useAuth } from '../composables/useAuth'
 import { apiClient } from '../api/client'
 import { grammarClient } from '../api/grammarClient'
+import { hasCachedScreen, getAppDataLocale, type AppDataScreenKey } from '../api/appDataCache'
+import { useCourse } from '../composables/useCourse'
 
 // Public entry router. Admin routes live in the separate admin entry
 // (router/admin.ts, served from admin.html at /app/admin).
@@ -300,6 +302,25 @@ router.beforeEach(async (to, _from, next) => {
   }
 
   const isOffline = typeof navigator !== 'undefined' && navigator.onLine === false
+  const offlineCacheScreens: Record<string, AppDataScreenKey> = {
+    City: 'city',
+    CityDistrict: 'city',
+    Progress: 'progress',
+    CityDailyRoute: 'daily-route',
+  }
+  const routeName = typeof to.name === 'string' ? to.name : ''
+  const cacheScreen = offlineCacheScreens[routeName]
+  if (isOffline && cacheScreen) {
+    const { currentCourseCode } = useCourse()
+    const code = (typeof to.query.course_code === 'string' && to.query.course_code) || currentCourseCode.value
+    if (code && await hasCachedScreen(cacheScreen, code, undefined, getAppDataLocale())) {
+      next()
+      return
+    }
+    next('/dashboard')
+    return
+  }
+
   const isOfflineAllowedBaseRoute = typeof to.name === 'string' && [
     'Dashboard',
     'Training',

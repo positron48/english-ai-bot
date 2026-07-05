@@ -1,5 +1,7 @@
 import { apiClient } from './client'
 import { getGrammarCourseCode } from './grammarClient'
+import { emitAppDataEvent } from './cacheInvalidation'
+import { patchDashboardAfterWordAttempt } from './appDataCachePatches'
 import {
   OfflineWordTrainingPack,
   OfflineWordTrainingQueueItem,
@@ -157,6 +159,13 @@ function createID(prefix: string): string {
   return `${prefix}-${Date.now()}-${Math.random().toString(16).slice(2)}`
 }
 
+function notifyWordReviewRecorded() {
+  const code = getGrammarCourseCode()
+  if (!code) return
+  emitAppDataEvent('word-review-recorded', code)
+  void patchDashboardAfterWordAttempt(code)
+}
+
 async function queueCardAttempt(session: OfflineWordTrainingSession, item: OfflineWordTrainingQueueItem, optionIndex: number): Promise<any> {
   const options = item.options || []
   const optionsShownAt = session.options_shown_at || new Date().toISOString()
@@ -187,6 +196,7 @@ async function queueCardAttempt(session: OfflineWordTrainingSession, item: Offli
   if (isCorrect) session.correct_count++
   session.index++
   await setWordTrainingSession(session)
+  notifyWordReviewRecorded()
   return {
     is_correct: isCorrect,
     chosen_option: chosenOption,
@@ -230,6 +240,7 @@ async function queueSpellTypeAttempt(session: OfflineWordTrainingSession, item: 
   if (isCorrect) session.correct_count++
   session.index++
   await setWordTrainingSession(session)
+  notifyWordReviewRecorded()
   return {
     is_correct: isCorrect,
     chosen_option: answerText,
@@ -371,7 +382,9 @@ export const wordTrainingClient = {
   async answer(formData: FormData): Promise<any> {
     if (!isBrowserOffline()) {
       try {
-        return await apiClient.requestFormData('/api/training/answer', formData)
+        const result = await apiClient.requestFormData('/api/training/answer', formData)
+        notifyWordReviewRecorded()
+        return result
       } catch (error) {
         if (!isNetworkError(error)) throw error
       }

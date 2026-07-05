@@ -12,9 +12,10 @@
     <div v-if="loading" class="loading">{{ t('wordSets.loadingWords') }}</div>
     <div v-else-if="error" class="error">{{ error }}</div>
     <div v-else-if="currentWord" class="study-card">
-      <div v-if="loadingCard" class="loading">
-        {{ loadingCardGenerating ? t('wordSets.generatingCard') : t('wordSets.loadingCard') }}
-      </div>
+      <LgLumiCardLoading
+        v-if="loadingCard"
+        :message="loadingCardGenerating ? t('wordSets.generatingCard') : t('wordSets.loadingCard')"
+      />
       <div v-else-if="currentTrainingCard" class="word-display">
         <h2>{{ currentTrainingCard.display_target || currentTrainingCard.display_word || currentTrainingCard.word_target || currentTrainingCard.word_en || currentWord.display_target || currentWord.display_word || currentWord.word }}</h2>
         <div v-if="currentTrainingCard.transcription" class="transcription-with-audio">
@@ -75,8 +76,11 @@ import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { apiClient } from '../api/client'
+import { getGrammarCourseCode } from '../api/grammarClient'
+import { emitAppDataEvent } from '../api/cacheInvalidation'
 import { showAlert } from '../composables/useDialog'
 import Icon from '../components/Icon.vue'
+import LgLumiCardLoading from '../components/linglow/LgLumiCardLoading.vue'
 import { useAudio } from '../composables/useAudio'
 
 interface WordInfo {
@@ -136,8 +140,8 @@ const words = ref<WordInfo[]>([])
 const currentIndex = ref(0)
 const processing = ref(false)
 const loadingCard = ref(false)
-// True once a card fetch has been pending longer than typical DB round-trip time — signals the
-// backend is likely generating a brand-new training card via AI, not just fetching an existing one.
+// True once a card fetch has been pending longer than typical DB round-trip time — the backend
+// is likely generating a brand-new training card, not just fetching an existing one.
 const loadingCardGenerating = ref(false)
 let loadingCardGeneratingTimer: ReturnType<typeof setTimeout> | null = null
 const currentTrainingCard = ref<TrainingCard | null>(null)
@@ -287,6 +291,8 @@ const markKnown = async () => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ word_card_id: currentWord.value.word_card_id })
     })
+    const code = getGrammarCourseCode()
+    if (code) emitAppDataEvent('word-set-updated', code)
     
     // Remove word from list (it's now known, so not in unknown list)
     words.value = words.value.filter(w => w.word_card_id !== currentWord.value!.word_card_id)
@@ -313,6 +319,8 @@ const markLearn = async () => {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ word_card_id: currentWord.value.word_card_id })
     })
+    const code = getGrammarCourseCode()
+    if (code) emitAppDataEvent('word-set-updated', code)
     
     // Remove word from list (it's now in vocab, so not in unknown list)
     words.value = words.value.filter(w => w.word_card_id !== currentWord.value!.word_card_id)

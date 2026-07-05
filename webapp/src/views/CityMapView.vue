@@ -49,6 +49,9 @@ import { useCourse } from '../composables/useCourse'
 import { useMe } from '../composables/useMe'
 import { courseClient, type CourseProgress, type CourseProgressLocation } from '../api/courseClient'
 import { apiClient } from '../api/client'
+import { useCachedOverviewScreen } from '../composables/useCachedOverviewScreen'
+import { useLocale } from '../composables/useLocale'
+import { useAuth } from '../composables/useAuth'
 import LgActivityIcon from '../components/linglow/LgActivityIcon.vue'
 import LgLoader from '../components/linglow/LgLoader.vue'
 import { districtMapLevel, masteryLevelByCode, metricForLevel, metricPercentToStatus } from '../utils/masteryDisplay'
@@ -57,6 +60,8 @@ const { t } = useI18n()
 const router = useRouter()
 const { currentCourse, currentCourseCode, ensureCourseLoaded } = useCourse()
 const { ensureMe, hasFeature } = useMe()
+const { isAuthenticated } = useAuth()
+const { currentLocale } = useLocale()
 
 const cityName = computed(() => currentCourse.value?.city_name || currentCourse.value?.title || 'Ciudad Luminaria')
 
@@ -84,6 +89,36 @@ const conversationPro = ref(false)
 const picturePro = ref(false)
 // True once district titles + progress are loaded, so labels render at final width.
 const mapReady = ref(false)
+
+async function applyCityOverview(ov: any) {
+  await Promise.all([
+    loadProgress(ov?.progress),
+    loadDistrictTitles(ov?.course_map),
+  ])
+  mapReady.value = true
+}
+
+const { load: loadCityCache } = useCachedOverviewScreen<any>({
+  screenKey: 'city',
+  courseCode: currentCourseCode,
+  locale: currentLocale,
+  fetcher: async () => apiClient.request(
+    currentCourseCode.value
+      ? `/api/overview/city?course_code=${encodeURIComponent(currentCourseCode.value)}`
+      : '/api/overview/city',
+  ),
+  applyPayload: (ov) => { void applyCityOverview(ov) },
+})
+
+watch(isAuthenticated, (authenticated) => {
+  if (authenticated) {
+    void ensureCourseLoaded().then(() => loadCityCache())
+  }
+}, { immediate: true })
+
+watch(currentCourseCode, () => {
+  if (isAuthenticated.value) void loadCityCache(true)
+})
 
 async function loadProgress(raw?: Awaited<ReturnType<typeof courseClient.getProgress>>) {
   try {
@@ -230,25 +265,10 @@ function handleCanvasClick(e: MouseEvent) {
 }
 
 onMounted(() => {
-  ensureCourseLoaded()
-    .then(() => {
-      // Single aggregated round trip instead of four separate map/progress calls.
-      const ovPromise = apiClient
-        .request<any>(currentCourseCode.value ? `/api/overview/city?course_code=${encodeURIComponent(currentCourseCode.value)}` : '/api/overview/city')
-        .then((ov) => Promise.all([
-          loadProgress(ov.progress),
-          loadDistrictTitles(ov.course_map),
-        ]))
-        .catch(() => {})
-      return Promise.all([
-        ovPromise,
-        ensureMe().then(() => {
-          conversationPro.value = hasFeature('conversation')
-          picturePro.value = hasFeature('picture_description')
-        }),
-      ])
-    })
-    .finally(() => { mapReady.value = true })
+  ensureMe().then(() => {
+    conversationPro.value = hasFeature('conversation')
+    picturePro.value = hasFeature('picture_description')
+  })
   setTimeout(resize, 50)
   const srcs = [
     '/app/linglow/city/level1.jpg',

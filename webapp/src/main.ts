@@ -3,6 +3,9 @@ import App from './App.vue'
 import router from './router'
 import i18n from './i18n'
 import { initOfflineSyncRunner } from './api/offlineSyncRunner'
+import { initAppDataInvalidation, registerAppDataRefreshHandler } from './api/cacheInvalidation'
+import { refreshAppData } from './composables/useAppDataRefresh'
+import { listCachedScreensDebug } from './api/appDataCache'
 import { isEmbeddedAndroidApp } from './utils/runtime'
 // Public entry uses ONLY the new Linglow theme; legacy styles live in admin-main.ts
 import './styles/linglow-theme.css'
@@ -11,6 +14,7 @@ import './styles/linglow-markdown.css'
 declare global {
   interface Window {
     __showQantrixRuntimeDebug?: () => void
+    __showLinglowAppDataCache?: () => Promise<void>
     __setSafeAreaInsets?: (top: number, bottom: number) => void
   }
 }
@@ -212,6 +216,15 @@ if ('serviceWorker' in navigator) {
 }
 
 initOfflineSyncRunner()
+initAppDataInvalidation()
+registerAppDataRefreshHandler((screens, courseCode) => {
+  void refreshAppData({ courseCode, screens, reason: 'invalidation', scheduleSync: false })
+})
+
+window.__showLinglowAppDataCache = async () => {
+  const payload = await listCachedScreensDebug()
+  showRuntimeDebugOverlay({ appDataCache: payload })
+}
 
 app.use(router)
 app.use(i18n)

@@ -11,15 +11,16 @@
       </div>
       <div class="lg-home-header-right">
         <LgStreakBadge v-if="streakDays > 0" :n="streakDays" />
-        <button @click="refreshData" class="lg-refresh-btn" :disabled="loading" :class="{ 'rotating': loading }">
+        <button @click="refreshData" class="lg-refresh-btn" :disabled="refreshing" :class="{ 'rotating': refreshing }">
           <LgIcon name="refresh" :s="18" c="var(--text)" />
         </button>
       </div>
     </div>
 
-    <LgLoader v-if="loading" />
+    <LgLoader v-if="loadingInitial" />
 
     <div v-else class="dashboard-content">
+      <p v-if="refreshing" class="lg-cache-refresh-hint">{{ t('common.updating') }}</p>
       <!-- Ciudad Luminaria card -->
       <router-link to="/city" class="lg-city-card">
         <div class="lg-city-card-bg" />
@@ -231,6 +232,9 @@ import LgCourseSwitcher from '../components/linglow/LgCourseSwitcher.vue'
 import LgActivityIcon from '../components/linglow/LgActivityIcon.vue'
 import { useStats } from '../composables/useStats'
 import { useGrammarContinueChapter } from '../composables/useGrammarContinueChapter'
+import { useCachedOverviewScreen } from '../composables/useCachedOverviewScreen'
+import { refreshAppData, prefetchAppData } from '../composables/useAppDataRefresh'
+import { useLocale } from '../composables/useLocale'
 import { masteryStudyingPath } from '../utils/masteryDisplay'
 
 const { t } = useI18n()
@@ -239,6 +243,7 @@ ensureStatsLoaded()
 const { targetLangDisplay, ensureLearningLoaded } = useLearningConfig()
 ensureLearningLoaded()
 const { currentCourse, currentCourseCode } = useCourse()
+const { currentLocale } = useLocale()
 
 const linglowProgress = ref<CourseProgress | null>(null)
 const dailyToday = ref<NonNullable<DailyRoute['today']> | null>(null)
@@ -335,67 +340,84 @@ const stats = ref<DashboardStats>({
   accuracyPercent: 0,
 })
 
-const loading = ref(true)
 const offlineDashboard = ref(false)
 
-const loadData = async () => {
-  // Ensure tokens are loaded before making request
-  apiClient.loadTokens()
-  
-  // Don't make request if not authenticated
-  if (!isAuthenticated.value) {
-    console.warn('Not authenticated, skipping dashboard data load')
-    return
+function applyDashboardOverview(ov: any) {
+  const data = ov?.dashboard || ov || {}
+  if (ov?.progress) linglowProgress.value = ov.progress
+  if (ov?.daily_route) dailyToday.value = ov.daily_route.today || null
+  if ('continue_chapter' in (ov || {})) applyContinueChapter(ov.continue_chapter)
+  if ('sentence_today' in (ov || {})) applySentenceToday(ov.sentence_today)
+  stats.value = {
+    dueCount: data.due_count || 0,
+    newCount: data.new_count || 0,
+    learningCount: data.learning_count || 0,
+    reviewCount: data.review_count || 0,
+    totalCards: data.total_cards || 0,
+    availableForTraining: data.available_for_training || 0,
+    accuracyPercent: data.accuracy_percent || 0,
+    grammarStats: data.grammar_stats || null,
   }
-  
-  try {
-    loading.value = true
-    offlineDashboard.value = false
-    let data: any
-    if (typeof navigator !== 'undefined' && navigator.onLine === false) {
-      const [wordStats, grammarStats] = await Promise.all([
-        wordTrainingClient.getDashboard().catch(() => null),
-        grammarClient.getStatistics().catch(() => null),
-      ])
-      data = {
+}
+
+const dashboardCache = useCachedOverviewScreen<any>({
+  screenKey: 'dashboard',
+  courseCode: currentCourseCode,
+  locale: currentLocale,
+  fetcher: async () => apiClient.request(
+    currentCourseCode.value
+      ? `/api/overview/dashboard?course_code=${encodeURIComponent(currentCourseCode.value)}`
+      : '/api/overview/dashboard',
+  ),
+  applyPayload: (ov, meta) => {
+    applyDashboardOverview(ov)
+    offlineDashboard.value = meta.fromCache && typeof navigator !== 'undefined' && navigator.onLine === false
+  },
+  offlineFetcher: async () => {
+    const [wordStats, grammarStats] = await Promise.all([
+      wordTrainingClient.getDashboard().catch(() => null),
+      grammarClient.getStatistics().catch(() => null),
+    ])
+    return {
+      dashboard: {
         due_count: wordStats?.due_count || 0,
         total_cards: wordStats?.total_cards || 0,
         available_for_training: wordStats?.available_for_training || 0,
         grammar_stats: grammarStats,
-      }
-      offlineDashboard.value = true
-    } else {
-      // Single aggregated round trip; the individual endpoints are still folded together
-      // server-side (see /api/overview/dashboard).
-      const ov: any = await apiClient.request(
-        currentCourseCode.value ? `/api/overview/dashboard?course_code=${encodeURIComponent(currentCourseCode.value)}` : '/api/overview/dashboard',
-      )
-      data = ov.dashboard || {}
-      if (ov.progress) linglowProgress.value = ov.progress
-      dailyToday.value = ov.daily_route?.today || null
-      applyContinueChapter(ov.continue_chapter)
-      applySentenceToday(ov.sentence_today)
+      },
     }
-    stats.value = {
-      dueCount: data.due_count || 0,
-      newCount: data.new_count || 0,
-      learningCount: data.learning_count || 0,
-      reviewCount: data.review_count || 0,
-      totalCards: data.total_cards || 0,
-      availableForTraining: data.available_for_training || 0,
-      accuracyPercent: data.accuracy_percent || 0,
-      grammarStats: data.grammar_stats || null
-    }
-  } catch (error) {
-    console.error('Failed to load dashboard:', error)
-  } finally {
-    loading.value = false
+  },
+})
+
+const { loadingInitial, refreshing, load: loadDashboardCache } = dashboardCache
+
+const loadData = async (force = false) => {
+  apiClient.loadTokens()
+  if (!isAuthenticated.value) {
+    console.warn('Not authenticated, skipping dashboard data load')
+    return
   }
+  await loadDashboardCache(force)
 }
 
-const refreshData = () => {
-  loadData()
-  refreshStats()
+const refreshData = async () => {
+  const code = currentCourseCode.value
+  if (!code) {
+    await loadData(true)
+    refreshStats()
+    return
+  }
+  try {
+    await refreshAppData({
+      courseCode: code,
+      locale: currentLocale.value,
+      reason: 'manual-refresh',
+    })
+    await loadData(true)
+    refreshStats()
+  } catch (error) {
+    console.error('Failed to refresh dashboard data:', error)
+  }
 }
 
 // Grammar statistics computed properties
@@ -470,9 +492,11 @@ watch(isAuthenticated, (authenticated) => {
 
 onMounted(() => {
   if (isAuthenticated.value) {
-    // loadData() (triggered by the immediate isAuthenticated watcher) is the single aggregate
-    // round trip; sentence availability is folded into it, so no separate /me or /today here.
     void maybeRunOfflineAutoDownload()
+    const code = currentCourseCode.value
+    if (code) {
+      void prefetchAppData(code, currentLocale.value)
+    }
   }
 })
 </script>
@@ -733,6 +757,13 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   gap: 24px;
+}
+
+.lg-cache-refresh-hint {
+  margin: 0;
+  font-size: 12px;
+  color: var(--text-muted);
+  text-align: center;
 }
 
 .dashboard-lumi-fact {

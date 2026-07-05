@@ -1,6 +1,7 @@
 import { ref, computed } from 'vue'
 import { apiClient } from '../api/client'
 import { clearMeCache } from './useMe'
+import { clearAppDataCacheForUser } from '../api/appDataCache'
 
 const isAuthenticated = ref(false)
 const isAdmin = ref(false)
@@ -143,6 +144,7 @@ export function useAuth() {
   }
 
   const logout = () => {
+    void clearAppDataCacheForUser()
     apiClient.clearTokens()
     clearMeCache()
     isAuthenticated.value = false

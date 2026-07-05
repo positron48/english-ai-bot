@@ -13,7 +13,7 @@
       <p class="dst-desc">{{ districtDesc }}</p>
     </div>
 
-    <LgLoader v-if="loading" />
+    <LgLoader v-if="loadingInitial" />
     <template v-else>
 
       <!-- 4 ACTIVITY AREAS -->
@@ -48,13 +48,17 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 import { courseClient, type CourseMap, type CourseProgress } from '../api/courseClient'
+import { apiClient } from '../api/client'
+import { getCachedScreen } from '../api/appDataCache'
+import { useCachedOverviewScreen } from '../composables/useCachedOverviewScreen'
 import { useLocale } from '../composables/useLocale'
 import { useCourse } from '../composables/useCourse'
 import { useMe } from '../composables/useMe'
+import { useAuth } from '../composables/useAuth'
 import { metricForLevel, metricPercentToStatus } from '../utils/masteryDisplay'
 import LgPageHeader from '../components/linglow/LgPageHeader.vue'
 import LgLumiFact from '../components/linglow/LgLumiFact.vue'
@@ -66,13 +70,33 @@ const route = useRoute()
 const router = useRouter()
 const { currentCourseCode, ensureCourseLoaded } = useCourse()
 const { ensureMe, hasFeature } = useMe()
+const { isAuthenticated } = useAuth()
+const { currentLocale } = useLocale()
 const conversationPro = ref(false)
 const picturePro = ref(false)
 
 const courseMap = ref<CourseMap | null>(null)
 const progress = ref<CourseProgress | null>(null)
-const loading = ref(true)
+
+function applyCitySnapshot(ov: any) {
+  if (ov?.course_map) courseMap.value = ov.course_map
+  if (ov?.progress) progress.value = ov.progress
+}
+
+const { loadingInitial, load: loadDistrictCache } = useCachedOverviewScreen<any>({
+  screenKey: 'city',
+  courseCode: resolvedCourseCode,
+  locale: currentLocale,
+  fetcher: async () => {
+    const code = resolvedCourseCode.value
+    return apiClient.request(
+      code ? `/api/overview/city?course_code=${encodeURIComponent(code)}` : '/api/overview/city',
+    )
+  },
+  applyPayload: (ov) => applyCitySnapshot(ov),
+})
 const courseCode = computed(() => (typeof route.query.course_code === 'string' ? route.query.course_code : undefined))
+const resolvedCourseCode = computed(() => courseCode.value || currentCourseCode.value)
 const districtCode = computed(() => String(route.params.districtCode || ''))
 
 const district = computed(() => {
@@ -86,7 +110,6 @@ const districtLevelQuery = computed(() => districtLevelCode.value ? { level: dis
 
 const metricPct = (key: string) => Math.round(metricForLevel(progress.value?.mastery, districtLevelCode.value, key)?.percent || 0)
 
-const { currentLocale } = useLocale()
 const districtDesc = computed(() => {
   const d = district.value
   if (!d) return ''
@@ -164,15 +187,17 @@ onMounted(async () => {
       conversationPro.value = hasFeature('conversation')
       picturePro.value = hasFeature('picture_description')
     })
-    const [map, prog] = await Promise.all([
-      courseClient.getCourseMap(courseCode.value),
-      courseClient.getProgress(courseCode.value),
-    ])
-    courseMap.value = map
-    progress.value = prog
-  } catch { /* ignore */ } finally {
-    loading.value = false
-  }
+    const code = courseCode.value || currentCourseCode.value
+    if (code) {
+      const cached = await getCachedScreen('city', code, undefined, currentLocale.value)
+      if (cached?.payload) applyCitySnapshot(cached.payload)
+    }
+    await loadDistrictCache()
+  } catch { /* ignore */ }
+})
+
+watch(currentCourseCode, () => {
+  if (isAuthenticated.value) void loadDistrictCache(true)
 })
 </script>
 

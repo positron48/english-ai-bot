@@ -1,6 +1,7 @@
 import { grammarClient } from './grammarClient'
 import { wordTrainingClient } from './wordTrainingClient'
 import { contentReportClient } from './contentReportClient'
+import { emitAppDataEvent } from './cacheInvalidation'
 
 let syncInFlight = false
 let syncScheduled = false
@@ -19,18 +20,24 @@ async function runOfflineSync(): Promise<void> {
 
   syncInFlight = true
   try {
-    await Promise.all([
+    const [grammarSynced, wordSynced, reportSynced] = await Promise.all([
       grammarClient.syncQueuedAttempts().catch((error) => {
         console.warn('[PWA] Offline grammar sync failed:', error)
+        return 0
       }),
       wordTrainingClient.syncQueuedAttempts().catch((error) => {
         console.warn('[PWA] Offline word training sync failed:', error)
+        return 0
       }),
       contentReportClient.syncQueuedReports().catch((error) => {
         console.warn('[PWA] Offline content report sync failed:', error)
+        return 0
       }),
     ])
     lastSyncAt = Date.now()
+    if ((grammarSynced || 0) + (wordSynced || 0) + (reportSynced || 0) > 0) {
+      emitAppDataEvent('offline-sync-completed')
+    }
   } finally {
     syncInFlight = false
     if (syncScheduled) {

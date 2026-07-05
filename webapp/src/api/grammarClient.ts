@@ -1,4 +1,6 @@
 import { apiClient } from './client'
+import { emitAppDataEvent } from './cacheInvalidation'
+import { patchLearningAfterGrammarSubmit } from './appDataCachePatches'
 import {
   OfflineGrammarMeta,
   QueuedGrammarAttempt,
@@ -173,6 +175,19 @@ function activeCourseCode(): string {
  *  (e.g. TTS, reading audio) that need to request resources for the active course. */
 export function getGrammarCourseCode(): string {
   return getActiveCourseCode()
+}
+
+function notifyGrammarTestSubmitted(result?: any) {
+  const code = activeCourseCode()
+  if (!code) return
+  emitAppDataEvent('grammar-test-submitted', code)
+  void patchLearningAfterGrammarSubmit(code, result?.continue_chapter)
+}
+
+function notifyGrammarTrainingRecorded() {
+  const code = activeCourseCode()
+  if (!code) return
+  emitAppDataEvent('grammar-training-recorded', code)
 }
 
 function clearCategoriesCache() {
@@ -595,10 +610,12 @@ export const grammarClient = {
   async submitTrainingAnswer(questionID: string, answer: any): Promise<any> {
     if (!isBrowserOffline()) {
       try {
-        return await apiClient.request(`/api/learning/grammar/training/session/answer${grammarCourseParam()}`, {
+        const result = await apiClient.request(`/api/learning/grammar/training/session/answer${grammarCourseParam()}`, {
           method: 'POST',
           body: { question_id: questionID, answer } as any,
         })
+        notifyGrammarTrainingRecorded()
+        return result
       } catch (error) {
         if (!isNetworkError(error)) throw error
       }
@@ -615,6 +632,7 @@ export const grammarClient = {
       queued: true,
     }
     await queueOfflineTrainingAttempt(question._offline_original_question_id || questionID, answer, result)
+    notifyGrammarTrainingRecorded()
     return result
   },
 
@@ -767,6 +785,7 @@ export const grammarClient = {
           body: { scope, scope_id: scopeID, answers } as any,
         })
         clearCategoriesCache()
+        notifyGrammarTestSubmitted(result)
         return result
       } catch (error) {
         if (!isNetworkError(error)) throw error
@@ -775,6 +794,7 @@ export const grammarClient = {
     const result = await gradeOfflineTest(scope, scopeID, answers)
     await updateLocalProgress(scope, scopeID, result)
     await queueOfflineAttempt(scope, scopeID, answers, result)
+    notifyGrammarTestSubmitted(result)
     return result
   },
 
@@ -786,6 +806,7 @@ export const grammarClient = {
           body: answersMap as any,
         })
         clearCategoriesCache()
+        notifyGrammarTestSubmitted(result)
         return result
       } catch (error) {
         if (!isNetworkError(error)) throw error
@@ -827,7 +848,7 @@ export const grammarClient = {
       }
       await setOfflineMeta(meta, activeCourseCode())
     }
-    return {
+    const result = {
       score,
       total_questions: total,
       correct,
@@ -836,6 +857,8 @@ export const grammarClient = {
       results,
       offline: true,
     }
+    notifyGrammarTestSubmitted(result)
+    return result
   },
 
   async getNextChapter(chapterID: string): Promise<any> {

@@ -172,9 +172,10 @@
     <!-- Полный экран как в «Словарь»: карточки, SRS, формы глаголов; слово в обучение — на сервере при word-lookup -->
     <div v-if="wordModalVisible" class="word-modal-overlay" @click.self="closeWordModal">
       <div class="word-modal-panel">
-        <div v-if="wordLookupLoading" class="word-modal-loading">
-          {{ wordLookupGenerating ? t('reading.wordGenerating') : t('common.loading') }}
-        </div>
+        <LgLumiCardLoading
+          v-if="wordLookupLoading"
+          :message="wordLookupGenerating ? t('reading.wordGenerating') : t('common.loading')"
+        />
         <div v-else-if="wordLookupError" class="word-modal-error">
           <p class="word-modal-error-text">{{ wordLookupError }}</p>
           <button type="button" class="word-modal-close-btn" @click="closeWordModal">{{ t('common.close') }}</button>
@@ -196,10 +197,13 @@ import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { apiClient } from '../api/client'
 import { getGrammarCourseCode, withCourseCode } from '../api/grammarClient'
+import { emitAppDataEvent } from '../api/cacheInvalidation'
+import { patchDailyRouteAfterReadingDone, patchProgressStatsAfterReadingDone } from '../api/appDataCachePatches'
 import { useCourse } from '../composables/useCourse'
 import { useAudio } from '../composables/useAudio'
 import { useSettings } from '../composables/useSettings'
 import Icon from './Icon.vue'
+import LgLumiCardLoading from './linglow/LgLumiCardLoading.vue'
 import GrammarQuestion from './GrammarQuestion.vue'
 import VocabWordCardsDetail, { type VocabCardsAPIResponse } from './VocabWordCardsDetail.vue'
 
@@ -649,6 +653,12 @@ const markReadDirect = async () => {
     const resourceId = props.textId || props.chapterId
     if (!resourceId) throw new Error('text id is required')
     await apiClient.request(`/api/learning/reading/texts/${resourceId}/mark-read`, { method: 'POST' })
+    const code = getGrammarCourseCode()
+    if (code) {
+      emitAppDataEvent('reading-marked-read', code)
+      void patchDailyRouteAfterReadingDone(code)
+      void patchProgressStatsAfterReadingDone(code)
+    }
     emit('marked-read')
   } catch (error) {
     console.error('Failed to mark reading text as read', error)

@@ -6,12 +6,12 @@
         <p class="city-kicker">{{ courseTitle }}</p>
         <h1>{{ t('city.dailyRoute') }}</h1>
       </div>
-      <button type="button" class="secondary-button" :disabled="loading" @click="loadRoute">
+      <button type="button" class="secondary-button" :disabled="refreshing" @click="loadRoute(true)">
         {{ t('common.retry') }}
       </button>
     </header>
 
-    <div v-if="loading" class="loading">{{ t('common.loading') }}</div>
+    <div v-if="loadingInitial" class="loading">{{ t('common.loading') }}</div>
     <div v-else-if="error" class="error-card">
       <strong>{{ t('common.error') }}</strong>
       <p>{{ error }}</p>
@@ -112,22 +112,51 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute } from 'vue-router'
 import { courseClient, CourseProgress, DailyRoute, ReviewQueue } from '../api/courseClient'
 import { routeForLinglowItem } from '../utils/linglowNavigation'
+import { useCachedOverviewScreen } from '../composables/useCachedOverviewScreen'
+import { useCourse } from '../composables/useCourse'
+import { useLocale } from '../composables/useLocale'
+import { useAuth } from '../composables/useAuth'
 
 const { t } = useI18n()
 const currentRoute = useRoute()
+const { currentCourseCode } = useCourse()
+const { currentLocale } = useLocale()
+const { isAuthenticated } = useAuth()
 
 const route = ref<DailyRoute | null>(null)
 const review = ref<ReviewQueue | null>(null)
 const progress = ref<CourseProgress | null>(null)
-const loading = ref(false)
 const error = ref('')
 
 const courseCode = computed(() => (typeof currentRoute.query.course_code === 'string' ? currentRoute.query.course_code : undefined))
+const resolvedCourseCode = computed(() => courseCode.value || currentCourseCode.value)
+
+function applyDailyRouteBundle(bundle: any) {
+  route.value = bundle?.route ?? null
+  review.value = bundle?.review ?? null
+  progress.value = bundle?.progress ?? null
+}
+
+const { loadingInitial, refreshing, load } = useCachedOverviewScreen<any>({
+  screenKey: 'daily-route',
+  courseCode: resolvedCourseCode,
+  locale: currentLocale,
+  fetcher: async () => {
+    const code = resolvedCourseCode.value
+    const [routeData, reviewData, progressData] = await Promise.all([
+      courseClient.getDailyRoute(16, code),
+      courseClient.getReviewQueue(16, code),
+      courseClient.getProgress(code),
+    ])
+    return { route: routeData, review: reviewData, progress: progressData }
+  },
+  applyPayload: (bundle) => applyDailyRouteBundle(bundle),
+})
 const courseTitle = computed(() => route.value?.course.city_name || route.value?.course.title || t('city.title'))
 const reviewItems = computed(() => (review.value?.items || route.value?.review || []).slice(0, 12))
 const newItems = computed(() => (route.value?.new_items || []).slice(0, 12))
@@ -170,26 +199,22 @@ function districtLink(districtCode: string, locationCode: string) {
   }
 }
 
-async function loadRoute() {
-  loading.value = true
+async function loadRoute(force = false) {
   error.value = ''
   try {
-    const [routeData, reviewData, progressData] = await Promise.all([
-      courseClient.getDailyRoute(16, courseCode.value),
-      courseClient.getReviewQueue(16, courseCode.value),
-      courseClient.getProgress(courseCode.value),
-    ])
-    route.value = routeData
-    review.value = reviewData
-    progress.value = progressData
+    await load(force)
   } catch (err: any) {
     error.value = err?.message || t('common.networkError')
-  } finally {
-    loading.value = false
   }
 }
 
-onMounted(loadRoute)
+watch(isAuthenticated, (authenticated) => {
+  if (authenticated) void loadRoute()
+}, { immediate: true })
+
+onMounted(() => {
+  if (isAuthenticated.value) void loadRoute()
+})
 </script>
 
 <style scoped>

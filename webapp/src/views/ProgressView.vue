@@ -6,8 +6,9 @@
       <span class="prg-star">✦</span>
     </div>
 
-    <div v-if="loading" class="lg-loading">{{ t('common.loading') }}</div>
+    <div v-if="loadingInitial" class="lg-loading">{{ t('common.loading') }}</div>
     <template v-else>
+      <p v-if="refreshing" class="lg-cache-refresh-hint">{{ t('common.updating') }}</p>
 
       <!-- MONTH SUMMARY CARD -->
       <div class="prg-summary-card">
@@ -162,7 +163,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { type LinglowStats } from '../api/statsClient'
 import { type CourseProgress } from '../api/courseClient'
@@ -171,6 +172,8 @@ import { apiClient } from '../api/client'
 import { useCourse } from '../composables/useCourse'
 import { useLearningConfig } from '../composables/useLearningConfig'
 import { useLocale } from '../composables/useLocale'
+import { useCachedOverviewScreen } from '../composables/useCachedOverviewScreen'
+import { useAuth } from '../composables/useAuth'
 import LgIcon from '../components/linglow/LgIcon.vue'
 import LgLumiFact from '../components/linglow/LgLumiFact.vue'
 import LgLumi from '../components/linglow/LgLumi.vue'
@@ -182,29 +185,41 @@ const { t } = useI18n()
 const { currentCourseCode } = useCourse()
 const { targetLangDisplay, ensureLearningLoaded } = useLearningConfig()
 const { currentLocale } = useLocale()
+const { isAuthenticated } = useAuth()
 
-const loading = ref(true)
 const stats = ref<LinglowStats | null>(null)
 const progress = ref<CourseProgress | null>(null)
-// Dashboard + 7-day history folded into the same aggregate, handed to LgProgressCharts as props
-// so it need not self-fetch /api/dashboard + /api/history again.
 const dashboardData = ref<any>(null)
 const historyData = ref<any>(null)
 
-onMounted(async () => {
-  try {
+function applyProgressOverview(ov: any) {
+  stats.value = (ov?.stats as LinglowStats) ?? null
+  progress.value = (ov?.progress as CourseProgress) ?? null
+  dashboardData.value = ov?.dashboard ?? null
+  historyData.value = ov?.history ?? null
+}
+
+const { loadingInitial, refreshing, load } = useCachedOverviewScreen<any>({
+  screenKey: 'progress',
+  courseCode: currentCourseCode,
+  locale: currentLocale,
+  fetcher: async () => {
     const code = currentCourseCode.value || undefined
-    const [ov] = await Promise.all([
-      apiClient.request<any>(code ? `/api/overview/progress?course_code=${encodeURIComponent(code)}` : '/api/overview/progress'),
-      ensureLearningLoaded().catch(() => {}),
-    ])
-    stats.value = (ov?.stats as LinglowStats) ?? null
-    progress.value = (ov?.progress as CourseProgress) ?? null
-    dashboardData.value = ov?.dashboard ?? null
-    historyData.value = ov?.history ?? null
-  } catch { /* ignore */ } finally {
-    loading.value = false
-  }
+    return apiClient.request<any>(code ? `/api/overview/progress?course_code=${encodeURIComponent(code)}` : '/api/overview/progress')
+  },
+  applyPayload: (ov) => applyProgressOverview(ov),
+})
+
+watch(isAuthenticated, (authenticated) => {
+  if (authenticated) void load()
+}, { immediate: true })
+
+watch(currentCourseCode, () => {
+  if (isAuthenticated.value) void load(true)
+})
+
+onMounted(() => {
+  void ensureLearningLoaded().catch(() => {})
 })
 
 const streakDays = computed(() => stats.value?.streak.current_days ?? 0)
