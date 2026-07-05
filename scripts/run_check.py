@@ -55,6 +55,7 @@ fi
 WEBAPP = (
     WEBAPP_DEPS
     + "\necho '--- type-check ---'\ncd webapp && npm run type-check\n"
+    + "echo '--- unit tests ---'\nnpm test\n"
     + "echo '--- build ---'\nnpm run build\n"
 )
 

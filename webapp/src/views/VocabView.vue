@@ -476,7 +476,6 @@ onUnmounted(() => {
   margin: 0 auto;
   background:
     linear-gradient(180deg, color-mix(in srgb, var(--bg-primary) 22%, transparent) 0%, var(--bg-primary) 380px),
-    linear-gradient(90deg, color-mix(in srgb, var(--bg-primary) 96%, transparent) 0%, color-mix(in srgb, var(--bg-primary) 78%, transparent) 48%, color-mix(in srgb, var(--bg-primary) 20%, transparent) 100%),
     url('/app/linglow/art/bg-dictionary.jpg') top center / 100% auto no-repeat;
 }
 

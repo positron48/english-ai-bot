@@ -236,6 +236,7 @@ import { useStats } from '../composables/useStats'
 import { useGrammarContinueChapter } from '../composables/useGrammarContinueChapter'
 import { useCachedOverviewScreen } from '../composables/useCachedOverviewScreen'
 import { refreshAppData, prefetchAppData } from '../composables/useAppDataRefresh'
+import { maybeRunOfflineAutoDownload } from '../composables/useOfflineAutoDownload'
 import { useLocale } from '../composables/useLocale'
 import { masteryStudyingPath } from '../utils/masteryDisplay'
 

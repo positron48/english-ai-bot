@@ -78,6 +78,9 @@ const picturePro = ref(false)
 const courseMap = ref<CourseMap | null>(null)
 const progress = ref<CourseProgress | null>(null)
 
+const courseCode = computed(() => (typeof route.query.course_code === 'string' ? route.query.course_code : undefined))
+const resolvedCourseCode = computed(() => courseCode.value || currentCourseCode.value)
+
 function applyCitySnapshot(ov: any) {
   if (ov?.course_map) courseMap.value = ov.course_map
   if (ov?.progress) progress.value = ov.progress
@@ -95,8 +98,6 @@ const { loadingInitial, load: loadDistrictCache } = useCachedOverviewScreen<any>
   },
   applyPayload: (ov) => applyCitySnapshot(ov),
 })
-const courseCode = computed(() => (typeof route.query.course_code === 'string' ? route.query.course_code : undefined))
-const resolvedCourseCode = computed(() => courseCode.value || currentCourseCode.value)
 const districtCode = computed(() => String(route.params.districtCode || ''))
 
 const district = computed(() => {
