@@ -61,7 +61,7 @@
                   </div>
                   <div class="scenario-meta mono">
                     {{ s.code }} · {{ s.cefr_level }} · {{ s.place_type }} · NPC: {{ s.npc_name }}
-                    · {{ s.max_turns }} ходов · {{ s.token_budget }} токенов · order {{ s.sort_order }}
+                    · {{ s.tasks.length }} задач · {{ s.max_turns }} ходов · order {{ s.sort_order }}
                   </div>
                   <div v-if="s.npc_code || s.prerequisite_code" class="scenario-meta mono chain">
                     <span v-if="s.npc_code">npc: {{ s.npc_code }}</span>
@@ -71,33 +71,9 @@
               </div>
               <div class="scenario-actions">
                 <button class="btn btn-sm" @click="editScenario(s)">Изменить</button>
+                <button class="btn btn-sm" @click="newTask(s)">+ Задача</button>
                 <button class="btn btn-sm btn-danger" @click="removeScenario(s)">Удалить</button>
               </div>
-            </div>
-
-            <div class="tasks-block">
-              <div class="tasks-head">
-                <span>Задачи квеста ({{ s.tasks.length }})</span>
-                <button class="btn btn-sm" @click="newTask(s)">+ Задача</button>
-              </div>
-              <table v-if="s.tasks.length" class="tasks-table">
-                <thead>
-                  <tr><th>code</th><th>Название</th><th>Критерий выполнения</th><th>req</th><th>ord</th><th></th></tr>
-                </thead>
-                <tbody>
-                  <tr v-for="t in s.tasks" :key="t.id">
-                    <td class="mono">{{ t.code }}</td>
-                    <td>{{ t.title }}</td>
-                    <td class="criteria">{{ t.completion_criteria }}</td>
-                    <td>{{ t.is_required ? '✓' : '-' }}</td>
-                    <td>{{ t.sort_order }}</td>
-                    <td class="nowrap">
-                      <button class="btn btn-xs" @click="editTask(s, t)">ред.</button>
-                      <button class="btn btn-xs btn-danger" @click="removeTask(s, t)">×</button>
-                    </td>
-                  </tr>
-                </tbody>
-              </table>
             </div>
           </div>
         </div>
@@ -584,8 +560,8 @@ textarea.inp { resize: vertical; font-family: inherit; }
 .npc-stats { flex: 0 0 auto; display: flex; gap: 8px; color: var(--text-secondary); font-size: 12px; white-space: nowrap; }
 .npc-stats span { border: 1px solid var(--border-primary); border-radius: 999px; padding: 3px 8px; background: var(--bg-primary); }
 .scenario-list { display: flex; flex-direction: column; gap: 10px; padding: 0 12px 12px 40px; }
-.scenario-card { border: 1px solid var(--border-primary); border-radius: 8px; padding: 14px; background: var(--bg-primary); }
-.scenario-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+.scenario-card { border: 1px solid var(--border-primary); border-radius: 8px; padding: 10px 12px; background: var(--bg-primary); }
+.scenario-head { display: flex; justify-content: space-between; align-items: center; gap: 10px; }
 .scenario-main { min-width: 0; display: flex; align-items: flex-start; gap: 12px; }
 .scenario-text { min-width: 0; }
 .scenario-title { font-weight: 600; font-size: 15px; margin-right: 8px; }
@@ -620,11 +596,6 @@ textarea.inp { resize: vertical; font-family: inherit; }
 .badge--quest { background: rgba(45,107,58,0.12); color: #2d6b3a; }
 .badge--free { background: rgba(200,168,75,0.18); color: #9a7b1e; }
 
-.tasks-block { border-top: 1px solid var(--border-primary); padding-top: 8px; }
-.tasks-head { display: flex; justify-content: space-between; align-items: center; font-size: 12px; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px; }
-.tasks-table { width: 100%; border-collapse: collapse; font-size: 12px; }
-.tasks-table th, .tasks-table td { text-align: left; padding: 4px 6px; border-bottom: 1px solid var(--border-primary); vertical-align: top; }
-.tasks-table .criteria { color: var(--text-secondary); max-width: 360px; }
 .nowrap { white-space: nowrap; }
 
 .btn { border: 1px solid var(--border-primary); border-radius: 6px; padding: 6px 12px; background: var(--bg-primary); color: var(--text-primary); cursor: pointer; font-size: 13px; }
