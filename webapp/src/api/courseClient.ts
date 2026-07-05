@@ -482,6 +482,7 @@ export interface ConversationSessionState {
   scenario_code: string
   title: string
   npc_name: string
+  npc_image_url: string
   place_type: string
   cefr_level: string
   is_quest: boolean

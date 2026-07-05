@@ -739,12 +739,21 @@ func (r *Router) writeSessionState(w http.ResponseWriter, ctx context.Context, u
 		status = session.Status
 		turnCount = session.TurnCount
 	}
+	npcImageURL := ""
+	if strings.TrimSpace(scenario.NPCCode) != "" {
+		if npcImages, err := r.conversationRepo.GetNPCImages(ctx, scenario.CourseID); err == nil {
+			npcImageURL = npcImages[scenario.NPCCode]
+		} else {
+			r.logger.Error("get npc image for session", zap.Error(err))
+		}
+	}
 
 	writeJSON(w, map[string]interface{}{
 		"session_id":    sessionID,
 		"scenario_code": scenario.Code,
 		"title":         scenario.Title,
 		"npc_name":      scenario.NPCName,
+		"npc_image_url": npcImageURL,
 		"place_type":    scenario.PlaceType,
 		"cefr_level":    scenario.CEFRLevel,
 		"is_quest":      scenario.IsQuest,

@@ -90,7 +90,8 @@
               :disabled="s.locked"
               @click="openScenario(s.code)"
             >
-              <span class="npc-step-num">{{ idx + 1 }}</span>
+              <img v-if="s.image_url" :src="mediaUrl(s.image_url)" class="npc-step-thumb" alt="" />
+              <span v-else class="npc-step-num">{{ idx + 1 }}</span>
               <span class="npc-step-body">
                 <span class="npc-step-title">{{ s.title }}</span>
                 <span class="npc-step-meta">
@@ -143,7 +144,16 @@
               class="chat-row"
               :class="m.role === 'user' ? 'chat-row--user' : 'chat-row--npc'"
             >
-              <LgSpeechBubble v-if="m.role !== 'user'" :text="m.content" />
+              <template v-if="m.role !== 'user'">
+                <img
+                  v-if="session.npc_image_url"
+                  :src="mediaUrl(session.npc_image_url)"
+                  class="chat-npc-avatar"
+                  alt=""
+                />
+                <span v-else class="chat-npc-avatar chat-npc-avatar--fallback">{{ npcInitial }}</span>
+                <LgSpeechBubble :text="m.content" />
+              </template>
               <div v-else class="chat-user-bubble">{{ m.content }}</div>
             </div>
             <div v-if="m.role !== 'user' && m.corrections && m.corrections.length" class="chat-corrections">
@@ -159,6 +169,13 @@
             </div>
           </template>
           <div v-if="sending" class="chat-row chat-row--npc">
+            <img
+              v-if="session.npc_image_url"
+              :src="mediaUrl(session.npc_image_url)"
+              class="chat-npc-avatar"
+              alt=""
+            />
+            <span v-else class="chat-npc-avatar chat-npc-avatar--fallback">{{ npcInitial }}</span>
             <div class="chat-typing">…</div>
           </div>
 
@@ -305,6 +322,7 @@ const headerTitle = computed(() => {
 // optional tasks; the session only truly ends when status flips to completed or budget runs out.
 const canSend = computed(() => status.value === 'open' && !budgetExhausted.value)
 const allTasksDone = computed(() => tasks.value.length > 0 && tasks.value.every(t => t.completed))
+const npcInitial = computed(() => (session.value?.npc_name || '?').trim().slice(0, 1).toUpperCase())
 
 function goBack() {
   router.push({ name: 'CityDistrict', params: { districtCode: districtCode.value } })
@@ -546,6 +564,14 @@ onMounted(loadForRoute)
   font-size: 12px; font-weight: 700; color: var(--subtext);
   background: var(--chip-bg, rgba(0,0,0,0.05));
 }
+.npc-step-thumb {
+  width: 46px;
+  height: 34px;
+  flex-shrink: 0;
+  border-radius: 8px;
+  object-fit: cover;
+  border: 1px solid var(--border, rgba(0,0,0,0.08));
+}
 .npc-step--done .npc-step-num { background: #2d6b3a; color: #fff; }
 .npc-step-body { flex: 1; min-width: 0; }
 .npc-step-title { display: block; font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 600; color: var(--text); }
@@ -572,7 +598,26 @@ onMounted(loadForRoute)
 .chat-scene { font-family: 'Inter', sans-serif; font-size: 12px; font-style: italic; color: var(--subtext); text-align: center; margin: 0 0 6px; }
 .chat-row { display: flex; }
 .chat-row--user { justify-content: flex-end; }
-.chat-row--npc { justify-content: flex-start; }
+.chat-row--npc { justify-content: flex-start; align-items: flex-end; gap: 8px; }
+.chat-npc-avatar {
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid var(--border, rgba(0,0,0,0.08));
+  background: var(--card-bg);
+}
+.chat-npc-avatar--fallback {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #2d6b3a;
+  font-family: 'Inter', sans-serif;
+  font-size: 13px;
+  font-weight: 800;
+  background: rgba(45,107,58,0.12);
+}
 .chat-user-bubble {
   max-width: 78%; padding: 10px 14px; border-radius: 16px 16px 4px 16px;
   background: #2d6b3a; color: #fff; font-family: 'Inter', sans-serif; font-size: 14px; line-height: 1.4;
