@@ -88,9 +88,11 @@ export function buildNpcGroups(scenarios: ConversationScenarioSummary[], courseC
     g.allPassed = g.questTotal > 0 && passedCount === g.questTotal
     g.hasCompletedQuests = passedCount > 0
     g.hasIncompleteQuests = g.questScenarios.some(s => !scenarioQuestPassed(s))
-    // Next playable quest in chain (for badges / single-quest auto-open). Full chain uses questScenarios.
-    g.visibleQuestScenarios = g.questScenarios.filter(s => !s.locked && !scenarioQuestPassed(s)).slice(0, 1)
-    g.hasAvailableIncompleteQuests = g.visibleQuestScenarios.length > 0
+    const passed = g.questScenarios.filter(scenarioQuestPassed)
+    const nextOpen = g.questScenarios.find(s => !s.locked && !scenarioQuestPassed(s))
+    // Expanded list: completed steps plus the next unlocked quest (future locked steps stay hidden).
+    g.visibleQuestScenarios = nextOpen ? [...passed, nextOpen] : passed
+    g.hasAvailableIncompleteQuests = !!nextOpen
     // Locked only when there is nothing to start: every quest is locked and free chat is absent
     // or still gated by a prerequisite.
     g.locked = (!g.freeScenario || g.freeScenario.locked) && g.questScenarios.every(s => s.locked)

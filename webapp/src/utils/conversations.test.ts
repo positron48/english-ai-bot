@@ -76,20 +76,20 @@ describe('buildNpcGroups', () => {
     expect(g.allPassed).toBe(true)
     expect(g.allDone).toBe(false)
     expect(g.hasIncompleteQuests).toBe(false)
-    expect(g.visibleQuestScenarios).toHaveLength(0)
+    expect(g.visibleQuestScenarios.map(s => s.code)).toEqual(['q1', 'q2'])
     expect(g.hasAvailableIncompleteQuests).toBe(false)
     expect(g.expandable).toBe(true)
     expect(g.locked).toBe(false)
   })
 
-  it('shows only the next available unfinished quest for badges', () => {
+  it('shows passed quests plus the next open step, not future locked ones', () => {
     const groups = buildNpcGroups([
       scenario({ code: 'q1', quest_passed: true }),
       scenario({ code: 'q2', title: 'Visible next quest' }),
-      scenario({ code: 'q3', title: 'Future quest' }),
+      scenario({ code: 'q3', title: 'Future quest', locked: true }),
     ])
 
-    expect(groups[0].visibleQuestScenarios.map(s => s.code)).toEqual(['q2'])
+    expect(groups[0].visibleQuestScenarios.map(s => s.code)).toEqual(['q1', 'q2'])
     expect(groups[0].questScenarios.map(s => s.code)).toEqual(['q1', 'q2', 'q3'])
     expect(groups[0].hasAvailableIncompleteQuests).toBe(true)
     expect(groups[0].expandable).toBe(true)
@@ -101,7 +101,7 @@ describe('buildNpcGroups', () => {
       scenario({ code: 'q2', locked: true, cooldown_until: '2026-07-01T12:00:00Z' }),
     ])
 
-    expect(groups[0].visibleQuestScenarios).toHaveLength(0)
+    expect(groups[0].visibleQuestScenarios.map(s => s.code)).toEqual(['q1'])
     expect(groups[0].hasAvailableIncompleteQuests).toBe(false)
     expect(groups[0].cooldownUntil).toBe('2026-07-01T12:00:00Z')
   })

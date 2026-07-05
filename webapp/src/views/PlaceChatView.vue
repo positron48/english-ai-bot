@@ -74,7 +74,7 @@
           <!-- quest chain -->
           <div v-if="g.expandable && expandedNpc === g.key" class="npc-steps">
             <button
-              v-for="(s, idx) in g.questScenarios"
+              v-for="(s, idx) in g.visibleQuestScenarios"
               :key="s.code"
               class="npc-step"
               :class="{
