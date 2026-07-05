@@ -21,74 +21,85 @@
     <div v-else-if="error" class="error">{{ error }}</div>
     <div v-else-if="selectedCourseCode && !scenarios.length" class="empty-message">Сценариев нет.</div>
 
-    <!-- NPC AVATARS -->
-    <div v-if="!loading && selectedCourseCode && scenarios.length" class="npc-avatars-section">
-      <h4 class="npc-avatars-title">Аватары NPC</h4>
-      <div class="npc-avatars-grid">
-        <div
-          v-for="npcCode in [...new Set(scenarios.filter(s => s.npc_code).map(s => s.npc_code))]"
-          :key="npcCode"
-          class="npc-avatar-card"
-        >
-          <img v-if="npcImages[npcCode]" :src="mediaUrl(npcImages[npcCode])" class="npc-avatar-img" alt="" />
-          <div v-else class="npc-avatar-placeholder">?</div>
-          <div class="npc-avatar-code">{{ npcCode }}</div>
-          <label class="btn btn-xs file-btn">
-            Загрузить
-            <input type="file" accept="image/png,image/jpeg,image/webp" style="display:none" @change="uploadNpcImage(npcCode, $event)" />
+    <!-- NPC LIST -->
+    <div v-if="!loading && npcGroups.length" class="npc-list">
+      <div v-for="npc in npcGroups" :key="npc.code" class="npc-card">
+        <div class="npc-head">
+          <button class="npc-toggle" type="button" @click="toggleNpc(npc.code)" :aria-expanded="isNpcOpen(npc.code)" title="Раскрыть список квестов">
+            <span class="npc-chevron">{{ isNpcOpen(npc.code) ? '⌄' : '›' }}</span>
+            <span class="npc-summary">
+              <span class="npc-name">{{ npc.name }}</span>
+              <span class="npc-code mono">{{ npc.code }}</span>
+            </span>
+          </button>
+          <label class="npc-photo" title="Загрузить или заменить фото">
+            <img v-if="npc.imageUrl" :src="mediaUrl(npc.imageUrl)" class="npc-avatar-img" alt="" />
+            <span v-else class="npc-avatar-placeholder">+</span>
+            <input type="file" accept="image/png,image/jpeg,image/webp" class="file-input" @change="uploadNpcImage(npc.code, $event)" />
           </label>
-        </div>
-      </div>
-    </div>
-
-    <!-- SCENARIO LIST -->
-    <div v-if="!loading && scenarios.length" class="scenario-list">
-      <div v-for="s in scenarios" :key="s.id" class="scenario-card">
-        <div class="scenario-head">
-          <div>
-            <span class="scenario-title">{{ s.title }}</span>
-            <span class="badge" :class="'badge--' + s.status">{{ s.status }}</span>
-            <span v-if="s.is_quest" class="badge badge--quest">quest</span>
-            <span v-else class="badge badge--free">free</span>
+          <div class="npc-stats">
+            <span>{{ npc.scenarios.length }} квестов</span>
+            <span>{{ npc.taskCount }} задач</span>
           </div>
-          <div class="scenario-actions">
-            <button class="btn btn-sm" @click="editScenario(s)">Изменить</button>
-            <button class="btn btn-sm btn-danger" @click="removeScenario(s)">Удалить</button>
-          </div>
-        </div>
-        <div class="scenario-meta mono">
-          {{ s.code }} · {{ s.cefr_level }} · {{ s.place_type }} · NPC: {{ s.npc_name }}
-          · {{ s.max_turns }} ходов · {{ s.token_budget }} токенов · order {{ s.sort_order }}
-        </div>
-        <div v-if="s.npc_code || s.prerequisite_code" class="scenario-meta mono chain">
-          <span v-if="s.npc_code">🔗 npc: {{ s.npc_code }}</span>
-          <span v-if="s.prerequisite_code">⟵ после: {{ s.prerequisite_code }}</span>
         </div>
 
-        <!-- tasks -->
-        <div class="tasks-block">
-          <div class="tasks-head">
-            <span>Задачи квеста ({{ s.tasks.length }})</span>
-            <button class="btn btn-sm" @click="newTask(s)">+ Задача</button>
+        <div v-if="isNpcOpen(npc.code)" class="scenario-list">
+          <div v-for="s in npc.scenarios" :key="s.id" class="scenario-card">
+            <div class="scenario-head">
+              <div class="scenario-main">
+                <label class="quest-photo" title="Загрузить или заменить картинку квеста">
+                  <img v-if="s.image_url" :src="mediaUrl(s.image_url)" class="quest-img" alt="" />
+                  <span v-else class="quest-placeholder">+</span>
+                  <input type="file" accept="image/png,image/jpeg,image/webp" class="file-input" @change="uploadScenarioImage(s, $event)" />
+                </label>
+                <div class="scenario-text">
+                  <div>
+                    <span class="scenario-title">{{ s.title }}</span>
+                    <span class="badge" :class="'badge--' + s.status">{{ s.status }}</span>
+                    <span v-if="s.is_quest" class="badge badge--quest">quest</span>
+                    <span v-else class="badge badge--free">free</span>
+                  </div>
+                  <div class="scenario-meta mono">
+                    {{ s.code }} · {{ s.cefr_level }} · {{ s.place_type }} · NPC: {{ s.npc_name }}
+                    · {{ s.max_turns }} ходов · {{ s.token_budget }} токенов · order {{ s.sort_order }}
+                  </div>
+                  <div v-if="s.npc_code || s.prerequisite_code" class="scenario-meta mono chain">
+                    <span v-if="s.npc_code">npc: {{ s.npc_code }}</span>
+                    <span v-if="s.prerequisite_code">после: {{ s.prerequisite_code }}</span>
+                  </div>
+                </div>
+              </div>
+              <div class="scenario-actions">
+                <button class="btn btn-sm" @click="editScenario(s)">Изменить</button>
+                <button class="btn btn-sm btn-danger" @click="removeScenario(s)">Удалить</button>
+              </div>
+            </div>
+
+            <div class="tasks-block">
+              <div class="tasks-head">
+                <span>Задачи квеста ({{ s.tasks.length }})</span>
+                <button class="btn btn-sm" @click="newTask(s)">+ Задача</button>
+              </div>
+              <table v-if="s.tasks.length" class="tasks-table">
+                <thead>
+                  <tr><th>code</th><th>Название</th><th>Критерий выполнения</th><th>req</th><th>ord</th><th></th></tr>
+                </thead>
+                <tbody>
+                  <tr v-for="t in s.tasks" :key="t.id">
+                    <td class="mono">{{ t.code }}</td>
+                    <td>{{ t.title }}</td>
+                    <td class="criteria">{{ t.completion_criteria }}</td>
+                    <td>{{ t.is_required ? '✓' : '-' }}</td>
+                    <td>{{ t.sort_order }}</td>
+                    <td class="nowrap">
+                      <button class="btn btn-xs" @click="editTask(s, t)">ред.</button>
+                      <button class="btn btn-xs btn-danger" @click="removeTask(s, t)">×</button>
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
           </div>
-          <table v-if="s.tasks.length" class="tasks-table">
-            <thead>
-              <tr><th>code</th><th>Название</th><th>Критерий выполнения</th><th>req</th><th>ord</th><th></th></tr>
-            </thead>
-            <tbody>
-              <tr v-for="t in s.tasks" :key="t.id">
-                <td class="mono">{{ t.code }}</td>
-                <td>{{ t.title }}</td>
-                <td class="criteria">{{ t.completion_criteria }}</td>
-                <td>{{ t.is_required ? '✓' : '—' }}</td>
-                <td>{{ t.sort_order }}</td>
-                <td class="nowrap">
-                  <button class="btn btn-xs" @click="editTask(s, t)">ред.</button>
-                  <button class="btn btn-xs btn-danger" @click="removeTask(s, t)">×</button>
-                </td>
-              </tr>
-            </tbody>
-          </table>
         </div>
       </div>
     </div>
@@ -205,7 +216,7 @@
 </template>
 
 <script setup lang="ts">
-import { nextTick, onMounted, ref, watch } from 'vue'
+import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { apiClient } from '../api/client'
 import { showAlert, showConfirm } from '../composables/useDialog'
 import { courseClient, type CourseSummary } from '../api/courseClient'
@@ -246,6 +257,7 @@ const coursesError = ref<string | null>(null)
 const scenarios = ref<AdminScenario[]>([])
 const levels = ref<LevelOption[]>([])
 const npcImages = ref<Record<string, string>>({})
+const openNpcCodes = ref<Set<string>>(new Set())
 const loading = ref(false)
 const error = ref<string | null>(null)
 const saving = ref(false)
@@ -263,6 +275,46 @@ const promptText = ref('')
 const promptArea = ref<HTMLTextAreaElement | null>(null)
 const copied = ref(false)
 
+const npcGroups = computed(() => {
+  const byCode = new Map<string, { code: string; name: string; imageUrl: string; scenarios: AdminScenario[]; taskCount: number }>()
+  for (const scenario of scenarios.value) {
+    const code = (scenario.npc_code || scenario.npc_name || scenario.code).trim()
+    const group = byCode.get(code) || {
+      code,
+      name: scenario.npc_name || code,
+      imageUrl: npcImages.value[code] || '',
+      scenarios: [],
+      taskCount: 0,
+    }
+    if (!group.name && scenario.npc_name) group.name = scenario.npc_name
+    group.imageUrl = npcImages.value[code] || group.imageUrl
+    group.scenarios.push(scenario)
+    group.taskCount += scenario.tasks.length
+    byCode.set(code, group)
+  }
+  return [...byCode.values()]
+    .map(group => ({
+      ...group,
+      scenarios: [...group.scenarios].sort((a, b) => a.sort_order - b.sort_order || a.title.localeCompare(b.title)),
+    }))
+    .sort((a, b) => {
+      const firstA = a.scenarios[0]?.sort_order ?? 0
+      const firstB = b.scenarios[0]?.sort_order ?? 0
+      return firstA - firstB || a.name.localeCompare(b.name)
+    })
+})
+
+function isNpcOpen(npcCode: string) {
+  return openNpcCodes.value.has(npcCode)
+}
+
+function toggleNpc(npcCode: string) {
+  const next = new Set(openNpcCodes.value)
+  if (next.has(npcCode)) next.delete(npcCode)
+  else next.add(npcCode)
+  openNpcCodes.value = next
+}
+
 async function load() {
   if (!selectedCourseCode.value) return
   loading.value = true
@@ -273,6 +325,10 @@ async function load() {
     scenarios.value = data.scenarios || []
     levels.value = data.levels || []
     npcImages.value = data.npc_images || {}
+    if (!openNpcCodes.value.size && scenarios.value.length) {
+      const firstNpcCode = scenarios.value[0].npc_code || scenarios.value[0].npc_name || scenarios.value[0].code
+      openNpcCodes.value = new Set([firstNpcCode])
+    }
   } catch (e: any) {
     error.value = e?.message || 'Не удалось загрузить сценарии'
   } finally {
@@ -290,18 +346,41 @@ function newScenario() {
 }
 
 async function uploadQuestImage(event: Event) {
-  const file = (event.target as HTMLInputElement).files?.[0]
+  const input = event.target as HTMLInputElement
+  const file = input.files?.[0]
   if (!file || !scenarioForm.value) return
   try {
     const res = await courseClient.uploadAdminMedia(file, 'quest')
     scenarioForm.value.image_url = res.url
   } catch (e: any) {
     await showAlert(e?.message || 'Не удалось загрузить изображение')
+  } finally {
+    input.value = ''
+  }
+}
+
+async function uploadScenarioImage(scenario: AdminScenario, event: Event) {
+  const input = event.target as HTMLInputElement
+  const file = input.files?.[0]
+  if (!file) return
+  try {
+    const res = await courseClient.uploadAdminMedia(file, 'quest')
+    const updated = { ...scenario, image_url: res.url }
+    await apiClient.request(
+      `/api/admin/conversations/scenarios/${scenario.id}?course_code=${encodeURIComponent(selectedCourseCode.value)}`,
+      { method: 'PUT', body: JSON.stringify(updated) },
+    )
+    scenarios.value = scenarios.value.map(s => s.id === scenario.id ? updated : s)
+  } catch (e: any) {
+    await showAlert(e?.message || 'Не удалось загрузить картинку квеста')
+  } finally {
+    input.value = ''
   }
 }
 
 async function uploadNpcImage(npcCode: string, event: Event) {
-  const file = (event.target as HTMLInputElement).files?.[0]
+  const input = event.target as HTMLInputElement
+  const file = input.files?.[0]
   if (!file) return
   try {
     const res = await courseClient.uploadAdminMedia(file, 'npc')
@@ -309,6 +388,8 @@ async function uploadNpcImage(npcCode: string, event: Event) {
     npcImages.value = { ...npcImages.value, [npcCode]: res.url }
   } catch (e: any) {
     await showAlert(e?.message || 'Не удалось загрузить изображение NPC')
+  } finally {
+    input.value = ''
   }
 }
 function editScenario(s: AdminScenario) {
@@ -447,7 +528,7 @@ async function copyPrompt() {
   setTimeout(() => { copied.value = false }, 1500)
 }
 
-watch(selectedCourseCode, () => { scenarios.value = []; load() })
+watch(selectedCourseCode, () => { scenarios.value = []; openNpcCodes.value = new Set(); load() })
 
 onMounted(async () => {
   try {
@@ -473,12 +554,63 @@ textarea.inp { resize: vertical; font-family: inherit; }
 .loading, .empty-message { padding: 24px; color: var(--text-secondary); }
 .error { padding: 12px; color: #c0392b; }
 
-.scenario-list { display: flex; flex-direction: column; gap: 14px; }
-.scenario-card { border: 1px solid var(--border-primary); border-radius: 10px; padding: 14px; background: var(--bg-secondary); }
+.npc-list { display: flex; flex-direction: column; gap: 12px; }
+.npc-card { border: 1px solid var(--border-primary); border-radius: 8px; background: var(--bg-secondary); overflow: hidden; }
+.npc-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 10px 12px; }
+.npc-toggle { flex: 1; min-width: 0; display: flex; align-items: center; gap: 10px; border: 0; background: transparent; color: var(--text-primary); padding: 0; cursor: pointer; text-align: left; }
+.npc-chevron { width: 18px; flex: 0 0 18px; font-size: 22px; line-height: 1; color: var(--text-secondary); text-align: center; }
+.npc-photo { position: relative; flex: 0 0 auto; display: block; width: 52px; height: 52px; cursor: pointer; }
+.npc-photo::after {
+  content: 'Заменить';
+  position: absolute;
+  inset: auto 3px 3px;
+  border-radius: 5px;
+  padding: 2px 3px;
+  background: rgba(0,0,0,0.64);
+  color: #fff;
+  font-size: 9px;
+  line-height: 1;
+  text-align: center;
+  opacity: 0;
+  transition: opacity .15s ease;
+}
+.npc-photo:hover::after { opacity: 1; }
+.npc-avatar-img { width: 52px; height: 52px; border-radius: 50%; object-fit: cover; display: block; }
+.npc-avatar-placeholder { width: 52px; height: 52px; border-radius: 50%; background: rgba(0,0,0,0.08); display: flex; align-items: center; justify-content: center; font-size: 24px; color: var(--text-secondary); }
+.file-input { display: none; }
+.npc-summary { min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.npc-name { font-weight: 700; font-size: 15px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.npc-code { font-size: 12px; color: var(--text-secondary); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.npc-stats { flex: 0 0 auto; display: flex; gap: 8px; color: var(--text-secondary); font-size: 12px; white-space: nowrap; }
+.npc-stats span { border: 1px solid var(--border-primary); border-radius: 999px; padding: 3px 8px; background: var(--bg-primary); }
+.scenario-list { display: flex; flex-direction: column; gap: 10px; padding: 0 12px 12px 40px; }
+.scenario-card { border: 1px solid var(--border-primary); border-radius: 8px; padding: 14px; background: var(--bg-primary); }
 .scenario-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 10px; }
+.scenario-main { min-width: 0; display: flex; align-items: flex-start; gap: 12px; }
+.scenario-text { min-width: 0; }
 .scenario-title { font-weight: 600; font-size: 15px; margin-right: 8px; }
 .scenario-meta { font-size: 12px; color: var(--text-secondary); margin: 6px 0 10px; }
 .scenario-actions { display: flex; gap: 6px; flex-shrink: 0; }
+.quest-photo { position: relative; flex: 0 0 auto; display: block; width: 72px; height: 52px; cursor: pointer; }
+.quest-photo::after {
+  content: 'Заменить';
+  position: absolute;
+  inset: auto 4px 4px;
+  border-radius: 5px;
+  padding: 2px 3px;
+  background: rgba(0,0,0,0.64);
+  color: #fff;
+  font-size: 9px;
+  line-height: 1;
+  text-align: center;
+  opacity: 0;
+  transition: opacity .15s ease;
+}
+.quest-photo:hover::after { opacity: 1; }
+.quest-img,
+.quest-placeholder { width: 72px; height: 52px; border-radius: 7px; display: block; }
+.quest-img { object-fit: cover; }
+.quest-placeholder { background: rgba(0,0,0,0.08); color: var(--text-secondary); display: flex; align-items: center; justify-content: center; font-size: 24px; }
 
 .badge { display: inline-block; padding: 1px 8px; border-radius: 10px; font-size: 11px; font-weight: 600; margin-right: 5px; }
 .badge--active { background: rgba(45,107,58,0.15); color: #2d6b3a; }
@@ -514,18 +646,21 @@ textarea.inp { resize: vertical; font-family: inherit; }
 .code-area { width: 100%; box-sizing: border-box; font-family: ui-monospace, monospace; font-size: 12px; resize: vertical; }
 .scenario-meta.chain { display: flex; gap: 14px; margin-top: -4px; color: var(--text-secondary); }
 
-/* NPC avatar management section */
-.npc-avatars-section { margin-bottom: 20px; }
-.npc-avatars-title { margin: 0 0 10px; font-size: 13px; font-weight: 600; color: var(--text-secondary); }
-.npc-avatars-grid { display: flex; flex-wrap: wrap; gap: 12px; }
-.npc-avatar-card { display: flex; flex-direction: column; align-items: center; gap: 6px; padding: 10px; border: 1px solid var(--border-primary); border-radius: 10px; background: var(--bg-secondary); min-width: 100px; }
-.npc-avatar-img { width: 56px; height: 56px; border-radius: 50%; object-fit: cover; }
-.npc-avatar-placeholder { width: 56px; height: 56px; border-radius: 50%; background: rgba(0,0,0,0.08); display: flex; align-items: center; justify-content: center; font-size: 22px; color: var(--text-secondary); }
-.npc-avatar-code { font-size: 11px; font-family: ui-monospace, monospace; color: var(--text-secondary); text-align: center; }
 .file-btn { cursor: pointer; }
 
 /* Quest image upload in form */
 .image-field { display: flex; gap: 8px; align-items: center; }
 .image-field .inp { flex: 1; }
 .image-preview { margin-top: 6px; max-height: 80px; border-radius: 8px; object-fit: cover; }
+
+@media (max-width: 720px) {
+  .npc-head { align-items: flex-start; flex-direction: column; }
+  .npc-toggle { width: 100%; }
+  .npc-stats { padding-left: 28px; flex-wrap: wrap; }
+  .scenario-list { padding-left: 12px; }
+  .scenario-head { flex-direction: column; }
+  .scenario-main { width: 100%; }
+  .scenario-text { flex: 1; }
+  .form-grid { grid-template-columns: 1fr; }
+}
 </style>
