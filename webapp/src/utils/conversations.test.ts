@@ -76,8 +76,33 @@ describe('buildNpcGroups', () => {
     expect(g.allPassed).toBe(true)
     expect(g.allDone).toBe(false)
     expect(g.hasIncompleteQuests).toBe(false)
-    expect(g.expandable).toBe(true)
+    expect(g.visibleQuestScenarios).toHaveLength(0)
+    expect(g.hasAvailableIncompleteQuests).toBe(false)
+    expect(g.expandable).toBe(false)
     expect(g.locked).toBe(false)
+  })
+
+  it('shows only the next available unfinished quest in a chain', () => {
+    const groups = buildNpcGroups([
+      scenario({ code: 'q1', quest_passed: true }),
+      scenario({ code: 'q2', title: 'Visible next quest' }),
+      scenario({ code: 'q3', title: 'Future quest' }),
+    ])
+
+    expect(groups[0].visibleQuestScenarios.map(s => s.code)).toEqual(['q2'])
+    expect(groups[0].hasAvailableIncompleteQuests).toBe(true)
+    expect(groups[0].expandable).toBe(true)
+  })
+
+  it('does not mark cooldown quests as newly available', () => {
+    const groups = buildNpcGroups([
+      scenario({ code: 'q1', quest_passed: true }),
+      scenario({ code: 'q2', locked: true, cooldown_until: '2026-07-01T12:00:00Z' }),
+    ])
+
+    expect(groups[0].visibleQuestScenarios).toHaveLength(0)
+    expect(groups[0].hasAvailableIncompleteQuests).toBe(false)
+    expect(groups[0].cooldownUntil).toBe('2026-07-01T12:00:00Z')
   })
 
   it('enables free chat when all quests passed and free scenario is unlocked', () => {

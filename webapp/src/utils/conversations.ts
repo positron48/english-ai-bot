@@ -20,6 +20,7 @@ export interface NpcGroup {
   level: string
   npcImageUrl: string
   questScenarios: ConversationScenarioSummary[]
+  visibleQuestScenarios: ConversationScenarioSummary[]
   freeScenario: ConversationScenarioSummary | null
   freeChatAvailable: boolean
   cooldownUntil: string | null
@@ -30,6 +31,7 @@ export interface NpcGroup {
   allPassed: boolean
   hasCompletedQuests: boolean
   hasIncompleteQuests: boolean
+  hasAvailableIncompleteQuests: boolean
   locked: boolean
   expandable: boolean
 }
@@ -52,6 +54,7 @@ export function buildNpcGroups(scenarios: ConversationScenarioSummary[], courseC
         level: s.cefr_level,
         npcImageUrl: '',
         questScenarios: [],
+        visibleQuestScenarios: [],
         freeScenario: null,
         freeChatAvailable: false,
         cooldownUntil: null,
@@ -62,6 +65,7 @@ export function buildNpcGroups(scenarios: ConversationScenarioSummary[], courseC
         allPassed: false,
         hasCompletedQuests: false,
         hasIncompleteQuests: false,
+        hasAvailableIncompleteQuests: false,
         locked: false,
         expandable: false,
       }
@@ -84,6 +88,8 @@ export function buildNpcGroups(scenarios: ConversationScenarioSummary[], courseC
     g.allPassed = g.questTotal > 0 && passedCount === g.questTotal
     g.hasCompletedQuests = passedCount > 0
     g.hasIncompleteQuests = g.questScenarios.some(s => !scenarioQuestPassed(s))
+    g.visibleQuestScenarios = g.questScenarios.filter(s => !s.locked && !scenarioQuestPassed(s)).slice(0, 1)
+    g.hasAvailableIncompleteQuests = g.visibleQuestScenarios.length > 0
     // Locked only when there is nothing to start: every quest is locked and free chat is absent
     // or still gated by a prerequisite.
     g.locked = (!g.freeScenario || g.freeScenario.locked) && g.questScenarios.every(s => s.locked)
@@ -92,7 +98,7 @@ export function buildNpcGroups(scenarios: ConversationScenarioSummary[], courseC
     // Cooldown: surface the unlock time of the next locked-but-cooldown quest so the UI can show a timer.
     const nextCooldown = g.questScenarios.find(s => s.locked && s.cooldown_until)
     g.cooldownUntil = nextCooldown?.cooldown_until ?? null
-    g.expandable = g.questTotal > 1
+    g.expandable = g.questTotal > 1 && g.visibleQuestScenarios.length > 0
   }
   return groups
 }

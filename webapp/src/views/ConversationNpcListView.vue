@@ -29,14 +29,11 @@
               <span class="npc-dot">·</span>
               {{ t('chat.availableQuestsCount', { count: districtGroup.availableCount }) }}
               <span class="npc-dot">·</span>
-              {{ t('chat.completedQuestsCount', { completed: districtGroup.completedCount, total: districtGroup.questTotal }) }}
+              {{ t('chat.completedQuestsCount', { count: districtGroup.completedCount }) }}
             </div>
           </div>
           <LgIcon v-if="districtGroup.locked" name="lock" :s="16" class="npc-district-lock" />
           <span v-else class="npc-district-count">{{ districtGroup.availableCount }}</span>
-        </div>
-        <div v-if="districtGroup.questTotal > 0" class="npc-bar-track">
-          <div class="npc-bar-fill" :style="{ width: districtGroup.pct + '%' }" />
         </div>
       </button>
     </div>
@@ -66,7 +63,6 @@ interface DistrictNpcGroup {
   availableCount: number
   completedCount: number
   questTotal: number
-  pct: number
 }
 
 const { t } = useI18n()
@@ -105,8 +101,7 @@ onMounted(async () => {
       const completedCount = quests.filter(scenarioQuestPassed).length
       const availableCount = quests.filter(s => !s.locked && !scenarioQuestPassed(s)).length
       const questTotal = quests.length
-      const pct = questTotal > 0 ? Math.round((completedCount / questTotal) * 100) : 0
-      return { district, npcs, locked, availableCount, completedCount, questTotal, pct }
+      return { district, npcs, locked, availableCount, completedCount, questTotal }
     }))
     districtGroups.value = results.filter(g => g.questTotal > 0 || g.npcs.length > 0)
   } catch (e: any) {
@@ -184,17 +179,4 @@ onMounted(async () => {
   font-weight: 700;
 }
 .npc-district-lock { color: var(--subtext); flex-shrink: 0; }
-.npc-bar-track {
-  margin-top: 6px;
-  height: 3px;
-  border-radius: 999px;
-  background: var(--progress-track, rgba(0,0,0,0.08));
-  overflow: hidden;
-}
-.npc-bar-fill {
-  height: 100%;
-  border-radius: 999px;
-  background: #2d6b3a;
-  transition: width 0.4s ease;
-}
 </style>

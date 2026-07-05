@@ -662,7 +662,7 @@
     "npcTitle": "Собеседники",
     "npcListSub": "Выберите район, чтобы открыть цепочки разговоров.",
     "availableQuestsCount": "доступно: {count}",
-    "completedQuestsCount": "пройдено: {completed}/{total}",
+    "completedQuestsCount": "пройдено: {count}",
     "newQuests": "Есть непройденные квесты",
     "locked": "Закрыто",
     "lockedHint": "Сначала пройдите предыдущий разговор",

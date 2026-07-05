@@ -41,16 +41,12 @@
                 <div class="chat-card-title">
                   {{ g.npcName }}
                   <span v-if="g.npcRole" class="npc-role">, {{ g.npcRole }}</span>
-                  <span v-if="g.hasIncompleteQuests && !g.locked" class="npc-bang" :title="t('chat.newQuests')">!</span>
+                  <span v-if="g.hasAvailableIncompleteQuests" class="npc-bang" :title="t('chat.newQuests')">!</span>
                 </div>
                 <div class="chat-card-meta">
                   {{ placeLabel(g.placeType) }} · {{ g.level }}
-                  <span v-if="g.questTotal" class="chat-tag">{{ g.completedCount }}/{{ g.questTotal }}</span>
                   <span v-if="g.allDone" class="chat-tag chat-tag--perfect"><LgIcon name="star-filled" :s="11" /> {{ t('chat.completed100') }}</span>
                   <span v-if="g.locked" class="chat-tag chat-tag--locked"><LgIcon name="lock" :s="11" /> {{ t('chat.locked') }}</span>
-                </div>
-                <div v-if="g.questTotal > 1" class="npc-bar-track">
-                  <div class="npc-bar-fill" :style="{ width: g.pct + '%' }" />
                 </div>
               </div>
               <span v-if="g.allDone" class="chat-done chat-done--perfect"><LgIcon name="star-filled" :s="16" /></span>
@@ -78,7 +74,7 @@
           <!-- quest chain -->
           <div v-if="g.expandable && expandedNpc === g.key" class="npc-steps">
             <button
-              v-for="(s, idx) in g.questScenarios"
+              v-for="(s, idx) in g.visibleQuestScenarios"
               :key="s.code"
               class="npc-step"
               :class="{
@@ -119,8 +115,26 @@
              conversation instead of pinning to the top/bottom, so the thread keeps usable height
              when the keyboard is open and the composer never gets pushed off-screen). -->
         <div ref="scrollEl" class="chat-thread">
+          <div v-if="session.image_url" class="chat-quest-scene">
+            <img :src="mediaUrl(session.image_url)" alt="" class="chat-quest-scene-img" />
+            <div class="chat-quest-scene-shade" />
+            <div v-if="session.is_quest && tasks.length" class="chat-tasks chat-tasks--scene">
+              <div class="chat-tasks-title">{{ t('chat.tasksTitle') }}</div>
+              <div
+                v-for="task in tasks"
+                :key="task.code"
+                class="chat-task"
+                :class="{ 'chat-task--done': task.completed, 'chat-task--optional': !task.required }"
+              >
+                <span class="chat-task-check"><LgIcon :name="task.completed ? 'check' : 'circle'" :s="14" /></span>
+                <span class="chat-task-label">{{ task.title }}</span>
+                <span v-if="!task.required" class="chat-task-opt">{{ t('chat.optional') }}</span>
+              </div>
+            </div>
+          </div>
+
           <!-- task checklist -->
-          <div v-if="session.is_quest && tasks.length" class="chat-tasks">
+          <div v-else-if="session.is_quest && tasks.length" class="chat-tasks">
             <div class="chat-tasks-title">{{ t('chat.tasksTitle') }}</div>
             <div
               v-for="task in tasks"
@@ -134,15 +148,13 @@
             </div>
           </div>
 
-          <!-- quest image banner -->
-          <div v-if="session.image_url" class="chat-quest-image">
-            <img :src="mediaUrl(session.image_url)" alt="" class="chat-quest-img" />
-          </div>
-
           <template v-for="(m, i) in messages" :key="i">
             <div
               class="chat-row"
-              :class="m.role === 'user' ? 'chat-row--user' : 'chat-row--npc'"
+              :class="[
+                m.role === 'user' ? 'chat-row--user' : 'chat-row--npc',
+                session.image_url && i === 0 && m.role !== 'user' ? 'chat-row--scene-opening' : '',
+              ]"
             >
               <template v-if="m.role !== 'user'">
                 <img
@@ -289,7 +301,7 @@ function onNpcClick(g: NpcGroup) {
   if (g.locked) return
   if (!g.expandable) {
     // A single available scenario (one quest or just a free chat) — open it directly.
-    const only = g.questScenarios[0] || g.freeScenario
+    const only = g.visibleQuestScenarios[0] || g.freeScenario
     if (only) openScenario(only.code)
     return
   }
@@ -537,17 +549,44 @@ onMounted(loadForRoute)
 /* cooldown countdown label inside a quest step */
 .npc-cooldown { margin-left: 6px; font-size: 11px; color: #d97706; font-weight: 600; }
 
-/* quest banner image at the top of the dialog */
-.chat-quest-image { flex-shrink: 0; }
-.chat-quest-img { width: 100%; max-height: 180px; object-fit: cover; border-radius: 14px; display: block; }
+/* quest scene image at the top of the dialog */
+.chat-quest-scene {
+  position: relative;
+  flex-shrink: 0;
+  min-height: 260px;
+  margin: -12px -16px 0;
+  padding: 14px 16px 34px;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+  background: #10140f;
+}
+.chat-quest-scene-img {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  object-position: center top;
+  display: block;
+}
+.chat-quest-scene-shade {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to bottom, rgba(0,0,0,0.08) 0%, rgba(0,0,0,0.16) 42%, rgba(0,0,0,0.58) 78%, var(--bg) 100%),
+    linear-gradient(to right, rgba(0,0,0,0.38), rgba(0,0,0,0.06) 45%, rgba(0,0,0,0.26));
+  pointer-events: none;
+}
+@media (min-width: 640px) {
+  .chat-quest-scene { min-height: 340px; }
+}
 
 /* NPC groups + chain steps */
 .npc-block { display: flex; flex-direction: column; }
 .chat-card--locked { opacity: 0.6; cursor: default; }
 .npc-chevron { color: var(--subtext); flex-shrink: 0; transition: transform 0.2s; }
 .npc-chevron--open { transform: rotate(180deg); }
-.npc-bar-track { margin-top: 6px; height: 3px; border-radius: 999px; background: var(--progress-track, rgba(0,0,0,0.08)); overflow: hidden; }
-.npc-bar-fill { height: 100%; border-radius: 999px; background: #2d6b3a; transition: width 0.4s ease; }
 
 .npc-steps { display: flex; flex-direction: column; gap: 6px; margin: 6px 0 2px 14px; padding-left: 14px; border-left: 2px solid var(--border, rgba(0,0,0,0.08)); }
 .npc-step {
@@ -583,8 +622,27 @@ onMounted(loadForRoute)
 /* task checklist — scrolls with the thread instead of pinning to the top of the screen, so it
    doesn't eat into the conversation's visible height when the mobile keyboard is open. */
 .chat-tasks { flex-shrink: 0; padding: 12px 14px; border-radius: 14px; background: var(--card-bg); border: 1px solid var(--border, rgba(0,0,0,0.08)); }
+.chat-tasks--scene {
+  position: relative;
+  z-index: 1;
+  width: min(100%, 430px);
+  background: rgba(255,255,255,0.88);
+  border-color: rgba(255,255,255,0.62);
+  box-shadow: 0 14px 34px rgba(0,0,0,0.28);
+  backdrop-filter: blur(14px) saturate(1.12);
+}
+:root[data-theme="dark"] .chat-tasks--scene {
+  background: rgba(24,28,24,0.84);
+  border-color: rgba(255,255,255,0.16);
+}
 .chat-tasks-title { font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 700; color: var(--subtext); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 8px; }
 .chat-task { display: flex; align-items: center; gap: 8px; padding: 4px 0; font-family: 'Inter', sans-serif; font-size: 13px; color: var(--text); transition: opacity 0.25s; }
+.chat-tasks--scene .chat-tasks-title { color: rgba(31,41,32,0.72); }
+.chat-tasks--scene .chat-task { color: #172017; text-shadow: 0 1px 0 rgba(255,255,255,0.35); }
+.chat-tasks--scene .chat-task-opt { color: rgba(31,41,32,0.66); }
+:root[data-theme="dark"] .chat-tasks--scene .chat-tasks-title,
+:root[data-theme="dark"] .chat-tasks--scene .chat-task-opt { color: rgba(235,238,230,0.72); }
+:root[data-theme="dark"] .chat-tasks--scene .chat-task { color: #f4f7ef; text-shadow: 0 1px 2px rgba(0,0,0,0.55); }
 .chat-task-check { width: 18px; text-align: center; color: var(--subtext); }
 .chat-task--done { color: #2d6b3a; }
 .chat-task--done .chat-task-check { color: #2d6b3a; }
@@ -599,6 +657,21 @@ onMounted(loadForRoute)
 .chat-row { display: flex; }
 .chat-row--user { justify-content: flex-end; }
 .chat-row--npc { justify-content: flex-start; align-items: flex-end; gap: 8px; }
+.chat-row--scene-opening {
+  margin-top: -20px;
+  position: relative;
+  z-index: 1;
+}
+.chat-row--scene-opening :deep(.lg-bubble) {
+  background: rgba(255,255,255,0.92);
+  border: 1px solid rgba(255,255,255,0.7);
+  box-shadow: 0 12px 30px rgba(0,0,0,0.18);
+  backdrop-filter: blur(12px) saturate(1.08);
+}
+:root[data-theme="dark"] .chat-row--scene-opening :deep(.lg-bubble) {
+  background: rgba(24,28,24,0.88);
+  border-color: rgba(255,255,255,0.14);
+}
 .chat-npc-avatar {
   width: 34px;
   height: 34px;

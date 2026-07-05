@@ -662,7 +662,7 @@
     "npcTitle": "People to talk to",
     "npcListSub": "Choose a district to open its conversation chains.",
     "availableQuestsCount": "available: {count}",
-    "completedQuestsCount": "done: {completed}/{total}",
+    "completedQuestsCount": "done: {count}",
     "newQuests": "Unfinished quests available",
     "locked": "Locked",
     "lockedHint": "Complete the previous chat first",

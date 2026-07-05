@@ -623,7 +623,7 @@
     "npcTitle": "Personas para conversar",
     "npcListSub": "Elige un distrito para abrir sus cadenas de conversación.",
     "availableQuestsCount": "disponibles: {count}",
-    "completedQuestsCount": "hechas: {completed}/{total}",
+    "completedQuestsCount": "hechas: {count}",
     "newQuests": "Hay misiones pendientes",
     "locked": "Bloqueado",
     "lockedHint": "Completa la conversación anterior primero",
