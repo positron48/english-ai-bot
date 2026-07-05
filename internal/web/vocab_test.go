@@ -433,9 +433,11 @@ func TestHandleVocab_GroupByLemma(t *testing.T) {
 	if word["lemma"].(string) != "spy" {
 		t.Errorf("Expected lemma 'spy', got %v", word["lemma"])
 	}
-	// Should have 2 total_cards (one for each training_card)
-	if word["total_cards"].(float64) != 2 {
-		t.Errorf("Expected 2 total_cards, got %v", word["total_cards"])
+	if word["mastery_level"] == nil {
+		t.Error("Word should have mastery_level field")
+	}
+	if word["total_cards"] != nil {
+		t.Error("expected no total_cards in simplified vocab list response")
 	}
 }
 

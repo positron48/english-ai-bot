@@ -262,8 +262,7 @@ func TestHandleVocab_WithKnownWord(t *testing.T) {
 	}
 }
 
-// TestHandleVocab_WithLastReviewAndAddedAt covers the parseDateTime branches for
-// last_review and added_at fields.
+// TestHandleVocab_WithLastReviewAndAddedAt covers the parseDateTime branch for added_at.
 func TestHandleVocab_WithLastReviewAndAddedAt(t *testing.T) {
 	db, userRepo := setupVocabCoverageTestDB(t)
 	user, err := userRepo.GetOrCreateUser(90005)
@@ -308,9 +307,11 @@ func TestHandleVocab_WithLastReviewAndAddedAt(t *testing.T) {
 		t.Fatalf("expected at least 1 word, got %d", len(words))
 	}
 	word := words[0].(map[string]interface{})
-	// last_review should be set
-	if word["last_review"] == nil {
-		t.Error("expected last_review to be set")
+	if word["added_at"] == nil {
+		t.Error("expected added_at to be set")
+	}
+	if word["last_review"] != nil {
+		t.Error("expected no last_review in simplified vocab list response")
 	}
 }
 
@@ -427,7 +428,8 @@ func TestHandleVocabWordCards_MainQueryFails(t *testing.T) {
 	}
 }
 
-// TestHandleVocabWordCards_WithLastQuality covers the branch where lastQuality.Valid = true.
+// TestHandleVocabWordCards_WithLastQuality covers user_cards path returning lexical
+// card details without per-card SRS fields in the simplified dictionary response.
 func TestHandleVocabWordCards_WithLastQuality(t *testing.T) {
 	db, userRepo := setupVocabCoverageTestDB(t)
 	user, err := userRepo.GetOrCreateUser(90021)
@@ -472,14 +474,20 @@ func TestHandleVocabWordCards_WithLastQuality(t *testing.T) {
 	if len(cards) < 1 {
 		t.Fatalf("expected at least 1 card, got %d", len(cards))
 	}
+	if response["has_user_cards"] != true {
+		t.Errorf("expected has_user_cards true, got %v", response["has_user_cards"])
+	}
 	card := cards[0].(map[string]interface{})
-	if card["last_quality"] == nil {
-		t.Error("expected last_quality to be set")
+	if card["word_ru"] != "качество" || card["meaning_en"] != "quality" {
+		t.Errorf("expected lexical card fields, got word_ru=%v meaning_en=%v", card["word_ru"], card["meaning_en"])
+	}
+	if card["last_quality"] != nil {
+		t.Error("expected no last_quality in simplified vocab cards response")
 	}
 }
 
-// TestHandleVocabWordCards_WithNextDueAtAndLastReviewAt covers the branches where
-// nextDueAt.Valid = true and lastReviewAt.Valid = true.
+// TestHandleVocabWordCards_WithNextDueAtAndLastReviewAt covers word-level mastery
+// metadata while per-card SRS timestamps stay hidden from the dictionary UI.
 func TestHandleVocabWordCards_WithNextDueAtAndLastReviewAt(t *testing.T) {
 	db, userRepo := setupVocabCoverageTestDB(t)
 	user, err := userRepo.GetOrCreateUser(90022)
@@ -523,12 +531,18 @@ func TestHandleVocabWordCards_WithNextDueAtAndLastReviewAt(t *testing.T) {
 	if len(cards) < 1 {
 		t.Fatalf("expected at least 1 card, got %d", len(cards))
 	}
-	card := cards[0].(map[string]interface{})
-	if card["next_due_at"] == nil {
-		t.Error("expected next_due_at to be set")
+	if response["has_user_cards"] != true {
+		t.Errorf("expected has_user_cards true, got %v", response["has_user_cards"])
 	}
-	if card["last_review_at"] == nil {
-		t.Error("expected last_review_at to be set")
+	if response["mastery_level"] != "mastered" {
+		t.Errorf("expected word-level mastery_level mastered, got %v", response["mastery_level"])
+	}
+	card := cards[0].(map[string]interface{})
+	if card["next_due_at"] != nil {
+		t.Error("expected no next_due_at in simplified vocab cards response")
+	}
+	if card["last_review_at"] != nil {
+		t.Error("expected no last_review_at in simplified vocab cards response")
 	}
 }
 
@@ -2342,13 +2356,15 @@ func TestHandleVocab_LastReviewParsedAndSet(t *testing.T) {
 		t.Fatalf("expected at least 1 word, got %d", len(words))
 	}
 	word := words[0].(map[string]interface{})
-	if word["last_review"] == nil {
-		t.Error("expected last_review to be set when parseDateTime succeeds")
+	if word["mastery_level"] != "mastered" {
+		t.Errorf("expected mastery_level mastered for reviewed word, got %v", word["mastery_level"])
+	}
+	if word["last_review"] != nil {
+		t.Error("expected no last_review in simplified vocab list response")
 	}
 }
 
-// TestHandleVocab_LastReviewAndAddedAtParsedMainDB covers the same branches using the main test DB
-// with fixed timestamp strings so parseDateTime succeeds (word.LastReview and word.AddedAt set).
+// TestHandleVocab_LastReviewAndAddedAtParsedMainDB covers added_at parsing on the main test DB.
 func TestHandleVocab_LastReviewAndAddedAtParsedMainDB(t *testing.T) {
 	db, userRepo := setupVocabCoverageTestDB(t)
 	user, err := userRepo.GetOrCreateUser(93105)
@@ -2395,11 +2411,11 @@ func TestHandleVocab_LastReviewAndAddedAtParsedMainDB(t *testing.T) {
 		t.Fatalf("expected at least 1 word, got %d", len(words))
 	}
 	word := words[0].(map[string]interface{})
-	if word["last_review"] == nil {
-		t.Error("expected last_review to be set")
-	}
 	if word["added_at"] == nil {
 		t.Error("expected added_at to be set")
+	}
+	if word["last_review"] != nil {
+		t.Error("expected no last_review in simplified vocab list response")
 	}
 }
 
@@ -2545,8 +2561,7 @@ func TestHandleVocabWordCards_TrainingQueryFailHook(t *testing.T) {
 	}
 }
 
-// TestHandleVocab_LastReviewAndAddedAtHooks covers word.LastReview and word.AddedAt assignment
-// via testHookVocabSetLastReview and testHookVocabSetAddedAt when parse path is used.
+// TestHandleVocab_LastReviewAndAddedAtHooks covers word.AddedAt assignment via testHookVocabSetAddedAt.
 func TestHandleVocab_LastReviewAndAddedAtHooks(t *testing.T) {
 	db, userRepo := setupVocabCoverageTestDB(t)
 	user, err := userRepo.GetOrCreateUser(93107)
@@ -2574,12 +2589,9 @@ func TestHandleVocab_LastReviewAndAddedAtHooks(t *testing.T) {
 		t.Fatalf("insert user_cards: %v", err)
 	}
 
-	hookLast := time.Date(2025, 3, 1, 12, 0, 0, 0, time.UTC)
 	hookAdded := time.Date(2025, 2, 1, 8, 0, 0, 0, time.UTC)
-	testHookVocabSetLastReview = &hookLast
 	testHookVocabSetAddedAt = &hookAdded
 	defer func() {
-		testHookVocabSetLastReview = nil
 		testHookVocabSetAddedAt = nil
 	}()
 
@@ -2600,11 +2612,11 @@ func TestHandleVocab_LastReviewAndAddedAtHooks(t *testing.T) {
 		t.Fatalf("expected at least 1 word, got %d", len(words))
 	}
 	word := words[0].(map[string]interface{})
-	if word["last_review"] == nil {
-		t.Error("expected last_review from hook")
-	}
 	if word["added_at"] == nil {
 		t.Error("expected added_at from hook")
+	}
+	if word["last_review"] != nil {
+		t.Error("expected no last_review in simplified vocab list response")
 	}
 }
 

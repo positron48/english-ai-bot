@@ -27,7 +27,6 @@ var (
 	testHookVocabDisplayWordInvalid    bool         // if true, handleVocab treats displayWord as invalid so else branch (word.DisplayWord = word.Lemma) runs
 	testHookVocabMasteringScoreInvalid bool         // if true, handleVocab treats masteringScoreStored as invalid so else branch (word.MasteringScore = 0) runs
 	testHookVocabForceDisplayWordValid bool         // if true, handleVocab treats displayWord as valid with String "hooked" to cover displayWord.Valid branch
-	testHookVocabSetLastReview         *time.Time   // if set, handleVocab sets word.LastReview to this (covers parse success path)
 	testHookVocabSetAddedAt            *time.Time   // if set, handleVocab sets word.AddedAt to this (covers parse success path)
 	testHookVocabRowScanErr            func() error // if set and returns err, handleVocab skips rows.Scan and continues (covers Scan error path)
 	testHookVocabScanErrAfter          func() error // if set and returns err after Scan, handleVocab treats as scan error (covers err != nil after Scan)
@@ -692,7 +691,20 @@ func (r *Router) handleVocabWordCardsByID(w http.ResponseWriter, req *http.Reque
 	GROUP BY tc.sense_index, tc.word_ru, tc.meaning_en, tc.example_en, tc.example_ru, tc.transcription, tc.pos
 	ORDER BY tc.sense_index`
 
-	rows, err := r.db.Query(query, wordCardID)
+	if testHookVocabTrainingQueryErr != nil {
+		if hookErr := testHookVocabTrainingQueryErr(); hookErr != nil {
+			r.logger.Error("failed to get word cards", zap.Error(hookErr))
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
+			return
+		}
+	}
+	var rows *sql.Rows
+	var err error
+	if testHookVocabTrainingQueryFail {
+		err = fmt.Errorf("injected training query error")
+	} else {
+		rows, err = r.db.Query(query, wordCardID)
+	}
 	if err != nil {
 		r.logger.Error("failed to get word cards", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
