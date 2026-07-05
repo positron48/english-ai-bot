@@ -425,7 +425,7 @@ const improvements = computed(() => {
   padding-bottom: 32px;
 }
 .prg-header {
-  padding: 16px 16px 0;
+  padding: 16px 4px 0;
   display: flex;
   align-items: baseline;
   gap: 4px;
@@ -442,7 +442,7 @@ const improvements = computed(() => {
 
 /* SUMMARY CARD */
 .prg-summary-card {
-  margin: 12px 16px;
+  margin: 12px 0;
   position: relative;
   border-radius: 18px;
   border: 1px solid var(--border);
@@ -533,7 +533,7 @@ const improvements = computed(() => {
 /* 2-column rows */
 .prg-row2 {
   display: grid; grid-template-columns: 1fr 1fr; gap: 10px;
-  padding: 10px 16px 0;
+  padding: 10px 4px 0;
 }
 .prg-row2--single { grid-template-columns: 1fr; }
 .prg-card {
@@ -632,11 +632,11 @@ const improvements = computed(() => {
 .prg-improve-tip { font-family: 'Inter', sans-serif; font-size: 10px; color: var(--subtext); line-height: 1.35; margin-top: 2px; }
 
 /* ACHIEVEMENTS */
-.prg-lumi-wrap { margin: 10px 16px 0; }
-.prg-charts-wrap { margin: 16px 16px 0; }
+.prg-lumi-wrap { margin: 10px 0 0; }
+.prg-charts-wrap { margin: 16px 0 0; }
 
 .prg-achievements-card {
-  margin: 10px 16px 0; padding: 16px; border-radius: 16px;
+  margin: 10px 0 0; padding: 16px; border-radius: 16px;
   background: var(--card-bg); border: 1px solid var(--border);
   box-shadow: var(--shadow-card);
 }

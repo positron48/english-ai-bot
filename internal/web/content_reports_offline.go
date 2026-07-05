@@ -33,6 +33,15 @@ type createGrammarTestReportRequest struct {
 	ClientReportID string                 `json:"client_report_id"`
 }
 
+type createReadingTextReportRequest struct {
+	TextID          string                 `json:"text_id"`
+	CategoryID      string                 `json:"category_id"`
+	ReportCategory  string                 `json:"report_category"`
+	Comment         string                 `json:"comment"`
+	ContentSnapshot map[string]interface{} `json:"content_snapshot"`
+	ClientReportID  string                 `json:"client_report_id"`
+}
+
 type offlineContentReportSyncItem struct {
 	ClientReportID string                 `json:"client_report_id"`
 	SourceType     string                 `json:"source_type"`
@@ -159,6 +168,63 @@ func (r *Router) handleLearningGrammarTestReport(w http.ResponseWriter, req *htt
 			return
 		}
 		r.logger.Error("failed to create grammar test report", zap.Error(err))
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	_ = json.NewEncoder(w).Encode(map[string]interface{}{"success": true, "report_id": id})
+}
+
+func (r *Router) handleLearningReadingTextReport(w http.ResponseWriter, req *http.Request) {
+	if req.Method != http.MethodPost {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+	userID := getUserIDFromContext(req.Context())
+	if userID == 0 {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+	var body createReadingTextReportRequest
+	if err := json.NewDecoder(req.Body).Decode(&body); err != nil {
+		http.Error(w, "Invalid request body", http.StatusBadRequest)
+		return
+	}
+	textID := strings.TrimSpace(body.TextID)
+	if textID == "" {
+		http.Error(w, "text_id required", http.StatusBadRequest)
+		return
+	}
+	comment := strings.TrimSpace(body.Comment)
+	if !validateReportComment("reading_text", body.ReportCategory, comment) {
+		http.Error(w, "comment required", http.StatusBadRequest)
+		return
+	}
+	if comment == "" {
+		comment = models.NormalizeReportCategory("reading_text", body.ReportCategory)
+	}
+	payload := map[string]interface{}{
+		"text_id":          textID,
+		"category_id":      strings.TrimSpace(body.CategoryID),
+		"content_snapshot": body.ContentSnapshot,
+		"comment":          comment,
+	}
+	id, err := r.createContentReport(userID, repository.CreateContentReportInput{
+		UserID:           userID,
+		SourceType:       "reading_text",
+		ClientReportID:   body.ClientReportID,
+		GrammarChapterID: textID,
+		ReportCategory:   body.ReportCategory,
+		CommentText:      comment,
+		Payload:          payload,
+	})
+	if err != nil {
+		if strings.Contains(err.Error(), "duplicate") {
+			w.Header().Set("Content-Type", "application/json")
+			_ = json.NewEncoder(w).Encode(map[string]interface{}{"success": true, "duplicate": true})
+			return
+		}
+		r.logger.Error("failed to create reading text report", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}

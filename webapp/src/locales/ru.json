@@ -456,6 +456,8 @@
       "theory_mismatch": "Не совпадает с теорией",
       "wrong_theory": "Неверная теория",
       "unclear_explanation": "Непонятное объяснение",
+      "wrong_question": "Неверный вопрос",
+      "unclear_text": "Непонятный текст",
       "too_hard": "Слишком сложно",
       "other": "Другое"
     },

@@ -1,5 +1,8 @@
 <template>
-  <div class="npc-page">
+  <div
+    class="npc-page lg-section-page"
+    style="--lg-section-bg-image: url('/app/linglow/art/bg-conversation.jpg')"
+  >
     <LgPageHeader
       :title="t('chat.npcTitle')"
       :show-back="true"
@@ -116,13 +119,10 @@ onMounted(async () => {
 <style scoped>
 .npc-page {
   padding-bottom: 24px;
-  background:
-    linear-gradient(180deg, color-mix(in srgb, var(--bg, var(--bg-primary)) 20%, transparent) 0%, var(--bg, var(--bg-primary)) 380px),
-    url('/app/linglow/art/bg-conversation.jpg') top center / 100% auto no-repeat;
 }
 .npc-sub {
   max-width: 560px;
-  padding: 0 16px 12px;
+  padding: 0 4px 12px;
   font-size: 13px;
   line-height: 1.4;
   color: var(--subtext);
@@ -139,7 +139,7 @@ onMounted(async () => {
   display: flex;
   flex-direction: column;
   gap: 14px;
-  padding: 4px 16px 16px;
+  padding: 4px 4px 16px;
 }
 .npc-district {
   width: 100%;

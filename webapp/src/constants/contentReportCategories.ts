@@ -35,10 +35,20 @@ export const GRAMMAR_TEST_REPORT_CATEGORIES = [
   'other'
 ] as const
 
+export const READING_TEXT_REPORT_CATEGORIES = [
+  'wrong_translation',
+  'typo',
+  'bad_audio',
+  'wrong_question',
+  'unclear_text',
+  'other'
+] as const
+
 export type WordReportCategory = (typeof WORD_TRAINING_REPORT_CATEGORIES)[number]
 export type GrammarReportCategory = (typeof GRAMMAR_TRAINING_REPORT_CATEGORIES)[number]
 export type GrammarChapterReportCategory = (typeof GRAMMAR_CHAPTER_REPORT_CATEGORIES)[number]
 export type GrammarTestReportCategory = (typeof GRAMMAR_TEST_REPORT_CATEGORIES)[number]
+export type ReadingTextReportCategory = (typeof READING_TEXT_REPORT_CATEGORIES)[number]
 
 export function buildReportComment(
   category: string,

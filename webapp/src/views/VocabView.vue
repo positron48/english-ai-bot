@@ -1,5 +1,8 @@
 <template>
-  <div class="vocab">
+  <div
+    class="vocab lg-section-page"
+    style="--lg-section-bg-image: url('/app/linglow/art/bg-dictionary.jpg')"
+  >
     <h1 class="vocab-title">{{ t('lg.myDictionary') }}</h1>
 
     <div class="vocab-header">
@@ -471,12 +474,7 @@ onUnmounted(() => {
 
 <style scoped>
 .vocab {
-  padding: 10px;
   max-width: 1200px;
-  margin: 0 auto;
-  background:
-    linear-gradient(180deg, color-mix(in srgb, var(--bg-primary) 22%, transparent) 0%, var(--bg-primary) 380px),
-    url('/app/linglow/art/bg-dictionary.jpg') top center / 100% auto no-repeat;
 }
 
 .vocab-title {

@@ -34,7 +34,7 @@
               </div>
               <div class="location-pairs">
                 <div v-for="item in locationSummary(s.entries)" :key="item.key" class="location-pair">
-                  <span>{{ item.entry.term }}</span>
+                  <ClickableText v-if="item.entry.term" :text="item.entry.term" class="location-pair-term" subtle-underline />
                   <small>{{ item.entry.gloss }}</small>
                 </div>
               </div>
@@ -48,7 +48,7 @@
                 :style="{ '--swatch': colorValue(e.term), '--swatch-border': colorBorder(e.term) }"
               >
                 <span class="color-sample"></span>
-                <span class="color-name">{{ e.term }}</span>
+                <ClickableText v-if="e.term" :text="e.term" class="color-name" subtle-underline />
                 <span class="color-gloss">{{ e.gloss }}</span>
               </div>
             </div>
@@ -106,7 +106,7 @@
 
             <div v-else class="hint-grid">
               <div v-for="(e, i) in s.entries" :key="i" class="hint-chip">
-                <span class="hint-term">{{ e.term }}</span>
+                <ClickableText :text="e.term" class="hint-term" subtle-underline />
                 <span class="hint-gloss">{{ e.gloss }}</span>
               </div>
             </div>
@@ -120,6 +120,7 @@
 <script setup lang="ts">
 import { computed } from 'vue'
 import LgIcon from './linglow/LgIcon.vue'
+import ClickableText from './ClickableText.vue'
 import { getHintSections, getHintSheetTitle, type HintEntry } from '../constants/pictureHintPhrasebook'
 
 const props = defineProps<{ targetLang: string; nativeLang: string }>()
@@ -304,6 +305,7 @@ function colorBorder(term: string): string {
   background: var(--card-bg); border: 1px solid var(--border, rgba(0,0,0,0.06));
 }
 .hint-term { font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 700; color: #2d6b3a; }
+.hint-term :deep(.ct-word) { color: #2d6b3a; font-weight: 700; }
 .hint-gloss { font-family: 'Inter', sans-serif; font-size: 12px; color: var(--subtext); }
 
 .location-card {
@@ -377,12 +379,17 @@ function colorBorder(term: string): string {
   background: var(--card-bg);
   border: 1px solid var(--border, rgba(0,0,0,0.06));
 }
-.location-pair span {
+.location-pair-term,
+.location-pair-term :deep(.ct-word) {
   color: #2d6b3a;
   font-family: 'Inter', sans-serif;
   font-size: 13px;
   font-weight: 800;
   line-height: 1.2;
+}
+.color-name :deep(.ct-word) {
+  color: #2d6b3a;
+  font-weight: 800;
 }
 .location-pair small {
   color: var(--subtext);

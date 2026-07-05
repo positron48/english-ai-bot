@@ -297,6 +297,36 @@ p { color: var(--text); }
   margin: 0 0 14px;
 }
 .lg-section-gap { margin-bottom: 14px; }
+
+/* Section list pages: decorative header art fades to transparent at the bottom of the image */
+.lg-section-page {
+  position: relative;
+  isolation: isolate;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 0 0 24px;
+}
+.lg-section-page::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  aspect-ratio: 2 / 1;
+  max-height: min(44vw, 240px);
+  background-image: var(--lg-section-bg-image);
+  background-position: top center;
+  background-size: 100% auto;
+  background-repeat: no-repeat;
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 58%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 0%, #000 58%, transparent 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+.lg-section-page > * {
+  position: relative;
+  z-index: 1;
+}
 .lg-muted { color: var(--subtext); }
 .lg-loading {
   padding: 40px 0;

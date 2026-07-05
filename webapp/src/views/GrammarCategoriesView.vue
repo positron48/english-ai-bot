@@ -1,5 +1,8 @@
 <template>
-  <div class="grammar-categories">
+  <div
+    class="grammar-categories lg-section-page"
+    style="--lg-section-bg-image: url('/app/linglow/art/bg-grammar.jpg')"
+  >
     <LgPageHeader
       :title="districtLevel ? (t('grammar.courseTitle') + ' · ' + districtLevel) : (t('grammar.courseTitle') || 'Grammar Course')"
       :show-back="true"
@@ -473,15 +476,6 @@ onMounted(() => {
 </script>
 
 <style scoped>
-.grammar-categories {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
-  background:
-    linear-gradient(180deg, color-mix(in srgb, var(--bg-primary) 22%, transparent) 0%, var(--bg-primary) 380px),
-    url('/app/linglow/art/bg-grammar.jpg') top center / 100% auto no-repeat;
-}
-
 .header-section {
   display: flex;
   justify-content: space-between;

@@ -163,7 +163,7 @@
                   alt=""
                 />
                 <span v-else class="chat-npc-avatar chat-npc-avatar--fallback">{{ npcInitial }}</span>
-                <LgSpeechBubble :text="m.content" />
+                <LgSpeechBubble><ClickableText :text="m.content" subtle-underline /></LgSpeechBubble>
               </template>
               <div v-else class="chat-user-bubble">{{ m.content }}</div>
             </div>
@@ -259,6 +259,7 @@ import LgPageHeader from '../components/linglow/LgPageHeader.vue'
 import LgIcon from '../components/linglow/LgIcon.vue'
 import LgActivityIcon from '../components/linglow/LgActivityIcon.vue'
 import LgSpeechBubble from '../components/linglow/LgSpeechBubble.vue'
+import ClickableText from '../components/ClickableText.vue'
 import LgButton from '../components/linglow/LgButton.vue'
 import LgLumi from '../components/linglow/LgLumi.vue'
 import VoiceMicButton from '../components/VoiceMicButton.vue'
@@ -656,6 +657,7 @@ onMounted(loadForRoute)
 
 /* NPC reply bubbles in chat are wider than the default Lumi speech bubble. */
 .chat-thread :deep(.lg-bubble) { max-width: 400px; font-size: 14px; }
+.chat-thread :deep(.lg-bubble .ct-word) { border-bottom-color: color-mix(in srgb, currentColor 22%, transparent); }
 .chat-scene { font-family: 'Inter', sans-serif; font-size: 12px; font-style: italic; color: var(--subtext); text-align: center; margin: 0 0 6px; }
 .chat-row { display: flex; }
 .chat-row--user { justify-content: flex-end; }

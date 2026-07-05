@@ -6,6 +6,7 @@ export type ContentReportSourceType =
   | 'grammar_training'
   | 'grammar_chapter'
   | 'grammar_test'
+  | 'reading_text'
 
 export interface QueuedContentReport {
   client_report_id: string
@@ -22,6 +23,8 @@ export interface QueuedContentReport {
   grammar_chapter_id?: string
   theory_block_id?: string
   grammar_question_id?: string
+  reading_text_id?: string
+  reading_category_id?: string
   payload: Record<string, unknown>
 }
 

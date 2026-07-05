@@ -12,4 +12,7 @@ func TestNormalizeReportCategory(t *testing.T) {
 	if got := NormalizeReportCategory("grammar_training", ""); got != "other" {
 		t.Fatalf("got %q", got)
 	}
+	if got := NormalizeReportCategory("reading_text", "bad_audio"); got != "bad_audio" {
+		t.Fatalf("got %q", got)
+	}
 }

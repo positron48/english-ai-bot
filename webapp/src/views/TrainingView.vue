@@ -97,8 +97,10 @@
       </div>
     </div>
 
+    <LgLoader v-if="sessionActive && cardLoading" />
+
     <div 
-      v-if="sessionActive && currentCard" 
+      v-if="sessionActive && currentCard && !cardLoading" 
       class="card"
       :class="{ 'card-timer-active': waitingDelay }"
       @mousedown="waitingDelay ? handleTimerMouseDown($event) : null"
@@ -474,7 +476,7 @@
       </div>
 
     </div>
-    <div v-if="sessionActive && currentCard" class="report-row report-row-outside">
+    <div v-if="sessionActive && currentCard && !cardLoading" class="report-row report-row-outside">
       <button
         v-if="!reportAlreadySent"
         type="button"
@@ -644,6 +646,7 @@ const hintExcludedWord = computed(() => {
 })
 const loading = ref(false)
 const currentCard = ref<Card | null>(null)
+const cardLoading = ref(false)
 const optionsShown = ref(false)
 const options = ref<string[]>([])
 const feedback = ref<Feedback | null>(null)
@@ -1815,6 +1818,7 @@ const setupCard = (card: Card) => {
   }
 
   currentCard.value = card
+  cardLoading.value = false
   cardIndex.value = card.card_index
   totalCards.value = card.total_cards
   userCardId.value = card.user_card_id ?? 0
@@ -2630,6 +2634,9 @@ const nextCard = async () => {
   spellSkipResultActive.value = false
   typeAnswerText.value = ''
 
+  cardLoading.value = true
+  currentCard.value = null
+
   try {
     const response = await wordTrainingClient.current()
     
@@ -2698,6 +2705,8 @@ const nextCard = async () => {
       // For non-network errors, show a simple message
       await showAlert(t('training.failedNextCard'))
     }
+  } finally {
+    cardLoading.value = false
   }
 }
 
@@ -2856,7 +2865,6 @@ const handleTimerMouseLeave = () => {
 .training {
   max-width: 1200px;
   margin: 0 auto;
-  padding: 10px;
 }
 
 .training h1 {

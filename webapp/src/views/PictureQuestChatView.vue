@@ -53,7 +53,7 @@
           >
             <template v-if="m.role !== 'user'">
               <LgLumi pose="teacher" :size="36" class="pq-lumi" />
-              <LgSpeechBubble :text="m.content" />
+              <LgSpeechBubble><ClickableText :text="m.content" subtle-underline /></LgSpeechBubble>
             </template>
             <div v-else class="chat-user-bubble">{{ m.content }}</div>
           </div>
@@ -151,6 +151,7 @@ import {
 import LgPageHeader from '../components/linglow/LgPageHeader.vue'
 import LgIcon from '../components/linglow/LgIcon.vue'
 import LgSpeechBubble from '../components/linglow/LgSpeechBubble.vue'
+import ClickableText from '../components/ClickableText.vue'
 import LgButton from '../components/linglow/LgButton.vue'
 import LgLumi from '../components/linglow/LgLumi.vue'
 import PictureHintSheet from '../components/PictureHintSheet.vue'

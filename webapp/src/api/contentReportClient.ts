@@ -31,6 +31,8 @@ export interface SubmitContentReportInput {
   grammarChapterID?: string
   theoryBlockID?: string
   grammarQuestionID?: string
+  readingTextID?: string
+  readingCategoryID?: string
 }
 
 function endpointForSource(sourceType: ContentReportSourceType): string {
@@ -43,6 +45,8 @@ function endpointForSource(sourceType: ContentReportSourceType): string {
       return '/api/learning/grammar/chapter/report'
     case 'grammar_test':
       return '/api/learning/grammar/test/report'
+    case 'reading_text':
+      return '/api/learning/reading/text/report'
     default:
       return '/api/content-reports/offline/sync-reports'
   }
@@ -94,6 +98,15 @@ function buildOnlineBody(input: SubmitContentReportInput, clientReportID: string
         client_report_id: clientReportID,
         question_data: payload.question_snapshot || payload.question_data || payload,
       }
+    case 'reading_text':
+      return {
+        text_id: input.readingTextID || payload.text_id || '',
+        category_id: input.readingCategoryID || payload.category_id || '',
+        report_category: input.reportCategory,
+        comment: input.comment,
+        client_report_id: clientReportID,
+        content_snapshot: payload.content_snapshot || payload,
+      }
     default:
       return { client_report_id: clientReportID }
   }
@@ -115,6 +128,8 @@ function toQueuedReport(input: SubmitContentReportInput, clientReportID: string)
     grammar_chapter_id: input.grammarChapterID,
     theory_block_id: input.theoryBlockID,
     grammar_question_id: input.grammarQuestionID,
+    reading_text_id: input.readingTextID,
+    reading_category_id: input.readingCategoryID,
     payload: input.payload || {},
   }
 }
@@ -166,7 +181,7 @@ export const contentReportClient = {
             training_card_id: item.training_card_id,
             user_card_id: item.user_card_id,
             word_category: item.word_category,
-            grammar_chapter_id: item.grammar_chapter_id,
+            grammar_chapter_id: item.grammar_chapter_id || item.reading_text_id,
             theory_block_id: item.theory_block_id,
             grammar_question_id: item.grammar_question_id,
             payload: item.payload,

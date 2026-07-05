@@ -456,6 +456,8 @@
       "theory_mismatch": "Does not match theory",
       "wrong_theory": "Incorrect theory",
       "unclear_explanation": "Unclear explanation",
+      "wrong_question": "Wrong question",
+      "unclear_text": "Unclear text",
       "too_hard": "Too difficult",
       "other": "Other"
     },

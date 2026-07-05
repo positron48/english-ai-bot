@@ -41,6 +41,15 @@ var GrammarTestReportCategories = []string{
 	"other",
 }
 
+var ReadingTextReportCategories = []string{
+	"wrong_translation",
+	"typo",
+	"bad_audio",
+	"wrong_question",
+	"unclear_text",
+	"other",
+}
+
 func IsValidReportCategory(sourceType, category string) bool {
 	category = trimCategory(category)
 	if category == "" {
@@ -67,6 +76,12 @@ func IsValidReportCategory(sourceType, category string) bool {
 		}
 	case "grammar_test":
 		for _, c := range GrammarTestReportCategories {
+			if c == category {
+				return true
+			}
+		}
+	case "reading_text":
+		for _, c := range ReadingTextReportCategories {
 			if c == category {
 				return true
 			}

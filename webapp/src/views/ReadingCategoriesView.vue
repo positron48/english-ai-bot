@@ -1,5 +1,8 @@
 <template>
-  <div class="reading-categories">
+  <div
+    class="reading-categories lg-section-page"
+    style="--lg-section-bg-image: url('/app/linglow/art/bg-reading.jpg')"
+  >
     <h1 class="page-title">{{ t('reading.title') }}</h1>
     <LgLoader v-if="loading" />
     <div v-else-if="error">{{ error }}</div>
@@ -111,11 +114,6 @@ onMounted(async () => {
 <style scoped>
 .reading-categories {
   max-width: 1100px;
-  margin: 0 auto;
-  padding: 20px;
-  background:
-    linear-gradient(180deg, color-mix(in srgb, var(--bg-primary) 22%, transparent) 0%, var(--bg-primary) 380px),
-    url('/app/linglow/art/bg-reading.jpg') top center / 100% auto no-repeat;
 }
 .page-title { margin: 0 0 1rem; color: var(--text-primary); }
 .grid { display: grid; gap: 16px; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); }

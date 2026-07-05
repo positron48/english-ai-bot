@@ -119,6 +119,18 @@
             <Icon name="dice" />
             <span>{{ t('reading.anotherRandomUnread') }}</span>
           </button>
+          <div class="report-row">
+            <button
+              v-if="!reportAlreadySent"
+              type="button"
+              class="report-text-link"
+              :disabled="reportSubmitting"
+              @click="openReadingReportDialog"
+            >
+              {{ t('training.reportIssue') }}
+            </button>
+            <span v-else class="report-message">{{ t('training.reportSent') }}</span>
+          </div>
         </footer>
       </section>
     </main>
@@ -188,6 +200,18 @@
         />
       </div>
     </div>
+
+    <ContentReportDialog
+      :open="reportDialogOpen"
+      :submitting="reportSubmitting"
+      :categories="readingReportCategories"
+      :category="reportCategory"
+      :details="reportDetails"
+      @update:category="reportCategory = $event"
+      @update:details="reportDetails = $event"
+      @close="closeReadingReportDialog"
+      @submit="submitReadingReport"
+    />
   </div>
 </template>
 
@@ -196,6 +220,7 @@ import { computed, onBeforeUnmount, onMounted, onUnmounted, ref, watch } from 'v
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { apiClient } from '../api/client'
+import { contentReportClient } from '../api/contentReportClient'
 import { getGrammarCourseCode, withCourseCode } from '../api/grammarClient'
 import { emitAppDataEvent } from '../api/cacheInvalidation'
 import { patchDailyRouteAfterReadingDone, patchProgressStatsAfterReadingDone } from '../api/appDataCachePatches'
@@ -205,7 +230,12 @@ import { useSettings } from '../composables/useSettings'
 import Icon from './Icon.vue'
 import LgLumiCardLoading from './linglow/LgLumiCardLoading.vue'
 import GrammarQuestion from './GrammarQuestion.vue'
+import ContentReportDialog from './ContentReportDialog.vue'
 import VocabWordCardsDetail, { type VocabCardsAPIResponse } from './VocabWordCardsDetail.vue'
+import {
+  READING_TEXT_REPORT_CATEGORIES,
+  buildReportComment,
+} from '../constants/contentReportCategories'
 
 const props = defineProps<{
   block: any
@@ -250,6 +280,60 @@ const quizAnswered = ref<Record<number, boolean>>({})
 const quizCorrectMap = ref<Record<number, boolean>>({})
 const quizDone = ref(false)
 const quizPercent = ref(0)
+
+const readingReportCategories = READING_TEXT_REPORT_CATEGORIES
+const reportDialogOpen = ref(false)
+const reportSubmitting = ref(false)
+const reportCategory = ref('')
+const reportDetails = ref('')
+const reportAlreadySent = ref(false)
+const currentTextId = computed(() => String(props.textId || props.chapterId || '').trim())
+
+const openReadingReportDialog = () => {
+  if (reportSubmitting.value || reportAlreadySent.value) return
+  reportCategory.value = ''
+  reportDetails.value = ''
+  reportDialogOpen.value = true
+}
+
+const closeReadingReportDialog = () => {
+  if (reportSubmitting.value) return
+  reportDialogOpen.value = false
+}
+
+const submitReadingReport = async () => {
+  const textID = currentTextId.value
+  if (!textID || reportSubmitting.value || reportAlreadySent.value) return
+  const comment = buildReportComment(
+    reportCategory.value,
+    reportDetails.value,
+    t(`training.reportCategories.${reportCategory.value}`),
+  )
+  if (!comment) return
+  reportSubmitting.value = true
+  try {
+    await contentReportClient.submit({
+      sourceType: 'reading_text',
+      reportCategory: reportCategory.value,
+      comment,
+      readingTextID: textID,
+      readingCategoryID: String(props.categoryId || '').trim(),
+      payload: {
+        content_snapshot: {
+          text_id: textID,
+          category_id: props.categoryId || '',
+          title: props.block?.reading_passage?.title || props.block?.title || '',
+        },
+      },
+    })
+    reportAlreadySent.value = true
+    reportDialogOpen.value = false
+  } catch (error) {
+    console.error('Failed to submit reading text report:', error)
+  } finally {
+    reportSubmitting.value = false
+  }
+}
 
 const MAX_QUIZ_QUESTIONS = 3
 
@@ -667,8 +751,6 @@ const markReadDirect = async () => {
   }
 }
 
-const currentTextId = computed(() => String(props.textId || props.chapterId || '').trim())
-
 async function refreshOtherUnreadInCategory() {
   const cat = String(props.categoryId || '').trim()
   const tid = currentTextId.value
@@ -688,6 +770,7 @@ async function refreshOtherUnreadInCategory() {
 watch(
   () => [props.categoryId, props.textId, props.chapterId, props.isRead] as const,
   () => {
+    reportAlreadySent.value = false
     void refreshOtherUnreadInCategory()
   },
   { immediate: true }
@@ -1065,6 +1148,39 @@ const openRandomUnreadInCategory = async () => {
 .random-unread-footer-button:disabled {
   opacity: 0.6;
   cursor: default;
+}
+
+.report-row {
+  margin-top: 4px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.report-text-link {
+  border: 0;
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 12px;
+  line-height: 1.2;
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+  text-decoration: none;
+}
+
+.report-text-link:hover:not(:disabled) {
+  color: var(--text-primary);
+}
+
+.report-text-link:disabled {
+  cursor: default;
+  opacity: 0.8;
+}
+
+.report-message {
+  font-size: 12px;
+  color: var(--text-secondary);
 }
 
 .random-unread-footer-button :deep(.icon) {

@@ -1,5 +1,8 @@
 <template>
-  <div class="pq-page">
+  <div
+    class="pq-page lg-section-page"
+    style="--lg-section-bg-image: url('/app/linglow/art/bg-picture-quest.jpg')"
+  >
     <LgPageHeader
       :title="t('pictureQuest.title')"
       :show-back="true"
@@ -98,13 +101,10 @@ onMounted(async () => {
 <style scoped>
 .pq-page {
   padding-bottom: 24px;
-  background:
-    linear-gradient(180deg, color-mix(in srgb, var(--bg, var(--bg-primary)) 20%, transparent) 0%, var(--bg, var(--bg-primary)) 380px),
-    url('/app/linglow/art/bg-picture-quest.jpg') top center / 100% auto no-repeat;
 }
 .pq-sub {
   max-width: 560px;
-  padding: 0 16px 12px;
+  padding: 0 4px 12px;
   font-size: 13px;
   line-height: 1.4;
   color: var(--subtext);
@@ -121,7 +121,7 @@ onMounted(async () => {
   display: flex;
   flex-direction: column;
   gap: 10px;
-  padding: 4px 16px 16px;
+  padding: 4px 4px 16px;
 }
 .pq-cat {
   width: 100%;

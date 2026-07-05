@@ -1,5 +1,8 @@
 <template>
-  <div class="word-sets-view">
+  <div
+    class="word-sets-view lg-section-page"
+    style="--lg-section-bg-image: url('/app/linglow/art/bg-word-cards.jpg')"
+  >
     <h1>{{ pageTitle }}</h1>
     
     <div class="content-section">
@@ -344,15 +347,9 @@ const getProgressClass = (percent: number): string => {
 
 <style scoped>
 .word-sets-view {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 20px;
   overflow-x: hidden;
   width: 100%;
   box-sizing: border-box;
-  background:
-    linear-gradient(180deg, color-mix(in srgb, var(--bg-primary) 22%, transparent) 0%, var(--bg-primary) 380px),
-    url('/app/linglow/art/bg-word-cards.jpg') top center / 100% auto no-repeat;
 }
 
 .word-sets-view h1 {
