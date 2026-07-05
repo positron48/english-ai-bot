@@ -148,6 +148,8 @@ import { sentenceClient } from '../api/sentenceClient'
 import artWords from '../assets/linglow/art/bg-word-cards-440.jpg'
 import artGrammar from '../assets/linglow/art/bg-grammar-440.jpg'
 import artReading from '../assets/linglow/art/bg-read-440.jpg'
+import artConversation from '../assets/linglow/art/bg-conversation-440.jpg'
+import artPictureQuest from '../assets/linglow/art/bg-picture-quest-440.jpg'
 
 const { t } = useI18n()
 const { ensureMe, hasFeature } = useMe()
@@ -258,7 +260,7 @@ const modes = computed(() => {
       bg: 'rgba(45,107,58,0.10)',
       title: t('learning.conversation'),
       desc: t('learning.conversationDescription'),
-      art: '/app/linglow/city/level3.jpg',
+      art: artConversation,
       to: '/learning/conversations',
       disabled: isOffline.value,
     })
@@ -269,7 +271,7 @@ const modes = computed(() => {
       bg: 'rgba(45,107,58,0.10)',
       title: t('learning.pictureQuest'),
       desc: t('learning.pictureQuestDescription'),
-      art: '/app/linglow/city/level2.jpg',
+      art: artPictureQuest,
       to: '/learning/picture-quests',
       disabled: isOffline.value,
     })
@@ -478,6 +480,12 @@ onUnmounted(() => {
   align-items: center;
   gap: 12px;
   text-decoration: none;
+  position: relative;
+  overflow: hidden;
+  background:
+    linear-gradient(90deg, color-mix(in srgb, var(--card-bg) 96%, transparent) 0%, color-mix(in srgb, var(--card-bg) 86%, transparent) 54%, color-mix(in srgb, var(--card-bg) 18%, transparent) 100%),
+    url('../assets/linglow/art/bg-dictionary-440.jpg') right center / auto 100% no-repeat,
+    var(--card-bg);
 }
 .practice-dict-left { flex: 1; }
 .practice-dict-emoji { font-size: 24px; line-height: 1; }

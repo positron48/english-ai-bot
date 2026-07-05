@@ -482,10 +482,19 @@ onMounted(() => {
 .header-section {
   display: flex;
   justify-content: space-between;
-  align-items: flex-start;
+  align-items: flex-end;
+  min-height: 132px;
+  padding: 18px 20px;
+  border-radius: 16px;
   margin-bottom: 32px;
   gap: 16px;
   flex-wrap: wrap;
+  overflow: hidden;
+  background:
+    linear-gradient(90deg, color-mix(in srgb, var(--card-bg) 96%, transparent) 0%, color-mix(in srgb, var(--card-bg) 78%, transparent) 48%, color-mix(in srgb, var(--card-bg) 12%, transparent) 100%),
+    url('/app/linglow/art/bg-grammar.jpg') center / cover no-repeat,
+    var(--card-bg);
+  box-shadow: var(--shadow-card, 0 8px 24px rgba(0,0,0,0.08));
 }
 
 .header-actions {

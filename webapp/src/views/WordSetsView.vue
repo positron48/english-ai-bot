@@ -1,6 +1,8 @@
 <template>
   <div class="word-sets-view">
-    <h1>{{ pageTitle }}</h1>
+    <section class="section-hero section-hero--wordsets">
+      <h1>{{ pageTitle }}</h1>
+    </section>
     
     <div class="content-section">
       <div v-if="loading" class="loading">{{ t('common.loading') }}</div>
@@ -352,10 +354,26 @@ const getProgressClass = (percent: number): string => {
   box-sizing: border-box;
 }
 
-.word-sets-view h1 {
+.section-hero {
+  min-height: 132px;
+  display: flex;
+  align-items: flex-end;
   margin-bottom: 24px;
+  padding: 22px 24px;
+  border-radius: 16px;
+  overflow: hidden;
+  background:
+    linear-gradient(90deg, color-mix(in srgb, var(--card-bg) 96%, transparent) 0%, color-mix(in srgb, var(--card-bg) 78%, transparent) 48%, color-mix(in srgb, var(--card-bg) 12%, transparent) 100%),
+    url('/app/linglow/art/bg-word-cards.jpg') center / cover no-repeat,
+    var(--card-bg);
+  box-shadow: var(--shadow-card, 0 8px 24px rgba(0,0,0,0.08));
+}
+
+.section-hero h1 {
+  margin: 0;
   word-wrap: break-word;
   overflow-wrap: break-word;
+  color: var(--text-primary);
 }
 
 .filters-section {

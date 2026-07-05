@@ -6,7 +6,9 @@
       @back="router.push('/learning')"
     />
 
-    <div class="npc-sub">{{ t('chat.npcListSub') }}</div>
+    <section class="npc-hero">
+      <div class="npc-sub">{{ t('chat.npcListSub') }}</div>
+    </section>
 
     <LgLoader v-if="loading" />
     <div v-else-if="!isPro" class="npc-empty">{{ t('chat.requiresPro') }}</div>
@@ -115,12 +117,27 @@ onMounted(async () => {
 
 <style scoped>
 .npc-page { padding-bottom: 24px; }
+.npc-hero {
+  min-height: 132px;
+  display: flex;
+  align-items: flex-end;
+  margin: 0 16px 16px;
+  padding: 18px 20px;
+  border-radius: 16px;
+  overflow: hidden;
+  background:
+    linear-gradient(90deg, color-mix(in srgb, var(--card-bg) 96%, transparent) 0%, color-mix(in srgb, var(--card-bg) 78%, transparent) 48%, color-mix(in srgb, var(--card-bg) 12%, transparent) 100%),
+    url('/app/linglow/art/bg-conversation.jpg') center / cover no-repeat,
+    var(--card-bg);
+  box-shadow: var(--shadow-card);
+}
 .npc-sub {
-  padding: 0 16px 12px;
+  max-width: 62%;
+  margin: 0;
   font-size: 13px;
   line-height: 1.4;
   color: var(--subtext);
-  text-align: center;
+  text-align: left;
 }
 .npc-empty {
   padding: 40px 16px;
