@@ -78,11 +78,11 @@ describe('buildNpcGroups', () => {
     expect(g.hasIncompleteQuests).toBe(false)
     expect(g.visibleQuestScenarios).toHaveLength(0)
     expect(g.hasAvailableIncompleteQuests).toBe(false)
-    expect(g.expandable).toBe(false)
+    expect(g.expandable).toBe(true)
     expect(g.locked).toBe(false)
   })
 
-  it('shows only the next available unfinished quest in a chain', () => {
+  it('shows only the next available unfinished quest for badges', () => {
     const groups = buildNpcGroups([
       scenario({ code: 'q1', quest_passed: true }),
       scenario({ code: 'q2', title: 'Visible next quest' }),
@@ -90,6 +90,7 @@ describe('buildNpcGroups', () => {
     ])
 
     expect(groups[0].visibleQuestScenarios.map(s => s.code)).toEqual(['q2'])
+    expect(groups[0].questScenarios.map(s => s.code)).toEqual(['q1', 'q2', 'q3'])
     expect(groups[0].hasAvailableIncompleteQuests).toBe(true)
     expect(groups[0].expandable).toBe(true)
   })

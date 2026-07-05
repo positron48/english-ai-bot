@@ -52,7 +52,7 @@
               <span v-if="g.allDone" class="chat-done chat-done--perfect"><LgIcon name="star-filled" :s="16" /></span>
               <span v-else-if="g.allPassed || g.hasCompletedQuests" class="chat-done"><LgIcon name="check" :s="16" /></span>
               <svg
-                v-else-if="g.expandable"
+                v-if="g.expandable"
                 class="npc-chevron"
                 :class="{ 'npc-chevron--open': expandedNpc === g.key }"
                 width="16" height="16" viewBox="0 0 24 24" fill="none"
@@ -74,7 +74,7 @@
           <!-- quest chain -->
           <div v-if="g.expandable && expandedNpc === g.key" class="npc-steps">
             <button
-              v-for="(s, idx) in g.visibleQuestScenarios"
+              v-for="(s, idx) in g.questScenarios"
               :key="s.code"
               class="npc-step"
               :class="{
@@ -83,7 +83,7 @@
                 'npc-step--perfect': scenarioQuestPerfect(s),
               }"
               type="button"
-              :disabled="s.locked"
+              :disabled="s.locked && !scenarioQuestPassed(s)"
               @click="openScenario(s.code)"
             >
               <img v-if="s.image_url" :src="mediaUrl(s.image_url)" class="npc-step-thumb" alt="" />
@@ -303,9 +303,13 @@ function placeLabel(placeType: string): string {
 function onNpcClick(g: NpcGroup) {
   if (g.locked) return
   if (!g.expandable) {
-    // A single available scenario (one quest or just a free chat) — open it directly.
-    const only = g.visibleQuestScenarios[0] || g.freeScenario
-    if (only) openScenario(only.code)
+    // Single quest or free chat only — open directly (including replay of a passed quest).
+    const quest = g.questScenarios[0]
+    if (quest && (!quest.locked || scenarioQuestPassed(quest))) {
+      openScenario(quest.code)
+      return
+    }
+    if (g.freeScenario && !g.freeScenario.locked) openScenario(g.freeScenario.code)
     return
   }
   expandedNpc.value = expandedNpc.value === g.key ? '' : g.key

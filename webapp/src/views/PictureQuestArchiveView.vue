@@ -31,7 +31,6 @@
             <div class="pq-card-title">{{ quest.title }}</div>
             <div class="pq-card-meta">
               {{ quest.cefr_level }}
-              <span v-if="quest.tasks.length" class="pq-tag">{{ completedCount(quest) }}/{{ quest.tasks.length }}</span>
               <span v-if="quest.all_tasks_done" class="pq-tag pq-tag--perfect"><LgIcon name="star-filled" :s="11" /> {{ t('chat.completed100') }}</span>
             </div>
           </div>
@@ -78,10 +77,6 @@ const page = ref(1)
 const perPage = 20
 const pagedQuests = computed(() => quests.value.slice(0, page.value * perPage))
 const hasMore = computed(() => pagedQuests.value.length < quests.value.length)
-
-function completedCount(quest: PictureQuestSummary): number {
-  return quest.tasks.filter(task => task.completed).length
-}
 
 function openQuest(quest: PictureQuestSummary) {
   router.push({ name: 'PictureQuestChat', params: { questCode: quest.code } })

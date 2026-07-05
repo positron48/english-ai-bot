@@ -88,6 +88,7 @@ export function buildNpcGroups(scenarios: ConversationScenarioSummary[], courseC
     g.allPassed = g.questTotal > 0 && passedCount === g.questTotal
     g.hasCompletedQuests = passedCount > 0
     g.hasIncompleteQuests = g.questScenarios.some(s => !scenarioQuestPassed(s))
+    // Next playable quest in chain (for badges / single-quest auto-open). Full chain uses questScenarios.
     g.visibleQuestScenarios = g.questScenarios.filter(s => !s.locked && !scenarioQuestPassed(s)).slice(0, 1)
     g.hasAvailableIncompleteQuests = g.visibleQuestScenarios.length > 0
     // Locked only when there is nothing to start: every quest is locked and free chat is absent
@@ -98,7 +99,7 @@ export function buildNpcGroups(scenarios: ConversationScenarioSummary[], courseC
     // Cooldown: surface the unlock time of the next locked-but-cooldown quest so the UI can show a timer.
     const nextCooldown = g.questScenarios.find(s => s.locked && s.cooldown_until)
     g.cooldownUntil = nextCooldown?.cooldown_until ?? null
-    g.expandable = g.questTotal > 1 && g.visibleQuestScenarios.length > 0
+    g.expandable = g.questTotal > 1
   }
   return groups
 }
