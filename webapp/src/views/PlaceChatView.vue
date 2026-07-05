@@ -114,13 +114,10 @@
         <!-- messages (task checklist, quest image and completion banners scroll along with the
              conversation instead of pinning to the top/bottom, so the thread keeps usable height
              when the keyboard is open and the composer never gets pushed off-screen). -->
-        <div
-          ref="scrollEl"
-          class="chat-thread"
-          :class="{ 'chat-thread--scene': !!session.image_url }"
-          :style="session.image_url ? { backgroundImage: `url(${mediaUrl(session.image_url)})` } : undefined"
-        >
+        <div ref="scrollEl" class="chat-thread">
           <div v-if="session.image_url" class="chat-quest-scene">
+            <img :src="mediaUrl(session.image_url)" alt="" class="chat-quest-scene-img" />
+            <div class="chat-quest-scene-shade" aria-hidden="true" />
             <div v-if="session.is_quest && tasks.length" class="chat-tasks chat-tasks--scene">
               <div class="chat-tasks-title">{{ t('chat.tasksTitle') }}</div>
               <div
@@ -556,7 +553,7 @@ onMounted(loadForRoute)
 /* cooldown countdown label inside a quest step */
 .npc-cooldown { margin-left: 6px; font-size: 11px; color: #d97706; font-weight: 600; }
 
-/* quest scene background in dialog mode */
+/* quest scene image at the top of the dialog */
 .chat-thread {
   position: relative;
   flex: 1;
@@ -567,40 +564,23 @@ onMounted(loadForRoute)
   flex-direction: column;
   gap: 10px;
 }
-.chat-thread--scene {
-  background-color: var(--bg);
-  background-size: cover;
-  background-position: center top;
-  background-repeat: no-repeat;
-}
-.chat-thread--scene::before {
-  content: "";
-  position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(to bottom, rgba(0,0,0,0.18) 0%, rgba(0,0,0,0.10) 26%, rgba(0,0,0,0.42) 68%, var(--bg) 100%),
-    linear-gradient(to right, rgba(0,0,0,0.26), rgba(0,0,0,0.05) 48%, rgba(0,0,0,0.24));
-  pointer-events: none;
-  z-index: 0;
-}
-.chat-thread--scene > * {
-  position: relative;
-  z-index: 1;
-}
-
-/* quest task panel starts the dialog over the scene background */
 .chat-quest-scene {
   position: relative;
   flex-shrink: 0;
-  min-height: min(42vh, 360px);
   margin: -12px -16px 0;
-  padding: 14px 16px 34px;
-  display: flex;
-  align-items: flex-end;
-  overflow: hidden;
 }
-@media (min-width: 640px) {
-  .chat-quest-scene { min-height: min(48vh, 460px); }
+.chat-quest-scene-img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+.chat-quest-scene-shade {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to bottom, rgba(0,0,0,0.08) 0%, rgba(0,0,0,0.16) 42%, rgba(0,0,0,0.58) 78%, rgba(0,0,0,0.72) 100%),
+    linear-gradient(to right, rgba(0,0,0,0.38), rgba(0,0,0,0.06) 45%, rgba(0,0,0,0.26));
+  pointer-events: none;
 }
 
 /* NPC groups + chain steps */
@@ -644,9 +624,13 @@ onMounted(loadForRoute)
    doesn't eat into the conversation's visible height when the mobile keyboard is open. */
 .chat-tasks { flex-shrink: 0; padding: 12px 14px; border-radius: 14px; background: var(--card-bg); border: 1px solid var(--border, rgba(0,0,0,0.08)); }
 .chat-tasks--scene {
-  position: relative;
+  position: absolute;
+  left: 16px;
+  right: 16px;
+  bottom: 14px;
   z-index: 1;
-  width: min(100%, 430px);
+  width: auto;
+  max-width: 430px;
   background: rgba(255,255,255,0.88);
   border-color: rgba(255,255,255,0.62);
   box-shadow: 0 14px 34px rgba(0,0,0,0.28);
