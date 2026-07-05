@@ -53,14 +53,9 @@ type VocabWord struct {
 	Lemma          string     `json:"lemma"`        // Base form (word_cards.word)
 	DisplayWord    string     `json:"display_word"` // Display form (prefer training_cards.display_word, fallback word_cards.display_en, fallback word_cards.word)
 	DisplayTarget  string     `json:"display_target"`
-	TotalCards     int        `json:"total_cards"`
-	DueCount       int        `json:"due_count"`
-	LastReview     *time.Time `json:"last_review"`
-	TotalReps      int        `json:"total_reps"`      // Total number of reviews across all cards
 	AddedAt        *time.Time `json:"added_at"`        // Date when first card was added
 	MasteryLevel   string     `json:"mastery_level"`   // Calculated mastery level: new, learning, mastered, known
 	MasteringScore int        `json:"mastering_score"` // 0–100: how well the word is learned (for red–green marker)
-	ReviewCount    int        `json:"review_count"`    // Total number of review events
 }
 
 // handleVocab shows the vocabulary list
@@ -146,16 +141,11 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 		allowedSortFields := map[string]string{
 			"display_word":         "display_word",
 			"lemma":                "lemma",
-			"total_cards":          "total_cards",
 			"mastery_level":        "mastery_level",      // Special handling below
 			"mastery_level_desc":   "mastery_level_desc", // Special handling below - reversed order
 			"mastering_score":      "mastering_score",    // Numeric 0-100
 			"mastering_score_desc": "mastering_score_desc",
-			"total_reps":           "total_reps",
-			"review_count":         "review_count",
-			"due_count":            "due_count",
 			"added_at":             "added_at",
-			"last_review":          "last_review",
 		}
 		if field, ok := allowedSortFields[sortByStr]; ok {
 			sortBy = field
@@ -170,18 +160,16 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 	}
 	offset := (page - 1) * limit
 
-	now := time.Now()
-
 	// Build query with search and pagination
 	// Include both words with user_cards and words marked as "known"
 	// Display word: prefer training_cards.display_word, fallback word_cards.display_en, fallback word_cards.word
 	// Use UNION ALL to combine words from user_cards and known words without user_cards
 	// Optimized: using JOINs instead of subqueries for better performance
-	queryFromCards := "SELECT tc.word_card_id, wc.word as lemma, COALESCE(MAX(tc_display.display_word), MAX(wc.display_en), wc.word) as display_word, COUNT(DISTINCT uc.id) as total_cards, SUM(CASE WHEN uc.next_due_at IS NULL OR uc.next_due_at <= ? THEN 1 ELSE 0 END) as due_count, substr(CAST(MAX(uc.last_review_at) AS TEXT), 1, 19) as last_review, SUM(uc.reps) as total_reps, substr(CAST(MIN(uc.created_at) AS TEXT), 1, 19) as added_at, COUNT(CASE WHEN uc.state = 'review' THEN 1 END) as review_state_count, COUNT(CASE WHEN uc.state = 'learning' THEN 1 END) as learning_state_count, COUNT(CASE WHEN uc.state = 'new' THEN 1 END) as new_state_count, COALESCE(MAX(review_stats.review_count), 0) as review_count, MAX(CASE WHEN uwk_known.word_card_id IS NOT NULL THEN 1 ELSE 0 END) as is_known, COALESCE(MAX(uwm.mastering_score), 0) as mastering_score_stored FROM user_cards uc JOIN training_cards tc ON uc.training_card_id = tc.id JOIN word_cards wc ON tc.word_card_id = wc.id LEFT JOIN (SELECT tc1.word_card_id, tc1.display_word FROM training_cards tc1 INNER JOIN (SELECT word_card_id, MIN(id) as min_id FROM training_cards WHERE display_word IS NOT NULL AND display_word != '' GROUP BY word_card_id) tc_min ON tc1.word_card_id = tc_min.word_card_id AND tc1.id = tc_min.min_id) tc_display ON tc_display.word_card_id = tc.word_card_id LEFT JOIN (SELECT tc2.word_card_id, COUNT(*) as review_count FROM review_events re JOIN user_cards uc2 ON re.user_card_id = uc2.id JOIN training_cards tc2 ON uc2.training_card_id = tc2.id WHERE uc2.user_id = ? GROUP BY tc2.word_card_id) review_stats ON review_stats.word_card_id = tc.word_card_id LEFT JOIN user_word_knowledge uwk_known ON uwk_known.user_id = ? AND uwk_known.word_card_id = tc.word_card_id AND uwk_known.status = 'known' LEFT JOIN user_word_mastering uwm ON uwm.user_id = uc.user_id AND uwm.word_card_id = tc.word_card_id WHERE uc.user_id = ?"
+	queryFromCards := "SELECT tc.word_card_id, wc.word as lemma, COALESCE(MAX(tc_display.display_word), MAX(wc.display_en), wc.word) as display_word, COUNT(DISTINCT uc.id) as total_cards, SUM(uc.reps) as total_reps, substr(CAST(MIN(uc.created_at) AS TEXT), 1, 19) as added_at, COUNT(CASE WHEN uc.state = 'review' THEN 1 END) as review_state_count, COUNT(CASE WHEN uc.state = 'learning' THEN 1 END) as learning_state_count, COUNT(CASE WHEN uc.state = 'new' THEN 1 END) as new_state_count, MAX(CASE WHEN uwk_known.word_card_id IS NOT NULL THEN 1 ELSE 0 END) as is_known, COALESCE(MAX(uwm.mastering_score), 0) as mastering_score_stored FROM user_cards uc JOIN training_cards tc ON uc.training_card_id = tc.id JOIN word_cards wc ON tc.word_card_id = wc.id LEFT JOIN (SELECT tc1.word_card_id, tc1.display_word FROM training_cards tc1 INNER JOIN (SELECT word_card_id, MIN(id) as min_id FROM training_cards WHERE display_word IS NOT NULL AND display_word != '' GROUP BY word_card_id) tc_min ON tc1.word_card_id = tc_min.word_card_id AND tc1.id = tc_min.min_id) tc_display ON tc_display.word_card_id = tc.word_card_id LEFT JOIN user_word_knowledge uwk_known ON uwk_known.user_id = ? AND uwk_known.word_card_id = tc.word_card_id AND uwk_known.status = 'known' LEFT JOIN user_word_mastering uwm ON uwm.user_id = uc.user_id AND uwm.word_card_id = tc.word_card_id WHERE uc.user_id = ?"
 
-	queryFromKnown := "SELECT uwk.word_card_id, wc.word as lemma, COALESCE(tc_display.display_word, wc.display_en, wc.word) as display_word, 0 as total_cards, 0 as due_count, NULL as last_review, 0 as total_reps, substr(CAST(uwk.created_at AS TEXT), 1, 19) as added_at, 0 as review_state_count, 0 as learning_state_count, 0 as new_state_count, 0 as review_count, 1 as is_known, 100 as mastering_score_stored FROM user_word_knowledge uwk JOIN word_cards wc ON uwk.word_card_id = wc.id LEFT JOIN (SELECT tc1.word_card_id, tc1.display_word FROM training_cards tc1 INNER JOIN (SELECT word_card_id, MIN(id) as min_id FROM training_cards WHERE display_word IS NOT NULL AND display_word != '' GROUP BY word_card_id) tc_min ON tc1.word_card_id = tc_min.word_card_id AND tc1.id = tc_min.min_id) tc_display ON tc_display.word_card_id = uwk.word_card_id LEFT JOIN (SELECT DISTINCT tc.word_card_id FROM user_cards uc JOIN training_cards tc ON uc.training_card_id = tc.id WHERE uc.user_id = ?) has_user_cards ON has_user_cards.word_card_id = uwk.word_card_id WHERE uwk.user_id = ? AND uwk.status = 'known' AND has_user_cards.word_card_id IS NULL"
+	queryFromKnown := "SELECT uwk.word_card_id, wc.word as lemma, COALESCE(tc_display.display_word, wc.display_en, wc.word) as display_word, 0 as total_cards, 0 as total_reps, substr(CAST(uwk.created_at AS TEXT), 1, 19) as added_at, 0 as review_state_count, 0 as learning_state_count, 0 as new_state_count, 1 as is_known, 100 as mastering_score_stored FROM user_word_knowledge uwk JOIN word_cards wc ON uwk.word_card_id = wc.id LEFT JOIN (SELECT tc1.word_card_id, tc1.display_word FROM training_cards tc1 INNER JOIN (SELECT word_card_id, MIN(id) as min_id FROM training_cards WHERE display_word IS NOT NULL AND display_word != '' GROUP BY word_card_id) tc_min ON tc1.word_card_id = tc_min.word_card_id AND tc1.id = tc_min.min_id) tc_display ON tc_display.word_card_id = uwk.word_card_id LEFT JOIN (SELECT DISTINCT tc.word_card_id FROM user_cards uc JOIN training_cards tc ON uc.training_card_id = tc.id WHERE uc.user_id = ?) has_user_cards ON has_user_cards.word_card_id = uwk.word_card_id WHERE uwk.user_id = ? AND uwk.status = 'known' AND has_user_cards.word_card_id IS NULL"
 
-	args := []interface{}{now, userID, userID, userID}
+	args := []interface{}{userID, userID}
 	argsKnown := []interface{}{userID, userID}
 
 	// Scope to the learner's selected course on the unified DB so the dictionary matches
@@ -297,8 +285,8 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 	var totalCount int
 	for rows.Next() {
 		var word VocabWord
-		var totalCards, dueCount, totalReps, reviewCount, reviewStateCount, learningStateCount, newStateCount, isKnown int
-		var lastReview, addedAt sql.NullString
+		var totalCards, totalReps, reviewStateCount, learningStateCount, newStateCount, isKnown int
+		var addedAt sql.NullString
 		var displayWord sql.NullString
 		var masteryLevelCalc sql.NullString
 		var masteringScoreStored sql.NullInt64
@@ -317,8 +305,8 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 				continue
 			}
 		}
-		err := rows.Scan(&word.WordCardID, &word.Lemma, &displayWord, &totalCards, &dueCount, &lastReview, &totalReps, &addedAt,
-			&reviewStateCount, &learningStateCount, &newStateCount, &reviewCount, &isKnown, &masteringScoreStored, &masteryLevelCalc, &discardScore, &rowTotalCount)
+		err := rows.Scan(&word.WordCardID, &word.Lemma, &displayWord, &totalCards, &totalReps, &addedAt,
+			&reviewStateCount, &learningStateCount, &newStateCount, &isKnown, &masteringScoreStored, &masteryLevelCalc, &discardScore, &rowTotalCount)
 		if testHookVocabScanErrAfter != nil {
 			if hookErr := testHookVocabScanErrAfter(); hookErr != nil {
 				err = hookErr
@@ -344,23 +332,6 @@ func (r *Router) handleVocab(w http.ResponseWriter, req *http.Request) {
 			word.DisplayWord = word.Lemma
 		}
 		word.DisplayTarget = word.DisplayWord
-
-		word.TotalCards = totalCards
-		word.DueCount = dueCount
-		word.TotalReps = totalReps
-		word.ReviewCount = reviewCount
-
-		if lastReview.Valid && lastReview.String != "" {
-			var t *time.Time
-			if testHookVocabSetLastReview != nil {
-				t = testHookVocabSetLastReview
-			} else if parsed, err := parseDateTime(lastReview.String); err == nil && parsed != nil {
-				t = parsed
-			}
-			if t != nil {
-				word.LastReview = t
-			}
-		}
 
 		if addedAt.Valid && addedAt.String != "" {
 			var t *time.Time
@@ -446,7 +417,6 @@ func (r *Router) handleVocabSummary(w http.ResponseWriter, req *http.Request) {
 			"new":            summary.New,
 			"learning":       summary.Learning,
 			"review":         summary.Review,
-			"review_count":   summary.Review,
 			"mastered":       summary.Mastered,
 			"mastered_count": summary.Mastered,
 			"known":          summary.Mastered, // backward compat: "изучено" in Practice dictionary card
@@ -632,7 +602,7 @@ func (r *Router) handleVocabDelete(w http.ResponseWriter, req *http.Request) {
 	http.Error(w, "Invalid request", http.StatusBadRequest)
 }
 
-// VocabCardDetail represents detailed information about a user card
+// VocabCardDetail represents lexical details for a word sense.
 type VocabCardDetail struct {
 	WordRU        string  `json:"word_ru"`
 	WordNative    string  `json:"word_native"`
@@ -812,6 +782,14 @@ func (r *Router) handleVocabWordCardsByID(w http.ResponseWriter, req *http.Reque
 		r.logger.Warn("failed to check known status", zap.Error(err))
 		isKnown = false
 	}
+	if !hasUserCards && !isKnown {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusNotFound)
+		json.NewEncoder(w).Encode(map[string]interface{}{
+			"error": "Word not found",
+		})
+		return
+	}
 	var masteringScore int
 	if isKnown {
 		masteringScore = 100
@@ -851,13 +829,13 @@ func (r *Router) handleVocabWordCardsByID(w http.ResponseWriter, req *http.Reque
 
 	// Build response
 	response := map[string]interface{}{
-		"lemma":            lemma,
-		"word_card_id":     wordCardID,
-		"cards":            cards,
-		"has_user_cards":   hasUserCards,
-		"is_known":         isKnown,
-		"mastery_level":    masteryLevel,
-		"mastering_score":  masteringScore,
+		"lemma":           lemma,
+		"word_card_id":    wordCardID,
+		"cards":           cards,
+		"has_user_cards":  hasUserCards,
+		"is_known":        isKnown,
+		"mastery_level":   masteryLevel,
+		"mastering_score": masteringScore,
 	}
 
 	// Add verb forms if present

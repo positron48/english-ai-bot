@@ -169,7 +169,7 @@
       </div>
     </div>
 
-    <!-- Полный экран как в «Словарь»: карточки, SRS, формы глаголов; слово в обучение — на сервере при word-lookup -->
+    <!-- Полный экран как в «Словарь»: значения, формы глаголов; слово в обучение — на сервере при word-lookup -->
     <div v-if="wordModalVisible" class="word-modal-overlay" @click.self="closeWordModal">
       <div class="word-modal-panel">
         <LgLumiCardLoading

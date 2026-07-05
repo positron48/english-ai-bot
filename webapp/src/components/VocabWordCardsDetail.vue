@@ -156,20 +156,6 @@ export interface MorphInfo {
 }
 
 export interface CardDetail {
-  id: number
-  training_card_id: number
-  direction: string
-  state: string
-  ef: number
-  reps: number
-  interval_days: number
-  learning_step: number
-  lapse_count: number
-  next_due_at: string | null
-  last_review_at: string | null
-  last_quality: number | null
-  created_at?: string
-  updated_at?: string
   word_ru: string
   word_native?: string
   meaning_en: string
@@ -181,7 +167,6 @@ export interface CardDetail {
   transcription: string
   sense_index: number
   pos?: string
-  review_count: number
 }
 
 export interface VerbFormRow {
@@ -206,6 +191,8 @@ export interface VocabCardsAPIResponse {
   morph?: MorphInfo
   has_user_cards?: boolean
   is_known?: boolean
+  mastery_level?: string
+  mastering_score?: number
 }
 
 interface SenseGroup {
@@ -220,7 +207,6 @@ interface SenseGroup {
   example_native?: string
   transcription: string
   pos?: string
-  directions: CardDetail[]
 }
 
 const props = defineProps<{
@@ -251,6 +237,8 @@ const nounGender = ref<string | null>(null)
 const wordMorph = ref<MorphInfo | null>(null)
 const hasUserCards = ref(false)
 const isKnown = ref(false)
+const masteryLevel = ref('')
+const payloadMasteringScore = ref<number | null>(null)
 const processingAction = ref(false)
 
 const selectedWordDisplay = ref('')
@@ -267,51 +255,6 @@ const isVerbLikePOS = computed(() => {
   return p === 'verb' || p === 'aux'
 })
 
-const srsTooltipCard = ref<CardDetail | null>(null)
-const srsTooltipPosition = ref<{ top: number; left: number } | null>(null)
-let srsTooltipHideTimeout: ReturnType<typeof setTimeout> | null = null
-
-const srsTooltipStyle = computed(() => {
-  const pos = srsTooltipPosition.value
-  if (!pos) return {}
-  return { top: `${pos.top}px`, left: `${pos.left}px` }
-})
-
-function showSrsTooltip(e: MouseEvent, card: CardDetail) {
-  if (srsTooltipHideTimeout) {
-    clearTimeout(srsTooltipHideTimeout)
-    srsTooltipHideTimeout = null
-  }
-  const el = e.currentTarget as HTMLElement
-  const rect = el.getBoundingClientRect()
-  srsTooltipCard.value = card
-  srsTooltipPosition.value = { top: rect.top - 8, left: rect.left + rect.width / 2 }
-}
-
-function keepSrsTooltip() {
-  if (srsTooltipHideTimeout) {
-    clearTimeout(srsTooltipHideTimeout)
-    srsTooltipHideTimeout = null
-  }
-}
-
-function hideSrsTooltip(immediate = false) {
-  if (immediate) {
-    if (srsTooltipHideTimeout) {
-      clearTimeout(srsTooltipHideTimeout)
-      srsTooltipHideTimeout = null
-    }
-    srsTooltipCard.value = null
-    srsTooltipPosition.value = null
-    return
-  }
-  srsTooltipHideTimeout = setTimeout(() => {
-    srsTooltipHideTimeout = null
-    srsTooltipCard.value = null
-    srsTooltipPosition.value = null
-  }, 150)
-}
-
 let loadGen = 0
 
 function applyPayload(data: VocabCardsAPIResponse) {
@@ -323,6 +266,8 @@ function applyPayload(data: VocabCardsAPIResponse) {
   wordMorph.value = data.morph || null
   hasUserCards.value = data.has_user_cards || false
   isKnown.value = data.is_known || false
+  masteryLevel.value = data.mastery_level || ''
+  payloadMasteringScore.value = typeof data.mastering_score === 'number' ? data.mastering_score : null
   fullVerbForms.value = []
 }
 
@@ -383,7 +328,6 @@ async function loadCards() {
 watch(
   () => [props.lemma, props.preloaded] as const,
   () => {
-    hideSrsTooltip(true)
     loadCards()
   },
   { immediate: true },
@@ -405,21 +349,11 @@ const groupedCards = computed((): SenseGroup[] => {
         example_native: card.example_native,
         transcription: card.transcription,
         pos: card.pos,
-        directions: [],
       })
     }
-    groups.get(card.sense_index)!.directions.push(card)
   }
   return Array.from(groups.values())
     .sort((a, b) => a.sense_index - b.sense_index)
-    .map((group) => ({
-      ...group,
-      directions: group.directions.sort((a, b) => {
-        if (a.direction === 'en_ru' && b.direction === 'ru_en') return -1
-        if (a.direction === 'ru_en' && b.direction === 'en_ru') return 1
-        return 0
-      }),
-    }))
 })
 
 const selectedMorphText = computed(() => {
@@ -440,78 +374,16 @@ const selectedMorphText = computed(() => {
   return ''
 })
 
-const totalCards = computed(() => cards.value.length)
-const totalDue = computed(() => cards.value.filter((c) => c.next_due_at && new Date(c.next_due_at) <= new Date()).length)
-const lastReview = computed(() => {
-  const reviews = cards.value
-    .map((c) => c.last_review_at)
-    .filter((d): d is string => d !== null)
-    .sort()
-    .reverse()
-  return reviews.length > 0 ? reviews[0] : null
-})
+const displayMasteringScore = computed(() => (
+  props.listMasteringScore !== null && props.listMasteringScore !== undefined
+    ? props.listMasteringScore
+    : payloadMasteringScore.value
+))
 
 const masteryColor = (score: number): string => {
   const s = Math.max(0, Math.min(100, score ?? 0))
   const hue = (120 * s) / 100
   return `hsl(${hue}, 72%, 42%)`
-}
-
-const formatDateAbsolute = (dateStr: string | null): string => {
-  if (!dateStr) return '—'
-  const date = new Date(dateStr)
-  if (isNaN(date.getTime())) return '—'
-  const day = String(date.getDate()).padStart(2, '0')
-  const month = String(date.getMonth() + 1).padStart(2, '0')
-  const year = date.getFullYear()
-  return `${day}.${month}.${year}`
-}
-
-const formatDateRelative = (dateStr: string | null): string => {
-  if (!dateStr) return '—'
-  const date = new Date(dateStr)
-  if (isNaN(date.getTime())) return '—'
-  const now = new Date()
-  const diffTime = now.getTime() - date.getTime()
-  const diffDays = Math.floor(Math.abs(diffTime) / (1000 * 60 * 60 * 24))
-  const diffHours = Math.floor(Math.abs(diffTime) / (1000 * 60 * 60))
-  const diffMinutes = Math.floor(Math.abs(diffTime) / (1000 * 60))
-  const isFuture = diffTime < 0
-  if (diffDays === 0) {
-    if (diffHours === 0) {
-      if (diffMinutes < 1) return t('vocab.justNow')
-      if (isFuture) return t('vocab.inMinutes', diffMinutes, { n: diffMinutes })
-      return t('vocab.minutesAgo', diffMinutes, { n: diffMinutes })
-    }
-    if (isFuture) return t('vocab.inHours', diffHours, { n: diffHours })
-    return t('vocab.hoursAgo', diffHours, { n: diffHours })
-  }
-  if (diffDays === 1) return isFuture ? t('vocab.tomorrow') : t('vocab.yesterday')
-  if (diffDays < 7) return isFuture ? t('vocab.inDays', diffDays, { n: diffDays }) : t('vocab.daysAgo', diffDays, { n: diffDays })
-  const diffWeeks = Math.floor(diffDays / 7)
-  if (diffWeeks < 4) {
-    return isFuture ? t('vocab.inWeeks', diffWeeks, { n: diffWeeks }) : t('vocab.weeksAgo', diffWeeks, { n: diffWeeks })
-  }
-  const diffMonths = Math.floor(diffDays / 30)
-  if (diffMonths < 12) {
-    return isFuture ? t('vocab.inMonths', diffMonths, { n: diffMonths }) : t('vocab.monthsAgo', diffMonths, { n: diffMonths })
-  }
-  const diffYears = Math.floor(diffDays / 365)
-  return isFuture ? t('vocab.inYears', diffYears, { n: diffYears }) : t('vocab.yearsAgo', diffYears, { n: diffYears })
-}
-
-const formatSrsNumber = (n: number): string => {
-  if (typeof n !== 'number' || Number.isNaN(n)) return '—'
-  return Number.isInteger(n) ? String(n) : n.toFixed(2)
-}
-
-const LEARNING_STEPS_EN_RU = [1, 3, 7]
-const LEARNING_STEPS_RU_EN = [1, 3, 7, 14]
-
-function getStepIntervalDays(direction: string, learningStep: number): number {
-  const steps = direction === 'ru_en' ? LEARNING_STEPS_RU_EN : LEARNING_STEPS_EN_RU
-  if (learningStep < 0 || learningStep >= steps.length) return 0
-  return steps[learningStep]
 }
 
 const playSelectedPronunciation = async () => {
@@ -525,7 +397,6 @@ const playSelectedPronunciation = async () => {
 }
 
 function onCloseClick() {
-  hideSrsTooltip(true)
   emit('close')
 }
 
@@ -910,153 +781,6 @@ onUnmounted(() => {
   line-height: 1.5;
 }
 
-.directions-simple {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 8px;
-}
-
-.direction-item-simple {
-  padding: 12px;
-  background: var(--card-bg);
-  border-radius: 6px;
-  border-left: 3px solid var(--color-primary);
-}
-
-.direction-header-simple {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  margin-bottom: 8px;
-  flex-wrap: wrap;
-}
-
-.srs-info-wrap {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  margin-left: auto;
-  cursor: help;
-}
-
-.srs-info-icon {
-  width: 16px;
-  height: 16px;
-  opacity: 0.7;
-  color: var(--text-secondary);
-}
-
-.srs-info-wrap:hover .srs-info-icon {
-  opacity: 1;
-  color: var(--color-primary);
-}
-
-.srs-tooltip-fixed {
-  position: fixed;
-  transform: translate(-50%, -100%);
-  min-width: 240px;
-  max-width: 320px;
-  padding: 10px 12px;
-  background: var(--card-bg);
-  border: 1px solid var(--table-border, rgba(0, 0, 0, 0.15));
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  font-size: 12px;
-  line-height: 1.5;
-  color: var(--text-primary);
-  white-space: nowrap;
-  z-index: 1100;
-  pointer-events: auto;
-}
-
-.srs-tooltip-title {
-  font-weight: 600;
-  margin-bottom: 8px;
-  padding-bottom: 6px;
-  border-bottom: 1px solid var(--table-border, rgba(0, 0, 0, 0.1));
-}
-
-.srs-tooltip-row {
-  margin-bottom: 2px;
-}
-
-.srs-tooltip-row:last-child {
-  margin-bottom: 0;
-}
-
-.srs-tooltip-row span {
-  color: var(--text-secondary);
-  margin-right: 6px;
-}
-
-.srs-tooltip-hint {
-  cursor: help;
-  opacity: 0.8;
-}
-
-.srs-tooltip-step {
-  color: var(--color-primary);
-  margin-right: 0;
-}
-
-.srs-tooltip-reason {
-  margin-top: 8px;
-  padding-top: 6px;
-  border-top: 1px solid var(--table-border, rgba(0, 0, 0, 0.1));
-  font-size: 11px;
-  line-height: 1.4;
-  color: var(--text-secondary);
-  white-space: normal;
-}
-
-.direction-badge {
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-size: 11px;
-  font-weight: 600;
-}
-
-.direction-ru_en {
-  background-color: var(--color-primary, #3b82f6);
-  color: white;
-}
-
-.direction-en_ru {
-  background-color: var(--color-secondary, #6b7280);
-  color: white;
-}
-
-.state-badge {
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: capitalize;
-}
-
-.state-review {
-  background-color: var(--color-success, #10b981);
-  color: white;
-}
-
-.state-learning {
-  background-color: var(--color-warning, #f59e0b);
-  color: white;
-}
-
-.state-new {
-  background-color: var(--color-secondary, #6b7280);
-  color: white;
-}
-
-.direction-stats-simple {
-  display: flex;
-  gap: 16px;
-  font-size: 13px;
-  color: var(--text-secondary);
-  flex-wrap: wrap;
-}
-
 .no-cards {
   text-align: center;
   padding: 40px;
@@ -1107,19 +831,9 @@ onUnmounted(() => {
 }
 
 @media (max-width: 768px) {
-  .directions-simple {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 8px;
-  }
   .word-summary {
     flex-direction: column;
     gap: 4px;
-  }
-}
-
-@media (max-width: 400px) {
-  .directions-simple {
-    grid-template-columns: 1fr;
   }
 }
 </style>

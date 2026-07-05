@@ -170,14 +170,9 @@ interface VocabWord {
   lemma: string
   display_word: string
   display_target?: string
-  total_cards: number
-  due_count: number
-  last_review: string | null
-  total_reps: number
   added_at: string | null
   mastery_level: string
   mastering_score: number
-  review_count: number
 }
 
 interface Pagination {
@@ -256,14 +251,9 @@ function linglowWordToVocab(w: LinglowWordItem): VocabWord {
     lemma: w.lemma,
     display_word: w.display_word || w.lemma,
     display_target: w.translation,
-    total_cards: w.total_cards,
-    due_count: w.due_count,
-    last_review: w.last_review_at ?? null,
-    total_reps: w.total_reps,
     added_at: w.added_at ?? null,
     mastery_level: w.mastery_level,
     mastering_score: w.state === 'mastered' ? 100 : w.state === 'review' ? 60 : w.state === 'learning' ? 30 : 0,
-    review_count: w.reps,
   }
 }
 
@@ -278,7 +268,6 @@ const loadVocab = async () => {
     let sortOrder = 'asc'
     if (sortField.value === 'display_word') { sortBy = 'display_word'; sortOrder = 'asc' }
     else if (sortField.value === 'display_word_desc') { sortBy = 'display_word'; sortOrder = 'desc' }
-    else if (sortField.value === 'due_count') { sortBy = 'due_count'; sortOrder = 'desc' }
     else if (sortField.value === 'added_at') { sortBy = 'added_at'; sortOrder = 'desc' }
     else if (sortField.value === 'mastery_level') { sortBy = 'mastery_level'; sortOrder = 'asc' }
     else if (sortField.value === 'mastery_level_desc') { sortBy = 'mastery_level_desc'; sortOrder = 'asc' }
@@ -1078,154 +1067,6 @@ onUnmounted(() => {
   line-height: 1.5;
 }
 
-.directions-simple {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 8px;
-}
-
-.direction-item-simple {
-  padding: 12px;
-  background: var(--card-bg);
-  border-radius: 6px;
-  border-left: 3px solid var(--color-primary);
-}
-
-.direction-header-simple {
-  display: flex;
-  gap: 8px;
-  align-items: center;
-  margin-bottom: 8px;
-  flex-wrap: wrap;
-}
-
-.srs-info-wrap {
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  margin-left: auto;
-  cursor: help;
-}
-
-.srs-info-icon {
-  width: 16px;
-  height: 16px;
-  opacity: 0.7;
-  color: var(--text-secondary);
-}
-
-.srs-info-wrap:hover .srs-info-icon {
-  opacity: 1;
-  color: var(--color-primary);
-}
-
-/* Fixed tooltip (teleported to body) — not clipped by modal */
-.srs-tooltip-fixed {
-  position: fixed;
-  transform: translate(-50%, -100%);
-  min-width: 240px;
-  max-width: 320px;
-  padding: 10px 12px;
-  background: var(--card-bg);
-  border: 1px solid var(--table-border, rgba(0, 0, 0, 0.15));
-  border-radius: 8px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  font-size: 12px;
-  line-height: 1.5;
-  color: var(--text-primary);
-  white-space: nowrap;
-  z-index: 1100;
-  pointer-events: auto;
-}
-
-.srs-tooltip-title {
-  font-weight: 600;
-  margin-bottom: 8px;
-  padding-bottom: 6px;
-  border-bottom: 1px solid var(--table-border, rgba(0, 0, 0, 0.1));
-}
-
-.srs-tooltip-row {
-  margin-bottom: 2px;
-}
-
-.srs-tooltip-row:last-child {
-  margin-bottom: 0;
-}
-
-.srs-tooltip-row span {
-  color: var(--text-secondary);
-  margin-right: 6px;
-}
-
-.srs-tooltip-hint {
-  cursor: help;
-  opacity: 0.8;
-}
-
-.srs-tooltip-step {
-  color: var(--color-primary);
-  margin-right: 0;
-}
-
-.srs-tooltip-reason {
-  margin-top: 8px;
-  padding-top: 6px;
-  border-top: 1px solid var(--table-border, rgba(0, 0, 0, 0.1));
-  font-size: 11px;
-  line-height: 1.4;
-  color: var(--text-secondary);
-  white-space: normal;
-}
-
-.direction-badge {
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-size: 11px;
-  font-weight: 600;
-}
-
-.direction-ru_en {
-  background-color: var(--color-primary, #3b82f6);
-  color: white;
-}
-
-.direction-en_ru {
-  background-color: var(--color-secondary, #6b7280);
-  color: white;
-}
-
-.state-badge {
-  padding: 2px 8px;
-  border-radius: 4px;
-  font-size: 11px;
-  font-weight: 600;
-  text-transform: capitalize;
-}
-
-.state-review {
-  background-color: var(--color-success, #10b981);
-  color: white;
-}
-
-.state-learning {
-  background-color: var(--color-warning, #f59e0b);
-  color: white;
-}
-
-.state-new {
-  background-color: var(--color-secondary, #6b7280);
-  color: white;
-}
-
-.direction-stats-simple {
-  display: flex;
-  gap: 16px;
-  font-size: 13px;
-  color: var(--text-secondary);
-  flex-wrap: wrap;
-}
-
 .no-cards {
   text-align: center;
   padding: 40px;
@@ -1332,19 +1173,10 @@ onUnmounted(() => {
     flex-direction: column;
     gap: 4px;
   }
-  
-  .directions-simple {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-    gap: 8px;
-  }
 }
 
 @media (max-width: 400px) {
   .words-grid {
-    grid-template-columns: 1fr;
-  }
-  
-  .directions-simple {
     grid-template-columns: 1fr;
   }
 }
