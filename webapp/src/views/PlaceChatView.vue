@@ -117,7 +117,6 @@
         <div ref="scrollEl" class="chat-thread">
           <div v-if="session.image_url" class="chat-quest-scene">
             <img :src="mediaUrl(session.image_url)" alt="" class="chat-quest-scene-img" />
-            <div class="chat-quest-scene-shade" aria-hidden="true" />
             <div v-if="session.is_quest && tasks.length" class="chat-tasks chat-tasks--scene">
               <div class="chat-tasks-title">{{ t('chat.tasksTitle') }}</div>
               <div
@@ -574,12 +573,14 @@ onMounted(loadForRoute)
   height: auto;
   display: block;
 }
-.chat-quest-scene-shade {
+.chat-quest-scene::after {
+  content: "";
   position: absolute;
-  inset: 0;
-  background:
-    linear-gradient(to bottom, rgba(0,0,0,0.08) 0%, rgba(0,0,0,0.16) 42%, rgba(0,0,0,0.58) 78%, rgba(0,0,0,0.72) 100%),
-    linear-gradient(to right, rgba(0,0,0,0.38), rgba(0,0,0,0.06) 45%, rgba(0,0,0,0.26));
+  left: 0;
+  right: 0;
+  bottom: 0;
+  height: 40%;
+  background: linear-gradient(to bottom, transparent, var(--bg));
   pointer-events: none;
 }
 
@@ -631,23 +632,22 @@ onMounted(loadForRoute)
   z-index: 1;
   width: auto;
   max-width: 430px;
-  background: rgba(255,255,255,0.88);
-  border-color: rgba(255,255,255,0.62);
-  box-shadow: 0 14px 34px rgba(0,0,0,0.28);
-  backdrop-filter: blur(14px) saturate(1.12);
+  background: color-mix(in srgb, var(--card-bg) 36%, transparent);
+  border: 1px solid color-mix(in srgb, var(--border) 55%, transparent);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(8px) saturate(1.08);
+  -webkit-backdrop-filter: blur(8px) saturate(1.08);
 }
 :root[data-theme="dark"] .chat-tasks--scene {
-  background: rgba(24,28,24,0.84);
-  border-color: rgba(255,255,255,0.16);
+  background: color-mix(in srgb, var(--card-bg) 32%, transparent);
+  border-color: color-mix(in srgb, var(--border) 70%, transparent);
+  box-shadow: 0 8px 22px rgba(0, 0, 0, 0.22);
 }
 .chat-tasks-title { font-family: 'Inter', sans-serif; font-size: 12px; font-weight: 700; color: var(--subtext); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 8px; }
 .chat-task { display: flex; align-items: center; gap: 8px; padding: 4px 0; font-family: 'Inter', sans-serif; font-size: 13px; color: var(--text); transition: opacity 0.25s; }
-.chat-tasks--scene .chat-tasks-title { color: rgba(31,41,32,0.72); }
-.chat-tasks--scene .chat-task { color: #172017; text-shadow: 0 1px 0 rgba(255,255,255,0.35); }
-.chat-tasks--scene .chat-task-opt { color: rgba(31,41,32,0.66); }
-:root[data-theme="dark"] .chat-tasks--scene .chat-tasks-title,
-:root[data-theme="dark"] .chat-tasks--scene .chat-task-opt { color: rgba(235,238,230,0.72); }
-:root[data-theme="dark"] .chat-tasks--scene .chat-task { color: #f4f7ef; text-shadow: 0 1px 2px rgba(0,0,0,0.55); }
+.chat-tasks--scene .chat-tasks-title { color: var(--subtext); }
+.chat-tasks--scene .chat-task { color: var(--text); text-shadow: 0 1px 2px color-mix(in srgb, var(--bg) 70%, transparent); }
+.chat-tasks--scene .chat-task-opt { color: var(--subtext); }
 .chat-task-check { width: 18px; text-align: center; color: var(--subtext); }
 .chat-task--done { color: #2d6b3a; }
 .chat-task--done .chat-task-check { color: #2d6b3a; }
@@ -666,14 +666,15 @@ onMounted(loadForRoute)
   z-index: 1;
 }
 .chat-row--scene-opening :deep(.lg-bubble) {
-  background: rgba(255,255,255,0.92);
-  border: 1px solid rgba(255,255,255,0.7);
-  box-shadow: 0 12px 30px rgba(0,0,0,0.18);
-  backdrop-filter: blur(12px) saturate(1.08);
+  background: color-mix(in srgb, var(--card-bg) 72%, transparent);
+  border: 1px solid color-mix(in srgb, var(--border) 60%, transparent);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
+  backdrop-filter: blur(8px) saturate(1.06);
+  -webkit-backdrop-filter: blur(8px) saturate(1.06);
 }
 :root[data-theme="dark"] .chat-row--scene-opening :deep(.lg-bubble) {
-  background: rgba(24,28,24,0.88);
-  border-color: rgba(255,255,255,0.14);
+  background: color-mix(in srgb, var(--card-bg) 68%, transparent);
+  border-color: color-mix(in srgb, var(--border) 65%, transparent);
 }
 .chat-npc-avatar {
   width: 34px;
