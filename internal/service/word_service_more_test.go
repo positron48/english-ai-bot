@@ -3,6 +3,7 @@ package service
 import (
 	"bytes"
 	"context"
+	"database/sql"
 	"encoding/json"
 	"io"
 	"net/http"
@@ -119,15 +120,18 @@ func TestGetWordDefinition_WordFormMappingDoesNotLeakOtherCourse(t *testing.T) {
 	}
 	defer db.Close()
 
+	mock.ExpectQuery(`FROM word_forms wf\s+JOIN word_cards wc ON wc\.id = wf\.word_card_id`).
+		WithArgs("algo", "es_ru").
+		WillReturnRows(sqlmock.NewRows([]string{"form", "word_card_id"}))
+	mock.ExpectQuery(`FROM verb_forms_dict d`).
+		WithArgs("algo", "es_ru").
+		WillReturnError(sql.ErrNoRows)
 	mock.ExpectQuery(`FROM word_cards\s+WHERE LOWER\(word\) = LOWER\(\?\) AND course_code IS NOT DISTINCT FROM \?`).
 		WithArgs("algo", "es_ru").
 		WillReturnRows(sqlmock.NewRows([]string{
 			"id", "word", "definition", "pos", "noun_gender", "opposite_gender_word", "transcription", "definition_ru",
 			"examples_json", "verb_forms_json", "display_en", "processed_at", "processing_error", "course_code", "created_at", "updated_at",
 		}))
-	mock.ExpectQuery(`FROM word_forms wf\s+JOIN word_cards wc ON wc\.id = wf\.word_card_id`).
-		WithArgs("algo", "es_ru").
-		WillReturnRows(sqlmock.NewRows([]string{"form", "word_card_id"}))
 
 	wordRepo := repository.NewWordRepository(db, logger)
 	service := NewWordService(wordRepo, nil, nil, nil, config.LearningConfig{

@@ -1,16 +1,27 @@
 <template>
   <section class="lg-word-lookup">
-    <h2 class="lg-word-lookup-title">{{ t('dashboard.wordLookupTitle') }}</h2>
     <form class="lg-word-lookup-form" @submit.prevent="submit">
-      <input
-        v-model="query"
-        type="text"
-        class="lg-word-lookup-input"
-        :placeholder="t('dashboard.wordLookupPlaceholder')"
-        :disabled="loading"
-        autocomplete="off"
-        enterkeyhint="search"
-      />
+      <div class="lg-word-lookup-field">
+        <input
+          v-model="query"
+          type="text"
+          class="lg-word-lookup-input"
+          :placeholder="t('dashboard.wordLookupPlaceholder')"
+          :disabled="loading"
+          autocomplete="off"
+          enterkeyhint="search"
+        />
+        <button
+          v-if="query"
+          type="button"
+          class="lg-word-lookup-clear"
+          :disabled="loading"
+          :aria-label="t('dashboard.wordLookupClear')"
+          @click="clearQuery"
+        >
+          <LgIcon name="x" :s="16" c="var(--subtext)" />
+        </button>
+      </div>
       <button
         type="submit"
         class="lg-word-lookup-btn"
@@ -76,6 +87,11 @@ const canSubmit = computed(() => {
   return q.length > 0 && isWordLookupCandidate(q) && !loading.value
 })
 
+const clearQuery = () => {
+  query.value = ''
+  inlineError.value = ''
+}
+
 const submit = async () => {
   const q = query.value.trim()
   if (!q) return
@@ -94,47 +110,72 @@ const submit = async () => {
   border-radius: 18px;
   background: var(--card-bg);
   box-shadow: var(--shadow-card);
-  padding: 14px 16px;
+  padding: 12px 14px;
   margin-bottom: 10px;
-}
-
-.lg-word-lookup-title {
-  margin: 0 0 10px;
-  font-size: 15px;
-  font-weight: 600;
-  color: var(--text);
 }
 
 .lg-word-lookup-form {
   display: flex;
   gap: 8px;
+  align-items: stretch;
+}
+
+.lg-word-lookup-field {
+  flex: 1;
+  min-width: 0;
+  display: flex;
   align-items: center;
+  gap: 4px;
+  min-height: 42px;
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  background: var(--input-bg, var(--card-bg));
+  padding: 0 8px 0 12px;
+}
+
+.lg-word-lookup-field:focus-within {
+  border-color: var(--dorado, #c9a227);
 }
 
 .lg-word-lookup-input {
   flex: 1;
   min-width: 0;
-  border: 1px solid var(--border);
-  border-radius: 12px;
-  background: var(--input-bg, var(--card-bg));
+  border: none;
+  background: transparent;
   color: var(--text);
   font-size: 16px;
   line-height: 1.25;
-  padding: 10px 12px;
+  padding: 10px 0;
 }
 
 .lg-word-lookup-input:focus {
   outline: none;
-  border-color: var(--dorado, #c9a227);
 }
 
 .lg-word-lookup-input:disabled {
   opacity: 0.6;
 }
 
+.lg-word-lookup-clear {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+}
+
+.lg-word-lookup-clear:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
 .lg-word-lookup-btn {
   width: 42px;
-  height: 42px;
   flex-shrink: 0;
   border: 1px solid var(--border);
   border-radius: 12px;
@@ -143,6 +184,7 @@ const submit = async () => {
   align-items: center;
   justify-content: center;
   cursor: pointer;
+  padding: 0;
 }
 
 .lg-word-lookup-btn:disabled {

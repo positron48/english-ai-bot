@@ -11,6 +11,7 @@ import (
 	"path/filepath"
 	"sort"
 	"strings"
+	"unicode"
 
 	"tgbot-skeleton/internal/grammarbundle"
 	"tgbot-skeleton/internal/readingbundle"
@@ -432,20 +433,34 @@ func (r *Router) handleReadingWordLookup(w http.ResponseWriter, req *http.Reques
 	// under es_ru (not the instance default course).
 	courseCode := r.requestedCourseCodeForUser(req, userID)
 
-	canonicalLemma, wordCardID, found, err := r.findReadingWordCardByInput(lemma, courseCode)
+	lookupLemma := lemma
+	if readingInputContainsCyrillic(lemma) {
+		if ws := r.getReadingWordService(); ws != nil {
+			if resolver, ok := ws.(readingNativeWordResolver); ok {
+				resolved, resolveErr := resolver.ResolveNativeWordToTargetLemma(req.Context(), lemma, courseCode)
+				if resolveErr != nil {
+					r.logger.Warn("reading word lookup: native word resolve failed", zap.String("lemma", lemma), zap.Error(resolveErr))
+				} else if strings.TrimSpace(resolved) != "" {
+					lookupLemma = strings.TrimSpace(resolved)
+				}
+			}
+		}
+	}
+
+	canonicalLemma, wordCardID, found, err := r.findReadingWordCardByInput(lookupLemma, courseCode)
 	if err != nil {
 		r.logger.Error("reading word lookup: failed to resolve word card", zap.String("lemma", lemma), zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
 	if !found {
-		if ws := r.getReadingWordService(); ws != nil && ws.IsSingleWord(lemma) {
+		if ws := r.getReadingWordService(); ws != nil && (ws.IsSingleWord(lookupLemma) || readingInputContainsCyrillic(lemma)) {
 			// Reuse the same path as chat single-word lookup: DB + word_forms + LLM fallback,
 			// but generate the card in the learner's course.
-			if _, err := ws.GetWordDefinitionForCourse(req.Context(), userID, lemma, courseCode); err != nil {
-				r.logger.Warn("reading word lookup: word service fallback failed", zap.String("lemma", lemma), zap.Error(err))
+			if _, err := ws.GetWordDefinitionForCourse(req.Context(), userID, lookupLemma, courseCode); err != nil {
+				r.logger.Warn("reading word lookup: word service fallback failed", zap.String("lemma", lookupLemma), zap.Error(err))
 			}
-			canonicalLemma, wordCardID, found, err = r.findReadingWordCardByInput(lemma, courseCode)
+			canonicalLemma, wordCardID, found, err = r.findReadingWordCardByInput(lookupLemma, courseCode)
 			if err != nil {
 				r.logger.Error("reading word lookup: failed to resolve word card after fallback", zap.String("lemma", lemma), zap.Error(err))
 				http.Error(w, "Internal server error", http.StatusInternalServerError)
@@ -483,6 +498,19 @@ type readingWordLookupService interface {
 	GetWordDefinitionForCourse(ctx context.Context, userID int64, word, courseCode string) (string, error)
 }
 
+type readingNativeWordResolver interface {
+	ResolveNativeWordToTargetLemma(ctx context.Context, nativeWord, courseCode string) (string, error)
+}
+
+func readingInputContainsCyrillic(s string) bool {
+	for _, r := range s {
+		if unicode.Is(unicode.Cyrillic, r) {
+			return true
+		}
+	}
+	return false
+}
+
 func (r *Router) getReadingWordService() readingWordLookupService {
 	if r == nil || r.wordService == nil {
 		return nil
@@ -501,10 +529,13 @@ func (r *Router) findReadingWordCardByInput(input, courseCode string) (string, i
 	}
 	courseCode = strings.TrimSpace(strings.ToLower(courseCode))
 
-	// Prefer a direct lemma in the requested course, then a form mapping in the same
-	// course. Do not fall back globally: a selected Spanish course must never show
-	// an English card with the same spelling.
 	if courseCode != "" {
+		if lemma, id, found, err := r.findReadingWordCardByFormMapping(normalized, courseCode); found || err != nil {
+			return lemma, id, found, err
+		}
+		if lemma, id, found, err := r.findReadingWordCardByVerbSurface(normalized, courseCode); found || err != nil {
+			return lemma, id, found, err
+		}
 		var canonicalLemma string
 		var wordCardID int64
 		err := r.db.QueryRow(`SELECT word, id FROM word_cards WHERE LOWER(word) = LOWER(?) AND LOWER(course_code) = ?`, normalized, courseCode).Scan(&canonicalLemma, &wordCardID)
@@ -514,36 +545,81 @@ func (r *Router) findReadingWordCardByInput(input, courseCode string) (string, i
 		if err != nil && !errors.Is(err, sql.ErrNoRows) {
 			return "", 0, false, err
 		}
+		return "", 0, false, nil
+	}
+
+	if lemma, id, found, err := r.findReadingWordCardByFormMapping(normalized, ""); found || err != nil {
+		return lemma, id, found, err
+	}
+	if lemma, id, found, err := r.findReadingWordCardByVerbSurface(normalized, ""); found || err != nil {
+		return lemma, id, found, err
+	}
+	var canonicalLemma string
+	var wordCardID int64
+	err := r.db.QueryRow(`SELECT word, id FROM word_cards WHERE LOWER(word) = LOWER(?)`, normalized).Scan(&canonicalLemma, &wordCardID)
+	if err == nil {
+		return canonicalLemma, wordCardID, true, nil
+	}
+	if errors.Is(err, sql.ErrNoRows) {
+		return "", 0, false, nil
+	}
+	return "", 0, false, err
+}
+
+func (r *Router) findReadingWordCardByFormMapping(normalizedForm, courseCode string) (string, int64, bool, error) {
+	var canonicalLemma string
+	var wordCardID int64
+	var err error
+	if courseCode != "" {
 		err = r.db.QueryRow(`
 SELECT wc.word, wc.id
 FROM word_forms wf
 JOIN word_cards wc ON wc.id = wf.word_card_id
 WHERE LOWER(wf.form) = LOWER(?) AND LOWER(wc.course_code) = ?
-LIMIT 1`, normalized, courseCode).Scan(&canonicalLemma, &wordCardID)
-		if err == nil {
-			return canonicalLemma, wordCardID, true, nil
-		}
-		if err != nil && !errors.Is(err, sql.ErrNoRows) {
-			return "", 0, false, err
-		}
-		return "", 0, false, nil
-	}
-
-	var canonicalLemma string
-	var wordCardID int64
-	err := r.db.QueryRow(`
+LIMIT 1`, normalizedForm, courseCode).Scan(&canonicalLemma, &wordCardID)
+	} else {
+		err = r.db.QueryRow(`
 SELECT wc.word, wc.id
 FROM word_forms wf
 JOIN word_cards wc ON wc.id = wf.word_card_id
 WHERE LOWER(wf.form) = LOWER(?)
-LIMIT 1`, normalized).Scan(&canonicalLemma, &wordCardID)
+LIMIT 1`, normalizedForm).Scan(&canonicalLemma, &wordCardID)
+	}
 	if err == nil {
 		return canonicalLemma, wordCardID, true, nil
 	}
-	if err != nil && !errors.Is(err, sql.ErrNoRows) {
-		return "", 0, false, err
+	if errors.Is(err, sql.ErrNoRows) {
+		return "", 0, false, nil
 	}
-	err = r.db.QueryRow(`SELECT word, id FROM word_cards WHERE LOWER(word) = LOWER(?)`, normalized).Scan(&canonicalLemma, &wordCardID)
+	return "", 0, false, err
+}
+
+func (r *Router) findReadingWordCardByVerbSurface(normalizedForm, courseCode string) (string, int64, bool, error) {
+	if r == nil || r.db == nil {
+		return "", 0, false, nil
+	}
+	var canonicalLemma string
+	var wordCardID int64
+	var err error
+	if courseCode != "" {
+		err = r.db.QueryRow(`
+SELECT wc.word, wc.id
+FROM verb_forms_dict d
+JOIN verb_lemmas vl ON vl.id = d.verb_lemma_id
+JOIN word_verb_lemmas wvl ON wvl.verb_lemma_id = vl.id
+JOIN word_cards wc ON wc.id = wvl.word_card_id
+WHERE LOWER(d.surface_form) = LOWER(?) AND LOWER(wc.course_code) = ?
+LIMIT 1`, normalizedForm, courseCode).Scan(&canonicalLemma, &wordCardID)
+	} else {
+		err = r.db.QueryRow(`
+SELECT wc.word, wc.id
+FROM verb_forms_dict d
+JOIN verb_lemmas vl ON vl.id = d.verb_lemma_id
+JOIN word_verb_lemmas wvl ON wvl.verb_lemma_id = vl.id
+JOIN word_cards wc ON wc.id = wvl.word_card_id
+WHERE LOWER(d.surface_form) = LOWER(?)
+LIMIT 1`, normalizedForm).Scan(&canonicalLemma, &wordCardID)
+	}
 	if err == nil {
 		return canonicalLemma, wordCardID, true, nil
 	}

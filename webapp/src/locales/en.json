@@ -400,9 +400,9 @@
     "chartAccuracyTooltip": "Accuracy: {percent}% ({correct} correct)",
     "chartCardsTooltip": "Cards: {total} trained",
     "chartCardsAddedTooltip": "Cards added: {count}",
-    "wordLookupTitle": "Look up a word",
     "wordLookupPlaceholder": "Enter a word…",
-    "wordLookupSubmit": "Show dictionary card"
+    "wordLookupSubmit": "Show dictionary card",
+    "wordLookupClear": "Clear"
   },
   "training": {
     "title": "Training",

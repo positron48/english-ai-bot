@@ -324,6 +324,103 @@ func (s *WordService) GetWordDefinitionForCourse(ctx context.Context, userID int
 	return s.getWordDefinitionForCourse(ctx, userID, word, courseCode, targetLang)
 }
 
+// ResolveNativeWordToTargetLemma maps a native-language lookup token to the target-language
+// dictionary lemma (e.g. RU "любить" -> ES "amar") via the course LLM prompt.
+func (s *WordService) ResolveNativeWordToTargetLemma(ctx context.Context, nativeWord, courseCode string) (string, error) {
+	nativeWord = strings.TrimSpace(nativeWord)
+	if nativeWord == "" {
+		return "", fmt.Errorf("native word is empty")
+	}
+	if !ContainsCyrillic(nativeWord) {
+		return nativeWord, nil
+	}
+	if s.aiService == nil {
+		return "", fmt.Errorf("AI service not available")
+	}
+	targetLang := courseTargetLang(courseCode)
+	if targetLang == "" {
+		targetLang = s.learning.TargetLang
+	}
+	prompt := buildNativeToTargetLookupPrompt(nativeWord, s.learning.NativeLang, targetLang)
+	response, err := s.aiService.GenerateResponseForCourse(ctx, prompt, courseCode)
+	if err != nil {
+		return "", fmt.Errorf("failed to resolve native word: %w", err)
+	}
+	var wordInfo models.WordInfoResponse
+	if err := json.Unmarshal([]byte(strings.TrimSpace(response)), &wordInfo); err != nil {
+		return "", fmt.Errorf("failed to parse native word resolve response: %w", err)
+	}
+	models.SyncWordInfoResponseNeutralAliases(&wordInfo)
+	lemma := strings.TrimSpace(strings.ToLower(wordInfo.Lemma))
+	if lemma == "" || ContainsCyrillic(lemma) {
+		return "", fmt.Errorf("native word resolve returned no target lemma")
+	}
+	return lemma, nil
+}
+
+func buildNativeToTargetLookupPrompt(word, nativeLang, targetLang string) string {
+	return fmt.Sprintf(`NATIVE-WORD LOOKUP ONLY.
+The learner entered a %s word and needs the canonical %s dictionary lemma.
+Return ONLY valid JSON (no markdown, no prose) using this schema:
+{
+  "error": false,
+  "hint": "",
+  "input_word": "%s",
+  "lemma": "",
+  "pos": "",
+  "noun_gender": "",
+  "opposite_gender_word": "",
+  "transcription": "",
+  "definition_native": "",
+  "examples": []
+}
+Rules:
+- lemma MUST be the canonical dictionary form in %s (verb infinitive, singular noun, etc.).
+- definition_native may briefly gloss the %s input in %s.
+Word: %s`, nativeLang, targetLang, word, targetLang, nativeLang, nativeLang, word)
+}
+
+func (s *WordService) lookupWordCardByVerbSurface(normalizedForm, courseCode string) *models.WordCard {
+	if s == nil || s.wordRepo == nil || s.wordRepo.DB() == nil {
+		return nil
+	}
+	normalizedForm = strings.TrimSpace(strings.ToLower(normalizedForm))
+	if normalizedForm == "" {
+		return nil
+	}
+	courseCode = strings.TrimSpace(strings.ToLower(courseCode))
+	var wordCardID int64
+	var err error
+	if courseCode != "" {
+		err = s.wordRepo.DB().QueryRow(`
+SELECT wc.id
+FROM verb_forms_dict d
+JOIN verb_lemmas vl ON vl.id = d.verb_lemma_id
+JOIN word_verb_lemmas wvl ON wvl.verb_lemma_id = vl.id
+JOIN word_cards wc ON wc.id = wvl.word_card_id
+WHERE LOWER(d.surface_form) = LOWER(?) AND LOWER(wc.course_code) = ?
+LIMIT 1`, normalizedForm, courseCode).Scan(&wordCardID)
+	} else {
+		err = s.wordRepo.DB().QueryRow(`
+SELECT wc.id
+FROM verb_forms_dict d
+JOIN verb_lemmas vl ON vl.id = d.verb_lemma_id
+JOIN word_verb_lemmas wvl ON wvl.verb_lemma_id = vl.id
+JOIN word_cards wc ON wc.id = wvl.word_card_id
+WHERE LOWER(d.surface_form) = LOWER(?)
+LIMIT 1`, normalizedForm).Scan(&wordCardID)
+	}
+	if err != nil {
+		return nil
+	}
+	card, cardErr := s.wordRepo.GetWordCardByID(wordCardID)
+	if cardErr != nil {
+		s.logger.Warn("failed to get word card by verb surface", zap.Error(cardErr))
+		return nil
+	}
+	return card
+}
+
 // getWordDefinitionForCourse resolves a word form -> lemma -> markdown, scoped to courseCode
 // and targetLang (the language-specific bits like verb display and gender lexicon).
 func (s *WordService) getWordDefinitionForCourse(ctx context.Context, userID int64, word, courseCode, targetLang string) (string, error) {
@@ -332,25 +429,28 @@ func (s *WordService) getWordDefinitionForCourse(ctx context.Context, userID int
 
 	var wordCard *models.WordCard
 
-	// Step 1: Prefer a direct lemma match in the selected course. A global
-	// word_forms hit for the same spelling must not shadow the learner's course.
-	wordCard, err := s.wordRepo.GetWordCardByLemmaForCourse(normalizedWord, courseCode)
+	// Step 1: Resolve inflected forms through course-scoped word_forms before a direct lemma hit.
+	wordForm, err := s.wordRepo.GetWordFormMappingForCourse(normalizedWord, courseCode)
 	if err != nil {
-		s.logger.Warn("failed to get word card by lemma", zap.Error(err))
+		s.logger.Warn("failed to get word form mapping", zap.Error(err))
+	}
+	if wordForm != nil {
+		wordCard, err = s.wordRepo.GetWordCardByID(wordForm.WordCardID)
+		if err != nil {
+			s.logger.Warn("failed to get word card by ID", zap.Error(err))
+		}
 	}
 
-	// Step 2: If no lemma exists in this course, resolve form -> lemma through a
-	// course-scoped mapping only. No global fallback: it can leak another course.
+	// Step 2: Spanish verb dictionary surface forms linked to an existing word card.
 	if wordCard == nil {
-		wordForm, err := s.wordRepo.GetWordFormMappingForCourse(normalizedWord, courseCode)
+		wordCard = s.lookupWordCardByVerbSurface(normalizedWord, courseCode)
+	}
+
+	// Step 3: Direct lemma in the selected course.
+	if wordCard == nil {
+		wordCard, err = s.wordRepo.GetWordCardByLemmaForCourse(normalizedWord, courseCode)
 		if err != nil {
-			s.logger.Warn("failed to get word form mapping", zap.Error(err))
-		}
-		if wordForm != nil {
-			wordCard, err = s.wordRepo.GetWordCardByID(wordForm.WordCardID)
-			if err != nil {
-				s.logger.Warn("failed to get word card by ID", zap.Error(err))
-			}
+			s.logger.Warn("failed to get word card by lemma", zap.Error(err))
 		}
 	}
 

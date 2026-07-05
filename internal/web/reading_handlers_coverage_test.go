@@ -48,6 +48,10 @@ func (m *readingCoverageWordService) GetWordDefinitionForCourse(ctx context.Cont
 	return m.definition, nil
 }
 
+func (m *readingCoverageWordService) ResolveNativeWordToTargetLemma(ctx context.Context, nativeWord, courseCode string) (string, error) {
+	return "amar", nil
+}
+
 type readingCoverageWordServiceCloseDB struct {
 	readingCoverageWordService
 	db *sql.DB
@@ -326,6 +330,11 @@ func TestReadingHandlersCoverage(t *testing.T) {
 		lemma, id, found, err = router.findReadingWordCardByInput("coffees", "en_ru")
 		if err != nil || !found || id != cardID {
 			t.Fatalf("form mapping: (%q,%d,%v,%v)", lemma, id, found, err)
+		}
+		strayID := insertReadingWordCard(t, db, "coffees", "en_ru")
+		lemma, id, found, err = router.findReadingWordCardByInput("coffees", "en_ru")
+		if err != nil || !found || id != cardID || id == strayID {
+			t.Fatalf("form mapping should beat stray lemma card: (%q,%d,%v,%v) stray=%d", lemma, id, found, err, strayID)
 		}
 		_, _, found, err = router.findReadingWordCardByInput("missingword", "en_ru")
 		if err != nil || found {

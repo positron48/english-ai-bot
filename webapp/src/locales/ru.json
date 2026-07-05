@@ -400,9 +400,9 @@
     "chartAccuracyTooltip": "Точность: {percent}% ({correct} правильных)",
     "chartCardsTooltip": "Карточки: {total} пройдено",
     "chartCardsAddedTooltip": "Добавлено карточек: {count}",
-    "wordLookupTitle": "Узнать слово",
     "wordLookupPlaceholder": "Введите слово…",
-    "wordLookupSubmit": "Показать словарную карточку"
+    "wordLookupSubmit": "Показать словарную карточку",
+    "wordLookupClear": "Очистить"
   },
   "training": {
     "title": "Тренировка",

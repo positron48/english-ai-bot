@@ -43,11 +43,26 @@ export function metricForLevel(
   return lv.metrics[key] ?? null
 }
 
+const districtCoreMetricKeys = ['grammar', 'words', 'reading'] as const
+
+/** Full district art (tier 5) requires every included core metric at 100% of its level target. */
+export function districtCoreMetricsComplete(lv: CourseMasteryLevel | null | undefined): boolean {
+  if (!lv?.metrics) return false
+  let hasIncluded = false
+  for (const key of districtCoreMetricKeys) {
+    const m = lv.metrics[key]
+    if (!m?.included) continue
+    hasIncluded = true
+    if ((m.percent || 0) < 100) return false
+  }
+  return hasIncluded
+}
+
 export function districtMapLevel(mastery: CourseMastery | null | undefined, levelCode: string): number {
   const lv = masteryLevelByCode(mastery, levelCode)
   if (!lv || !lv.unlocked) return 1
   const pct = lv.mastery_percent || 0
-  if (lv.can_open_next || pct >= 75) return 5
+  if (districtCoreMetricsComplete(lv)) return 5
   if (pct >= 40) return 4
   if (pct > 0) return 3
   return 2

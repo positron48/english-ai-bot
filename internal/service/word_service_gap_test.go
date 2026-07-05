@@ -120,13 +120,20 @@ func wordServiceGapCardRow(id int64, word, defRU, course string, nounGender, opp
 	)
 }
 
-func wordServiceGapExpectLemmaNotFound(mock sqlmock.Sqlmock, lemma, course string) {
-	mock.ExpectQuery(`FROM word_cards\s+WHERE LOWER\(word\) = LOWER\(\?\) AND course_code IS NOT DISTINCT FROM \?`).
-		WithArgs(lemma, course).
-		WillReturnError(sql.ErrNoRows)
+func wordServiceGapExpectLookupMissesBeforeLemma(mock sqlmock.Sqlmock, lemma, course string) {
 	mock.ExpectQuery(`FROM word_forms wf\s+JOIN word_cards wc ON wc\.id = wf\.word_card_id`).
 		WithArgs(lemma, course).
 		WillReturnRows(sqlmock.NewRows([]string{"form", "word_card_id"}))
+	mock.ExpectQuery(`FROM verb_forms_dict d`).
+		WithArgs(lemma, course).
+		WillReturnError(sql.ErrNoRows)
+}
+
+func wordServiceGapExpectLemmaNotFound(mock sqlmock.Sqlmock, lemma, course string) {
+	wordServiceGapExpectLookupMissesBeforeLemma(mock, lemma, course)
+	mock.ExpectQuery(`FROM word_cards\s+WHERE LOWER\(word\) = LOWER\(\?\) AND course_code IS NOT DISTINCT FROM \?`).
+		WithArgs(lemma, course).
+		WillReturnError(sql.ErrNoRows)
 }
 
 func wordServiceGapExpectAISave(mock sqlmock.Sqlmock, lemma, course string, cardID int64) {
@@ -421,6 +428,7 @@ func TestWordServiceGap_GetWordDefinitionForCourse_EmptyCourseCode(t *testing.T)
 	}
 	defer db.Close()
 
+	wordServiceGapExpectLookupMissesBeforeLemma(mock, "gaphello", "en_ru")
 	mock.ExpectQuery(`FROM word_cards\s+WHERE LOWER\(word\) = LOWER\(\?\) AND course_code IS NOT DISTINCT FROM \?`).
 		WithArgs("gaphello", "en_ru").
 		WillReturnRows(wordServiceGapCardRow(11, "gaphello", "приветствие", "en_ru", nil, nil))
@@ -474,8 +482,8 @@ func TestWordServiceGap_GetWordDefinitionForCourse_ScopedLookup(t *testing.T) {
 	}
 	defer db.Close()
 
+	wordServiceGapExpectLookupMissesBeforeLemma(mock, "gapalgo", "es_ru")
 	mock.ExpectQuery(`FROM word_cards\s+WHERE LOWER\(word\) = LOWER\(\?\) AND course_code IS NOT DISTINCT FROM \?`).
-		WithArgs("gapalgo", "es_ru").
 		WillReturnRows(wordServiceGapCardRow(21, "gapalgo", "что-то", "es_ru", nil, nil))
 	mock.ExpectExec(`INSERT INTO word_request_history`).
 		WillReturnResult(sqlmock.NewResult(1, 1))
@@ -556,8 +564,8 @@ func TestWordServiceGap_DBInvalidNativeFieldsForcesAIRefresh(t *testing.T) {
 	}
 	defer db.Close()
 
+	wordServiceGapExpectLookupMissesBeforeLemma(mock, "gapperro", "es_ru")
 	mock.ExpectQuery(`FROM word_cards\s+WHERE LOWER\(word\) = LOWER\(\?\) AND course_code IS NOT DISTINCT FROM \?`).
-		WithArgs("gapperro", "es_ru").
 		WillReturnRows(wordServiceGapCardRow(41, "gapperro", "dog", "es_ru", nil, nil))
 	mock.ExpectQuery(`SELECT id FROM verb_lemmas WHERE lemma = \? AND language = \?`).
 		WithArgs("gapperro", "es").
@@ -615,6 +623,7 @@ func TestWordServiceGap_tryVerbFormCardsSyncOnDBHit(t *testing.T) {
 	}
 	defer db.Close()
 
+	wordServiceGapExpectLookupMissesBeforeLemma(mock, "gapsync", "es_ru")
 	mock.ExpectQuery(`FROM word_cards\s+WHERE LOWER\(word\) = LOWER\(\?\) AND course_code IS NOT DISTINCT FROM \?`).
 		WithArgs("gapsync", "es_ru").
 		WillReturnRows(wordServiceGapCardRow(61, "gapsync", "кот", "es_ru", nil, nil))
@@ -704,15 +713,18 @@ func TestWordServiceGap_getWordDefinitionForCourse_WordFormGetWordCardByIDError(
 	}
 	defer db.Close()
 
-	mock.ExpectQuery(`FROM word_cards\s+WHERE LOWER\(word\) = LOWER\(\?\) AND course_code IS NOT DISTINCT FROM \?`).
-		WithArgs("gapform", "en_ru").
-		WillReturnError(sql.ErrNoRows)
 	mock.ExpectQuery(`FROM word_forms wf\s+JOIN word_cards wc ON wc\.id = wf\.word_card_id`).
 		WithArgs("gapform", "en_ru").
 		WillReturnRows(sqlmock.NewRows([]string{"form", "word_card_id"}).AddRow("gapform", 77))
 	mock.ExpectQuery(`FROM word_cards\s+WHERE id = \?`).
 		WithArgs(int64(77)).
 		WillReturnError(fmt.Errorf("card gone"))
+	mock.ExpectQuery(`FROM verb_forms_dict d`).
+		WithArgs("gapform", "en_ru").
+		WillReturnError(sql.ErrNoRows)
+	mock.ExpectQuery(`FROM word_cards\s+WHERE LOWER\(word\) = LOWER\(\?\) AND course_code IS NOT DISTINCT FROM \?`).
+		WithArgs("gapform", "en_ru").
+		WillReturnError(sql.ErrNoRows)
 	wordServiceGapExpectAISave(mock, "gapform", "en_ru", 88)
 
 	aiSvc := newAIServiceWithResponse(t, zap.NewNop(), `{"lemma":"gapform","pos":"noun","definition_ru":"форма"}`)
