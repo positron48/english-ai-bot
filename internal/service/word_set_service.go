@@ -101,10 +101,18 @@ func NewWordSetServiceWithMastering(
 // This is used for fast word set creation - word cards are created without LLM call
 // Word cards will be filled asynchronously by TrainingWorker
 func (s *WordSetService) EnsureWordCardExistsMinimal(word string) (int64, error) {
+	return s.ensureWordCardExistsMinimalForCourse(word, s.courseCode)
+}
+
+func (s *WordSetService) ensureWordCardExistsMinimalForCourse(word, courseCode string) (int64, error) {
 	normalizedWord := strings.TrimSpace(strings.ToLower(word))
+	courseCode = strings.TrimSpace(strings.ToLower(courseCode))
+	if normalizedWord == "" {
+		return 0, fmt.Errorf("word is empty")
+	}
 
 	// Try to get existing word card
-	wordCard, err := s.wordRepo.GetWordCardByLemmaForCourse(normalizedWord, s.courseCode)
+	wordCard, err := s.wordRepo.GetWordCardByLemmaForCourse(normalizedWord, courseCode)
 	if err != nil {
 		return 0, fmt.Errorf("failed to get word card: %w", err)
 	}
@@ -119,7 +127,7 @@ func (s *WordSetService) EnsureWordCardExistsMinimal(word string) (int64, error)
 	wordCardModel := &models.WordCard{
 		Word:       normalizedWord,
 		Definition: "", // Empty - will be filled later
-		CourseCode: s.courseCode,
+		CourseCode: courseCode,
 		// All other fields are nil - will be filled asynchronously
 	}
 
@@ -132,6 +140,7 @@ func (s *WordSetService) EnsureWordCardExistsMinimal(word string) (int64, error)
 
 	s.logger.Debug("created minimal word card",
 		zap.String("word", normalizedWord),
+		zap.String("course_code", courseCode),
 		zap.Int64("word_card_id", wordCardID),
 	)
 
@@ -149,10 +158,10 @@ func (s *WordSetService) EnsureWordCardExists(ctx context.Context, word string) 
 	// Step 1: try word form mapping first (same lookup order as chat word flow),
 	// but only when repository implementation supports this operation.
 	type wordFormLookup interface {
-		GetWordFormMapping(wordForm string) (*models.WordForm, error)
+		GetWordFormMappingForCourse(wordForm, courseCode string) (*models.WordForm, error)
 	}
 	if lookupRepo, ok := s.wordRepo.(wordFormLookup); ok {
-		wordForm, err := lookupRepo.GetWordFormMapping(normalizedWord)
+		wordForm, err := lookupRepo.GetWordFormMappingForCourse(normalizedWord, s.courseCode)
 		if err != nil {
 			s.logger.Warn("failed to get word form mapping, fallback to lemma lookup",
 				zap.String("word", normalizedWord),
@@ -650,7 +659,7 @@ func (s *WordSetService) ProcessWordSetItemsForCourse(ctx context.Context, wordS
 
 		// Ensure word card exists with minimal data (no LLM call)
 		// Word card data will be filled asynchronously by TrainingWorker
-		wordCardID, err := s.EnsureWordCardExistsMinimal(word)
+		wordCardID, err := s.ensureWordCardExistsMinimalForCourse(word, courseCode)
 		if err != nil {
 			s.logger.Warn("failed to ensure minimal word card exists",
 				zap.String("word", word),
@@ -685,8 +694,8 @@ func (s *WordSetService) ProcessWordSetItemsForCourse(ctx context.Context, wordS
 		}
 	}
 
-	// Set word set items
-	if err := s.wordSetRepo.SetWordSetItems(wordSetID, uniqueWordCardIDs); err != nil {
+	// Set word set items, validating that every linked word card belongs to the set's course.
+	if err := s.wordSetRepo.SetWordSetItemsForCourse(wordSetID, courseCode, uniqueWordCardIDs); err != nil {
 		return fmt.Errorf("failed to set word set items: %w", err)
 	}
 

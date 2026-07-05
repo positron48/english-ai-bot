@@ -1,8 +1,11 @@
 package web
 
 import (
+	"bytes"
+	"context"
 	"encoding/json"
 	"errors"
+	"io"
 	"net/http"
 	"strconv"
 	"strings"
@@ -20,7 +23,8 @@ type pictureQuestImportPayload struct {
 	Tasks []taskPayload `json:"tasks"`
 }
 
-// handleAdminPictureQuestImport upserts a single picture quest (by course+code) and replaces its tasks.
+// handleAdminPictureQuestImport upserts one picture quest or a JSON array of quests (by course+code)
+// and replaces tasks for each. course_code in each body wins over the query param when present.
 // @Summary      Admin: импорт квеста «опиши картинку» из JSON
 // @Tags         Admin
 // @Router       /api/admin/picture-quests/import [post]
@@ -33,55 +37,143 @@ func (r *Router) handleAdminPictureQuestImport(w http.ResponseWriter, req *http.
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
-	var p pictureQuestImportPayload
-	if err := json.NewDecoder(req.Body).Decode(&p); err != nil {
+	body, err := io.ReadAll(req.Body)
+	if err != nil {
+		http.Error(w, "Не удалось прочитать тело запроса", http.StatusBadRequest)
+		return
+	}
+	body = bytes.TrimSpace(body)
+	if len(body) == 0 {
+		http.Error(w, "Пустое тело запроса", http.StatusBadRequest)
+		return
+	}
+
+	defaultCourse := r.adminConversationCourseCode(req)
+	ctx := req.Context()
+
+	if body[0] == '[' {
+		var payloads []pictureQuestImportPayload
+		if err := json.Unmarshal(body, &payloads); err != nil {
+			http.Error(w, "Невалидный JSON-массив: "+err.Error(), http.StatusBadRequest)
+			return
+		}
+		if len(payloads) == 0 {
+			http.Error(w, "Массив квестов пуст", http.StatusBadRequest)
+			return
+		}
+		results := make([]map[string]interface{}, 0, len(payloads))
+		createdCount := 0
+		for i := range payloads {
+			res, ierr := r.importPictureQuestPayload(ctx, &payloads[i], defaultCourse, i+1)
+			if ierr != nil {
+				if httpErr, ok := ierr.(*pictureQuestImportHTTPError); ok {
+					http.Error(w, httpErr.msg, httpErr.status)
+					return
+				}
+				r.logger.Error("admin import picture quest batch", zap.Int("index", i+1), zap.Error(ierr))
+				http.Error(w, "Квест #"+strconv.Itoa(i+1)+": "+ierr.Error(), http.StatusBadRequest)
+				return
+			}
+			if res.created {
+				createdCount++
+			}
+			results = append(results, res.response)
+		}
+		writeJSON(w, map[string]interface{}{
+			"success":       true,
+			"imported":      len(results),
+			"created_count": createdCount,
+			"updated_count": len(results) - createdCount,
+			"results":       results,
+		})
+		return
+	}
+
+	p := pictureQuestImportPayload{}
+	if err := json.Unmarshal(body, &p); err != nil {
 		http.Error(w, "Невалидный JSON: "+err.Error(), http.StatusBadRequest)
 		return
 	}
-
-	courseCode := strings.TrimSpace(strings.ToLower(p.CourseCode))
-	if courseCode == "" {
-		courseCode = r.adminConversationCourseCode(req)
-	}
-
-	in, err := p.toInput(courseCode)
+	res, err := r.importPictureQuestPayload(ctx, &p, defaultCourse, 0)
 	if err != nil {
-		http.Error(w, err.Error(), http.StatusBadRequest)
-		return
-	}
-
-	tasks := make([]repository.AdminPictureTaskInput, 0, len(p.Tasks))
-	for i := range p.Tasks {
-		ti, terr := p.Tasks[i].toPictureInput()
-		if terr != nil {
-			http.Error(w, "Задача #"+strconv.Itoa(i+1)+": "+terr.Error(), http.StatusBadRequest)
-			return
-		}
-		tasks = append(tasks, ti)
-	}
-	if len(tasks) == 0 {
-		http.Error(w, "Квест должен содержать хотя бы одну задачу (tasks)", http.StatusBadRequest)
-		return
-	}
-
-	ctx := req.Context()
-	id, created, err := r.pictureQuestRepo.ImportQuest(ctx, in, tasks)
-	if err != nil {
-		if errors.Is(err, repository.ErrDuplicatePictureTaskCode) {
-			http.Error(w, "Дублирующийся code задачи в одном квесте", http.StatusConflict)
+		if httpErr, ok := err.(*pictureQuestImportHTTPError); ok {
+			http.Error(w, httpErr.msg, httpErr.status)
 			return
 		}
 		r.logger.Error("admin import picture quest", zap.Error(err))
 		http.Error(w, "Не удалось импортировать: "+err.Error(), http.StatusBadRequest)
 		return
 	}
-	writeJSON(w, map[string]interface{}{
-		"id":          id,
-		"created":     created,
-		"task_count":  len(tasks),
-		"course_code": courseCode,
-		"success":     true,
-	})
+	writeJSON(w, res.response)
+}
+
+type pictureQuestImportHTTPError struct {
+	msg    string
+	status int
+}
+
+func (e *pictureQuestImportHTTPError) Error() string { return e.msg }
+
+type pictureQuestImportResult struct {
+	created  bool
+	response map[string]interface{}
+}
+
+func (r *Router) importPictureQuestPayload(ctx context.Context, p *pictureQuestImportPayload, defaultCourse string, questIndex int) (*pictureQuestImportResult, error) {
+	prefix := ""
+	if questIndex > 0 {
+		prefix = "Квест #" + strconv.Itoa(questIndex) + ": "
+	}
+
+	courseCode := strings.TrimSpace(strings.ToLower(p.CourseCode))
+	if courseCode == "" {
+		courseCode = defaultCourse
+	}
+
+	in, err := p.toInput(courseCode)
+	if err != nil {
+		return nil, &pictureQuestImportHTTPError{msg: prefix + err.Error(), status: http.StatusBadRequest}
+	}
+
+	tasks := make([]repository.AdminPictureTaskInput, 0, len(p.Tasks))
+	for i := range p.Tasks {
+		ti, terr := p.Tasks[i].toPictureInput()
+		if terr != nil {
+			return nil, &pictureQuestImportHTTPError{
+				msg:    prefix + "Задача #" + strconv.Itoa(i+1) + ": " + terr.Error(),
+				status: http.StatusBadRequest,
+			}
+		}
+		tasks = append(tasks, ti)
+	}
+	if len(tasks) == 0 {
+		return nil, &pictureQuestImportHTTPError{
+			msg:    prefix + "Квест должен содержать хотя бы одну задачу (tasks)",
+			status: http.StatusBadRequest,
+		}
+	}
+
+	id, created, err := r.pictureQuestRepo.ImportQuest(ctx, in, tasks)
+	if err != nil {
+		if errors.Is(err, repository.ErrDuplicatePictureTaskCode) {
+			return nil, &pictureQuestImportHTTPError{
+				msg:    prefix + "Дублирующийся code задачи в одном квесте",
+				status: http.StatusConflict,
+			}
+		}
+		return nil, err
+	}
+	return &pictureQuestImportResult{
+		created: created,
+		response: map[string]interface{}{
+			"id":          id,
+			"created":     created,
+			"code":        in.Code,
+			"task_count":  len(tasks),
+			"course_code": courseCode,
+			"success":     true,
+		},
+	}, nil
 }
 
 // handleAdminPictureQuestPromptTemplate returns a ready-to-use prompt for an LLM to generate a

@@ -97,6 +97,39 @@ func TestEnsureWordCardExistsMinimal(t *testing.T) {
 	}
 }
 
+func TestProcessWordSetItemsForCourseCreatesCardsForRequestedCourse(t *testing.T) {
+	svc, wordRepo, _, _, _, wordSetRepo, _, cleanup := newWordSetService(t, nil)
+	defer cleanup()
+
+	setID, err := wordSetRepo.CreateWordSet(&models.WordSet{
+		CourseCode:  "es_ru",
+		Title:       "Spanish items",
+		IsPublished: true,
+		SortOrder:   1,
+	})
+	if err != nil {
+		t.Fatalf("CreateWordSet: %v", err)
+	}
+
+	if err := svc.ProcessWordSetItemsForCourse(context.Background(), setID, "es_ru", "General, Doctor"); err != nil {
+		t.Fatalf("ProcessWordSetItemsForCourse: %v", err)
+	}
+
+	for _, word := range []string{"general", "doctor"} {
+		esCard, err := wordRepo.GetWordCardByLemmaForCourse(word, "es_ru")
+		if err != nil || esCard == nil {
+			t.Fatalf("expected %s in es_ru, card=%+v err=%v", word, esCard, err)
+		}
+		enCard, err := wordRepo.GetWordCardByLemmaForCourse(word, "en_ru")
+		if err != nil {
+			t.Fatalf("GetWordCardByLemmaForCourse(en): %v", err)
+		}
+		if enCard != nil {
+			t.Fatalf("did not expect %s to be created in en_ru", word)
+		}
+	}
+}
+
 func TestEnsureWordCardExists_AI_JSON(t *testing.T) {
 	transport := rtFunc(func(req *http.Request) (*http.Response, error) {
 		resp := ai.ChatResponse{

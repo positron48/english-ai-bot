@@ -87,8 +87,9 @@ func (r *TrainingCardRepository) CreateTrainingCard(card *models.TrainingCard) (
 	query := `INSERT INTO training_cards (
 		word_card_id, word_en, transcription, sense_index,
 		word_ru, meaning_en, example_en, example_ru,
-		distractors_ru, distractors_en, hint, pos, display_word
-	) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+		distractors_ru, distractors_en, hint, pos, display_word, course_code
+	) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+		(SELECT NULLIF(course_code, '') FROM word_cards WHERE id = ?))`
 
 	// Use display_word if provided, otherwise fall back to word_en
 	displayWord := card.WordEN
@@ -100,7 +101,7 @@ func (r *TrainingCardRepository) CreateTrainingCard(card *models.TrainingCard) (
 		card.WordCardID, card.WordEN, card.Transcription, card.SenseIndex,
 		card.WordRU, card.MeaningEN, card.ExampleEN, card.ExampleRU,
 		card.DistractorsRU, card.DistractorsEN, card.Hint,
-		card.POS, displayWord,
+		card.POS, displayWord, card.WordCardID,
 	)
 	if err != nil {
 		return 0, fmt.Errorf("failed to create training card: %w", err)

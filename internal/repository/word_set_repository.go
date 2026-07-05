@@ -614,12 +614,54 @@ func (r *WordSetRepository) GetWordSetWords(wordSetID, userID int64) ([]*models.
 
 // SetWordSetItems replaces all items in a word set
 func (r *WordSetRepository) SetWordSetItems(wordSetID int64, wordCardIDs []int64) error {
+	return r.setWordSetItems(wordSetID, "", wordCardIDs, false)
+}
+
+// SetWordSetItemsForCourse replaces items in a course-scoped word set and refuses
+// to link word cards from any other course. This prevents shared word_card rows
+// across courses when admin/import paths update set membership.
+func (r *WordSetRepository) SetWordSetItemsForCourse(wordSetID int64, courseCode string, wordCardIDs []int64) error {
+	courseCode = strings.TrimSpace(strings.ToLower(courseCode))
+	return r.setWordSetItems(wordSetID, courseCode, wordCardIDs, courseCode != "")
+}
+
+func (r *WordSetRepository) setWordSetItems(wordSetID int64, courseCode string, wordCardIDs []int64, enforceCourse bool) error {
 	// Start transaction
 	tx, err := r.db.Begin()
 	if err != nil {
 		return fmt.Errorf("failed to begin transaction: %w", err)
 	}
 	defer tx.Rollback()
+
+	if enforceCourse {
+		var exists int
+		if err := tx.QueryRow(`SELECT COUNT(*) FROM word_sets WHERE id = ? AND course_code = ?`, wordSetID, courseCode).Scan(&exists); err != nil {
+			return fmt.Errorf("failed to validate word set course: %w", err)
+		}
+		if exists == 0 {
+			return fmt.Errorf("word set %d does not belong to course %s", wordSetID, courseCode)
+		}
+		if len(wordCardIDs) > 0 {
+			placeholders := strings.TrimSuffix(strings.Repeat("?,", len(wordCardIDs)), ",")
+			query := fmt.Sprintf(`
+				SELECT COUNT(*)
+				FROM word_cards
+				WHERE id IN (%s)
+				  AND COALESCE(course_code, '') <> ?`, placeholders)
+			args := make([]interface{}, 0, len(wordCardIDs)+1)
+			for _, wordCardID := range wordCardIDs {
+				args = append(args, wordCardID)
+			}
+			args = append(args, courseCode)
+			var mismatched int
+			if err := tx.QueryRow(query, args...).Scan(&mismatched); err != nil {
+				return fmt.Errorf("failed to validate word card courses: %w", err)
+			}
+			if mismatched > 0 {
+				return fmt.Errorf("refusing to link %d word card(s) from another course into %s word set %d", mismatched, courseCode, wordSetID)
+			}
+		}
+	}
 
 	// Delete existing items
 	_, err = tx.Exec(`DELETE FROM word_set_items WHERE word_set_id = ?`, wordSetID)

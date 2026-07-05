@@ -1,4 +1,4 @@
-// One-off remediation for word_cards that are shared between multiple courses
+// One-off remediation for word_cards that are shared or mislinked across courses
 // (e.g. an es_ru-tagged "real"/"social"/"hotel" word_card whose word_set_items
 // also link it into the en_ru course, because the word happens to be spelled
 // the same in both languages). A shared word_card has nothing in common
@@ -6,7 +6,8 @@
 // distractors) and pronunciation are all language-specific.
 //
 // For every word_card linked (via word_set_items -> word_sets.course_code)
-// into more than one distinct course, this tool:
+// into more than one distinct course, or linked into a word set whose course
+// differs from word_cards.course_code, this tool:
 //   - creates a brand new word_cards row per linked course (word, course_code),
 //   - relinks that course's word_set_items rows from the old shared id to the
 //     new per-course id,
@@ -60,7 +61,7 @@ type wordSetLink struct {
 type sharedWordCard struct {
 	WordCardID int64
 	Word       string
-	Courses    []string                // distinct course codes this word_card is linked into, sorted
+	Courses    []string                 // distinct course codes this word_card is linked into, sorted
 	LinksByC   map[string][]wordSetLink // course_code -> word_set_items rows for that course
 }
 
@@ -144,6 +145,7 @@ func findSharedWordCards(conn dbQuerier, onlyWord string) ([]sharedWordCard, err
 	query += `
 		GROUP BY wc.id, wc.word
 		HAVING COUNT(DISTINCT ws.course_code) > 1
+		    OR BOOL_OR(COALESCE(wc.course_code, '') <> COALESCE(ws.course_code, ''))
 	`
 
 	rows, err := conn.Query(query, args...)
@@ -242,13 +244,26 @@ func splitOne(ctx context.Context, conn dbExecQuerier, audioDir string, s shared
 	for _, course := range s.Courses {
 		var newID int64
 		if err := tx.QueryRow(`
-			INSERT INTO word_cards (word, definition, course_code, updated_at)
-			VALUES (?, '', ?, CURRENT_TIMESTAMP)
-			RETURNING id`, s.Word, course).Scan(&newID); err != nil {
-			return fmt.Errorf("create per-course word_cards row for course=%s: %w", course, err)
+			SELECT id FROM word_cards
+			WHERE LOWER(word) = LOWER(?) AND course_code = ? AND id <> ?
+			ORDER BY id LIMIT 1`, s.Word, course, s.WordCardID).Scan(&newID); err != nil {
+			if !errors.Is(err, sql.ErrNoRows) {
+				return fmt.Errorf("find per-course word_cards row for course=%s: %w", course, err)
+			}
+			if err := tx.QueryRow(`
+				INSERT INTO word_cards (word, definition, course_code, updated_at)
+				VALUES (?, '', ?, CURRENT_TIMESTAMP)
+				RETURNING id`, s.Word, course).Scan(&newID); err != nil {
+				return fmt.Errorf("create per-course word_cards row for course=%s: %w", course, err)
+			}
 		}
 
 		for _, l := range s.LinksByC[course] {
+			if _, err := tx.Exec(`
+				DELETE FROM word_set_items
+				WHERE word_set_id = ? AND word_card_id = ?`, l.WordSetID, newID); err != nil {
+				return fmt.Errorf("delete duplicate target link set=%d course=%s: %w", l.WordSetID, course, err)
+			}
 			if _, err := tx.Exec(`
 				UPDATE word_set_items SET word_card_id = ?
 				WHERE word_set_id = ? AND word_card_id = ?`, newID, l.WordSetID, s.WordCardID); err != nil {

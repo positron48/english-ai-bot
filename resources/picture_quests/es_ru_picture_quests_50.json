@@ -13,32 +13,33 @@
       {
         "code": "main_objects",
         "title": "Назови главное",
-        "completion_criteria": "Task is complete when the learner, in Spanish, names cup, book, apple, and keys; mentions the table. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, nombra la taza, el libro, la manzana y las llaves, y menciona la mesa. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 0
       },
       {
         "code": "actions",
         "title": "Опиши действие",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions at least two colors: white cup, blue book, red apple, silver keys. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona que no hay personas en la escena. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 1
       },
       {
         "code": "colors_numbers",
         "title": "Добавь цвета и числа",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions where at least two objects are: cup on the left, book in the center, apple on the right, or keys in front. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona al menos dos colores: taza blanca, libro azul, manzana roja o llaves plateadas. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 2
       },
       {
         "code": "layout",
         "title": "Опиши расположение",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions that the apple has a green leaf. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona dónde están al menos dos objetos: la taza a la izquierda, el libro en el centro, la manzana a la derecha o las llaves delante; opcionalmente, que la manzana tiene una hoja verde. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": false,
         "sort_order": 3
       }
-    ]
+    ],
+    "course_code": "es_ru"
   },
   {
     "code": "habitacion_cama_lampara_ventana",
@@ -54,32 +55,33 @@
       {
         "code": "main_objects",
         "title": "Назови главное",
-        "completion_criteria": "Task is complete when the learner, in Spanish, names the bed, lamp, window, and room. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, nombra la cama, la lámpara, la ventana y la habitación. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 0
       },
       {
         "code": "actions",
         "title": "Опиши действие",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions at least two colors: blue bed, yellow lamp, brown table, green rug, or white curtains. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona que no hay personas en la habitación. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 1
       },
       {
         "code": "colors_numbers",
         "title": "Добавь цвета и числа",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions where the bed, lamp, or window is located. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona al menos dos colores: cama azul, lámpara amarilla, mesita marrón, alfombra verde o cortinas blancas. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 2
       },
       {
         "code": "layout",
         "title": "Опиши расположение",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the green rug on the floor. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona dónde están la cama, la lámpara o la ventana; opcionalmente, que la alfombra verde está en el suelo. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": false,
         "sort_order": 3
       }
-    ]
+    ],
+    "course_code": "es_ru"
   },
   {
     "code": "gato_silla_pelota",
@@ -95,32 +97,33 @@
       {
         "code": "main_objects",
         "title": "Назови главное",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the cat, chair, and ball. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona el gato, la silla y la pelota. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 0
       },
       {
         "code": "actions",
         "title": "Опиши действие",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions that the cat is on the chair. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona que el gato está en la silla. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 1
       },
       {
         "code": "colors_numbers",
         "title": "Добавь цвета и числа",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions at least one color: orange cat, blue ball, wooden chair, or beige floor. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona al menos un color: gato naranja, pelota azul, silla de madera o suelo beige. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 2
       },
       {
         "code": "layout",
         "title": "Опиши расположение",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions that the ball is to the right of the chair. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona que la pelota está a la derecha de la silla. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": false,
         "sort_order": 3
       }
-    ]
+    ],
+    "course_code": "es_ru"
   },
   {
     "code": "nina_globo_rojo",
@@ -136,32 +139,33 @@
       {
         "code": "main_objects",
         "title": "Назови главное",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the girl and the red balloon. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona la niña y el globo rojo. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 0
       },
       {
         "code": "actions",
         "title": "Опиши действие",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions that the girl is holding the balloon. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona que la niña sostiene el globo. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 1
       },
       {
         "code": "colors_numbers",
         "title": "Добавь цвета и числа",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions at least two colors: red balloon, yellow dress, blue shoes, green grass, or blue sky. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona al menos dos colores: globo rojo, vestido amarillo, zapatos azules, hierba verde o cielo azul. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 2
       },
       {
         "code": "layout",
         "title": "Опиши расположение",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the tree behind the girl. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona el árbol detrás de la niña. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": false,
         "sort_order": 3
       }
-    ]
+    ],
+    "course_code": "es_ru"
   },
   {
     "code": "desayuno_pan_leche_banana",
@@ -177,32 +181,33 @@
       {
         "code": "main_objects",
         "title": "Назови главное",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions bread, milk, and banana. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona el pan, la leche y el plátano. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 0
       },
       {
         "code": "actions",
         "title": "Опиши действие",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the quantities: two slices of bread, one glass of milk, or one banana. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona que no hay personas y que el desayuno está en la mesa. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 1
       },
       {
         "code": "colors_numbers",
         "title": "Добавь цвета и числа",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions at least two colors: brown bread, white milk, yellow banana, white plate. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona las cantidades (dos rebanadas de pan, un vaso de leche o un plátano) y al menos dos colores: pan marrón, leche blanca, plátano amarillo o plato blanco. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 2
       },
       {
         "code": "layout",
         "title": "Опиши расположение",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions where the glass or banana is. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona dónde está el vaso o el plátano. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": false,
         "sort_order": 3
       }
-    ]
+    ],
+    "course_code": "es_ru"
   },
   {
     "code": "parada_autobus_un_autobus",
@@ -218,32 +223,33 @@
       {
         "code": "main_objects",
         "title": "Назови главное",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the bus, bus stop, and people. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona el autobús, la parada y las personas. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 0
       },
       {
         "code": "actions",
         "title": "Опиши действие",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions that there is one bus. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona que el autobús está parado o que las personas esperan en la parada. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 1
       },
       {
         "code": "colors_numbers",
         "title": "Добавь цвета и числа",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions that two people are waiting. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona que dos personas esperan y al menos un color, como autobús azul, refugio gris o cielo azul. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 2
       },
       {
         "code": "layout",
         "title": "Опиши расположение",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions at least one color such as blue bus, gray shelter, or blue sky. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona dónde están el autobús o el refugio: el autobús a la derecha, las personas bajo el refugio a la izquierda. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": false,
         "sort_order": 3
       }
-    ]
+    ],
+    "course_code": "es_ru"
   },
   {
     "code": "tienda_frutas_colores",
@@ -259,32 +265,33 @@
       {
         "code": "main_objects",
         "title": "Назови главное",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions apples, pears, and oranges. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona las manzanas, las peras y las naranjas. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 0
       },
       {
         "code": "actions",
         "title": "Опиши действие",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions at least two fruit colors: red apples, green pears, orange oranges. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona al menos dos colores de frutas: manzanas rojas, peras verdes o naranjas naranjas. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 1
       },
       {
         "code": "colors_numbers",
         "title": "Добавь цвета и числа",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions at least one number of fruit: three apples, four pears, or five oranges. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona al menos una cantidad de frutas: tres manzanas, cuatro peras o cinco naranjas. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 2
       },
       {
         "code": "layout",
         "title": "Опиши расположение",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the seller behind the baskets. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona al vendedor detrás de las cestas. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": false,
         "sort_order": 3
       }
-    ]
+    ],
+    "course_code": "es_ru"
   },
   {
     "code": "parque_sol_arbol_banco_perro",
@@ -300,32 +307,33 @@
       {
         "code": "main_objects",
         "title": "Назови главное",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the tree, bench, and dog. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona el árbol, el banco y el perro. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 0
       },
       {
         "code": "actions",
         "title": "Опиши действие",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions that the park is sunny. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona que el parque está soleado. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 1
       },
       {
         "code": "colors_numbers",
         "title": "Добавь цвета и числа",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions at least two colors: green tree/grass, brown bench/dog, blue sky. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona al menos dos colores: árbol o hierba verde, banco o perro marrón, cielo azul. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 2
       },
       {
         "code": "layout",
         "title": "Опиши расположение",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions where the dog is: near the bench or on the grass. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona dónde está el perro: cerca del banco o sobre la hierba. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": false,
         "sort_order": 3
       }
-    ]
+    ],
+    "course_code": "es_ru"
   },
   {
     "code": "familia_cocina_cena",
@@ -341,32 +349,33 @@
       {
         "code": "main_objects",
         "title": "Назови главное",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the family members in the kitchen. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona a los miembros de la familia en la cocina. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 0
       },
       {
         "code": "actions",
         "title": "Опиши действие",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions at least two actions: cutting tomatoes, stirring soup, washing lettuce. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona al menos dos acciones: cortar tomates, remover la sopa o lavar lechuga. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 1
       },
       {
         "code": "colors_numbers",
         "title": "Добавь цвета и числа",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the food items: tomatoes, soup, lettuce, bread, or plates. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona los alimentos: tomates, sopa, lechuga, pan o platos. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 2
       },
       {
         "code": "layout",
         "title": "Опиши расположение",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the evening kitchen light. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona la luz de la cocina por la tarde. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": false,
         "sort_order": 3
       }
-    ]
+    ],
+    "course_code": "es_ru"
   },
   {
     "code": "alumno_mochila_manana",
@@ -382,32 +391,33 @@
       {
         "code": "main_objects",
         "title": "Назови главное",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the student and the backpack. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona al estudiante y la mochila. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 0
       },
       {
         "code": "actions",
         "title": "Опиши действие",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions that it is morning or sunny through the window. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona que es por la mañana o que entra sol por la ventana. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 1
       },
       {
         "code": "colors_numbers",
         "title": "Добавь цвета и числа",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions at least three school items: notebook, pencil, book, lunch box, backpack. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona al menos tres objetos escolares: cuaderno, lápiz, libro, fiambrera o mochila. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 2
       },
       {
         "code": "layout",
         "title": "Опиши расположение",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions that the notebook is being put into the backpack. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona que el cuaderno se está metiendo en la mochila. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": false,
         "sort_order": 3
       }
-    ]
+    ],
+    "course_code": "es_ru"
   },
   {
     "code": "cafe_dos_visitantes",
@@ -423,32 +433,33 @@
       {
         "code": "main_objects",
         "title": "Назови главное",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the cafe and two visitors. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona la cafetería y dos visitantes. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 0
       },
       {
         "code": "actions",
         "title": "Опиши действие",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the drinks: coffee and orange juice. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona las bebidas: café y zumo de naranja. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 1
       },
       {
         "code": "colors_numbers",
         "title": "Добавь цвета и числа",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the waiter and the menu. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona al camarero y el menú. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 2
       },
       {
         "code": "layout",
         "title": "Опиши расположение",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the chairs or the green plant near the window. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona las sillas o la planta verde junto a la ventana. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": false,
         "sort_order": 3
       }
-    ]
+    ],
+    "course_code": "es_ru"
   },
   {
     "code": "persona_compra_boleto_taquilla",
@@ -464,32 +475,33 @@
       {
         "code": "main_objects",
         "title": "Назови главное",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the customer and the cashier. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona al cliente y al cajero. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 0
       },
       {
         "code": "actions",
         "title": "Опиши действие",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions that the person is buying or receiving a ticket. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona que la persona compra o recibe un billete. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 1
       },
       {
         "code": "colors_numbers",
         "title": "Добавь цвета и числа",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the money and the glass window. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona el dinero y el ventanillo de cristal. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 2
       },
       {
         "code": "layout",
         "title": "Опиши расположение",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the blue sign above the window. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona el cartel azul encima del ventanillo. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": false,
         "sort_order": 3
       }
-    ]
+    ],
+    "course_code": "es_ru"
   },
   {
     "code": "patio_ninos_juegan_pelota",
@@ -505,32 +517,33 @@
       {
         "code": "main_objects",
         "title": "Назови главное",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the courtyard and children. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona el patio y los niños. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 0
       },
       {
         "code": "actions",
         "title": "Опиши действие",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions that there are three children. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona que hay tres niños. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 1
       },
       {
         "code": "colors_numbers",
         "title": "Добавь цвета и числа",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions at least two actions: kicking, running, or waiting. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona al menos dos acciones: patear, correr o esperar. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 2
       },
       {
         "code": "layout",
         "title": "Опиши расположение",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the red ball or the gray bench. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona la pelota roja o el banco gris. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": false,
         "sort_order": 3
       }
-    ]
+    ],
+    "course_code": "es_ru"
   },
   {
     "code": "playa_sombrilla_toalla_mar",
@@ -546,32 +559,33 @@
       {
         "code": "main_objects",
         "title": "Назови главное",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the beach, sea, umbrella, and towel. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona la playa, el mar, la sombrilla y la toalla. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 0
       },
       {
         "code": "actions",
         "title": "Опиши действие",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions at least two colors: blue sea, yellow umbrella, red towel, green sandals. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona que hace sol o que es una escena de playa. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 1
       },
       {
         "code": "colors_numbers",
         "title": "Добавь цвета и числа",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions that it is sunny or a beach scene. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona al menos dos colores: mar azul, sombrilla amarilla, toalla roja o sandalias verdes. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 2
       },
       {
         "code": "layout",
         "title": "Опиши расположение",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the sandals next to the towel. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona las sandalias junto a la toalla. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": false,
         "sort_order": 3
       }
-    ]
+    ],
+    "course_code": "es_ru"
   },
   {
     "code": "medico_paciente_consulta",
@@ -587,32 +601,33 @@
       {
         "code": "main_objects",
         "title": "Назови главное",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the doctor and patient. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona al médico y al paciente. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 0
       },
       {
         "code": "actions",
         "title": "Опиши действие",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions that the doctor uses a stethoscope. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona que el médico usa un estetoscopio. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 1
       },
       {
         "code": "colors_numbers",
         "title": "Добавь цвета и числа",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the clinic office or medical setting. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona la consulta o el entorno médico. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 2
       },
       {
         "code": "layout",
         "title": "Опиши расположение",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the computer or blue folder on the desk. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona el ordenador o la carpeta azul en el escritorio. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": false,
         "sort_order": 3
       }
-    ]
+    ],
+    "course_code": "es_ru"
   },
   {
     "code": "turista_mapa_metro",
@@ -628,32 +643,33 @@
       {
         "code": "main_objects",
         "title": "Назови главное",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the tourist and map. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona al turista y el mapa. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 0
       },
       {
         "code": "actions",
         "title": "Опиши действие",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the metro entrance or metro sign. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona la entrada del metro o el cartel del metro. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 1
       },
       {
         "code": "colors_numbers",
         "title": "Добавь цвета и числа",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions that the tourist is looking at the map. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona que el turista mira el mapa. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 2
       },
       {
         "code": "layout",
         "title": "Опиши расположение",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the buildings or crosswalk behind the tourist. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona los edificios o el paso de peatones detrás del turista. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": false,
         "sort_order": 3
       }
-    ]
+    ],
+    "course_code": "es_ru"
   },
   {
     "code": "picnic_lago_perro_pajaros",
@@ -669,32 +685,33 @@
       {
         "code": "main_objects",
         "title": "Назови главное",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the picnic by the lake. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona el picnic junto al lago. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 0
       },
       {
         "code": "actions",
         "title": "Опиши действие",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions food or drink on the blanket: sandwiches, apples, basket, or water. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona comida o bebida en la manta: bocadillos, manzanas, cesta o agua. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 1
       },
       {
         "code": "colors_numbers",
         "title": "Добавь цвета и числа",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the dog and the birds. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona el perro y los pájaros. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 2
       },
       {
         "code": "layout",
         "title": "Опиши расположение",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions at least one action: sitting, eating, or pouring water. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona al menos una acción: sentarse, comer o servir agua. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": false,
         "sort_order": 3
       }
-    ]
+    ],
+    "course_code": "es_ru"
   },
   {
     "code": "mercado_manana_verduras",
@@ -710,32 +727,33 @@
       {
         "code": "main_objects",
         "title": "Назови главное",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the morning market with sellers and customers. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona el mercado matutino con vendedores y clientes. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 0
       },
       {
         "code": "actions",
         "title": "Опиши действие",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions at least three vegetables: tomatoes, cucumbers, carrots, potatoes. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona al menos tres verduras: tomates, pepinos, zanahorias o patatas. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 1
       },
       {
         "code": "colors_numbers",
         "title": "Добавь цвета и числа",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the price cards or visible numbers. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona las tarjetas de precio o los números visibles. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 2
       },
       {
         "code": "layout",
         "title": "Опиши расположение",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the customer with a cloth bag. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona al cliente con una bolsa de tela. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": false,
         "sort_order": 3
       }
-    ]
+    ],
+    "course_code": "es_ru"
   },
   {
     "code": "apartamento_mudanza_cajas",
@@ -751,32 +769,33 @@
       {
         "code": "main_objects",
         "title": "Назови главное",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the apartment and moving boxes. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona el apartamento y las cajas de mudanza. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 0
       },
       {
         "code": "actions",
         "title": "Опиши действие",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the number or placement of boxes. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona el número o la ubicación de las cajas. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 1
       },
       {
         "code": "colors_numbers",
         "title": "Добавь цвета и числа",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions at least one moving action: taping a box or carrying a chair. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona al menos una acción de mudanza: cerrar una caja con cinta o llevar una silla. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 2
       },
       {
         "code": "layout",
         "title": "Опиши расположение",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the wrapped table or rolled blue rug. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona la mesa envuelta o la alfombra azul enrollada. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": false,
         "sort_order": 3
       }
-    ]
+    ],
+    "course_code": "es_ru"
   },
   {
     "code": "ciclista_repara_rueda",
@@ -792,32 +811,33 @@
       {
         "code": "main_objects",
         "title": "Назови главное",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the cyclist and bicycle. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona al ciclista y la bicicleta. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 0
       },
       {
         "code": "actions",
         "title": "Опиши действие",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions that the cyclist is repairing a wheel. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona que el ciclista repara una rueda. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 1
       },
       {
         "code": "colors_numbers",
         "title": "Добавь цвета и числа",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions at least two tools: pump, wrench, patch kit. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona al menos dos herramientas: bomba, llave inglesa o kit de parches. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 2
       },
       {
         "code": "layout",
         "title": "Опиши расположение",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the red helmet or black bicycle. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona el casco rojo o la bicicleta negra. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": false,
         "sort_order": 3
       }
-    ]
+    ],
+    "course_code": "es_ru"
   },
   {
     "code": "familia_ropa_tienda",
@@ -833,32 +853,33 @@
       {
         "code": "main_objects",
         "title": "Назови главное",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the family in a clothing store. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona a la familia en una tienda de ropa. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 0
       },
       {
         "code": "actions",
         "title": "Опиши действие",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions at least three clothing items: jacket, sweater, hat, shirts. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona al menos tres prendas: chaqueta, jersey, gorro o camisas. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 1
       },
       {
         "code": "colors_numbers",
         "title": "Добавь цвета и числа",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions colors of clothes. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona los colores de la ropa. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 2
       },
       {
         "code": "layout",
         "title": "Опиши расположение",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions sizes or the mirror. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona las tallas o el espejo. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": false,
         "sort_order": 3
       }
-    ]
+    ],
+    "course_code": "es_ru"
   },
   {
     "code": "oficina_colegas_computadores",
@@ -874,32 +895,33 @@
       {
         "code": "main_objects",
         "title": "Назови главное",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the office and colleagues. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona la oficina y los compañeros. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 0
       },
       {
         "code": "actions",
         "title": "Опиши действие",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions computers or laptops. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona ordenadores o portátiles. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 1
       },
       {
         "code": "colors_numbers",
         "title": "Добавь цвета и числа",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions at least two work actions: typing, headset call, writing notes. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona al menos dos acciones de trabajo: escribir, llamar con auriculares o tomar notas. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 2
       },
       {
         "code": "layout",
         "title": "Опиши расположение",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the printer or the clock showing 10:00. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona la impresora o el reloj que marca las 10:00. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": false,
         "sort_order": 3
       }
-    ]
+    ],
+    "course_code": "es_ru"
   },
   {
     "code": "aeropuerto_maletas_tablero",
@@ -915,32 +937,33 @@
       {
         "code": "main_objects",
         "title": "Назови главное",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the airport hall and passengers. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona la sala del aeropuerto y los pasajeros. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 0
       },
       {
         "code": "actions",
         "title": "Опиши действие",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions suitcases or luggage with colors/numbers. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona maletas o equipaje con colores o cantidades. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 1
       },
       {
         "code": "colors_numbers",
         "title": "Добавь цвета и числа",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the departure board with times. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona el tablero de salidas con horarios. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 2
       },
       {
         "code": "layout",
         "title": "Опиши расположение",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the passenger pointing at the board. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona al pasajero que señala el tablero. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": false,
         "sort_order": 3
       }
-    ]
+    ],
+    "course_code": "es_ru"
   },
   {
     "code": "parque_invierno_nieve_muneco",
@@ -956,32 +979,33 @@
       {
         "code": "main_objects",
         "title": "Назови главное",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions winter park and snow. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona el parque invernal y la nieve. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 0
       },
       {
         "code": "actions",
         "title": "Опиши действие",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the two children and snowman. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona a los dos niños y al muñeco de nieve. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 1
       },
       {
         "code": "colors_numbers",
         "title": "Добавь цвета и числа",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions at least two snowman details: carrot nose, blue scarf, black hat. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona al menos dos detalles del muñeco: nariz de zanahoria, bufanda azul o sombrero negro. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 2
       },
       {
         "code": "layout",
         "title": "Опиши расположение",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions falling snow or frozen pond. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona la nieve que cae o el estanque helado. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": false,
         "sort_order": 3
       }
-    ]
+    ],
+    "course_code": "es_ru"
   },
   {
     "code": "cola_policlinica_documentos",
@@ -997,32 +1021,33 @@
       {
         "code": "main_objects",
         "title": "Назови главное",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the clinic waiting area and line. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona la sala de espera de la clínica y la cola. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 0
       },
       {
         "code": "actions",
         "title": "Опиши действие",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions that five people are waiting. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona que cinco personas esperan. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 1
       },
       {
         "code": "colors_numbers",
         "title": "Добавь цвета и числа",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions documents or the blue folder. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona los documentos o la carpeta azul. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 2
       },
       {
         "code": "layout",
         "title": "Опиши расположение",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the nurse, tired child, cane, or red-cross poster. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona a la enfermera, al niño cansado, al bastón o al cartel de la cruz roja. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": false,
         "sort_order": 3
       }
-    ]
+    ],
+    "course_code": "es_ru"
   },
   {
     "code": "estudiantes_proyecto_biblioteca",
@@ -1038,32 +1063,33 @@
       {
         "code": "main_objects",
         "title": "Назови главное",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions students discussing a project in a library. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona a los estudiantes que discuten un proyecto en la biblioteca. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 0
       },
       {
         "code": "actions",
         "title": "Опиши действие",
-        "completion_criteria": "Task is complete when the learner, in Spanish, describes at least two roles or actions among pointing, note-taking, holding books, listening. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, describe al menos dos roles o acciones entre señalar, tomar notas, sostener libros o escuchar. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 1
       },
       {
         "code": "colors_numbers",
         "title": "Добавь цвета и числа",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the laptop and poster board with sticky notes. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona el portátil y el cartel con notas adhesivas. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 2
       },
       {
         "code": "layout",
         "title": "Опиши расположение",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the bookshelves or quiet library setting. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona las estanterías o el ambiente tranquilo de la biblioteca. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": false,
         "sort_order": 3
       }
-    ]
+    ],
+    "course_code": "es_ru"
   },
   {
     "code": "vecinos_proteccion_agua",
@@ -1079,32 +1105,33 @@
       {
         "code": "main_objects",
         "title": "Назови главное",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the water leak in an apartment hallway. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona la fuga de agua en el pasillo de un edificio. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 0
       },
       {
         "code": "actions",
         "title": "Опиши действие",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions at least two helping actions: holding a bucket, mopping, calling, using towels. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona al menos dos acciones de ayuda: sostener un cubo, fregar, llamar o usar toallas. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 1
       },
       {
         "code": "colors_numbers",
         "title": "Добавь цвета и числа",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the wet ceiling stain or water on the floor. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona la mancha húmeda del techo o el agua en el suelo. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 2
       },
       {
         "code": "layout",
         "title": "Опиши расположение",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the worried but cooperative mood. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona el ambiente de preocupación pero de cooperación. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": false,
         "sort_order": 3
       }
-    ]
+    ],
+    "course_code": "es_ru"
   },
   {
     "code": "excursion_ciudad_antigua",
@@ -1120,32 +1147,33 @@
       {
         "code": "main_objects",
         "title": "Назови главное",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the guided tour in an old city. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona la visita guiada en una ciudad antigua. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 0
       },
       {
         "code": "actions",
         "title": "Опиши действие",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the guide and six tourists. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona al guía y a los seis turistas. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 1
       },
       {
         "code": "colors_numbers",
         "title": "Добавь цвета и числа",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions old architecture: stone arches, clock tower, or cobblestone street. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona la arquitectura antigua: arcos de piedra, torre del reloj o calle empedrada. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 2
       },
       {
         "code": "layout",
         "title": "Опиши расположение",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the photo-taking tourist or brochure. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona al turista que hace fotos o el folleto. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": false,
         "sort_order": 3
       }
-    ]
+    ],
+    "course_code": "es_ru"
   },
   {
     "code": "voluntarios_limpian_rio",
@@ -1161,32 +1189,33 @@
       {
         "code": "main_objects",
         "title": "Назови главное",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions volunteers cleaning a riverbank. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona a los voluntarios que limpian la orilla del río. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 0
       },
       {
         "code": "actions",
         "title": "Опиши действие",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions at least two types of trash or containers: plastic bottles, paper, cans, blue bag, green box. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona al menos dos tipos de basura o contenedores: botellas de plástico, papel, latas, bolsa azul o caja verde. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 1
       },
       {
         "code": "colors_numbers",
         "title": "Добавь цвета и числа",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions at least two actions among collecting, picking up, checking, separating. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona al menos dos acciones entre recoger, levantar, revisar o separar. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 2
       },
       {
         "code": "layout",
         "title": "Опиши расположение",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the cloudy morning, river, or trees. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona la mañana nublada, el río o los árboles. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": false,
         "sort_order": 3
       }
-    ]
+    ],
+    "course_code": "es_ru"
   },
   {
     "code": "familia_planifica_vacaciones",
@@ -1202,32 +1231,33 @@
       {
         "code": "main_objects",
         "title": "Назови главное",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the family planning a vacation. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona a la familia que planifica unas vacaciones. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 0
       },
       {
         "code": "actions",
         "title": "Опиши действие",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions planning objects: map, laptop, brochures, notebook, or budget. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona objetos de planificación: mapa, portátil, folletos, cuaderno o presupuesto. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 1
       },
       {
         "code": "colors_numbers",
         "title": "Добавь цвета и числа",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions at least two preferences or destinations shown: beach and mountains. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona al menos dos preferencias o destinos mostrados: playa y montañas. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 2
       },
       {
         "code": "layout",
         "title": "Опиши расположение",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions who is pointing, writing, showing, or looking. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona quién señala, escribe, muestra o mira. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": false,
         "sort_order": 3
       }
-    ]
+    ],
+    "course_code": "es_ru"
   },
   {
     "code": "taller_reparacion_bicicleta",
@@ -1243,32 +1273,33 @@
       {
         "code": "main_objects",
         "title": "Назови главное",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the bicycle workshop and red bicycle. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona el taller de bicicletas y la bicicleta roja. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 0
       },
       {
         "code": "actions",
         "title": "Опиши действие",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the mechanic repairing or tightening the chain. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona que el mecánico repara o aprieta la cadena. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 1
       },
       {
         "code": "colors_numbers",
         "title": "Добавь цвета и числа",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions at least two tools or parts: spare tire, oil, wrench, screwdriver, chain. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona al menos dos herramientas o piezas: neumático de repuesto, aceite, llave inglesa, destornillador o cadena. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 2
       },
       {
         "code": "layout",
         "title": "Опиши расположение",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the workbench or drawers with parts. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona el banco de trabajo o los cajones con piezas. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": false,
         "sort_order": 3
       }
-    ]
+    ],
+    "course_code": "es_ru"
   },
   {
     "code": "entrevista_trabajo_joven",
@@ -1284,32 +1315,33 @@
       {
         "code": "main_objects",
         "title": "Назови главное",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the job interview and participants. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona la entrevista de trabajo y los participantes. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 0
       },
       {
         "code": "actions",
         "title": "Опиши действие",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the resume and note-taking or reading. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona el currículum y tomar notas o leer. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 1
       },
       {
         "code": "colors_numbers",
         "title": "Добавь цвета и числа",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the young man emotions: nervous but polite. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona las emociones del joven: nervioso pero educado. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 2
       },
       {
         "code": "layout",
         "title": "Опиши расположение",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the office table details such as water or plant. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona los detalles de la mesa de la oficina, como agua o una planta. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": false,
         "sort_order": 3
       }
-    ]
+    ],
+    "course_code": "es_ru"
   },
   {
     "code": "repartidor_lluvia_paquete",
@@ -1325,32 +1357,33 @@
       {
         "code": "main_objects",
         "title": "Назови главное",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the courier delivering a package. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona al repartidor que entrega un paquete. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 0
       },
       {
         "code": "actions",
         "title": "Опиши действие",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the heavy rain, puddles, or wet street. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona la lluvia intensa, los charcos o la calle mojada. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 1
       },
       {
         "code": "colors_numbers",
         "title": "Добавь цвета и числа",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the customer under the doorway with an umbrella. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona al cliente bajo el portal con un paraguas. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 2
       },
       {
         "code": "layout",
         "title": "Опиши расположение",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions colors such as yellow raincoat or brown box. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona colores como el impermeable amarillo o la caja marrón. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": false,
         "sort_order": 3
       }
-    ]
+    ],
+    "course_code": "es_ru"
   },
   {
     "code": "estacion_noche_tren_retrasado",
@@ -1366,32 +1399,33 @@
       {
         "code": "main_objects",
         "title": "Назови главное",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the evening train station and delayed train situation. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona la estación de tren por la tarde y la situación del tren retrasado. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 0
       },
       {
         "code": "actions",
         "title": "Опиши действие",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the board showing 21:40 and a delay symbol. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona el tablero que muestra las 21:40 y un símbolo de retraso. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 1
       },
       {
         "code": "colors_numbers",
         "title": "Добавь цвета и числа",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions passengers waiting with suitcases. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona a los pasajeros que esperan con maletas. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 2
       },
       {
         "code": "layout",
         "title": "Опиши расположение",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions at least two actions: checking phone, sleeping, pointing, sitting. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona al menos dos acciones: mirar el móvil, dormir, señalar o sentarse. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": false,
         "sort_order": 3
       }
-    ]
+    ],
+    "course_code": "es_ru"
   },
   {
     "code": "coworking_discusion_proyecto",
@@ -1407,32 +1441,33 @@
       {
         "code": "main_objects",
         "title": "Назови главное",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the coworking project discussion and team. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona la discusión del proyecto en un coworking y el equipo. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 0
       },
       {
         "code": "actions",
         "title": "Опиши действие",
-        "completion_criteria": "Task is complete when the learner, in Spanish, describes at least three roles or contributions: tablet mockup, code, priorities, charts. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, describe al menos tres roles o aportaciones: maqueta en tableta, código, prioridades o gráficos. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 1
       },
       {
         "code": "colors_numbers",
         "title": "Добавь цвета и числа",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions collaboration or focused mood. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona la colaboración o el ambiente de concentración. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 2
       },
       {
         "code": "layout",
         "title": "Опиши расположение",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions table details like coffee cups or charging cables. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona detalles de la mesa como tazas de café o cables de carga. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": false,
         "sort_order": 3
       }
-    ]
+    ],
+    "course_code": "es_ru"
   },
   {
     "code": "plaza_festival_ciudad",
@@ -1448,32 +1483,33 @@
       {
         "code": "main_objects",
         "title": "Назови главное",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the festival in a city square. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona el festival en una plaza de la ciudad. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 0
       },
       {
         "code": "actions",
         "title": "Опиши действие",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the stage, musicians, flags, and crowd. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona el escenario, los músicos, las banderas y la multitud. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 1
       },
       {
         "code": "colors_numbers",
         "title": "Добавь цвета и числа",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions at least two activities: watching, dancing, buying snacks. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona al menos dos actividades: mirar, bailar o comprar snacks. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 2
       },
       {
         "code": "layout",
         "title": "Опиши расположение",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the fountain or old town hall. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona la fuente o el ayuntamiento antiguo. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": false,
         "sort_order": 3
       }
-    ]
+    ],
+    "course_code": "es_ru"
   },
   {
     "code": "discusion_presupuesto_familia",
@@ -1489,32 +1525,33 @@
       {
         "code": "main_objects",
         "title": "Назови главное",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the family budget argument in the kitchen. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona la discusión del presupuesto familiar en la cocina. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 0
       },
       {
         "code": "actions",
         "title": "Опиши действие",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions evidence of money planning: bills, calculator, notebook with numbers. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona evidencias de planificación del dinero: billetes, calculadora o cuaderno con números. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 1
       },
       {
         "code": "colors_numbers",
         "title": "Добавь цвета и числа",
-        "completion_criteria": "Task is complete when the learner, in Spanish, describes at least two emotions or body language details: tense, crossed arms, upset, quiet. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, describe al menos dos emociones o detalles del lenguaje corporal: tensión, brazos cruzados, enfado o silencio. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 2
       },
       {
         "code": "layout",
         "title": "Опиши расположение",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the phone or glass of milk. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona el teléfono o el vaso de leche. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": false,
         "sort_order": 3
       }
-    ]
+    ],
+    "course_code": "es_ru"
   },
   {
     "code": "museo_arte_moderno_visitantes",
@@ -1530,32 +1567,33 @@
       {
         "code": "main_objects",
         "title": "Назови главное",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the modern art museum gallery. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona la galería de un museo de arte moderno. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 0
       },
       {
         "code": "actions",
         "title": "Опиши действие",
-        "completion_criteria": "Task is complete when the learner, in Spanish, describes the abstract painting with shapes and colors. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, describe el cuadro abstracto con formas y colores. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 1
       },
       {
         "code": "colors_numbers",
         "title": "Добавь цвета и числа",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions different visitor reactions: smiling, confusion, note-taking. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona distintas reacciones de los visitantes: sonrisa, confusión o tomar notas. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 2
       },
       {
         "code": "layout",
         "title": "Опиши расположение",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the silver cube sculpture. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona la escultura en forma de cubo plateado. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": false,
         "sort_order": 3
       }
-    ]
+    ],
+    "course_code": "es_ru"
   },
   {
     "code": "rueda_prensa_deporte",
@@ -1571,32 +1609,33 @@
       {
         "code": "main_objects",
         "title": "Назови главное",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the post-match press conference. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona la rueda de prensa después del partido. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 0
       },
       {
         "code": "actions",
         "title": "Опиши действие",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the coach, player, journalists, and microphones. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona al entrenador, al jugador, a los periodistas y a los micrófonos. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 1
       },
       {
         "code": "colors_numbers",
         "title": "Добавь цвета и числа",
-        "completion_criteria": "Task is complete when the learner, in Spanish, describes at least two media actions: cameras, audio recording, raised hand question. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, describe al menos dos acciones de los medios: cámaras, grabación de audio o mano levantada para preguntar. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 2
       },
       {
         "code": "layout",
         "title": "Опиши расположение",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the 2-1 scoreboard or emotions of coach/player. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona el marcador 2-1 o las emociones del entrenador y del jugador. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": false,
         "sort_order": 3
       }
-    ]
+    ],
+    "course_code": "es_ru"
   },
   {
     "code": "reunion_vecinos_parque_nuevo",
@@ -1612,32 +1651,33 @@
       {
         "code": "main_objects",
         "title": "Назови главное",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the community meeting about a new park. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona la reunión vecinal sobre un parque nuevo. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 0
       },
       {
         "code": "actions",
         "title": "Опиши действие",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the city planner and map with trees, paths, playground. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona al urbanista y el mapa con árboles, caminos y zona de juegos. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 1
       },
       {
         "code": "colors_numbers",
         "title": "Добавь цвета и числа",
-        "completion_criteria": "Task is complete when the learner, in Spanish, describes mixed resident reactions or participation. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, describe las reacciones o la participación mixta de los vecinos. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 2
       },
       {
         "code": "layout",
         "title": "Опиши расположение",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the before-and-after poster. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona el cartel de antes y después. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": false,
         "sort_order": 3
       }
-    ]
+    ],
+    "course_code": "es_ru"
   },
   {
     "code": "startup_app_inversor",
@@ -1653,32 +1693,33 @@
       {
         "code": "main_objects",
         "title": "Назови главное",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the startup pitch to an investor. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona la presentación de la startup a un inversor. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 0
       },
       {
         "code": "actions",
         "title": "Опиши действие",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the app dashboard, laptop, and prototype phone. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona el panel de la app, el portátil y el teléfono prototipo. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 1
       },
       {
         "code": "colors_numbers",
         "title": "Добавь цвета и числа",
-        "completion_criteria": "Task is complete when the learner, in Spanish, describes roles: speaker, laptop controller, investor with notebook. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, describe los roles: el que presenta, quien controla el portátil o el inversor con cuaderno. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 2
       },
       {
         "code": "layout",
         "title": "Опиши расположение",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the serious investor expression. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona la expresión seria del inversor. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": false,
         "sort_order": 3
       }
-    ]
+    ],
+    "course_code": "es_ru"
   },
   {
     "code": "calle_despues_lluvia_reparacion_trafico",
@@ -1694,32 +1735,33 @@
       {
         "code": "main_objects",
         "title": "Назови главное",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the street after heavy rain. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona la calle después de una lluvia intensa. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 0
       },
       {
         "code": "actions",
         "title": "Опиши действие",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions traffic: cars waiting and bus stopped. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona el tráfico: coches esperando y autobús parado. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 1
       },
       {
         "code": "colors_numbers",
         "title": "Добавь цвета и числа",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions repair workers fixing a blocked drain. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona a los trabajadores que reparan un desagüe bloqueado. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 2
       },
       {
         "code": "layout",
         "title": "Опиши расположение",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions consequences such as puddle, wet leaves, or broken branches. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona consecuencias como un charco, hojas mojadas o ramas rotas. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": false,
         "sort_order": 3
       }
-    ]
+    ],
+    "course_code": "es_ru"
   },
   {
     "code": "juicio_abogados_testigo",
@@ -1735,32 +1777,33 @@
       {
         "code": "main_objects",
         "title": "Назови главное",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the formal courtroom hearing. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona la audiencia formal en un tribunal. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 0
       },
       {
         "code": "actions",
         "title": "Опиши действие",
-        "completion_criteria": "Task is complete when the learner, in Spanish, identifies roles: judge, lawyers, witness, clerk, observers. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, identifica los roles: juez, abogados, testigo, secretario u observadores. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 1
       },
       {
         "code": "colors_numbers",
         "title": "Добавь цвета и числа",
-        "completion_criteria": "Task is complete when the learner, in Spanish, describes procedural actions: presenting document, reviewing notes, typing, witness at microphone. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, describe acciones procesales: presentar un documento, revisar notas, escribir o testigo ante el micrófono. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 2
       },
       {
         "code": "layout",
         "title": "Опиши расположение",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the formal seating arrangement or quiet observers. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona la disposición formal de los asientos o los observadores en silencio. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": false,
         "sort_order": 3
       }
-    ]
+    ],
+    "course_code": "es_ru"
   },
   {
     "code": "debate_politico_estudio_tv",
@@ -1776,32 +1819,33 @@
       {
         "code": "main_objects",
         "title": "Назови главное",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the TV political debate. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona el debate político en televisión. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 0
       },
       {
         "code": "actions",
         "title": "Опиши действие",
-        "completion_criteria": "Task is complete when the learner, in Spanish, identifies candidates, moderator, podiums, cameras, and audience. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, identifica a los candidatos, al moderador, a los podios, a las cámaras y al público. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 1
       },
       {
         "code": "colors_numbers",
         "title": "Добавь цвета и числа",
-        "completion_criteria": "Task is complete when the learner, in Spanish, contrasts the candidates body language or expressions. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, contrasta el lenguaje corporal o las expresiones de los candidatos. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 2
       },
       {
         "code": "layout",
         "title": "Опиши расположение",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the red-and-blue screen without slogans. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona la pantalla roja y azul sin eslóganes. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": false,
         "sort_order": 3
       }
-    ]
+    ],
+    "course_code": "es_ru"
   },
   {
     "code": "conferencia_cientifica_poster",
@@ -1817,32 +1861,33 @@
       {
         "code": "main_objects",
         "title": "Назови главное",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the scientific conference poster session. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona la sesión de pósters de una conferencia científica. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 0
       },
       {
         "code": "actions",
         "title": "Опиши действие",
-        "completion_criteria": "Task is complete when the learner, in Spanish, identifies the researcher and three attendees. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, identifica al investigador y a los tres asistentes. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 1
       },
       {
         "code": "colors_numbers",
         "title": "Добавь цвета и числа",
-        "completion_criteria": "Task is complete when the learner, in Spanish, describes abstract materials: diagrams, charts, molecule drawing, graph. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, describe materiales abstractos: diagramas, gráficos, dibujo molecular o gráfica. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 2
       },
       {
         "code": "layout",
         "title": "Опиши расположение",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions questions, pointing, tablet notes, badges, or coffee cups. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona preguntas, señalar, notas en tableta, credenciales o tazas de café. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": false,
         "sort_order": 3
       }
-    ]
+    ],
+    "course_code": "es_ru"
   },
   {
     "code": "negociacion_contrato_sala",
@@ -1858,32 +1903,33 @@
       {
         "code": "main_objects",
         "title": "Назови главное",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the contract negotiation in a meeting room. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona la negociación de un contrato en una sala de reuniones. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 0
       },
       {
         "code": "actions",
         "title": "Опиши действие",
-        "completion_criteria": "Task is complete when the learner, in Spanish, identifies two teams and negotiation materials: contracts, spreadsheet, pens. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, identifica a los dos equipos y los materiales de negociación: contratos, hoja de cálculo o bolígrafos. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 1
       },
       {
         "code": "colors_numbers",
         "title": "Добавь цвета и числа",
-        "completion_criteria": "Task is complete when the learner, in Spanish, describes strategic actions: highlighting clause, whispering, offered handshake not accepted. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, describe acciones estratégicas: subrayar una cláusula, susurrar o ofrecer un apretón de manos no aceptado. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 2
       },
       {
         "code": "layout",
         "title": "Опиши расположение",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the cautious atmosphere. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona el ambiente de cautela. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": false,
         "sort_order": 3
       }
-    ]
+    ],
+    "course_code": "es_ru"
   },
   {
     "code": "redaccion_noticias_urgente",
@@ -1899,32 +1945,33 @@
       {
         "code": "main_objects",
         "title": "Назови главное",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the breaking-news newsroom. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona la redacción de noticias de última hora. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 0
       },
       {
         "code": "actions",
         "title": "Опиши действие",
-        "completion_criteria": "Task is complete when the learner, in Spanish, identifies roles and actions: editors, producer, presenter, computers, microphone. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, identifica roles y acciones: editores, productor, presentador, ordenadores o micrófono. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 1
       },
       {
         "code": "colors_numbers",
         "title": "Добавь цвета и числа",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions urgent visual cues: wall screen with map and alert icons, clock 18:05. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona señales visuales de urgencia: pantalla en la pared con mapa e iconos de alerta, reloj 18:05. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 2
       },
       {
         "code": "layout",
         "title": "Опиши расположение",
-        "completion_criteria": "Task is complete when the learner, in Spanish, describes pressure and focus plus desk clutter. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, describe la presión y la concentración, además del desorden en los escritorios. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": false,
         "sort_order": 3
       }
-    ]
+    ],
+    "course_code": "es_ru"
   },
   {
     "code": "ciudad_futura_transporte_energia_ecologia",
@@ -1940,32 +1987,33 @@
       {
         "code": "main_objects",
         "title": "Назови главное",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the future city and its clean transport. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona la ciudad del futuro y su transporte limpio. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 0
       },
       {
         "code": "actions",
         "title": "Опиши действие",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions at least two transport types: electric buses, autonomous pods, cyclists. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona al menos dos tipos de transporte: autobuses eléctricos, pods autónomos o ciclistas. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 1
       },
       {
         "code": "colors_numbers",
         "title": "Добавь цвета и числа",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions energy or ecology elements: solar panels, wind turbines, vertical gardens, trees, clean air. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona elementos de energía o ecología: paneles solares, turbinas eólicas, jardines verticales, árboles o aire limpio. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 2
       },
       {
         "code": "layout",
         "title": "Опиши расположение",
-        "completion_criteria": "Task is complete when the learner, in Spanish, makes a comparison or hypothesis based only on the visible sustainable design. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, hace una comparación o hipótesis basada solo en el diseño sostenible visible. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": false,
         "sort_order": 3
       }
-    ]
+    ],
+    "course_code": "es_ru"
   },
   {
     "code": "restauradores_cuadro_danado",
@@ -1981,32 +2029,33 @@
       {
         "code": "main_objects",
         "title": "Назови главное",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the restoration studio and damaged painting. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona el taller de restauración y el cuadro dañado. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 0
       },
       {
         "code": "actions",
         "title": "Опиши действие",
-        "completion_criteria": "Task is complete when the learner, in Spanish, describes visible damage: faded portrait, torn corner, dark cracks. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, describe los daños visibles: retrato descolorido, esquina rota o grietas oscuras. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 1
       },
       {
         "code": "colors_numbers",
         "title": "Добавь цвета и числа",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions restoration process: tiny brush, magnifying lamp, tablet documentation. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona el proceso de restauración: pincel diminuto, lámpara de aumento o documentación en tableta. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 2
       },
       {
         "code": "layout",
         "title": "Опиши расположение",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions tools or materials such as cotton swabs, pigment jars, gloves, color chart. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona herramientas o materiales como bastoncillos, tarros de pigmento, guantes o carta de colores. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": false,
         "sort_order": 3
       }
-    ]
+    ],
+    "course_code": "es_ru"
   },
   {
     "code": "encuentro_internacional_clima",
@@ -2022,31 +2071,32 @@
       {
         "code": "main_objects",
         "title": "Назови главное",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions the international climate meeting. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona el encuentro internacional sobre el clima. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 0
       },
       {
         "code": "actions",
         "title": "Опиши действие",
-        "completion_criteria": "Task is complete when the learner, in Spanish, identifies delegates, speaker, translators, circular table, flags/nameplates. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, identifica a los delegados, al orador, a los traductores, la mesa circular y las banderas o placas con nombres. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 1
       },
       {
         "code": "colors_numbers",
         "title": "Добавь цвета и числа",
-        "completion_criteria": "Task is complete when the learner, in Spanish, describes climate evidence on the screen: world map, rising temperature line, flood icon. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, describe evidencias climáticas en la pantalla: mapa del mundo, línea de temperatura ascendente o icono de inundación. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": true,
         "sort_order": 2
       },
       {
         "code": "layout",
         "title": "Опиши расположение",
-        "completion_criteria": "Task is complete when the learner, in Spanish, mentions notes, quiet discussion, or translation booths. Minor grammar mistakes are acceptable if the meaning is clear.",
+        "completion_criteria": "La tarea se completa cuando el alumno, en español, menciona notas, conversación en voz baja o cabinas de traducción. Se aceptan errores gramaticales menores si el significado es claro.",
         "is_required": false,
         "sort_order": 3
       }
-    ]
+    ],
+    "course_code": "es_ru"
   }
 ]

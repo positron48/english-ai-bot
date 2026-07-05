@@ -37,6 +37,8 @@ RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o import_learning_conten
 RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o import_spanish_verbs ./cmd/import_spanish_verbs
 RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o backfill_word_verb_links ./cmd/backfill_word_verb_links
 RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o sync_verb_training_json ./cmd/sync_verb_training_json
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o split_shared_words ./cmd/split_shared_words
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o fix_misassigned_words ./cmd/fix_misassigned_words
 
 # Final stage
 FROM alpine:latest
@@ -62,6 +64,8 @@ COPY --from=builder /app/import_learning_content .
 COPY --from=builder /app/import_spanish_verbs .
 COPY --from=builder /app/backfill_word_verb_links .
 COPY --from=builder /app/sync_verb_training_json .
+COPY --from=builder /app/split_shared_words .
+COPY --from=builder /app/fix_misassigned_words .
 COPY --from=builder /app/scripts/requeue_invalid_training_cards.sh ./scripts/requeue_invalid_training_cards.sh
 COPY --from=builder /app/prompts ./prompts
 # Ship static Spanish frequency CSV for in-cluster imports (independent from grammar submodule).

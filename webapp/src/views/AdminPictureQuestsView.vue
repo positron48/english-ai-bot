@@ -190,11 +190,11 @@
       <div class="modal">
         <h3>Импорт квеста из JSON</h3>
         <p class="hint">
-          Вставьте JSON одного квеста с заданиями (структура — как из кнопки «Промпт для генерации»).
-          Квест с таким же <span class="mono">code</span> в курсе <span class="mono">{{ selectedCourseCode }}</span>
-          будет перезаписан вместе с заданиями.
+          Вставьте JSON одного квеста или массива квестов с заданиями (структура — как из кнопки «Промпт для генерации»).
+          Квесты с тем же <span class="mono">code</span> в курсе <span class="mono">{{ selectedCourseCode }}</span>
+          будут перезаписаны вместе с заданиями.
         </p>
-        <textarea ref="importArea" v-model="importText" class="inp code-area" rows="16" placeholder='{ "code": "...", "title": "...", "image_description": "...", "tasks": [ ... ] }'></textarea>
+        <textarea ref="importArea" v-model="importText" class="inp code-area" rows="16" placeholder='{ "code": "...", "title": "...", "tasks": [ ... ] } или [ { ... }, { ... } ]'></textarea>
         <div v-if="importError" class="error">{{ importError }}</div>
         <div class="modal-actions">
           <button class="btn" @click="importOpen = false">Отмена</button>
@@ -489,14 +489,29 @@ async function doImport() {
     importError.value = 'Невалидный JSON: ' + (e?.message || '')
     return
   }
+  if (Array.isArray(parsed) && parsed.length === 0) {
+    importError.value = 'Массив квестов пуст'
+    return
+  }
   importing.value = true
   try {
-    await apiClient.request(
+    const res: {
+      created?: boolean
+      task_count?: number
+      imported?: number
+      created_count?: number
+      updated_count?: number
+    } = await apiClient.request(
       `/api/admin/picture-quests/import?course_code=${encodeURIComponent(selectedCourseCode.value)}`,
       { method: 'POST', body: JSON.stringify(parsed) },
     )
     importOpen.value = false
-    // Silent refresh: keep current filter/sort/page, no success popup, no jump.
+    if (typeof res.imported === 'number' && res.imported > 1) {
+      await showAlert(`Импортировано квестов: ${res.imported} (создано: ${res.created_count ?? 0}, обновлено: ${res.updated_count ?? 0})`)
+    } else if (typeof res.imported === 'number') {
+      await showAlert(`${res.created_count ? 'Создан' : 'Обновлён'} 1 квест из массива`)
+    }
+    // Silent refresh: keep current filter/sort/page, no success popup for single quest, no jump.
     await load(true)
   } catch (e: any) {
     importError.value = e?.message || 'Не удалось импортировать'

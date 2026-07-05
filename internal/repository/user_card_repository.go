@@ -92,14 +92,18 @@ func (r *UserCardRepository) CreateUserCard(card *models.UserCard) (int64, error
 	query := `INSERT INTO user_cards (
 		user_id, training_card_id, direction, state, ef, reps, interval_days,
 		learning_step, lapse_count, next_due_at, last_review_at, last_quality,
-		last_options_json, wrong_answers_json, stats_json
-	) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+		last_options_json, wrong_answers_json, stats_json, course_code
+	) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+		(SELECT COALESCE(NULLIF(wc.course_code, ''), NULLIF(tc.course_code, ''))
+		 FROM training_cards tc
+		 JOIN word_cards wc ON wc.id = tc.word_card_id
+		 WHERE tc.id = ?))`
 
 	id, err := database.InsertAndReturnID(r.db, query,
 		card.UserID, card.TrainingCardID, card.Direction, card.State, card.EF,
 		card.Reps, card.IntervalDays, card.LearningStep, card.LapseCount,
 		card.NextDueAt, card.LastReviewAt, card.LastQuality,
-		card.LastOptionsJSON, card.WrongAnswersJSON, card.StatsJSON,
+		card.LastOptionsJSON, card.WrongAnswersJSON, card.StatsJSON, card.TrainingCardID,
 	)
 	if err != nil {
 		return 0, fmt.Errorf("failed to create user card: %w", err)
@@ -162,8 +166,9 @@ func (r *UserCardRepository) GetDueCards(userID int64, now time.Time, limit int)
 }
 
 // GetDueCardsForCourse is GetDueCards scoped to a course. An empty courseCode means
-// "no course filter" (identical to the legacy behaviour); a non-empty courseCode matches
-// rows tagged with it plus still-untagged rows (course_code IS NULL) during prod transition.
+// "no course filter" (identical to the legacy behaviour). For non-empty scopes, the
+// content course wins over the denormalized user_cards tag so stale progress rows cannot
+// leak cards from another course.
 func (r *UserCardRepository) GetDueCardsForCourse(userID int64, courseCode string, now time.Time, limit int) ([]*models.UserCard, error) {
 	query := `SELECT uc.id, uc.user_id, uc.training_card_id, uc.direction, uc.state, uc.ef, uc.reps,
 			  uc.interval_days, uc.learning_step, uc.lapse_count, uc.next_due_at, uc.last_review_at,
@@ -172,13 +177,14 @@ func (r *UserCardRepository) GetDueCardsForCourse(userID int64, courseCode strin
 			  uc.created_at, uc.updated_at
 			  FROM user_cards uc
 			  INNER JOIN training_cards tc ON uc.training_card_id = tc.id
+			  INNER JOIN word_cards wc ON tc.word_card_id = wc.id
 			  WHERE uc.user_id = ?
 			    AND (uc.next_due_at IS NULL OR uc.next_due_at <= ?)
 			    AND NOT EXISTS (
 			      SELECT 1 FROM user_word_knowledge uwk
 			      WHERE uwk.user_id = ? AND uwk.word_card_id = tc.word_card_id AND uwk.status = 'known'
 			    )
-			    AND (? = '' OR uc.course_code = ? OR uc.course_code IS NULL)
+			    AND (? = '' OR COALESCE(NULLIF(wc.course_code, ''), NULLIF(tc.course_code, ''), NULLIF(uc.course_code, '')) = ?)
 			  ORDER BY
 			    CASE WHEN uc.state = 'learning' THEN 0 ELSE 1 END,
 			    uc.next_due_at ASC NULLS FIRST
@@ -204,13 +210,14 @@ func (r *UserCardRepository) GetDueCountForCourse(userID int64, courseCode strin
 	query := `SELECT COUNT(*)
 			  FROM user_cards uc
 			  INNER JOIN training_cards tc ON uc.training_card_id = tc.id
+			  INNER JOIN word_cards wc ON tc.word_card_id = wc.id
 			  WHERE uc.user_id = ?
 			    AND (uc.next_due_at IS NULL OR uc.next_due_at <= ?)
 			    AND NOT EXISTS (
 			      SELECT 1 FROM user_word_knowledge uwk
 			      WHERE uwk.user_id = ? AND uwk.word_card_id = tc.word_card_id AND uwk.status = 'known'
 			    )
-			    AND (? = '' OR uc.course_code = ? OR uc.course_code IS NULL)`
+			    AND (? = '' OR COALESCE(NULLIF(wc.course_code, ''), NULLIF(tc.course_code, ''), NULLIF(uc.course_code, '')) = ?)`
 
 	var count int
 	err := r.db.QueryRow(query, userID, now, userID, courseCode, courseCode).Scan(&count)
@@ -247,13 +254,14 @@ func (r *UserCardRepository) GetNewCardsForCourse(userID int64, courseCode strin
 			  uc.created_at, uc.updated_at
 			  FROM user_cards uc
 			  INNER JOIN training_cards tc ON uc.training_card_id = tc.id
+			  INNER JOIN word_cards wc ON tc.word_card_id = wc.id
 			  WHERE uc.user_id = ?
 			    AND uc.state = 'new'
 			    AND NOT EXISTS (
 			      SELECT 1 FROM user_word_knowledge uwk
 			      WHERE uwk.user_id = ? AND uwk.word_card_id = tc.word_card_id AND uwk.status = 'known'
 			    )
-			    AND (? = '' OR uc.course_code = ? OR uc.course_code IS NULL)
+			    AND (? = '' OR COALESCE(NULLIF(wc.course_code, ''), NULLIF(tc.course_code, ''), NULLIF(uc.course_code, '')) = ?)
 			  ORDER BY uc.created_at
 			  LIMIT ?`
 
@@ -825,6 +833,7 @@ func (r *UserCardRepository) GetUpcomingCardsByDateForCourse(userID int64, cours
 	query := `SELECT uc.next_due_at
 	FROM user_cards uc
 	INNER JOIN training_cards tc ON uc.training_card_id = tc.id
+	INNER JOIN word_cards wc ON tc.word_card_id = wc.id
 	WHERE uc.user_id = ?
 		AND uc.next_due_at IS NOT NULL
 		AND uc.next_due_at > ?
@@ -833,7 +842,7 @@ func (r *UserCardRepository) GetUpcomingCardsByDateForCourse(userID int64, cours
 			SELECT 1 FROM user_word_knowledge uwk
 			WHERE uwk.user_id = ? AND uwk.word_card_id = tc.word_card_id AND uwk.status = 'known'
 		)
-		AND (? = '' OR uc.course_code = ? OR uc.course_code IS NULL)`
+		AND (? = '' OR COALESCE(NULLIF(wc.course_code, ''), NULLIF(tc.course_code, ''), NULLIF(uc.course_code, '')) = ?)`
 
 	rows, err := r.db.Query(query, userID, startDate, endDate, userID, courseCode, courseCode)
 	if err != nil {

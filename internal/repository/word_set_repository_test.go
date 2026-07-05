@@ -576,6 +576,49 @@ func TestWordSetRepository_SetWordSetItems(t *testing.T) {
 	})
 }
 
+func TestWordSetRepository_SetWordSetItemsForCourseRejectsCrossCourseCards(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := setupWordSetTestDB(t)
+
+	repo := NewWordSetRepository(db, logger)
+	wordRepo := NewWordRepository(db, logger)
+
+	setID, err := repo.CreateWordSet(&models.WordSet{
+		CourseCode:  "es_ru",
+		Title:       "Spanish guarded set",
+		IsPublished: true,
+		SortOrder:   1,
+	})
+	if err != nil {
+		t.Fatalf("CreateWordSet: %v", err)
+	}
+
+	esID, err := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "guard-es", Definition: "def", CourseCode: "es_ru"})
+	if err != nil {
+		t.Fatalf("create es card: %v", err)
+	}
+	enID, err := wordRepo.UpsertWordCardLemma(&models.WordCard{Word: "guard-en", Definition: "def", CourseCode: "en_ru"})
+	if err != nil {
+		t.Fatalf("create en card: %v", err)
+	}
+
+	if err := repo.SetWordSetItemsForCourse(setID, "es_ru", []int64{esID}); err != nil {
+		t.Fatalf("SetWordSetItemsForCourse valid card: %v", err)
+	}
+
+	if err := repo.SetWordSetItemsForCourse(setID, "es_ru", []int64{enID}); err == nil {
+		t.Fatal("expected cross-course word card to be rejected")
+	}
+
+	var count int
+	if err := db.QueryRow(`SELECT COUNT(*) FROM word_set_items WHERE word_set_id = ? AND word_card_id = ?`, setID, esID).Scan(&count); err != nil {
+		t.Fatalf("count existing item: %v", err)
+	}
+	if count != 1 {
+		t.Fatalf("existing valid item count = %d, want 1", count)
+	}
+}
+
 func TestWordSetRepository_GetWordSetWords(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := setupWordSetTestDB(t)
