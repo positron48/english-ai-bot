@@ -635,8 +635,8 @@ onMounted(loadForRoute)
   background: color-mix(in srgb, var(--card-bg) 36%, transparent);
   border: 1px solid color-mix(in srgb, var(--border) 55%, transparent);
   box-shadow: 0 8px 22px rgba(0, 0, 0, 0.1);
-  backdrop-filter: blur(8px) saturate(1.08);
-  -webkit-backdrop-filter: blur(8px) saturate(1.08);
+  backdrop-filter: blur(2px) saturate(1.1);
+  -webkit-backdrop-filter: blur(2px) saturate(1.1);
 }
 :root[data-theme="dark"] .chat-tasks--scene {
   background: color-mix(in srgb, var(--card-bg) 32%, transparent);
@@ -669,8 +669,8 @@ onMounted(loadForRoute)
   background: color-mix(in srgb, var(--card-bg) 72%, transparent);
   border: 1px solid color-mix(in srgb, var(--border) 60%, transparent);
   box-shadow: 0 10px 24px rgba(0, 0, 0, 0.12);
-  backdrop-filter: blur(8px) saturate(1.06);
-  -webkit-backdrop-filter: blur(8px) saturate(1.06);
+  backdrop-filter: blur(2px) saturate(1.1);
+  -webkit-backdrop-filter: blur(2px) saturate(1.1);
 }
 :root[data-theme="dark"] .chat-row--scene-opening :deep(.lg-bubble) {
   background: color-mix(in srgb, var(--card-bg) 68%, transparent);
