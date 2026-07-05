@@ -1,6 +1,7 @@
 export type AppDataScreenKey =
   | 'dashboard'
   | 'city'
+  | 'city-district'
   | 'learning'
   | 'progress'
   | 'daily-route'
@@ -28,6 +29,7 @@ export const SCREEN_TTL_MS: Record<AppDataScreenKey, number> = {
   dashboard: 5 * 60_000,
   learning: 5 * 60_000,
   city: 15 * 60_000,
+  'city-district': 15 * 60_000,
   progress: 10 * 60_000,
   'daily-route': 2 * 60_000,
   review: 2 * 60_000,
@@ -36,6 +38,7 @@ export const SCREEN_TTL_MS: Record<AppDataScreenKey, number> = {
 export const SCREEN_DIRTY_TAGS: Record<AppDataScreenKey, AppDataDirtyTag[]> = {
   dashboard: ['words', 'srs', 'stats', 'progress', 'grammar', 'reading', 'daily-route'],
   city: ['city', 'grammar', 'reading', 'conversation', 'picture', 'progress', 'words'],
+  'city-district': ['city', 'grammar', 'reading', 'conversation', 'picture', 'progress', 'words'],
   learning: ['grammar', 'words', 'reading', 'speaking'],
   progress: ['stats', 'progress', 'grammar', 'reading', 'words'],
   'daily-route': ['srs', 'daily-route', 'reading', 'grammar', 'words'],

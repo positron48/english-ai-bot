@@ -9,7 +9,9 @@ import {
 import { emitAppDataEvent, registerAppDataRefreshHandler } from '../api/cacheInvalidation'
 import { courseClient } from '../api/courseClient'
 
-const OVERVIEW_ENDPOINTS: Record<Exclude<AppDataScreenKey, 'daily-route' | 'review'>, string> = {
+type OverviewScreenKey = Exclude<AppDataScreenKey, 'daily-route' | 'review' | 'city-district'>
+
+const OVERVIEW_ENDPOINTS: Record<OverviewScreenKey, string> = {
   dashboard: '/api/overview/dashboard',
   city: '/api/overview/city',
   learning: '/api/overview/learning',
@@ -29,9 +31,17 @@ function courseQuery(courseCode: string): string {
   return courseCode ? `?course_code=${encodeURIComponent(courseCode)}` : ''
 }
 
-async function fetchOverviewScreen(screenKey: Exclude<AppDataScreenKey, 'daily-route' | 'review'>, courseCode: string): Promise<unknown> {
+async function fetchOverviewScreen(screenKey: OverviewScreenKey, courseCode: string): Promise<unknown> {
   const endpoint = `${OVERVIEW_ENDPOINTS[screenKey]}${courseQuery(courseCode)}`
   return apiClient.request(endpoint)
+}
+
+async function fetchCityDistrictBundle(courseCode: string): Promise<unknown> {
+  const [map, prog] = await Promise.all([
+    courseClient.getCourseMap(courseCode),
+    courseClient.getProgress(courseCode),
+  ])
+  return { course_map: map, progress: prog }
 }
 
 async function fetchDailyRouteBundle(courseCode: string): Promise<unknown> {
@@ -75,6 +85,11 @@ export async function refreshAppData(options: {
           if (screenKey === 'review') {
             await setCachedScreen('review', courseCode, (bundle as any).review, { userScope, locale })
           }
+          return
+        }
+        if (screenKey === 'city-district') {
+          const bundle = await fetchCityDistrictBundle(courseCode)
+          await setCachedScreen('city-district', courseCode, bundle, { userScope, locale })
           return
         }
         const payload = await fetchOverviewScreen(screenKey, courseCode)

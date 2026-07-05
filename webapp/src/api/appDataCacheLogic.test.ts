@@ -61,7 +61,7 @@ describe('appDataCacheLogic', () => {
     expect(screensForTags(['words', 'srs'])).toContain('daily-route')
     expect(tagsAffectScreen('review', ['srs'])).toBe(true)
     expect(tagsAffectScreen('learning', ['srs'])).toBe(false)
-    expect(screensForTags(['course']).length).toBe(6)
+    expect(screensForTags(['course']).length).toBe(7)
   })
 
   it('hashes token scopes deterministically', () => {

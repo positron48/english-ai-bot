@@ -52,8 +52,6 @@ import { computed, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 import { courseClient, type CourseMap, type CourseProgress } from '../api/courseClient'
-import { apiClient } from '../api/client'
-import { getCachedScreen } from '../api/appDataCache'
 import { useCachedOverviewScreen } from '../composables/useCachedOverviewScreen'
 import { useLocale } from '../composables/useLocale'
 import { useCourse } from '../composables/useCourse'
@@ -86,15 +84,17 @@ function applyCitySnapshot(ov: any) {
   if (ov?.progress) progress.value = ov.progress
 }
 
-const { loadingInitial, load: loadDistrictCache } = useCachedOverviewScreen<any>({
-  screenKey: 'city',
+const { loadingInitial, load: loadDistrictCache } = useCachedOverviewScreen<{ course_map: CourseMap; progress: CourseProgress }>({
+  screenKey: 'city-district',
   courseCode: resolvedCourseCode,
   locale: currentLocale,
   fetcher: async () => {
     const code = resolvedCourseCode.value
-    return apiClient.request(
-      code ? `/api/overview/city?course_code=${encodeURIComponent(code)}` : '/api/overview/city',
-    )
+    const [map, prog] = await Promise.all([
+      courseClient.getCourseMap(code),
+      courseClient.getProgress(code),
+    ])
+    return { course_map: map, progress: prog }
   },
   applyPayload: (ov) => applyCitySnapshot(ov),
 })
@@ -184,15 +184,9 @@ const areas = computed(() => {
 onMounted(async () => {
   try {
     await ensureCourseLoaded()
-    ensureMe().then(() => {
-      conversationPro.value = hasFeature('conversation')
-      picturePro.value = hasFeature('picture_description')
-    })
-    const code = courseCode.value || currentCourseCode.value
-    if (code) {
-      const cached = await getCachedScreen('city', code, undefined, currentLocale.value)
-      if (cached?.payload) applyCitySnapshot(cached.payload)
-    }
+    await ensureMe()
+    conversationPro.value = hasFeature('conversation')
+    picturePro.value = hasFeature('picture_description')
     await loadDistrictCache()
   } catch { /* ignore */ }
 })

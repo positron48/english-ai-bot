@@ -13,6 +13,13 @@ vi.mock('../api/client', () => ({
   },
 }))
 
+vi.mock('../api/courseClient', () => ({
+  courseClient: {
+    getCourseMap: vi.fn().mockResolvedValue({ districts: [] }),
+    getProgress: vi.fn().mockResolvedValue({ mastery: { levels: [] } }),
+  },
+}))
+
 vi.mock('../api/grammarClient', () => ({
   grammarClient: { getContinueChapter: vi.fn().mockResolvedValue(null) },
 }))
@@ -139,7 +146,7 @@ describe('critical views smoke', () => {
 
   it('mounts CityDistrictView without runtime errors', async () => {
     const { default: CityDistrictView } = await import('./CityDistrictView.vue')
-    const wrapper = await mountCriticalView(CityDistrictView, '/city/district/a1')
+    const wrapper = await mountCriticalView(CityDistrictView, '/city/district/a1_clear_plaza')
     expect(wrapper.exists()).toBe(true)
     expect(mountErrors).toEqual([])
   })
