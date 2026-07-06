@@ -333,14 +333,14 @@
       >
         <button
           v-for="(option, index) in options"
-          :key="index"
+          :key="`${index}:${option}`"
           @click="!feedback && !answering && submitAnswer(index)"
           :class="[
             'btn',
             'option-btn',
             {
               'option-correct': feedback && option === feedback.correct_answer,
-              'option-incorrect': feedback && !feedback.is_correct && option === feedback.chosen_option,
+              'option-incorrect': feedback && !feedback.is_correct && index === chosenOptionIndex,
               'option-disabled': !!feedback || answering
             }
           ]"
@@ -649,6 +649,7 @@ let prefetchInFlight: Promise<void> | null = null
 const optionsShown = ref(false)
 const options = ref<string[]>([])
 const feedback = ref<Feedback | null>(null)
+const chosenOptionIndex = ref<number | null>(null)
 const currentEncouragingPhrase = ref('')
 const currentDisappointingPhrase = ref('')
 const answering = ref(false)
@@ -755,6 +756,12 @@ const typeInputRef = ref<HTMLInputElement | null>(null)
 const playingPronunciation = ref(false)
 const currentPronunciationURL = ref<string | null>(null)
 let pronunciationLoadRequestId = 0
+let currentCardGeneration = 0
+
+const sameTrainingCard = (a: Card | null | undefined, b: Card | null | undefined): boolean => {
+  if (!a || !b) return false
+  return a.user_card_id === b.user_card_id && a.card_index === b.card_index && a.session_id === b.session_id
+}
 
 // Settings
 const { settings, setAutoplayPronunciation } = useSettings()
@@ -1768,6 +1775,7 @@ const checkCurrentSession = async () => {
     // No active session (HTTP 200)
     if (response && typeof response === 'object' && 'active' in response && (response as any).active === false) {
       sessionActive.value = false
+      currentCardGeneration++
       currentCard.value = null
       return
     }
@@ -1776,6 +1784,7 @@ const checkCurrentSession = async () => {
     if (response && typeof response === 'object' && 'complete' in response) {
       sessionComplete.value = true
       sessionActive.value = false
+      currentCardGeneration++
       currentCard.value = null
       await loadStats()
       return
@@ -1804,6 +1813,7 @@ const applyTrainingSessionResponse = async (response: any): Promise<boolean> => 
       correctCards: response.correct_cards || 0,
     }
     sessionActive.value = false
+    currentCardGeneration++
     currentCard.value = null
     prefetchedCardResponse.value = null
     await loadStats()
@@ -1812,6 +1822,7 @@ const applyTrainingSessionResponse = async (response: any): Promise<boolean> => 
 
   if (isTrainingInactiveResponse(response)) {
     sessionActive.value = false
+    currentCardGeneration++
     currentCard.value = null
     prefetchedCardResponse.value = null
     await loadStats()
@@ -1845,6 +1856,7 @@ const applyTrainingSessionResponse = async (response: any): Promise<boolean> => 
       }
     }
     sessionActive.value = false
+    currentCardGeneration++
     currentCard.value = null
     prefetchedCardResponse.value = null
     await loadStats()
@@ -1856,16 +1868,18 @@ const applyTrainingSessionResponse = async (response: any): Promise<boolean> => 
 
 const prefetchNextTrainingCard = () => {
   if (!sessionActive.value || prefetchInFlight) return
+  const generation = currentCardGeneration
+  const cardAtStart = currentCard.value
   prefetchInFlight = (async () => {
     try {
       const response = await wordTrainingClient.current()
-      if (!sessionActive.value) return
+      if (!sessionActive.value || generation !== currentCardGeneration || !sameTrainingCard(cardAtStart, currentCard.value)) return
       if (isTrainingCompleteResponse(response) || isTrainingInactiveResponse(response)) {
         prefetchedCardResponse.value = response
         return
       }
       const card = response as Card
-      if (currentCard.value && card.user_card_id === currentCard.value.user_card_id && card.card_index === currentCard.value.card_index) {
+      if (sameTrainingCard(card, currentCard.value)) {
         return
       }
       prefetchedCardResponse.value = response
@@ -1904,6 +1918,7 @@ const setupCard = (card: Card) => {
     spellHintButtonTimer = null
   }
 
+  currentCardGeneration++
   currentCard.value = card
   cardIndex.value = card.card_index
   totalCards.value = card.total_cards
@@ -1911,6 +1926,7 @@ const setupCard = (card: Card) => {
   optionsShown.value = false
   options.value = []
   feedback.value = null
+  chosenOptionIndex.value = null
   waitingDelay.value = false
   delaySeconds.value = 0
   initialDelaySeconds.value = 0
@@ -1988,8 +2004,6 @@ const setupCard = (card: Card) => {
       }
     }, 0)
   }
-
-  void prefetchNextTrainingCard()
 }
 
 const startTraining = async () => {
@@ -2265,12 +2279,15 @@ async function animateSpellSkipAutoPick(correctAnswer: string, prefix: string) {
 
 const submitSpellAnswerAs = async (answerText: string, isSkip = false) => {
   if (feedback.value || answering.value) return
+  const cardAtSubmit = currentCard.value
+  const generation = currentCardGeneration
   answering.value = true
   spellSkipResultActive.value = isSkip
   try {
     const formData = new FormData()
     formData.append('answer_text', answerText)
     const data: Feedback = await wordTrainingClient.answer(formData)
+    if (generation !== currentCardGeneration || !sameTrainingCard(cardAtSubmit, currentCard.value)) return
     feedback.value = data
     prefetchedCardResponse.value = null
     void prefetchNextTrainingCard()
@@ -2371,17 +2388,22 @@ const submitSpellAnswerAs = async (answerText: string, isSkip = false) => {
       await showAlert(t('training.failedSubmitAnswer'))
     }
   } finally {
-    answering.value = false
+    if (generation === currentCardGeneration && sameTrainingCard(cardAtSubmit, currentCard.value)) {
+      answering.value = false
+    }
   }
 }
 
 const submitTypeAnswerAs = async (answerText: string) => {
   if (feedback.value || answering.value) return
+  const cardAtSubmit = currentCard.value
+  const generation = currentCardGeneration
   answering.value = true
   try {
     const formData = new FormData()
     formData.append('answer_text', answerText)
     const data: Feedback = await wordTrainingClient.answer(formData)
+    if (generation !== currentCardGeneration || !sameTrainingCard(cardAtSubmit, currentCard.value)) return
     feedback.value = data
     prefetchedCardResponse.value = null
     void prefetchNextTrainingCard()
@@ -2474,7 +2496,9 @@ const submitTypeAnswerAs = async (answerText: string) => {
       await showAlert(t('training.failedSubmitAnswer'))
     }
   } finally {
-    answering.value = false
+    if (generation === currentCardGeneration && sameTrainingCard(cardAtSubmit, currentCard.value)) {
+      answering.value = false
+    }
   }
 }
 
@@ -2533,6 +2557,9 @@ function startTypeRevealAnimation(wrongAnswer: string, correctAnswer: string, on
 }
 
 const submitAnswer = async (optionIndex: number) => {
+  if (feedback.value || answering.value || optionIndex < 0 || optionIndex >= options.value.length) return
+  const cardAtSubmit = currentCard.value
+  const generation = currentCardGeneration
   answering.value = true
   try {
     const formData = new FormData()
@@ -2540,6 +2567,8 @@ const submitAnswer = async (optionIndex: number) => {
     formData.append('user_card_id', userCardId.value.toString())
     
     const data: Feedback = await wordTrainingClient.answer(formData)
+    if (generation !== currentCardGeneration || !sameTrainingCard(cardAtSubmit, currentCard.value)) return
+    chosenOptionIndex.value = optionIndex
     feedback.value = data
     prefetchedCardResponse.value = null
     void prefetchNextTrainingCard()
@@ -2672,7 +2701,9 @@ const submitAnswer = async (optionIndex: number) => {
       await showAlert(t('training.failedSubmitAnswer'))
     }
   } finally {
-    answering.value = false
+    if (generation === currentCardGeneration && sameTrainingCard(cardAtSubmit, currentCard.value)) {
+      answering.value = false
+    }
   }
 }
 
@@ -2706,6 +2737,7 @@ const nextCard = async () => {
   autoNextCardTimerDelayMs = null
 
   feedback.value = null
+  chosenOptionIndex.value = null
   optionsShown.value = false
   options.value = []
   waitingDelay.value = false
@@ -2766,11 +2798,13 @@ const resetSession = async () => {
   }
 
   sessionActive.value = false
+  currentCardGeneration++
   currentCard.value = null
   prefetchedCardResponse.value = null
   optionsShown.value = false
   options.value = []
   feedback.value = null
+  chosenOptionIndex.value = null
   waitingDelay.value = false
   delaySeconds.value = 0
   initialDelaySeconds.value = 0
