@@ -119,5 +119,6 @@ func (r *Router) handleProgressOverview(w http.ResponseWriter, req *http.Request
 		{key: "progress", handler: r.handleLinglowProgress},
 		{key: "dashboard", handler: r.handleDashboard, query: map[string]string{"sections": "totals"}},
 		{key: "history", handler: r.handleLinglowHistory, query: map[string]string{"days": "7"}},
+		{key: "vocab_summary", handler: r.handleVocabSummary},
 	})
 }

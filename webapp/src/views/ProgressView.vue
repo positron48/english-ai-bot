@@ -199,12 +199,14 @@ const stats = ref<LinglowStats | null>(null)
 const progress = ref<CourseProgress | null>(null)
 const dashboardData = ref<any>(null)
 const historyData = ref<any>(null)
+const vocabSummary = ref<{ total?: number; mastered?: number; known?: number } | null>(null)
 
 function applyProgressOverview(ov: any) {
   stats.value = (ov?.stats as LinglowStats) ?? null
   progress.value = (ov?.progress as CourseProgress) ?? null
   dashboardData.value = ov?.dashboard ?? null
   historyData.value = ov?.history ?? null
+  vocabSummary.value = ov?.vocab_summary ?? null
 }
 
 const { loadingInitial, refreshing, load } = useCachedOverviewScreen<any>({
@@ -235,7 +237,7 @@ const streakDays = computed(() => stats.value?.streak.current_days ?? 0)
 const monthMotivation = computed(() => {
   const m = stats.value?.month
   if (!m) return ''
-  const words = m.words_learned ?? 0
+  const words = vocabWordsCount.value
   const texts = m.texts_read ?? 0
   const mins = m.active_minutes ?? 0
   if (words === 0 && texts === 0 && mins === 0) return t('progress.monthStart')
@@ -312,11 +314,17 @@ interface ProgressMetric {
   label: string
   sub: string
 }
+const vocabWordsCount = computed(() => {
+  const v = vocabSummary.value
+  if (!v) return stats.value?.month?.words_learned ?? 0
+  return v.mastered ?? v.known ?? 0
+})
 const metrics = computed<ProgressMetric[]>(() => {
   const m = stats.value?.month
+  const words = vocabWordsCount.value
   return [
     { icon: '', lgicon: 'clock', value: String(m?.active_minutes ?? 0), label: (t as any)('progress.metricMinutes', m?.active_minutes ?? 0), sub: t('progress.metricMinutesSub') },
-    { icon: '', type: 'words',   value: String(m?.words_learned ?? 0),  label: (t as any)('progress.metricWords', m?.words_learned ?? 0),   sub: t('progress.metricWordsSub') },
+    { icon: '', type: 'words',   value: String(words),  label: (t as any)('progress.metricWords', words),   sub: t('progress.metricWordsSub') },
     { icon: '', type: 'reading', value: String(m?.texts_read ?? 0),     label: (t as any)('progress.metricTexts', m?.texts_read ?? 0),   sub: t('progress.metricTextsSub') },
   ]
 })

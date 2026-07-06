@@ -712,7 +712,7 @@ const handleLogout = () => {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px 16px 12px;
+  padding: 20px 0 12px;
 }
 .prf-title {
   font-family: 'Lora', serif;
@@ -733,7 +733,7 @@ const handleLogout = () => {
 /* USER CARD */
 .prf-user-card {
   display: flex; align-items: center; gap: 16px;
-  padding: 0 16px 16px;
+  padding: 0 0 16px;
 }
 .prf-avatar {
   width: 72px; height: 72px; border-radius: 50%; flex-shrink: 0;
@@ -754,10 +754,10 @@ const handleLogout = () => {
 /* SECTION CARDS */
 .prf-section-title {
   font-family: 'Lora', serif; font-size: 17px; font-weight: 600; color: var(--text);
-  margin: 14px 16px 8px;
+  margin: 14px 0 8px;
 }
 .prf-section-card {
-  margin: 0 16px 14px;
+  margin: 0 0 14px;
   background: var(--card-bg); border: 1px solid var(--border);
   border-radius: 18px; overflow: hidden;
   box-shadow: var(--shadow-soft);

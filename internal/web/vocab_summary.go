@@ -49,12 +49,13 @@ func (r *Router) queryVocabSummary(userID int64, courseCode string) (vocabSummar
 	courseFilter := ""
 	args := []interface{}{userID}
 	if courseCode != "" {
-		courseFilter = ` AND EXISTS (
-			SELECT 1 FROM training_cards tc2
-			JOIN word_cards wc2 ON tc2.word_card_id = wc2.id
-			WHERE tc2.id = uc.training_card_id AND wc2.course_code = ?
-		)`
+		courseFilter = ` AND LOWER(wc.course_code) = LOWER(?)`
 		args = append(args, courseCode)
+	}
+
+	knownArgs := []interface{}{userID}
+	if courseCode != "" {
+		knownArgs = append(knownArgs, courseCode)
 	}
 
 	query := `
@@ -70,12 +71,29 @@ WITH per_word AS (
 		MAX(CASE WHEN uwk.word_card_id IS NOT NULL THEN 1 ELSE 0 END) AS is_known
 	FROM user_cards uc
 	JOIN training_cards tc ON uc.training_card_id = tc.id
+	JOIN word_cards wc ON wc.id = tc.word_card_id
 	LEFT JOIN user_word_knowledge uwk
 		ON uwk.user_id = uc.user_id
 		AND uwk.word_card_id = tc.word_card_id
 		AND uwk.status = 'known'
 	WHERE uc.user_id = ?` + courseFilter + `
 	GROUP BY tc.word_card_id
+
+	UNION ALL
+
+	SELECT
+		uwk.word_card_id,
+		2 AS min_card_rank,
+		1 AS is_known
+	FROM user_word_knowledge uwk
+	JOIN word_cards wc ON wc.id = uwk.word_card_id
+	WHERE uwk.user_id = ? AND uwk.status = 'known'` + courseFilter + `
+		AND NOT EXISTS (
+			SELECT 1
+			FROM user_cards uc
+			JOIN training_cards tc ON uc.training_card_id = tc.id
+			WHERE uc.user_id = uwk.user_id AND tc.word_card_id = uwk.word_card_id
+		)
 ),
 classified AS (
 	SELECT
@@ -93,6 +111,8 @@ SELECT
 	COALESCE(SUM(CASE WHEN bucket = 2 THEN 1 ELSE 0 END), 0) AS review_count,
 	COALESCE(SUM(CASE WHEN bucket = 3 THEN 1 ELSE 0 END), 0) AS mastered_count
 FROM classified`
+
+	args = append(args, knownArgs...)
 
 	var out vocabSummaryBreakdown
 	err := r.db.QueryRow(query, args...).Scan(

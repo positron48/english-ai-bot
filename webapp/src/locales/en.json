@@ -292,7 +292,7 @@
     "metricMinutes": "minute | minutes",
     "metricMinutesSub": "studying",
     "metricWords": "word | words",
-    "metricWordsSub": "mastered in 30 days",
+    "metricWordsSub": "in your dictionary",
     "metricTexts": "text | texts",
     "metricTextsSub": "read",
     "metricChats": "chat | chats",

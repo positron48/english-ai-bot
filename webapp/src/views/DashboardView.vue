@@ -1106,10 +1106,6 @@ onMounted(() => {
 }
 
 @media (max-width: 768px) {
-  .dashboard {
-    padding: 12px;
-  }
-  
   .dashboard-header {
     margin-bottom: 16px;
   }

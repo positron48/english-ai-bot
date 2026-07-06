@@ -98,8 +98,10 @@
     <template v-else-if="name === 'party-popper'">
       <path d="M5.8 11.3 2 22l10.7-3.79" :stroke="c" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
       <path d="M4 3h.01M22 8h.01M15 2h.01M22 20h.01" :stroke="c" stroke-width="2" stroke-linecap="round" />
-      <path d="M22 2 15.86 3.53a2 2 0 0 0-1.57 1.57L14 8M9.17 4.24a2 2 0 0 1 .24 2.53l-.44.65M16 16l.66-.44a2 2 0 0 1 2.53.24" :stroke="c" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
-      <path d="M11.36 6.64a1.2 1.2 0 0 1 1.71 0l4.29 4.29a1.2 1.2 0 0 1 0 1.71l-4.94 4.94a6 6 0 0 1-6-6z" :stroke="c" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+      <path d="m22 2-2.24.75a2.9 2.9 0 0 0-1.96 3.12c.1.86-.57 1.63-1.45 1.63h-.38c-.86 0-1.6.6-1.76 1.44L14 10" :stroke="c" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+      <path d="m22 13-.82-.33c-.86-.34-1.82.2-1.98 1.11c-.11.7-.72 1.22-1.43 1.22H17" :stroke="c" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+      <path d="m11 2 .33.82c.34.86-.2 1.82-1.11 1.98C9.52 4.9 9 5.52 9 6.23V7" :stroke="c" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
+      <path d="M11 13c1.93 1.93 2.83 4.17 2 5-.83.83-3.07-.07-5-2-1.93-1.93-2.83-4.17-2-5 .83-.83 3.07.07 5 2Z" :stroke="c" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" />
     </template>
     <template v-else-if="name === 'lightbulb'">
       <path d="M15 14c.2-1 .7-1.7 1.5-2.5 1-.9 1.5-2.2 1.5-3.5A6 6 0 0 0 6 8c0 1 .2 2.2 1.5 3.5.7.7 1.3 1.5 1.5 2.5" :stroke="c" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" />

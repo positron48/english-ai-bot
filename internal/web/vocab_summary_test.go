@@ -110,3 +110,46 @@ func TestHandleVocabSummary_BreakdownCounts(t *testing.T) {
 		t.Fatalf("breakdown sum %d != total %d: %+v", sum, resp["total"], resp)
 	}
 }
+
+func TestHandleVocabSummary_KnownOnlyWords(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDatabase(t)
+
+	userRepo := repository.NewUserRepository(db.GetConnection(), logger)
+	user, _ := userRepo.GetOrCreateUser(525252)
+
+	cfg := &config.Config{}
+	cfg.WebApp.JWTSecret = "test-secret"
+	cbRepo := repository.NewCircuitBreakerRepository(db.GetConnection(), logger)
+	cbService := service.NewCircuitBreakerService(cbRepo, 5, logger)
+	router := NewRouter(logger, cfg, db.GetConnection(), nil, nil, nil, cbService)
+
+	conn := db.GetConnection()
+	var wordCardID int64
+	if err := conn.QueryRow("INSERT INTO word_cards (word, definition) VALUES ($1, $2) RETURNING id", "knownonly", "def").Scan(&wordCardID); err != nil {
+		t.Fatalf("insert word_cards: %v", err)
+	}
+	if _, err := conn.Exec(
+		`INSERT INTO user_word_knowledge (user_id, word_card_id, status) VALUES ($1, $2, 'known')`,
+		user.ID, wordCardID,
+	); err != nil {
+		t.Fatalf("insert user_word_knowledge: %v", err)
+	}
+
+	req := httptest.NewRequest(http.MethodGet, "/api/vocab/summary", nil)
+	req = setUserIDInContext(req, user.ID)
+	w := httptest.NewRecorder()
+	router.handleVocabSummary(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Fatalf("status = %d, body = %s", w.Code, w.Body.String())
+	}
+
+	var resp map[string]int
+	if err := json.Unmarshal(w.Body.Bytes(), &resp); err != nil {
+		t.Fatalf("decode: %v", err)
+	}
+	if resp["total"] != 1 || resp["mastered"] != 1 {
+		t.Fatalf("known-only word should count as mastered: %+v", resp)
+	}
+}
