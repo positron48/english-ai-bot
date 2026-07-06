@@ -425,7 +425,7 @@ const improvements = computed(() => {
   padding-bottom: 32px;
 }
 .prg-header {
-  padding: 16px 4px 0;
+  padding: 16px 0 0;
   display: flex;
   align-items: baseline;
   gap: 4px;

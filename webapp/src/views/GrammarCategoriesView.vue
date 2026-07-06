@@ -708,7 +708,7 @@ onMounted(() => {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 12px;
     justify-items: stretch;
-    padding: 0 4px;
+    padding: 0;
     max-width: 387px;
     margin: auto;
   }

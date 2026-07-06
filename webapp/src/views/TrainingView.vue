@@ -1,6 +1,6 @@
 <template>
   <div class="training">
-    <h1 v-if="!(sessionActive && currentCard)" class="training-title">{{ t('training.title') }}</h1>
+    <h1 v-if="!sessionActive && !loading && !sessionComplete" class="training-title">{{ t('training.title') }}</h1>
     
     <TrainingSessionCompletion
       v-if="sessionComplete && !sessionActive"
@@ -97,10 +97,8 @@
       </div>
     </div>
 
-    <LgLoader v-if="sessionActive && cardLoading" />
-
     <div 
-      v-if="sessionActive && currentCard && !cardLoading" 
+      v-if="sessionActive && currentCard" 
       class="card"
       :class="{ 'card-timer-active': waitingDelay }"
       @mousedown="waitingDelay ? handleTimerMouseDown($event) : null"
@@ -476,7 +474,7 @@
       </div>
 
     </div>
-    <div v-if="sessionActive && currentCard && !cardLoading" class="report-row report-row-outside">
+    <div v-if="sessionActive && currentCard" class="report-row report-row-outside">
       <button
         v-if="!reportAlreadySent"
         type="button"
@@ -646,7 +644,8 @@ const hintExcludedWord = computed(() => {
 })
 const loading = ref(false)
 const currentCard = ref<Card | null>(null)
-const cardLoading = ref(false)
+const prefetchedCardResponse = ref<any | null>(null)
+let prefetchInFlight: Promise<void> | null = null
 const optionsShown = ref(false)
 const options = ref<string[]>([])
 const feedback = ref<Feedback | null>(null)
@@ -1790,6 +1789,94 @@ const checkCurrentSession = async () => {
   }
 }
 
+const isTrainingCompleteResponse = (response: any): response is { complete: boolean; cards_completed: number; total_cards?: number; correct_cards?: number } =>
+  !!response && typeof response === 'object' && 'complete' in response
+
+const isTrainingInactiveResponse = (response: any): response is { active: false } =>
+  !!response && typeof response === 'object' && 'active' in response && response.active === false
+
+const applyTrainingSessionResponse = async (response: any): Promise<boolean> => {
+  if (isTrainingCompleteResponse(response)) {
+    sessionComplete.value = true
+    cardsCompleted.value = response.cards_completed || 0
+    trainingStats.value = {
+      totalCards: response.total_cards || response.cards_completed || 0,
+      correctCards: response.correct_cards || 0,
+    }
+    sessionActive.value = false
+    currentCard.value = null
+    prefetchedCardResponse.value = null
+    await loadStats()
+    return false
+  }
+
+  if (isTrainingInactiveResponse(response)) {
+    sessionActive.value = false
+    currentCard.value = null
+    prefetchedCardResponse.value = null
+    await loadStats()
+    await showAlert(t('training.noActiveSession'))
+    return false
+  }
+
+  const card = response as Card
+  setupCard(card)
+
+  if (card.card_index > card.total_cards) {
+    sessionComplete.value = true
+    cardsCompleted.value = card.card_index - 1
+    try {
+      const statsResponse = await wordTrainingClient.current()
+      if (isTrainingCompleteResponse(statsResponse)) {
+        trainingStats.value = {
+          totalCards: statsResponse.total_cards || card.card_index - 1,
+          correctCards: statsResponse.correct_cards || 0,
+        }
+      } else {
+        trainingStats.value = {
+          totalCards: card.card_index - 1,
+          correctCards: 0,
+        }
+      }
+    } catch {
+      trainingStats.value = {
+        totalCards: card.card_index - 1,
+        correctCards: 0,
+      }
+    }
+    sessionActive.value = false
+    currentCard.value = null
+    prefetchedCardResponse.value = null
+    await loadStats()
+    return false
+  }
+
+  return true
+}
+
+const prefetchNextTrainingCard = () => {
+  if (!sessionActive.value || prefetchInFlight) return
+  prefetchInFlight = (async () => {
+    try {
+      const response = await wordTrainingClient.current()
+      if (!sessionActive.value) return
+      if (isTrainingCompleteResponse(response) || isTrainingInactiveResponse(response)) {
+        prefetchedCardResponse.value = response
+        return
+      }
+      const card = response as Card
+      if (currentCard.value && card.user_card_id === currentCard.value.user_card_id && card.card_index === currentCard.value.card_index) {
+        return
+      }
+      prefetchedCardResponse.value = response
+    } catch (error) {
+      console.error('Failed to prefetch next training card:', error)
+    } finally {
+      prefetchInFlight = null
+    }
+  })()
+}
+
 const setupCard = (card: Card) => {
   // Clear any existing timers
   if (autoRevealTimer) {
@@ -1818,7 +1905,6 @@ const setupCard = (card: Card) => {
   }
 
   currentCard.value = card
-  cardLoading.value = false
   cardIndex.value = card.card_index
   totalCards.value = card.total_cards
   userCardId.value = card.user_card_id ?? 0
@@ -1902,6 +1988,8 @@ const setupCard = (card: Card) => {
       }
     }, 0)
   }
+
+  void prefetchNextTrainingCard()
 }
 
 const startTraining = async () => {
@@ -2184,6 +2272,8 @@ const submitSpellAnswerAs = async (answerText: string, isSkip = false) => {
     formData.append('answer_text', answerText)
     const data: Feedback = await wordTrainingClient.answer(formData)
     feedback.value = data
+    prefetchedCardResponse.value = null
+    void prefetchNextTrainingCard()
     if (!data.is_correct && currentCard.value?.type === 'spell' && data.correct_answer) {
       const prefix = currentCard.value?.prefix ?? ''
       if (isSkip) {
@@ -2293,6 +2383,8 @@ const submitTypeAnswerAs = async (answerText: string) => {
     formData.append('answer_text', answerText)
     const data: Feedback = await wordTrainingClient.answer(formData)
     feedback.value = data
+    prefetchedCardResponse.value = null
+    void prefetchNextTrainingCard()
     triggerHapticFeedback(data.is_correct)
     if (data.is_correct) {
       playCorrectSound()
@@ -2449,6 +2541,8 @@ const submitAnswer = async (optionIndex: number) => {
     
     const data: Feedback = await wordTrainingClient.answer(formData)
     feedback.value = data
+    prefetchedCardResponse.value = null
+    void prefetchNextTrainingCard()
     
     // Hide example if it was shown before answer (to avoid duplicate display in feedback)
     exampleUsageShown.value = false
@@ -2634,69 +2728,17 @@ const nextCard = async () => {
   spellSkipResultActive.value = false
   typeAnswerText.value = ''
 
-  cardLoading.value = true
-  currentCard.value = null
-
   try {
-    const response = await wordTrainingClient.current()
-    
-    // Check if training is complete (response has complete field)
-    if (response && typeof response === 'object' && 'complete' in response) {
-      const completionData = response as { complete: boolean; cards_completed: number; total_cards?: number; correct_cards?: number }
-      sessionComplete.value = true
-      cardsCompleted.value = completionData.cards_completed || 0
-      trainingStats.value = {
-        totalCards: completionData.total_cards || completionData.cards_completed || 0,
-        correctCards: completionData.correct_cards || 0
-      }
-      sessionActive.value = false
-      currentCard.value = null
-      await loadStats() // Refresh stats after completion
-      return
+    let response = prefetchedCardResponse.value
+    if (response) {
+      prefetchedCardResponse.value = null
+    } else {
+      response = await wordTrainingClient.current()
     }
 
-    // No active session (HTTP 200)
-    if (response && typeof response === 'object' && 'active' in response && (response as any).active === false) {
-      sessionActive.value = false
-      currentCard.value = null
-      await loadStats()
-      await showAlert(t('training.noActiveSession'))
-      return
-    }
-    
-    // Normal card response
-    const card = response as Card
-    setupCard(card)
-    
-    // Check if training is complete based on card index
-    if (card.card_index > card.total_cards) {
-      // Training completed - get stats from last request
-      sessionComplete.value = true
-      cardsCompleted.value = card.card_index - 1
-      // Try to get stats by making another request
-      try {
-        const statsResponse = await wordTrainingClient.current()
-        if (statsResponse && typeof statsResponse === 'object' && 'complete' in statsResponse) {
-          const statsData = statsResponse as { total_cards?: number; correct_cards?: number }
-          trainingStats.value = {
-            totalCards: statsData.total_cards || card.card_index - 1,
-            correctCards: statsData.correct_cards || 0
-          }
-        } else {
-          trainingStats.value = {
-            totalCards: card.card_index - 1,
-            correctCards: 0
-          }
-        }
-      } catch {
-        trainingStats.value = {
-          totalCards: card.card_index - 1,
-          correctCards: 0
-        }
-      }
-      sessionActive.value = false
-      currentCard.value = null
-      await loadStats() // Refresh stats after completion
+    const continued = await applyTrainingSessionResponse(response)
+    if (continued) {
+      void prefetchNextTrainingCard()
     }
   } catch (error: any) {
     console.error('Failed to get next card:', error)
@@ -2705,8 +2747,6 @@ const nextCard = async () => {
       // For non-network errors, show a simple message
       await showAlert(t('training.failedNextCard'))
     }
-  } finally {
-    cardLoading.value = false
   }
 }
 
@@ -2727,6 +2767,7 @@ const resetSession = async () => {
 
   sessionActive.value = false
   currentCard.value = null
+  prefetchedCardResponse.value = null
   optionsShown.value = false
   options.value = []
   feedback.value = null

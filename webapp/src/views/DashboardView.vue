@@ -563,7 +563,7 @@ onMounted(() => {
 
 /* ─── New home header ─── */
 .lg-home-header {
-  padding: 16px 4px 0;
+  padding: 16px 0 0;
   display: flex;
   justify-content: space-between;
   align-items: flex-start;
@@ -1178,7 +1178,7 @@ onMounted(() => {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 12px;
     justify-items: stretch;
-    padding: 0 4px;
+    padding: 0;
     max-width: 387px;
     margin: auto;
   }

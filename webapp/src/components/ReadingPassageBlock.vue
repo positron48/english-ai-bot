@@ -806,7 +806,7 @@ const openRandomUnreadInCategory = async () => {
   font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   display: flex;
   justify-content: center;
-  padding: 16px;
+  padding: 0 0 16px;
 }
 
 .reader-shell {
@@ -905,12 +905,14 @@ const openRandomUnreadInCategory = async () => {
 
 .hero {
   display: block;
-  width: 100%;
+  width: calc(100% + 32px);
+  max-width: none;
   height: auto;
+  min-height: 140px;
   max-height: 320px;
-  margin: 0 0 18px;
-  border-radius: 14px;
-  object-fit: contain;
+  margin: -22px -16px 18px;
+  border-radius: 0;
+  object-fit: cover;
   object-position: center;
   background: var(--bg-tertiary, rgba(0, 0, 0, 0.04));
 }
@@ -1225,7 +1227,7 @@ const openRandomUnreadInCategory = async () => {
 
 @media (max-width: 768px) {
   .screen {
-    padding: 8px;
+    padding: 0 0 8px;
   }
 
   .reader-shell {
@@ -1250,6 +1252,11 @@ const openRandomUnreadInCategory = async () => {
 
   .content {
     padding: 14px 10px 20px;
+  }
+
+  .hero {
+    width: calc(100% + 20px);
+    margin: -14px -10px 18px;
   }
 
   .sentence-text {

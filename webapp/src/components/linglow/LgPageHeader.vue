@@ -32,7 +32,7 @@ import LgStreakBadge from './LgStreakBadge.vue'
 </script>
 
 <style scoped>
-.lg-header { padding: 16px 16px 8px; }
+.lg-header { padding: 16px 0 8px; }
 .lg-header-row {
   display: flex;
   align-items: center;

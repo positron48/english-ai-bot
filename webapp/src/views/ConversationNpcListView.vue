@@ -122,7 +122,7 @@ onMounted(async () => {
 }
 .npc-sub {
   max-width: 560px;
-  padding: 0 4px 12px;
+  padding: 0 0 12px;
   font-size: 13px;
   line-height: 1.4;
   color: var(--subtext);
@@ -139,7 +139,7 @@ onMounted(async () => {
   display: flex;
   flex-direction: column;
   gap: 14px;
-  padding: 4px 4px 16px;
+  padding: 0 0 16px;
 }
 .npc-district {
   width: 100%;

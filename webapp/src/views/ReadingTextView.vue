@@ -16,7 +16,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { apiClient } from '../api/client'
@@ -37,9 +37,13 @@ const coverHeroRelPath = ref('')
 const readingIsRead = ref(false)
 const categoryId = ref('')
 
-onMounted(async () => {
+const loadText = async () => {
   loading.value = true
   error.value = null
+  block.value = null
+  coverHeroRelPath.value = ''
+  readingIsRead.value = false
+  categoryId.value = ''
   try {
     await ensureCourseLoaded()
     const data: {
@@ -57,7 +61,11 @@ onMounted(async () => {
   } finally {
     loading.value = false
   }
-})
+}
+
+watch(textId, () => {
+  void loadText()
+}, { immediate: true })
 </script>
 
 <style scoped>

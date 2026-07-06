@@ -309,23 +309,59 @@ p { color: var(--text); }
 .lg-section-page::before {
   content: '';
   position: absolute;
-  left: 0;
-  right: 0;
+  left: 50%;
   top: 0;
-  aspect-ratio: 2 / 1;
-  max-height: min(44vw, 240px);
+  width: 100vw;
+  max-width: none;
+  transform: translateX(-50%);
+  height: min(44vw, 260px);
   background-image: var(--lg-section-bg-image);
   background-position: top center;
-  background-size: 100% auto;
+  background-size: cover;
   background-repeat: no-repeat;
-  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 58%, transparent 100%);
-  mask-image: linear-gradient(to bottom, #000 0%, #000 58%, transparent 100%);
+  opacity: 0.36;
+  -webkit-mask-image: linear-gradient(to bottom, #000 0%, #000 52%, transparent 100%);
+  mask-image: linear-gradient(to bottom, #000 0%, #000 52%, transparent 100%);
+  pointer-events: none;
+  z-index: 0;
+}
+.lg-section-page::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  top: 0;
+  width: 100vw;
+  transform: translateX(-50%);
+  height: min(44vw, 260px);
+  background: linear-gradient(
+    180deg,
+    color-mix(in srgb, var(--bg) 8%, transparent) 0%,
+    color-mix(in srgb, var(--bg) 72%, transparent) 72%,
+    var(--bg) 100%
+  );
   pointer-events: none;
   z-index: 0;
 }
 .lg-section-page > * {
   position: relative;
   z-index: 1;
+}
+.lg-section-page :is(
+  h1,
+  h2,
+  .page-title,
+  .lg-header,
+  .lg-header-title,
+  .lg-page-title,
+  .header-section h1,
+  .lg-muted,
+  .lg-page-subtitle,
+  .page-subtitle
+) {
+  text-shadow:
+    0 0 20px color-mix(in srgb, var(--bg) 95%, transparent),
+    0 0 8px color-mix(in srgb, var(--bg) 88%, transparent),
+    0 1px 3px color-mix(in srgb, var(--bg) 85%, transparent);
 }
 .lg-muted { color: var(--subtext); }
 .lg-loading {
