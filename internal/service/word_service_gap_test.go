@@ -120,18 +120,22 @@ func wordServiceGapCardRow(id int64, word, defRU, course string, nounGender, opp
 	)
 }
 
-func wordServiceGapExpectLookupMissesBeforeLemma(mock sqlmock.Sqlmock, lemma, course string) {
+func wordServiceGapExpectWordFormLookupMiss(mock sqlmock.Sqlmock, lemma, course string) {
 	mock.ExpectQuery(`FROM word_forms wf\s+JOIN word_cards wc ON wc\.id = wf\.word_card_id`).
 		WithArgs(lemma, course).
 		WillReturnRows(sqlmock.NewRows([]string{"form", "word_card_id"}))
-	mock.ExpectQuery(`FROM verb_forms_dict d`).
-		WithArgs(lemma, course).
-		WillReturnError(sql.ErrNoRows)
+}
+
+func wordServiceGapExpectLookupMissesBeforeLemma(mock sqlmock.Sqlmock, lemma, course string) {
+	wordServiceGapExpectWordFormLookupMiss(mock, lemma, course)
 }
 
 func wordServiceGapExpectLemmaNotFound(mock sqlmock.Sqlmock, lemma, course string) {
-	wordServiceGapExpectLookupMissesBeforeLemma(mock, lemma, course)
+	wordServiceGapExpectWordFormLookupMiss(mock, lemma, course)
 	mock.ExpectQuery(`FROM word_cards\s+WHERE LOWER\(word\) = LOWER\(\?\) AND course_code IS NOT DISTINCT FROM \?`).
+		WithArgs(lemma, course).
+		WillReturnError(sql.ErrNoRows)
+	mock.ExpectQuery(`FROM verb_forms_dict d`).
 		WithArgs(lemma, course).
 		WillReturnError(sql.ErrNoRows)
 }
@@ -719,10 +723,10 @@ func TestWordServiceGap_getWordDefinitionForCourse_WordFormGetWordCardByIDError(
 	mock.ExpectQuery(`FROM word_cards\s+WHERE id = \?`).
 		WithArgs(int64(77)).
 		WillReturnError(fmt.Errorf("card gone"))
-	mock.ExpectQuery(`FROM verb_forms_dict d`).
+	mock.ExpectQuery(`FROM word_cards\s+WHERE LOWER\(word\) = LOWER\(\?\) AND course_code IS NOT DISTINCT FROM \?`).
 		WithArgs("gapform", "en_ru").
 		WillReturnError(sql.ErrNoRows)
-	mock.ExpectQuery(`FROM word_cards\s+WHERE LOWER\(word\) = LOWER\(\?\) AND course_code IS NOT DISTINCT FROM \?`).
+	mock.ExpectQuery(`FROM verb_forms_dict d`).
 		WithArgs("gapform", "en_ru").
 		WillReturnError(sql.ErrNoRows)
 	wordServiceGapExpectAISave(mock, "gapform", "en_ru", 88)

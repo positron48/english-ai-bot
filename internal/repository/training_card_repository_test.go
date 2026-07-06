@@ -477,3 +477,27 @@ func TestTrainingCardRepository_GetTrainingCard_NeutralAliasesMatchLegacy(t *tes
 		t.Fatalf("neutral aliases: %+v", got)
 	}
 }
+
+func TestTrainingCardRepository_LookupWordCardByExactNativeTranslation(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := setupTrainingCardTestDB(t)
+	repo := NewTrainingCardRepository(db, logger)
+
+	var entreID int64
+	if err := db.QueryRow(`INSERT INTO word_cards (word, definition, course_code) VALUES (?, ?, ?) RETURNING id`, "entre", "prep", "es_ru").Scan(&entreID); err != nil {
+		t.Fatalf("insert word card: %v", err)
+	}
+	if _, err := db.Exec(`INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en) VALUES (?, ?, 0, ?, ?)`, entreID, "entre", "между", "between"); err != nil {
+		t.Fatalf("insert training card: %v", err)
+	}
+
+	lemma, id, found, err := repo.LookupWordCardByExactNativeTranslation("  Между ", "es_ru")
+	if err != nil || !found || id != entreID || lemma != "entre" {
+		t.Fatalf("lookup: lemma=%q id=%d found=%v err=%v", lemma, id, found, err)
+	}
+
+	_, _, found, err = repo.LookupWordCardByExactNativeTranslation("между", "en_ru")
+	if err != nil || found {
+		t.Fatalf("expected no match in other course, found=%v err=%v", found, err)
+	}
+}

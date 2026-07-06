@@ -433,8 +433,23 @@ func (r *Router) handleReadingWordLookup(w http.ResponseWriter, req *http.Reques
 	// under es_ru (not the instance default course).
 	courseCode := r.requestedCourseCodeForUser(req, userID)
 
-	lookupLemma := lemma
+	var canonicalLemma string
+	var wordCardID int64
+	var found bool
+	var err error
+
+	// Cyrillic: prefer an exact training-card native translation before LLM lemma resolve.
 	if readingInputContainsCyrillic(lemma) {
+		canonicalLemma, wordCardID, found, err = r.findReadingWordCardByNativeTranslation(lemma, courseCode)
+		if err != nil {
+			r.logger.Error("reading word lookup: failed native translation lookup", zap.String("lemma", lemma), zap.Error(err))
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
+			return
+		}
+	}
+
+	lookupLemma := lemma
+	if !found && readingInputContainsCyrillic(lemma) {
 		if ws := r.getReadingWordService(); ws != nil {
 			if resolver, ok := ws.(readingNativeWordResolver); ok {
 				resolved, resolveErr := resolver.ResolveNativeWordToTargetLemma(req.Context(), lemma, courseCode)
@@ -447,11 +462,13 @@ func (r *Router) handleReadingWordLookup(w http.ResponseWriter, req *http.Reques
 		}
 	}
 
-	canonicalLemma, wordCardID, found, err := r.findReadingWordCardByInput(lookupLemma, courseCode)
-	if err != nil {
-		r.logger.Error("reading word lookup: failed to resolve word card", zap.String("lemma", lemma), zap.Error(err))
-		http.Error(w, "Internal server error", http.StatusInternalServerError)
-		return
+	if !found {
+		canonicalLemma, wordCardID, found, err = r.findReadingWordCardByInput(lookupLemma, courseCode)
+		if err != nil {
+			r.logger.Error("reading word lookup: failed to resolve word card", zap.String("lemma", lemma), zap.Error(err))
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
+			return
+		}
 	}
 	if !found {
 		if ws := r.getReadingWordService(); ws != nil && (ws.IsSingleWord(lookupLemma) || readingInputContainsCyrillic(lemma)) {
@@ -537,9 +554,6 @@ func (r *Router) findReadingWordCardByInput(input, courseCode string) (string, i
 		if lemma, id, found, err := r.findReadingWordCardByFormMapping(normalized, courseCode); found || err != nil {
 			return lemma, id, found, err
 		}
-		if lemma, id, found, err := r.findReadingWordCardByVerbSurface(normalized, courseCode); found || err != nil {
-			return lemma, id, found, err
-		}
 		var canonicalLemma string
 		var wordCardID int64
 		err := r.db.QueryRow(`SELECT word, id FROM word_cards WHERE LOWER(word) = LOWER(?) AND LOWER(course_code) = ?`, normalized, courseCode).Scan(&canonicalLemma, &wordCardID)
@@ -549,13 +563,13 @@ func (r *Router) findReadingWordCardByInput(input, courseCode string) (string, i
 		if err != nil && !errors.Is(err, sql.ErrNoRows) {
 			return "", 0, false, err
 		}
+		if lemma, id, found, err := r.findReadingWordCardByVerbSurface(normalized, courseCode); found || err != nil {
+			return lemma, id, found, err
+		}
 		return "", 0, false, nil
 	}
 
 	if lemma, id, found, err := r.findReadingWordCardByFormMapping(normalized, ""); found || err != nil {
-		return lemma, id, found, err
-	}
-	if lemma, id, found, err := r.findReadingWordCardByVerbSurface(normalized, ""); found || err != nil {
 		return lemma, id, found, err
 	}
 	var canonicalLemma string
@@ -565,9 +579,24 @@ func (r *Router) findReadingWordCardByInput(input, courseCode string) (string, i
 		return canonicalLemma, wordCardID, true, nil
 	}
 	if errors.Is(err, sql.ErrNoRows) {
+		if lemma, id, found, err := r.findReadingWordCardByVerbSurface(normalized, ""); found || err != nil {
+			return lemma, id, found, err
+		}
 		return "", 0, false, nil
 	}
 	return "", 0, false, err
+}
+
+func (r *Router) findReadingWordCardByNativeTranslation(nativeWord, courseCode string) (string, int64, bool, error) {
+	if r == nil || r.db == nil {
+		return "", 0, false, nil
+	}
+	repo := repository.NewTrainingCardRepository(r.db, r.logger)
+	lemma, wordCardID, found, err := repo.LookupWordCardByExactNativeTranslation(nativeWord, courseCode)
+	if err != nil {
+		return "", 0, false, err
+	}
+	return lemma, wordCardID, found, nil
 }
 
 func (r *Router) findReadingWordCardByFormMapping(normalizedForm, courseCode string) (string, int64, bool, error) {

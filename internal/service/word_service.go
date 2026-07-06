@@ -429,29 +429,54 @@ func (s *WordService) getWordDefinitionForCourse(ctx context.Context, userID int
 
 	var wordCard *models.WordCard
 
-	// Step 1: Resolve inflected forms through course-scoped word_forms before a direct lemma hit.
-	wordForm, err := s.wordRepo.GetWordFormMappingForCourse(normalizedWord, courseCode)
-	if err != nil {
-		s.logger.Warn("failed to get word form mapping", zap.Error(err))
-	}
-	if wordForm != nil {
-		wordCard, err = s.wordRepo.GetWordCardByID(wordForm.WordCardID)
-		if err != nil {
-			s.logger.Warn("failed to get word card by ID", zap.Error(err))
+	// Step 0: Cyrillic input — exact native translation on an existing training card wins over
+	// inflected/verb-form resolution (e.g. RU "между" → ES "entre", not entrar conjugation).
+	if nativeToken := NativeLookupHintWord(word); nativeToken != "" && s.trainingCardRepo != nil {
+		if _, cardID, found, lookupErr := s.trainingCardRepo.LookupWordCardByExactNativeTranslation(nativeToken, courseCode); lookupErr != nil {
+			s.logger.Warn("failed to lookup word card by native translation", zap.Error(lookupErr))
+		} else if found {
+			var lookupErr error
+			wordCard, lookupErr = s.wordRepo.GetWordCardByID(cardID)
+			if lookupErr != nil {
+				s.logger.Warn("failed to get word card by native translation", zap.Error(lookupErr))
+				wordCard = nil
+			} else if wordCard != nil {
+				s.logger.Info("word found by native translation",
+					zap.String("input", inputWord),
+					zap.String("lemma", wordCard.Word),
+					zap.Int64("word_card_id", cardID),
+				)
+			}
 		}
 	}
 
-	// Step 2: Spanish verb dictionary surface forms linked to an existing word card.
+	// Step 1: Resolve inflected forms through course-scoped word_forms before a direct lemma hit.
 	if wordCard == nil {
-		wordCard = s.lookupWordCardByVerbSurface(normalizedWord, courseCode)
+		wordForm, err := s.wordRepo.GetWordFormMappingForCourse(normalizedWord, courseCode)
+		if err != nil {
+			s.logger.Warn("failed to get word form mapping", zap.Error(err))
+		}
+		if wordForm != nil {
+			wordCard, err = s.wordRepo.GetWordCardByID(wordForm.WordCardID)
+			if err != nil {
+				s.logger.Warn("failed to get word card by ID", zap.Error(err))
+			}
+		}
 	}
 
-	// Step 3: Direct lemma in the selected course.
+	// Step 2: Direct lemma in the selected course (before verb conjugation surfaces so homographs
+	// like ES "entre" preposition are not swallowed by entrar's present subjunctive form).
 	if wordCard == nil {
+		var err error
 		wordCard, err = s.wordRepo.GetWordCardByLemmaForCourse(normalizedWord, courseCode)
 		if err != nil {
 			s.logger.Warn("failed to get word card by lemma", zap.Error(err))
 		}
+	}
+
+	// Step 3: Spanish verb dictionary surface forms linked to an existing word card.
+	if wordCard == nil {
+		wordCard = s.lookupWordCardByVerbSurface(normalizedWord, courseCode)
 	}
 
 	// Step 3: If found in DB, render markdown and return

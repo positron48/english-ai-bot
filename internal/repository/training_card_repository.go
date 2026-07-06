@@ -3,6 +3,7 @@ package repository
 import (
 	"database/sql"
 	"fmt"
+	"strings"
 	"time"
 
 	"tgbot-skeleton/internal/database"
@@ -393,6 +394,50 @@ func (r *TrainingCardRepository) GetTrainingCardsByWordEN(wordEN string) ([]*mod
 	}
 
 	return cards, nil
+}
+
+// LookupWordCardByExactNativeTranslation finds a word card whose training card has an exact
+// native translation match (training_cards.word_ru), scoped to course when courseCode is set.
+func (r *TrainingCardRepository) LookupWordCardByExactNativeTranslation(nativeWord, courseCode string) (lemma string, wordCardID int64, found bool, err error) {
+	if r == nil || r.db == nil {
+		return "", 0, false, nil
+	}
+	nativeWord = strings.TrimSpace(strings.ToLower(nativeWord))
+	if nativeWord == "" {
+		return "", 0, false, nil
+	}
+	courseCode = strings.TrimSpace(strings.ToLower(courseCode))
+
+	var query string
+	var args []interface{}
+	if courseCode != "" {
+		query = `
+SELECT wc.word, wc.id
+FROM training_cards tc
+JOIN word_cards wc ON wc.id = tc.word_card_id
+WHERE LOWER(TRIM(tc.word_ru)) = ? AND LOWER(wc.course_code) = ?
+ORDER BY tc.sense_index
+LIMIT 1`
+		args = []interface{}{nativeWord, courseCode}
+	} else {
+		query = `
+SELECT wc.word, wc.id
+FROM training_cards tc
+JOIN word_cards wc ON wc.id = tc.word_card_id
+WHERE LOWER(TRIM(tc.word_ru)) = ?
+ORDER BY tc.sense_index
+LIMIT 1`
+		args = []interface{}{nativeWord}
+	}
+
+	err = r.db.QueryRow(query, args...).Scan(&lemma, &wordCardID)
+	if err == sql.ErrNoRows {
+		return "", 0, false, nil
+	}
+	if err != nil {
+		return "", 0, false, fmt.Errorf("lookup word card by native translation: %w", err)
+	}
+	return lemma, wordCardID, true, nil
 }
 
 // UpdateTrainingCard updates a training card
