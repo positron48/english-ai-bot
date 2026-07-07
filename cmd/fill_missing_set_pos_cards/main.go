@@ -53,7 +53,7 @@ func runCLI() int {
 	}
 	defer db.Close()
 
-	aiService := ai.NewServiceWithTimeout(cfg.AI.URL, cfg.AI.Model, cfg.AI.APIKey, cfg.AI.Prompt, ai.ParseHTTPTimeout(cfg.AI.RequestTimeout), log)
+	aiService := ai.NewServiceWithTimeoutAndSocks5Proxy(cfg.AI.URL, cfg.AI.Model, cfg.AI.APIKey, cfg.AI.Prompt, ai.ParseHTTPTimeout(cfg.AI.RequestTimeout), cfg.AI.Socks5Proxy, log)
 	trainingPrompt, err := ai.LoadRenderedPromptFile(
 		cfg.Training.PromptFile,
 		cfg.Learning.NativeLang,
@@ -371,4 +371,3 @@ func buildTrainingCardFromSense(wordCardID int64, existing []*models.TrainingCar
 	}
 	return card, nil
 }
-

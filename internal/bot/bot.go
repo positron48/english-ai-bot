@@ -120,14 +120,18 @@ func New(cfg *config.Config, log *zap.Logger) (*Bot, error) {
 
 	// Create AI service
 	aiHTTPTimeout := ai.ParseHTTPTimeout(cfg.AI.RequestTimeout)
-	aiService := ai.NewServiceWithTimeout(
+	aiService := ai.NewServiceWithTimeoutAndSocks5Proxy(
 		cfg.AI.URL,
 		cfg.AI.Model,
 		cfg.AI.APIKey,
 		cfg.AI.Prompt,
 		aiHTTPTimeout,
+		cfg.AI.Socks5Proxy,
 		log,
 	)
+	if cfg.AI.Socks5Proxy != "" {
+		log.Info("OpenRouter SOCKS5 proxy enabled for AI requests", zap.String("addr", cfg.AI.Socks5Proxy))
+	}
 	// NPC role-play conversations use a stronger instruction-following model than dictionary/
 	// training generation when AI_CONVERSATION_MODEL is set (empty falls back to AI_MODEL).
 	if cfg.AI.ConversationModel != "" {

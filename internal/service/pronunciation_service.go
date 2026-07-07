@@ -23,6 +23,7 @@ import (
 
 	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/models"
+	"tgbot-skeleton/internal/netproxy"
 	"tgbot-skeleton/internal/repository"
 
 	"go.uber.org/zap"
@@ -724,7 +725,14 @@ func buildPronunciationProviders(cfg config.TTSConfig, learning config.LearningC
 		return nil
 	}
 	timeout := parseDurationWithDefault(cfg.RequestTimeout, 45*time.Second)
-	client := &http.Client{Timeout: timeout}
+	dictionaryClient := &http.Client{Timeout: timeout}
+	openRouterClient, proxyErr := netproxy.NewHTTPClient(timeout, cfg.Socks5Proxy)
+	if proxyErr != nil && logger != nil {
+		logger.Warn("invalid TTS/OpenRouter SOCKS5 proxy, using direct connection",
+			zap.String("proxy", cfg.Socks5Proxy),
+			zap.Error(proxyErr),
+		)
+	}
 	provider := strings.ToLower(strings.TrimSpace(cfg.Provider))
 	if provider == "" {
 		provider = "auto"
@@ -752,7 +760,7 @@ func buildPronunciationProviders(cfg config.TTSConfig, learning config.LearningC
 		}
 		providers = append(providers, &dictionaryPronunciationProvider{
 			baseURL:       baseURL,
-			client:        client,
+			client:        dictionaryClient,
 			throttleEvery: minDelay,
 		})
 	}
@@ -774,7 +782,7 @@ func buildPronunciationProviders(cfg config.TTSConfig, learning config.LearningC
 			voice:                  voice,
 			apiKey:                 strings.TrimSpace(cfg.APIKey),
 			chatUserPromptTemplate: strings.TrimSpace(cfg.ChatPronunciationPrompt),
-			client:                 client,
+			client:                 openRouterClient,
 			forceChatCompletions:   isOpenRouterBaseURL(baseURL),
 		})
 	}

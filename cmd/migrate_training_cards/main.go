@@ -76,7 +76,7 @@ func runMigrationWithLoader(ctx context.Context, load func() (*config.Config, er
 	}
 	defer db.Close()
 	wordRepo := repository.NewWordRepository(db.GetConnection(), log)
-	aiService := ai.NewServiceWithTimeout(cfg.AI.URL, cfg.AI.Model, cfg.AI.APIKey, cfg.AI.Prompt, ai.ParseHTTPTimeout(cfg.AI.RequestTimeout), log)
+	aiService := ai.NewServiceWithTimeoutAndSocks5Proxy(cfg.AI.URL, cfg.AI.Model, cfg.AI.APIKey, cfg.AI.Prompt, ai.ParseHTTPTimeout(cfg.AI.RequestTimeout), cfg.AI.Socks5Proxy, log)
 	doRun := run
 	if runFuncForTests != nil {
 		doRun = runFuncForTests

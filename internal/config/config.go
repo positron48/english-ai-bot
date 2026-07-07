@@ -183,6 +183,7 @@ type AIConfig struct {
 	Prompt            string `mapstructure:"prompt"`
 	PromptFile        string `mapstructure:"prompt_file"`
 	RequestTimeout    string `mapstructure:"request_timeout"` // e.g. 120s, 3m; HTTP client timeout for chat/completions (default 30s)
+	Socks5Proxy       string `mapstructure:"socks5_proxy"`
 }
 
 // TTSConfig holds text-to-speech/pronunciation audio configuration
@@ -197,6 +198,7 @@ type TTSConfig struct {
 	BaseURL            string `mapstructure:"base_url"`
 	APIKey             string `mapstructure:"api_key"`
 	RequestTimeout     string `mapstructure:"request_timeout"`
+	Socks5Proxy        string `mapstructure:"socks5_proxy"`
 	PrefetchEnabled    bool   `mapstructure:"prefetch_enabled"`
 	PrefetchWorkers    int    `mapstructure:"prefetch_workers"`
 	BackfillInterval   string `mapstructure:"backfill_interval"`
@@ -226,6 +228,7 @@ type SpeakingConfig struct {
 	EvalBaseURL        string `mapstructure:"eval_base_url"`
 	EvalAPIKey         string `mapstructure:"eval_api_key"`
 	EvalTimeout        string `mapstructure:"eval_timeout"`
+	Socks5Proxy        string `mapstructure:"socks5_proxy"`
 	MaxAudioMB         int    `mapstructure:"max_audio_mb"`
 	MaxAttemptsDefault int    `mapstructure:"max_attempts_default"`
 	AcceptMeaningScore int    `mapstructure:"accept_meaning_score"`
@@ -332,6 +335,7 @@ func Load() (*Config, error) {
 	viper.SetDefault("server.address", ":8184")
 	viper.SetDefault("logging.level", "info")
 	viper.SetDefault("ai.model", "gpt-3.5-turbo")
+	viper.SetDefault("ai.socks5_proxy", "")
 	viper.SetDefault("tts.enabled", true)
 	viper.SetDefault("tts.provider", "auto")
 	viper.SetDefault("tts.external_only", false)
@@ -341,6 +345,7 @@ func Load() (*Config, error) {
 	viper.SetDefault("tts.voice", "alloy")
 	viper.SetDefault("tts.base_url", "https://openrouter.ai/api/v1")
 	viper.SetDefault("tts.request_timeout", "45s")
+	viper.SetDefault("tts.socks5_proxy", "")
 	viper.SetDefault("tts.prefetch_enabled", true)
 	viper.SetDefault("tts.prefetch_workers", 2)
 	viper.SetDefault("tts.backfill_interval", "10m")
@@ -361,6 +366,7 @@ func Load() (*Config, error) {
 	viper.SetDefault("speaking.eval_model", "openai/gpt-audio-mini")
 	viper.SetDefault("speaking.eval_base_url", "https://openrouter.ai/api/v1")
 	viper.SetDefault("speaking.eval_timeout", "60s")
+	viper.SetDefault("speaking.socks5_proxy", "")
 	viper.SetDefault("speaking.max_audio_mb", 2)
 	viper.SetDefault("speaking.max_attempts_default", 3)
 	viper.SetDefault("speaking.accept_meaning_score", 3)
@@ -470,6 +476,7 @@ func Load() (*Config, error) {
 	_ = viper.BindEnv("ai.prompt", "AI_PROMPT")
 	_ = viper.BindEnv("ai.prompt_file", "AI_PROMPT_FILE")
 	_ = viper.BindEnv("ai.request_timeout", "AI_REQUEST_TIMEOUT")
+	_ = viper.BindEnv("ai.socks5_proxy", "OPENROUTER_SOCKS5_PROXY", "AI_SOCKS5_PROXY")
 	_ = viper.BindEnv("tts.enabled", "TTS_ENABLED", "TTS_ENABLE")
 	_ = viper.BindEnv("tts.provider", "TTS_PROVIDER")
 	_ = viper.BindEnv("tts.external_only", "TTS_EXTERNAL_ONLY")
@@ -480,6 +487,7 @@ func Load() (*Config, error) {
 	_ = viper.BindEnv("tts.base_url", "TTS_BASE_URL")
 	_ = viper.BindEnv("tts.api_key", "TTS_API_KEY")
 	_ = viper.BindEnv("tts.request_timeout", "TTS_REQUEST_TIMEOUT")
+	_ = viper.BindEnv("tts.socks5_proxy", "TTS_OPENROUTER_SOCKS5_PROXY")
 	_ = viper.BindEnv("tts.prefetch_enabled", "TTS_PREFETCH_ENABLED")
 	_ = viper.BindEnv("tts.prefetch_workers", "TTS_PREFETCH_WORKERS")
 	_ = viper.BindEnv("tts.backfill_interval", "TTS_BACKFILL_INTERVAL")
@@ -501,6 +509,7 @@ func Load() (*Config, error) {
 	_ = viper.BindEnv("speaking.eval_base_url", "SPEAKING_EVAL_BASE_URL")
 	_ = viper.BindEnv("speaking.eval_api_key", "SPEAKING_EVAL_API_KEY")
 	_ = viper.BindEnv("speaking.eval_timeout", "SPEAKING_EVAL_TIMEOUT")
+	_ = viper.BindEnv("speaking.socks5_proxy", "SPEAKING_OPENROUTER_SOCKS5_PROXY")
 	_ = viper.BindEnv("speaking.max_audio_mb", "SPEAKING_MAX_AUDIO_MB")
 	_ = viper.BindEnv("speaking.max_attempts_default", "SPEAKING_MAX_ATTEMPTS_DEFAULT")
 	_ = viper.BindEnv("speaking.accept_meaning_score", "SPEAKING_ACCEPT_MEANING_SCORE")
@@ -685,6 +694,12 @@ func Load() (*Config, error) {
 	}
 	if strings.TrimSpace(config.Speaking.EvalBaseURL) == "" {
 		config.Speaking.EvalBaseURL = strings.TrimSpace(config.AI.URL)
+	}
+	if strings.TrimSpace(config.TTS.Socks5Proxy) == "" {
+		config.TTS.Socks5Proxy = strings.TrimSpace(config.AI.Socks5Proxy)
+	}
+	if strings.TrimSpace(config.Speaking.Socks5Proxy) == "" {
+		config.Speaking.Socks5Proxy = strings.TrimSpace(config.AI.Socks5Proxy)
 	}
 
 	return &config, nil

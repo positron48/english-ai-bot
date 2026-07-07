@@ -34,9 +34,9 @@ type task struct {
 
 // scriptedTurn is one learner message plus what we expect the model to do that turn.
 type scriptedTurn struct {
-	user            string
-	expectTaskByNow string // task code that should be marked complete by this turn at the latest
-	expectCorrection bool  // the message contains a deliberate Spanish mistake
+	user             string
+	expectTaskByNow  string // task code that should be marked complete by this turn at the latest
+	expectCorrection bool   // the message contains a deliberate Spanish mistake
 }
 
 func main() {
@@ -85,7 +85,7 @@ func main() {
 	var results []scorecard
 	for _, model := range models {
 		fmt.Fprintf(os.Stderr, "▶ %s …\n", model)
-		svc := ai.NewServiceWithTimeout(url, model, key, "", 90*time.Second, logger)
+		svc := ai.NewServiceWithTimeoutAndSocks5Proxy(url, model, key, "", 90*time.Second, os.Getenv("OPENROUTER_SOCKS5_PROXY"), logger)
 		sc := runOne(svc, model, string(basePrompt), tasks, script)
 		if p, ok := prices[model]; ok {
 			sc.costUSD = float64(sc.promptTokens)*p[0] + float64(sc.completionTokens)*p[1]
@@ -245,7 +245,9 @@ func score(r scorecard) float64 {
 	return s
 }
 
-func leaksControl(s string) bool { return strings.Contains(s, ai.ControlSentinel) || strings.Contains(s, "completed_task_codes") }
+func leaksControl(s string) bool {
+	return strings.Contains(s, ai.ControlSentinel) || strings.Contains(s, "completed_task_codes")
+}
 
 func looksEnglish(s string) bool {
 	s = strings.ToLower(s)

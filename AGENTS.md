@@ -50,4 +50,23 @@ Dockerfile ships `/app/import_spanish_verbs`, `/app/backfill_word_verb_links`,
 - **Every rollout**: initContainer runs `sync_verb_training_json` (GitOps: `devops-time-host/apps/linglow/base/deployment.yaml`).
 - Operator runbook: `devops-time-host/apps/linglow/RELEASE_K3S.md` §2.7.
 
+## OpenRouter proxy in k3s
+
+OpenRouter-compatible requests can use a dedicated SOCKS5 proxy via
+`OPENROUTER_SOCKS5_PROXY` (also accepted as `AI_SOCKS5_PROXY` for the main AI
+client). This is intentionally scoped to OpenRouter HTTP clients instead of
+global `HTTP_PROXY`/`HTTPS_PROXY`, so Postgres/Redis/Kubernetes-internal traffic
+stays direct.
+
+Runtime coverage:
+- main AI/chat-completions client (`AI_URL`);
+- training/backfill CLI commands that create the same AI client;
+- TTS OpenRouter provider (`TTS_BASE_URL`) through `TTS_OPENROUTER_SOCKS5_PROXY`
+  or fallback to `OPENROUTER_SOCKS5_PROXY`;
+- Speaking evaluator (`SPEAKING_EVAL_BASE_URL`) through
+  `SPEAKING_OPENROUTER_SOCKS5_PROXY` or fallback to `OPENROUTER_SOCKS5_PROXY`.
+
+k3s ConfigMaps for `english`, `spanish`, and `linglow` set
+`OPENROUTER_SOCKS5_PROXY: "51.254.98.124:1080"`.
+
 ## Imported Claude Cowork project instructions

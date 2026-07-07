@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"tgbot-skeleton/internal/config"
+	"tgbot-skeleton/internal/netproxy"
 	"tgbot-skeleton/internal/repository"
 
 	"go.uber.org/zap"
@@ -46,11 +47,16 @@ func NewSpeakingEvaluatorService(cfg *config.Config, logger *zap.Logger) *Speaki
 	if d, err := time.ParseDuration(strings.TrimSpace(cfg.Speaking.EvalTimeout)); err == nil && d > 0 {
 		timeout = d
 	}
+	httpClient, proxyErr := netproxy.NewHTTPClient(timeout, cfg.Speaking.Socks5Proxy)
+	if proxyErr != nil && logger != nil {
+		logger.Warn("invalid speaking/OpenRouter SOCKS5 proxy, using direct connection",
+			zap.String("proxy", cfg.Speaking.Socks5Proxy),
+			zap.Error(proxyErr),
+		)
+	}
 	return &SpeakingEvaluatorService{
-		cfg: cfg.Speaking,
-		client: &http.Client{
-			Timeout: timeout,
-		},
+		cfg:    cfg.Speaking,
+		client: httpClient,
 		logger: logger,
 	}
 }

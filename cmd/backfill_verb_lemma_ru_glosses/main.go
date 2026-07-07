@@ -100,7 +100,7 @@ func run() int {
 		return 0
 	}
 
-	aiSvc := ai.NewServiceWithTimeout(cfg.AI.URL, cfg.AI.Model, cfg.AI.APIKey, cfg.AI.Prompt, ai.ParseHTTPTimeout(cfg.AI.RequestTimeout), log)
+	aiSvc := ai.NewServiceWithTimeoutAndSocks5Proxy(cfg.AI.URL, cfg.AI.Model, cfg.AI.APIKey, cfg.AI.Prompt, ai.ParseHTTPTimeout(cfg.AI.RequestTimeout), cfg.AI.Socks5Proxy, log)
 	const sys = `You are a lexicographer. Output ONLY one minified JSON object, no markdown.
 Keys: Spanish infinitive lemmas (lowercase, ASCII letters and Spanish letters as in input).
 Values: short Russian literary gloss for dictionary main sense — 2–7 words, Cyrillic, no nested JSON, no quotes inside values, no line breaks inside values.
@@ -197,7 +197,7 @@ func runFillClass(cfg *config.Config, log *zap.Logger, repo *repository.VerbForm
 		return 0
 	}
 
-	aiSvc := ai.NewServiceWithTimeout(cfg.AI.URL, cfg.AI.Model, cfg.AI.APIKey, cfg.AI.Prompt, ai.ParseHTTPTimeout(cfg.AI.RequestTimeout), log)
+	aiSvc := ai.NewServiceWithTimeoutAndSocks5Proxy(cfg.AI.URL, cfg.AI.Model, cfg.AI.APIKey, cfg.AI.Prompt, ai.ParseHTTPTimeout(cfg.AI.RequestTimeout), cfg.AI.Socks5Proxy, log)
 	const sys = `You are a Spanish lexicographer. Output ONLY one minified JSON object, no markdown.
 Keys: Spanish infinitive lemmas (lowercase).
 Values: exactly one of: motion, speech, transfer, generic — coarse verb semantics for example templates.

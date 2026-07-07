@@ -11,6 +11,8 @@ import (
 	"time"
 	"unicode"
 
+	"tgbot-skeleton/internal/netproxy"
+
 	"go.uber.org/zap"
 )
 
@@ -65,14 +67,14 @@ func isSingleWordLookupCandidate(s string) bool {
 
 // Service handles AI provider interactions
 type Service struct {
-	client              *http.Client
-	url                 string
-	model               string
-	apiKey              string
-	prompt              string
-	trainingPrompt      string
-	dictionaryPrompts   map[string]string // course_code -> dictionary lookup prompt override
-	trainingPrompts     map[string]string // course_code -> training card generation prompt override
+	client                        *http.Client
+	url                           string
+	model                         string
+	apiKey                        string
+	prompt                        string
+	trainingPrompt                string
+	dictionaryPrompts             map[string]string // course_code -> dictionary lookup prompt override
+	trainingPrompts               map[string]string // course_code -> training card generation prompt override
 	conversationPrompts           map[string]string // course_code -> legacy combined NPC prompt (deprecated)
 	conversationQuestPrompts      map[string]string // course_code -> quest task evaluation prompt (Prompt A)
 	conversationCorrectionPrompts map[string]string // course_code -> error correction prompt (Prompt B)
@@ -82,7 +84,7 @@ type Service struct {
 	pictureLumiPrompts            map[string]string // course_code -> Lumi reply prompt for picture quests
 	sentenceGenPrompts            map[string]string // course_code -> daily sentence-set generation prompt
 	sentenceGradePrompts          map[string]string // course_code -> per-sentence grading prompt
-	logger              *zap.Logger
+	logger                        *zap.Logger
 }
 
 // SetConversationModel sets an optional model override used only by ConversationTurn (NPC
@@ -99,16 +101,24 @@ func NewService(url, model, apiKey, prompt string, logger *zap.Logger) *Service 
 
 // NewServiceWithTimeout creates a new AI service. httpTimeout <= 0 means DefaultHTTPTimeout.
 func NewServiceWithTimeout(url, model, apiKey, prompt string, httpTimeout time.Duration, logger *zap.Logger) *Service {
+	return NewServiceWithTimeoutAndSocks5Proxy(url, model, apiKey, prompt, httpTimeout, "", logger)
+}
+
+// NewServiceWithTimeoutAndSocks5Proxy creates a new AI service and optionally routes
+// chat/completions requests through a SOCKS5 proxy.
+func NewServiceWithTimeoutAndSocks5Proxy(url, model, apiKey, prompt string, httpTimeout time.Duration, socks5Proxy string, logger *zap.Logger) *Service {
 	if httpTimeout <= 0 {
 		httpTimeout = DefaultHTTPTimeout
 	}
 	// Process prompt to handle escaped newlines
 	processedPrompt := strings.ReplaceAll(prompt, "\\n", "\n")
+	httpClient, err := netproxy.NewHTTPClient(httpTimeout, socks5Proxy)
+	if err != nil && logger != nil {
+		logger.Warn("invalid AI SOCKS5 proxy, using direct OpenRouter connection", zap.String("proxy", socks5Proxy), zap.Error(err))
+	}
 
 	return &Service{
-		client: &http.Client{
-			Timeout: httpTimeout,
-		},
+		client: httpClient,
 		url:    url,
 		model:  model,
 		apiKey: apiKey,
