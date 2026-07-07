@@ -1,6 +1,7 @@
 package web
 
 import (
+	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -47,6 +48,32 @@ func (r *Router) getTrainingDelaysForUser(userID int64) (optionsDelayMS int, wro
 	return optionsDelayMS, wrongAnswerDelaySeconds
 }
 
+func trainingCorrectAnswerForCard(card *models.UserCardWithTraining) string {
+	if card == nil {
+		return ""
+	}
+	if card.UserCard.Direction == models.DirectionRUtoEN {
+		if card.TrainingCard.DisplayWord != nil && strings.TrimSpace(*card.TrainingCard.DisplayWord) != "" {
+			return *card.TrainingCard.DisplayWord
+		}
+		return card.TrainingCard.WordEN
+	}
+	return card.TrainingCard.WordRU
+}
+
+func trainingOptionsContain(options []string, answer string) bool {
+	answer = strings.TrimSpace(answer)
+	if answer == "" {
+		return false
+	}
+	for _, option := range options {
+		if strings.TrimSpace(option) == answer {
+			return true
+		}
+	}
+	return false
+}
+
 // WebTrainingState holds the state of a web training session
 type WebTrainingState struct {
 	UserID               int64
@@ -60,6 +87,38 @@ type WebTrainingState struct {
 	Options              []string
 	CorrectAnswer        string
 	RecentCorrectAnswers []string
+	PrefetchedCards      map[int]*PrefetchedTrainingCard
+}
+
+type PrefetchedTrainingCard struct {
+	Response      []byte
+	Options       []string
+	CorrectAnswer string
+}
+
+type trainingResponseCapture struct {
+	header http.Header
+	status int
+	body   bytes.Buffer
+}
+
+func newTrainingResponseCapture() *trainingResponseCapture {
+	return &trainingResponseCapture{header: make(http.Header)}
+}
+
+func (c *trainingResponseCapture) Header() http.Header {
+	return c.header
+}
+
+func (c *trainingResponseCapture) WriteHeader(statusCode int) {
+	c.status = statusCode
+}
+
+func (c *trainingResponseCapture) Write(data []byte) (int, error) {
+	if c.status == 0 {
+		c.status = http.StatusOK
+	}
+	return c.body.Write(data)
 }
 
 // WebTrainingHandler handles web training sessions
@@ -237,6 +296,7 @@ func (r *Router) handleTrainingStart(w http.ResponseWriter, req *http.Request) {
 		Queue:                queue,
 		CurrentIndex:         0,
 		RecentCorrectAnswers: make([]string, 0, 2),
+		PrefetchedCards:      make(map[int]*PrefetchedTrainingCard),
 	}
 
 	r.webTrainingHandler.sessionsMutex.Lock()
@@ -253,6 +313,20 @@ func (r *Router) showTrainingCard(w http.ResponseWriter, req *http.Request, stat
 		// Session finished
 		r.finishTrainingSession(w, req, state)
 		return
+	}
+
+	if state.PrefetchedCards != nil {
+		if prefetched := state.PrefetchedCards[state.CurrentIndex]; prefetched != nil {
+			delete(state.PrefetchedCards, state.CurrentIndex)
+			state.ShownAt = time.Now()
+			state.OptionsShownAt = nil
+			state.Options = append([]string(nil), prefetched.Options...)
+			state.CorrectAnswer = prefetched.CorrectAnswer
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusOK)
+			_, _ = w.Write(prefetched.Response)
+			return
+		}
 	}
 
 	item := state.Queue[state.CurrentIndex]
@@ -673,6 +747,94 @@ func (r *Router) handleTrainingCurrent(w http.ResponseWriter, req *http.Request)
 	r.showTrainingCard(w, req, state)
 }
 
+func (r *Router) handleTrainingPrefetchNext(w http.ResponseWriter, req *http.Request) {
+	if req.Method != http.MethodPost {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+
+	userID := getUserIDFromContext(req.Context())
+	if userID == 0 {
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
+		return
+	}
+
+	if r.webTrainingHandler == nil {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		_ = json.NewEncoder(w).Encode(map[string]interface{}{"active": false, "message": "No active session"})
+		return
+	}
+
+	r.webTrainingHandler.sessionsMutex.Lock()
+	state, exists := r.webTrainingHandler.sessions[userID]
+	if !exists || state == nil {
+		r.webTrainingHandler.sessionsMutex.Unlock()
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		_ = json.NewEncoder(w).Encode(map[string]interface{}{"active": false, "message": "No active session"})
+		return
+	}
+
+	nextIndex := state.CurrentIndex + 1
+	if nextIndex >= len(state.Queue) {
+		r.webTrainingHandler.sessionsMutex.Unlock()
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		_ = json.NewEncoder(w).Encode(map[string]interface{}{"complete": true})
+		return
+	}
+	if state.PrefetchedCards == nil {
+		state.PrefetchedCards = make(map[int]*PrefetchedTrainingCard)
+	}
+	if prefetched := state.PrefetchedCards[nextIndex]; prefetched != nil {
+		r.webTrainingHandler.sessionsMutex.Unlock()
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write(prefetched.Response)
+		return
+	}
+
+	originalIndex := state.CurrentIndex
+	originalShownAt := state.ShownAt
+	originalOptionsShownAt := state.OptionsShownAt
+	originalOptions := append([]string(nil), state.Options...)
+	originalCorrectAnswer := state.CorrectAnswer
+	state.CurrentIndex = nextIndex
+	capture := newTrainingResponseCapture()
+	r.showTrainingCard(capture, req, state)
+	prefetchedOptions := append([]string(nil), state.Options...)
+	prefetchedCorrectAnswer := state.CorrectAnswer
+	state.CurrentIndex = originalIndex
+	state.ShownAt = originalShownAt
+	state.OptionsShownAt = originalOptionsShownAt
+	state.Options = originalOptions
+	state.CorrectAnswer = originalCorrectAnswer
+
+	if capture.status == http.StatusOK && capture.body.Len() > 0 {
+		state.PrefetchedCards[nextIndex] = &PrefetchedTrainingCard{
+			Response:      append([]byte(nil), capture.body.Bytes()...),
+			Options:       prefetchedOptions,
+			CorrectAnswer: prefetchedCorrectAnswer,
+		}
+	}
+	r.webTrainingHandler.sessionsMutex.Unlock()
+
+	if capture.status == 0 {
+		capture.status = http.StatusOK
+	}
+	for key, values := range capture.header {
+		for _, value := range values {
+			w.Header().Add(key, value)
+		}
+	}
+	if w.Header().Get("Content-Type") == "" {
+		w.Header().Set("Content-Type", "application/json")
+	}
+	w.WriteHeader(capture.status)
+	_, _ = w.Write(capture.body.Bytes())
+}
+
 // handleTrainingReveal reveals the options
 // @Summary      Показать варианты ответов
 // @Description  Показывает варианты ответов для текущей карточки тренировки
@@ -1038,6 +1200,12 @@ func (r *Router) handleTrainingAnswer(w http.ResponseWriter, req *http.Request) 
 	}
 
 	chosenOption := options[optionIndex]
+	if !trainingOptionsContain(options, correctAnswer) {
+		if fallbackCorrectAnswer := trainingCorrectAnswerForCard(card); trainingOptionsContain(options, fallbackCorrectAnswer) {
+			correctAnswer = fallbackCorrectAnswer
+			state.CorrectAnswer = fallbackCorrectAnswer
+		}
+	}
 	isCorrect := chosenOption == correctAnswer
 
 	// Timings: for quality we use only time from options shown to answer (delay before options not counted).

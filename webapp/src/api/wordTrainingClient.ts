@@ -364,6 +364,13 @@ export const wordTrainingClient = {
     )
   },
 
+  async prefetchNext(): Promise<any> {
+    return offlineFallback(
+      () => apiClient.request(withCourse('/api/training/prefetch-next'), { method: 'POST' }),
+      async () => null,
+    )
+  },
+
   async reveal(): Promise<any> {
     return offlineFallback(
       () => apiClient.request('/api/training/reveal', { method: 'POST', headers: { 'Content-Type': 'application/json' } }),

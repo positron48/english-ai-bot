@@ -364,6 +364,92 @@ func TestShowTrainingCard_NormalCardRUtoEN(t *testing.T) {
 	}
 }
 
+func TestHandleTrainingPrefetchNext_DoesNotMutateCurrentCardAnswerState(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db, userRepo, trainingCardRepo, _, _ := setupTrainingIntegrationTestDB(t)
+	user, _ := userRepo.GetOrCreateUser(700099)
+
+	var firstWordID, secondWordID int64
+	if err := db.QueryRow("INSERT INTO word_cards (word, definition) VALUES ($1, $2) RETURNING id", "first", "first").Scan(&firstWordID); err != nil {
+		t.Fatalf("create first word: %v", err)
+	}
+	if err := db.QueryRow("INSERT INTO word_cards (word, definition) VALUES ($1, $2) RETURNING id", "second", "second").Scan(&secondWordID); err != nil {
+		t.Fatalf("create second word: %v", err)
+	}
+	firstCardID, _ := trainingCardRepo.CreateTrainingCard(&models.TrainingCard{
+		WordCardID: firstWordID, WordEN: "first", SenseIndex: 0, WordRU: "первый", MeaningEN: "first",
+		DistractorsRU: `["а","б","в"]`, DistractorsEN: `["a","b","c"]`,
+	})
+	secondCardID, _ := trainingCardRepo.CreateTrainingCard(&models.TrainingCard{
+		WordCardID: secondWordID, WordEN: "second", SenseIndex: 0, WordRU: "второй", MeaningEN: "second",
+		DistractorsRU: `["г","д","е"]`, DistractorsEN: `["d","e","f"]`,
+	})
+
+	cfg := &config.Config{Training: config.TrainingConfig{OptionsDelayMS: 1000, WrongAnswerDelaySeconds: 3}}
+	optionsService := service.NewOptionsService(trainingCardRepo, logger, "en")
+	router := NewRouter(logger, cfg, db, nil, nil, optionsService, nil)
+
+	first := &models.UserCardWithTraining{
+		UserCard:     models.UserCard{ID: 101, UserID: user.ID, TrainingCardID: firstCardID, Direction: models.DirectionENtoRU},
+		TrainingCard: models.TrainingCard{ID: firstCardID, WordCardID: firstWordID, WordEN: "first", WordRU: "первый", DistractorsRU: `["а","б","в"]`},
+	}
+	second := &models.UserCardWithTraining{
+		UserCard:     models.UserCard{ID: 102, UserID: user.ID, TrainingCardID: secondCardID, Direction: models.DirectionENtoRU},
+		TrainingCard: models.TrainingCard{ID: secondCardID, WordCardID: secondWordID, WordEN: "second", WordRU: "второй", DistractorsRU: `["г","д","е"]`},
+	}
+	state := &WebTrainingState{
+		UserID: user.ID, SessionID: 1, CurrentIndex: 0,
+		Queue: []*models.TrainingQueueItem{{Type: "card", Card: first}, {Type: "card", Card: second}},
+	}
+	router.webTrainingHandler = &WebTrainingHandler{sessions: map[int64]*WebTrainingState{user.ID: state}}
+
+	currentReq := setUserIDInContext(httptest.NewRequest(http.MethodGet, "/api/training/current", nil), user.ID)
+	currentW := httptest.NewRecorder()
+	router.showTrainingCard(currentW, currentReq, state)
+	if currentW.Code != http.StatusOK {
+		t.Fatalf("show first card status=%d body=%s", currentW.Code, currentW.Body.String())
+	}
+	currentOptions := append([]string(nil), state.Options...)
+	currentCorrect := state.CorrectAnswer
+
+	prefetchReq := setUserIDInContext(httptest.NewRequest(http.MethodPost, "/api/training/prefetch-next", nil), user.ID)
+	prefetchW := httptest.NewRecorder()
+	router.handleTrainingPrefetchNext(prefetchW, prefetchReq)
+	if prefetchW.Code != http.StatusOK {
+		t.Fatalf("prefetch status=%d body=%s", prefetchW.Code, prefetchW.Body.String())
+	}
+	if state.CurrentIndex != 0 {
+		t.Fatalf("prefetch changed current index to %d", state.CurrentIndex)
+	}
+	if state.CorrectAnswer != currentCorrect {
+		t.Fatalf("prefetch changed correct answer from %q to %q", currentCorrect, state.CorrectAnswer)
+	}
+	if len(state.Options) != len(currentOptions) {
+		t.Fatalf("prefetch changed options length from %d to %d", len(currentOptions), len(state.Options))
+	}
+	for i := range currentOptions {
+		if state.Options[i] != currentOptions[i] {
+			t.Fatalf("prefetch changed current options: before=%v after=%v", currentOptions, state.Options)
+		}
+	}
+	if state.PrefetchedCards == nil || state.PrefetchedCards[1] == nil {
+		t.Fatalf("expected second card to be stored in prefetch cache")
+	}
+
+	state.CurrentIndex = 1
+	nextW := httptest.NewRecorder()
+	router.showTrainingCard(nextW, currentReq, state)
+	if nextW.Code != http.StatusOK {
+		t.Fatalf("show prefetched card status=%d body=%s", nextW.Code, nextW.Body.String())
+	}
+	if state.CorrectAnswer != "второй" {
+		t.Fatalf("expected prefetched correct answer for second card, got %q", state.CorrectAnswer)
+	}
+	if state.PrefetchedCards[1] != nil {
+		t.Fatalf("expected consumed prefetched card to be removed")
+	}
+}
+
 // showTrainingFeedback: direct call with correct and incorrect (hint, example, delay_seconds)
 func TestShowTrainingFeedback_Direct(t *testing.T) {
 	logger, _ := zap.NewDevelopment()

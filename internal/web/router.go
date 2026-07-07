@@ -604,6 +604,7 @@ func (r *Router) setupProtectedRoutes() {
 
 	r.mux.HandleFunc("/api/training/start", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleTrainingStart)))
 	r.mux.HandleFunc("/api/training/current", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleTrainingCurrent)))
+	r.mux.HandleFunc("/api/training/prefetch-next", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleTrainingPrefetchNext)))
 	r.mux.HandleFunc("/api/training/reveal", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleTrainingReveal)))
 	r.mux.HandleFunc("/api/training/answer", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleTrainingAnswer)))
 	r.mux.HandleFunc("/api/training/report", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleTrainingReport)))

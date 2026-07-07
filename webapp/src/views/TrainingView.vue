@@ -339,8 +339,8 @@
             'btn',
             'option-btn',
             {
-              'option-correct': feedback && option === feedback.correct_answer,
-              'option-incorrect': feedback && !feedback.is_correct && index === chosenOptionIndex,
+              'option-correct': isCorrectOption(option, index),
+              'option-incorrect': isIncorrectChosenOption(index),
               'option-disabled': !!feedback || answering
             }
           ]"
@@ -837,6 +837,21 @@ const pronunciationWord = computed(() => {
   if (!card) return ''
   return (card.word_target || card.word_en || '').trim()
 })
+
+const normalizeAnswerOption = (value: string | undefined | null): string =>
+  (value || '').trim().replace(/\s+/g, ' ').toLowerCase()
+
+const isCorrectOption = (option: string, index: number): boolean => {
+  const resp = feedback.value
+  if (!resp) return false
+  if (resp.is_correct && index === chosenOptionIndex.value) return true
+  return normalizeAnswerOption(option) === normalizeAnswerOption(resp.correct_answer)
+}
+
+const isIncorrectChosenOption = (index: number): boolean => {
+  const resp = feedback.value
+  return !!resp && !resp.is_correct && index === chosenOptionIndex.value
+}
 
 const shouldAutoplayPronunciationOnCardShown = computed(() => {
   const card = currentCard.value
@@ -1793,6 +1808,7 @@ const checkCurrentSession = async () => {
     const card = response as Card
     sessionActive.value = true
     setupCard(card)
+    void prefetchNextTrainingCard()
   } catch (error: any) {
     console.error('Failed to check session:', error)
   }
@@ -1832,6 +1848,7 @@ const applyTrainingSessionResponse = async (response: any): Promise<boolean> => 
 
   const card = response as Card
   setupCard(card)
+  void prefetchNextTrainingCard()
 
   if (card.card_index > card.total_cards) {
     sessionComplete.value = true
@@ -1869,19 +1886,10 @@ const applyTrainingSessionResponse = async (response: any): Promise<boolean> => 
 const prefetchNextTrainingCard = () => {
   if (!sessionActive.value || prefetchInFlight) return
   const generation = currentCardGeneration
-  const cardAtStart = currentCard.value
   prefetchInFlight = (async () => {
     try {
-      const response = await wordTrainingClient.current()
-      if (!sessionActive.value || generation !== currentCardGeneration || !sameTrainingCard(cardAtStart, currentCard.value)) return
-      if (isTrainingCompleteResponse(response) || isTrainingInactiveResponse(response)) {
-        prefetchedCardResponse.value = response
-        return
-      }
-      const card = response as Card
-      if (sameTrainingCard(card, currentCard.value)) {
-        return
-      }
+      const response = await wordTrainingClient.prefetchNext()
+      if (!sessionActive.value || generation !== currentCardGeneration) return
       prefetchedCardResponse.value = response
     } catch (error) {
       console.error('Failed to prefetch next training card:', error)
@@ -2012,6 +2020,7 @@ const startTraining = async () => {
     const card: Card = await wordTrainingClient.start()
     sessionActive.value = true
     setupCard(card)
+    void prefetchNextTrainingCard()
     sessionComplete.value = false
     // Card is on screen — hide the loader before refreshing stats so the
     // spinner doesn't keep spinning over the first card.
@@ -2289,8 +2298,6 @@ const submitSpellAnswerAs = async (answerText: string, isSkip = false) => {
     const data: Feedback = await wordTrainingClient.answer(formData)
     if (generation !== currentCardGeneration || !sameTrainingCard(cardAtSubmit, currentCard.value)) return
     feedback.value = data
-    prefetchedCardResponse.value = null
-    void prefetchNextTrainingCard()
     if (!data.is_correct && currentCard.value?.type === 'spell' && data.correct_answer) {
       const prefix = currentCard.value?.prefix ?? ''
       if (isSkip) {
@@ -2405,8 +2412,6 @@ const submitTypeAnswerAs = async (answerText: string) => {
     const data: Feedback = await wordTrainingClient.answer(formData)
     if (generation !== currentCardGeneration || !sameTrainingCard(cardAtSubmit, currentCard.value)) return
     feedback.value = data
-    prefetchedCardResponse.value = null
-    void prefetchNextTrainingCard()
     triggerHapticFeedback(data.is_correct)
     if (data.is_correct) {
       playCorrectSound()
@@ -2570,8 +2575,6 @@ const submitAnswer = async (optionIndex: number) => {
     if (generation !== currentCardGeneration || !sameTrainingCard(cardAtSubmit, currentCard.value)) return
     chosenOptionIndex.value = optionIndex
     feedback.value = data
-    prefetchedCardResponse.value = null
-    void prefetchNextTrainingCard()
     
     // Hide example if it was shown before answer (to avoid duplicate display in feedback)
     exampleUsageShown.value = false
@@ -2768,10 +2771,7 @@ const nextCard = async () => {
       response = await wordTrainingClient.current()
     }
 
-    const continued = await applyTrainingSessionResponse(response)
-    if (continued) {
-      void prefetchNextTrainingCard()
-    }
+    await applyTrainingSessionResponse(response)
   } catch (error: any) {
     console.error('Failed to get next card:', error)
     // Network error is already handled by callback
