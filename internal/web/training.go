@@ -96,6 +96,20 @@ type PrefetchedTrainingCard struct {
 	CorrectAnswer string
 }
 
+func takePrefetchedTrainingCard(state *WebTrainingState, index int) *PrefetchedTrainingCard {
+	if state == nil || state.PrefetchedCards == nil {
+		return nil
+	}
+	prefetched := state.PrefetchedCards[index]
+	if prefetched == nil {
+		return nil
+	}
+	delete(state.PrefetchedCards, index)
+	state.Options = append([]string(nil), prefetched.Options...)
+	state.CorrectAnswer = prefetched.CorrectAnswer
+	return prefetched
+}
+
 type trainingResponseCapture struct {
 	header http.Header
 	status int
@@ -315,18 +329,13 @@ func (r *Router) showTrainingCard(w http.ResponseWriter, req *http.Request, stat
 		return
 	}
 
-	if state.PrefetchedCards != nil {
-		if prefetched := state.PrefetchedCards[state.CurrentIndex]; prefetched != nil {
-			delete(state.PrefetchedCards, state.CurrentIndex)
-			state.ShownAt = time.Now()
-			state.OptionsShownAt = nil
-			state.Options = append([]string(nil), prefetched.Options...)
-			state.CorrectAnswer = prefetched.CorrectAnswer
-			w.Header().Set("Content-Type", "application/json")
-			w.WriteHeader(http.StatusOK)
-			_, _ = w.Write(prefetched.Response)
-			return
-		}
+	if prefetched := takePrefetchedTrainingCard(state, state.CurrentIndex); prefetched != nil {
+		state.ShownAt = time.Now()
+		state.OptionsShownAt = nil
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		_, _ = w.Write(prefetched.Response)
+		return
 	}
 
 	item := state.Queue[state.CurrentIndex]
@@ -879,6 +888,10 @@ func (r *Router) handleTrainingReveal(w http.ResponseWriter, req *http.Request) 
 		http.Error(w, "Reveal not applicable to this card type", http.StatusBadRequest)
 		return
 	}
+
+	// Client may show prefetched card JSON without calling /current; apply cached options
+	// for the active index so reveal does not return stale options from the previous card.
+	_ = takePrefetchedTrainingCard(state, state.CurrentIndex)
 
 	// Mark options as shown
 	now := time.Now()

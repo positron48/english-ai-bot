@@ -2764,13 +2764,11 @@ const nextCard = async () => {
   typeAnswerText.value = ''
 
   try {
-    let response = prefetchedCardResponse.value
-    if (response) {
-      prefetchedCardResponse.value = null
-    } else {
-      response = await wordTrainingClient.current()
-    }
-
+    // Always sync the next card through /api/training/current so backend session state
+    // (Options, CorrectAnswer, ShownAt) matches the displayed question. Client-side
+    // prefetch JSON only warms the server cache; using it directly desyncs reveal.
+    prefetchedCardResponse.value = null
+    const response = await wordTrainingClient.current()
     await applyTrainingSessionResponse(response)
   } catch (error: any) {
     console.error('Failed to get next card:', error)
