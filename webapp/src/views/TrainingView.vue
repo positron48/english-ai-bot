@@ -646,6 +646,7 @@ const loading = ref(false)
 const currentCard = ref<Card | null>(null)
 const prefetchedCardResponse = ref<any | null>(null)
 let prefetchInFlight: Promise<void> | null = null
+let syncCurrentInFlight: Promise<void> | null = null
 const optionsShown = ref(false)
 const options = ref<string[]>([])
 const feedback = ref<Feedback | null>(null)
@@ -1899,6 +1900,20 @@ const prefetchNextTrainingCard = () => {
   })()
 }
 
+const syncCurrentCardState = (): Promise<void> => {
+  if (syncCurrentInFlight) return syncCurrentInFlight
+  syncCurrentInFlight = (async () => {
+    try {
+      await wordTrainingClient.current()
+    } catch (error) {
+      console.error('Failed to sync current training card state:', error)
+    } finally {
+      syncCurrentInFlight = null
+    }
+  })()
+  return syncCurrentInFlight
+}
+
 const setupCard = (card: Card) => {
   // Clear any existing timers
   if (autoRevealTimer) {
@@ -2122,6 +2137,9 @@ const revealOptions = async (isEarly: boolean = false) => {
   }
 
   try {
+    if (syncCurrentInFlight) {
+      await syncCurrentInFlight
+    }
     const data: OptionsResponse = await wordTrainingClient.reveal()
     options.value = data.options
     optionsShown.value = true
@@ -2764,10 +2782,16 @@ const nextCard = async () => {
   typeAnswerText.value = ''
 
   try {
-    // Always sync the next card through /api/training/current so backend session state
-    // (Options, CorrectAnswer, ShownAt) matches the displayed question. Client-side
-    // prefetch JSON only warms the server cache; using it directly desyncs reveal.
+    const cached = prefetchedCardResponse.value
     prefetchedCardResponse.value = null
+    if (cached) {
+      // Show the prefetched card immediately; sync backend session state in the
+      // background so reveal/answer use options for the active card, not the previous one.
+      void syncCurrentCardState()
+      await applyTrainingSessionResponse(cached)
+      return
+    }
+
     const response = await wordTrainingClient.current()
     await applyTrainingSessionResponse(response)
   } catch (error: any) {
@@ -2799,6 +2823,7 @@ const resetSession = async () => {
   currentCardGeneration++
   currentCard.value = null
   prefetchedCardResponse.value = null
+  syncCurrentInFlight = null
   optionsShown.value = false
   options.value = []
   feedback.value = null
