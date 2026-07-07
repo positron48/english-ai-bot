@@ -1,8 +1,11 @@
 package netproxy
 
 import (
+	"bytes"
 	"context"
+	"errors"
 	"fmt"
+	"io"
 	"net"
 	"net/http"
 	"net/url"
@@ -11,6 +14,8 @@ import (
 
 	"golang.org/x/net/proxy"
 )
+
+const DefaultRetryAttempts = 3
 
 // NewHTTPClient returns an HTTP client with an optional SOCKS5 proxy transport.
 // Expected proxy formats: "ip:port", "socks5://ip:port", "socks5://user:pass@ip:port".
@@ -44,9 +49,60 @@ func NewSocks5Transport(raw string) (*http.Transport, error) {
 		TLSHandshakeTimeout:   10 * time.Second,
 		ResponseHeaderTimeout: 30 * time.Second,
 		ExpectContinueTimeout: 1 * time.Second,
-		IdleConnTimeout:       90 * time.Second,
-		MaxIdleConns:          10,
+		DisableKeepAlives:     true,
 	}, nil
+}
+
+func DoJSONWithRetry(ctx context.Context, client *http.Client, method, endpoint string, body []byte, headers map[string]string) (*http.Response, error) {
+	if client == nil {
+		client = http.DefaultClient
+	}
+	attempts := DefaultRetryAttempts
+	var lastErr error
+	for attempt := 1; attempt <= attempts; attempt++ {
+		req, err := http.NewRequestWithContext(ctx, method, endpoint, bytes.NewReader(body))
+		if err != nil {
+			return nil, err
+		}
+		for key, value := range headers {
+			req.Header.Set(key, value)
+		}
+		resp, err := client.Do(req)
+		if err == nil {
+			return resp, nil
+		}
+		lastErr = err
+		if ctx.Err() != nil || attempt == attempts || !isRetryableTransportError(err) {
+			break
+		}
+		select {
+		case <-ctx.Done():
+			return nil, ctx.Err()
+		case <-time.After(time.Duration(attempt*250) * time.Millisecond):
+		}
+	}
+	return nil, lastErr
+}
+
+func isRetryableTransportError(err error) bool {
+	if err == nil {
+		return false
+	}
+	if errors.Is(err, io.EOF) || errors.Is(err, io.ErrUnexpectedEOF) {
+		return true
+	}
+	var urlErr *url.Error
+	if errors.As(err, &urlErr) {
+		return isRetryableTransportError(urlErr.Err)
+	}
+	var netErr net.Error
+	if errors.As(err, &netErr) {
+		return true
+	}
+	msg := strings.ToLower(err.Error())
+	return strings.Contains(msg, "connection reset by peer") ||
+		strings.Contains(msg, "broken pipe") ||
+		strings.Contains(msg, "unexpected eof")
 }
 
 func normalizeSocks5Proxy(raw string) (hostPort string, auth *proxy.Auth, err error) {

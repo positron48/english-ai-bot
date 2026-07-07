@@ -1,7 +1,6 @@
 package ai
 
 import (
-	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -85,6 +84,28 @@ type Service struct {
 	sentenceGenPrompts            map[string]string // course_code -> daily sentence-set generation prompt
 	sentenceGradePrompts          map[string]string // course_code -> per-sentence grading prompt
 	logger                        *zap.Logger
+}
+
+func (s *Service) openRouterHeaders(accept string) map[string]string {
+	headers := map[string]string{
+		"Content-Type":  "application/json",
+		"Authorization": "Bearer " + s.apiKey,
+	}
+	if strings.TrimSpace(accept) != "" {
+		headers["Accept"] = accept
+	}
+	return headers
+}
+
+func (s *Service) doOpenRouterJSON(ctx context.Context, endpoint string, body []byte, accept string) (*http.Response, error) {
+	if _, err := http.NewRequestWithContext(ctx, http.MethodPost, endpoint, nil); err != nil {
+		return nil, fmt.Errorf("failed to create request: %w", err)
+	}
+	resp, err := netproxy.DoJSONWithRetry(ctx, s.client, http.MethodPost, endpoint, body, s.openRouterHeaders(accept))
+	if err != nil {
+		return nil, fmt.Errorf("failed to send request: %w", err)
+	}
+	return resp, nil
 }
 
 // SetConversationModel sets an optional model override used only by ConversationTurn (NPC
@@ -323,19 +344,12 @@ func (s *Service) postChatCompletion(ctx context.Context, model string, messages
 	if err != nil {
 		return "", fmt.Errorf("failed to marshal request: %w", err)
 	}
-	httpReq, err := http.NewRequestWithContext(ctx, "POST", s.url+"/chat/completions", bytes.NewBuffer(reqBody))
-	if err != nil {
-		return "", fmt.Errorf("failed to create request: %w", err)
-	}
-	httpReq.Header.Set("Content-Type", "application/json")
-	httpReq.Header.Set("Authorization", "Bearer "+s.apiKey)
-
 	fields := append([]zap.Field{zap.String("url", s.url), zap.String("model", model)}, logFields...)
 	s.logger.Debug("sending chat/completions", fields...)
 
-	resp, err := s.client.Do(httpReq)
+	resp, err := s.doOpenRouterJSON(ctx, s.url+"/chat/completions", reqBody, "")
 	if err != nil {
-		return "", fmt.Errorf("failed to send request: %w", err)
+		return "", err
 	}
 	defer resp.Body.Close()
 	respBody, err := io.ReadAll(resp.Body)
@@ -407,19 +421,12 @@ func (s *Service) postChatCompletionRaw(ctx context.Context, model string, messa
 	if err != nil {
 		return "", nil, fmt.Errorf("failed to marshal request: %w", err)
 	}
-	httpReq, err := http.NewRequestWithContext(ctx, "POST", s.url+"/chat/completions", bytes.NewBuffer(reqBody))
-	if err != nil {
-		return "", nil, fmt.Errorf("failed to create request: %w", err)
-	}
-	httpReq.Header.Set("Content-Type", "application/json")
-	httpReq.Header.Set("Authorization", "Bearer "+s.apiKey)
-
 	fields := append([]zap.Field{zap.String("url", s.url), zap.String("model", model)}, logFields...)
 	s.logger.Debug("sending chat/completions (raw)", fields...)
 
-	resp, err := s.client.Do(httpReq)
+	resp, err := s.doOpenRouterJSON(ctx, s.url+"/chat/completions", reqBody, "")
 	if err != nil {
-		return "", nil, fmt.Errorf("failed to send request: %w", err)
+		return "", nil, err
 	}
 	defer resp.Body.Close()
 	respBody, err := io.ReadAll(resp.Body)
@@ -636,25 +643,15 @@ func (s *Service) generateTrainingCardForCourse(ctx context.Context, word, cours
 		return "", fmt.Errorf("failed to marshal request: %w", err)
 	}
 
-	// Create HTTP request
-	httpReq, err := http.NewRequestWithContext(ctx, "POST", s.url+"/chat/completions", bytes.NewBuffer(reqBody))
-	if err != nil {
-		return "", fmt.Errorf("failed to create request: %w", err)
-	}
-
-	// Set headers
-	httpReq.Header.Set("Content-Type", "application/json")
-	httpReq.Header.Set("Authorization", "Bearer "+s.apiKey)
-
 	s.logger.Debug("sending training card generation request",
 		zap.String("word", word),
 		zap.String("model", model),
 	)
 
 	// Send request
-	resp, err := s.client.Do(httpReq)
+	resp, err := s.doOpenRouterJSON(ctx, s.url+"/chat/completions", reqBody, "")
 	if err != nil {
-		return "", fmt.Errorf("failed to send request: %w", err)
+		return "", err
 	}
 	defer resp.Body.Close()
 
@@ -753,16 +750,6 @@ func (s *Service) GenerateAdditionalTrainingCardForCourse(ctx context.Context, w
 		return "", fmt.Errorf("failed to marshal request: %w", err)
 	}
 
-	// Create HTTP request
-	httpReq, err := http.NewRequestWithContext(ctx, "POST", s.url+"/chat/completions", bytes.NewBuffer(reqBody))
-	if err != nil {
-		return "", fmt.Errorf("failed to create request: %w", err)
-	}
-
-	// Set headers
-	httpReq.Header.Set("Content-Type", "application/json")
-	httpReq.Header.Set("Authorization", "Bearer "+s.apiKey)
-
 	s.logger.Debug("sending additional training card generation request",
 		zap.String("word", word),
 		zap.String("constraints", constraints),
@@ -770,9 +757,9 @@ func (s *Service) GenerateAdditionalTrainingCardForCourse(ctx context.Context, w
 	)
 
 	// Send request
-	resp, err := s.client.Do(httpReq)
+	resp, err := s.doOpenRouterJSON(ctx, s.url+"/chat/completions", reqBody, "")
 	if err != nil {
-		return "", fmt.Errorf("failed to send request: %w", err)
+		return "", err
 	}
 	defer resp.Body.Close()
 

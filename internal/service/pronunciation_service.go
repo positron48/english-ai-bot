@@ -84,13 +84,13 @@ func (p *openRouterPronunciationProvider) fetchViaAudioSpeech(ctx context.Contex
 	}
 	bodyBytes, _ := json.Marshal(body)
 	endpoint := strings.TrimRight(p.baseURL, "/") + "/audio/speech"
-	req, err := http.NewRequestWithContext(ctx, http.MethodPost, endpoint, bytes.NewReader(bodyBytes))
-	if err != nil {
+	if _, err := http.NewRequestWithContext(ctx, http.MethodPost, endpoint, nil); err != nil {
 		return nil, fmt.Errorf("build openrouter tts request: %w", err)
 	}
-	req.Header.Set("Authorization", "Bearer "+p.apiKey)
-	req.Header.Set("Content-Type", "application/json")
-	resp, err := p.client.Do(req)
+	resp, err := netproxy.DoJSONWithRetry(ctx, p.client, http.MethodPost, endpoint, bodyBytes, map[string]string{
+		"Authorization": "Bearer " + p.apiKey,
+		"Content-Type":  "application/json",
+	})
 	if err != nil {
 		return nil, fmt.Errorf("openrouter tts request failed: %w", err)
 	}
@@ -157,14 +157,14 @@ func (p *openRouterPronunciationProvider) fetchViaChatCompletionsOnce(ctx contex
 	}
 	bodyBytes, _ := json.Marshal(payload)
 	endpoint := strings.TrimRight(p.baseURL, "/") + "/chat/completions"
-	req, err := http.NewRequestWithContext(ctx, http.MethodPost, endpoint, bytes.NewReader(bodyBytes))
-	if err != nil {
+	if _, err := http.NewRequestWithContext(ctx, http.MethodPost, endpoint, nil); err != nil {
 		return nil, fmt.Errorf("build openrouter chat request: %w", err)
 	}
-	req.Header.Set("Authorization", "Bearer "+p.apiKey)
-	req.Header.Set("Content-Type", "application/json")
-	req.Header.Set("Accept", "text/event-stream")
-	resp, err := p.client.Do(req)
+	resp, err := netproxy.DoJSONWithRetry(ctx, p.client, http.MethodPost, endpoint, bodyBytes, map[string]string{
+		"Authorization": "Bearer " + p.apiKey,
+		"Content-Type":  "application/json",
+		"Accept":        "text/event-stream",
+	})
 	if err != nil {
 		return nil, fmt.Errorf("openrouter chat request failed: %w", err)
 	}

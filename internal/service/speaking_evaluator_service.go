@@ -1,7 +1,6 @@
 package service
 
 import (
-	"bytes"
 	"context"
 	"encoding/base64"
 	"encoding/json"
@@ -176,14 +175,10 @@ func (s *SpeakingEvaluatorService) callModel(ctx context.Context, prompt string,
 	}
 	body, _ := json.Marshal(payload)
 	endpoint := strings.TrimRight(s.cfg.EvalBaseURL, "/") + "/chat/completions"
-	req, err := http.NewRequestWithContext(ctx, http.MethodPost, endpoint, bytes.NewReader(body))
-	if err != nil {
-		return nil, err
-	}
-	req.Header.Set("Authorization", "Bearer "+strings.TrimSpace(s.cfg.EvalAPIKey))
-	req.Header.Set("Content-Type", "application/json")
-
-	resp, err := s.client.Do(req)
+	resp, err := netproxy.DoJSONWithRetry(ctx, s.client, http.MethodPost, endpoint, body, map[string]string{
+		"Authorization": "Bearer " + strings.TrimSpace(s.cfg.EvalAPIKey),
+		"Content-Type":  "application/json",
+	})
 	if err != nil {
 		return nil, fmt.Errorf("speaking eval request: %w", err)
 	}
