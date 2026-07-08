@@ -147,11 +147,11 @@ func (r *SessionRepository) GetActiveSession(userID int64) (*models.TrainingSess
 // CreateReviewEvent creates a review event
 func (r *SessionRepository) CreateReviewEvent(event *models.ReviewEvent) (int64, error) {
 	query := `INSERT INTO review_events (
-		session_id, user_id, user_card_id, client_attempt_id, direction, shown_at,
+		session_id, user_id, user_card_id, course_code, client_attempt_id, direction, shown_at,
 		options_shown_at, answered_at, t_delay_ms, early_reveal,
 		option_count, options_json, chosen_option, is_correct,
 		quality, metrics_json, srs_before_json, srs_after_json
-	) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
+	) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`
 
 	earlyReveal := 0
 	if event.EarlyReveal {
@@ -163,7 +163,7 @@ func (r *SessionRepository) CreateReviewEvent(event *models.ReviewEvent) (int64,
 	}
 
 	id, err := database.InsertAndReturnID(r.db, query,
-		event.SessionID, event.UserID, event.UserCardID, nullableClientAttemptID(event.ClientAttemptID), event.Direction,
+		event.SessionID, event.UserID, event.UserCardID, nullableCourseCode(event.CourseCode), nullableClientAttemptID(event.ClientAttemptID), event.Direction,
 		event.ShownAt, event.OptionsShownAt, event.AnsweredAt,
 		event.TDelayMS, earlyReveal, event.OptionCount,
 		event.OptionsJSON, event.ChosenOption, isCorrect,

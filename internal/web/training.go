@@ -3,6 +3,7 @@ package web
 import (
 	"bytes"
 	"context"
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"net/http"
@@ -72,6 +73,23 @@ func trainingOptionsContain(options []string, answer string) bool {
 		}
 	}
 	return false
+}
+
+func (r *Router) courseCodeForUserCard(userCardID int64) string {
+	if r == nil || r.db == nil || userCardID == 0 {
+		return ""
+	}
+	var courseCode sql.NullString
+	if err := r.db.QueryRow(`
+		SELECT COALESCE(NULLIF(uc.course_code, ''), NULLIF(tc.course_code, ''), NULLIF(wc.course_code, ''))
+		FROM user_cards uc
+		JOIN training_cards tc ON tc.id = uc.training_card_id
+		JOIN word_cards wc ON wc.id = tc.word_card_id
+		WHERE uc.id = ?
+	`, userCardID).Scan(&courseCode); err != nil || !courseCode.Valid {
+		return ""
+	}
+	return strings.TrimSpace(strings.ToLower(courseCode.String))
 }
 
 // WebTrainingState holds the state of a web training session
@@ -970,6 +988,7 @@ func (r *Router) gradeReplacedCardForSpellType(userID int64, userCardID int64, i
 		SessionID:      &sessionID,
 		UserID:         userID,
 		UserCardID:     userCardID,
+		CourseCode:     r.courseCodeForUserCard(userCardID),
 		Direction:      userCard.Direction,
 		ShownAt:        shownAt,
 		OptionsShownAt: nil,
@@ -988,7 +1007,7 @@ func (r *Router) gradeReplacedCardForSpellType(userID int64, userCardID int64, i
 	if reviewEventID, err := r.webTrainingHandler.sessionRepo.CreateReviewEvent(reviewEvent); err != nil {
 		r.logger.Error("failed to create review event for spell/type", zap.Error(err))
 	} else {
-		r.recordLinglowWordReviewEvent(context.Background(), "", reviewEventID, reviewEvent)
+		r.recordLinglowWordReviewEvent(context.Background(), reviewEvent.CourseCode, reviewEventID, reviewEvent)
 	}
 	if !isCorrect {
 		if err := r.srsService.RecordWrongAnswer(userCard, chosenOption); err != nil {
@@ -1319,6 +1338,7 @@ func (r *Router) handleTrainingAnswer(w http.ResponseWriter, req *http.Request) 
 			SessionID:      &state.SessionID,
 			UserID:         userID,
 			UserCardID:     card.UserCard.ID,
+			CourseCode:     state.CourseCode,
 			Direction:      card.UserCard.Direction,
 			ShownAt:        shownAt,
 			OptionsShownAt: optionsShownAt,

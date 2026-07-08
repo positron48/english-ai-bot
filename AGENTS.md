@@ -2,6 +2,12 @@
 
 ## How to query the production DB on k3s
 
+Codex runs locally on the developer machine and does **not** have a configured
+kube context for the production k3s cluster. Do not attempt local `kubectl`
+access from Codex. When production DB inspection is needed, provide the exact
+SQL/command for the human operator to run on the server and ask them to paste
+the output back.
+
 There is no postgres pod in the `linglow` namespace, and the `linglow` app
 image does not bundle a `psql` client. The actual Postgres instance backing
 `linglow_unified` lives in the `english` namespace, as `deploy/english-postgres`

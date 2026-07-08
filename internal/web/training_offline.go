@@ -147,17 +147,17 @@ func (r *Router) handleTrainingOfflinePack(w http.ResponseWriter, req *http.Requ
 			}
 			tl := learning.TargetLangNameRUPrepositional(r.config.Learning.TargetLang)
 			items = append(items, offlineWordTrainingQueueItem{
-				Type:           "spell",
-				Question:       fmt.Sprintf("Составьте слово на %s: <strong>%s</strong>", tl, item.Spell.WordRU),
-				UserCardID:     item.Spell.ReplacedUserCardID,
-				WordCardID:     item.Spell.WordCardID,
-				Direction:      "spell",
-				WordRU:         item.Spell.WordRU,
-				WordNative:     item.Spell.WordNative,
-				WordTarget:     item.Spell.WordTarget,
-				Prefix:         item.Spell.Prefix,
-				Letters:        item.Spell.ShuffledLetters,
-				CorrectAnswer:  item.Spell.DisplayWord,
+				Type:          "spell",
+				Question:      fmt.Sprintf("Составьте слово на %s: <strong>%s</strong>", tl, item.Spell.WordRU),
+				UserCardID:    item.Spell.ReplacedUserCardID,
+				WordCardID:    item.Spell.WordCardID,
+				Direction:     "spell",
+				WordRU:        item.Spell.WordRU,
+				WordNative:    item.Spell.WordNative,
+				WordTarget:    item.Spell.WordTarget,
+				Prefix:        item.Spell.Prefix,
+				Letters:       item.Spell.ShuffledLetters,
+				CorrectAnswer: item.Spell.DisplayWord,
 			})
 		case "type":
 			if item.TypeChallenge == nil {
@@ -555,6 +555,7 @@ func (r *Router) handleTrainingOfflineSyncAttempts(w http.ResponseWriter, req *h
 			SessionID:       &sessionID,
 			UserID:          userID,
 			UserCardID:      userCard.ID,
+			CourseCode:      r.courseCodeForUserCard(userCard.ID),
 			ClientAttemptID: attempt.ClientAttemptID,
 			Direction:       userCard.Direction,
 			ShownAt:         shownAt,
@@ -577,7 +578,7 @@ func (r *Router) handleTrainingOfflineSyncAttempts(w http.ResponseWriter, req *h
 			results = append(results, result)
 			continue
 		} else {
-			r.recordLinglowWordReviewEvent(req.Context(), "", reviewEventID, reviewEvent)
+			r.recordLinglowWordReviewEvent(req.Context(), reviewEvent.CourseCode, reviewEventID, reviewEvent)
 		}
 		if !isCorrect {
 			if err := r.srsService.RecordWrongAnswer(userCard, chosenOption); err != nil {
@@ -670,6 +671,7 @@ func (r *Router) syncOfflineSpellTypeAttempt(req *http.Request, userID int64, se
 		SessionID:       &sessionID,
 		UserID:          userID,
 		UserCardID:      userCard.ID,
+		CourseCode:      r.courseCodeForUserCard(userCard.ID),
 		ClientAttemptID: attempt.ClientAttemptID,
 		Direction:       userCard.Direction,
 		ShownAt:         shownAt,
@@ -688,7 +690,7 @@ func (r *Router) syncOfflineSpellTypeAttempt(req *http.Request, userID int64, se
 	if reviewEventID, err := sessionRepo.CreateReviewEvent(reviewEvent); err != nil {
 		return fmt.Errorf("review_event_create_failed")
 	} else {
-		r.recordLinglowWordReviewEvent(req.Context(), "", reviewEventID, reviewEvent)
+		r.recordLinglowWordReviewEvent(req.Context(), reviewEvent.CourseCode, reviewEventID, reviewEvent)
 	}
 	if !isCorrect {
 		if err := r.srsService.RecordWrongAnswer(userCard, attempt.AnswerText); err != nil {
