@@ -740,7 +740,9 @@ func buildPronunciationProviders(cfg config.TTSConfig, learning config.LearningC
 
 	var providers []pronunciationProvider
 	dictEnabled := cfg.DictionaryEnabled
-	openRouterEnabled := strings.TrimSpace(cfg.APIKey) != "" && strings.TrimSpace(cfg.Model) != ""
+	openRouterEnabled := cfg.OpenRouterEnabled &&
+		strings.TrimSpace(cfg.APIKey) != "" &&
+		strings.TrimSpace(cfg.Model) != ""
 
 	addDictionary := func() {
 		if !dictEnabled {
@@ -791,6 +793,9 @@ func buildPronunciationProviders(cfg config.TTSConfig, learning config.LearningC
 	case "dictionary":
 		addDictionary()
 	case "openrouter":
+		if !openRouterEnabled {
+			logger.Warn("tts openrouter provider requested but disabled (set TTS_OPENROUTER_ENABLED=true to enable)")
+		}
 		addOpenRouter()
 	case "external":
 		// External worker mode: service keeps cache/status API but does not synthesize locally.

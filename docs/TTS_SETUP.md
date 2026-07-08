@@ -1,8 +1,12 @@
-# Настройка произношения TTS (основной Dictionary, fallback OpenRouter)
+# Настройка произношения TTS (Dictionary + external worker; OpenRouter TTS opt-in)
 
 В проекте используется генерация/кэш аудио произношения по отдельным словам.
 
-При `TTS_PROVIDER=auto` приоритет такой:
+По умолчанию **встроенный OpenRouter/OpenAI TTS выключен** (`TTS_OPENROUTER_ENABLED=false`). Активные пути:
+1. `Free Dictionary API` для английских слов (когда `TTS_DICTIONARY_ENABLED=true`)
+2. Внешний `tts-worker` через internal API (`TTS_INTERNAL_ENABLED=true`): cron на Mac берёт pending-слова, генерирует локально и заливает MP3 обратно
+
+При `TTS_PROVIDER=auto` и `TTS_OPENROUTER_ENABLED=true` (legacy/opt-in) приоритет такой:
 1. `Free Dictionary API` (основной, бесплатный)
 2. Fallback TTS: если `TTS_BASE_URL` — **OpenRouter** (`openrouter.ai`), приложение дергает `/chat/completions` с `modalities: ["text","audio"]`, стрим, парсит `delta.audio.data` (PCM), конвертирует в MP3 через **ffmpeg** (должен быть в образе). Если базовый URL — **OpenAI** (`api.openai.com`), используется `/audio/speech` и в ответе уже MP3.
 
@@ -21,12 +25,16 @@
 ```env
 TTS_ENABLED=true
 TTS_PROVIDER=auto
+TTS_OPENROUTER_ENABLED=false
 TTS_AUDIO_DIR=/app/data/tts
 TTS_PUBLIC_BASE_PATH=/media/tts
 
 TTS_DICTIONARY_ENABLED=true
 TTS_DICTIONARY_BASE_URL=https://api.dictionaryapi.dev/api/v2/entries/en
 TTS_DICTIONARY_MIN_DELAY=100ms
+
+TTS_INTERNAL_ENABLED=true
+TTS_INTERNAL_TOKENS_JSON={"en":"..."}
 
 TTS_PREFETCH_ENABLED=true
 TTS_PREFETCH_WORKERS=2
@@ -37,9 +45,10 @@ TTS_RETRY_MAX_DELAY=24h
 TTS_MAX_RETRIES=8
 ```
 
-Опционально для fallback TTS:
+Опционально для legacy fallback TTS (только при `TTS_OPENROUTER_ENABLED=true`):
 
 ```env
+TTS_OPENROUTER_ENABLED=true
 TTS_API_KEY=...          # ключ OpenRouter или OpenAI
 TTS_MODEL=openai/gpt-4o-audio-preview   # для OpenRouter; для OpenAI — tts-1, tts-1-hd, gpt-4o-mini-tts
 TTS_BASE_URL=https://openrouter.ai/api/v1   # или https://api.openai.com/v1
@@ -51,7 +60,7 @@ TTS_REQUEST_TIMEOUT=45s
 - **OpenRouter** (`TTS_BASE_URL` с `openrouter.ai`): приложение вызывает `/chat/completions` с жёстким промптом «только слово», стрим, собирает PCM из `delta.audio.data`, конвертирует в MP3 через **ffmpeg** (в Docker-образе ffmpeg уже добавлен).
 - **OpenAI** (`TTS_BASE_URL=https://api.openai.com/v1`): используется `/audio/speech`, в ответе сразу MP3, ffmpeg не нужен.
 - `TTS_REQUEST_TIMEOUT` — общий таймаут (по умолчанию 45s). При таймаутах увеличь до 60s.
-- Если `TTS_API_KEY` пустой, TTS fallback выключен.
+- Если `TTS_API_KEY` пустой или `TTS_OPENROUTER_ENABLED=false`, встроенный TTS fallback выключен.
 - Сервис работает только с английскими (latin) словами; не-latin отбрасываются на нормализации.
 
 ## 2) Настройка в k3s / Flux
@@ -63,12 +72,15 @@ TTS_REQUEST_TIMEOUT=45s
 ```yaml
 TTS_ENABLED: "true"
 TTS_PROVIDER: "auto"
+TTS_EXTERNAL_ONLY: "false"
+TTS_OPENROUTER_ENABLED: "false"
 TTS_AUDIO_DIR: "/app/data/tts"
 TTS_PUBLIC_BASE_PATH: "/media/tts"
 TTS_DICTIONARY_ENABLED: "true"
 TTS_DICTIONARY_BASE_URL: "https://api.dictionaryapi.dev/api/v2/entries/en"
 TTS_DICTIONARY_MIN_DELAY: "100ms"
-TTS_BASE_URL: "https://openrouter.ai/api/v1"
+TTS_INTERNAL_ENABLED: "true"
+TTS_BASE_URL: "https://openrouter.ai/api/v1" # legacy, only if TTS_OPENROUTER_ENABLED=true
 TTS_MODEL: "openai/gpt-audio-mini"
 TTS_VOICE: "alloy"
 TTS_REQUEST_TIMEOUT: "15s"

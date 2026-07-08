@@ -1122,6 +1122,7 @@ func TestBuildPronunciationProvidersAuto_WithOpenRouter(t *testing.T) {
 		Provider:          "auto",
 		DictionaryEnabled: true,
 		DictionaryBaseURL: "https://api.dictionaryapi.dev/api/v2/entries/en",
+		OpenRouterEnabled: true,
 		APIKey:            "test-key",
 		Model:             "openai/gpt-audio-mini",
 		BaseURL:           "https://openrouter.ai/api/v1",
@@ -1136,6 +1137,23 @@ func TestBuildPronunciationProvidersAuto_WithOpenRouter(t *testing.T) {
 	}
 	if providers[1].name() != "openrouter" {
 		t.Fatalf("expected second provider openrouter, got %q", providers[1].name())
+	}
+}
+
+func TestBuildPronunciationProvidersAuto_OpenRouterDisabledByDefault(t *testing.T) {
+	providers := buildPronunciationProviders(config.TTSConfig{
+		Provider:          "auto",
+		DictionaryEnabled: true,
+		DictionaryBaseURL: "https://api.dictionaryapi.dev/api/v2/entries/en",
+		APIKey:            "test-key",
+		Model:             "openai/gpt-audio-mini",
+		BaseURL:           "https://openrouter.ai/api/v1",
+	}, config.DefaultLearningConfig(), zap.NewNop())
+	if len(providers) != 1 {
+		t.Fatalf("expected 1 provider (dictionary only), got %d", len(providers))
+	}
+	if providers[0].name() != "dictionary" {
+		t.Fatalf("expected dictionary provider, got %q", providers[0].name())
 	}
 }
 
@@ -2264,11 +2282,12 @@ func TestBuildPronunciationProviders_DictionaryOnly(t *testing.T) {
 // TestBuildPronunciationProviders_OpenRouterOnly covers provider "openrouter".
 func TestBuildPronunciationProviders_OpenRouterOnly(t *testing.T) {
 	providers := buildPronunciationProviders(config.TTSConfig{
-		Provider: "openrouter",
-		APIKey:   "key",
-		Model:    "model",
-		BaseURL:  "https://openrouter.ai/api/v1",
-		Voice:    "alloy",
+		Provider:          "openrouter",
+		OpenRouterEnabled: true,
+		APIKey:            "key",
+		Model:             "model",
+		BaseURL:           "https://openrouter.ai/api/v1",
+		Voice:             "alloy",
 	}, config.DefaultLearningConfig(), zap.NewNop())
 	if len(providers) != 1 {
 		t.Fatalf("expected 1 provider, got %d", len(providers))
@@ -2284,6 +2303,7 @@ func TestBuildPronunciationProviders_UnknownProvider(t *testing.T) {
 		Provider:          "unknown_xyz",
 		DictionaryEnabled: true,
 		DictionaryBaseURL: "https://example.com",
+		OpenRouterEnabled: true,
 		APIKey:            "key",
 		Model:             "m",
 	}, config.DefaultLearningConfig(), zap.NewNop())
@@ -2298,6 +2318,7 @@ func TestBuildPronunciationProviders_EmptyProvider(t *testing.T) {
 		Provider:          "  ",
 		DictionaryEnabled: true,
 		DictionaryBaseURL: "https://example.com",
+		OpenRouterEnabled: true,
 		APIKey:            "key",
 		Model:             "m",
 	}, config.DefaultLearningConfig(), zap.NewNop())
@@ -2873,11 +2894,12 @@ func TestParseDurationWithDefault_Invalid(t *testing.T) {
 
 func TestBuildPronunciationProviders_OpenRouterVoiceEmpty(t *testing.T) {
 	providers := buildPronunciationProviders(config.TTSConfig{
-		Provider: "openrouter",
-		APIKey:   "key",
-		Model:    "m",
-		Voice:    "  ",
-		BaseURL:  "https://openrouter.ai/api/v1",
+		Provider:          "openrouter",
+		OpenRouterEnabled: true,
+		APIKey:            "key",
+		Model:             "m",
+		Voice:             "  ",
+		BaseURL:           "https://openrouter.ai/api/v1",
 	}, config.DefaultLearningConfig(), zap.NewNop())
 	if len(providers) != 1 {
 		t.Fatalf("expected 1 provider, got %d", len(providers))

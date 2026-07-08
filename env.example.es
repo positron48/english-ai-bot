@@ -30,12 +30,12 @@ AI_PROMPT_FILE=prompts/teacher-ru-es.txt
 TRAINING_PROMPT_FILE=prompts/training-card-ru-es.txt
 
 TTS_ENABLED=true
-TTS_PROVIDER=openrouter
-TTS_EXTERNAL_ONLY=false
+# Spanish: dictionary API is unreliable; use external worker (tts-worker) + internal API.
+TTS_PROVIDER=external
+TTS_EXTERNAL_ONLY=true
+TTS_OPENROUTER_ENABLED=false
 TTS_AUDIO_DIR=./data/tts-es
 TTS_DICTIONARY_ENABLED=false
-# Промпт для chat+audio: {word} → слово в обратных кавычках (как раньше в коде)
-TTS_CHAT_PRONUNCIATION_PROMPT="You are a pronunciation machine. Say ONLY the exact Spanish word below as audio, with natural Spanish pronunciation. One word, no greeting, no pause, no repetition. Word: {word}"
 TTS_INTERNAL_ENABLED=false
 TTS_INTERNAL_TOKENS_JSON=
 TTS_INTERNAL_MAX_PENDING_LIMIT=500

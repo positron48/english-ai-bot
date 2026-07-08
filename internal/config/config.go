@@ -209,6 +209,9 @@ type TTSConfig struct {
 	DictionaryBaseURL  string `mapstructure:"dictionary_base_url"`
 	DictionaryEnabled  bool   `mapstructure:"dictionary_enabled"`
 	DictionaryMinDelay string `mapstructure:"dictionary_min_delay"`
+	// OpenRouterEnabled gates the built-in OpenRouter/OpenAI TTS pronunciation provider.
+	// Default off: pronunciation uses dictionary (when enabled) and/or external worker uploads.
+	OpenRouterEnabled bool `mapstructure:"openrouter_enabled"`
 	// ChatPronunciationPrompt is the user message for OpenRouter chat+audio TTS. Use {word} — replaced with the word in backticks. Empty = built-in English default.
 	ChatPronunciationPrompt string `mapstructure:"chat_pronunciation_prompt"`
 	InternalEnabled         bool   `mapstructure:"internal_enabled"`
@@ -356,6 +359,7 @@ func Load() (*Config, error) {
 	viper.SetDefault("tts.dictionary_base_url", "https://api.dictionaryapi.dev/api/v2/entries/en")
 	viper.SetDefault("tts.dictionary_enabled", true)
 	viper.SetDefault("tts.dictionary_min_delay", "100ms")
+	viper.SetDefault("tts.openrouter_enabled", false)
 	viper.SetDefault("tts.chat_pronunciation_prompt", "")
 	viper.SetDefault("tts.internal_enabled", false)
 	viper.SetDefault("tts.internal_tokens_json", "")
@@ -498,6 +502,7 @@ func Load() (*Config, error) {
 	_ = viper.BindEnv("tts.dictionary_base_url", "TTS_DICTIONARY_BASE_URL")
 	_ = viper.BindEnv("tts.dictionary_min_delay", "TTS_DICTIONARY_MIN_DELAY")
 	_ = viper.BindEnv("tts.dictionary_enabled", "TTS_DICTIONARY_ENABLED")
+	_ = viper.BindEnv("tts.openrouter_enabled", "TTS_OPENROUTER_ENABLED")
 	_ = viper.BindEnv("tts.chat_pronunciation_prompt", "TTS_CHAT_PRONUNCIATION_PROMPT")
 	_ = viper.BindEnv("tts.internal_enabled", "TTS_INTERNAL_ENABLED")
 	_ = viper.BindEnv("tts.internal_tokens_json", "TTS_INTERNAL_TOKENS_JSON")
