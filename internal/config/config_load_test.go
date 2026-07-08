@@ -1115,3 +1115,80 @@ func TestLoad_DotenvDoesNotOverrideInitialShellEnv(t *testing.T) {
 	}
 }
 
+func TestLoad_PolzaProvider(t *testing.T) {
+	dir := t.TempDir()
+	origDir, err := os.Getwd()
+	if err != nil {
+		t.Fatalf("Getwd: %v", err)
+	}
+	if err := os.Chdir(dir); err != nil {
+		t.Fatalf("Chdir: %v", err)
+	}
+	defer func() {
+		_ = os.Chdir(origDir)
+	}()
+
+	learningEnv := backupLearningEnv()
+	originalEnv := map[string]string{
+		"AI_PROVIDER":            os.Getenv("AI_PROVIDER"),
+		"AI_URL":                 os.Getenv("AI_URL"),
+		"AI_API_KEY":             os.Getenv("AI_API_KEY"),
+		"POLZA_AI_URL":           os.Getenv("POLZA_AI_URL"),
+		"POLZA_AI_API_KEY":       os.Getenv("POLZA_AI_API_KEY"),
+		"OPENROUTER_SOCKS5_PROXY": os.Getenv("OPENROUTER_SOCKS5_PROXY"),
+		"AI_PROMPT":              os.Getenv("AI_PROMPT"),
+		"AI_PROMPT_FILE":         os.Getenv("AI_PROMPT_FILE"),
+		"WEBAPP_JWT_SECRET":      os.Getenv("WEBAPP_JWT_SECRET"),
+		"DATABASE_URL":           os.Getenv("DATABASE_URL"),
+		"SPEAKING_EVAL_API_KEY":  os.Getenv("SPEAKING_EVAL_API_KEY"),
+		"SPEAKING_EVAL_BASE_URL": os.Getenv("SPEAKING_EVAL_BASE_URL"),
+	}
+	defer func() {
+		restoreLearningEnv(learningEnv)
+		for k, v := range originalEnv {
+			if v == "" {
+				os.Unsetenv(k)
+			} else {
+				os.Setenv(k, v)
+			}
+		}
+	}()
+
+	unsetLearningEnvForDefaults()
+	os.Setenv("AI_PROVIDER", AIProviderPolza)
+	os.Setenv("AI_URL", "https://openrouter.ai/api/v1")
+	os.Setenv("AI_API_KEY", "openrouter-key")
+	os.Setenv("POLZA_AI_API_KEY", "polza-key")
+	os.Setenv("OPENROUTER_SOCKS5_PROXY", "51.254.98.124:1080")
+	os.Setenv("AI_PROMPT", "test prompt")
+	os.Setenv("WEBAPP_JWT_SECRET", "test-secret")
+	os.Setenv("DATABASE_URL", "postgres://test:test@localhost/test?sslmode=disable")
+	os.Unsetenv("SPEAKING_EVAL_API_KEY")
+	os.Unsetenv("SPEAKING_EVAL_BASE_URL")
+	os.Unsetenv("POLZA_AI_URL")
+	os.Unsetenv("TTS_API_KEY")
+
+	cfg, err := Load()
+	if err != nil {
+		t.Fatalf("Load() error = %v", err)
+	}
+	if cfg.AI.Provider != AIProviderPolza {
+		t.Fatalf("AI provider = %q, want %q", cfg.AI.Provider, AIProviderPolza)
+	}
+	if cfg.AI.URL != defaultPolzaURL {
+		t.Fatalf("AI url = %q, want %q", cfg.AI.URL, defaultPolzaURL)
+	}
+	if cfg.AI.APIKey != "polza-key" {
+		t.Fatalf("AI api key = %q, want polza-key", cfg.AI.APIKey)
+	}
+	if cfg.AI.Socks5Proxy != "" {
+		t.Fatalf("AI socks5 = %q, want empty", cfg.AI.Socks5Proxy)
+	}
+	if cfg.Speaking.EvalAPIKey != "openrouter-key" {
+		t.Fatalf("Speaking eval api key = %q, want openrouter-key", cfg.Speaking.EvalAPIKey)
+	}
+	if cfg.Speaking.Socks5Proxy != "51.254.98.124:1080" {
+		t.Fatalf("Speaking socks5 = %q, want proxy addr", cfg.Speaking.Socks5Proxy)
+	}
+}
+

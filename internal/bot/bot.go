@@ -129,8 +129,13 @@ func New(cfg *config.Config, log *zap.Logger) (*Bot, error) {
 		cfg.AI.Socks5Proxy,
 		log,
 	)
+	log.Info("text LLM provider configured",
+		zap.String("provider", cfg.AI.Provider),
+		zap.String("model", cfg.AI.Model),
+		zap.String("url", cfg.AI.URL),
+	)
 	if cfg.AI.Socks5Proxy != "" {
-		log.Info("OpenRouter SOCKS5 proxy enabled for AI requests", zap.String("addr", cfg.AI.Socks5Proxy))
+		log.Info("SOCKS5 proxy enabled for text LLM requests", zap.String("addr", cfg.AI.Socks5Proxy))
 	}
 	// NPC role-play conversations use a stronger instruction-following model than dictionary/
 	// training generation when AI_CONVERSATION_MODEL is set (empty falls back to AI_MODEL).

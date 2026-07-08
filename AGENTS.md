@@ -56,6 +56,16 @@ Dockerfile ships `/app/import_spanish_verbs`, `/app/backfill_word_verb_links`,
 - **Every rollout**: initContainer runs `sync_verb_training_json` (GitOps: `devops-time-host/apps/linglow/base/deployment.yaml`).
 - Operator runbook: `devops-time-host/apps/linglow/RELEASE_K3S.md` §2.7.
 
+## Text LLM providers (OpenRouter + Polza)
+
+Text chat/training/NPC use `AI_PROVIDER`:
+- `openrouter` (default): `AI_URL` + `AI_API_KEY` + optional `OPENROUTER_SOCKS5_PROXY`
+- `polza`: `POLZA_AI_URL` (default `https://polza.ai/api/v1`) + `POLZA_AI_API_KEY`; text LLM goes direct, **no SOCKS5**
+
+`AI_MODEL` / `AI_MODEL_HIGH` / `AI_CONVERSATION_MODEL` are shared across providers.
+
+Keep `AI_API_KEY` (OpenRouter) in secrets when `AI_PROVIDER=polza` — Spanish Speaking eval and rollback still need it. TTS is not routed through Polza.
+
 ## OpenRouter proxy in k3s
 
 OpenRouter-compatible requests can use a dedicated SOCKS5 proxy via
@@ -65,7 +75,8 @@ global `HTTP_PROXY`/`HTTPS_PROXY`, so Postgres/Redis/Kubernetes-internal traffic
 stays direct.
 
 Runtime coverage:
-- main AI/chat-completions client (`AI_URL`);
+- main AI/chat-completions client when `AI_PROVIDER=openrouter` (`AI_URL` + SOCKS5);
+- Polza text LLM when `AI_PROVIDER=polza` (direct, no SOCKS5);
 - training/backfill CLI commands that create the same AI client;
 - TTS OpenRouter provider (`TTS_BASE_URL`) through `TTS_OPENROUTER_SOCKS5_PROXY`
   or fallback to `OPENROUTER_SOCKS5_PROXY`;

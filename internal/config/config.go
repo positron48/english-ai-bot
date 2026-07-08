@@ -173,13 +173,17 @@ type LoggingConfig struct {
 
 // AIConfig holds AI provider configuration
 type AIConfig struct {
-	URL       string `mapstructure:"url"`
-	Model     string `mapstructure:"model"`
+	// Provider selects the text LLM backend: openrouter (default) or polza.
+	Provider string `mapstructure:"provider"`
+	URL      string `mapstructure:"url"`
+	Model    string `mapstructure:"model"`
 	ModelHigh string `mapstructure:"model_high"`
 	// ConversationModel overrides the model used for NPC role-play conversations only (it benefits
 	// from stronger instruction-following than dictionary/training). Empty = fall back to Model.
 	ConversationModel string `mapstructure:"conversation_model"`
 	APIKey            string `mapstructure:"api_key"`
+	PolzaURL          string `mapstructure:"polza_url"`
+	PolzaAPIKey       string `mapstructure:"polza_api_key"`
 	Prompt            string `mapstructure:"prompt"`
 	PromptFile        string `mapstructure:"prompt_file"`
 	RequestTimeout    string `mapstructure:"request_timeout"` // e.g. 120s, 3m; HTTP client timeout for chat/completions (default 30s)
@@ -316,6 +320,8 @@ type WebAppConfig struct {
 
 // Load loads configuration from environment variables and config file
 func Load() (*Config, error) {
+	viper.Reset()
+
 	// Load .env chain:
 	// 1) .env (base)
 	// 2) .env.<learning target lang> (language overrides)
@@ -337,7 +343,9 @@ func Load() (*Config, error) {
 	viper.SetDefault("telegram.webhook_path", "/webhook")
 	viper.SetDefault("server.address", ":8184")
 	viper.SetDefault("logging.level", "info")
+	viper.SetDefault("ai.provider", AIProviderOpenRouter)
 	viper.SetDefault("ai.model", "gpt-3.5-turbo")
+	viper.SetDefault("ai.polza_url", defaultPolzaURL)
 	viper.SetDefault("ai.socks5_proxy", "")
 	viper.SetDefault("tts.enabled", true)
 	viper.SetDefault("tts.provider", "auto")
@@ -472,11 +480,14 @@ func Load() (*Config, error) {
 	_ = viper.BindEnv("telegram.webhook_path", "TELEGRAM_WEBHOOK_PATH")
 	_ = viper.BindEnv("server.address", "SERVER_ADDRESS")
 	_ = viper.BindEnv("logging.level", "LOG_LEVEL")
+	_ = viper.BindEnv("ai.provider", "AI_PROVIDER")
 	_ = viper.BindEnv("ai.url", "AI_URL")
 	_ = viper.BindEnv("ai.model", "AI_MODEL")
 	_ = viper.BindEnv("ai.model_high", "AI_MODEL_HIGH")
 	_ = viper.BindEnv("ai.conversation_model", "AI_CONVERSATION_MODEL")
 	_ = viper.BindEnv("ai.api_key", "AI_API_KEY")
+	_ = viper.BindEnv("ai.polza_url", "POLZA_AI_URL")
+	_ = viper.BindEnv("ai.polza_api_key", "POLZA_AI_API_KEY")
 	_ = viper.BindEnv("ai.prompt", "AI_PROMPT")
 	_ = viper.BindEnv("ai.prompt_file", "AI_PROMPT_FILE")
 	_ = viper.BindEnv("ai.request_timeout", "AI_REQUEST_TIMEOUT")
@@ -644,12 +655,6 @@ func Load() (*Config, error) {
 	if config.Database.URL == "" {
 		return nil, fmt.Errorf("DATABASE_URL is required")
 	}
-	if config.AI.URL == "" {
-		return nil, fmt.Errorf("ai url is required")
-	}
-	if config.AI.APIKey == "" {
-		return nil, fmt.Errorf("ai api key is required")
-	}
 	config.AI.RequestTimeout = strings.TrimSpace(config.AI.RequestTimeout)
 	if config.AI.RequestTimeout != "" {
 		if _, err := time.ParseDuration(config.AI.RequestTimeout); err != nil {
@@ -688,6 +693,8 @@ func Load() (*Config, error) {
 
 	config.AI.Prompt = ai.PreparePrompt(config.AI.Prompt, config.Learning.NativeLang, config.Learning.TargetLang, config.Learning.Pair)
 
+	// Speaking/TTS inherit OpenRouter credentials and SOCKS5 from raw AI_* env before
+	// resolveAIProvider swaps the text LLM to Polza.
 	if strings.TrimSpace(config.Speaking.EvalAPIKey) == "" {
 		config.Speaking.EvalAPIKey = strings.TrimSpace(config.TTS.APIKey)
 	}
@@ -705,6 +712,10 @@ func Load() (*Config, error) {
 	}
 	if strings.TrimSpace(config.Speaking.Socks5Proxy) == "" {
 		config.Speaking.Socks5Proxy = strings.TrimSpace(config.AI.Socks5Proxy)
+	}
+
+	if err := resolveAIProvider(&config.AI); err != nil {
+		return nil, err
 	}
 
 	return &config, nil
