@@ -1798,11 +1798,7 @@ const checkCurrentSession = async () => {
     
     // Training complete response (HTTP 200)
     if (response && typeof response === 'object' && 'complete' in response) {
-      sessionComplete.value = true
-      sessionActive.value = false
-      currentCardGeneration++
-      currentCard.value = null
-      await loadStats()
+      await applyTrainingSessionResponse(response)
       return
     }
     
