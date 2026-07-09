@@ -1,4 +1,4 @@
-const APP_SHELL_CACHE = 'qantrix-app-shell-v9'
+const APP_SHELL_CACHE = 'qantrix-app-shell-v10'
 const ASSET_MANIFEST_URL = '/app/asset-manifest.json'
 const APP_SHELL_URLS = ['/app', '/app/', '/app/manifest.webmanifest', '/telegram-web-app.js', '/favicon.svg']
 
