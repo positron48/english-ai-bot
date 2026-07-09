@@ -99,7 +99,7 @@ type WebTrainingState struct {
 	CourseCode           string
 	Queue                []*models.TrainingQueueItem
 	CurrentIndex         int
-	CorrectCount         int // deprecated: stats are taken only from review_events (each mode creates one event per answer)
+	CorrectCount         int
 	ShownAt              time.Time
 	OptionsShownAt       *time.Time
 	Options              []string
@@ -1046,6 +1046,9 @@ func (r *Router) handleTrainingSpellAnswer(w http.ResponseWriter, req *http.Requ
 	shownAt := state.ShownAt
 	sessionID := state.SessionID
 	answeredAt := time.Now()
+	if isCorrect {
+		state.CorrectCount++
+	}
 	state.CurrentIndex++
 	r.webTrainingHandler.sessionsMutex.Unlock()
 
@@ -1099,6 +1102,9 @@ func (r *Router) handleTrainingTypeAnswer(w http.ResponseWriter, req *http.Reque
 	shownAt := state.ShownAt
 	sessionID := state.SessionID
 	answeredAt := time.Now()
+	if isCorrect {
+		state.CorrectCount++
+	}
 	state.CurrentIndex++
 	r.webTrainingHandler.sessionsMutex.Unlock()
 
@@ -1367,6 +1373,7 @@ func (r *Router) handleTrainingAnswer(w http.ResponseWriter, req *http.Request) 
 			r.logger.Error("failed to record wrong answer", zap.Error(err))
 		}
 	} else {
+		state.CorrectCount++
 		// Track correct answer
 		if state.RecentCorrectAnswers == nil {
 			state.RecentCorrectAnswers = make([]string, 0, 2)
@@ -1478,6 +1485,12 @@ func (r *Router) finishTrainingSession(w http.ResponseWriter, req *http.Request,
 		r.logger.Error("failed to get session stats", zap.Error(err))
 		totalCards = state.CurrentIndex
 		correctCards = 0
+	}
+	if state.CurrentIndex > 0 {
+		totalCards = state.CurrentIndex
+		if state.CorrectCount > 0 || correctCards == 0 {
+			correctCards = state.CorrectCount
+		}
 	}
 
 	// Remove from memory

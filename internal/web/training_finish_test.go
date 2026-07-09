@@ -218,6 +218,7 @@ func TestFinishTrainingSession_DirectCall(t *testing.T) {
 		SessionID:    99999,
 		Queue:        nil,
 		CurrentIndex: 2,
+		CorrectCount: 1,
 	}
 	router.webTrainingHandler.sessionsMutex.Lock()
 	router.webTrainingHandler.sessions[state.UserID] = state
@@ -239,6 +240,12 @@ func TestFinishTrainingSession_DirectCall(t *testing.T) {
 	}
 	if resp["cards_completed"] != float64(2) {
 		t.Errorf("cards_completed = %v, want 2", resp["cards_completed"])
+	}
+	if resp["total_cards"] != float64(2) {
+		t.Errorf("total_cards = %v, want 2", resp["total_cards"])
+	}
+	if resp["correct_cards"] != float64(1) {
+		t.Errorf("correct_cards = %v, want 1", resp["correct_cards"])
 	}
 	// Session should be removed from memory
 	router.webTrainingHandler.sessionsMutex.Lock()
