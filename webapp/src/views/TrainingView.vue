@@ -661,10 +661,6 @@ const remainingMs = ref(0)
 const initialDelayMs = ref(0)
 const sessionComplete = ref(false)
 const cardsCompleted = ref(0)
-const sessionAnswerStats = ref({
-  answered: 0,
-  correct: 0
-})
 const trainingStats = ref({
   totalCards: 0,
   correctCards: 0
@@ -1821,25 +1817,13 @@ const isTrainingCompleteResponse = (response: any): response is { complete: bool
 const isTrainingInactiveResponse = (response: any): response is { active: false } =>
   !!response && typeof response === 'object' && 'active' in response && response.active === false
 
-const recordTrainingAnswer = (answer: Feedback) => {
-  sessionAnswerStats.value = {
-    answered: sessionAnswerStats.value.answered + 1,
-    correct: sessionAnswerStats.value.correct + (answer.is_correct ? 1 : 0),
-  }
-}
-
 const applyTrainingSessionResponse = async (response: any): Promise<boolean> => {
   if (isTrainingCompleteResponse(response)) {
-    const fallbackTotal = sessionAnswerStats.value.answered
-    const fallbackCorrect = sessionAnswerStats.value.correct
-    const completed = response.cards_completed || fallbackTotal || 0
-    const total = response.total_cards || completed || fallbackTotal || 0
-    const correct = response.correct_cards || fallbackCorrect || 0
     sessionComplete.value = true
-    cardsCompleted.value = completed
+    cardsCompleted.value = response.cards_completed || 0
     trainingStats.value = {
-      totalCards: total,
-      correctCards: correct,
+      totalCards: response.total_cards || response.cards_completed || 0,
+      correctCards: response.correct_cards || 0,
     }
     sessionActive.value = false
     currentCardGeneration++
@@ -1869,22 +1853,20 @@ const applyTrainingSessionResponse = async (response: any): Promise<boolean> => 
     try {
       const statsResponse = await wordTrainingClient.current()
       if (isTrainingCompleteResponse(statsResponse)) {
-        const fallbackTotal = sessionAnswerStats.value.answered
-        const fallbackCorrect = sessionAnswerStats.value.correct
         trainingStats.value = {
-          totalCards: statsResponse.total_cards || card.card_index - 1 || fallbackTotal,
-          correctCards: statsResponse.correct_cards || fallbackCorrect,
+          totalCards: statsResponse.total_cards || card.card_index - 1,
+          correctCards: statsResponse.correct_cards || 0,
         }
       } else {
         trainingStats.value = {
-          totalCards: card.card_index - 1 || sessionAnswerStats.value.answered,
-          correctCards: sessionAnswerStats.value.correct,
+          totalCards: card.card_index - 1,
+          correctCards: 0,
         }
       }
     } catch {
       trainingStats.value = {
-        totalCards: card.card_index - 1 || sessionAnswerStats.value.answered,
-        correctCards: sessionAnswerStats.value.correct,
+        totalCards: card.card_index - 1,
+        correctCards: 0,
       }
     }
     sessionActive.value = false
@@ -2046,7 +2028,6 @@ const setupCard = (card: Card) => {
 const startTraining = async () => {
   loading.value = true
   try {
-    sessionAnswerStats.value = { answered: 0, correct: 0 }
     const card: Card = await wordTrainingClient.start()
     sessionActive.value = true
     setupCard(card)
@@ -2330,7 +2311,6 @@ const submitSpellAnswerAs = async (answerText: string, isSkip = false) => {
     formData.append('answer_text', answerText)
     const data: Feedback = await wordTrainingClient.answer(formData)
     if (generation !== currentCardGeneration || !sameTrainingCard(cardAtSubmit, currentCard.value)) return
-    recordTrainingAnswer(data)
     feedback.value = data
     if (!data.is_correct && currentCard.value?.type === 'spell' && data.correct_answer) {
       const prefix = currentCard.value?.prefix ?? ''
@@ -2445,7 +2425,6 @@ const submitTypeAnswerAs = async (answerText: string) => {
     formData.append('answer_text', answerText)
     const data: Feedback = await wordTrainingClient.answer(formData)
     if (generation !== currentCardGeneration || !sameTrainingCard(cardAtSubmit, currentCard.value)) return
-    recordTrainingAnswer(data)
     feedback.value = data
     triggerHapticFeedback(data.is_correct)
     if (data.is_correct) {
@@ -2608,7 +2587,6 @@ const submitAnswer = async (optionIndex: number) => {
     
     const data: Feedback = await wordTrainingClient.answer(formData)
     if (generation !== currentCardGeneration || !sameTrainingCard(cardAtSubmit, currentCard.value)) return
-    recordTrainingAnswer(data)
     chosenOptionIndex.value = optionIndex
     feedback.value = data
     
@@ -2853,10 +2831,6 @@ const resetSession = async () => {
   initialDelayMs.value = 0
   sessionComplete.value = false
   cardsCompleted.value = 0
-  sessionAnswerStats.value = {
-    answered: 0,
-    correct: 0
-  }
   trainingStats.value = {
     totalCards: 0,
     correctCards: 0

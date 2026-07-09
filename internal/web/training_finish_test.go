@@ -256,6 +256,78 @@ func TestFinishTrainingSession_DirectCall(t *testing.T) {
 	}
 }
 
+func TestHandleTrainingCurrent_RestoresPersistedFinishedSessionStats(t *testing.T) {
+	logger := zap.NewNop()
+	db, userRepo, trainingCardRepo, userCardRepo, sessionRepo := setupTrainingIntegrationTestDB(t)
+	user, err := userRepo.GetOrCreateUser(919191)
+	if err != nil {
+		t.Fatalf("GetOrCreateUser: %v", err)
+	}
+
+	persisted := persistedWebTrainingSession{
+		Config:       &service.SessionConfig{},
+		Queue:        []*models.TrainingQueueItem{{Type: "card"}, {Type: "card"}},
+		CurrentIndex: 2,
+		CorrectCount: 1,
+	}
+	stateJSON, err := json.Marshal(persisted)
+	if err != nil {
+		t.Fatalf("marshal persisted state: %v", err)
+	}
+	sessionID, err := sessionRepo.CreateSession(&models.TrainingSession{
+		UserID:       user.ID,
+		Source:       models.SourceManual,
+		PlannedCount: 2,
+		DoneCount:    0,
+		SessionJSON:  string(stateJSON),
+	})
+	if err != nil {
+		t.Fatalf("CreateSession: %v", err)
+	}
+
+	cfg := &config.Config{
+		Training: config.TrainingConfig{
+			OptionsDelayMS:          2000,
+			WrongAnswerDelaySeconds: 3,
+		},
+		Learning: config.DefaultLearningConfig(),
+	}
+	trainingService := service.NewTrainingService(userCardRepo, trainingCardRepo, sessionRepo, nil, config.DefaultLearningConfig(), logger)
+	router := NewRouter(logger, cfg, db, trainingService, nil, nil, nil)
+
+	req := httptest.NewRequest(http.MethodGet, "/api/training/current", nil)
+	req = req.WithContext(context.WithValue(req.Context(), userIDKey, user.ID))
+	w := httptest.NewRecorder()
+	router.handleTrainingCurrent(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Fatalf("status = %d, want 200; body=%s", w.Code, w.Body.String())
+	}
+	var resp map[string]interface{}
+	if err := json.NewDecoder(w.Body).Decode(&resp); err != nil {
+		t.Fatalf("decode response: %v", err)
+	}
+	if resp["complete"] != true {
+		t.Fatalf("complete = %v, want true; resp=%v", resp["complete"], resp)
+	}
+	if resp["cards_completed"] != float64(2) {
+		t.Errorf("cards_completed = %v, want 2", resp["cards_completed"])
+	}
+	if resp["total_cards"] != float64(2) {
+		t.Errorf("total_cards = %v, want 2", resp["total_cards"])
+	}
+	if resp["correct_cards"] != float64(1) {
+		t.Errorf("correct_cards = %v, want 1", resp["correct_cards"])
+	}
+	session, err := sessionRepo.GetSession(sessionID)
+	if err != nil {
+		t.Fatalf("GetSession: %v", err)
+	}
+	if session == nil || session.EndedAt == nil {
+		t.Fatal("restored session should be finished")
+	}
+}
+
 func ptrBool(b bool) *bool {
 	return &b
 }
