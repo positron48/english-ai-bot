@@ -1887,6 +1887,7 @@ const prefetchNextTrainingCard = () => {
     try {
       const response = await wordTrainingClient.prefetchNext()
       if (!sessionActive.value || generation !== currentCardGeneration) return
+      if (!response || response.complete || response.active === false || !response.card_index || !response.total_cards) return
       prefetchedCardResponse.value = response
     } catch (error) {
       console.error('Failed to prefetch next training card:', error)

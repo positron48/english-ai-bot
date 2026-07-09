@@ -543,6 +543,48 @@ func TestHandleTrainingReveal_UsesPrefetchedOptionsAfterAnswerWithoutCurrent(t *
 	}
 }
 
+func TestHandleTrainingPrefetchNext_LastCardDoesNotReturnComplete(t *testing.T) {
+	logger := zap.NewNop()
+	cfg := &config.Config{Training: config.TrainingConfig{OptionsDelayMS: 1000, WrongAnswerDelaySeconds: 3}}
+	router := NewRouter(logger, cfg, nil, nil, nil, nil, nil)
+	userID := int64(700300)
+	state := &WebTrainingState{
+		UserID:       userID,
+		SessionID:    1,
+		CurrentIndex: 0,
+		Queue: []*models.TrainingQueueItem{{
+			Type: "card",
+			Card: &models.UserCardWithTraining{
+				UserCard:     models.UserCard{ID: 1, UserID: userID, Direction: models.DirectionENtoRU},
+				TrainingCard: models.TrainingCard{WordEN: "last", WordRU: "последний"},
+			},
+		}},
+		PrefetchedCards: make(map[int]*PrefetchedTrainingCard),
+	}
+	router.webTrainingHandler = &WebTrainingHandler{sessions: map[int64]*WebTrainingState{userID: state}}
+
+	req := setUserIDInContext(httptest.NewRequest(http.MethodPost, "/api/training/prefetch-next", nil), userID)
+	w := httptest.NewRecorder()
+	router.handleTrainingPrefetchNext(w, req)
+
+	if w.Code != http.StatusOK {
+		t.Fatalf("status = %d, body=%s", w.Code, w.Body.String())
+	}
+	var payload map[string]interface{}
+	if err := json.Unmarshal(w.Body.Bytes(), &payload); err != nil {
+		t.Fatalf("decode response: %v", err)
+	}
+	if payload["complete"] == true {
+		t.Fatalf("last-card prefetch must not return complete=true: %v", payload)
+	}
+	if payload["active"] != false {
+		t.Fatalf("last-card prefetch active = %v, want false", payload["active"])
+	}
+	if len(state.PrefetchedCards) != 0 {
+		t.Fatalf("last-card prefetch cached unexpected response: %+v", state.PrefetchedCards)
+	}
+}
+
 // showTrainingFeedback: direct call with correct and incorrect (hint, example, delay_seconds)
 func TestShowTrainingFeedback_Direct(t *testing.T) {
 	logger, _ := zap.NewDevelopment()

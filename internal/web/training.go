@@ -885,7 +885,7 @@ func (r *Router) handleTrainingPrefetchNext(w http.ResponseWriter, req *http.Req
 		r.webTrainingHandler.sessionsMutex.Unlock()
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
-		_ = json.NewEncoder(w).Encode(map[string]interface{}{"complete": true})
+		_ = json.NewEncoder(w).Encode(map[string]interface{}{"active": false, "message": "No next card"})
 		return
 	}
 	if state.PrefetchedCards == nil {
