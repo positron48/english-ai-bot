@@ -106,9 +106,9 @@ func (r *SentenceCompositionRepository) CreateSet(set *models.SentenceSet, items
 	for _, it := range items {
 		idsJSON, _ := json.Marshal(it.WordCardIDs)
 		if _, err := tx.Exec(`
-			INSERT INTO sentence_items (set_id, position, prompt_ru, reference_es, word_card_ids)
-			VALUES (?, ?, ?, ?, CAST(? AS jsonb))`,
-			setID, it.Position, it.PromptRU, it.ReferenceES, string(idsJSON)); err != nil {
+			INSERT INTO sentence_items (set_id, position, prompt_ru, clarification_ru, reference_es, word_card_ids)
+			VALUES (?, ?, ?, ?, ?, CAST(? AS jsonb))`,
+			setID, it.Position, it.PromptRU, it.ClarificationRU, it.ReferenceES, string(idsJSON)); err != nil {
 			return 0, fmt.Errorf("insert item: %w", err)
 		}
 	}
@@ -144,7 +144,7 @@ func (r *SentenceCompositionRepository) GetSetByID(setID int64) (*models.Sentenc
 // GetItems returns all items of a set ordered by position.
 func (r *SentenceCompositionRepository) GetItems(setID int64) ([]models.SentenceItem, error) {
 	rows, err := r.db.Query(`
-		SELECT id, set_id, position, prompt_ru, reference_es, COALESCE(word_card_ids::text, '[]'),
+		SELECT id, set_id, position, prompt_ru, COALESCE(clarification_ru, ''), reference_es, COALESCE(word_card_ids::text, '[]'),
 		       attempted_at, user_input, error_count, outcome, grading_json::text
 		FROM sentence_items WHERE set_id = ? ORDER BY position ASC`, setID)
 	if err != nil {
@@ -165,7 +165,7 @@ func (r *SentenceCompositionRepository) GetItems(setID int64) ([]models.Sentence
 // GetItemWithSet loads a single item plus its parent set (for ownership and grading context).
 func (r *SentenceCompositionRepository) GetItemWithSet(itemID int64) (*models.SentenceItem, *models.SentenceSet, error) {
 	itemRow := r.db.QueryRow(`
-		SELECT id, set_id, position, prompt_ru, reference_es, COALESCE(word_card_ids::text, '[]'),
+		SELECT id, set_id, position, prompt_ru, COALESCE(clarification_ru, ''), reference_es, COALESCE(word_card_ids::text, '[]'),
 		       attempted_at, user_input, error_count, outcome, grading_json::text
 		FROM sentence_items WHERE id = ?`, itemID)
 	it, err := scanSentenceItem(itemRow)
@@ -278,7 +278,7 @@ func scanSentenceItem(row rowScanner) (*models.SentenceItem, error) {
 	var attemptedAt sql.NullTime
 	var userInput, outcome, gradingJSON sql.NullString
 	var errorCount sql.NullInt64
-	err := row.Scan(&it.ID, &it.SetID, &it.Position, &it.PromptRU, &it.ReferenceES, &idsJSON,
+	err := row.Scan(&it.ID, &it.SetID, &it.Position, &it.PromptRU, &it.ClarificationRU, &it.ReferenceES, &idsJSON,
 		&attemptedAt, &userInput, &errorCount, &outcome, &gradingJSON)
 	if err == sql.ErrNoRows {
 		return nil, nil

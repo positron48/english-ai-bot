@@ -46,17 +46,18 @@ type SentenceSet struct {
 
 // SentenceItem is a single sentence to translate, plus its single-shot attempt result.
 type SentenceItem struct {
-	ID          int64
-	SetID       int64
-	Position    int
-	PromptRU    string
-	ReferenceES string
-	WordCardIDs []int64
-	AttemptedAt *time.Time
-	UserInput   *string
-	ErrorCount  *int
-	Outcome     *string
-	GradingJSON *string // raw teacher-markup JSON, passed through to the client
+	ID              int64
+	SetID           int64
+	Position        int
+	PromptRU        string
+	ClarificationRU string // short, optional Russian context shown before answering
+	ReferenceES     string
+	WordCardIDs     []int64
+	AttemptedAt     *time.Time
+	UserInput       *string
+	ErrorCount      *int
+	Outcome         *string
+	GradingJSON     *string // raw teacher-markup JSON, passed through to the client
 }
 
 // SentenceWordCandidate is a well-learned word eligible to seed sentence generation,

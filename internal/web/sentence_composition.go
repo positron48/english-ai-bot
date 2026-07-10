@@ -6,6 +6,7 @@ import (
 	"strings"
 	"time"
 
+	"tgbot-skeleton/internal/ai"
 	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
 
@@ -40,6 +41,7 @@ func sentenceItemJSON(it models.SentenceItem, includePrompt bool) map[string]int
 	}
 	if includePrompt {
 		m["prompt_ru"] = it.PromptRU
+		m["clarification_ru"] = it.ClarificationRU
 	}
 	if it.Outcome != nil {
 		m["outcome"] = *it.Outcome
@@ -241,7 +243,15 @@ func (r *Router) handleSentenceTrainingAnswer(w http.ResponseWriter, req *http.R
 		return
 	}
 	// Grade with the default model (5.5-nano by config) — the grading prompt is tuned for it.
-	grade, err := aiSvc.GradeSentenceForCourse(req.Context(), set.CourseCode, item.PromptRU, item.ReferenceES, strings.TrimSpace(body.UserInput))
+	userInput := strings.TrimSpace(body.UserInput)
+	// Punctuation and leading capitalization are presentation, not language errors.
+	// Avoid an LLM call for this common exact-answer path altogether.
+	var grade *ai.SentenceGrade
+	if ai.NormalizedSentenceAnswer(userInput) == ai.NormalizedSentenceAnswer(item.ReferenceES) {
+		grade = ai.NewExactSentenceGrade(userInput)
+	} else {
+		grade, err = aiSvc.GradeSentenceForCourse(req.Context(), set.CourseCode, item.PromptRU, item.ClarificationRU, item.ReferenceES, userInput)
+	}
 	if err != nil {
 		r.logger.Error("sentence answer: grading failed", zap.Error(err))
 		http.Error(w, "Grading failed", http.StatusBadGateway)
@@ -252,7 +262,7 @@ func (r *Router) handleSentenceTrainingAnswer(w http.ResponseWriter, req *http.R
 	grade.Outcome = outcome
 	gradingJSON, _ := json.Marshal(grade)
 
-	updated, err := repo.RecordAttempt(item.ID, strings.TrimSpace(body.UserInput), grade.ErrorCount, outcome, string(gradingJSON))
+	updated, err := repo.RecordAttempt(item.ID, userInput, grade.ErrorCount, outcome, string(gradingJSON))
 	if err != nil {
 		r.logger.Error("sentence answer: record attempt", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)

@@ -4,6 +4,7 @@ INPUT
 You receive ONE JSON object:
 {
   "prompt_ru": "<the {{native_lang}} sentence the learner had to translate>",
+  "clarification_ru": "<optional learner-visible context; this fixes otherwise ambiguous choices>",
   "reference_es": "<one correct English translation; legacy field name>",
   "user_input": "<what the learner actually wrote>"
 }
@@ -32,8 +33,9 @@ OUTPUT (STRICT)
   "error_count": <int>,
   "outcome": "star" | "passed" | "failed",
   "corrected_es": "<the learner's English sentence, minimally corrected>",
+  "issues": [{"kind":"spelling|article|pronoun|verb_form|missing_word|extra_word|agreement|preposition|meaning"}],
   "explanation": "<short tip in {{native_lang}}, max ~140 chars, on the MAIN mistake; empty string when there are no mistakes>"
 }
-- `outcome` MUST match `error_count`: 0 -> "star", 1 -> "passed", >=2 -> "failed".
+- `issues` contains exactly one object per distinct correction. `error_count` MUST equal its length; a run of wrong letters in one word is ONE `spelling` issue. `outcome` MUST match `error_count`: 0 -> "star", 1 -> "passed", >=2 -> "failed".
 - `explanation`: when there is at least one mistake, explain WHY it is a mistake, not merely WHAT the correct form is. Give ONE short, friendly tip in {{native_lang}}, max ~140 chars.
 - If `user_input` is empty or unrelated, `corrected_es` is a correct English translation of `prompt_ru` and outcome is "failed".

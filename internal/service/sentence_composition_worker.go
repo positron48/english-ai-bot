@@ -277,6 +277,7 @@ func (w *SentenceCompositionWorker) generateSet(ctx context.Context, user *model
 		items = append(items, models.SentenceItem{
 			Position:    i,
 			PromptRU:    s.PromptRU,
+			ClarificationRU: s.ClarificationRU,
 			ReferenceES: s.ReferenceES,
 			WordCardIDs: ids,
 		})

@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"strings"
+	"unicode"
 
 	"go.uber.org/zap"
 )
@@ -18,9 +19,10 @@ type GenSentenceWord struct {
 // GeneratedSentence is one Russian sentence the model produced, with the suggested
 // correct target translation and the lemmas it actually used.
 type GeneratedSentence struct {
-	PromptRU    string   `json:"prompt_ru"`
-	ReferenceES string   `json:"reference_es"`
-	UsedWords   []string `json:"used_words"`
+	PromptRU        string   `json:"prompt_ru"`
+	ClarificationRU string   `json:"clarification_ru"`
+	ReferenceES     string   `json:"reference_es"`
+	UsedWords       []string `json:"used_words"`
 }
 
 type generatedSentenceSet struct {
@@ -43,6 +45,13 @@ type SentenceGrade struct {
 	CorrectedES string               `json:"corrected_es"`
 	Tokens      []SentenceGradeToken `json:"tokens"`
 	Explanation string               `json:"explanation,omitempty"`
+	Issues      []SentenceGradeIssue `json:"issues,omitempty"`
+}
+
+// SentenceGradeIssue makes model output auditable and prevents a vague numeric
+// score from hiding what was counted. The server derives the final count from it.
+type SentenceGradeIssue struct {
+	Kind string `json:"kind"`
 }
 
 // SetSentenceGenPromptForCourse registers the daily sentence-set generation prompt for a course.
@@ -93,6 +102,15 @@ func (s *Service) GenerateSentenceSetForCourse(ctx context.Context, courseCode s
 	if err != nil {
 		return nil, err
 	}
+	if strings.TrimSpace(raw) == "" {
+		raw, err = s.postChatCompletion(ctx, model, messages, 4500, 0.4, zap.String("kind", "sentence_gen_retry"), zap.String("course", courseCode))
+		if err != nil {
+			return nil, err
+		}
+	}
+	if strings.TrimSpace(raw) == "" {
+		return nil, fmt.Errorf("sentence generator returned an empty response")
+	}
 	var set generatedSentenceSet
 	if err := json.Unmarshal([]byte(raw), &set); err != nil {
 		return nil, fmt.Errorf("parse generated sentences: %w (raw: %s)", err, truncateForLog(raw))
@@ -129,16 +147,17 @@ func (s *Service) GenerateSentenceSetForCourse(ctx context.Context, courseCode s
 
 // GradeSentenceForCourse grades one learner submission against the prompt and reference,
 // returning teacher-style markup tokens and an error count.
-func (s *Service) GradeSentenceForCourse(ctx context.Context, courseCode, promptRU, referenceES, userInput string, modelOverride ...string) (*SentenceGrade, error) {
+func (s *Service) GradeSentenceForCourse(ctx context.Context, courseCode, promptRU, clarificationRU, referenceES, userInput string, modelOverride ...string) (*SentenceGrade, error) {
 	prompt := s.sentenceGradePrompts[courseCode]
 	if prompt == "" {
 		return nil, fmt.Errorf("sentence grading prompt not set for course %q", courseCode)
 	}
 
 	payload := map[string]interface{}{
-		"prompt_ru":    promptRU,
-		"reference_es": referenceES,
-		"user_input":   userInput,
+		"prompt_ru":        promptRU,
+		"clarification_ru": clarificationRU,
+		"reference_es":     referenceES,
+		"user_input":       userInput,
 	}
 	payloadJSON, err := json.Marshal(payload)
 	if err != nil {
@@ -150,9 +169,22 @@ func (s *Service) GradeSentenceForCourse(ctx context.Context, courseCode, prompt
 		{Role: "user", Content: string(payloadJSON)},
 	}
 	model := s.modelOr(modelOverride...)
-	raw, err := s.postChatCompletion(ctx, model, messages, 1500, 0.2, zap.String("kind", "sentence_grade"), zap.String("course", courseCode))
+	raw, err := s.postChatCompletion(ctx, model, messages, 2500, 0.2, zap.String("kind", "sentence_grade"), zap.String("course", courseCode))
 	if err != nil {
 		return nil, err
+	}
+	// Some reasoning-capable local models can spend their initial completion
+	// budget on hidden reasoning and return an empty visible answer. Retry once
+	// with more room so a transient model-format failure never becomes a lost
+	// exercise attempt or a 502 for the learner.
+	if strings.TrimSpace(raw) == "" {
+		raw, err = s.postChatCompletion(ctx, model, messages, 3500, 0.2, zap.String("kind", "sentence_grade_retry"), zap.String("course", courseCode))
+		if err != nil {
+			return nil, err
+		}
+	}
+	if strings.TrimSpace(raw) == "" {
+		return nil, fmt.Errorf("sentence grader returned an empty response")
 	}
 	var grade SentenceGrade
 	if err := json.Unmarshal([]byte(raw), &grade); err != nil {
@@ -161,8 +193,30 @@ func (s *Service) GradeSentenceForCourse(ctx context.Context, courseCode, prompt
 	if grade.ErrorCount < 0 {
 		grade.ErrorCount = 0
 	}
+	if grade.Issues != nil {
+		grade.ErrorCount = len(grade.Issues)
+	}
 	grade.Outcome = strings.TrimSpace(grade.Outcome)
 	return &grade, nil
+}
+
+// NormalizedSentenceAnswer ignores the presentation differences explicitly not
+// assessed by this exercise: leading capitalization and terminal punctuation.
+func NormalizedSentenceAnswer(s string) string {
+	s = strings.TrimSpace(s)
+	s = strings.TrimRightFunc(s, func(r rune) bool {
+		return unicode.IsSpace(r) || strings.ContainsRune(".!?¡¿", r)
+	})
+	s = strings.TrimLeftFunc(s, func(r rune) bool { return strings.ContainsRune("¡¿", r) })
+	s = strings.Join(strings.Fields(s), " ")
+	return strings.ToLower(s)
+}
+
+// NewExactSentenceGrade is used for an answer equal to the stored reference
+// after harmless normalization. It guarantees that a missing final dot can
+// never be turned into a lost star by a model.
+func NewExactSentenceGrade(userInput string) *SentenceGrade {
+	return &SentenceGrade{ErrorCount: 0, Outcome: "star", CorrectedES: strings.TrimSpace(userInput)}
 }
 
 // modelOr returns the first non-empty model override, else the default model.

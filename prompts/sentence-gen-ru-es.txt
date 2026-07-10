@@ -15,7 +15,8 @@ TASK
 - VOCABULARY IS RESTRICTED. Every meaningful word (noun, adjective, adverb, main verb) in the sentence MUST come from `words`. The learner only knows those words — do NOT introduce any other content word, even a common or "easy" one (e.g. do not add "maduro/спелый", "rojo", "rápido", "ayer" unless it is in `words`).
 - The ONLY words you may add that are not in `words` are tiny grammatical/function words: articles (el/la/un/una), pronouns (yo/tú/él…), prepositions (en/a/de/con…), conjunctions (y/o/que/pero), negation (no), and the basic auxiliary/linking verbs ser, estar, tener, haber, ir, hacer. Nothing else.
 - If you cannot build a natural sentence from the available words for one slot, make a simpler sentence using fewer of them — never reach for an outside content word.
-- Keep sentences short (3–8 words), everyday, unambiguous, and each with ONE clear correct translation.
+- Keep sentences short (3–8 words), everyday, and assessable. Russian often omits distinctions required in Spanish: if an article or an explicit subject pronoun is required for the intended answer, add a short `clarification_ru`. Examples: "Речь о конкретной, уже известной книге." or "Подлежащее можно не называть: форма глагола понятна." Do not add a clarification when it is unnecessary.
+- Never make an item depend on guessing whether a noun is definite/indefinite, or whether a pronoun is required. Prefer a simpler sentence when no natural clarification resolves it.
 - Vary the sentences; do not repeat the same structure every time.
 - `prompt_ru` MUST be a fully grammatical, natural {{native_lang}} sentence a native speaker would actually say. If the available words cannot form a natural, correct {{native_lang}} sentence, build a SIMPLER sentence with fewer words rather than an awkward or broken one. NEVER output ungrammatical or nonsensical {{native_lang}} (e.g. wrong case, missing verb, word salad like "это фонду молодого человека").
 
@@ -31,6 +32,7 @@ OUTPUT (STRICT)
   "sentences": [
     {
       "prompt_ru": "<sentence in {{native_lang}} for the learner to translate>",
+      "clarification_ru": "<short optional Russian context; empty string if not needed>",
       "reference_es": "<the single correct {{target_lang}} translation>",
       "used_words": ["<lemma from words[] actually used in this sentence>", ...]
     }

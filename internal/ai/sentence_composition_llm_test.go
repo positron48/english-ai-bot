@@ -56,7 +56,7 @@ func TestSentenceLLMHarness(t *testing.T) {
 	if fr := strings.TrimSpace(os.Getenv("SENTENCE_TEST_REF_ES")); fr != "" {
 		fp := strings.TrimSpace(os.Getenv("SENTENCE_TEST_PROMPT_RU"))
 		fin := os.Getenv("SENTENCE_TEST_INPUT")
-		g, err := svc.GradeSentenceForCourse(context.Background(), course, fp, fr, fin, model)
+		g, err := svc.GradeSentenceForCourse(context.Background(), course, fp, "", fr, fin, model)
 		if err != nil {
 			t.Fatalf("fixed grade: %v", err)
 		}
@@ -116,7 +116,7 @@ func TestSentenceLLMHarness(t *testing.T) {
 
 	// Single custom-answer debug mode.
 	if custom := strings.TrimSpace(os.Getenv("SENTENCE_TEST_INPUT")); custom != "" && len(sentences) > 0 {
-		g, err := svc.GradeSentenceForCourse(ctx, course, sentences[0].PromptRU, sentences[0].ReferenceES, custom, model)
+		g, err := svc.GradeSentenceForCourse(ctx, course, sentences[0].PromptRU, sentences[0].ClarificationRU, sentences[0].ReferenceES, custom, model)
 		if err != nil {
 			t.Fatalf("grade custom: %v", err)
 		}
@@ -131,7 +131,7 @@ func TestSentenceLLMHarness(t *testing.T) {
 	// Scenario C: empty answer -> must be "failed".
 	var aStar, bNonStar, cFailed int
 	for i, s := range sentences {
-		ga, err := svc.GradeSentenceForCourse(ctx, course, s.PromptRU, s.ReferenceES, s.ReferenceES, model)
+		ga, err := svc.GradeSentenceForCourse(ctx, course, s.PromptRU, s.ClarificationRU, s.ReferenceES, s.ReferenceES, model)
 		if err != nil {
 			t.Errorf("[%d] grade(reference) error: %v", i+1, err)
 			continue
@@ -144,7 +144,7 @@ func TestSentenceLLMHarness(t *testing.T) {
 
 		corrupted := dropLastWord(s.ReferenceES)
 		if corrupted != s.ReferenceES {
-			gb, err := svc.GradeSentenceForCourse(ctx, course, s.PromptRU, s.ReferenceES, corrupted, model)
+			gb, err := svc.GradeSentenceForCourse(ctx, course, s.PromptRU, s.ClarificationRU, s.ReferenceES, corrupted, model)
 			if err == nil {
 				if gb.ErrorCount >= 1 && gb.Outcome != "star" {
 					bNonStar++
@@ -156,7 +156,7 @@ func TestSentenceLLMHarness(t *testing.T) {
 			bNonStar++ // single-word sentence; skip but don't penalize
 		}
 
-		gc, err := svc.GradeSentenceForCourse(ctx, course, s.PromptRU, s.ReferenceES, "", model)
+		gc, err := svc.GradeSentenceForCourse(ctx, course, s.PromptRU, s.ClarificationRU, s.ReferenceES, "", model)
 		if err == nil {
 			if gc.Outcome == "failed" {
 				cFailed++

@@ -19,6 +19,7 @@ export interface SentenceItem {
   position: number
   attempted: boolean
   prompt_ru?: string
+  clarification_ru?: string
   outcome?: 'star' | 'passed' | 'failed'
   error_count?: number
   user_input?: string
