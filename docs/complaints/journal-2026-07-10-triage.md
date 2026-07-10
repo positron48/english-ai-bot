@@ -4,7 +4,7 @@
 **Run ID:** `triage-2026-07-10`  
 **Снимок:** `logs/complaints/snapshot-en-20260710T125421Z.json` (3), `snapshot-es-20260710T125422Z.json` (10)  
 **Закрыто на prod:** resolve-bulk 3 EN + 7 ES (причина: RU hints на карточках + правки training_pack; грамматика — после tag/import)  
-**Тег:** _(заполнить после `make tag` + Flux rollout)_  
+**Тег:** `0.12.183` _(после push + Flux — import в spanish pod)_  
 **Деплой грамматики:** `kubectl -n spanish exec deploy/spanish -- /app/import_learning_content --commit` после выката образа.
 
 Формат блока: **дата жалобы** → **суть** → **что изменено**.
@@ -87,6 +87,14 @@
 
 ---
 
+### #7 — 2026-07-01 · question marks b3 q10
+
+**Жалоба:** «Вы как будто требует ustedes» — prompt «Вы, Анна, живете здесь?» путает с *ustedes*/*viven*.
+
+**Изменено:** prompt → «Живёт ли Анна здесь?» (3-е лицо); пояснение про *vive* vs *viven*. Файл: `courses/spanish-grammar/training_pack/chapters/017/es.03.b3_theory_question_marks_and_subject_position.questions.json`.
+
+---
+
 ## Spanish (grammar_chapter)
 
 ### #6 — 2026-06-27 · alphabet chapter
@@ -106,7 +114,7 @@
 ## Правила / pattern sweep
 
 - `libro`/`libros` — муж. род: исправлены q8–q9 в `es.06.b6_theory_strategy_quantity_questions_traps.questions.json`.
-- Русский в `choices` grammar ES: q4–q5 `es.03.b3_theory_sequencing_daily_actions.questions.json`.
+- Русский в `choices` grammar ES: q4–q5, q8–q9 `es.03.b3_theory_sequencing_daily_actions.questions.json`.
 - Bundle: `./scripts/generate-grammar-training-pack.sh es` → `internal/grammartrainingpack/es/...`.
 
 ---
