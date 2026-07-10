@@ -48,11 +48,11 @@ type RedisConfig struct {
 	DB       int    `mapstructure:"db"`
 }
 
-// SentenceCompositionConfig configures the daily Pro sentence-composition training.
+// SentenceCompositionConfig configures completion-driven Pro sentence-composition training.
 type SentenceCompositionConfig struct {
 	Enabled            bool   `mapstructure:"enabled"`
 	Interval           string `mapstructure:"interval"`            // worker tick interval, e.g. "1h"
-	SentencesPerSet    int    `mapstructure:"sentences_per_set"`   // sentences generated per daily set
+	SentencesPerSet    int    `mapstructure:"sentences_per_set"`   // sentences generated per set
 	WordsPerSet        int    `mapstructure:"words_per_set"`       // well-learned words offered to the generator
 	MinWords           int    `mapstructure:"min_words"`           // minimum candidates required to generate
 	MasteringThreshold int    `mapstructure:"mastering_threshold"` // min mastering_score (0-100) to count as well-learned
@@ -407,7 +407,7 @@ func Load() (*Config, error) {
 	viper.SetDefault("training.verb_forms_typed_min_reps", 2)
 	viper.SetDefault("training.verb_forms_typed_chance_percent", 50)
 
-	// Sentence composition (daily Pro training) defaults
+	// Sentence composition (completion-driven Pro training) defaults
 	viper.SetDefault("sentence_composition.enabled", true)
 	viper.SetDefault("sentence_composition.interval", "1h")
 	viper.SetDefault("sentence_composition.sentences_per_set", 20)

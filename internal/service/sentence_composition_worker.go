@@ -15,9 +15,10 @@ import (
 	"go.uber.org/zap"
 )
 
-// SentenceCompositionWorker generates one daily sentence-composition set per Pro user/course.
-// It honours the regeneration guard: a previous set that was never started (status "ready")
-// blocks generating a new one, so we never spend LLM budget on sets the user ignored.
+// SentenceCompositionWorker generates sentence-composition sets for Pro users on an hourly tick.
+// Regeneration guard: while the latest set for a user/course is not completed (ready or started),
+// no new set is created. After completion, the next hourly tick may create another set, even
+// on the same calendar day.
 type SentenceCompositionWorker struct {
 	aiService       *ai.Service
 	repo            *repository.SentenceCompositionRepository
@@ -140,18 +141,13 @@ func (w *SentenceCompositionWorker) generateForUser(ctx context.Context, user *m
 			continue
 		}
 
-		// Regeneration guard is per user/course.
+		// Regeneration guard is per user/course: skip while an incomplete set exists.
 		latest, err := w.repo.LatestSet(user.ID, courseCode)
 		if err != nil {
 			return err
 		}
-		if latest != nil {
-			if latest.GenerationDate == today {
-				continue // already generated today
-			}
-			if latest.Status == models.SentenceSetReady {
-				continue // previous set never consumed — don't waste budget
-			}
+		if !shouldGenerateSentenceSet(latest) {
+			continue
 		}
 
 		if _, err := w.generateSet(ctx, user, courseCode, today); err != nil {
@@ -160,6 +156,15 @@ func (w *SentenceCompositionWorker) generateForUser(ctx context.Context, user *m
 		}
 	}
 	return nil
+}
+
+// shouldGenerateSentenceSet returns true when the worker may create a new set for the course.
+// No prior set, or the latest set is completed — generate. Ready or started — wait.
+func shouldGenerateSentenceSet(latest *models.SentenceSet) bool {
+	if latest == nil {
+		return true
+	}
+	return latest.Status == models.SentenceSetCompleted
 }
 
 func (w *SentenceCompositionWorker) sentenceCourseCodesForUser(ctx context.Context, userID int64) ([]string, error) {
@@ -275,11 +280,11 @@ func (w *SentenceCompositionWorker) generateSet(ctx context.Context, user *model
 			}
 		}
 		items = append(items, models.SentenceItem{
-			Position:    i,
-			PromptRU:    s.PromptRU,
+			Position:        i,
+			PromptRU:        s.PromptRU,
 			ClarificationRU: s.ClarificationRU,
-			ReferenceES: s.ReferenceES,
-			WordCardIDs: ids,
+			ReferenceES:     s.ReferenceES,
+			WordCardIDs:     ids,
 		})
 	}
 	usedIDs := make([]int64, 0, len(usedSet))

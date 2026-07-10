@@ -4,7 +4,32 @@ import (
 	"testing"
 
 	"tgbot-skeleton/internal/config"
+	"tgbot-skeleton/internal/models"
 )
+
+func TestShouldGenerateSentenceSet(t *testing.T) {
+	today := "2026-07-08"
+	yesterday := "2026-07-07"
+
+	cases := []struct {
+		name   string
+		latest *models.SentenceSet
+		want   bool
+	}{
+		{name: "no prior set", latest: nil, want: true},
+		{name: "ready blocks", latest: &models.SentenceSet{Status: models.SentenceSetReady, GenerationDate: yesterday}, want: false},
+		{name: "started blocks", latest: &models.SentenceSet{Status: models.SentenceSetStarted, GenerationDate: yesterday}, want: false},
+		{name: "completed today allows", latest: &models.SentenceSet{Status: models.SentenceSetCompleted, GenerationDate: today}, want: true},
+		{name: "completed yesterday allows", latest: &models.SentenceSet{Status: models.SentenceSetCompleted, GenerationDate: yesterday}, want: true},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			if got := shouldGenerateSentenceSet(tc.latest); got != tc.want {
+				t.Fatalf("shouldGenerateSentenceSet() = %v, want %v", got, tc.want)
+			}
+		})
+	}
+}
 
 func TestHumanizeScopes(t *testing.T) {
 	got := humanizeScopes([]string{"es.presente.indicativo", "es.preterito", "weird"})
