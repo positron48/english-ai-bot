@@ -38,8 +38,10 @@
         <div class="sc-task-icon"><LgIcon name="lightbulb" :s="22" /></div>
         <div>
           <h1 class="sc-task-title">{{ current.prompt_ru }}</h1>
+          <p v-if="current.clarification_ru" class="sc-task-clarification">
+            {{ t('sentence.contextLabel') }}: {{ current.clarification_ru }}
+          </p>
           <p class="sc-task-sub">{{ t('sentence.taskSubtitle', { lang: targetLangDisplay }) }}</p>
-          <p v-if="current.clarification_ru" class="sc-task-clarification">{{ current.clarification_ru }}</p>
         </div>
       </section>
 
@@ -281,12 +283,11 @@ onMounted(async () => {
 }
 
 .sc-task-clarification {
-  margin: 8px 0 0;
-  padding: 8px 10px;
-  border-left: 3px solid var(--salvia, #2f7d46);
+  margin: 6px 0 0;
   color: var(--subtext);
   font-size: 14px;
   line-height: 1.35;
+  opacity: 0.75;
 }
 .sc-progress-fill {
   height: 100%;

@@ -77,7 +77,39 @@ func (s *Service) HasSentencePromptsForCourse(courseCode string) bool {
 
 // GenerateSentenceSetForCourse asks the model to build `count` Russian sentences from the
 // given well-learned words, constrained to the provided grammar tenses (human-readable).
-func (s *Service) GenerateSentenceSetForCourse(ctx context.Context, courseCode string, words []GenSentenceWord, tenses []string, count int, modelOverride ...string) ([]GeneratedSentence, error) {
+func (s *Service) GenerateSentenceSetForCourse(ctx context.Context, courseCode string, focusWords, supportWords []GenSentenceWord, tenses []string, count int, modelOverride ...string) ([]GeneratedSentence, error) {
+	if count <= 0 || len(focusWords) == 0 {
+		return nil, fmt.Errorf("sentence generation requires a positive count and focus vocabulary")
+	}
+	const batchSize = 5
+	out := make([]GeneratedSentence, 0, count)
+	for offset := 0; offset < count; offset += batchSize {
+		batchCount := batchSize
+		if remaining := count - offset; remaining < batchCount {
+			batchCount = remaining
+		}
+		batchFocus := make([]GenSentenceWord, 0, batchCount)
+		for i := 0; i < batchCount; i++ {
+			batchFocus = append(batchFocus, focusWords[(offset+i)%len(focusWords)])
+		}
+		batch := make([]GeneratedSentence, 0, batchCount)
+		for attempt := 0; attempt < 3 && len(batch) < batchCount; attempt++ {
+			generated, err := s.generateSentenceBatchForCourse(ctx, courseCode, batchFocus, supportWords, tenses, batchCount-len(batch), modelOverride...)
+			if err != nil {
+				return nil, err
+			}
+			batch = append(batch, generated...)
+		}
+		if len(batch) < batchCount {
+			s.logger.Warn("sentence generation batch remained short after quality retries",
+				zap.String("course", courseCode), zap.Int("wanted", batchCount), zap.Int("generated", len(batch)))
+		}
+		out = append(out, batch...)
+	}
+	return out, nil
+}
+
+func (s *Service) generateSentenceBatchForCourse(ctx context.Context, courseCode string, focusWords, supportWords []GenSentenceWord, tenses []string, count int, modelOverride ...string) ([]GeneratedSentence, error) {
 	prompt := s.sentenceGenPrompts[courseCode]
 	if prompt == "" {
 		return nil, fmt.Errorf("sentence generation prompt not set for course %q", courseCode)
@@ -86,7 +118,8 @@ func (s *Service) GenerateSentenceSetForCourse(ctx context.Context, courseCode s
 	payload := map[string]interface{}{
 		"sentence_count": count,
 		"allowed_tenses": tenses,
-		"words":          words,
+		"focus_words":    focusWords,
+		"support_words":  supportWords,
 	}
 	payloadJSON, err := json.Marshal(payload)
 	if err != nil {
@@ -113,7 +146,24 @@ func (s *Service) GenerateSentenceSetForCourse(ctx context.Context, courseCode s
 	}
 	var set generatedSentenceSet
 	if err := json.Unmarshal([]byte(raw), &set); err != nil {
-		return nil, fmt.Errorf("parse generated sentences: %w (raw: %s)", err, truncateForLog(raw))
+		s.logger.Warn("sentence generator returned malformed JSON; retrying",
+			zap.String("course", courseCode), zap.Error(err))
+		raw, retryErr := s.postChatCompletion(ctx, model, messages, 8000, 0.2, zap.String("kind", "sentence_gen_json_retry"), zap.String("course", courseCode))
+		if retryErr != nil {
+			return nil, retryErr
+		}
+		if err := json.Unmarshal([]byte(raw), &set); err != nil {
+			return nil, fmt.Errorf("parse sentence generation retry: %w (raw: %s)", err, truncateForLog(raw))
+		}
+	}
+	allWords := append(append(make([]GenSentenceWord, 0, len(focusWords)+len(supportWords)), focusWords...), supportWords...)
+	focusSet := make(map[string]bool, len(focusWords))
+	knownSet := make(map[string]bool, len(allWords))
+	for _, word := range focusWords {
+		focusSet[strings.ToLower(strings.TrimSpace(word.Lemma))] = true
+	}
+	for _, word := range allWords {
+		knownSet[strings.ToLower(strings.TrimSpace(word.Lemma))] = true
 	}
 	out := make([]GeneratedSentence, 0, len(set.Sentences))
 	for _, sentence := range set.Sentences {
@@ -122,15 +172,39 @@ func (s *Service) GenerateSentenceSetForCourse(ctx context.Context, courseCode s
 		if sentence.PromptRU == "" || sentence.ReferenceES == "" {
 			continue
 		}
+		if !usableSentenceClarification(sentence.ClarificationRU) {
+			s.logger.Warn("sentence generation returned an unusable learner context; dropping",
+				zap.String("course", courseCode), zap.String("clarification_ru", sentence.ClarificationRU))
+			continue
+		}
 		// The native-language prompt must never leak a target-language word. Weaker models
 		// occasionally drop a supplied target lemma (or its inflected form) straight into
 		// `prompt_ru` instead of translating it, which shows the learner the answer. Detect
 		// that and skip the item rather than serve a corrupted exercise.
-		if leaked := leakedTargetWord(sentence.PromptRU, words); leaked != "" {
+		if leaked := leakedTargetWord(sentence.PromptRU, allWords); leaked != "" {
 			s.logger.Warn("sentence generation leaked target word into native prompt; dropping",
 				zap.String("course", courseCode),
 				zap.String("leaked_word", leaked),
 				zap.String("prompt_ru", sentence.PromptRU))
+			continue
+		}
+		focusUses := 0
+		validUsedWords := true
+		for _, lemma := range sentence.UsedWords {
+			normalized := strings.ToLower(strings.TrimSpace(lemma))
+			if !knownSet[normalized] {
+				validUsedWords = false
+				break
+			}
+			if focusSet[normalized] {
+				focusUses++
+			}
+		}
+		if !validUsedWords || focusUses < 1 {
+			s.logger.Warn("sentence generation did not use a valid focus vocabulary word; dropping",
+				zap.String("course", courseCode),
+				zap.String("prompt_ru", sentence.PromptRU),
+				zap.Strings("used_words", sentence.UsedWords))
 			continue
 		}
 		out = append(out, sentence)
@@ -143,6 +217,22 @@ func (s *Service) GenerateSentenceSetForCourse(ctx context.Context, courseCode s
 		out = out[:count]
 	}
 	return out, nil
+}
+
+func usableSentenceClarification(context string) bool {
+	lower := strings.ToLower(strings.TrimSpace(context))
+	if lower == "" {
+		return true
+	}
+	for _, forbidden := range []string{
+		"конкретн", "неконкретн", "определённ", "определенн",
+		"неопределённ", "неопределенн", "артикл", "используй el", "используй un",
+	} {
+		if strings.Contains(lower, forbidden) {
+			return false
+		}
+	}
+	return !strings.ContainsFunc(context, func(r rune) bool { return unicode.Is(unicode.Latin, r) })
 }
 
 // GradeSentenceForCourse grades one learner submission against the prompt and reference,

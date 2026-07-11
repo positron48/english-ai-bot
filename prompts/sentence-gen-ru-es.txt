@@ -5,24 +5,33 @@ You receive ONE JSON object:
 {
   "sentence_count": <int>,        // how many sentences to produce
   "allowed_tenses": [<string>],   // grammar tenses/moods the learner has unlocked; only use these
-  "words": [ { "lemma": "...", "translation": "..." }, ... ]  // well-learned target-language words
+  "focus_words": [ { "lemma": "...", "translation": "..." }, ... ],   // least-used known words to practise
+  "support_words": [ { "lemma": "...", "translation": "..." }, ... ]  // other words the learner already knows
 }
 
 TASK
 - Produce exactly `sentence_count` short, natural {{native_lang}} sentences for the learner to translate into {{target_lang}}.
 - Each sentence MUST be translatable using ONLY grammar within `allowed_tenses`. Never require a tense or mood that is not listed.
-- Prefer reusing the supplied `words`: aim to cover as many of them as possible across the set. NOT every word must be used, and a word that does not fit naturally should be skipped rather than forced.
-- VOCABULARY IS RESTRICTED. Every meaningful word (noun, adjective, adverb, main verb) in the sentence MUST come from `words`. The learner only knows those words — do NOT introduce any other content word, even a common or "easy" one (e.g. do not add "maduro/спелый", "rojo", "rápido", "ayer" unless it is in `words`).
-- The ONLY words you may add that are not in `words` are tiny grammatical/function words: articles (el/la/un/una), pronouns (yo/tú/él…), prepositions (en/a/de/con…), conjunctions (y/o/que/pero), negation (no), and the basic auxiliary/linking verbs ser, estar, tener, haber, ir, hacer. Nothing else.
-- If you cannot build a natural sentence from the available words for one slot, make a simpler sentence using fewer of them — never reach for an outside content word.
-- Keep sentences short (3–8 words), everyday, and assessable. Russian often omits distinctions required in Spanish: if an article or an explicit subject pronoun is required for the intended answer, add a short `clarification_ru`. Examples: "Речь о конкретной, уже известной книге." or "Подлежащее можно не называть: форма глагола понятна." Do not add a clarification when it is unnecessary.
-- Never make an item depend on guessing whether a noun is definite/indefinite, or whether a pronoun is required. Prefer a simpler sentence when no natural clarification resolves it.
+- Each sentence MUST naturally practise at least ONE lemma from `focus_words`. Multiple focus words are welcome only when they belong together in an ordinary situation; never combine them merely for coverage. Other content words must come only from `support_words`. Quality is more important than vocabulary coverage, and it is fine to repeat a useful focus word or leave another unused.
+- VOCABULARY IS STRICTLY RESTRICTED. Every content-bearing word in BOTH `prompt_ru` and `reference_es` (noun, adjective, adverb, main verb, time/place expression) MUST be an inflected/translated form of an entry from `focus_words` or `support_words`. The learner does not know any other content word. Do NOT introduce even an easy word such as "сегодня", "стакан", "держать", "вчера", "rápido" unless its matching entry was supplied.
+- The ONLY additions not present in either list are grammatical/function words: articles, personal/possessive pronouns, basic determiners, prepositions, conjunctions, particles, negation, and the linking/existential verbs `ser`, `estar`, `haber`. `tener`, `hacer`, `ir` and every other meaning-bearing verb are forbidden unless supplied in one of the lists.
+- `used_words` must list EVERY supplied content lemma used in `prompt_ru`/`reference_es`. Ignore native wording used only inside `clarification_ru`. Never list an unsupplied lemma and never hide an added content word by omitting it from `used_words`.
+- DO NOT try to use every `focus_words` entry. First select only the focus lemmas that have an ordinary, self-contained situation with the available support vocabulary. Reuse those safe focus lemmas as often as needed. If a body part or other focus word lacks a suitable known action, skip it completely — do not describe its colour/cleanliness/location and do not invent a relationship merely to include it.
+- Do not add possessives or demonstratives merely to avoid article ambiguity. Use "мой/этот/эта" and `mi/este/esta` only when ownership or pointing is a natural part of the intended meaning; otherwise provide `clarification_ru` for the article choice.
+- Keep sentences short (3–8 words), everyday, and assessable. `clarification_ru` is ONE optional context sentence shown to the learner directly after `prompt_ru`. Use it only when Russian alone does not reveal a meaning distinction required by the Spanish answer, especially definite vs indefinite articles.
+- Context must give observable circumstances from which the learner can infer the choice. A known object must be identifiable to BOTH speaker and listener: say HOW both know it (already discussed, shown to each other, requested, or uniquely identified). It is not enough that only the speaker knows or sees it. For a newly introduced object, say that it appears for the first time or that no particular object was intended. Good examples: "Собеседники уже обсуждали эту книгу вчера."; "Говорящий впервые замечает книгу и раньше о ней не упоминал."
+- When introducing an unknown/new object, never call it "этот/эта/это/эту/тот/та" in `clarification_ru`: Russian demonstratives falsely make it sound already identified. Refer to it with the bare noun or say "какой-то/один из" only when natural.
+- If several nouns need disambiguation, `clarification_ru` must cover ALL of them in the same natural sentence. Example: "Книгу только что купили, а речь идёт о столе в нашей комнате."
+- NEVER write a tautology or reveal grammar directly: no "конкретный/неконкретный предмет", "определённый/неопределённый артикль", "используй el/un", or target-language words. Context describes the situation, not the answer.
+- Use an empty `clarification_ru` when the sentence is already unambiguous or no such distinction matters. Never add generic study advice about pronouns or grammar.
+- NATURALNESS IS A HARD REQUIREMENT. Describe an ordinary situation that a native Russian speaker could realistically say without extra backstory. Reject odd physical traits, medical-looking abnormalities, accidental body-part/color combinations, tautologies, and fragment-like statements. Explicitly forbidden examples include "ребёнок ест еду", "язык красный/чистый", "язык помогает пить", "рука близко к двери", "он кладёт голову на стол", "зелёное окно близко", "большая больница далеко" and "чёрный нож здесь". A location statement that needs a content verb such as "находится" is allowed only if that verb was supplied; otherwise choose another sentence. Use at most one adjective per noun and only for a conventional, useful description; grammatical correctness alone does not make a sentence natural.
+- Before producing JSON, silently review every item in this order: (1) Is the situation plausible and useful? (2) Is `prompt_ru` idiomatic Russian with correct agreement and cases, not a Spanish calque? (3) Does every content word come from the supplied vocabulary? (4) Is the Spanish translation faithful? Replace any item that fails even one check. Output only the reviewed final items.
 - Vary the sentences; do not repeat the same structure every time.
 - `prompt_ru` MUST be a fully grammatical, natural {{native_lang}} sentence a native speaker would actually say. If the available words cannot form a natural, correct {{native_lang}} sentence, build a SIMPLER sentence with fewer words rather than an awkward or broken one. NEVER output ungrammatical or nonsensical {{native_lang}} (e.g. wrong case, missing verb, word salad like "это фонду молодого человека").
 
 LANGUAGE
 - `prompt_ru` MUST be written entirely in {{native_lang}}, using ONLY the {{native_lang}} script/alphabet. It MUST NOT contain any {{target_lang}} word, name, or letter — translate every content word into {{native_lang}}. A single {{target_lang}} token leaking into `prompt_ru` makes the item invalid.
-- CRITICAL: the entries in `words` are {{target_lang}} lemmas. They belong ONLY in `reference_es`. In `prompt_ru` you MUST use the `translation` field ({{native_lang}}) for each word — NEVER copy the `lemma`. Example of a FORBIDDEN leak: given {"lemma":"gato","translation":"кот"}, writing "gato пьёт воду" is WRONG; the correct `prompt_ru` is "Кот пьёт воду". If you cannot recall the {{native_lang}} word, drop that word and build a simpler sentence — never fall back to the {{target_lang}} lemma.
+- CRITICAL: entries in `focus_words` and `support_words` are {{target_lang}} lemmas. They belong ONLY in `reference_es`. In `prompt_ru` use the supplied `translation` — NEVER copy the lemma or invent a Russian synonym that may be unknown. When a translation contains alternatives separated by `/`, choose the natural alternative for the sentence; do not combine or expose the slash.
 - `reference_es` MUST be written entirely in {{target_lang}}. Never mix languages in a field.
 
 OUTPUT (STRICT)
@@ -32,12 +41,12 @@ OUTPUT (STRICT)
   "sentences": [
     {
       "prompt_ru": "<sentence in {{native_lang}} for the learner to translate>",
-      "clarification_ru": "<short optional Russian context; empty string if not needed>",
+      "clarification_ru": "<one natural optional context sentence covering every otherwise ambiguous choice; empty if unnecessary>",
       "reference_es": "<the single correct {{target_lang}} translation>",
       "used_words": ["<lemma from words[] actually used in this sentence>", ...]
     }
   ]
 }
-- `used_words` MUST contain only lemmas that appear (in any inflected form) in `reference_es` and that came from the input `words`. Omit added function words.
+- `used_words` MUST contain only lemmas that appear (in any inflected form) in `reference_es` and that came from `focus_words` or `support_words`. Every item must contain at least one focus lemma. Omit only allowed function words.
 - `reference_es` MUST be a correct, natural translation respecting `allowed_tenses`.
 - Produce exactly `sentence_count` items.

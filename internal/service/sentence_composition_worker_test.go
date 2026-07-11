@@ -55,3 +55,20 @@ func TestLearningForCourseCode(t *testing.T) {
 		t.Fatalf("expected fallback, got %+v", got)
 	}
 }
+
+func TestSentenceFocusWordCount(t *testing.T) {
+	tests := []struct {
+		total, sentences, want int
+	}{
+		{80, 20, 20},
+		{40, 20, 13},
+		{12, 20, 4},
+		{2, 20, 1},
+		{0, 20, 0},
+	}
+	for _, tc := range tests {
+		if got := sentenceFocusWordCount(tc.total, tc.sentences); got != tc.want {
+			t.Errorf("sentenceFocusWordCount(%d, %d) = %d, want %d", tc.total, tc.sentences, got, tc.want)
+		}
+	}
+}

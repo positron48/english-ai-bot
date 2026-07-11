@@ -26,7 +26,10 @@ import (
 //
 //	SENTENCE_TEST_MODEL=openai/gpt-5.4-nano   # model id (default: $AI_MODEL)
 //	SENTENCE_TEST_COUNT=8                      # how many sentences to generate
+//	SENTENCE_TEST_GRADE_COUNT=5                # optionally grade only a sample
+//	SENTENCE_TEST_WORD_PROFILE=adversarial      # awkward-combination stress pool
 //	SENTENCE_TEST_INPUT="Tengo un gato"        # grade ONE custom answer against sentence #1 and stop
+//	SENTENCE_TEST_CONTEXT_RU="..."              # optional context for fixed grading mode
 func TestSentenceLLMHarness(t *testing.T) {
 	if os.Getenv("RUN_SENTENCE_LLM") != "1" {
 		t.Skip("manual harness; set RUN_SENTENCE_LLM=1 (and AI_URL/AI_API_KEY/AI_MODEL) to run")
@@ -36,6 +39,9 @@ func TestSentenceLLMHarness(t *testing.T) {
 	model := firstNonEmptyEnv("SENTENCE_TEST_MODEL", "AI_MODEL")
 	if url == "" || model == "" {
 		t.Fatalf("need AI_URL and a model (SENTENCE_TEST_MODEL or AI_MODEL); url=%q model=%q", url, model)
+	}
+	if strings.Contains(url, "localhost") || strings.Contains(url, "127.0.0.1") || strings.Contains(url, "0.0.0.0") {
+		t.Fatalf("sentence LLM smoke tests must use the production cloud provider, not a local model: %s", url)
 	}
 	t.Logf("harness: url=%s model=%s", url, model)
 
@@ -55,28 +61,31 @@ func TestSentenceLLMHarness(t *testing.T) {
 	//   SENTENCE_TEST_INPUT="El gato bebe la agua"
 	if fr := strings.TrimSpace(os.Getenv("SENTENCE_TEST_REF_ES")); fr != "" {
 		fp := strings.TrimSpace(os.Getenv("SENTENCE_TEST_PROMPT_RU"))
+		fc := strings.TrimSpace(os.Getenv("SENTENCE_TEST_CONTEXT_RU"))
 		fin := os.Getenv("SENTENCE_TEST_INPUT")
-		g, err := svc.GradeSentenceForCourse(context.Background(), course, fp, "", fr, fin, model)
+		g, err := svc.GradeSentenceForCourse(context.Background(), course, fp, fc, fr, fin, model)
 		if err != nil {
 			t.Fatalf("fixed grade: %v", err)
 		}
-		t.Logf("\nFIXED GRADE:\n  prompt_ru=%q\n  reference=%q\n  input=%q\n  errors=%d outcome=%s corrected=%q\n  explanation=%q\n  tokens=%+v",
-			fp, fr, fin, g.ErrorCount, g.Outcome, g.CorrectedES, g.Explanation, g.Tokens)
+		t.Logf("\nFIXED GRADE:\n  prompt_ru=%q\n  context=%q\n  reference=%q\n  input=%q\n  errors=%d outcome=%s corrected=%q\n  explanation=%q\n  tokens=%+v",
+			fp, fc, fr, fin, g.ErrorCount, g.Outcome, g.CorrectedES, g.Explanation, g.Tokens)
 		return
 	}
 
 	// A realistic pool of "well-learned" Spanish words (lemma + RU gloss).
-	words := []GenSentenceWord{
-		{"gato", "кот"}, {"perro", "собака"}, {"casa", "дом"}, {"comer", "есть"},
-		{"beber", "пить"}, {"agua", "вода"}, {"libro", "книга"}, {"leer", "читать"},
-		{"amigo", "друг"}, {"grande", "большой"}, {"pequeño", "маленький"}, {"hablar", "говорить"},
-		{"trabajar", "работать"}, {"ciudad", "город"}, {"comprar", "покупать"}, {"feliz", "счастливый"},
-	}
+	words := sentenceTestWords(os.Getenv("SENTENCE_TEST_WORD_PROFILE"))
 	tenses := []string{"presente (indicativo)"}
 	count := atoiDefault(os.Getenv("SENTENCE_TEST_COUNT"), 8)
 
 	ctx := context.Background()
-	sentences, err := svc.GenerateSentenceSetForCourse(ctx, course, words, tenses, count, model)
+	focusCount := len(words) / 3
+	if focusCount < 1 {
+		focusCount = 1
+	}
+	if focusCount > count {
+		focusCount = count
+	}
+	sentences, err := svc.GenerateSentenceSetForCourse(ctx, course, words[:focusCount], words[focusCount:], tenses, count, model)
 	if err != nil {
 		t.Fatalf("generation failed: %v", err)
 	}
@@ -90,14 +99,39 @@ func TestSentenceLLMHarness(t *testing.T) {
 	// --- Generation quality report ---
 	usedWordsValid, usedWordsTotal := 0, 0
 	latinLeaks := 0
+	contextCount := 0
+	badContexts := 0
 	for i, s := range sentences {
-		t.Logf("\n[%d] RU: %s\n    ES: %s\n    used: %v", i+1, s.PromptRU, s.ReferenceES, s.UsedWords)
+		t.Logf("\n[%d] RU: %s\n    context: %s\n    ES: %s\n    used: %v", i+1, s.PromptRU, s.ClarificationRU, s.ReferenceES, s.UsedWords)
 		// The RU prompt must contain no Latin letters — any is a leaked Spanish word.
 		if strings.ContainsFunc(s.PromptRU, func(r rune) bool {
 			return (r >= 'a' && r <= 'z') || (r >= 'A' && r <= 'Z')
 		}) {
 			latinLeaks++
 			t.Errorf("[%d] LATIN LEAK in prompt_ru: %q", i+1, s.PromptRU)
+		}
+		if context := strings.TrimSpace(s.ClarificationRU); context != "" {
+			contextCount++
+			lowerContext := strings.ToLower(context)
+			for _, forbidden := range []string{"конкретн", "определённ", "определенн", "неопределённ", "неопределенн", "артикл", "используй el", "используй un"} {
+				if strings.Contains(lowerContext, forbidden) {
+					badContexts++
+					t.Errorf("[%d] context reveals/labels the answer (%q): %q", i+1, forbidden, context)
+					break
+				}
+			}
+			if strings.ContainsFunc(context, func(r rune) bool { return (r >= 'a' && r <= 'z') || (r >= 'A' && r <= 'Z') }) {
+				badContexts++
+				t.Errorf("[%d] LATIN LEAK in clarification_ru: %q", i+1, context)
+			}
+			if containsSpanishIndefiniteArticle(s.ReferenceES) && containsRussianDemonstrative(lowerContext) {
+				badContexts++
+				t.Errorf("[%d] indefinite referent is falsely identified by a Russian demonstrative: %q", i+1, context)
+			}
+			if (strings.Contains(lowerContext, "говорящий уже знает") || strings.Contains(lowerContext, "известн") && strings.Contains(lowerContext, "говорящ")) && !strings.Contains(lowerContext, "собесед") {
+				badContexts++
+				t.Errorf("[%d] definite referent is known only to the speaker, not both interlocutors: %q", i+1, context)
+			}
 		}
 		refLower := strings.ToLower(s.ReferenceES)
 		for _, uw := range s.UsedWords {
@@ -130,7 +164,12 @@ func TestSentenceLLMHarness(t *testing.T) {
 	// Scenario B: drop the last word -> a good grader must find >= 1 error (not star).
 	// Scenario C: empty answer -> must be "failed".
 	var aStar, bNonStar, cFailed int
-	for i, s := range sentences {
+	var articleChecks, usefulArticleExplanations int
+	gradeCount := atoiDefault(os.Getenv("SENTENCE_TEST_GRADE_COUNT"), len(sentences))
+	if gradeCount > len(sentences) {
+		gradeCount = len(sentences)
+	}
+	for i, s := range sentences[:gradeCount] {
 		ga, err := svc.GradeSentenceForCourse(ctx, course, s.PromptRU, s.ClarificationRU, s.ReferenceES, s.ReferenceES, model)
 		if err != nil {
 			t.Errorf("[%d] grade(reference) error: %v", i+1, err)
@@ -143,11 +182,22 @@ func TestSentenceLLMHarness(t *testing.T) {
 		}
 
 		corrupted := dropLastWord(s.ReferenceES)
+		articleSwap := false
+		if strings.TrimSpace(s.ClarificationRU) != "" {
+			if swapped, ok := swapFirstSpanishArticle(s.ReferenceES); ok {
+				corrupted = swapped
+				articleSwap = true
+				articleChecks++
+			}
+		}
 		if corrupted != s.ReferenceES {
 			gb, err := svc.GradeSentenceForCourse(ctx, course, s.PromptRU, s.ClarificationRU, s.ReferenceES, corrupted, model)
 			if err == nil {
 				if gb.ErrorCount >= 1 && gb.Outcome != "star" {
 					bNonStar++
+					if articleSwap && usefulArticleExplanation(gb.Explanation) {
+						usefulArticleExplanations++
+					}
 				} else {
 					t.Logf("[%d] MISSED error on corrupted %q: errors=%d outcome=%s", i+1, corrupted, gb.ErrorCount, gb.Outcome)
 				}
@@ -171,20 +221,99 @@ func TestSentenceLLMHarness(t *testing.T) {
 	t.Logf("generation: %d sentences (asked %d)", n, count)
 	t.Logf("prompt_ru Latin leaks: %d (must be 0)", latinLeaks)
 	t.Logf("used_words validity: %s", pct(usedWordsValid, usedWordsTotal))
-	t.Logf("grader: correct→star (no false positives): %s", pct(aStar, n))
-	t.Logf("grader: corrupted→detected error:          %s", pct(bNonStar, n))
-	t.Logf("grader: empty→failed:                      %s", pct(cFailed, n))
+	t.Logf("useful optional contexts: %d/%d (bad: %d)", contextCount, n, badContexts)
+	t.Logf("grader: correct→star (no false positives): %s", pct(aStar, gradeCount))
+	t.Logf("grader: corrupted→detected error:          %s", pct(bNonStar, gradeCount))
+	t.Logf("grader: empty→failed:                      %s", pct(cFailed, gradeCount))
+	t.Logf("article swaps with useful explanation:     %s", pct(usefulArticleExplanations, articleChecks))
 	t.Logf("========================================")
 
 	// Soft quality gates (logged, not hard-failed, so you can iterate on prompts).
-	if n > 0 {
-		if aStar*100/n < 90 {
+	if gradeCount > 0 {
+		if aStar*100/gradeCount < 90 {
 			t.Logf("⚠ grader flags correct answers too often (want >=90%% star on references)")
 		}
-		if bNonStar*100/n < 80 {
+		if bNonStar*100/gradeCount < 80 {
 			t.Logf("⚠ grader misses introduced errors too often (want >=80%% detection)")
 		}
 	}
+}
+
+func sentenceTestWords(profile string) []GenSentenceWord {
+	if strings.EqualFold(strings.TrimSpace(profile), "adversarial") {
+		return []GenSentenceWord{
+			{"niño", "ребёнок / мальчик"}, {"lengua", "язык"}, {"brazo", "рука"}, {"cabeza", "голова"},
+			{"negro", "чёрный"}, {"rojo", "красный"}, {"verde", "зелёный"}, {"grande", "большой"},
+			{"madre", "мать"}, {"vecino", "сосед"}, {"médico", "врач"}, {"amigo", "друг"},
+			{"cuchillo", "нож"}, {"mesa", "стол"}, {"ventana", "окно"}, {"hospital", "больница"},
+			{"libro", "книга"}, {"agua", "вода"}, {"comida", "еда"}, {"puerta", "дверь"},
+			{"leer", "читать"}, {"beber", "пить"}, {"comer", "есть"}, {"comprar", "покупать"},
+			{"abrir", "открывать"}, {"cerrar", "закрывать"}, {"buscar", "искать"}, {"encontrar", "находить"},
+			{"poner", "класть / ставить"}, {"llevar", "нести / носить"}, {"mirar", "смотреть"}, {"ayudar", "помогать"},
+			{"limpio", "чистый"}, {"sucio", "грязный"}, {"nuevo", "новый"}, {"viejo", "старый"},
+			{"aquí", "здесь"}, {"allí", "там"}, {"cerca", "близко"}, {"lejos", "далеко"},
+		}
+	}
+	return []GenSentenceWord{
+		{"gato", "кот"}, {"perro", "собака"}, {"casa", "дом"}, {"comer", "есть"},
+		{"beber", "пить"}, {"agua", "вода"}, {"libro", "книга"}, {"leer", "читать"},
+		{"amigo", "друг"}, {"grande", "большой"}, {"pequeño", "маленький"}, {"hablar", "говорить"},
+		{"trabajar", "работать"}, {"ciudad", "город"}, {"comprar", "покупать"}, {"feliz", "счастливый"},
+	}
+}
+
+func swapFirstSpanishArticle(sentence string) (string, bool) {
+	words := strings.Fields(sentence)
+	for i, word := range words {
+		punctuation := strings.TrimRight(word, ",.;:!?¡¿")
+		replacement := map[string]string{
+			"el": "un", "la": "una", "los": "unos", "las": "unas",
+			"un": "el", "una": "la", "unos": "los", "unas": "las",
+		}[strings.ToLower(punctuation)]
+		if replacement == "" {
+			continue
+		}
+		if punctuation != strings.ToLower(punctuation) {
+			replacement = strings.ToUpper(replacement[:1]) + replacement[1:]
+		}
+		words[i] = replacement + strings.TrimPrefix(word, punctuation)
+		return strings.Join(words, " "), true
+	}
+	return sentence, false
+}
+
+func usefulArticleExplanation(explanation string) bool {
+	lower := strings.ToLower(strings.TrimSpace(explanation))
+	if lower == "" {
+		return false
+	}
+	for _, tautology := range []string{"потому что книга конкрет", "потому что предмет конкрет", "вместо un", "вместо una", "а не un", "а не una"} {
+		if strings.Contains(lower, tautology) {
+			return false
+		}
+	}
+	return true
+}
+
+func containsSpanishIndefiniteArticle(sentence string) bool {
+	for _, word := range strings.Fields(strings.ToLower(sentence)) {
+		word = strings.Trim(word, ",.;:!?¡¿")
+		if word == "un" || word == "una" || word == "unos" || word == "unas" {
+			return true
+		}
+	}
+	return false
+}
+
+func containsRussianDemonstrative(context string) bool {
+	for _, word := range strings.Fields(strings.ToLower(context)) {
+		word = strings.Trim(word, ",.;:!?—–-()")
+		switch word {
+		case "этот", "эта", "это", "эту", "эти", "тот", "та", "то", "ту", "те":
+			return true
+		}
+	}
+	return false
 }
 
 func mustLoadPrompt(t *testing.T, path string) string {

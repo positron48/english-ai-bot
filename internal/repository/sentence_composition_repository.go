@@ -21,35 +21,62 @@ func NewSentenceCompositionRepository(db *sql.DB, logger *zap.Logger) *SentenceC
 	return &SentenceCompositionRepository{db: db, logger: logger}
 }
 
-// SelectCandidateWords returns well-learned words for the course (review state with stored
-// mastering_score >= minMastery, excluding "known" words), ordered by least participation in
-// this feature so far (used_count ASC, last_used_on ASC NULLS FIRST), then random.
+// SelectCandidateWords returns the user's best-known course vocabulary: reviewed words at or
+// above minMastery plus words explicitly marked known (even without a user_card). Explicitly
+// known and higher-mastery words rank first; sentence participation rotates equally mastered words.
 func (r *SentenceCompositionRepository) SelectCandidateWords(userID int64, courseCode string, minMastery, limit int) ([]models.SentenceWordCandidate, error) {
 	if minMastery < 0 {
 		minMastery = 0
 	}
 	query := `
-		SELECT tc.word_card_id,
+		WITH eligible AS (
+			SELECT tc.word_card_id,
+			       COALESCE(uwm.mastering_score, 0) AS mastery_score,
+			       0 AS explicitly_known
+			FROM user_cards uc
+			JOIN training_cards tc ON uc.training_card_id = tc.id
+			LEFT JOIN user_word_mastering uwm
+			  ON uwm.user_id = uc.user_id AND uwm.word_card_id = tc.word_card_id
+			 AND (? = '' OR uwm.course_code IS NULL OR uwm.course_code = '' OR uwm.course_code = ?)
+			WHERE uc.user_id = ?
+			  AND uc.state = 'review'
+			  AND (? = '' OR uc.course_code = ?)
+			  AND COALESCE(uwm.mastering_score, 0) >= ?
+
+			UNION ALL
+
+			SELECT uwk.word_card_id, 101 AS mastery_score, 1 AS explicitly_known
+			FROM user_word_knowledge uwk
+			JOIN word_cards known_wc ON known_wc.id = uwk.word_card_id
+			WHERE uwk.user_id = ? AND uwk.status = 'known'
+			  AND (? = '' OR uwk.course_code = ? OR (
+			       (uwk.course_code IS NULL OR uwk.course_code = '')
+			       AND (known_wc.course_code IS NULL OR known_wc.course_code = '' OR known_wc.course_code = ?)
+			  ))
+		), ranked AS (
+			SELECT word_card_id, MAX(mastery_score) AS mastery_score, MAX(explicitly_known) AS explicitly_known
+			FROM eligible GROUP BY word_card_id
+		)
+		SELECT ranked.word_card_id,
 		       COALESCE(MAX(wc.word), '') AS lemma,
-		       MAX(tc.word_ru) AS word_ru,
+		       COALESCE(MAX(NULLIF(tc_display.word_ru, '')), MAX(NULLIF(wc.definition_ru, '')), MAX(NULLIF(wc.definition, ''))) AS word_ru,
 		       COALESCE(MAX(swu.used_count), 0) AS used_count
-		FROM user_cards uc
-		JOIN training_cards tc ON uc.training_card_id = tc.id
-		JOIN word_cards wc ON tc.word_card_id = wc.id
-		LEFT JOIN user_word_mastering uwm ON uwm.user_id = uc.user_id AND uwm.word_card_id = tc.word_card_id
-		LEFT JOIN sentence_word_usage swu ON swu.user_id = uc.user_id AND swu.word_card_id = tc.word_card_id AND swu.course_code = ?
-		WHERE uc.user_id = ?
-		  AND uc.state = 'review'
-		  AND (? = '' OR uc.course_code = ?)
-		  AND COALESCE(uwm.mastering_score, 0) >= ?
-		  AND NOT EXISTS (
-		      SELECT 1 FROM user_word_knowledge uwk
-		      WHERE uwk.user_id = uc.user_id AND uwk.word_card_id = tc.word_card_id AND uwk.status = 'known'
-		  )
-		GROUP BY tc.word_card_id
-		ORDER BY used_count ASC, MAX(COALESCE(swu.last_used_on, '1970-01-01')) ASC, RANDOM()
+		FROM ranked
+		JOIN word_cards wc ON wc.id = ranked.word_card_id
+		LEFT JOIN training_cards tc_display ON tc_display.word_card_id = ranked.word_card_id
+		 AND (? = '' OR tc_display.course_code IS NULL OR tc_display.course_code = '' OR tc_display.course_code = ?)
+		LEFT JOIN sentence_word_usage swu ON swu.user_id = ? AND swu.word_card_id = ranked.word_card_id AND swu.course_code = ?
+		GROUP BY ranked.word_card_id, ranked.mastery_score, ranked.explicitly_known
+		ORDER BY ranked.explicitly_known DESC, ranked.mastery_score DESC,
+		         used_count ASC, MAX(COALESCE(swu.last_used_on, '1970-01-01')) ASC, RANDOM()
 		LIMIT ?`
-	rows, err := r.db.Query(query, courseCode, userID, courseCode, courseCode, minMastery, limit)
+	rows, err := r.db.Query(query,
+		courseCode, courseCode,
+		userID, courseCode, courseCode, minMastery,
+		userID, courseCode, courseCode, courseCode,
+		courseCode, courseCode,
+		userID, courseCode,
+		limit)
 	if err != nil {
 		return nil, fmt.Errorf("select candidate words: %w", err)
 	}
@@ -383,6 +410,48 @@ func (r *SentenceCompositionRepository) ListSetsByUser(userID int64, limit int) 
 		}
 	}
 	return out, rows.Err()
+}
+
+// DeleteReadySet removes an unstarted set owned by userID and rolls back its
+// per-word participation counters. Started and completed sets are retained as history.
+func (r *SentenceCompositionRepository) DeleteReadySet(userID, setID int64) (bool, error) {
+	tx, err := r.db.Begin()
+	if err != nil {
+		return false, fmt.Errorf("begin tx: %w", err)
+	}
+	defer func() { _ = tx.Rollback() }()
+
+	var courseCode string
+	if err := tx.QueryRow(`SELECT course_code FROM sentence_sets WHERE id = ? AND user_id = ? AND status = 'ready' FOR UPDATE`, setID, userID).Scan(&courseCode); err != nil {
+		if err == sql.ErrNoRows {
+			return false, nil
+		}
+		return false, fmt.Errorf("load ready set: %w", err)
+	}
+
+	if _, err := tx.Exec(`
+		WITH used_words AS (
+			SELECT DISTINCT (word_id.value)::bigint AS word_card_id
+			FROM sentence_items si
+			CROSS JOIN LATERAL jsonb_array_elements_text(si.word_card_ids) AS word_id(value)
+			WHERE si.set_id = ?
+		)
+		UPDATE sentence_word_usage swu
+		SET used_count = GREATEST(0, swu.used_count - 1)
+		FROM used_words uw
+		WHERE swu.user_id = ? AND swu.course_code = ? AND swu.word_card_id = uw.word_card_id`, setID, userID, courseCode); err != nil {
+		return false, fmt.Errorf("roll back word usage: %w", err)
+	}
+	if _, err := tx.Exec(`DELETE FROM sentence_word_usage WHERE user_id = ? AND course_code = ? AND used_count = 0`, userID, courseCode); err != nil {
+		return false, fmt.Errorf("remove empty word usage: %w", err)
+	}
+	if _, err := tx.Exec(`DELETE FROM sentence_sets WHERE id = ? AND user_id = ? AND status = 'ready'`, setID, userID); err != nil {
+		return false, fmt.Errorf("delete ready set: %w", err)
+	}
+	if err := tx.Commit(); err != nil {
+		return false, fmt.Errorf("commit: %w", err)
+	}
+	return true, nil
 }
 
 // ParticipationCount returns the stored participation counter for one word (testing/inspection).

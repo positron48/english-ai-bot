@@ -2,6 +2,8 @@ package web
 
 import (
 	"encoding/json"
+	"errors"
+	"io"
 	"net/http"
 	"strconv"
 	"strings"
@@ -34,6 +36,7 @@ func (r *Router) handleAdminSentenceCompositionUsers(w http.ResponseWriter, req 
 //
 //	GET  /api/admin/sentence-composition/users/{id}          -> sets + items
 //	POST /api/admin/sentence-composition/users/{id}/generate -> force generate a new set
+//	DELETE /api/admin/sentence-composition/users/{id}/sets/{setID} -> remove a ready set
 func (r *Router) handleAdminSentenceCompositionUserDetail(w http.ResponseWriter, req *http.Request) {
 	rest := strings.TrimPrefix(req.URL.Path, "/api/admin/sentence-composition/users/")
 	rest = strings.Trim(rest, "/")
@@ -51,6 +54,15 @@ func (r *Router) handleAdminSentenceCompositionUserDetail(w http.ResponseWriter,
 	// POST .../generate — force a new set.
 	if len(parts) == 2 && parts[1] == "generate" {
 		r.adminForceGenerateSentenceSet(w, req, userID)
+		return
+	}
+	if len(parts) == 3 && parts[1] == "sets" {
+		setID, err := strconv.ParseInt(parts[2], 10, 64)
+		if err != nil || setID <= 0 {
+			http.Error(w, "Invalid set id", http.StatusBadRequest)
+			return
+		}
+		r.adminDeleteReadySentenceSet(w, req, userID, setID)
 		return
 	}
 	if len(parts) != 1 {
@@ -103,10 +115,23 @@ func (r *Router) handleAdminSentenceCompositionUserDetail(w http.ResponseWriter,
 		})
 	}
 	writeJSON(w, map[string]interface{}{
-		"user_id": userID,
-		"sets":    out,
-		"enabled": r.sentenceWorker != nil,
+		"user_id":           userID,
+		"sets":              out,
+		"enabled":           r.sentenceWorker != nil,
+		"available_courses": r.sentenceCoursesForUser(req, userID),
 	})
+}
+
+func (r *Router) sentenceCoursesForUser(req *http.Request, userID int64) []string {
+	if r.sentenceWorker == nil {
+		return nil
+	}
+	courses, err := r.sentenceWorker.SentenceCourseCodesForUser(req.Context(), userID)
+	if err != nil {
+		r.logger.Warn("admin sentence: list available courses", zap.Error(err), zap.Int64("user_id", userID))
+		return nil
+	}
+	return courses
 }
 
 func (r *Router) adminForceGenerateSentenceSet(w http.ResponseWriter, req *http.Request, userID int64) {
@@ -120,7 +145,22 @@ func (r *Router) adminForceGenerateSentenceSet(w http.ResponseWriter, req *http.
 		_ = json.NewEncoder(w).Encode(map[string]string{"error": "sentence composition is disabled"})
 		return
 	}
-	setID, err := r.sentenceWorker.ForceGenerateForUser(req.Context(), userID)
+	var input struct {
+		CourseCode string `json:"course_code"`
+	}
+	if req.Body != nil {
+		if err := json.NewDecoder(req.Body).Decode(&input); err != nil && !errors.Is(err, io.EOF) {
+			http.Error(w, "Invalid request body", http.StatusBadRequest)
+			return
+		}
+	}
+	var setID int64
+	var err error
+	if strings.TrimSpace(input.CourseCode) == "" {
+		setID, err = r.sentenceWorker.ForceGenerateForUser(req.Context(), userID)
+	} else {
+		setID, err = r.sentenceWorker.ForceGenerateForUserCourse(req.Context(), userID, input.CourseCode)
+	}
 	if err != nil {
 		r.logger.Warn("admin sentence: force generate failed", zap.Error(err), zap.Int64("user_id", userID))
 		w.Header().Set("Content-Type", "application/json")
@@ -135,4 +175,22 @@ func (r *Router) adminForceGenerateSentenceSet(w http.ResponseWriter, req *http.
 		return
 	}
 	writeJSON(w, map[string]interface{}{"generated": true, "set_id": setID})
+}
+
+func (r *Router) adminDeleteReadySentenceSet(w http.ResponseWriter, req *http.Request, userID, setID int64) {
+	if req.Method != http.MethodDelete {
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
+		return
+	}
+	deleted, err := r.sentenceRepo().DeleteReadySet(userID, setID)
+	if err != nil {
+		r.logger.Error("admin sentence: delete ready set", zap.Error(err), zap.Int64("user_id", userID), zap.Int64("set_id", setID))
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	if !deleted {
+		http.Error(w, "Ready set not found", http.StatusNotFound)
+		return
+	}
+	writeJSON(w, map[string]bool{"deleted": true})
 }

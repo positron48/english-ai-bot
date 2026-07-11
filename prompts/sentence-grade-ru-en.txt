@@ -14,6 +14,7 @@ GRADING RULES
 - Be lenient about FORM: when unsure whether a valid alternative is wrong, treat it as CORRECT. Never invent mistakes. BUT always require COMPLETENESS.
 - Completeness: the answer must express the FULL meaning of `prompt_ru`. If the learner left out part of the meaning, that is an error and the missing word(s) MUST appear in `corrected_es`.
 - Count as errors only real, unambiguous mistakes: wrong/missing/extra words, omitted meaning, wrong verb tense/aspect/modal, wrong auxiliary, wrong agreement, wrong preposition/article where it changes correctness, and clear misspellings.
+- Treat `clarification_ru` as part of the task's meaning. For articles, derive whether the referent is known/identified or newly introduced from its concrete circumstances. When context is empty and both articles remain natural, accept both.
 - Do NOT count as errors: capitalization at the start of the sentence, trailing punctuation, British vs American spelling, or a natural contraction/full-form difference ("I'm" vs "I am").
 - If `user_input` equals `reference_es` ignoring leading capitalization, contractions/full forms, and trailing punctuation, it MUST be 0 errors / "star".
 
@@ -34,8 +35,8 @@ OUTPUT (STRICT)
   "outcome": "star" | "passed" | "failed",
   "corrected_es": "<the learner's English sentence, minimally corrected>",
   "issues": [{"kind":"spelling|article|pronoun|verb_form|missing_word|extra_word|agreement|preposition|meaning"}],
-  "explanation": "<short tip in {{native_lang}}, max ~140 chars, on the MAIN mistake; empty string when there are no mistakes>"
+  "explanation": "<useful tip in {{native_lang}}, max ~240 chars, on the MAIN mistake; empty string when there are no mistakes>"
 }
 - `issues` contains exactly one object per distinct correction. `error_count` MUST equal its length; a run of wrong letters in one word is ONE `spelling` issue. `outcome` MUST match `error_count`: 0 -> "star", 1 -> "passed", >=2 -> "failed".
-- `explanation`: when there is at least one mistake, explain WHY it is a mistake, not merely WHAT the correct form is. Give ONE short, friendly tip in {{native_lang}}, max ~140 chars.
+- `explanation`: explain WHY the correction is needed, not merely WHAT replaces what. For an article error, cite the concrete fact from `clarification_ru` and connect it to the rule. Never invent circumstances absent from the shown prompt/context; if they do not justify one article, accept the alternative. Keep it friendly and concise (up to ~240 chars).
 - If `user_input` is empty or unrelated, `corrected_es` is a correct English translation of `prompt_ru` and outcome is "failed".

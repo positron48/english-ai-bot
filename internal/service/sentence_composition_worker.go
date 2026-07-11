@@ -196,10 +196,25 @@ func (w *SentenceCompositionWorker) sentenceCourseCodesForUser(ctx context.Conte
 	return out, nil
 }
 
-// ForceGenerateForUser generates a fresh set for one user regardless of the daily
-// regeneration guard (admin-triggered). It still requires Pro tier, a resolvable course
-// with both prompts registered, and enough well-learned words. Returns the new set id.
+// ForceGenerateForUser generates a fresh set for the user's current course.
 func (w *SentenceCompositionWorker) ForceGenerateForUser(ctx context.Context, userID int64) (int64, error) {
+	user, err := w.userRepo.GetUserByID(userID)
+	if err != nil {
+		return 0, err
+	}
+	if user == nil {
+		return 0, fmt.Errorf("user %d not found", userID)
+	}
+	courseCode, err := w.courseRepo.ResolveCurrentCourseCode(ctx, user.ID, w.defaultCode)
+	if err != nil || courseCode == "" {
+		return 0, fmt.Errorf("cannot resolve course for user %d", userID)
+	}
+	return w.ForceGenerateForUserCourse(ctx, userID, courseCode)
+}
+
+// ForceGenerateForUserCourse generates a fresh set for an active user course regardless
+// of the daily regeneration guard (admin-triggered).
+func (w *SentenceCompositionWorker) ForceGenerateForUserCourse(ctx context.Context, userID int64, courseCode string) (int64, error) {
 	user, err := w.userRepo.GetUserByID(userID)
 	if err != nil {
 		return 0, err
@@ -210,9 +225,20 @@ func (w *SentenceCompositionWorker) ForceGenerateForUser(ctx context.Context, us
 	if !models.ParseUserTier(string(user.SubscriptionTier)).AtLeast(models.TierPro) {
 		return 0, fmt.Errorf("user %d is not Pro", userID)
 	}
-	courseCode, err := w.courseRepo.ResolveCurrentCourseCode(ctx, user.ID, w.defaultCode)
-	if err != nil || courseCode == "" {
-		return 0, fmt.Errorf("cannot resolve course for user %d", userID)
+	courseCode = strings.ToLower(strings.TrimSpace(courseCode))
+	courses, err := w.sentenceCourseCodesForUser(ctx, user.ID)
+	if err != nil {
+		return 0, fmt.Errorf("cannot resolve courses for user %d: %w", userID, err)
+	}
+	allowed := false
+	for _, code := range courses {
+		if code == courseCode {
+			allowed = true
+			break
+		}
+	}
+	if !allowed {
+		return 0, fmt.Errorf("course %q is not active for user %d", courseCode, userID)
 	}
 	if !w.aiService.HasSentencePromptsForCourse(courseCode) {
 		return 0, fmt.Errorf("sentence prompts not configured for course %q", courseCode)
@@ -223,6 +249,21 @@ func (w *SentenceCompositionWorker) ForceGenerateForUser(ctx context.Context, us
 	}
 	today := time.Now().In(loc).Format("2006-01-02")
 	return w.generateSet(ctx, user, courseCode, today)
+}
+
+// SentenceCourseCodesForUser returns the active courses eligible for sentence generation.
+func (w *SentenceCompositionWorker) SentenceCourseCodesForUser(ctx context.Context, userID int64) ([]string, error) {
+	codes, err := w.sentenceCourseCodesForUser(ctx, userID)
+	if err != nil {
+		return nil, err
+	}
+	out := make([]string, 0, len(codes))
+	for _, code := range codes {
+		if w.aiService.HasSentencePromptsForCourse(code) {
+			out = append(out, code)
+		}
+	}
+	return out, nil
 }
 
 // generateSet builds and persists one sentence set for the user/course, bumping word-usage
@@ -257,8 +298,12 @@ func (w *SentenceCompositionWorker) generateSet(ctx context.Context, user *model
 		lemmaToID[strings.ToLower(strings.TrimSpace(c.Lemma))] = c.WordCardID
 	}
 
+	focusCount := sentenceFocusWordCount(len(words), w.sentencesPerSet())
+	focusWords := words[:focusCount]
+	supportWords := words[focusCount:]
+
 	// Uses the default model (5.5-nano by config); generation is once/day, grading is the hot path.
-	sentences, err := w.aiService.GenerateSentenceSetForCourse(ctx, courseCode, words, humanizeScopes(scopes), w.sentencesPerSet())
+	sentences, err := w.aiService.GenerateSentenceSetForCourse(ctx, courseCode, focusWords, supportWords, humanizeScopes(scopes), w.sentencesPerSet())
 	if err != nil {
 		if w.cbService != nil {
 			_ = w.cbService.RecordFailure(err.Error())
@@ -359,7 +404,26 @@ func (w *SentenceCompositionWorker) wordsPerSet() int {
 	if w.cfg.WordsPerSet > 0 {
 		return w.cfg.WordsPerSet
 	}
-	return 40
+	return 80
+}
+
+// sentenceFocusWordCount keeps a smaller least-used focus list and reserves the
+// rest of the user's known vocabulary as natural sentence-building support.
+func sentenceFocusWordCount(total, sentenceCount int) int {
+	if total <= 0 {
+		return 0
+	}
+	focus := total / 3
+	if focus < 1 {
+		focus = 1
+	}
+	if sentenceCount > 0 && focus > sentenceCount {
+		focus = sentenceCount
+	}
+	if focus > total {
+		focus = total
+	}
+	return focus
 }
 
 func (w *SentenceCompositionWorker) sentencesPerSet() int {

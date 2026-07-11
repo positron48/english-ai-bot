@@ -14,7 +14,8 @@ GRADING RULES
 - Be lenient about FORM: when unsure whether a valid alternative is wrong, treat it as CORRECT. Never invent mistakes. BUT always require COMPLETENESS (see next rule).
 - Completeness: the answer must express the FULL meaning of `prompt_ru`. If the learner left out part of the meaning, that is an error and the missing word(s) MUST appear in `corrected_es`.
 - Count as errors only real, unambiguous mistakes: wrong/missing/extra words, omitted meaning, wrong verb form or agreement, wrong gender/number, wrong preposition, and clear misspellings.
-- Spanish subject pronouns are optional when the conjugated verb already identifies the subject and there is no contrast. Accept both the natural pronoun and omitted-pronoun forms. For articles, obey `clarification_ru`; when it is empty and both choices are natural, accept both.
+- Spanish subject pronouns are optional when the conjugated verb already identifies the subject and there is no contrast. Accept both the natural pronoun and omitted-pronoun forms.
+- Treat `clarification_ru` as part of the task's meaning. For articles, derive whether the referent is known/identified or newly introduced from the concrete circumstances stated there. When context is empty and both articles remain natural, accept both.
 - Accents: count a missing or wrong accent ONLY when it turns the word into a different word or is plainly required spelling (e.g. "esta" vs "está"). Otherwise ignore accents.
 - NEVER count as errors: capitalization at the start of the sentence, and trailing punctuation (. ! ? ¡ ¿).
 - If `user_input` equals `reference_es` (ignoring leading capitalization and trailing punctuation), it MUST be 0 errors / "star".
@@ -34,8 +35,8 @@ OUTPUT (STRICT)
   "outcome": "star" | "passed" | "failed",   // star = 0 errors, passed = 1 error, failed = 2+ errors
   "corrected_es": "<the learner's sentence, minimally corrected>",
   "issues": [{"kind":"spelling|article|pronoun|verb_form|missing_word|extra_word|agreement|preposition|meaning"}],
-  "explanation": "<short tip in {{native_lang}}, max ~140 chars, on the MAIN mistake; empty string when there are no mistakes>"
+  "explanation": "<useful tip in {{native_lang}}, max ~240 chars, on the MAIN mistake; empty string when there are no mistakes>"
 }
 - `issues` contains exactly one object per distinct correction. `error_count` MUST equal its length; a run of wrong letters in one word is ONE `spelling` issue. `outcome` MUST match `error_count`: 0 -> "star", 1 -> "passed", >=2 -> "failed".
-- `explanation`: when there is at least one mistake, explain WHY it is a mistake — the underlying rule or reason — NOT merely WHAT the correct form is (the learner already sees the corrected sentence). Give ONE short, friendly tip in {{native_lang}}, max ~140 chars, about the most important error. Say why THIS word/form is required here: e.g. "la, а не una — речь о конкретном, уже упомянутом доме" or "hay, а не está — о наличии/существовании чего-то говорят через hay". When the answer is correct (star), use "".
+- `explanation`: when there is at least one mistake, explain WHY it is a mistake — the learner already sees the corrected form. For an article error, explicitly cite the useful fact from `clarification_ru`, then connect it to the rule and result. Good: "Книгу уже обсуждали, поэтому оба собеседника знают, о какой книге речь — нужен el." Forbidden: "Здесь нужен el, потому что книга конкретная" or merely "el, а не un". Never invent circumstances absent from the shown prompt/context. If they do not justify one article, do not count the alternative as an error. Keep the tip friendly and concise (up to ~240 chars). When the answer is correct, use "".
 - If `user_input` is empty or unrelated, `corrected_es` is a correct translation of `prompt_ru` and outcome is "failed".

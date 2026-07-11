@@ -56,6 +56,48 @@ func TestSentenceComposition_SelectCandidateWords_OrdersByLeastUsed(t *testing.T
 	}
 }
 
+func TestSentenceComposition_SelectCandidateWords_IncludesExplicitlyKnownWithoutStudy(t *testing.T) {
+	logger, _ := zap.NewDevelopment()
+	db := testutil.SetupTestDB(t)
+	repo := NewSentenceCompositionRepository(db, logger)
+	userRepo := NewUserRepository(db, logger)
+	user, _ := userRepo.GetOrCreateUser(7006)
+	const course = "es_ru"
+
+	var knownWC int64
+	if err := db.QueryRow(`INSERT INTO word_cards (word, definition, definition_ru, course_code) VALUES ('ventana', 'window', 'окно', ?) RETURNING id`, course).Scan(&knownWC); err != nil {
+		t.Fatalf("insert known word: %v", err)
+	}
+	if _, err := db.Exec(`INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en, course_code) VALUES (?, 'ventana', 0, 'окно', 'window', ?)`, knownWC, course); err != nil {
+		t.Fatalf("insert known training card: %v", err)
+	}
+	if _, err := db.Exec(`INSERT INTO user_word_knowledge (user_id, word_card_id, status, course_code) VALUES (?, ?, 'known', ?)`, user.ID, knownWC, course); err != nil {
+		t.Fatalf("mark known: %v", err)
+	}
+
+	var lowWC, lowTC int64
+	if err := db.QueryRow(`INSERT INTO word_cards (word, definition, course_code) VALUES ('raro', 'rare', ?) RETURNING id`, course).Scan(&lowWC); err != nil {
+		t.Fatalf("insert low word: %v", err)
+	}
+	if err := db.QueryRow(`INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en, course_code) VALUES (?, 'raro', 0, 'редкий', 'rare', ?) RETURNING id`, lowWC, course).Scan(&lowTC); err != nil {
+		t.Fatalf("insert low training card: %v", err)
+	}
+	if _, err := db.Exec(`INSERT INTO user_cards (user_id, training_card_id, direction, state, ef, course_code) VALUES (?, ?, 'ru_en', 'review', 2.5, ?)`, user.ID, lowTC, course); err != nil {
+		t.Fatalf("insert low user card: %v", err)
+	}
+	if _, err := db.Exec(`INSERT INTO user_word_mastering (user_id, word_card_id, mastering_score, course_code) VALUES (?, ?, 69, ?)`, user.ID, lowWC, course); err != nil {
+		t.Fatalf("insert low mastery: %v", err)
+	}
+
+	got, err := repo.SelectCandidateWords(user.ID, course, 70, 10)
+	if err != nil {
+		t.Fatalf("SelectCandidateWords: %v", err)
+	}
+	if len(got) != 1 || got[0].WordCardID != knownWC || got[0].Lemma != "ventana" || got[0].Translation != "окно" {
+		t.Fatalf("expected only explicitly known word, got %+v", got)
+	}
+}
+
 func TestSentenceComposition_CreateAndRecordAttempt(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := testutil.SetupTestDB(t)

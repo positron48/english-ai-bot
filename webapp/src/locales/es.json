@@ -489,6 +489,7 @@
   "sentence": {
     "title": "Composición de oraciones",
     "taskSubtitle": "Traduce la oración al {lang}",
+    "contextLabel": "Contexto",
     "dashboardTitle": "Tu set de oraciones está listo",
     "dashboardSub": "Traduce las oraciones de hoy a tu idioma de estudio",
     "shortTitle": "Traducción de frases",

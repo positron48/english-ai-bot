@@ -174,9 +174,9 @@ type LoggingConfig struct {
 // AIConfig holds AI provider configuration
 type AIConfig struct {
 	// Provider selects the text LLM backend: openrouter (default) or polza.
-	Provider string `mapstructure:"provider"`
-	URL      string `mapstructure:"url"`
-	Model    string `mapstructure:"model"`
+	Provider  string `mapstructure:"provider"`
+	URL       string `mapstructure:"url"`
+	Model     string `mapstructure:"model"`
 	ModelHigh string `mapstructure:"model_high"`
 	// ConversationModel overrides the model used for NPC role-play conversations only (it benefits
 	// from stronger instruction-following than dictionary/training). Empty = fall back to Model.
@@ -411,7 +411,7 @@ func Load() (*Config, error) {
 	viper.SetDefault("sentence_composition.enabled", true)
 	viper.SetDefault("sentence_composition.interval", "1h")
 	viper.SetDefault("sentence_composition.sentences_per_set", 20)
-	viper.SetDefault("sentence_composition.words_per_set", 40)
+	viper.SetDefault("sentence_composition.words_per_set", 80)
 	viper.SetDefault("sentence_composition.min_words", 12)
 	viper.SetDefault("sentence_composition.mastering_threshold", 70)
 

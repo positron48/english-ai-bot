@@ -57,11 +57,15 @@
           <button
             v-if="enabled"
             class="primary"
-            :disabled="generating"
+            :disabled="generating || !selectedCourse"
             @click="generate"
           >
             {{ generating ? 'Генерирую…' : 'Сгенерировать новый набор' }}
           </button>
+          <select v-if="enabled" v-model="selectedCourse" class="course-filter" :disabled="generating">
+            <option value="" disabled>Выберите курс</option>
+            <option v-for="course in availableCourses" :key="course" :value="course">{{ course }}</option>
+          </select>
           <span v-if="genMessage" :class="genError ? 'warn' : 'ok'">{{ genMessage }}</span>
         </div>
       </div>
@@ -78,6 +82,9 @@
           <div class="mono set-stats">
             {{ set.attempted }}/{{ set.total }} · ★{{ set.stars }} ✓{{ set.passed }} ✗{{ set.failed }}
           </div>
+          <button v-if="set.status === 'ready'" class="danger" :disabled="deletingSetID === set.id" @click="deleteSet(set)">
+            {{ deletingSetID === set.id ? 'Удаляю…' : 'Удалить' }}
+          </button>
         </div>
         <table class="grid items">
           <thead>
@@ -93,7 +100,10 @@
           <tbody>
             <tr v-for="it in set.items" :key="it.id" :class="outcomeClass(it)">
               <td>{{ it.position + 1 }}</td>
-              <td>{{ it.prompt_ru }}</td>
+              <td>
+                <div>{{ it.prompt_ru }}</div>
+                <div v-if="it.clarification_ru" class="clarification">{{ it.clarification_ru }}</div>
+              </td>
               <td class="mono">{{ it.reference_es }}</td>
               <td class="mono">{{ it.user_input ?? '—' }}</td>
               <td>
@@ -132,6 +142,7 @@ interface Item {
   id: number
   position: number
   prompt_ru: string
+  clarification_ru?: string
   reference_es: string
   user_input?: string
   attempted: boolean
@@ -168,10 +179,13 @@ const filteredUsers = computed(() => {
 const selectedUser = ref<UserOverview | null>(null)
 const sets = ref<SetRow[]>([])
 const loadingDetail = ref(false)
+const availableCourses = ref<string[]>([])
+const selectedCourse = ref('')
 
 const generating = ref(false)
 const genMessage = ref('')
 const genError = ref(false)
+const deletingSetID = ref<number | null>(null)
 
 async function loadUsers() {
   loadingUsers.value = true
@@ -191,9 +205,17 @@ async function loadDetail(userID: number) {
   try {
     const res: any = await apiClient.request(`/api/admin/sentence-composition/users/${userID}`)
     sets.value = res.sets || []
+    availableCourses.value = res.available_courses || []
+    if (!availableCourses.value.includes(selectedCourse.value)) {
+      selectedCourse.value = availableCourses.value.includes(selectedUser.value?.course_code || '')
+        ? selectedUser.value!.course_code
+        : (availableCourses.value[0] || '')
+    }
     enabled.value = !!res.enabled
   } catch (e: any) {
     sets.value = []
+    availableCourses.value = []
+    selectedCourse.value = ''
   } finally {
     loadingDetail.value = false
   }
@@ -219,7 +241,7 @@ async function generate() {
   try {
     const res: any = await apiClient.request(
       `/api/admin/sentence-composition/users/${selectedUser.value.user_id}/generate`,
-      { method: 'POST' }
+      { method: 'POST', body: JSON.stringify({ course_code: selectedCourse.value }) }
     )
     genError.value = false
     genMessage.value = `Готово: набор #${res.set_id}`
@@ -229,6 +251,23 @@ async function generate() {
     genMessage.value = e?.message || 'Ошибка генерации'
   } finally {
     generating.value = false
+  }
+}
+
+async function deleteSet(set: SetRow) {
+  if (!selectedUser.value || !confirm(`Удалить готовый набор #${set.id}?`)) return
+  deletingSetID.value = set.id
+  genMessage.value = ''
+  genError.value = false
+  try {
+    await apiClient.request(`/api/admin/sentence-composition/users/${selectedUser.value.user_id}/sets/${set.id}`, { method: 'DELETE' })
+    genMessage.value = `Набор #${set.id} удалён`
+    await loadDetail(selectedUser.value.user_id)
+  } catch (e: any) {
+    genError.value = true
+    genMessage.value = e?.message || 'Ошибка удаления'
+  } finally {
+    deletingSetID.value = null
   }
 }
 
@@ -268,6 +307,7 @@ button {
   cursor: pointer;
 }
 button.primary { background: var(--accent-color, #3b82f6); color: #fff; border-color: transparent; }
+button.danger { color: #dc2626; border-color: #dc2626; }
 button:disabled { opacity: 0.6; cursor: default; }
 .course-filter {
   padding: 6px 10px;
@@ -302,6 +342,7 @@ button:disabled { opacity: 0.6; cursor: default; }
 .set-stats { color: var(--text-secondary); }
 .items td { font-size: 13px; }
 .explain { color: var(--text-secondary); max-width: 280px; }
+.clarification { color: var(--text-secondary); margin-top: 4px; }
 .row-star { background: rgba(22, 163, 74, 0.08); }
 .row-passed { background: rgba(234, 179, 8, 0.08); }
 .row-failed { background: rgba(220, 38, 38, 0.08); }
