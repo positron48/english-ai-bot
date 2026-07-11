@@ -68,3 +68,26 @@ func TestUsableSentenceClarification(t *testing.T) {
 		}
 	}
 }
+
+func TestSentenceExplanationLanguageMatches(t *testing.T) {
+	if !sentenceExplanationLanguageMatches("Они едят апельсин.", "Форма глагола должна согласоваться с vosotros.") {
+		t.Fatal("expected Russian explanation to match")
+	}
+	if sentenceExplanationLanguageMatches("Они едят апельсин.", "El verbo debe concordar con el sujeto.") {
+		t.Fatal("expected Spanish explanation to be rejected")
+	}
+	if !sentenceExplanationLanguageMatches("Они едят апельсин.", "") {
+		t.Fatal("empty explanation must remain valid")
+	}
+}
+
+func TestHasSpanishArticle(t *testing.T) {
+	for _, sentence := range []string{"Ellos comen una naranja.", "Leo el libro.", "Veo las casas."} {
+		if !hasSpanishArticle(sentence) {
+			t.Errorf("expected article in %q", sentence)
+		}
+	}
+	if hasSpanishArticle("Bebemos agua.") {
+		t.Fatal("unexpected article")
+	}
+}

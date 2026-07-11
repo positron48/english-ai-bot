@@ -504,7 +504,9 @@
     "outcomeStar": "Sin errores",
     "outcomePassed": "Aprobado",
     "outcomeFailed": "No aprobado",
-    "voiceInput": "Entrada de voz"
+    "voiceInput": "Entrada de voz",
+    "gradingError": "No se pudo comprobar la respuesta. Inténtalo de nuevo o vuelve a intentarlo más tarde.",
+    "retryBtn": "Enviar de nuevo"
   },
   "learning": {
     "title": "Aprendizaje",

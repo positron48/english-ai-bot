@@ -101,6 +101,13 @@
         <button class="sc-next" type="button" @click="next">{{ t('sentence.nextBtn') }}</button>
       </template>
 
+      <section v-else-if="gradingError" class="sc-submit-error" role="alert">
+        <div class="sc-submit-error-text">{{ t('sentence.gradingError') }}</div>
+        <button class="sc-next" type="button" :disabled="grading" @click="submit">
+          {{ grading ? t('sentence.checking') : t('sentence.retryBtn') }}
+        </button>
+      </section>
+
       <button
         v-else
         class="sc-next"
@@ -148,6 +155,7 @@ const current = ref<SentenceItem | null>(null)
 const result = ref<SentenceGrade | null>(null)
 const resultInput = ref('') // the exact text the learner submitted, for the correction diff
 const input = ref('')
+const gradingError = ref(false)
 const total = ref(0)
 const attempted = ref(0)
 const setState = ref<SentenceSetState>({ status: '', stars: 0, passed: 0, failed: 0, total: 0, attempted: 0 })
@@ -175,12 +183,14 @@ async function loadCurrent() {
   total.value = cur.total ?? total.value
   attempted.value = cur.attempted_count ?? (cur as any).attempted ?? attempted.value
   result.value = null
+  gradingError.value = false
   input.value = ''
 }
 
 async function submit() {
   if (!current.value || grading.value || !input.value.trim()) return
   grading.value = true
+  gradingError.value = false
   try {
     resultInput.value = input.value.trim()
     const res = await sentenceClient.answer(current.value.id, input.value)
@@ -188,6 +198,8 @@ async function submit() {
     setState.value = res.set
     attempted.value = res.set.attempted
     total.value = res.set.total
+  } catch {
+    gradingError.value = true
   } finally {
     grading.value = false
   }
@@ -262,6 +274,21 @@ onMounted(async () => {
 }
 .sc-empty-icon { font-size: 44px; }
 .sc-empty-text { color: var(--subtext); font-size: 17px; margin: 0; }
+
+.sc-submit-error {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid rgba(196, 68, 60, 0.32);
+  border-radius: 16px;
+  background: rgba(196, 68, 60, 0.08);
+}
+.sc-submit-error-text {
+  color: var(--wrong-ink);
+  font-size: 15px;
+  line-height: 1.45;
+}
 
 /* progress */
 .sc-progress-row {

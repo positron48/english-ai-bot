@@ -509,7 +509,9 @@
     "outcomeStar": "No mistakes",
     "outcomePassed": "Passed",
     "outcomeFailed": "Not passed",
-    "voiceInput": "Voice input"
+    "voiceInput": "Voice input",
+    "gradingError": "We couldn't check your answer. Try submitting it again or try later.",
+    "retryBtn": "Submit again"
   },
   "learning": {
     "title": "Learning",

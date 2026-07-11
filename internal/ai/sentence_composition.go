@@ -177,6 +177,7 @@ func (s *Service) generateSentenceBatchForCourse(ctx context.Context, courseCode
 			return nil, fmt.Errorf("parse sentence generation retry: %w (raw: %s)", err, truncateForLog(raw))
 		}
 	}
+	set.Sentences = s.repairMissingArticleContexts(ctx, model, courseCode, set.Sentences)
 	allWords := append(append(make([]GenSentenceWord, 0, len(focusWords)+len(supportWords)), focusWords...), supportWords...)
 	focusSet := make(map[string]bool, len(focusWords))
 	knownSet := make(map[string]bool, len(allWords))
@@ -205,6 +206,11 @@ func (s *Service) generateSentenceBatchForCourse(ctx context.Context, courseCode
 		if !usableSentenceClarification(sentence.ClarificationRU) {
 			s.logger.Warn("sentence generation returned an unusable learner context; dropping",
 				zap.String("course", courseCode), zap.String("clarification_ru", sentence.ClarificationRU))
+			continue
+		}
+		if strings.TrimSpace(sentence.ClarificationRU) == "" && hasSpanishArticle(sentence.ReferenceES) {
+			s.logger.Warn("sentence generation left an article choice without learner context; dropping",
+				zap.String("course", courseCode), zap.String("reference_es", sentence.ReferenceES))
 			continue
 		}
 		// The native-language prompt must never leak a target-language word. Weaker models
@@ -266,6 +272,43 @@ func (s *Service) generateSentenceBatchForCourse(ctx context.Context, courseCode
 	return out, nil
 }
 
+func (s *Service) repairMissingArticleContexts(ctx context.Context, model, courseCode string, sentences []GeneratedSentence) []GeneratedSentence {
+	needsRepair := false
+	for _, sentence := range sentences {
+		if strings.TrimSpace(sentence.ClarificationRU) == "" && hasSpanishArticle(sentence.ReferenceES) {
+			needsRepair = true
+			break
+		}
+	}
+	if !needsRepair {
+		return sentences
+	}
+	payload, err := json.Marshal(map[string]interface{}{"sentences": sentences})
+	if err != nil {
+		return sentences
+	}
+	const prompt = `Return ONLY JSON with the same {"sentences":[...]} array and preserve every field exactly except clarification_ru.
+For each item whose Spanish reference contains el/la/los/las/un/una/unos/unas and clarification_ru is empty, write one short natural Russian context sentence that makes the article choice inferable.
+For a definite article, state a concrete reason both speakers can identify the referent (they discussed it, requested it, or can uniquely identify it). For an indefinite article, state that this noun is introduced for the first time and no previously identified one is intended.
+Cover every article-bearing noun in the item. Use Cyrillic Russian only. Never mention grammar, article names, "конкретный", el/la/un/una, or reveal the answer directly.`
+	raw, err := s.postChatCompletion(ctx, model, []Message{{Role: "system", Content: prompt}, {Role: "user", Content: string(payload)}}, 3000, 0, zap.String("kind", "sentence_context_repair"), zap.String("course", courseCode))
+	if err != nil {
+		s.logger.Warn("sentence context repair failed", zap.Error(err))
+		return sentences
+	}
+	var repaired generatedSentenceSet
+	if err := json.Unmarshal([]byte(raw), &repaired); err != nil || len(repaired.Sentences) != len(sentences) {
+		s.logger.Warn("sentence context repair returned invalid payload", zap.Error(err))
+		return sentences
+	}
+	for i := range sentences {
+		if strings.TrimSpace(sentences[i].ClarificationRU) == "" {
+			sentences[i].ClarificationRU = strings.TrimSpace(repaired.Sentences[i].ClarificationRU)
+		}
+	}
+	return sentences
+}
+
 func (s *Service) reviewGeneratedSentenceQuality(ctx context.Context, model, courseCode string, focusWords, supportWords []GenSentenceWord, sentences []GeneratedSentence) []GeneratedSentence {
 	payload, err := json.Marshal(map[string]interface{}{
 		"allowed_vocabulary": append(append([]GenSentenceWord{}, focusWords...), supportWords...),
@@ -283,6 +326,7 @@ Accept an item only when ALL conditions hold:
 - it is a complete useful sentence, not a forced word combination or translation calque;
 - reference_es is a faithful, grammatical and natural translation of prompt_ru;
 - clarification_ru, when present, is coherent and does not contradict either sentence.
+- article choice is inferable from prompt_ru plus clarification_ru. If reference_es chooses a definite or indefinite article but bare Russian wording permits both, clarification_ru is mandatory and must state an observable fact that distinguishes already identified from newly introduced. Reject items like "Они едят апельсин" -> "Comen una naranja" when clarification_ru is empty;
 - every content-bearing word and action in BOTH prompt_ru and reference_es is derived from an entry in allowed_vocabulary (lemma or translation). Inflected forms are allowed. Function words are allowed: articles, pronouns, determiners, prepositions, conjunctions, particles and negation. Linking/existential uses of ser, estar and haber are allowed. Being grammatical, common or easy never makes an unsupplied content word acceptable;
 - used_words is complete: reject the item if either sentence contains a supplied content word that is omitted from used_words, or if used_words claims a word that is not actually expressed in both sides.
 Reject any Russian item without a finite verb, including nominal/location fragments whose Spanish translation inserts ser/estar. Reject odd physical traits, body-part/color combinations, tautologies, nonsensical ownership, unnatural fragments, and phrases like "язык чистый", "рука рядом с столом", "голова старая", "зелёное окно близко" or "чёрный нож на столе".
@@ -333,6 +377,18 @@ func usableSentenceClarification(context string) bool {
 	return !strings.ContainsFunc(context, func(r rune) bool { return unicode.Is(unicode.Latin, r) })
 }
 
+func hasSpanishArticle(sentence string) bool {
+	for _, token := range strings.FieldsFunc(strings.ToLower(sentence), func(r rune) bool {
+		return unicode.IsSpace(r) || unicode.IsPunct(r)
+	}) {
+		switch token {
+		case "el", "la", "los", "las", "un", "una", "unos", "unas":
+			return true
+		}
+	}
+	return false
+}
+
 // GradeSentenceForCourse grades one learner submission against the prompt and reference,
 // returning teacher-style markup tokens and an error count.
 func (s *Service) GradeSentenceForCourse(ctx context.Context, courseCode, promptRU, clarificationRU, referenceES, userInput string, modelOverride ...string) (*SentenceGrade, error) {
@@ -378,6 +434,29 @@ func (s *Service) GradeSentenceForCourse(ctx context.Context, courseCode, prompt
 	if err := json.Unmarshal([]byte(raw), &grade); err != nil {
 		return nil, fmt.Errorf("parse sentence grade: %w (raw: %s)", err, truncateForLog(raw))
 	}
+	if strings.TrimSpace(clarificationRU) == "" && sentenceGradeHasIssue(grade, "article") {
+		retryMessages := append(append([]Message{}, messages...), Message{Role: "system", Content: "Your previous grading incorrectly counted an article error even though clarification_ru is empty. With no disambiguating context, preserve any natural definite/indefinite article chosen by the learner. Re-grade from scratch, correct only genuine errors, minimally edit user_input, and return the complete JSON."})
+		raw, err = s.postChatCompletion(ctx, model, retryMessages, 2500, 0, zap.String("kind", "sentence_grade_ambiguous_article_retry"), zap.String("course", courseCode))
+		if err != nil {
+			return nil, err
+		}
+		if err := json.Unmarshal([]byte(raw), &grade); err != nil {
+			return nil, fmt.Errorf("parse sentence ambiguous article retry: %w (raw: %s)", err, truncateForLog(raw))
+		}
+	}
+	if !sentenceExplanationLanguageMatches(promptRU, grade.Explanation) {
+		retryMessages := append(append([]Message{}, messages...), Message{Role: "system", Content: "The explanation field MUST be written in Russian using Cyrillic. Re-evaluate the original input and return the complete JSON again. Do not translate the explanation into Spanish."})
+		raw, err = s.postChatCompletion(ctx, model, retryMessages, 2500, 0, zap.String("kind", "sentence_grade_language_retry"), zap.String("course", courseCode))
+		if err != nil {
+			return nil, err
+		}
+		if err := json.Unmarshal([]byte(raw), &grade); err != nil {
+			return nil, fmt.Errorf("parse sentence grade language retry: %w (raw: %s)", err, truncateForLog(raw))
+		}
+		if !sentenceExplanationLanguageMatches(promptRU, grade.Explanation) {
+			grade.Explanation = "Исправьте отмеченные части предложения и проверьте согласование слов."
+		}
+	}
 	if grade.ErrorCount < 0 {
 		grade.ErrorCount = 0
 	}
@@ -386,6 +465,22 @@ func (s *Service) GradeSentenceForCourse(ctx context.Context, courseCode, prompt
 	}
 	grade.Outcome = strings.TrimSpace(grade.Outcome)
 	return &grade, nil
+}
+
+func sentenceGradeHasIssue(grade SentenceGrade, kind string) bool {
+	for _, issue := range grade.Issues {
+		if strings.EqualFold(strings.TrimSpace(issue.Kind), kind) {
+			return true
+		}
+	}
+	return false
+}
+
+func sentenceExplanationLanguageMatches(prompt, explanation string) bool {
+	if strings.TrimSpace(explanation) == "" || !strings.ContainsFunc(prompt, func(r rune) bool { return unicode.Is(unicode.Cyrillic, r) }) {
+		return true
+	}
+	return strings.ContainsFunc(explanation, func(r rune) bool { return unicode.Is(unicode.Cyrillic, r) })
 }
 
 // NormalizedSentenceAnswer ignores the presentation differences explicitly not
