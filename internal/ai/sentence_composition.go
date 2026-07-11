@@ -29,6 +29,10 @@ type generatedSentenceSet struct {
 	Sentences []GeneratedSentence `json:"sentences"`
 }
 
+type sentenceQualityReview struct {
+	AcceptedPositions []int `json:"accepted_positions"`
+}
+
 // SentenceGradeToken is one rendered token of teacher-style markup.
 // Status: "ok" (correct), "wrong" (struck out, Correction shown above),
 // "insert" (a missing word the learner should have written, shown as Correction).
@@ -93,12 +97,29 @@ func (s *Service) GenerateSentenceSetForCourse(ctx context.Context, courseCode s
 			batchFocus = append(batchFocus, focusWords[(offset+i)%len(focusWords)])
 		}
 		batch := make([]GeneratedSentence, 0, batchCount)
-		for attempt := 0; attempt < 3 && len(batch) < batchCount; attempt++ {
-			generated, err := s.generateSentenceBatchForCourse(ctx, courseCode, batchFocus, supportWords, tenses, batchCount-len(batch), modelOverride...)
+		seen := make(map[string]bool, batchCount*2)
+		for attempt := 0; attempt < 4 && len(batch) < batchCount; attempt++ {
+			candidateCount := (batchCount - len(batch)) * 2
+			// Keep refill batches wide enough to give a small model room to avoid
+			// duplicates and unsafe focus-word combinations.
+			if candidateCount < batchCount {
+				candidateCount = batchCount
+			}
+			generated, err := s.generateSentenceBatchForCourse(ctx, courseCode, batchFocus, supportWords, tenses, candidateCount, modelOverride...)
 			if err != nil {
 				return nil, err
 			}
-			batch = append(batch, generated...)
+			for _, sentence := range generated {
+				key := NormalizedSentenceAnswer(sentence.PromptRU) + "\x00" + NormalizedSentenceAnswer(sentence.ReferenceES)
+				if seen[key] {
+					continue
+				}
+				seen[key] = true
+				batch = append(batch, sentence)
+				if len(batch) == batchCount {
+					break
+				}
+			}
 		}
 		if len(batch) < batchCount {
 			s.logger.Warn("sentence generation batch remained short after quality retries",
@@ -159,11 +180,20 @@ func (s *Service) generateSentenceBatchForCourse(ctx context.Context, courseCode
 	allWords := append(append(make([]GenSentenceWord, 0, len(focusWords)+len(supportWords)), focusWords...), supportWords...)
 	focusSet := make(map[string]bool, len(focusWords))
 	knownSet := make(map[string]bool, len(allWords))
+	canonicalByAlias := make(map[string]string, len(allWords)*2)
 	for _, word := range focusWords {
 		focusSet[strings.ToLower(strings.TrimSpace(word.Lemma))] = true
 	}
 	for _, word := range allWords {
-		knownSet[strings.ToLower(strings.TrimSpace(word.Lemma))] = true
+		lemma := strings.ToLower(strings.TrimSpace(word.Lemma))
+		knownSet[lemma] = true
+		canonicalByAlias[lemma] = lemma
+		for _, translation := range strings.Split(word.Translation, "/") {
+			alias := strings.ToLower(strings.TrimSpace(translation))
+			if alias != "" {
+				canonicalByAlias[alias] = lemma
+			}
+		}
 	}
 	out := make([]GeneratedSentence, 0, len(set.Sentences))
 	for _, sentence := range set.Sentences {
@@ -190,13 +220,19 @@ func (s *Service) generateSentenceBatchForCourse(ctx context.Context, courseCode
 		}
 		focusUses := 0
 		validUsedWords := true
-		for _, lemma := range sentence.UsedWords {
-			normalized := strings.ToLower(strings.TrimSpace(lemma))
-			if !knownSet[normalized] {
+		canonicalUsedWords := make([]string, 0, len(sentence.UsedWords))
+		for _, reportedWord := range sentence.UsedWords {
+			normalized := strings.ToLower(strings.TrimSpace(reportedWord))
+			canonical, ok := canonicalByAlias[normalized]
+			if !ok {
+				canonical = normalized
+			}
+			if !knownSet[canonical] {
 				validUsedWords = false
 				break
 			}
-			if focusSet[normalized] {
+			canonicalUsedWords = append(canonicalUsedWords, canonical)
+			if focusSet[canonical] {
 				focusUses++
 			}
 		}
@@ -207,16 +243,78 @@ func (s *Service) generateSentenceBatchForCourse(ctx context.Context, courseCode
 				zap.Strings("used_words", sentence.UsedWords))
 			continue
 		}
+		sentence.UsedWords = canonicalUsedWords
 		out = append(out, sentence)
 	}
 	if len(out) == 0 {
-		return nil, fmt.Errorf("no usable sentences generated")
+		return []GeneratedSentence{}, nil
+	}
+	out = s.reviewGeneratedSentenceQuality(ctx, model, courseCode, focusWords, supportWords, out)
+	if len(out) == 0 {
+		return []GeneratedSentence{}, nil
+	}
+	// Cheap models are not perfectly stable as judges. A second independent pass
+	// makes acceptance conservative: an item is served only when both reviews agree.
+	out = s.reviewGeneratedSentenceQuality(ctx, model, courseCode, focusWords, supportWords, out)
+	if len(out) == 0 {
+		return []GeneratedSentence{}, nil
 	}
 	// The model occasionally overshoots the requested count; hold it to exactly `count`.
 	if count > 0 && len(out) > count {
 		out = out[:count]
 	}
 	return out, nil
+}
+
+func (s *Service) reviewGeneratedSentenceQuality(ctx context.Context, model, courseCode string, focusWords, supportWords []GenSentenceWord, sentences []GeneratedSentence) []GeneratedSentence {
+	payload, err := json.Marshal(map[string]interface{}{
+		"allowed_vocabulary": append(append([]GenSentenceWord{}, focusWords...), supportWords...),
+		"sentences":          sentences,
+	})
+	if err != nil {
+		return sentences
+	}
+	const reviewPrompt = `You are a strict quality gate for short language-learning translation exercises.
+Return ONLY JSON: {"accepted_positions":[0,2,...]}.
+Accept an item only when ALL conditions hold:
+- FIRST perform a token-by-token vocabulary audit of both languages. If any noun, adjective, adverb or main verb cannot be traced to allowed_vocabulary, reject immediately. Never infer that a common/easy word is allowed. For example, reject игрушка/juguete, сын/hijo, видеть/ver or брать/agarrar unless that exact concept occurs in allowed_vocabulary;
+- prompt_ru is fully grammatical, idiomatic Russian with correct agreement, government and cases;
+- it describes a plausible ordinary situation a Russian speaker might naturally say;
+- it is a complete useful sentence, not a forced word combination or translation calque;
+- reference_es is a faithful, grammatical and natural translation of prompt_ru;
+- clarification_ru, when present, is coherent and does not contradict either sentence.
+- every content-bearing word and action in BOTH prompt_ru and reference_es is derived from an entry in allowed_vocabulary (lemma or translation). Inflected forms are allowed. Function words are allowed: articles, pronouns, determiners, prepositions, conjunctions, particles and negation. Linking/existential uses of ser, estar and haber are allowed. Being grammatical, common or easy never makes an unsupplied content word acceptable;
+- used_words is complete: reject the item if either sentence contains a supplied content word that is omitted from used_words, or if used_words claims a word that is not actually expressed in both sides.
+Reject any Russian item without a finite verb, including nominal/location fragments whose Spanish translation inserts ser/estar. Reject odd physical traits, body-part/color combinations, tautologies, nonsensical ownership, unnatural fragments, and phrases like "язык чистый", "рука рядом с столом", "голова старая", "зелёное окно близко" or "чёрный нож на столе".
+Reject semantically empty noun+generic-action combinations such as "ребёнок ест еду", including variants with an adjective such as "ребёнок ест красную еду". An adjective does not make a tautological exercise useful.
+Reject unsupplied actions even when the generator omitted them from used_words. For example, брать/agarrar, видеть/ver, читать/leer or possession with tener must be present in allowed_vocabulary to be accepted. Do not treat a content verb as a harmless function word.
+Do not repair anything and do not explain. Include only zero-based positions that are clearly good.`
+	messages := []Message{{Role: "system", Content: reviewPrompt}, {Role: "user", Content: string(payload)}}
+	raw, err := s.postChatCompletion(ctx, model, messages, 1000, 0, zap.String("kind", "sentence_quality_review"), zap.String("course", courseCode))
+	if err != nil {
+		s.logger.Warn("sentence quality review failed; keeping deterministically valid candidates", zap.Error(err))
+		return sentences
+	}
+	var review sentenceQualityReview
+	if err := json.Unmarshal([]byte(raw), &review); err != nil {
+		s.logger.Warn("sentence quality review returned invalid JSON; keeping deterministically valid candidates", zap.Error(err))
+		return sentences
+	}
+	accepted := make(map[int]bool, len(review.AcceptedPositions))
+	for _, position := range review.AcceptedPositions {
+		if position >= 0 && position < len(sentences) {
+			accepted[position] = true
+		}
+	}
+	out := make([]GeneratedSentence, 0, len(accepted))
+	for i, sentence := range sentences {
+		if accepted[i] {
+			out = append(out, sentence)
+		} else {
+			s.logger.Info("sentence rejected by quality review", zap.String("prompt_ru", sentence.PromptRU))
+		}
+	}
+	return out
 }
 
 func usableSentenceClarification(context string) bool {
