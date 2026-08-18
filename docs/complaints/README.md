@@ -117,5 +117,6 @@ git commit -m "docs: content complaints triage journal YYYY-MM-DD"
 |------|------|------|-------|-----|
 | 2026-06-04 | [journal-2026-06-04-triage.md](journal-2026-06-04-triage.md) | EN+ES | 33 | 0.11.13 |
 | 2026-07-10 | [journal-2026-07-10-triage.md](journal-2026-07-10-triage.md) | EN+ES | 13 (3 EN + 10 ES, −3 дубль слов) | 0.12.183 |
+| 2026-08-18 | [journal-2026-08-18-triage.md](journal-2026-08-18-triage.md) | EN+ES | 2 (0 EN + 2 ES) | ожидает релиза |
 
 При новом прогоне добавь строку в эту таблицу.
