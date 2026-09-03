@@ -129,3 +129,5 @@ git commit -m "docs: content complaints triage journal YYYY-MM-DD"
 Чтение: канонические `courses/*-grammar/reading/texts`, индекс `reading/index.json` и `assets/reading`. Проверять текст, перевод, вопросы, ключи, аудио и соответствие обложки описанию; выполнить поиск аналогичных ошибок. `GET .../{id}` на обновлённом API отдаёт `reading_text` из текущей БД отдельно от исторического payload.
 
 Для unified Linglow после здорового rollout оператор запускает `kubectl -n linglow exec deploy/linglow -- /app/import_learning_content --course-code es_ru --commit`. Локальный kubectl не использовать (AGENTS.md). Закрывать только явно указанные ID после проверки production; `resolve_all_active.py` без `--apply` ничего не изменяет.
+
+Канонический production URL для обоих курсов: `https://linglow.qantrix.ru`. Старые домены перенаправляют GET, но POST resolve через urllib завершается HTTP 308. В `COMPLAINTS_SERVICE_URL_EN` и `COMPLAINTS_SERVICE_URL_ES` задавать канонический URL. Health endpoint: `/health`.

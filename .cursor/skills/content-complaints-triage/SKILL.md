@@ -80,3 +80,5 @@ python3 tools-local/complaints-triage/resolve_all_active.py es --report-ids 17,1
 ```
 
 Не использовать массовое закрытие всех активных жалоб или старый `apply_prod_word_fixes.py` как универсальное исправление. Повторить fetch, зафиксировать оставшиеся ID и причины; новые жалобы не закрывать заодно. JSONL хранится локально с текущими датой, причиной и выбранными ID.
+
+Канонический production URL для обоих курсов: `https://linglow.qantrix.ru`. Старые домены перенаправляют GET, но POST resolve через urllib завершается HTTP 308. В `COMPLAINTS_SERVICE_URL_EN` и `COMPLAINTS_SERVICE_URL_ES` задавать канонический URL. Health endpoint: `/health`.
