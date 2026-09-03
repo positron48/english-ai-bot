@@ -1,9 +1,11 @@
 package repository
 
 import (
+	"context"
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"strings"
 	"time"
 
 	"tgbot-skeleton/internal/database"
@@ -13,8 +15,9 @@ import (
 
 // GrammarAttemptRepository handles database operations for grammar test attempts
 type GrammarAttemptRepository struct {
-	db     *sql.DB
-	logger *zap.Logger
+	db         *sql.DB
+	logger     *zap.Logger
+	courseCode string
 }
 
 // NewGrammarAttemptRepository creates a new grammar attempt repository
@@ -385,7 +388,12 @@ func (r *GrammarAttemptRepository) GetAverageTestScore(userID int64) (int, error
 			) ranked
 			WHERE rn = 1`
 
-	rows, err := r.db.Query(query, userID)
+	args := []interface{}{userID}
+	if r.courseCode != "" {
+		query = strings.Replace(query, "AND scope_type = 'chapter' AND finished_at IS NOT NULL", "AND scope_type = 'chapter' AND finished_at IS NOT NULL AND scope_id LIKE ?", 1)
+		args = append(args, strings.SplitN(r.courseCode, "_", 2)[0]+".grammar.%")
+	}
+	rows, err := r.db.Query(query, args...)
 	if err != nil {
 		return 0, fmt.Errorf("failed to query test scores: %w", err)
 	}
@@ -446,17 +454,22 @@ func ParseResultsJSON(jsonStr string) ([]interface{}, error) {
 // PlacementTestResult represents a placement test result
 type PlacementTestResult struct {
 	UserID         int64
+	UserCourseID   int64
 	Score          int
 	TotalQuestions int
 	OpenedSections []string
 	CompletedAt    time.Time
 	AdminOverride  bool
+	Source         string
 }
 
 // SavePlacementTestResult saves or updates placement test result
 // Only updates if the new score is higher (better) than existing, unless the existing row was set by an admin override
 // (then the user's attempt always replaces it).
 func (r *GrammarAttemptRepository) SavePlacementTestResult(userID int64, score int, totalQuestions int, openedSections []string) error {
+	if r.courseCode != "" {
+		return r.saveCoursePlacement(userID, score, totalQuestions, openedSections, "legacy", false)
+	}
 	openedSectionsJSON, _ := json.Marshal(openedSections)
 
 	// Check existing result
@@ -498,6 +511,9 @@ func (r *GrammarAttemptRepository) SavePlacementTestResult(userID int64, score i
 
 // UpsertPlacementByAdmin overwrites placement (opened sections / level) regardless of score; marks admin_override.
 func (r *GrammarAttemptRepository) UpsertPlacementByAdmin(userID int64, score int, totalQuestions int, openedSections []string) error {
+	if r.courseCode != "" {
+		return r.saveCoursePlacement(userID, score, totalQuestions, openedSections, "admin", false)
+	}
 	openedSectionsJSON, err := json.Marshal(openedSections)
 	if err != nil {
 		return fmt.Errorf("failed to marshal opened sections: %w", err)
@@ -519,6 +535,9 @@ func (r *GrammarAttemptRepository) UpsertPlacementByAdmin(userID int64, score in
 
 // DeletePlacementTestResult removes placement row for a user (full reset of placement-based unlocks).
 func (r *GrammarAttemptRepository) DeletePlacementTestResult(userID int64) error {
+	if r.courseCode != "" {
+		return r.saveCoursePlacement(userID, 0, 0, nil, "admin", true)
+	}
 	_, err := r.db.Exec(`DELETE FROM grammar_placement_test WHERE user_id = ?`, userID)
 	if err != nil {
 		return fmt.Errorf("failed to delete placement test result: %w", err)
@@ -528,6 +547,9 @@ func (r *GrammarAttemptRepository) DeletePlacementTestResult(userID int64) error
 
 // GetPlacementTestResult retrieves placement test result for a user
 func (r *GrammarAttemptRepository) GetPlacementTestResult(userID int64) (*PlacementTestResult, error) {
+	if r.courseCode != "" {
+		return r.getCoursePlacement(context.Background(), userID)
+	}
 	query := `SELECT user_id, score, total_questions, opened_sections_json, completed_at, COALESCE(admin_override, false)
 			  FROM grammar_placement_test
 			  WHERE user_id = ?`
@@ -562,6 +584,7 @@ func (r *GrammarAttemptRepository) GetPlacementTestResult(userID int64) (*Placem
 	if completedAt.Valid {
 		result.CompletedAt = parseTimestampFlex(completedAt.String)
 	}
+	result.Source = "legacy"
 
 	return &result, nil
 }

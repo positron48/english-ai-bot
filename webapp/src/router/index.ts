@@ -117,7 +117,12 @@ const router = createRouter({
         {
           path: 'learning/grammar/placement-test',
           name: 'GrammarPlacementTest',
-          component: () => import('../views/GrammarPlacementTestView.vue'),
+          redirect: { name: 'LanguagePlacement' },
+        },
+        {
+          path: 'learning/placement-test',
+          name: 'LanguagePlacement',
+          component: () => import('../views/LanguagePlacementView.vue'),
           meta: { requiresAuth: true, navTab: 'practice', fullscreen: true }
         },
         {
@@ -331,6 +336,7 @@ router.beforeEach(async (to, _from, next) => {
     'GrammarChapterTest',
     'GrammarCategoryTest',
     'GrammarPlacementTest',
+    'LanguagePlacement',
     'GrammarTraining',
   ].includes(to.name)
   const isOfflineAllowedRoute = isOfflineAllowedBaseRoute

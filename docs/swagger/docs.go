@@ -267,6 +267,24 @@ const docTemplate = `{
                 }
             }
         },
+        "/api/admin/conversations/import": {
+            "post": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Admin: импорт сценария общения из JSON",
+                "responses": {}
+            }
+        },
+        "/api/admin/conversations/prompt-template": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Admin: промпт для генерации сценария общения",
+                "responses": {}
+            }
+        },
         "/api/admin/conversations/scenarios": {
             "get": {
                 "tags": [
@@ -590,6 +608,15 @@ const docTemplate = `{
                 "responses": {}
             }
         },
+        "/api/admin/lumi-facts/prompt-template": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Admin: промпт для генерации Lumi-фактов",
+                "responses": {}
+            }
+        },
         "/api/admin/orphaned-cards": {
             "get": {
                 "security": [
@@ -812,6 +839,33 @@ const docTemplate = `{
                         }
                     }
                 }
+            }
+        },
+        "/api/admin/picture-quests": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Admin: список/создание квестов «опиши картинку»",
+                "responses": {}
+            }
+        },
+        "/api/admin/picture-quests/import": {
+            "post": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Admin: импорт квеста «опиши картинку» из JSON",
+                "responses": {}
+            }
+        },
+        "/api/admin/picture-quests/prompt-template": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Admin: промпт для генерации квеста «опиши картинку»",
+                "responses": {}
             }
         },
         "/api/admin/stats": {
@@ -2903,14 +2957,14 @@ const docTemplate = `{
                 }
             }
         },
-        "/api/learning/grammar/placement-test": {
+        "/api/learning/grammar/continue-chapter": {
             "get": {
                 "security": [
                     {
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Генерирует тест на определение уровня (25 вопросов из всех опубликованных категорий)",
+                "description": "Возвращает главу, на которую нужно вести пользователя с home quick access",
                 "consumes": [
                     "application/json"
                 ],
@@ -2918,14 +2972,15 @@ const docTemplate = `{
                     "application/json"
                 ],
                 "tags": [
-                    "Learning Grammar"
+                    "Learning"
                 ],
-                "summary": "Получить placement тест",
+                "summary": "Получить главу для продолжения грамматики",
                 "responses": {
                     "200": {
-                        "description": "Вопросы теста",
+                        "description": "Глава для продолжения или null",
                         "schema": {
-                            "$ref": "#/definitions/tgbot-skeleton_internal_service.TestQuestions"
+                            "type": "object",
+                            "additionalProperties": true
                         }
                     },
                     "401": {
@@ -2934,10 +2989,42 @@ const docTemplate = `{
                             "type": "string"
                         }
                     },
-                    "405": {
-                        "description": "Метод не разрешен",
+                    "500": {
+                        "description": "Внутренняя ошибка сервера",
                         "schema": {
                             "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/learning/grammar/placement-test": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Всегда возвращает 410 placement_replaced. Для диагностики используйте POST /api/learning/placement/sessions, для интерфейса — /learning/placement-test.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Learning Placement"
+                ],
+                "summary": "Устаревший тест из вопросов курса — заменён",
+                "deprecated": true,
+                "responses": {
+                    "401": {
+                        "description": "unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/internal_web.placementErrorDocumentation"
+                        }
+                    },
+                    "410": {
+                        "description": "placement_replaced",
+                        "schema": {
+                            "$ref": "#/definitions/internal_web.placementRetiredDocumentation"
                         }
                     }
                 }
@@ -2950,52 +3037,26 @@ const docTemplate = `{
                         "ApiKeyAuth": []
                     }
                 ],
-                "description": "Отправляет ответы на placement тест и определяет уровень пользователя",
-                "consumes": [
-                    "application/json"
-                ],
+                "description": "Всегда возвращает 410 placement_replaced; переданные ответы не оцениваются. Используйте answers и finish новой серверной сессии диагностики.",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
-                    "Learning Grammar"
+                    "Learning Placement"
                 ],
-                "summary": "Отправить ответы placement теста",
-                "parameters": [
-                    {
-                        "description": "Ответы на вопросы (map question_id -\u003e answer)",
-                        "name": "request",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    }
-                ],
+                "summary": "Устаревшая отправка ответов теста курса — заменена",
+                "deprecated": true,
                 "responses": {
-                    "200": {
-                        "description": "Результат теста",
-                        "schema": {
-                            "$ref": "#/definitions/tgbot-skeleton_internal_service.PlacementTestResult"
-                        }
-                    },
-                    "400": {
-                        "description": "Неверный запрос",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
                     "401": {
-                        "description": "Неавторизован",
+                        "description": "unauthorized",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/internal_web.placementErrorDocumentation"
                         }
                     },
-                    "405": {
-                        "description": "Метод не разрешен",
+                    "410": {
+                        "description": "placement_replaced",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/internal_web.placementRetiredDocumentation"
                         }
                     }
                 }
@@ -3095,6 +3156,350 @@ const docTemplate = `{
                         "description": "Внутренняя ошибка сервера",
                         "schema": {
                             "type": "string"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/learning/placement/results": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Возвращает до десяти последних завершённых попыток текущего пользователя только для выбранного курса, от новых к старым. В элементах sessions поля questions и answers равны null; результат и разбор находятся в result. Снятые с публикации главы/разделы исключены из chapter_ids. Необязательный available_chapter_ids содержит выбранные доступные переходы из результата, а не все доступные уроки курса; темы, закрытые последовательностью, остаются видимыми без ссылки. Cache-Control: no-store.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Learning Placement"
+                ],
+                "summary": "Получить историю диагностики языка",
+                "parameters": [
+                    {
+                        "enum": [
+                            "en_ru",
+                            "es_ru"
+                        ],
+                        "type": "string",
+                        "description": "Курс; при отсутствии используется текущий выбранный курс",
+                        "name": "course_code",
+                        "in": "query"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/internal_web.placementHistoryDocumentation"
+                        }
+                    },
+                    "401": {
+                        "description": "unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/internal_web.placementErrorDocumentation"
+                        }
+                    },
+                    "404": {
+                        "description": "placement_course_not_found",
+                        "schema": {
+                            "$ref": "#/definitions/internal_web.placementErrorDocumentation"
+                        }
+                    },
+                    "503": {
+                        "description": "placement_unavailable",
+                        "schema": {
+                            "$ref": "#/definitions/internal_web.placementErrorDocumentation"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/learning/placement/sessions": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Создаёт самостоятельный тест из 30 вопросов A1–C1 либо восстанавливает активную попытку пользователя в указанном курсе. Повтор одного idempotency_key возвращает ту же попытку; для пересдачи отправьте новый ключ и new_attempt=true. Вопросы и резерв до шести уточнений закреплены в сессии. Правильные ответы и объяснения отсутствуют до завершения. Все ответы имеют Cache-Control: no-store.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Learning Placement"
+                ],
+                "summary": "Начать или восстановить диагностику языка",
+                "parameters": [
+                    {
+                        "enum": [
+                            "en_ru",
+                            "es_ru"
+                        ],
+                        "type": "string",
+                        "description": "Курс, если course_code отсутствует в теле; иначе используется текущий курс",
+                        "name": "course_code",
+                        "in": "query"
+                    },
+                    {
+                        "description": "Курс и ключ идемпотентности",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/internal_web.placementStartDocumentation"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Новая или восстановленная попытка; available_chapter_ids только для завершённой попытки с доступными переходами из результата",
+                        "schema": {
+                            "$ref": "#/definitions/internal_web.placementSessionDocumentation"
+                        }
+                    },
+                    "400": {
+                        "description": "placement_invalid_request / placement_invalid_answer",
+                        "schema": {
+                            "$ref": "#/definitions/internal_web.placementErrorDocumentation"
+                        }
+                    },
+                    "401": {
+                        "description": "unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/internal_web.placementErrorDocumentation"
+                        }
+                    },
+                    "404": {
+                        "description": "placement_course_not_found / placement_not_found",
+                        "schema": {
+                            "$ref": "#/definitions/internal_web.placementErrorDocumentation"
+                        }
+                    },
+                    "410": {
+                        "description": "placement_expired: попытка завершена отказом, истекла или её политика больше не поддерживается",
+                        "schema": {
+                            "$ref": "#/definitions/internal_web.placementErrorDocumentation"
+                        }
+                    },
+                    "503": {
+                        "description": "placement_unavailable",
+                        "schema": {
+                            "$ref": "#/definitions/internal_web.placementErrorDocumentation"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/learning/placement/sessions/{session_id}": {
+            "get": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Возвращает закреплённые публичные вопросы и сохранённые ответы пользователя. Курс определяется сессией, а доступ — её владельцем. После завершения содержит result с профилем уровней, разбором и опубликованными рекомендациями. available_chapter_ids перечисляет выбранные доступные переходы из результата, а не весь каталог; ссылка на урок допустима только для ID из этого списка. Закрытая последовательностью тема остаётся видимой без ссылки. При отсутствии доступных переходов поле опущено. Не создаёт новую попытку. Cache-Control: no-store.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Learning Placement"
+                ],
+                "summary": "Получить сохранённую попытку диагностики",
+                "parameters": [
+                    {
+                        "maxLength": 32,
+                        "minLength": 32,
+                        "type": "string",
+                        "description": "Идентификатор сессии: 32 шестнадцатеричных символа",
+                        "name": "session_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "$ref": "#/definitions/internal_web.placementSessionDocumentation"
+                        }
+                    },
+                    "401": {
+                        "description": "unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/internal_web.placementErrorDocumentation"
+                        }
+                    },
+                    "404": {
+                        "description": "placement_not_found: не найдена либо принадлежит другому пользователю",
+                        "schema": {
+                            "$ref": "#/definitions/internal_web.placementErrorDocumentation"
+                        }
+                    },
+                    "410": {
+                        "description": "placement_expired",
+                        "schema": {
+                            "$ref": "#/definitions/internal_web.placementErrorDocumentation"
+                        }
+                    },
+                    "503": {
+                        "description": "placement_unavailable",
+                        "schema": {
+                            "$ref": "#/definitions/internal_web.placementErrorDocumentation"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/learning/placement/sessions/{session_id}/answers": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Принимает один идентификатор варианта или пустую строку для «Не знаю»; отсутствующий/null answer недопустим. После 30 ответов base_closed=true и основной блок больше не изменяется. При необходимости сервер добавляет ровно шесть уточнений: clarifying=true, questions содержит 36 вопросов. Повтор того же сохранённого ответа безопасен; ключи ответов и объяснения до finish не раскрываются. Cache-Control: no-store.",
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Learning Placement"
+                ],
+                "summary": "Сохранить ответ диагностики",
+                "parameters": [
+                    {
+                        "maxLength": 32,
+                        "minLength": 32,
+                        "type": "string",
+                        "description": "Идентификатор сессии",
+                        "name": "session_id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "description": "Один ответ на выданный вопрос",
+                        "name": "request",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "$ref": "#/definitions/internal_web.placementAnswerDocumentation"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Состояние после сохранения, включая уточнения при закрытии основного блока",
+                        "schema": {
+                            "$ref": "#/definitions/internal_web.placementSessionDocumentation"
+                        }
+                    },
+                    "400": {
+                        "description": "placement_invalid_request / placement_invalid_answer",
+                        "schema": {
+                            "$ref": "#/definitions/internal_web.placementErrorDocumentation"
+                        }
+                    },
+                    "401": {
+                        "description": "unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/internal_web.placementErrorDocumentation"
+                        }
+                    },
+                    "404": {
+                        "description": "placement_not_found",
+                        "schema": {
+                            "$ref": "#/definitions/internal_web.placementErrorDocumentation"
+                        }
+                    },
+                    "409": {
+                        "description": "placement_conflict: попытка или основной блок закрыты для изменений",
+                        "schema": {
+                            "$ref": "#/definitions/internal_web.placementErrorDocumentation"
+                        }
+                    },
+                    "410": {
+                        "description": "placement_expired",
+                        "schema": {
+                            "$ref": "#/definitions/internal_web.placementErrorDocumentation"
+                        }
+                    },
+                    "503": {
+                        "description": "placement_unavailable",
+                        "schema": {
+                            "$ref": "#/definitions/internal_web.placementErrorDocumentation"
+                        }
+                    }
+                }
+            }
+        },
+        "/api/learning/placement/sessions/{session_id}/finish": {
+            "post": {
+                "security": [
+                    {
+                        "ApiKeyAuth": []
+                    }
+                ],
+                "description": "Требует ответы на все выданные вопросы, включая уточнения, если они появились. Атомарно сохраняет результат и расширяет доступ только в курсе этой сессии. Слабая пересдача не уменьшает ранее открытый доступ; уроки не помечаются пройденными. Повтор finish возвращает сохранённый результат с актуальными доступными переходами. available_chapter_ids содержит только выбранные доступные уроки из рекомендаций/разбора и не является каталогом курса; при отсутствии доступных переходов поле опущено. Закрытые последовательностью темы остаются видимыми без ссылки. Оценка относится к грамматике в письменном контексте и остаётся ориентировочной. Тело запроса не требуется. Cache-Control: no-store.",
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Learning Placement"
+                ],
+                "summary": "Завершить диагностику и получить рекомендации",
+                "parameters": [
+                    {
+                        "maxLength": 32,
+                        "minLength": 32,
+                        "type": "string",
+                        "description": "Идентификатор сессии",
+                        "name": "session_id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "status=completed, result с profile, review и recommended_skills; необязательный available_chapter_ids для доступных переходов",
+                        "schema": {
+                            "$ref": "#/definitions/internal_web.placementSessionDocumentation"
+                        }
+                    },
+                    "401": {
+                        "description": "unauthorized",
+                        "schema": {
+                            "$ref": "#/definitions/internal_web.placementErrorDocumentation"
+                        }
+                    },
+                    "404": {
+                        "description": "placement_not_found",
+                        "schema": {
+                            "$ref": "#/definitions/internal_web.placementErrorDocumentation"
+                        }
+                    },
+                    "409": {
+                        "description": "placement_conflict: остались вопросы без ответа или попытка недоступна для завершения",
+                        "schema": {
+                            "$ref": "#/definitions/internal_web.placementErrorDocumentation"
+                        }
+                    },
+                    "410": {
+                        "description": "placement_expired",
+                        "schema": {
+                            "$ref": "#/definitions/internal_web.placementErrorDocumentation"
+                        }
+                    },
+                    "503": {
+                        "description": "placement_unavailable",
+                        "schema": {
+                            "$ref": "#/definitions/internal_web.placementErrorDocumentation"
                         }
                     }
                 }
@@ -3572,6 +3977,69 @@ const docTemplate = `{
                     },
                     "204": {
                         "description": "Фактов нет"
+                    }
+                }
+            }
+        },
+        "/api/linglow/picture-quests": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Linglow"
+                ],
+                "summary": "Квесты «опиши картинку» в районе",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/api/linglow/picture-quests/districts": {
+            "get": {
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Linglow"
+                ],
+                "summary": "Районы с квестами «опиши картинку»",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
+                    }
+                }
+            }
+        },
+        "/api/linglow/picture-quests/sessions": {
+            "post": {
+                "consumes": [
+                    "application/json"
+                ],
+                "produces": [
+                    "application/json"
+                ],
+                "tags": [
+                    "Linglow"
+                ],
+                "summary": "Начать сессию «опиши картинку»",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "object",
+                            "additionalProperties": true
+                        }
                     }
                 }
             }
@@ -4103,64 +4571,7 @@ const docTemplate = `{
         },
         "/api/vocab/{word}": {
             "get": {
-                "security": [
-                    {
-                        "ApiKeyAuth": []
-                    }
-                ],
-                "description": "Подтверждение удаления (GET) или удаление слова (POST) из словаря пользователя. Путь: /api/vocab/{word}/confirm_delete или /api/vocab/{word}/delete",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Vocab"
-                ],
-                "summary": "Удалить слово из словаря",
-                "parameters": [
-                    {
-                        "type": "string",
-                        "description": "Английское слово для удаления",
-                        "name": "word",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "type": "string",
-                        "description": "Действие: confirm_delete или delete",
-                        "name": "action",
-                        "in": "path"
-                    }
-                ],
                 "responses": {
-                    "200": {
-                        "description": "Информация о слове или результат удаления",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    },
-                    "400": {
-                        "description": "Неверный запрос",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "401": {
-                        "description": "Неавторизован",
-                        "schema": {
-                            "type": "string"
-                        }
-                    },
-                    "404": {
-                        "description": "Слово не найдено",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    },
                     "500": {
                         "description": "Внутренняя ошибка сервера",
                         "schema": {
@@ -4505,14 +4916,205 @@ const docTemplate = `{
                 }
             }
         },
-        "tgbot-skeleton_internal_service.PlacementTestResult": {
+        "internal_web.placementAnswerDocumentation": {
+            "type": "object",
+            "required": [
+                "answer",
+                "question_id"
+            ],
+            "properties": {
+                "answer": {
+                    "description": "A choice ID, or the empty string for an explicit \"I don't know\". Missing/null is invalid.",
+                    "type": "string",
+                    "example": "a"
+                },
+                "question_id": {
+                    "type": "string",
+                    "example": "es.placement.a1.location.01"
+                }
+            }
+        },
+        "internal_web.placementErrorDocumentation": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string",
+                    "example": "placement_expired"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Срок этой попытки истёк. Начните новый тест."
+                }
+            }
+        },
+        "internal_web.placementHistoryDocumentation": {
+            "type": "object",
+            "properties": {
+                "sessions": {
+                    "description": "The latest ten completed attempts for this course. Questions and answers are null;\nthe diagnostic profile, answer review and published recommendations are in result.",
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/internal_web.placementSessionDocumentation"
+                    }
+                }
+            }
+        },
+        "internal_web.placementRetiredDocumentation": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "string",
+                    "example": "placement_replaced"
+                },
+                "message": {
+                    "type": "string",
+                    "example": "Откройте новый тест определения уровня."
+                },
+                "path": {
+                    "type": "string",
+                    "example": "/learning/placement-test"
+                }
+            }
+        },
+        "internal_web.placementSessionDocumentation": {
+            "type": "object",
+            "properties": {
+                "answers": {
+                    "type": "object",
+                    "additionalProperties": {
+                        "type": "string"
+                    }
+                },
+                "available_chapter_ids": {
+                    "description": "Present only for a completed attempt with usable result links. This is a\nselected subset of currently accessible chapter IDs from result recommendations\nand review, not the complete course catalog. Link only to chapter IDs present\nhere; a recommended topic may remain visible even when all its lessons are\nlocked by the course sequence. Omitted when no accessible result links exist.",
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "bank_version": {
+                    "type": "string"
+                },
+                "base_closed": {
+                    "type": "boolean"
+                },
+                "clarifying": {
+                    "type": "boolean"
+                },
+                "course_code": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "policy_version": {
+                    "type": "string"
+                },
+                "questions": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/tgbot-skeleton_internal_placement.Question"
+                    }
+                },
+                "result": {
+                    "$ref": "#/definitions/tgbot-skeleton_internal_placement.Result"
+                },
+                "status": {
+                    "type": "string"
+                }
+            }
+        },
+        "internal_web.placementStartDocumentation": {
+            "type": "object",
+            "required": [
+                "idempotency_key"
+            ],
+            "properties": {
+                "course_code": {
+                    "description": "Defaults to the requested or currently selected course when omitted.",
+                    "type": "string",
+                    "enum": [
+                        "en_ru",
+                        "es_ru"
+                    ],
+                    "example": "es_ru"
+                },
+                "idempotency_key": {
+                    "description": "Reuse the same key when retrying the same start/resume request.",
+                    "type": "string",
+                    "maxLength": 100,
+                    "minLength": 8,
+                    "example": "d83b3477-1a78-414e-92c4-f1287a5c58d5"
+                },
+                "new_attempt": {
+                    "description": "True abandons an active attempt and creates another selection.",
+                    "type": "boolean",
+                    "default": false
+                }
+            }
+        },
+        "tgbot-skeleton_internal_placement.Choice": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "text": {
+                    "type": "string"
+                }
+            }
+        },
+        "tgbot-skeleton_internal_placement.LevelScore": {
             "type": "object",
             "properties": {
                 "correct": {
                     "type": "integer"
                 },
                 "level": {
-                    "description": "CEFR level of last opened section, or \"Below A1\" / \"—\"",
+                    "type": "string"
+                },
+                "status": {
+                    "description": "secure, borderline, limited",
+                    "type": "string"
+                },
+                "total": {
+                    "type": "integer"
+                }
+            }
+        },
+        "tgbot-skeleton_internal_placement.Question": {
+            "type": "object",
+            "properties": {
+                "choices": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/tgbot-skeleton_internal_placement.Choice"
+                    }
+                },
+                "context": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "instruction": {
+                    "type": "string"
+                },
+                "prompt": {
+                    "type": "string"
+                }
+            }
+        },
+        "tgbot-skeleton_internal_placement.Result": {
+            "type": "object",
+            "properties": {
+                "correct": {
+                    "type": "integer"
+                },
+                "estimated": {
+                    "type": "boolean"
+                },
+                "level": {
                     "type": "string"
                 },
                 "opened_sections": {
@@ -4521,28 +5123,111 @@ const docTemplate = `{
                         "type": "string"
                     }
                 },
-                "results": {
-                    "description": "per-question: question_id, correct, user_answer, correct_answer, explanation, placement_chapter_title",
-                    "type": "array",
-                    "items": {}
+                "policy_version": {
+                    "type": "string"
                 },
-                "score": {
-                    "type": "integer"
-                },
-                "total_questions": {
-                    "type": "integer"
-                }
-            }
-        },
-        "tgbot-skeleton_internal_service.TestQuestions": {
-            "type": "object",
-            "properties": {
-                "questions": {
+                "profile": {
                     "type": "array",
-                    "items": {}
+                    "items": {
+                        "$ref": "#/definitions/tgbot-skeleton_internal_placement.LevelScore"
+                    }
+                },
+                "recommended_skills": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/tgbot-skeleton_internal_placement.Skill"
+                    }
+                },
+                "review": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/tgbot-skeleton_internal_placement.Review"
+                    }
                 },
                 "total": {
                     "type": "integer"
+                },
+                "upper_level": {
+                    "type": "string"
+                }
+            }
+        },
+        "tgbot-skeleton_internal_placement.Review": {
+            "type": "object",
+            "properties": {
+                "answer": {
+                    "type": "string"
+                },
+                "chapter_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "choices": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/tgbot-skeleton_internal_placement.Choice"
+                    }
+                },
+                "context": {
+                    "type": "string"
+                },
+                "correct": {
+                    "type": "boolean"
+                },
+                "correct_answer": {
+                    "type": "string"
+                },
+                "explanation": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "instruction": {
+                    "type": "string"
+                },
+                "level": {
+                    "type": "string"
+                },
+                "prompt": {
+                    "type": "string"
+                },
+                "revision": {
+                    "type": "integer"
+                },
+                "skill_id": {
+                    "type": "string"
+                },
+                "skill_title": {
+                    "type": "string"
+                }
+            }
+        },
+        "tgbot-skeleton_internal_placement.Skill": {
+            "type": "object",
+            "properties": {
+                "chapter_ids": {
+                    "type": "array",
+                    "items": {
+                        "type": "string"
+                    }
+                },
+                "description": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "level": {
+                    "type": "string"
+                },
+                "section_id": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
                 }
             }
         }

@@ -32,7 +32,7 @@ func setupGrammarService(t *testing.T) (*GrammarService, *repository.GrammarCont
 
 	cleanup := func() {} // shared db, do not close
 
-	return service, contentRepo, publishRepo, attemptRepo, userRepo, cleanup
+	return service, contentRepo, publishRepo, service.AttemptRepo, userRepo, cleanup
 }
 
 func TestGrammarService_GetPublishedSections_GetSectionsError(t *testing.T) {
@@ -346,7 +346,7 @@ func TestGrammarService_GetGrammarStatistics_WithPlacementOpenedSections(t *test
 
 	_ = publishRepo.SetPublished("section", sectionID, true, nil)
 	_ = publishRepo.SetPublished("chapter", chapterID, true, nil)
-	// Section opened by placement: all its chapters count as 100% and passed
+	// Access granted by placement is not evidence of completed chapters.
 	if err := attemptRepo.SavePlacementTestResult(1, 50, 10, []string{sectionID}); err != nil {
 		t.Fatalf("SavePlacementTestResult: %v", err)
 	}
@@ -355,11 +355,11 @@ func TestGrammarService_GetGrammarStatistics_WithPlacementOpenedSections(t *test
 	if err != nil {
 		t.Fatalf("GetGrammarStatistics error: %v", err)
 	}
-	if stats.PassedChapters != 1 {
-		t.Fatalf("expected PassedChapters 1 when section opened by placement, got %d", stats.PassedChapters)
+	if stats.PassedChapters != 0 {
+		t.Fatalf("expected PassedChapters 0 when section only opened by placement, got %d", stats.PassedChapters)
 	}
-	if stats.CourseCompletionPct != 100 {
-		t.Fatalf("expected CourseCompletionPct 100 when section opened by placement, got %d", stats.CourseCompletionPct)
+	if stats.CourseCompletionPct != 0 || stats.WholeCourseCompletionPct != 0 || stats.ConfirmedLevel != "" {
+		t.Fatalf("placement must not create course progress: %+v", stats)
 	}
 }
 

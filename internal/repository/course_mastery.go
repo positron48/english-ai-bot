@@ -3,7 +3,6 @@ package repository
 import (
 	"context"
 	"database/sql"
-	"encoding/json"
 	"fmt"
 	"strings"
 
@@ -90,12 +89,12 @@ type masteryRawData struct {
 	grammarDone       map[string]int
 	wordMasteredTotal int
 	readingTotal      map[string]int
-	readingDone   map[string]int
-	convTotal     map[string]int
-	convDone      map[string]int
-	pictureTotal  map[string]int
-	pictureDone   map[string]int
-	placementMax  int
+	readingDone       map[string]int
+	convTotal         map[string]int
+	convDone          map[string]int
+	pictureTotal      map[string]int
+	pictureDone       map[string]int
+	placementMax      int
 }
 
 func masteryLevelIndex(code string) int {
@@ -435,25 +434,15 @@ func (r *CourseRepository) scanLevelCounts(ctx context.Context, query string, ar
 	return rows.Err()
 }
 
-func (r *CourseRepository) loadPlacementMaxOrder(ctx context.Context, userID int64, bundleID string, out *masteryRawData) error {
-	var openedJSON sql.NullString
-	err := r.db.QueryRowContext(ctx, `
-		SELECT opened_sections_json
-		FROM grammar_placement_test
-		WHERE user_id = ?`, userID).Scan(&openedJSON)
-	if err == sql.ErrNoRows {
-		return nil
-	}
+func (r *CourseRepository) loadPlacementMaxOrder(ctx context.Context, userID int64, courseCode, bundleID string, out *masteryRawData) error {
+	placement, err := NewGrammarAttemptRepository(r.db, nil).ForCourse(courseCode).getCoursePlacement(ctx, userID)
 	if err != nil {
 		return fmt.Errorf("placement test: %w", err)
 	}
-	if !openedJSON.Valid || strings.TrimSpace(openedJSON.String) == "" {
+	if placement == nil {
 		return nil
 	}
-	var opened []string
-	if err := json.Unmarshal([]byte(openedJSON.String), &opened); err != nil {
-		return fmt.Errorf("parse placement sections: %w", err)
-	}
+	opened := placement.OpenedSections
 	if len(opened) == 0 {
 		return nil
 	}
@@ -538,7 +527,7 @@ func (r *CourseRepository) loadMasteryRawData(ctx context.Context, userID, cours
 			GROUP BY upper(s.level)`, []interface{}{userID, bundleID}, out.grammarDone); err != nil {
 			return nil, fmt.Errorf("grammar category done: %w", err)
 		}
-		if err := r.loadPlacementMaxOrder(ctx, userID, bundleID, out); err != nil {
+		if err := r.loadPlacementMaxOrder(ctx, userID, courseCode, bundleID, out); err != nil {
 			return nil, err
 		}
 	}

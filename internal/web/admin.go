@@ -1,13 +1,13 @@
 package web
 
 import (
-	"context"
 	"database/sql"
 	"encoding/json"
 	"fmt"
 	"net/http"
 	"strconv"
 	"strings"
+	"time"
 
 	"tgbot-skeleton/internal/ai"
 	"tgbot-skeleton/internal/models"
@@ -1452,76 +1452,56 @@ func (r *Router) handleAdminUsers(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 
-	// Return user list with id, telegram_id, telegram_username, created_at, grammar placement summary
-	query := `SELECT u.id, u.telegram_id, COALESCE(u.telegram_username, ''), 
-			  COALESCE(u.subscription_tier, 'free'),
-			  COALESCE(CAST(u.created_at AS TEXT), '') as created_at,
-			  gpt.score, gpt.total_questions, gpt.opened_sections_json,
-			  COALESCE(CAST(gpt.completed_at AS TEXT), ''),
-			  COALESCE(gpt.admin_override, false)
-			  FROM users u
-			  LEFT JOIN grammar_placement_test gpt ON gpt.user_id::text = u.id::text
-			  ORDER BY u.id`
-	rows, err := r.db.Query(query)
+	// The administrator's selected language also scopes every placement action.
+	grammarService := r.grammarServiceForRequest(req, getUserIDFromContext(req.Context()))
+	query := `SELECT id, telegram_id, COALESCE(telegram_username, ''),
+		COALESCE(subscription_tier, 'free'), COALESCE(CAST(created_at AS TEXT), '')
+		FROM users ORDER BY id`
+	rows, err := r.db.QueryContext(req.Context(), query)
 	if err != nil {
 		r.logger.Error("failed to query users", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
 	defer rows.Close()
-
 	userList := make([]map[string]interface{}, 0)
 	for rows.Next() {
-		var id int64
-		var telegramID int64
-		var telegramUsername string
-		var subscriptionTier string
-		var createdAt string
-		var gptScore sql.NullInt64
-		var gptTotal sql.NullInt64
-		var gptOpenedJSON sql.NullString
-		var gptCompleted sql.NullString
-		var gptAdminOverride sql.NullBool
-
-		if err := rows.Scan(&id, &telegramID, &telegramUsername, &subscriptionTier, &createdAt,
-			&gptScore, &gptTotal, &gptOpenedJSON, &gptCompleted, &gptAdminOverride); err != nil {
+		var id, telegramID int64
+		var telegramUsername, subscriptionTier, createdAt string
+		if err := rows.Scan(&id, &telegramID, &telegramUsername, &subscriptionTier, &createdAt); err != nil {
 			r.logger.Warn("failed to scan user", zap.Error(err))
 			continue
 		}
-
-		row := map[string]interface{}{
-			"id":                id,
-			"telegram_id":       telegramID,
-			"telegram_username": telegramUsername,
-			"subscription_tier": models.ParseUserTier(subscriptionTier),
-			"created_at":        createdAt,
-		}
-
-		if gptScore.Valid {
-			var opened []string
-			if gptOpenedJSON.Valid && gptOpenedJSON.String != "" {
-				if err := json.Unmarshal([]byte(gptOpenedJSON.String), &opened); err != nil {
-					r.logger.Warn("failed to parse placement opened_sections", zap.Error(err), zap.Int64("user_id", id))
-					opened = nil
+		userList = append(userList, map[string]interface{}{
+			"id": id, "telegram_id": telegramID, "telegram_username": telegramUsername,
+			"subscription_tier": models.ParseUserTier(subscriptionTier), "created_at": createdAt,
+			"grammar_placement": nil,
+		})
+	}
+	if err := rows.Err(); err != nil {
+		r.logger.Error("failed to read users", zap.Error(err))
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	rows.Close()
+	if grammarService != nil {
+		for _, row := range userList {
+			placement, err := grammarService.AttemptRepo.GetPlacementTestResult(row["id"].(int64))
+			if err != nil {
+				r.logger.Error("failed to read user placement", zap.Error(err))
+				http.Error(w, "Internal server error", http.StatusInternalServerError)
+				return
+			}
+			if placement != nil {
+				row["grammar_placement"] = map[string]interface{}{
+					"level": grammarService.FormatPlacementLevelDisplay(placement.OpenedSections, true),
+					"score": placement.Score, "total_questions": placement.TotalQuestions,
+					"completed_at": placement.CompletedAt.Format(time.RFC3339),
+					"admin_set":    placement.AdminOverride, "source": placement.Source,
+					"course_code": grammarService.AttemptRepo.CourseCode(),
 				}
 			}
-			levelLabel := ""
-			if r.grammarService != nil {
-				levelLabel = r.grammarService.FormatPlacementLevelDisplay(opened, true)
-			}
-			adminSet := gptAdminOverride.Valid && gptAdminOverride.Bool
-			row["grammar_placement"] = map[string]interface{}{
-				"level":           levelLabel,
-				"score":           int(gptScore.Int64),
-				"total_questions": int(gptTotal.Int64),
-				"completed_at":    gptCompleted.String,
-				"admin_set":       adminSet,
-			}
-		} else {
-			row["grammar_placement"] = nil
 		}
-
-		userList = append(userList, row)
 	}
 
 	w.Header().Set("Content-Type", "application/json")
@@ -1593,7 +1573,8 @@ func (r *Router) handleAdminUserGrammarPlacement(w http.ResponseWriter, req *htt
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
-	if r.grammarService == nil {
+	grammarService := r.grammarServiceForRequest(req, getUserIDFromContext(req.Context()))
+	if grammarService == nil {
 		http.Error(w, "Grammar service not configured", http.StatusServiceUnavailable)
 		return
 	}
@@ -1617,7 +1598,7 @@ func (r *Router) handleAdminUserGrammarPlacement(w http.ResponseWriter, req *htt
 		return
 	}
 
-	if err := r.grammarService.AdminSetGrammarPlacementLevel(context.Background(), userID, body.Level); err != nil {
+	if err := grammarService.AdminSetGrammarPlacementLevel(req.Context(), userID, body.Level); err != nil {
 		if strings.Contains(err.Error(), "invalid grammar level") || strings.Contains(err.Error(), "unknown grammar level") {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			return

@@ -391,7 +391,7 @@ func (w *SentenceCompositionWorker) resolveEnglishScopes(userID int64, courseCod
 			zap.Int64("user_id", userID), zap.String("course", courseCode), zap.Error(err))
 		return nil
 	}
-	placement, err := w.grammarAttempts.GetPlacementTestResult(userID)
+	placement, err := w.grammarAttempts.ForCourse(courseCode).GetPlacementTestResult(userID)
 	if err != nil {
 		w.logger.Warn("sentence english scopes: load placement failed",
 			zap.Int64("user_id", userID), zap.String("course", courseCode), zap.Error(err))

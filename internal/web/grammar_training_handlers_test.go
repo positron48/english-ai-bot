@@ -42,7 +42,7 @@ func setupGrammarTrainingHandlersTest(t *testing.T) (*Router, int64, func()) {
 	lc.GrammarBundleID = "es"
 	gs := service.NewGrammarService(contentRepo, publishRepo, attemptRepo, lc, logger)
 	packFS := fstest.MapFS{
-		"index.json": {Data: []byte(`{"version":"1","language":"es","course_id":"es","generated_at":"","chapters":{"ch1":"one_questions.json"}}`)},
+		"index.json":                  {Data: []byte(`{"version":"1","language":"es","course_id":"es","generated_at":"","chapters":{"ch1":"one_questions.json"}}`)},
 		"chapters/one_questions.json": {Data: []byte(`{"chapter_id":"ch1","questions":[{"id":"q1","chapter_id":"ch1","theory_block_id":"b1","concept_id":"c1","type":"single_choice","question":"Q?","options":["A","B"],"correct_answer":"A","explanation":"E"}]}`)},
 	}
 	gs.SetTrainingPackRepository(repository.NewGrammarTrainingPackRepositoryWithFS(packFS, logger))
@@ -51,7 +51,7 @@ func setupGrammarTrainingHandlersTest(t *testing.T) (*Router, int64, func()) {
 
 	_ = publishRepo.SetPublished("section", "s1", true, nil)
 	_ = publishRepo.SetPublished("chapter", "ch1", true, nil)
-	_ = attemptRepo.SavePlacementTestResult(userID, 100, 100, []string{"s1"})
+	_ = gs.AttemptRepo.SavePlacementTestResult(userID, 100, 100, []string{"s1"})
 
 	return router, userID, cleanup
 }
@@ -139,39 +139,39 @@ func TestGrammarTrainingHandlers_MethodAndAuthGuards(t *testing.T) {
 		status int
 	}{
 		{
-			name: "availability method not allowed",
-			call: router.handleLearningGrammarTrainingAvailability,
-			req:  httptest.NewRequest(http.MethodPost, "/api/learning/grammar/training/availability", nil),
+			name:   "availability method not allowed",
+			call:   router.handleLearningGrammarTrainingAvailability,
+			req:    httptest.NewRequest(http.MethodPost, "/api/learning/grammar/training/availability", nil),
 			status: http.StatusMethodNotAllowed,
 		},
 		{
-			name: "start unauthorized",
-			call: router.handleLearningGrammarTrainingStart,
-			req:  httptest.NewRequest(http.MethodPost, "/api/learning/grammar/training/session/start", bytes.NewReader([]byte(`{}`))),
+			name:   "start unauthorized",
+			call:   router.handleLearningGrammarTrainingStart,
+			req:    httptest.NewRequest(http.MethodPost, "/api/learning/grammar/training/session/start", bytes.NewReader([]byte(`{}`))),
 			status: http.StatusUnauthorized,
 		},
 		{
-			name: "start method not allowed",
-			call: router.handleLearningGrammarTrainingStart,
-			req:  httptest.NewRequest(http.MethodGet, "/api/learning/grammar/training/session/start", nil),
+			name:   "start method not allowed",
+			call:   router.handleLearningGrammarTrainingStart,
+			req:    httptest.NewRequest(http.MethodGet, "/api/learning/grammar/training/session/start", nil),
 			status: http.StatusMethodNotAllowed,
 		},
 		{
-			name: "answer method not allowed",
-			call: router.handleLearningGrammarTrainingAnswer,
-			req:  setUserIDInContext(httptest.NewRequest(http.MethodGet, "/api/learning/grammar/training/session/answer", nil), userID),
+			name:   "answer method not allowed",
+			call:   router.handleLearningGrammarTrainingAnswer,
+			req:    setUserIDInContext(httptest.NewRequest(http.MethodGet, "/api/learning/grammar/training/session/answer", nil), userID),
 			status: http.StatusMethodNotAllowed,
 		},
 		{
-			name: "answer unauthorized",
-			call: router.handleLearningGrammarTrainingAnswer,
-			req:  httptest.NewRequest(http.MethodPost, "/api/learning/grammar/training/session/answer", bytes.NewReader([]byte(`{"question_id":"q1","answer":"A"}`))),
+			name:   "answer unauthorized",
+			call:   router.handleLearningGrammarTrainingAnswer,
+			req:    httptest.NewRequest(http.MethodPost, "/api/learning/grammar/training/session/answer", bytes.NewReader([]byte(`{"question_id":"q1","answer":"A"}`))),
 			status: http.StatusUnauthorized,
 		},
 		{
-			name: "availability unauthorized",
-			call: router.handleLearningGrammarTrainingAvailability,
-			req:  httptest.NewRequest(http.MethodGet, "/api/learning/grammar/training/availability", nil),
+			name:   "availability unauthorized",
+			call:   router.handleLearningGrammarTrainingAvailability,
+			req:    httptest.NewRequest(http.MethodGet, "/api/learning/grammar/training/availability", nil),
 			status: http.StatusUnauthorized,
 		},
 	}
@@ -224,4 +224,3 @@ func TestGrammarTrainingHandlers_500Branches(t *testing.T) {
 		t.Fatalf("answer 500: expected 500, got %d", wAnswer.Code)
 	}
 }
-

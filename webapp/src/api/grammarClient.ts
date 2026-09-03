@@ -190,7 +190,7 @@ function notifyGrammarTrainingRecorded() {
   emitAppDataEvent('grammar-training-recorded', code)
 }
 
-function clearCategoriesCache() {
+export function clearCategoriesCache() {
   categoriesCache = null
   categoriesRequest = null
 }
@@ -750,31 +750,10 @@ export const grammarClient = {
     )
   },
 
+  // Compatibility for old clients: the retired endpoint returns an explicit upgrade error.
+  // Placement must never fall back to a chapter bank or a different offline scoring rule.
   async getPlacementTest(): Promise<{ questions: any[]; total: number }> {
-    return offlineFallback(
-      () => apiClient.request('/api/learning/grammar/placement-test'),
-      async () => {
-        const meta = await requireMeta()
-        const candidates: any[] = []
-        for (const section of meta.sections) {
-          for (const chapter of section.chapters) {
-            const payload = await getStoredChapter(chapter.chapter_id, activeCourseCode())
-            for (const question of chapterPoolQuestions(payload)) {
-              candidates.push(sanitizeQuestionForTest({
-                ...question,
-                id: `${chapter.chapter_id}:${question.id}`,
-                _offline_original_question_id: question.id,
-                _category_test_chapter_id: chapter.chapter_id,
-                placement_chapter_title: chapter.title,
-                level: chapter.level || section.level,
-              }))
-            }
-          }
-        }
-        const selected = shuffle(candidates).slice(0, 25)
-        return { questions: selected, total: selected.length }
-      },
-    )
+    return apiClient.request(`/api/learning/grammar/placement-test${grammarCourseParam()}`)
   },
 
   async submitTest(scope: 'chapter' | 'category', scopeID: string, answers: any[]): Promise<any> {
@@ -799,66 +778,10 @@ export const grammarClient = {
   },
 
   async submitPlacementTest(answersMap: Record<string, any>): Promise<any> {
-    if (!isBrowserOffline()) {
-      try {
-        const result = await apiClient.request(`/api/learning/grammar/placement-test/submit${grammarCourseParam()}`, {
-          method: 'POST',
-          body: answersMap as any,
-        })
-        clearCategoriesCache()
-        notifyGrammarTestSubmitted(result)
-        return result
-      } catch (error) {
-        if (!isNetworkError(error)) throw error
-      }
-    }
-    const meta = await requireMeta()
-    const results: any[] = []
-    let correct = 0
-    let total = 0
-    for (const [compoundID, answer] of Object.entries(answersMap)) {
-      const [chapterID, questionID] = compoundID.includes(':') ? compoundID.split(/:(.*)/s).filter(Boolean) : ['', compoundID]
-      if (!chapterID || !questionID) continue
-      const payload = await getStoredChapter(chapterID, activeCourseCode())
-      const question = questionsByID(payload).get(questionID)
-      if (!question) continue
-      const isCorrect = answer !== null && answer !== undefined && compareAnswers(answer, question.correct_answer, question.type)
-      if (isCorrect) correct++
-      total++
-      results.push({
-        question_id: compoundID,
-        correct: isCorrect,
-        user_answer: answer,
-        correct_answer: question.correct_answer,
-        explanation: question.explanation,
-        level: payload?.chapter?.level,
-        placement_chapter_title: payload?.title || payload?.chapter?.title,
-      })
-    }
-    const score = total > 0 ? Math.floor((correct * 100) / total) : 0
-    const sectionCount = score >= 80 ? meta.sections.length : score >= 50 ? Math.max(1, Math.ceil(meta.sections.length / 3)) : 0
-    const openedSections = meta.sections.slice(0, sectionCount).map((section) => section.section_id)
-    if (openedSections.length > 0) {
-      for (const section of meta.sections) {
-        if (openedSections.includes(section.section_id)) {
-          section.can_access = true
-          section.opened_by_placement = true
-          for (const chapter of section.chapters) chapter.can_access = true
-        }
-      }
-      await setOfflineMeta(meta, activeCourseCode())
-    }
-    const result = {
-      score,
-      total_questions: total,
-      correct,
-      opened_sections: openedSections,
-      level: score >= 80 ? 'B+' : score >= 50 ? 'A+' : 'A0',
-      results,
-      offline: true,
-    }
-    notifyGrammarTestSubmitted(result)
-    return result
+    return apiClient.request(`/api/learning/grammar/placement-test/submit${grammarCourseParam()}`, {
+      method: 'POST',
+      body: answersMap as any,
+    })
   },
 
   async getNextChapter(chapterID: string): Promise<any> {

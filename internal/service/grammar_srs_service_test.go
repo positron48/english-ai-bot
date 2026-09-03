@@ -86,11 +86,11 @@ func setupGrammarSRSServiceWithRepos(t *testing.T) (*GrammarService, *repository
 	if err := publishRepo.SetPublished("chapter", "ch1", true, nil); err != nil {
 		t.Fatalf("publish chapter: %v", err)
 	}
-	if err := attemptRepo.SavePlacementTestResult(user.ID, 100, 100, []string{"s1"}); err != nil {
+	if err := svc.AttemptRepo.SavePlacementTestResult(user.ID, 100, 100, []string{"s1"}); err != nil {
 		t.Fatalf("SavePlacementTestResult: %v", err)
 	}
 
-	return svc, attemptRepo, user.ID, func() {}
+	return svc, svc.AttemptRepo, user.ID, func() {}
 }
 
 func TestGrammarSRS_AvailabilityAndSessionAndAnswer_HappyPath(t *testing.T) {
@@ -290,7 +290,7 @@ func TestGrammarSRS_StartSession_RemainingLoopBranches(t *testing.T) {
 	svc.SetSRSRepository(nil) // force remaining path
 	_ = publishRepo.SetPublished("section", "s1", true, nil)
 	_ = publishRepo.SetPublished("chapter", "ch1", true, nil)
-	_ = attemptRepo.SavePlacementTestResult(user.ID, 100, 100, []string{"s1"})
+	_ = svc.AttemptRepo.SavePlacementTestResult(user.ID, 100, 100, []string{"s1"})
 	session, err := svc.StartGrammarSrsSession(context.Background(), user.ID, 1)
 	if err != nil {
 		t.Fatalf("StartGrammarSrsSession remaining branches: %v", err)
@@ -326,7 +326,7 @@ func TestGrammarSRS_StartSession_DueLoopBreakBranch(t *testing.T) {
 	svc.SetSRSRepository(repository.NewGrammarSRSRepository(db.GetConnection(), logger))
 	_ = publishRepo.SetPublished("section", "s1", true, nil)
 	_ = publishRepo.SetPublished("chapter", "ch1", true, nil)
-	_ = attemptRepo.SavePlacementTestResult(user.ID, 100, 100, []string{"s1"})
+	_ = svc.AttemptRepo.SavePlacementTestResult(user.ID, 100, 100, []string{"s1"})
 	// Preseed due list with two existing blocks, limit=1 should hit due-loop break on second iteration.
 	_ = svc.SRSRepo.EnsureTheoryMemory(user.ID, "es", "es", "ch1", "b1", "c1")
 	_, _ = db.GetConnection().Exec(
@@ -374,7 +374,7 @@ func TestGrammarSRS_StartSession_DueTrimBranch_WithSQLMock(t *testing.T) {
 	svc.SetTrainingPackRepository(repository.NewGrammarTrainingPackRepositoryWithFS(packFS, logger))
 	_ = publishRepo.SetPublished("section", "s1", true, nil)
 	_ = publishRepo.SetPublished("chapter", "ch1", true, nil)
-	_ = attemptRepo.SavePlacementTestResult(user.ID, 100, 100, []string{"s1"})
+	_ = svc.AttemptRepo.SavePlacementTestResult(user.ID, 100, 100, []string{"s1"})
 
 	mockDB, mock, err := sqlmock.New()
 	if err != nil {
@@ -422,12 +422,12 @@ func TestGrammarSRS_AllowedTrainingChapters_IsSectionOpenedByPlacementErrorBranc
 	attemptRepo := repository.NewGrammarAttemptRepository(db.GetConnection(), logger)
 	userRepo := repository.NewUserRepository(db.GetConnection(), logger)
 	user, _ := userRepo.GetOrCreateUser(1)
+	svc := NewGrammarService(contentRepo, publishRepo, attemptRepo, config.DefaultLearningConfig(), logger)
 	// placement with unknown section to force level-based branch inside isSectionOpenedByPlacement,
 	// which triggers the second ContentRepo.GetSections() call that now fails.
-	if err := attemptRepo.SavePlacementTestResult(user.ID, 10, 10, []string{"unknown-section"}); err != nil {
+	if err := svc.AttemptRepo.SavePlacementTestResult(user.ID, 10, 10, []string{"unknown-section"}); err != nil {
 		t.Fatalf("SavePlacementTestResult: %v", err)
 	}
-	svc := NewGrammarService(contentRepo, publishRepo, attemptRepo, config.DefaultLearningConfig(), logger)
 	if _, err := svc.allowedTrainingChapters(context.Background(), user.ID); err == nil {
 		t.Fatal("expected error from isSectionOpenedByPlacement second GetSections call")
 	}
@@ -537,7 +537,7 @@ func TestGrammarSRS_SubmitAnswer_WithoutTheoryBlock(t *testing.T) {
 	svc.SetTrainingPackRepository(repository.NewGrammarTrainingPackRepositoryWithFS(packFS, logger))
 	_ = publishRepo.SetPublished("section", "s1", true, nil)
 	_ = publishRepo.SetPublished("chapter", "ch1", true, nil)
-	_ = attemptRepo.SavePlacementTestResult(user.ID, 100, 100, []string{"s1"})
+	_ = svc.AttemptRepo.SavePlacementTestResult(user.ID, 100, 100, []string{"s1"})
 
 	res, err := svc.SubmitGrammarSrsAnswer(context.Background(), user.ID, "q1", "A")
 	if err != nil {

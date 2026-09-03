@@ -856,16 +856,7 @@ func (r *Router) handleLearningGrammarStatistics(w http.ResponseWriter, req *htt
 }
 
 // handleLearningGrammarPlacementTest generates a placement test
-// @Summary      Получить placement тест
-// @Description  Генерирует тест на определение уровня (25 вопросов из всех опубликованных категорий)
-// @Tags         Learning Grammar
-// @Accept       json
-// @Produce      application/json
-// @Security     ApiKeyAuth
-// @Success      200  {object}  service.TestQuestions  "Вопросы теста"
-// @Failure      401  {string}  string  "Неавторизован"
-// @Failure      405  {string}  string  "Метод не разрешен"
-// @Router       /api/learning/grammar/placement-test [get]
+// Kept for historical tests; the route is retired and documented in placement_swagger.go.
 func (r *Router) handleLearningGrammarPlacementTest(w http.ResponseWriter, req *http.Request) {
 	if req.Method != http.MethodGet {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
@@ -891,18 +882,7 @@ func (r *Router) handleLearningGrammarPlacementTest(w http.ResponseWriter, req *
 }
 
 // handleLearningGrammarSubmitPlacementTest submits placement test answers
-// @Summary      Отправить ответы placement теста
-// @Description  Отправляет ответы на placement тест и определяет уровень пользователя
-// @Tags         Learning Grammar
-// @Accept       json
-// @Produce      application/json
-// @Security     ApiKeyAuth
-// @Param        request  body  map[string]interface{}  true  "Ответы на вопросы (map question_id -> answer)"
-// @Success      200  {object}  service.PlacementTestResult  "Результат теста"
-// @Failure      400  {string}  string  "Неверный запрос"
-// @Failure      401  {string}  string  "Неавторизован"
-// @Failure      405  {string}  string  "Метод не разрешен"
-// @Router       /api/learning/grammar/placement-test/submit [post]
+// Kept for historical tests; the route is retired and documented in placement_swagger.go.
 func (r *Router) handleLearningGrammarSubmitPlacementTest(w http.ResponseWriter, req *http.Request) {
 	if req.Method != http.MethodPost {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)

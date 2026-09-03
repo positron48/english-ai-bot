@@ -59,6 +59,14 @@ grammar-bundle:
 grammar-bundle-list:
 	@./scripts/generate-grammar-bundle.sh list
 
+.PHONY: placement-bundle placement-validate
+placement-bundle:
+	@python3 scripts/build-placement-bank.py all
+
+placement-validate:
+	@python3 scripts/build-placement-bank.py all --check
+	@$(GO) test ./internal/placement ./internal/placementbundle -count=1
+
 # Local Reading Texts CMS (dev-only authoring UI, not part of prod runtime)
 READING_CMS_PORT ?= 8791
 

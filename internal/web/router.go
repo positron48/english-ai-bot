@@ -266,7 +266,7 @@ func (r *Router) grammarServiceForRequest(req *http.Request, userID int64) *serv
 	}
 	courseCode := req.URL.Query().Get("course_code")
 	if courseCode == "" {
-		courseCode = r.currentCourseCodeForUser(req.Context(), userID)
+		courseCode = r.placementCourseCode(req, userID)
 	}
 	bundleID := grammarBundleForCourse(courseCode)
 	if svc, ok := r.grammarServices[bundleID]; ok {
@@ -586,8 +586,11 @@ func (r *Router) setupProtectedRoutes() {
 	r.mux.HandleFunc("/api/learning/grammar/test/report", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLearningGrammarTestReport)))
 	r.mux.HandleFunc("/api/learning/reading/text/report", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLearningReadingTextReport)))
 	r.mux.HandleFunc("/api/content-reports/offline/sync-reports", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleContentReportsOfflineSync)))
-	r.mux.HandleFunc("/api/learning/grammar/placement-test", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLearningGrammarPlacementTest)))
-	r.mux.HandleFunc("/api/learning/grammar/placement-test/submit", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLearningGrammarSubmitPlacementTest)))
+	r.mux.HandleFunc("/api/learning/grammar/placement-test", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLegacyPlacementRetired)))
+	r.mux.HandleFunc("/api/learning/grammar/placement-test/submit", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLegacyPlacementRetired)))
+	r.mux.HandleFunc("/api/learning/placement/sessions", appAPIMiddleware.Wrap(auth.RequireAuth(r.handlePlacementSessions)))
+	r.mux.HandleFunc("/api/learning/placement/sessions/", appAPIMiddleware.Wrap(auth.RequireAuth(r.handlePlacementSession)))
+	r.mux.HandleFunc("/api/learning/placement/results", appAPIMiddleware.Wrap(auth.RequireAuth(r.handlePlacementResults)))
 	r.mux.HandleFunc("/api/learning/reading/categories", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLearningReadingCategories)))
 	r.mux.HandleFunc("/api/learning/reading/categories/", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLearningReadingCategoryTexts)))
 	r.mux.HandleFunc("/api/learning/reading/texts/", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLearningReadingTexts)))

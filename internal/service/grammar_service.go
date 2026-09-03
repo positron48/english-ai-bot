@@ -35,6 +35,14 @@ func NewGrammarService(
 	learning config.LearningConfig,
 	logger *zap.Logger,
 ) *GrammarService {
+	bundleID := strings.ToLower(strings.TrimSpace(learning.GrammarBundleID))
+	if bundleID == "" {
+		bundleID = strings.ToLower(strings.TrimSpace(learning.TargetLang))
+	}
+	nativeLang := strings.ToLower(strings.TrimSpace(learning.NativeLang))
+	if bundleID != "" && nativeLang != "" {
+		attemptRepo = attemptRepo.ForCourse(bundleID + "_" + nativeLang)
+	}
 	theoryIndex, err := repository.BuildTheoryBlockIndex(contentRepo)
 	if err != nil && logger != nil {
 		logger.Warn("failed to build theory block index", zap.Error(err))
@@ -1678,15 +1686,6 @@ func (s *GrammarService) GetGrammarStatistics(ctx context.Context, userID int64)
 		return nil, fmt.Errorf("failed to get published items: %w", err)
 	}
 
-	// Get placement test result to check opened sections
-	placementResult, _ := s.AttemptRepo.GetPlacementTestResult(userID)
-	openedSectionsMap := make(map[string]bool)
-	if placementResult != nil {
-		for _, sectionID := range placementResult.OpenedSections {
-			openedSectionsMap[sectionID] = true
-		}
-	}
-
 	// Level hierarchy for comparison
 	levelOrder := map[string]int{
 		"A0":    0,
@@ -1733,9 +1732,6 @@ func (s *GrammarService) GetGrammarStatistics(ctx context.Context, userID int64)
 			continue // Skip sections without valid level
 		}
 
-		// Check if section was opened by placement test
-		isOpenedByPlacement := openedSectionsMap[section.SectionID]
-
 		// Check all published chapters in this section
 		allChaptersPassed := true
 		sectionTotalScore := 0
@@ -1749,27 +1745,18 @@ func (s *GrammarService) GetGrammarStatistics(ctx context.Context, userID int64)
 
 			sectionPublishedChapters++
 
-			// If section was opened by placement test, count all chapters as passed (100%)
-			if isOpenedByPlacement {
-				sectionTotalScore += 100
+			// Placement grants access; only actual chapter attempts establish progress.
+			progress, _ := s.AttemptRepo.GetChapterProgress(userID, chapterID)
+			if progress == nil {
+				allChaptersPassed = false
+				continue
+			}
+			sectionTotalScore += progress.BestScore
+			if progress.Passed {
 				passedChaptersCount++
 			} else {
-				progress, _ := s.AttemptRepo.GetChapterProgress(userID, chapterID)
-				sectionTotalScore += progress.BestScore
-
-				if progress.Passed {
-					passedChaptersCount++
-				}
-
-				if !progress.Passed {
-					allChaptersPassed = false
-				}
+				allChaptersPassed = false
 			}
-		}
-
-		// If opened by placement test, consider all chapters passed
-		if isOpenedByPlacement {
-			allChaptersPassed = true
 		}
 
 		// Update confirmed level if all chapters in this section are passed
@@ -1813,10 +1800,8 @@ func (s *GrammarService) GetGrammarStatistics(ctx context.Context, userID int64)
 				totalScoreWholeCourse += 0
 				continue
 			}
-			if openedSectionsMap[section.SectionID] {
-				totalScoreWholeCourse += 100
-			} else {
-				progress, _ := s.AttemptRepo.GetChapterProgress(userID, chapterID)
+			progress, _ := s.AttemptRepo.GetChapterProgress(userID, chapterID)
+			if progress != nil {
 				totalScoreWholeCourse += progress.BestScore
 			}
 		}

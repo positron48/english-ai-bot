@@ -585,7 +585,7 @@ func TestCourseAdminCoverage_AdminUsersWithGrammarPlacement(t *testing.T) {
 		INSERT INTO grammar_placement_test (user_id, score, total_questions, opened_sections_json, completed_at, admin_override)
 		VALUES ($1, 80, 10, $2, CURRENT_TIMESTAMP, true)
 		ON CONFLICT (user_id) DO UPDATE SET score = 80, total_questions = 10, opened_sections_json = $2, admin_override = true
-	`, targetUser.ID, `["A1"]`)
+	`, targetUser.ID, `["es.grammar.first_sentences_ser_pronouns"]`)
 	if err != nil {
 		t.Fatalf("insert placement: %v", err)
 	}
@@ -1399,19 +1399,11 @@ func TestCourseAdminCoverage_AdminUserGrammarPlacementSetError(t *testing.T) {
 	attemptRepo := repository.NewGrammarAttemptRepository(router.db, router.logger)
 	grammarSvc := service.NewGrammarService(contentRepo, publishRepo, attemptRepo, router.config.Learning, router.logger)
 	router.SetGrammarService(grammarSvc)
-	if _, err := router.db.Exec(`DROP TABLE grammar_placement_test`); err != nil {
-		t.Fatalf("drop placement table: %v", err)
+	if _, err := router.db.Exec(`ALTER TABLE grammar_placement_access RENAME TO grammar_placement_access_unavailable`); err != nil {
+		t.Fatalf("make placement table unavailable: %v", err)
 	}
 	t.Cleanup(func() {
-		_, _ = router.db.Exec(`CREATE TABLE IF NOT EXISTS grammar_placement_test (
-			user_id BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
-			score INTEGER NOT NULL,
-			total_questions INTEGER NOT NULL,
-			opened_sections_json TEXT NOT NULL,
-			completed_at TIMESTAMPTZ DEFAULT CURRENT_TIMESTAMP,
-			admin_override BOOLEAN NOT NULL DEFAULT FALSE,
-			UNIQUE(user_id)
-		)`)
+		_, _ = router.db.Exec(`ALTER TABLE grammar_placement_access_unavailable RENAME TO grammar_placement_access`)
 	})
 	req := httptest.NewRequest(http.MethodPut, fmt.Sprintf("/api/admin/users/%d/grammar-placement", targetUser.ID), strings.NewReader(`{"level":"A1"}`))
 	req = adminCtx(req, adminUserID)

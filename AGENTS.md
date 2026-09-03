@@ -87,3 +87,20 @@ k3s ConfigMaps for `english`, `spanish`, and `linglow` set
 `OPENROUTER_SOCKS5_PROXY: "51.254.98.124:1080"`.
 
 ## Imported Claude Cowork project instructions
+
+## Standalone language placement release (EN/ES)
+
+Canonical banks live in each grammar submodule's `placement/`; run
+`make placement-bundle` after edits and `make placement-validate` before release.
+Commit and push both course repositories before updating their pointers here.
+
+Migration `000077_language_placement.sql` is automatic. Linglow uses
+`CONTENT_SOURCE=db`; the new banks require the operator to run, after the
+new image has rolled out:
+
+```bash
+kubectl -n linglow exec deploy/linglow -- /app/import_learning_content --course-code=all --commit
+```
+
+Do not execute production kubectl locally. Release, validation, and bank review
+details: `docs/placement/IMPLEMENTATION.md`.

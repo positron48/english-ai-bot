@@ -20,11 +20,11 @@
         </button>
         <router-link
           v-if="settingsLoaded && !hidePlacementTestButton"
-          to="/learning/grammar/placement-test"
+          to="/learning/placement-test"
           class="btn-placement-test"
         >
           <Icon name="sparkles" />
-          {{ t('grammar.takePlacementTest') || 'Take Placement Test' }}
+          {{ t('placement.title') }}
         </router-link>
       </div>
     </div>

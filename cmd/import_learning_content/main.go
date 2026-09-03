@@ -18,6 +18,8 @@ import (
 	"tgbot-skeleton/internal/database"
 	"tgbot-skeleton/internal/grammartrainingpack"
 	"tgbot-skeleton/internal/logger"
+	"tgbot-skeleton/internal/placement"
+	"tgbot-skeleton/internal/placementbundle"
 	"tgbot-skeleton/internal/readingsync"
 	"tgbot-skeleton/internal/repository"
 	"tgbot-skeleton/internal/speakingsync"
@@ -96,6 +98,16 @@ func run() int {
 			fmt.Fprintf(os.Stderr, "build import plan (%s): %v\n", repository.CourseCodeForLearning(learning), err)
 			return 1
 		}
+		var placementBank *placement.Bank
+		placementCourse := repository.CourseCodeForLearning(learning)
+		if placementCourse == "en_ru" || placementCourse == "es_ru" {
+			placementBank, err = placementbundle.Load(placementCourse)
+			if err != nil {
+				fmt.Fprintf(os.Stderr, "placement bank (%s): %v\n", placementCourse, err)
+				return 1
+			}
+			fmt.Printf("[%s] placement course=%s questions=%d version=%s\n", mode, placementBank.CourseCode, len(placementBank.Items), placementBank.Version)
+		}
 		fmt.Printf("[%s] course=%s bundle=%s app=%s target=%s sections=%d chapters=%d training_questions=%d hash=%s\n",
 			mode, repository.CourseCodeForLearning(learning), plan.BundleID, plan.AppCode, plan.TargetLang, len(plan.SectionsData.Sections), len(plan.ChaptersRaw), len(plan.TrainingQuestions), plan.SourceHash)
 		if !*commit {
@@ -104,6 +116,12 @@ func run() int {
 		if err := writePlan(ctx, conn, plan); err != nil {
 			fmt.Fprintf(os.Stderr, "commit import (%s): %v\n", repository.CourseCodeForLearning(learning), err)
 			return 1
+		}
+		if placementBank != nil {
+			if err := repository.ImportPlacementBank(ctx, conn, placementBank); err != nil {
+				fmt.Fprintf(os.Stderr, "placement import (%s): %v\n", placementBank.CourseCode, err)
+				return 1
+			}
 		}
 		if err := readingsync.SyncFromBundle(ctx, &courseCfg, repository.NewReadingCatalogRepository(conn), log); err != nil {
 			fmt.Fprintf(os.Stderr, "commit reading import (%s): %v\n", repository.CourseCodeForLearning(learning), err)
