@@ -1144,3 +1144,50 @@ func TestCourseRepository_SRSReadinessAggregate(t *testing.T) {
 		t.Fatalf("not ready users = %+v", report.NotReadyUsers)
 	}
 }
+
+func TestCourseRepository_MapLegacyContent_ArchivesRemovedReading(t *testing.T) {
+	conn := testutil.SetupTestDB(t)
+	repo := NewCourseRepository(conn, zap.NewNop())
+	for _, row := range []struct{ course, id string }{{"es_ru", "removed-es"}, {"es_ru", "kept-es"}, {"en_ru", "kept-en"}} {
+		if _, err := conn.Exec(`INSERT INTO learning_items (course_id,item_type,source_kind,source_id,status) SELECT id,'reading_text','reading_text',?,'published' FROM courses WHERE code=?`, row.id, row.course); err != nil {
+			t.Fatal(err)
+		}
+	}
+	if _, err := conn.Exec(`INSERT INTO reading_texts (text_id,category_id,title,level,target_language,reading_passage) VALUES ('kept-es','es_a1','Keep','A1','es','{}')`); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := repo.MapLegacyContent(context.Background(), "es_ru", "es"); err != nil {
+		t.Fatal(err)
+	}
+	for id, want := range map[string]string{"removed-es": "archived", "kept-es": "published", "kept-en": "published"} {
+		var status string
+		if err := conn.QueryRow(`SELECT status FROM learning_items WHERE source_kind='reading_text' AND source_id=?`, id).Scan(&status); err != nil {
+			t.Fatal(err)
+		}
+		if status != want {
+			t.Fatalf("%s: status %s, want %s", id, status, want)
+		}
+	}
+	// Restoring the source republishes the same item instead of losing history.
+	var beforeID int64
+	if err := conn.QueryRow(`SELECT id FROM learning_items WHERE source_id='removed-es'`).Scan(&beforeID); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := conn.Exec(`INSERT INTO reading_categories (category_id,title,level,sort_order,text_ids) VALUES ('es_a1','Reading','A1',1,'["kept-es","removed-es"]') ON CONFLICT(category_id) DO NOTHING`); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := conn.Exec(`INSERT INTO reading_texts (text_id,category_id,title,level,target_language,reading_passage) VALUES ('removed-es','es_a1','Restored','A1','es','{}')`); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := repo.MapLegacyContent(context.Background(), "es_ru", "es"); err != nil {
+		t.Fatal(err)
+	}
+	var afterID int64
+	var status string
+	if err := conn.QueryRow(`SELECT id,status FROM learning_items WHERE source_id='removed-es'`).Scan(&afterID, &status); err != nil {
+		t.Fatal(err)
+	}
+	if afterID != beforeID || status != "published" {
+		t.Fatalf("restored item: id %d -> %d, status %s", beforeID, afterID, status)
+	}
+}

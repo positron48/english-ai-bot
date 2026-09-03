@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+from collections import Counter
 import datetime as dt
 import json
 import os
@@ -78,14 +79,16 @@ def fetch_all_reports(base_url: str, token: str, course: str, source_type: str) 
     st = source_type.strip()
     if st == "word_training":
         try:
-            return fetch_unified_reports(base_url, token, course, st), "unified"
+            return fetch_unified_reports(base_url, token, "", st), "unified"
         except RuntimeError as e:
             if "HTTP 404" not in str(e):
                 raise
             print("word_training requires unified /api/internal/content-reports (deploy new image)", file=sys.stderr)
             return [], "unified_missing"
     try:
-        return fetch_unified_reports(base_url, token, course, st), "unified"
+        # Older servers silently omit reading_text when course is supplied.
+        # Always fetch every page without it and classify locally.
+        return fetch_unified_reports(base_url, token, "", st), "unified"
     except RuntimeError as e:
         if "HTTP 404" not in str(e):
             raise
@@ -95,10 +98,42 @@ def fetch_all_reports(base_url: str, token: str, course: str, source_type: str) 
     return grammar, "legacy_grammar"
 
 
+def report_course(report: dict) -> str:
+    payload = report.get("payload") or {}
+    snapshot = payload.get("content_snapshot") or {}
+    candidates = [report.get("course_code"), payload.get("course_code"),
+                  snapshot.get("target_language"), payload.get("target_language"),
+                  report.get("grammar_chapter_id"), payload.get("text_id"),
+                  payload.get("category_id"), snapshot.get("category_id")]
+    for value in candidates:
+        value = str(value or "").strip().lower()
+        for course in ("en", "es"):
+            if value == course or value.startswith((course + ".", course + "_", "free_" + course + "_")):
+                return course
+    # A report can outlive the catalog entry; unresolved IDs remain visible.
+    text_id = payload.get("text_id") or report.get("grammar_chapter_id")
+    if report.get("source_type") == "reading_text" and text_id:
+        root = Path(__file__).resolve().parents[2]
+        for course, directory in (("en", "english-grammar"), ("es", "spanish-grammar")):
+            path = root / "courses" / directory / "reading" / "index.json"
+            if path.exists() and text_id in json.loads(path.read_text(encoding="utf-8")).get("texts", {}):
+                return course
+    return ""
+
+
+def select_course(reports: List[dict], course: str) -> List[dict]:
+    selected = []
+    for report in reports:
+        detected = report_course(report)
+        if course == "all" or not detected or detected == course:
+            selected.append({**report, "triage_course": detected or "unknown"})
+    return selected
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="Fetch content reports snapshot")
-    parser.add_argument("--course", choices=["en", "es", "english", "spanish"], default="en")
-    parser.add_argument("--source-type", default="", help="word_training|grammar_training|empty=all")
+    parser.add_argument("--course", choices=["en", "es", "english", "spanish", "all"], default="en")
+    parser.add_argument("--source-type", default="", help="word_training|grammar_training|grammar_chapter|grammar_test|reading_text|empty=all")
     parser.add_argument("--service-url", default=os.getenv("COMPLAINTS_SERVICE_URL", ""))
     parser.add_argument("--service-token", default=os.getenv("COMPLAINTS_SERVICE_TOKEN", ""))
     parser.add_argument("--out", default="")
@@ -116,21 +151,25 @@ def main() -> int:
     if course == "spanish":
         course = "es"
 
-    reports, api_mode = fetch_all_reports(url, token, course, args.source_type.strip())
-    summary: List[dict] = []
-    if api_mode == "unified":
-        try:
-            summary_url = f"{url.rstrip('/')}/api/internal/content-reports/summary?course={course}"
-            data = http_json("GET", summary_url, token)
-            summary = data.get("summary", [])
-        except RuntimeError:
-            pass
+    all_reports, api_mode = fetch_all_reports(url, token, course, args.source_type.strip())
+    reports = select_course(all_reports, course)
+    counts = Counter((r.get("source_type"), r.get("report_category") or "other") for r in reports)
+    summary = [{"source_type": st, "report_category": cat, "count": count}
+               for (st, cat), count in sorted(counts.items())]
+    unknown_ids = [r["id"] for r in reports if r["triage_course"] == "unknown"]
+    if unknown_ids:
+        print(f"Course unknown for report IDs {unknown_ids}; retained for manual triage (may appear in both courses)", file=sys.stderr)
+    if api_mode != "unified":
+        print(f"INCOMPLETE snapshot: {api_mode}; reading and other report types are not verified", file=sys.stderr)
 
     payload = {
         "fetched_at": dt.datetime.now(dt.UTC).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
         "course": course,
         "service_url": url,
         "api_mode": api_mode,
+        "complete": api_mode == "unified",
+        "unfiltered_report_count": len(all_reports),
+        "unknown_course_report_ids": unknown_ids,
         "report_count": len(reports),
         "summary": summary,
         "reports": reports,
@@ -143,7 +182,7 @@ def main() -> int:
     out_path = Path(args.out) if args.out else out_dir / f"snapshot-{course}-{ts}.json"
     out_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print(f"Wrote {len(reports)} reports -> {out_path}")
-    return 0
+    return 0 if api_mode == "unified" else 2
 
 
 if __name__ == "__main__":

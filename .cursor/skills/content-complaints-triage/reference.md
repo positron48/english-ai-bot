@@ -128,5 +128,13 @@ Prod apply:
 
 ```bash
 set -a && . ./secrets/complaints-prod.env && set +a
-python3 tools-local/complaints-triage/resolve_all_active.py en
+python3 tools-local/complaints-triage/resolve_all_active.py en --report-ids "$VERIFIED_REPORT_IDS" --reason "Проверено после импорта"
 ```
+
+## Полнота выборки и чтение
+
+Сборщик всегда читает все страницы без серверного `course`: старые версии API отбрасывают `reading_text` с ID `free_es_*`. Курс определяется локально; неизвестные остаются видимыми в `unknown_course_report_ids`. Сводка строится из снимка. Проверять `complete`; legacy API не подтверждает отсутствие жалоб. Оба URL могут возвращать общую БД — не считать одинаковые ID дважды.
+
+Чтение: канонические `courses/*-grammar/reading/texts`, индекс `reading/index.json` и `assets/reading`. Проверять текст, перевод, вопросы, ключи, аудио и соответствие обложки описанию; выполнить поиск аналогичных ошибок. `GET .../{id}` на обновлённом API отдаёт `reading_text` из текущей БД отдельно от исторического payload.
+
+Для unified Linglow после здорового rollout оператор запускает `kubectl -n linglow exec deploy/linglow -- /app/import_learning_content --course-code es_ru --commit`. Локальный kubectl не использовать (AGENTS.md). Закрывать только явно указанные ID после проверки production; `resolve_all_active.py` без `--apply` ничего не изменяет.

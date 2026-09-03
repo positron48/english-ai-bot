@@ -133,11 +133,11 @@ func (r *Router) handleInternalContentReportsSummary(w http.ResponseWriter, req 
 	out := make([]map[string]interface{}, 0, len(rows))
 	for _, row := range rows {
 		out = append(out, map[string]interface{}{
-			"source_type":          row.SourceType,
-			"report_category":      row.ReportCategory,
-			"grammar_chapter_id":   row.GrammarChapterID,
-			"word_category":        row.WordCategory,
-			"count":                row.Count,
+			"source_type":        row.SourceType,
+			"report_category":    row.ReportCategory,
+			"grammar_chapter_id": row.GrammarChapterID,
+			"word_category":      row.WordCategory,
+			"count":              row.Count,
 		})
 	}
 	w.Header().Set("Content-Type", "application/json")
@@ -176,6 +176,23 @@ func (r *Router) handleInternalContentReportByID(w http.ResponseWriter, req *htt
 		return
 	}
 	resp := contentReportToMap(report, repo)
+	if report.SourceType == "reading_text" {
+		textID := report.GrammarChapterID
+		if payloadID, ok := repo.ParsePayload(report.PayloadJSON)["text_id"].(string); ok && strings.TrimSpace(payloadID) != "" {
+			textID = strings.TrimSpace(payloadID)
+		}
+		doc, found, err := repository.NewReadingCatalogRepository(r.db).GetTextDocument(textID)
+		if err != nil {
+			r.logger.Error("failed to get reported reading text", zap.Error(err))
+			http.Error(w, "Internal server error", http.StatusInternalServerError)
+			return
+		}
+		// The report payload is a historical snapshot. This is the current DB
+		// document so triage can verify an import before resolving the report.
+		resp["text_id"] = textID
+		resp["reading_text_found"] = found
+		resp["reading_text"] = doc
+	}
 	if report.TrainingCardID != nil {
 		trainingRepo := repository.NewTrainingCardRepository(r.db, r.logger)
 		if card, e := trainingRepo.GetTrainingCard(*report.TrainingCardID); e == nil && card != nil {

@@ -67,9 +67,9 @@ set -a && . ./secrets/complaints-prod.env && set +a
 # слова: дистракторы, TTS (пример)
 python3 tools-local/complaints-triage/apply_prod_word_fixes.py
 
-# закрыть все активные жалобы курса
-python3 tools-local/complaints-triage/resolve_all_active.py en
-python3 tools-local/complaints-triage/resolve_all_active.py es
+# Предпросмотр закрытия конкретных проверенных ID; добавить --apply для выполнения
+python3 tools-local/complaints-triage/resolve_all_active.py en --report-ids "$VERIFIED_REPORT_IDS" --reason "Проверено после импорта"
+python3 tools-local/complaints-triage/resolve_all_active.py es --report-ids "$VERIFIED_REPORT_IDS" --reason "Проверено после импорта"
 ```
 
 Проверка, что активных нет:
@@ -77,7 +77,7 @@ python3 tools-local/complaints-triage/resolve_all_active.py es
 ```bash
 set -a && . ./secrets/complaints-prod.env && set +a
 curl -sS -H "X-Service-Token: $COMPLAINTS_SERVICE_TOKEN_EN" \
-  "$COMPLAINTS_SERVICE_URL_EN/api/internal/content-reports?limit=1&status=active&course=en"
+  "$COMPLAINTS_SERVICE_URL_EN/api/internal/content-reports?limit=200&status=active"
 ```
 
 ### 6. Грамматика → релиз
@@ -118,5 +118,14 @@ git commit -m "docs: content complaints triage journal YYYY-MM-DD"
 | 2026-06-04 | [journal-2026-06-04-triage.md](journal-2026-06-04-triage.md) | EN+ES | 33 | 0.11.13 |
 | 2026-07-10 | [journal-2026-07-10-triage.md](journal-2026-07-10-triage.md) | EN+ES | 13 (3 EN + 10 ES, −3 дубль слов) | 0.12.183 |
 | 2026-08-18 | [journal-2026-08-18-triage.md](journal-2026-08-18-triage.md) | EN+ES | 2 (0 EN + 2 ES) | ожидает релиза |
+| 2026-09-03 | [journal-2026-09-03-triage.md](journal-2026-09-03-triage.md) | EN+ES | 7 (6 reading + 1 grammar) | 0.12.189 |
 
 При новом прогоне добавь строку в эту таблицу.
+
+## Полнота выборки и чтение
+
+Сборщик всегда читает все страницы без серверного `course`: старые версии API отбрасывают `reading_text` с ID `free_es_*`. Курс определяется локально; неизвестные остаются видимыми в `unknown_course_report_ids`. Сводка строится из снимка. Проверять `complete`; legacy API не подтверждает отсутствие жалоб. Оба URL могут возвращать общую БД — не считать одинаковые ID дважды.
+
+Чтение: канонические `courses/*-grammar/reading/texts`, индекс `reading/index.json` и `assets/reading`. Проверять текст, перевод, вопросы, ключи, аудио и соответствие обложки описанию; выполнить поиск аналогичных ошибок. `GET .../{id}` на обновлённом API отдаёт `reading_text` из текущей БД отдельно от исторического payload.
+
+Для unified Linglow после здорового rollout оператор запускает `kubectl -n linglow exec deploy/linglow -- /app/import_learning_content --course-code es_ru --commit`. Локальный kubectl не использовать (AGENTS.md). Закрывать только явно указанные ID после проверки production; `resolve_all_active.py` без `--apply` ничего не изменяет.

@@ -12,7 +12,11 @@ from typing import Any, DefaultDict, Dict, List, Tuple
 
 def entity_key(report: dict) -> str:
     st = report.get("source_type", "")
-    if st == "grammar_training":
+    if st == "reading_text":
+        payload = report.get("payload") or {}
+        text_id = payload.get("text_id") or report.get("grammar_chapter_id")
+        return "|".join([st, str(text_id or report.get("id"))])
+    if st in ("grammar_training", "grammar_chapter", "grammar_test"):
         return "|".join(
             [
                 st,
@@ -21,6 +25,8 @@ def entity_key(report: dict) -> str:
                 report.get("grammar_question_id") or "",
             ]
         )
+    if st != "word_training":
+        return "|".join([st or "unknown", str(report.get("id"))])
     return "|".join(
         [
             st or "word_training",
@@ -56,6 +62,8 @@ def main() -> int:
     out: Dict[str, Any] = {
         "source_snapshot": str(args.snapshot),
         "report_count": len(reports),
+        "complete": data.get("complete", False),
+        "unknown_course_report_ids": data.get("unknown_course_report_ids", []),
         "cluster_count": len(ranked),
         "clusters": [],
     }
@@ -76,6 +84,7 @@ def main() -> int:
                 "grammar_question_id": sample.get("grammar_question_id"),
                 "word": sample.get("word"),
                 "training_card_id": sample.get("training_card_id"),
+                "text_id": (sample.get("payload") or {}).get("text_id") if sample.get("source_type") == "reading_text" else None,
             }
         )
 

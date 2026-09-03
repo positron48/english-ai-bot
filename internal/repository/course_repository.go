@@ -2694,6 +2694,7 @@ func (r *CourseRepository) MapLegacyContent(ctx context.Context, courseCode, bun
 		{mapGrammarTheoryBlockItemsSQL, true, false},
 		{mapReadingCategoryModulesSQL, false, false},
 		{mapReadingTextItemsSQL, false, false},
+		{archiveRemovedReadingTextItemsSQL, false, false},
 		{mapSpeakingCategoryModulesSQL, false, false},
 		{mapSpeakingTaskItemsSQL, false, false},
 		{mapWordSetModulesSQL, false, true},
@@ -2883,6 +2884,17 @@ ON CONFLICT (course_id, code) DO UPDATE SET
     sort_order = excluded.sort_order,
     status = excluded.status,
     updated_at = CURRENT_TIMESTAMP`
+
+// Keep historical attempts, but stop offering texts removed from the source
+// catalog. Scope this to the imported course in a shared multilingual DB.
+var archiveRemovedReadingTextItemsSQL = `
+UPDATE learning_items li
+SET status = 'archived', updated_at = CURRENT_TIMESTAMP
+WHERE li.course_id = ? AND li.source_kind = 'reading_text' AND li.status = 'published'
+  AND NOT EXISTS (
+    SELECT 1 FROM reading_texts rt JOIN courses c ON c.id = li.course_id
+    WHERE rt.text_id = li.source_id AND LOWER(rt.target_language) = LOWER(c.target_lang)
+  )`
 
 var mapReadingTextItemsSQL = `
 WITH src AS (

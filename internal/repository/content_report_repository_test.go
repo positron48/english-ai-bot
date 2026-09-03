@@ -109,3 +109,78 @@ func TestContentReportRepository_ListActiveGrammarReports_AndResolveBulk(t *test
 		t.Fatalf("expected 0 active grammar reports after resolve, got %d", len(after))
 	}
 }
+
+func TestContentReportRepository_ReadingCourseFilterAndSummary(t *testing.T) {
+	db := testutil.SetupTestDatabase(t)
+	conn := db.GetConnection()
+	repo := NewContentReportRepository(conn, zap.NewNop())
+	user, err := NewUserRepository(conn, zap.NewNop()).GetOrCreateUser(777002)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := conn.Exec(`INSERT INTO reading_texts (text_id,category_id,title,level,target_language,reading_passage) VALUES ('cms-rain','es_a1','Rain','A1','es','{}'),('cms-sun','en_a1','Sun','A1','en','{}')`); err != nil {
+		t.Fatal(err)
+	}
+	var esIDs = map[int64]bool{}
+	for _, item := range []struct {
+		id, kind string
+		es       bool
+	}{
+		{"free_es_a1_rain", "reading_text", true},
+		{"es_a1_retired", "reading_text", true},
+		{"cms-rain", "reading_text", true},
+		{"es.chapter", "grammar_chapter", true},
+		{"es.chapter", "grammar_test", true},
+		{"free_en_a1_rain", "reading_text", false},
+		{"cms-sun", "reading_text", false},
+		{"freeXesYa1_wrong", "reading_text", false},
+	} {
+		id, err := repo.Create(CreateContentReportInput{UserID: user.ID, SourceType: item.kind, GrammarChapterID: item.id})
+		if err != nil {
+			t.Fatal(err)
+		}
+		if item.es {
+			esIDs[id] = true
+		}
+	}
+	for _, course := range []string{"es", "spanish"} {
+		rows, err := repo.ListActiveReports(ListActiveReportsFilter{Course: course})
+		if err != nil {
+			t.Fatal(err)
+		}
+		if len(rows) != len(esIDs) {
+			t.Fatalf("%s: got %d reports, want %d", course, len(rows), len(esIDs))
+		}
+		for _, row := range rows {
+			if !esIDs[row.ID] {
+				t.Fatalf("unexpected report %+v", row)
+			}
+		}
+		summary, err := repo.SummaryActiveReports(course)
+		if err != nil {
+			t.Fatal(err)
+		}
+		var count int64
+		for _, row := range summary {
+			count += row.Count
+		}
+		if count != int64(len(rows)) {
+			t.Fatalf("list/summary mismatch: %d/%d", len(rows), count)
+		}
+	}
+	enRows, err := repo.ListActiveReports(ListActiveReportsFilter{Course: "en", SourceType: "reading_text"})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if len(enRows) != 2 {
+		t.Fatalf("expected 2 English reading reports, got %d", len(enRows))
+	}
+	page, err := repo.ListActiveReports(ListActiveReportsFilter{Course: "es", SourceType: "reading_text", Limit: 1})
+	if err != nil || len(page) != 1 {
+		t.Fatalf("first page: %v, %v", page, err)
+	}
+	rest, err := repo.ListActiveReports(ListActiveReportsFilter{Course: "es", SourceType: "reading_text", CursorID: page[0].ID})
+	if err != nil || len(rest) != 2 {
+		t.Fatalf("remaining page: %v, %v", rest, err)
+	}
+}

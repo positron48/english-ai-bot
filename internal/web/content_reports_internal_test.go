@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"strconv"
 	"testing"
 
 	"tgbot-skeleton/internal/repository"
@@ -149,5 +150,45 @@ func TestInternalContentReports_UnifiedListAndSummary(t *testing.T) {
 	router.handleInternalContentReportsSummary(w, req)
 	if w.Code != http.StatusOK {
 		t.Fatalf("summary: %d %s", w.Code, w.Body.String())
+	}
+}
+
+func TestInternalContentReport_ReadingCurrentDocument(t *testing.T) {
+	router, _, userID, cleanup := setupGrammarTest(t)
+	defer cleanup()
+	router.internalServiceTokens = map[string]string{"default": "tok"}
+	repo := repository.NewContentReportRepository(router.db, router.logger)
+	id, err := repo.Create(repository.CreateContentReportInput{UserID: userID, SourceType: "reading_text", GrammarChapterID: "free_es_a1_rain", Payload: map[string]interface{}{"text_id": "free_es_a1_rain", "content_snapshot": map[string]interface{}{"title": "Old title"}}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	if _, err := router.db.Exec(`INSERT INTO reading_texts (text_id,category_id,title,level,target_language,reading_passage) VALUES ('free_es_a1_rain','es_a1','Corrected title','A1','es','{"segments":[]}')`); err != nil {
+		t.Fatal(err)
+	}
+	path := "/api/internal/content-reports/" + strconv.FormatInt(id, 10)
+	get := func() map[string]interface{} {
+		req := httptest.NewRequest(http.MethodGet, path, nil)
+		req.Header.Set("X-Service-Token", "tok")
+		w := httptest.NewRecorder()
+		router.handleInternalContentReportByID(w, req)
+		if w.Code != http.StatusOK {
+			t.Fatalf("%d: %s", w.Code, w.Body.String())
+		}
+		var result map[string]interface{}
+		if err := json.Unmarshal(w.Body.Bytes(), &result); err != nil {
+			t.Fatal(err)
+		}
+		return result
+	}
+	result := get()
+	if result["reading_text_found"] != true || result["reading_text"].(map[string]interface{})["title"] != "Corrected title" {
+		t.Fatalf("wrong current document: %+v", result)
+	}
+	if _, err := router.db.Exec(`DELETE FROM reading_texts WHERE text_id='free_es_a1_rain'`); err != nil {
+		t.Fatal(err)
+	}
+	result = get()
+	if result["reading_text_found"] != false || result["reading_text"] != nil {
+		t.Fatalf("deleted text must remain reportable: %+v", result)
 	}
 }

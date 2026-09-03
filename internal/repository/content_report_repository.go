@@ -128,11 +128,34 @@ type ListActiveReportsFilter struct {
 }
 
 type ContentReportSummaryRow struct {
-	SourceType        string
-	ReportCategory    string
-	GrammarChapterID  string
-	WordCategory      string
-	Count             int64
+	SourceType       string
+	ReportCategory   string
+	GrammarChapterID string
+	WordCategory     string
+	Count            int64
+}
+
+// Keep list and summary in sync. Reading IDs can be free_es_* or arbitrary
+// CMS IDs; the latter need the catalog's target language.
+func contentReportCoursePredicate(course string) (string, []interface{}, error) {
+	course = strings.ToLower(strings.TrimSpace(course))
+	switch course {
+	case "":
+		return "", nil, nil
+	case "english", "en":
+		course = "en"
+	case "spanish", "es":
+		course = "es"
+	default:
+		return "", nil, fmt.Errorf("unsupported course filter: %s", course)
+	}
+	return ` AND (source_type = 'word_training' OR grammar_chapter_id LIKE ?
+		OR (source_type = 'reading_text' AND (
+			grammar_chapter_id LIKE ? ESCAPE '!'
+			OR grammar_chapter_id LIKE ? ESCAPE '!'
+			OR EXISTS (SELECT 1 FROM reading_texts rt
+				WHERE rt.text_id = content_reports.grammar_chapter_id AND LOWER(rt.target_language) = ?)
+		)))`, []interface{}{course + ".%", "free!_" + course + "!_%", course + "!_%", course}, nil
 }
 
 func (r *ContentReportRepository) ListActiveGrammarReports(filter ListGrammarReportsFilter) ([]*models.ContentReport, error) {
@@ -189,16 +212,12 @@ func (r *ContentReportRepository) ListActiveReports(filter ListActiveReportsFilt
 		base += ` AND report_category = ?`
 		args = append(args, category)
 	}
-	if course := strings.ToLower(strings.TrimSpace(filter.Course)); course != "" {
-		switch course {
-		case "en", "english":
-			base += ` AND (source_type = 'word_training' OR grammar_chapter_id LIKE 'en.%')`
-		case "es", "spanish":
-			base += ` AND (source_type = 'word_training' OR grammar_chapter_id LIKE 'es.%')`
-		default:
-			return nil, fmt.Errorf("unsupported course filter: %s", filter.Course)
-		}
+	predicate, courseArgs, err := contentReportCoursePredicate(filter.Course)
+	if err != nil {
+		return nil, err
 	}
+	base += predicate
+	args = append(args, courseArgs...)
 	base += ` ORDER BY id DESC LIMIT ?`
 	args = append(args, limit)
 
@@ -225,16 +244,12 @@ func (r *ContentReportRepository) SummaryActiveReports(course string) ([]Content
 	         FROM content_reports
 	         WHERE status = ?`
 	args := []interface{}{status}
-	if course := strings.ToLower(strings.TrimSpace(course)); course != "" {
-		switch course {
-		case "en", "english":
-			base += ` AND (source_type = 'word_training' OR grammar_chapter_id LIKE 'en.%')`
-		case "es", "spanish":
-			base += ` AND (source_type = 'word_training' OR grammar_chapter_id LIKE 'es.%')`
-		default:
-			return nil, fmt.Errorf("unsupported course filter: %s", course)
-		}
+	predicate, courseArgs, err := contentReportCoursePredicate(course)
+	if err != nil {
+		return nil, err
 	}
+	base += predicate
+	args = append(args, courseArgs...)
 	base += ` GROUP BY source_type, report_category, grammar_chapter_id, word_category
 	          ORDER BY COUNT(*) DESC, source_type, report_category`
 
