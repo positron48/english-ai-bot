@@ -112,6 +112,7 @@
     </teleport>
     <div v-if="chapterTitle" class="question-chapter">{{ chapterTitle }}</div>
     <div class="question-prompt" v-html="renderMarkdown(question.prompt)"></div>
+    <p v-if="question.translation_ru" class="reorder-translation" lang="ru">{{ question.translation_ru }}</p>
     
     <!-- MCQ Single -->
     <div v-if="question.type === 'mcq_single'" class="question-choices">
@@ -292,6 +293,7 @@ interface Question {
   id: string
   type: 'mcq_single' | 'fill_blank' | 'reorder' | 'error_spotting' | 'true_false'
   prompt: string
+  translation_ru?: string
   choices?: Array<{ id: string; text: string; feedback?: string }>
   correct_answer?: any
   explanation?: string
@@ -1259,6 +1261,14 @@ defineExpose({
 
 .reorder-container {
   margin-bottom: 16px;
+}
+
+.reorder-translation {
+  margin: 0 0 16px;
+  color: var(--text-primary);
+  font-size: 1.1em;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
 }
 
 .reorder-sentence {

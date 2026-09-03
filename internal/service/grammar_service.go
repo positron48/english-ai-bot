@@ -608,7 +608,11 @@ func (s *GrammarService) filterQuestionBankForQuizzes(chapter *repository.Chapte
 	}
 
 	// Filter question bank if it exists
-	questionBank := filteredChapter.QuestionBank
+	questionBank := make(map[string]interface{}, len(chapter.QuestionBank))
+	for key, value := range chapter.QuestionBank {
+		questionBank[key] = value
+	}
+	availableIDs := make(map[string]bool)
 	if questionBank != nil {
 		if questions, ok := questionBank["questions"].([]interface{}); ok {
 			filteredQuestions := make([]interface{}, 0)
@@ -625,8 +629,9 @@ func (s *GrammarService) filterQuestionBankForQuizzes(chapter *repository.Chapte
 				}
 
 				// Only include questions that are used in quizzes
-				if usedQuestionIDs[qID] {
+				if usedQuestionIDs[qID] && repository.GrammarQuestionAvailable(q) {
 					filteredQuestions = append(filteredQuestions, q)
+					availableIDs[qID] = true
 				}
 			}
 
@@ -636,6 +641,37 @@ func (s *GrammarService) filterQuestionBankForQuizzes(chapter *repository.Chapte
 		}
 	}
 
+	// Prune quiz references too, including quizzes left empty after filtering.
+	filteredChapter.Blocks = make([]interface{}, 0, len(chapter.Blocks))
+	for _, raw := range chapter.Blocks {
+		block, ok := raw.(map[string]interface{})
+		if !ok || block["type"] != "quiz_inline" {
+			filteredChapter.Blocks = append(filteredChapter.Blocks, raw)
+			continue
+		}
+		quiz, _ := block["quiz_inline"].(map[string]interface{})
+		ids, _ := quiz["question_ids"].([]interface{})
+		keptIDs := make([]interface{}, 0, len(ids))
+		for _, rawID := range ids {
+			if id, ok := rawID.(string); ok && availableIDs[id] {
+				keptIDs = append(keptIDs, id)
+			}
+		}
+		if len(keptIDs) == 0 {
+			continue
+		}
+		blockCopy := make(map[string]interface{}, len(block))
+		for key, value := range block {
+			blockCopy[key] = value
+		}
+		quizCopy := make(map[string]interface{}, len(quiz))
+		for key, value := range quiz {
+			quizCopy[key] = value
+		}
+		quizCopy["question_ids"] = keptIDs
+		blockCopy["quiz_inline"] = quizCopy
+		filteredChapter.Blocks = append(filteredChapter.Blocks, blockCopy)
+	}
 	return &filteredChapter
 }
 
@@ -672,7 +708,7 @@ func (s *GrammarService) GenerateChapterTest(ctx context.Context, chapterID stri
 	questionMap := make(map[string]interface{})
 	for _, q := range questionBank {
 		qMap, ok := q.(map[string]interface{})
-		if !ok {
+		if !ok || !repository.GrammarQuestionAvailable(qMap) {
 			continue
 		}
 		if id, ok := qMap["id"].(string); ok {
@@ -696,7 +732,7 @@ func (s *GrammarService) GenerateChapterTest(ctx context.Context, chapterID stri
 
 	return &TestQuestions{
 		Questions: selectedQuestions,
-		Total:     numQuestions,
+		Total:     len(selectedQuestions),
 	}, nil
 }
 
@@ -777,7 +813,7 @@ func (s *GrammarService) GenerateCategoryTest(ctx context.Context, sectionID str
 		questionMap := make(map[string]interface{})
 		for _, q := range questionBank {
 			qMap, ok := q.(map[string]interface{})
-			if !ok {
+			if !ok || !repository.GrammarQuestionAvailable(qMap) {
 				continue
 			}
 			if id, ok := qMap["id"].(string); ok {
@@ -1860,6 +1896,9 @@ func (s *GrammarService) GeneratePlacementTest(ctx context.Context) (*TestQuesti
 			for _, q := range questionBank {
 				qMap, ok := q.(map[string]interface{})
 				if !ok {
+					continue
+				}
+				if !repository.GrammarQuestionAvailable(qMap) {
 					continue
 				}
 				if id, ok := qMap["id"].(string); ok && id != "" {

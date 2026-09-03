@@ -1,6 +1,7 @@
 import { apiClient } from './client'
 import { emitAppDataEvent } from './cacheInvalidation'
 import { patchLearningAfterGrammarSubmit } from './appDataCachePatches'
+import { chapterForQuestionDisplay, chapterQuestionsWithTranslations, grammarQuestionAvailable } from '../utils/grammarReorder'
 import {
   OfflineGrammarMeta,
   QueuedGrammarAttempt,
@@ -99,7 +100,8 @@ function questionsByID(chapterPayload: any): Map<string, any> {
 }
 
 function chapterPoolQuestions(chapterPayload: any): any[] {
-  const questionMap = questionsByID(chapterPayload)
+  const questions = chapterQuestionsWithTranslations(chapterPayload?.chapter).filter(grammarQuestionAvailable)
+  const questionMap = new Map(questions.map((q: any) => [q.id, q]))
   const pool = chapterPayload?.chapter?.chapter_test?.pool_question_ids || []
   const ids = Array.isArray(pool) && pool.length > 0 ? pool : [...questionMap.keys()]
   return ids.map((id: string) => questionMap.get(id)).filter(Boolean)
@@ -340,9 +342,7 @@ async function queueOfflineAttempt(scope: 'chapter' | 'category', scopeID: strin
 }
 
 function sanitizeTrainingQuestion(question: any): any {
-  const q = clone(question)
-  delete q.correct_answer
-  return q
+  return sanitizeQuestionForTest(question)
 }
 
 function chapterIDFromPayload(payload: any): string {
@@ -352,7 +352,7 @@ function chapterIDFromPayload(payload: any): string {
 function trainingQuestionsFromChapterPayload(payload: any): any[] {
   const chapterID = chapterIDFromPayload(payload)
   if (!chapterID) return []
-  const questions = payload?.chapter?.question_bank?.questions || []
+  const questions = chapterQuestionsWithTranslations(payload?.chapter).filter(grammarQuestionAvailable)
   if (!Array.isArray(questions)) return []
   return questions
     .filter((question: any) => question?.id)
@@ -369,7 +369,7 @@ async function getOfflineTrainingQuestionPool(): Promise<any[]> {
   const pool = trainingQuestions.length > 0
     ? trainingQuestions
     : (await getStoredChapters(activeCourseCode())).flatMap(trainingQuestionsFromChapterPayload)
-  return filterTrainingQuestionsByStudiedChapters(pool)
+  return filterTrainingQuestionsByStudiedChapters(pool.filter(grammarQuestionAvailable))
 }
 
 async function queueOfflineTrainingAttempt(questionID: string, answer: any, result: any): Promise<void> {
@@ -649,7 +649,7 @@ export const grammarClient = {
   },
 
   async getChapter(chapterID: string): Promise<any> {
-    return offlineFallback(
+    const payload = await offlineFallback<any>(
       () => apiClient.request(`/api/learning/grammar/chapters/${chapterID}${grammarCourseParam()}`),
       async () => {
         const payload = await getStoredChapter(chapterID, activeCourseCode())
@@ -658,6 +658,7 @@ export const grammarClient = {
         return payload
       },
     )
+    return { ...payload, chapter: chapterForQuestionDisplay(payload.chapter) }
   },
 
   async getChapterForTheory(chapterID: string): Promise<any> {

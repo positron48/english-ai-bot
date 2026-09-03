@@ -204,6 +204,7 @@ func (r *GrammarContentRepository) GetChapter(chapterID string) (*Chapter, error
 	if err := json.Unmarshal(data, &chapter); err != nil {
 		return nil, fmt.Errorf("failed to parse chapter JSON: %w", err)
 	}
+	enrichReorderTranslations(&chapter)
 
 	return &chapter, nil
 }

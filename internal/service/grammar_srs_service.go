@@ -6,6 +6,8 @@ import (
 	"math/rand"
 	"strings"
 	"time"
+
+	"tgbot-skeleton/internal/repository"
 )
 
 type GrammarTrainingAvailability struct {
@@ -243,7 +245,7 @@ func (s *GrammarService) GetOfflineGrammarTrainingQuestions(ctx context.Context,
 	filtered := make([]map[string]interface{}, 0, len(all))
 	for _, q := range all {
 		chapterID, _ := q["chapter_id"].(string)
-		if allowedByChapter[chapterID] {
+		if allowedByChapter[chapterID] && repository.GrammarQuestionAvailable(q) {
 			filtered = append(filtered, q)
 		}
 	}
@@ -300,7 +302,7 @@ func (s *GrammarService) filterBlocksByAllowedChapters(
 		filteredQuestions := make([]map[string]interface{}, 0, len(qs))
 		for _, q := range qs {
 			chapterID, _ := q["chapter_id"].(string)
-			if allowedByChapter[chapterID] {
+			if allowedByChapter[chapterID] && repository.GrammarQuestionAvailable(q) {
 				filteredQuestions = append(filteredQuestions, q)
 			}
 		}
