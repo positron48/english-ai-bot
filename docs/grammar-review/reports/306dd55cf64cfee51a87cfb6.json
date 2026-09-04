@@ -1,0 +1,133 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/chapters/001/es.04.b4_theory_special_letters_and_variants.questions.json",
+  "source_sha256": "34b50cbf9f903f324b6b132ff2b5f18ac0fb03f1782388ce21f9b9dd5692a27d",
+  "context_sha256": "1a64f3ddd665872040a4f81f07a6775f26643e70a2efc08d56379c490b9c6974",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "Пользователь — независимая ручная проверка",
+  "phase": "done",
+  "reviewed_at": "2026-09-04T09:05:35.587783+00:00",
+  "verified_at": "2026-09-04T09:21:53.964257+00:00",
+  "questions": [
+    {
+      "id": "q1",
+      "decision": "ok",
+      "note": "eñe; ñ отдельная буква.",
+      "verification": "ok"
+    },
+    {
+      "id": "q2",
+      "decision": "fixed",
+      "note": "Смешивались название h и её чтение; теперь проверяется немая h.",
+      "verification": "ok"
+    },
+    {
+      "id": "q3",
+      "decision": "fixed",
+      "note": "Несколько допустимых названий w; оставлен один верный вариант без отрицания региональных названий.",
+      "verification": "ok"
+    },
+    {
+      "id": "q4",
+      "decision": "fixed",
+      "note": "rr как запись давало неоднозначное прочтение варианта; заменено именами других букв.",
+      "verification": "ok"
+    },
+    {
+      "id": "q5",
+      "decision": "fixed",
+      "note": "hache/ache одинаково звучат; явно спрашивается написание названия.",
+      "verification": "ok"
+    },
+    {
+      "id": "q6",
+      "decision": "ok",
+      "note": "rr единственное сочетание.",
+      "verification": "ok"
+    },
+    {
+      "id": "q7",
+      "decision": "fixed",
+      "note": "Условие диэрезиса было неполным: u должна произноситься, не любое gue/gui.",
+      "verification": "ok"
+    },
+    {
+      "id": "q8",
+      "decision": "fixed",
+      "note": "Повтор h и ссылка на блок заменены диктовкой Hugo.",
+      "verification": "ok"
+    },
+    {
+      "id": "q9",
+      "decision": "fixed",
+      "note": "Убрана ссылка на блок, разграничены ñ и n.",
+      "verification": "ok"
+    },
+    {
+      "id": "q10",
+      "decision": "fixed",
+      "note": "ye и i griega оба верны; второй допустимый вариант заменён, убрана оценка частотности.",
+      "verification": "ok"
+    },
+    {
+      "id": "q11",
+      "decision": "fixed",
+      "note": "Повтор rr заменён обратным распознаванием названия.",
+      "verification": "ok"
+    },
+    {
+      "id": "q12",
+      "decision": "fixed",
+      "note": "Убраны ссылка на блок, неточная транскрипция и синонимичные дистракторы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q13",
+      "decision": "fixed",
+      "note": "Два правильных названия w заменены вопросом по названию doble u.",
+      "verification": "ok"
+    },
+    {
+      "id": "q14",
+      "decision": "fixed",
+      "note": "Повтор о диэрезисе заменён применением к написанию pingüino.",
+      "verification": "ok"
+    },
+    {
+      "id": "q15",
+      "decision": "fixed",
+      "note": "Неоднозначное r doble и третий повтор заменены сопоставлением r/rr.",
+      "verification": "ok"
+    },
+    {
+      "id": "q16",
+      "decision": "ok",
+      "note": "uve единственный допустимый вариант в данном списке.",
+      "verification": "ok"
+    },
+    {
+      "id": "q17",
+      "decision": "fixed",
+      "note": "Название equis ошибочно отождествлялось с произношением x в словах.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-04-pilot/check.py",
+      "result": "pass",
+      "evidence": "224 вопроса в 13 файлах: IDs, порядок, type/difficulty, chapter/concept/theory bindings и IDs вариантов сохранены относительно зафиксированных baseline commits; ключи и уникальность вариантов корректны; все training signatures актуальны, новых дубликатов в курсах нет; source → final → embedded совпадают; hashes отчётов актуальны."
+    },
+    {
+      "command": "go test ./internal/grammarbundle ./internal/repository -run 'TestValidateEmbeddedBundleID|TestGrammar.*Bundle|TestGrammar.*Reorder' -count=1",
+      "result": "pass",
+      "evidence": "Оба пакета прошли: grammarbundle 5.068s; repository 15.166s."
+    },
+    {
+      "command": "git diff --check && git -C courses/spanish-grammar diff --check && git -C courses/english-grammar diff --check",
+      "result": "pass",
+      "evidence": "Все три дерева: без whitespace errors."
+    }
+  ],
+  "verification_note": "Пользователь подтвердил проверку пилота ES 001 → EN 001: «я проверил, ок, правим дальше» (2026-09-04). Подтверждение относится к сохранённым 224 вопросам; source/context hashes перед фиксацией сверены. Запись внесена координатором по сообщению пользователя."
+}

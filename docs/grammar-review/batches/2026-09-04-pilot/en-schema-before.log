@@ -1,0 +1,12 @@
+Command: ajv validate --spec=draft2020 --validate-formats=false --all-errors -s /Users/antonfilatov/www/my/k3s/english-ai-bot/courses/english-grammar/02-chapter-schema.json -d /tmp/grammar-pilot-en-final-before.json
+Exit: 1
+/tmp/grammar-pilot-en-final-before.json invalid
+[
+  {
+    instancePath: '/chapter_test/pool_question_ids',
+    schemaPath: '#/properties/chapter_test/properties/pool_question_ids/minItems',
+    keyword: 'minItems',
+    params: { limit: 20 },
+    message: 'must NOT have fewer than 20 items'
+  }
+]

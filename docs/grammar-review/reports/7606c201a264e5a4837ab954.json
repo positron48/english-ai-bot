@@ -1,0 +1,103 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/chapters/001/es.06.b6_theory_russian_speaker_traps.questions.json",
+  "source_sha256": "3b1c81693f181489461752b1e4366bace3030d18fe137c7b5f4d5c45917ad0c2",
+  "context_sha256": "1a64f3ddd665872040a4f81f07a6775f26643e70a2efc08d56379c490b9c6974",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "Пользователь — независимая ручная проверка",
+  "phase": "done",
+  "reviewed_at": "2026-09-04T09:07:32.218245+00:00",
+  "verified_at": "2026-09-04T09:21:53.964257+00:00",
+  "questions": [
+    {
+      "id": "q1",
+      "decision": "fixed",
+      "note": "Буквы g/j в ответах заменены сопоставимыми названиями.",
+      "verification": "ok"
+    },
+    {
+      "id": "q2",
+      "decision": "fixed",
+      "note": "ce/se совпадают при seseo; спрашивается написание названия.",
+      "verification": "ok"
+    },
+    {
+      "id": "q3",
+      "decision": "fixed",
+      "note": "ve тоже нормативное название v, заменён второй правильный ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "q4",
+      "decision": "fixed",
+      "note": "В норме b/v обозначают одну фонему; устранён альтернативно верный вариант и выровнены ответы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q5",
+      "decision": "fixed",
+      "note": "be/ve одинаково произносятся; требуется написание названия.",
+      "verification": "ok"
+    },
+    {
+      "id": "q6",
+      "decision": "fixed",
+      "note": "Диграф ll больше не назван буквой в объяснении.",
+      "verification": "ok"
+    },
+    {
+      "id": "q7",
+      "decision": "fixed",
+      "note": "ve ошибочно считалось неверным; повтор заменён диктовкой Eva.",
+      "verification": "ok"
+    },
+    {
+      "id": "q8",
+      "decision": "fixed",
+      "note": "Повтор v и второй ответ ve заменены распознаванием буквы по названию.",
+      "verification": "ok"
+    },
+    {
+      "id": "q11",
+      "decision": "fixed",
+      "note": "Смешение названий и букв в вариантах устранено.",
+      "verification": "ok"
+    },
+    {
+      "id": "q12",
+      "decision": "fixed",
+      "note": "uve doble и doble u оба правильны; исправлено ложное объяснение.",
+      "verification": "ok"
+    },
+    {
+      "id": "q13",
+      "decision": "fixed",
+      "note": "Диграфы больше не названы буквами в условии.",
+      "verification": "ok"
+    },
+    {
+      "id": "q14",
+      "decision": "fixed",
+      "note": "Повтор ll заменён применением правила о названии и звуке c.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-04-pilot/check.py",
+      "result": "pass",
+      "evidence": "224 вопроса в 13 файлах: IDs, порядок, type/difficulty, chapter/concept/theory bindings и IDs вариантов сохранены относительно зафиксированных baseline commits; ключи и уникальность вариантов корректны; все training signatures актуальны, новых дубликатов в курсах нет; source → final → embedded совпадают; hashes отчётов актуальны."
+    },
+    {
+      "command": "go test ./internal/grammarbundle ./internal/repository -run 'TestValidateEmbeddedBundleID|TestGrammar.*Bundle|TestGrammar.*Reorder' -count=1",
+      "result": "pass",
+      "evidence": "Оба пакета прошли: grammarbundle 5.068s; repository 15.166s."
+    },
+    {
+      "command": "git diff --check && git -C courses/spanish-grammar diff --check && git -C courses/english-grammar diff --check",
+      "result": "pass",
+      "evidence": "Все три дерева: без whitespace errors."
+    }
+  ],
+  "verification_note": "Пользователь подтвердил проверку пилота ES 001 → EN 001: «я проверил, ок, правим дальше» (2026-09-04). Подтверждение относится к сохранённым 224 вопросам; source/context hashes перед фиксацией сверены. Запись внесена координатором по сообщению пользователя."
+}

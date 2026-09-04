@@ -1,0 +1,168 @@
+{
+  "version": 1,
+  "source": "courses/english-grammar/chapters/001.en.grammar.orientation_how_to_read.subject_verb_object_in/03-questions.json",
+  "source_sha256": "83fffb174ede75b9907c436399868fbaa52624c12948c2fc9cef5c26ad19c045",
+  "context_sha256": "d4d28191706d8ef9d5889af66836e5bcbd394911989102808f674f7377977293",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "Пользователь — независимая ручная проверка",
+  "phase": "done",
+  "reviewed_at": "2026-09-04T09:08:36.292025+00:00",
+  "verified_at": "2026-09-04T09:21:53.964257+00:00",
+  "questions": [
+    {
+      "id": "q1",
+      "decision": "ok",
+      "note": "I — субъект read; все feedback согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q2",
+      "decision": "ok",
+      "note": "likes — глагол, coffee — объект; feedback согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q4",
+      "decision": "ok",
+      "note": "Указан перевод и начало I, единственный естественный порядок слов.",
+      "verification": "ok"
+    },
+    {
+      "id": "q5",
+      "decision": "fixed",
+      "note": "Ложное абсолютное правило о подлежащем ограничено полным повествовательным предложением.",
+      "verification": "ok"
+    },
+    {
+      "id": "q6",
+      "decision": "ok",
+      "note": "Tom — субъект, here — обстоятельство; один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "q8",
+      "decision": "fixed",
+      "note": "The book — группа слов, не слово; уточнено описание is.",
+      "verification": "ok"
+    },
+    {
+      "id": "q9",
+      "decision": "fixed",
+      "note": "Убрано абсолютное утверждение о позиции подлежащего.",
+      "verification": "ok"
+    },
+    {
+      "id": "q10",
+      "decision": "ok",
+      "note": "Существительные и имена тоже могут быть подлежащими.",
+      "verification": "ok"
+    },
+    {
+      "id": "q11",
+      "decision": "ok",
+      "note": "read — глагол, варианты и feedback согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q13",
+      "decision": "fixed",
+      "note": "Уточнена грамматическая задача: is — связка, не всё составное сказуемое.",
+      "verification": "ok"
+    },
+    {
+      "id": "q14",
+      "decision": "ok",
+      "note": "He plays football: задан перевод, роли и порядок согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q15",
+      "decision": "ok",
+      "note": "Составные глагольные формы допускаются; отрицание показано в теории.",
+      "verification": "ok"
+    },
+    {
+      "id": "q16",
+      "decision": "ok",
+      "note": "Объект a book дан целиком, включая артикль.",
+      "verification": "ok"
+    },
+    {
+      "id": "q18",
+      "decision": "ok",
+      "note": "She works без дополнения; остальные варианты имеют объект.",
+      "verification": "ok"
+    },
+    {
+      "id": "q19",
+      "decision": "fixed",
+      "note": "Вопросительный порядок do не объяснён в блоке про дополнение; заменён повествовательным предложением той же темы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q20",
+      "decision": "ok",
+      "note": "Не все глаголы требуют объекта.",
+      "verification": "ok"
+    },
+    {
+      "id": "q23",
+      "decision": "ok",
+      "note": "They do not watch: отрицание поддержано теорией, перевод и токены согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q24",
+      "decision": "fixed",
+      "note": "Неизменность порядка слов была абсолютной; теперь указан базовый повествовательный порядок.",
+      "verification": "ok"
+    },
+    {
+      "id": "q27",
+      "decision": "ok",
+      "note": "play — глагол действия, feedback корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q29",
+      "decision": "ok",
+      "note": "coffee — объект like, feedback корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q30",
+      "decision": "fixed",
+      "note": "Books I read допустимо при выделении темы; условие ограничено базовым порядком SVO, feedback исправлен.",
+      "verification": "ok"
+    },
+    {
+      "id": "q31",
+      "decision": "fixed",
+      "note": "Инструкция приведена к исправлению ошибки, правило ограничено повествовательным предложением.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-04-pilot/check.py",
+      "result": "pass",
+      "evidence": "224 вопроса в 13 файлах: IDs, порядок, type/difficulty, chapter/concept/theory bindings и IDs вариантов сохранены относительно зафиксированных baseline commits; ключи и уникальность вариантов корректны; все training signatures актуальны, новых дубликатов в курсах нет; source → final → embedded совпадают; hashes отчётов актуальны."
+    },
+    {
+      "command": "go test ./internal/grammarbundle ./internal/repository -run 'TestValidateEmbeddedBundleID|TestGrammar.*Bundle|TestGrammar.*Reorder' -count=1",
+      "result": "pass",
+      "evidence": "Оба пакета прошли: grammarbundle 5.068s; repository 15.166s."
+    },
+    {
+      "command": "git diff --check && git -C courses/spanish-grammar diff --check && git -C courses/english-grammar diff --check",
+      "result": "pass",
+      "evidence": "Все три дерева: без whitespace errors."
+    },
+    {
+      "command": "cd courses/english-grammar && bash scripts/assemble-chapter.sh 001.en.grammar.orientation_how_to_read.subject_verb_object_in && bash scripts/validate-chapter.sh 001.en.grammar.orientation_how_to_read.subject_verb_object_in",
+      "result": "known_baseline",
+      "evidence": "Сборка завершена; validate-chapter: is_valid=true, issues=[] до/после. EN: сборщик предупреждает о конфигурации AJV; явная draft2020 проверка до/после даёт одно и то же нарушение minItems: pool_question_ids=12 при минимуме 20. Логи en-schema-before.log и en-schema-after.log в отчёте партии."
+    }
+  ],
+  "verification_note": "Пользователь подтвердил проверку пилота ES 001 → EN 001: «я проверил, ок, правим дальше» (2026-09-04). Подтверждение относится к сохранённым 224 вопросам; source/context hashes перед фиксацией сверены. Запись внесена координатором по сообщению пользователя."
+}

@@ -1,0 +1,109 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/chapters/002/es.04.b4_theory_diphthongs.questions.json",
+  "source_sha256": "1ccc09b3fcd8dc9f98548fb3ac2e673a6c8be82dba403c97238c0c9226c7c08d",
+  "context_sha256": "e51b0e0494fd7379a0459ae2d61b76621c8e0b85513b67c3fb4438ecadbc4cf3",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "",
+  "phase": "awaiting_verification",
+  "reviewed_at": "2026-09-04T09:28:02.182605+00:00",
+  "verified_at": "",
+  "questions": [
+    {
+      "id": "q1",
+      "decision": "fixed",
+      "note": "Три ответа имели дифтонг (pueblo/sueño/bueno); оставлен один и исправлено ложное объяснение.",
+      "verification": "pending"
+    },
+    {
+      "id": "q2",
+      "decision": "fixed",
+      "note": "Исправлен русский термин дифтонг.",
+      "verification": "pending"
+    },
+    {
+      "id": "q3",
+      "decision": "fixed",
+      "note": "Дистрактор терял j; исправлены буквы и термин дифтонг.",
+      "verification": "pending"
+    },
+    {
+      "id": "q4",
+      "decision": "fixed",
+      "note": "agua/causa/sueño все с дифтонгом; заменены варианты и ложное объяснение об отсутствии соседних гласных.",
+      "verification": "pending"
+    },
+    {
+      "id": "q5",
+      "decision": "fixed",
+      "note": "Условие было неполным, ai ошибочно приводилось как пример без i/u; заменено точным определением.",
+      "verification": "pending"
+    },
+    {
+      "id": "q6",
+      "decision": "ok",
+      "note": "causa единственное слово с соседними гласными-дифтонгом.",
+      "verification": "pending"
+    },
+    {
+      "id": "q7",
+      "decision": "fixed",
+      "note": "calle/mesa оба без дифтонга, но не хиат; заменено однозначным противопоставлением teatro.",
+      "verification": "pending"
+    },
+    {
+      "id": "q8",
+      "decision": "ok",
+      "note": "au сильная+слабая; ie/ue обратный порядок.",
+      "verification": "pending"
+    },
+    {
+      "id": "q9",
+      "decision": "ok",
+      "note": "cau-sa: au в одном слоге.",
+      "verification": "pending"
+    },
+    {
+      "id": "q11",
+      "decision": "ok",
+      "note": "cie-lo: ie в одном слоге.",
+      "verification": "pending"
+    },
+    {
+      "id": "q13",
+      "decision": "ok",
+      "note": "bue-no: ue в одном слоге.",
+      "verification": "pending"
+    },
+    {
+      "id": "q15",
+      "decision": "ok",
+      "note": "sue-lo: ue в одном слоге.",
+      "verification": "pending"
+    },
+    {
+      "id": "q17",
+      "decision": "ok",
+      "note": "hue-so: ue в одном слоге, h сохраняется.",
+      "verification": "pending"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-04-es002-003/check.py",
+      "result": "pass",
+      "evidence": "250 IDs/contracts preserved; reports match current fingerprints; signatures current; no new ES training duplicates; source/final/embedded identical. See batches/2026-09-04-es002-003/validation.log."
+    },
+    {
+      "command": "go test ./internal/grammarbundle ./internal/repository -run 'TestValidateEmbeddedBundleID|TestGrammar.*Bundle|TestGrammar.*Reorder' -count=1",
+      "result": "pass",
+      "evidence": "Both packages passed: grammarbundle 4.828s, repository 13.885s."
+    },
+    {
+      "command": "git diff --check && git -C courses/spanish-grammar diff --check && git -C courses/english-grammar diff --check",
+      "result": "pass",
+      "evidence": "All three commands exited 0."
+    }
+  ],
+  "verification_note": ""
+}

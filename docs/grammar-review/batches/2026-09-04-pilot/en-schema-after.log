@@ -1,0 +1,12 @@
+Command: ajv validate --spec=draft2020 --validate-formats=false --all-errors -s /Users/antonfilatov/www/my/k3s/english-ai-bot/courses/english-grammar/02-chapter-schema.json -d /Users/antonfilatov/www/my/k3s/english-ai-bot/courses/english-grammar/chapters/001.en.grammar.orientation_how_to_read.subject_verb_object_in/05-final.json
+Exit: 1
+/Users/antonfilatov/www/my/k3s/english-ai-bot/courses/english-grammar/chapters/001.en.grammar.orientation_how_to_read.subject_verb_object_in/05-final.json invalid
+[
+  {
+    instancePath: '/chapter_test/pool_question_ids',
+    schemaPath: '#/properties/chapter_test/properties/pool_question_ids/minItems',
+    keyword: 'minItems',
+    params: { limit: 20 },
+    message: 'must NOT have fewer than 20 items'
+  }
+]

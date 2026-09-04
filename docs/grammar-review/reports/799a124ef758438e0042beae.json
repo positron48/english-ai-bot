@@ -1,0 +1,121 @@
+{
+  "version": 1,
+  "source": "courses/english-grammar/training_pack/chapters/001/en.01.b1_theory_basic_structure.questions.json",
+  "source_sha256": "6f52a6ff2631f0edfe5c51f588f80a4da424f7764f27a6cc66e8d0f4e048ff92",
+  "context_sha256": "f11a2b096837eefa42dbe02d427176f6f0eb7d44357d6325bda2e210b9c99372",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "Пользователь — независимая ручная проверка",
+  "phase": "done",
+  "reviewed_at": "2026-09-04T09:09:23.997191+00:00",
+  "verified_at": "2026-09-04T09:21:53.964257+00:00",
+  "questions": [
+    {
+      "id": "q1",
+      "decision": "fixed",
+      "note": "Отсутствуют также объект/обстоятельство; уточнено, что нужно для полного предложения.",
+      "verification": "ok"
+    },
+    {
+      "id": "q2",
+      "decision": "fixed",
+      "note": "She reads book имеет SVO, проблема в артикле; дистракторы теперь содержат те же слова.",
+      "verification": "ok"
+    },
+    {
+      "id": "q3",
+      "decision": "fixed",
+      "note": "Отсутствовало и прилагательное; варианты ограничены тремя основными частями.",
+      "verification": "ok"
+    },
+    {
+      "id": "q4",
+      "decision": "ok",
+      "note": "SVO соответствует изучаемой базовой структуре.",
+      "verification": "ok"
+    },
+    {
+      "id": "q5",
+      "decision": "ok",
+      "note": "A book reads she нарушает нейтральный порядок, другие предложения верны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q6",
+      "decision": "fixed",
+      "note": "Исходный ключ It is raining противоречил вопросу об отсутствии подлежащего; заменено проверкой необязательности объекта.",
+      "verification": "ok"
+    },
+    {
+      "id": "q7",
+      "decision": "ok",
+      "note": "books — объект reads.",
+      "verification": "ok"
+    },
+    {
+      "id": "q8",
+      "decision": "fixed",
+      "note": "Вынос дополнения A letter she writes возможен; спрашивается отсутствие базового порядка.",
+      "verification": "ok"
+    },
+    {
+      "id": "q9",
+      "decision": "fixed",
+      "note": "Убрана подсказка Is a student, правило ограничено полным повествовательным предложением.",
+      "verification": "ok"
+    },
+    {
+      "id": "q10",
+      "decision": "fixed",
+      "note": "Подлежащее и сказуемое оба обязательны; теперь проверяется роль The boy.",
+      "verification": "ok"
+    },
+    {
+      "id": "q11",
+      "decision": "fixed",
+      "note": "Исправлен русский, убраны ссылки на буквы вариантов и лишняя терминология SVC.",
+      "verification": "ok"
+    },
+    {
+      "id": "q12",
+      "decision": "fixed",
+      "note": "Исправлено условие и объяснение: важны подлежащее и связка, не только наличие He.",
+      "verification": "ok"
+    },
+    {
+      "id": "q13",
+      "decision": "fixed",
+      "note": "Повтор She reads a book заменён применением SVO к They like coffee.",
+      "verification": "ok"
+    },
+    {
+      "id": "q14",
+      "decision": "fixed",
+      "note": "Варианты переведены на русский для A0, убрана ссылка на теорию.",
+      "verification": "ok"
+    },
+    {
+      "id": "q15",
+      "decision": "fixed",
+      "note": "Повтор She reads a book заменён выделением сказуемого в He reads books.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-04-pilot/check.py",
+      "result": "pass",
+      "evidence": "224 вопроса в 13 файлах: IDs, порядок, type/difficulty, chapter/concept/theory bindings и IDs вариантов сохранены относительно зафиксированных baseline commits; ключи и уникальность вариантов корректны; все training signatures актуальны, новых дубликатов в курсах нет; source → final → embedded совпадают; hashes отчётов актуальны."
+    },
+    {
+      "command": "go test ./internal/grammarbundle ./internal/repository -run 'TestValidateEmbeddedBundleID|TestGrammar.*Bundle|TestGrammar.*Reorder' -count=1",
+      "result": "pass",
+      "evidence": "Оба пакета прошли: grammarbundle 5.068s; repository 15.166s."
+    },
+    {
+      "command": "git diff --check && git -C courses/spanish-grammar diff --check && git -C courses/english-grammar diff --check",
+      "result": "pass",
+      "evidence": "Все три дерева: без whitespace errors."
+    }
+  ],
+  "verification_note": "Пользователь подтвердил проверку пилота ES 001 → EN 001: «я проверил, ок, правим дальше» (2026-09-04). Подтверждение относится к сохранённым 224 вопросам; source/context hashes перед фиксацией сверены. Запись внесена координатором по сообщению пользователя."
+}

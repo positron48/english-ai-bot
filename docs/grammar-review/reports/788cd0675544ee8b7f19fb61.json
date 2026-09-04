@@ -1,0 +1,127 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/chapters/002/es.03.b3_theory_basic_segmentation.questions.json",
+  "source_sha256": "912b02886940b715663feea9861fd02eb35d4caa26af6f0bf80f4ff87ab64740",
+  "context_sha256": "e51b0e0494fd7379a0459ae2d61b76621c8e0b85513b67c3fb4438ecadbc4cf3",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "",
+  "phase": "awaiting_verification",
+  "reviewed_at": "2026-09-04T09:37:39.846997+00:00",
+  "verified_at": "",
+  "questions": [
+    {
+      "id": "q1",
+      "decision": "fixed",
+      "note": "Перестановка to-pa не проверяла границу; заменена ошибочным делением pat-o.",
+      "verification": "pending"
+    },
+    {
+      "id": "q2",
+      "decision": "fixed",
+      "note": "Исправлен бессмысленный дистрактор и распределён ключ, исходно все 16 — a.",
+      "verification": "pending"
+    },
+    {
+      "id": "q3",
+      "decision": "fixed",
+      "note": "Для A0 выбрано обычное mamá; варианты сохраняют буквы и знак, ключ распределён.",
+      "verification": "pending"
+    },
+    {
+      "id": "q4",
+      "decision": "fixed",
+      "note": "Устранена перестановка букв za-ta, распределён ключ.",
+      "verification": "pending"
+    },
+    {
+      "id": "q5",
+      "decision": "fixed",
+      "note": "Перестановка so-pi заменена неверной границей pis-o.",
+      "verification": "pending"
+    },
+    {
+      "id": "q6",
+      "decision": "fixed",
+      "note": "Устранена перестановка na-lu, распределён ключ.",
+      "verification": "pending"
+    },
+    {
+      "id": "q7",
+      "decision": "fixed",
+      "note": "Устранена перестановка no-vi, распределён ключ.",
+      "verification": "pending"
+    },
+    {
+      "id": "q8",
+      "decision": "fixed",
+      "note": "Устранена перестановка no-ma, распределён ключ.",
+      "verification": "pending"
+    },
+    {
+      "id": "q9",
+      "decision": "fixed",
+      "note": "Перестановка pel-pa заменена неверной границей pap-el.",
+      "verification": "pending"
+    },
+    {
+      "id": "q10",
+      "decision": "fixed",
+      "note": "Устранена перестановка be-nu, распределён ключ.",
+      "verification": "pending"
+    },
+    {
+      "id": "q11",
+      "decision": "fixed",
+      "note": "Верное ca-ma подтверждено; ключ перераспределён.",
+      "verification": "pending"
+    },
+    {
+      "id": "q12",
+      "decision": "fixed",
+      "note": "Верное pa-pa подтверждено; ключ перераспределён.",
+      "verification": "pending"
+    },
+    {
+      "id": "q13",
+      "decision": "fixed",
+      "note": "so-pa, три неверных разделения проверены. Только техническая правка: пересчитана исходно устаревшая signature штатной функцией; содержание сохранено.",
+      "verification": "pending"
+    },
+    {
+      "id": "q14",
+      "decision": "fixed",
+      "note": "Верное na-da подтверждено; ключ перераспределён.",
+      "verification": "pending"
+    },
+    {
+      "id": "q15",
+      "decision": "fixed",
+      "note": "Верное la-ta подтверждено; ключ перераспределён.",
+      "verification": "pending"
+    },
+    {
+      "id": "q16",
+      "decision": "fixed",
+      "note": "Верное ca-sa подтверждено; ключ перераспределён.",
+      "verification": "pending"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-04-es002-003/check.py",
+      "result": "pass",
+      "evidence": "250 IDs/contracts preserved; reports match current fingerprints; signatures current; no new ES training duplicates; source/final/embedded identical. See batches/2026-09-04-es002-003/validation.log."
+    },
+    {
+      "command": "go test ./internal/grammarbundle ./internal/repository -run 'TestValidateEmbeddedBundleID|TestGrammar.*Bundle|TestGrammar.*Reorder' -count=1",
+      "result": "pass",
+      "evidence": "Both packages passed: grammarbundle 4.828s, repository 13.885s."
+    },
+    {
+      "command": "git diff --check && git -C courses/spanish-grammar diff --check && git -C courses/english-grammar diff --check",
+      "result": "pass",
+      "evidence": "All three commands exited 0."
+    }
+  ],
+  "verification_note": ""
+}

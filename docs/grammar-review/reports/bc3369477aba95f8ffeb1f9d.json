@@ -1,0 +1,91 @@
+{
+  "version": 1,
+  "source": "courses/english-grammar/training_pack/chapters/001/en.05.b5_theory_practice.questions.json",
+  "source_sha256": "c19e3f0e1716832ae71a53bf858bb9562e62ef3b7623a4c7a2a378e080e64035",
+  "context_sha256": "f11a2b096837eefa42dbe02d427176f6f0eb7d44357d6325bda2e210b9c99372",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "Пользователь — независимая ручная проверка",
+  "phase": "done",
+  "reviewed_at": "2026-09-04T09:11:45.034994+00:00",
+  "verified_at": "2026-09-04T09:21:53.964257+00:00",
+  "questions": [
+    {
+      "id": "q1",
+      "decision": "ok",
+      "note": "writes — сказуемое, один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "q2",
+      "decision": "ok",
+      "note": "the ball — полный объект chases.",
+      "verification": "ok"
+    },
+    {
+      "id": "q3",
+      "decision": "fixed",
+      "note": "Абсолютное правило ограничено базовым повествовательным порядком.",
+      "verification": "ok"
+    },
+    {
+      "id": "q4",
+      "decision": "fixed",
+      "note": "Убрано ложное всегда в начале.",
+      "verification": "ok"
+    },
+    {
+      "id": "q5",
+      "decision": "ok",
+      "note": "reads — сказуемое.",
+      "verification": "ok"
+    },
+    {
+      "id": "q6",
+      "decision": "fixed",
+      "note": "The boy reads book уже имеет нужный порядок, ошибка артикля; варианты выровнены, убрана ссылка на букву ответа.",
+      "verification": "ok"
+    },
+    {
+      "id": "q7",
+      "decision": "ok",
+      "note": "dinner — объект cooks.",
+      "verification": "ok"
+    },
+    {
+      "id": "q8",
+      "decision": "fixed",
+      "note": "Проверяется конкретно позиция глагола перед подлежащим; устранены ссылка на букву и смешение обстоятельства с объектом.",
+      "verification": "ok"
+    },
+    {
+      "id": "q9",
+      "decision": "ok",
+      "note": "The teacher — субъект explains.",
+      "verification": "ok"
+    },
+    {
+      "id": "q10",
+      "decision": "fixed",
+      "note": "A book she reads возможно при выделении темы; условие ограничено базовым порядком, убрана ссылка на букву.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-04-pilot/check.py",
+      "result": "pass",
+      "evidence": "224 вопроса в 13 файлах: IDs, порядок, type/difficulty, chapter/concept/theory bindings и IDs вариантов сохранены относительно зафиксированных baseline commits; ключи и уникальность вариантов корректны; все training signatures актуальны, новых дубликатов в курсах нет; source → final → embedded совпадают; hashes отчётов актуальны."
+    },
+    {
+      "command": "go test ./internal/grammarbundle ./internal/repository -run 'TestValidateEmbeddedBundleID|TestGrammar.*Bundle|TestGrammar.*Reorder' -count=1",
+      "result": "pass",
+      "evidence": "Оба пакета прошли: grammarbundle 5.068s; repository 15.166s."
+    },
+    {
+      "command": "git diff --check && git -C courses/spanish-grammar diff --check && git -C courses/english-grammar diff --check",
+      "result": "pass",
+      "evidence": "Все три дерева: без whitespace errors."
+    }
+  ],
+  "verification_note": "Пользователь подтвердил проверку пилота ES 001 → EN 001: «я проверил, ок, правим дальше» (2026-09-04). Подтверждение относится к сохранённым 224 вопросам; source/context hashes перед фиксацией сверены. Запись внесена координатором по сообщению пользователя."
+}

@@ -1,0 +1,103 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/chapters/002/es.06.b6_theory_practical_algorithm.questions.json",
+  "source_sha256": "875af0305837d8059d3f98e0aecd8ede51dc9393e4d1080fee99fc8679d68d5d",
+  "context_sha256": "e51b0e0494fd7379a0459ae2d61b76621c8e0b85513b67c3fb4438ecadbc4cf3",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "",
+  "phase": "awaiting_verification",
+  "reviewed_at": "2026-09-04T09:31:55.573304+00:00",
+  "verified_at": "",
+  "questions": [
+    {
+      "id": "q1",
+      "decision": "fixed",
+      "note": "Устранено ложное правило, будто ударение создаёт слог; проверено pa-pá.",
+      "verification": "pending"
+    },
+    {
+      "id": "q2",
+      "decision": "fixed",
+      "note": "Устранена ложная причинность ударения; ió объяснён как дифтонг.",
+      "verification": "pending"
+    },
+    {
+      "id": "q3",
+      "decision": "fixed",
+      "note": "Устранена ложная причинность ударения; все варианты сохраняют música.",
+      "verification": "pending"
+    },
+    {
+      "id": "q4",
+      "decision": "fixed",
+      "note": "Исправлено ti-a без tilde; проверка применяет правило хиата.",
+      "verification": "pending"
+    },
+    {
+      "id": "q5",
+      "decision": "fixed",
+      "note": "Устранено ложное правило об ударении; ca-fé объяснено согласной между гласными.",
+      "verification": "pending"
+    },
+    {
+      "id": "q6",
+      "decision": "fixed",
+      "note": "Устранено ложное объяснение через ударение; проверены одиночные согласные.",
+      "verification": "pending"
+    },
+    {
+      "id": "q7",
+      "decision": "fixed",
+      "note": "Устранено ложное объяснение через ударение; проверено có-le-ra.",
+      "verification": "pending"
+    },
+    {
+      "id": "q8",
+      "decision": "fixed",
+      "note": "Вместо ошибочного le-ción и неверного ударения дано знакомое María с изученным хиатом.",
+      "verification": "pending"
+    },
+    {
+      "id": "q9",
+      "decision": "fixed",
+      "note": "Устранено ложное объяснение через ударение; проверены дифтонг и полные варианты.",
+      "verification": "pending"
+    },
+    {
+      "id": "q10",
+      "decision": "fixed",
+      "note": "Исправлено неверное te-le-fó-no на te-lé-fo-no; объяснение и все варианты согласованы.",
+      "verification": "pending"
+    },
+    {
+      "id": "q11",
+      "decision": "fixed",
+      "note": "Исправлено ложное ударение на u; указана орфографическая трактовка iu.",
+      "verification": "pending"
+    },
+    {
+      "id": "q12",
+      "decision": "fixed",
+      "note": "Неизученное правило rb заменено применением обоих изученных типов соседних гласных.",
+      "verification": "pending"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-04-es002-003/check.py",
+      "result": "pass",
+      "evidence": "250 IDs/contracts preserved; reports match current fingerprints; signatures current; no new ES training duplicates; source/final/embedded identical. See batches/2026-09-04-es002-003/validation.log."
+    },
+    {
+      "command": "go test ./internal/grammarbundle ./internal/repository -run 'TestValidateEmbeddedBundleID|TestGrammar.*Bundle|TestGrammar.*Reorder' -count=1",
+      "result": "pass",
+      "evidence": "Both packages passed: grammarbundle 4.828s, repository 13.885s."
+    },
+    {
+      "command": "git diff --check && git -C courses/spanish-grammar diff --check && git -C courses/english-grammar diff --check",
+      "result": "pass",
+      "evidence": "All three commands exited 0."
+    }
+  ],
+  "verification_note": ""
+}

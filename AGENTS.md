@@ -1,5 +1,16 @@
 # Agent notes for this repo
 
+## Resumable grammar question review
+
+For full grammar question review/corrections and continuation after compaction,
+use the `linglow-grammar-review` skill when available. Read
+`docs/grammar-review/README.md` and `docs/grammar-review/ACTIVE.md`, then verify
+the current source and per-question report before resuming. The report plus
+source/context hashes take precedence over a remembered cursor or chat summary.
+Save a checkpoint after each 10–20-question chunk. Placement is excluded from
+this review. The historical Spanish `review-questions/status.json` is not proof
+of completion of the new pass. For status-only requests, inspect without editing.
+
 ## How to query the production DB on k3s
 
 Codex runs locally on the developer machine and does **not** have a configured

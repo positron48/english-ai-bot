@@ -1,0 +1,17 @@
+0 es chapter 60 {'ok': 37, 'fixed': 23}
+1 es training 20 {'fixed': 20}
+2 es training 17 {'fixed': 17}
+3 es training 16 {'fixed': 16}
+4 es training 13 {'fixed': 6, 'ok': 7}
+5 es training 10 {'fixed': 8, 'ok': 2}
+6 es training 12 {'fixed': 12}
+7 es chapter 60 {'ok': 35, 'fixed': 25}
+8 es training 16 {'fixed': 16}
+9 es training 1 {'fixed': 1}
+10 es training 0 {}
+11 es training 3 {'fixed': 1, 'ok': 2}
+12 es training 12 {'fixed': 12}
+13 es training 10 {'fixed': 10}
+es no new course-wide duplicate signatures
+Changes: {'unchanged': 83, 'content_changed': 145, 'signature_only': 22}
+PASS: all 250 IDs/contracts, choices, theory bindings, report fingerprints, signatures and source-final equality

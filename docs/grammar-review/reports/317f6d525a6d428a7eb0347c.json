@@ -1,0 +1,35 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/chapters/003/es.03.b3_theory_default_stress_other_consonants.questions.json",
+  "source_sha256": "548b31a66659be3dedf9f973177d9ce4eb0ec5230d3e4f730144e1eeb9bce65a",
+  "context_sha256": "9fdba53951595674bc94b4350a94f40a8664f9efd8ad982e25918ddab4725fd2",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "",
+  "phase": "awaiting_verification",
+  "reviewed_at": "2026-09-04T09:35:30.314804+00:00",
+  "verified_at": "",
+  "questions": [],
+  "checks": [
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-04-es002-003/check.py",
+      "result": "pass",
+      "evidence": "250 IDs/contracts preserved; reports match current fingerprints; signatures current; no new ES training duplicates; source/final/embedded identical. See batches/2026-09-04-es002-003/validation.log."
+    },
+    {
+      "command": "go test ./internal/grammarbundle ./internal/repository -run 'TestValidateEmbeddedBundleID|TestGrammar.*Bundle|TestGrammar.*Reorder' -count=1",
+      "result": "pass",
+      "evidence": "Both packages passed: grammarbundle 4.828s, repository 13.885s."
+    },
+    {
+      "command": "git diff --check && git -C courses/spanish-grammar diff --check && git -C courses/english-grammar diff --check",
+      "result": "pass",
+      "evidence": "All three commands exited 0."
+    },
+    {
+      "command": "python3 -m unittest discover -s scripts -p grammar_review_test.py -v",
+      "result": "pass",
+      "evidence": "13 tests passed, including empty source awaiting verification and invalid unsigned done. Source questions=[]; no questions added."
+    }
+  ],
+  "verification_note": ""
+}

@@ -1,0 +1,91 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/chapters/003/es.06.b6_theory_reading_algorithm_and_traps.questions.json",
+  "source_sha256": "87615b21ff05b9dbf5c57da5c3dc7be9150eed006b3a6ed454906695aad66591",
+  "context_sha256": "9fdba53951595674bc94b4350a94f40a8664f9efd8ad982e25918ddab4725fd2",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "",
+  "phase": "awaiting_verification",
+  "reviewed_at": "2026-09-04T09:38:41.721798+00:00",
+  "verified_at": "",
+  "questions": [
+    {
+      "id": "q1",
+      "decision": "fixed",
+      "note": "Ударный me, правило гласной и ключ согласованы. Только техническая правка: пересчитана исходно устаревшая signature штатной функцией; содержание сохранено.",
+      "verification": "pending"
+    },
+    {
+      "id": "q2",
+      "decision": "fixed",
+      "note": "Ударный pel по окончанию l; один правильный слог. Только техническая правка: пересчитана исходно устаревшая signature штатной функцией; содержание сохранено.",
+      "verification": "pending"
+    },
+    {
+      "id": "q3",
+      "decision": "fixed",
+      "note": "Визуальное обнаружение tilde заменено исправлением реального ошибочного чтения café.",
+      "verification": "pending"
+    },
+    {
+      "id": "q4",
+      "decision": "fixed",
+      "note": "Исправлен ошибочный cal: диграф ll нельзя разделять, слоги ca-lle.",
+      "verification": "pending"
+    },
+    {
+      "id": "q5",
+      "decision": "fixed",
+      "note": "Уточнена согласная l и отличие от n/s; проверены дистракторы.",
+      "verification": "pending"
+    },
+    {
+      "id": "q6",
+      "decision": "fixed",
+      "note": "Ударный ta в TA-za; один верный вариант. Только техническая правка: пересчитана исходно устаревшая signature штатной функцией; содержание сохранено.",
+      "verification": "pending"
+    },
+    {
+      "id": "q7",
+      "decision": "fixed",
+      "note": "Повтор поиска tilde заменён определением ударного слога teléfono; варианты независимы от регистра.",
+      "verification": "pending"
+    },
+    {
+      "id": "q8",
+      "decision": "fixed",
+      "note": "LU-nes по окончанию s; объяснение и ключ верны. Только техническая правка: пересчитана исходно устаревшая signature штатной функцией; содержание сохранено.",
+      "verification": "pending"
+    },
+    {
+      "id": "q9",
+      "decision": "fixed",
+      "note": "Исправлено неверное указание tilde над í: в camión ударная ó, слог mión целиком.",
+      "verification": "pending"
+    },
+    {
+      "id": "q10",
+      "decision": "fixed",
+      "note": "au-to-bús, ударный bús по tilde над ú; ключ верен. Только техническая правка: пересчитана исходно устаревшая signature штатной функцией; содержание сохранено.",
+      "verification": "pending"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-04-es002-003/check.py",
+      "result": "pass",
+      "evidence": "250 IDs/contracts preserved; reports match current fingerprints; signatures current; no new ES training duplicates; source/final/embedded identical. See batches/2026-09-04-es002-003/validation.log."
+    },
+    {
+      "command": "go test ./internal/grammarbundle ./internal/repository -run 'TestValidateEmbeddedBundleID|TestGrammar.*Bundle|TestGrammar.*Reorder' -count=1",
+      "result": "pass",
+      "evidence": "Both packages passed: grammarbundle 4.828s, repository 13.885s."
+    },
+    {
+      "command": "git diff --check && git -C courses/spanish-grammar diff --check && git -C courses/english-grammar diff --check",
+      "result": "pass",
+      "evidence": "All three commands exited 0."
+    }
+  ],
+  "verification_note": ""
+}

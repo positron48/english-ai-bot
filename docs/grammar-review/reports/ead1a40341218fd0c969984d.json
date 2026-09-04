@@ -1,0 +1,133 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/chapters/002/es.02.b2_theory_syllable_nucleus.questions.json",
+  "source_sha256": "b8ff361dae1b3aa53299cd7dd8b446b53adabea12c0b5b805e3596e77e30c2fc",
+  "context_sha256": "e51b0e0494fd7379a0459ae2d61b76621c8e0b85513b67c3fb4438ecadbc4cf3",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "",
+  "phase": "awaiting_verification",
+  "reviewed_at": "2026-09-04T09:37:39.844814+00:00",
+  "verified_at": "",
+  "questions": [
+    {
+      "id": "q1",
+      "decision": "fixed",
+      "note": "a-gua: ua объединены, два слога. Только техническая правка: пересчитана исходно устаревшая signature штатной функцией; содержание сохранено.",
+      "verification": "pending"
+    },
+    {
+      "id": "q2",
+      "decision": "fixed",
+      "note": "Число слогов ciudad привязано к орфографическому разбору, не запрету произносительного варианта.",
+      "verification": "pending"
+    },
+    {
+      "id": "q3",
+      "decision": "fixed",
+      "note": "pue-blo: ue дифтонг, два слога. Только техническая правка: пересчитана исходно устаревшая signature штатной функцией; содержание сохранено.",
+      "verification": "pending"
+    },
+    {
+      "id": "q4",
+      "decision": "fixed",
+      "note": "Перераспределён ключ: исходно 16 из 17 ответов были b.",
+      "verification": "pending"
+    },
+    {
+      "id": "q5",
+      "decision": "fixed",
+      "note": "ma-ña-na — три слога. Только техническая правка: пересчитана исходно устаревшая signature штатной функцией; содержание сохранено.",
+      "verification": "pending"
+    },
+    {
+      "id": "q6",
+      "decision": "fixed",
+      "note": "i/ó не разделены n: исправлено объяснение дифтонга и позиция ключа.",
+      "verification": "pending"
+    },
+    {
+      "id": "q7",
+      "decision": "fixed",
+      "note": "ll названа диграфом, а не отдельной согласной буквой.",
+      "verification": "pending"
+    },
+    {
+      "id": "q8",
+      "decision": "fixed",
+      "note": "Уточнён диграф ll, перераспределён ключ.",
+      "verification": "pending"
+    },
+    {
+      "id": "q9",
+      "decision": "fixed",
+      "note": "pa-pel — два слога. Только техническая правка: пересчитана исходно устаревшая signature штатной функцией; содержание сохранено.",
+      "verification": "pending"
+    },
+    {
+      "id": "q10",
+      "decision": "fixed",
+      "note": "Между u/o стоят n и d, не одна n; объяснение исправлено и ключ распределён.",
+      "verification": "pending"
+    },
+    {
+      "id": "q11",
+      "decision": "fixed",
+      "note": "lu-na — два ядра. Только техническая правка: пересчитана исходно устаревшая signature штатной функцией; содержание сохранено.",
+      "verification": "pending"
+    },
+    {
+      "id": "q12",
+      "decision": "fixed",
+      "note": "a/e соседствуют; объяснение исправлено на хиат, ключ распределён.",
+      "verification": "pending"
+    },
+    {
+      "id": "q13",
+      "decision": "fixed",
+      "note": "pa-pa — два слога; papa допустимое слово без тильды. Только техническая правка: пересчитана исходно устаревшая signature штатной функцией; содержание сохранено.",
+      "verification": "pending"
+    },
+    {
+      "id": "q14",
+      "decision": "fixed",
+      "note": "Перераспределён ключ при исходной концентрации b.",
+      "verification": "pending"
+    },
+    {
+      "id": "q15",
+      "decision": "fixed",
+      "note": "Перераспределён ключ при исходной концентрации b.",
+      "verification": "pending"
+    },
+    {
+      "id": "q16",
+      "decision": "fixed",
+      "note": "co-che — два слога, ch не разделяется. Только техническая правка: пересчитана исходно устаревшая signature штатной функцией; содержание сохранено.",
+      "verification": "pending"
+    },
+    {
+      "id": "q17",
+      "decision": "fixed",
+      "note": "ho-la — два слога, немая h не добавляет ядра. Только техническая правка: пересчитана исходно устаревшая signature штатной функцией; содержание сохранено.",
+      "verification": "pending"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-04-es002-003/check.py",
+      "result": "pass",
+      "evidence": "250 IDs/contracts preserved; reports match current fingerprints; signatures current; no new ES training duplicates; source/final/embedded identical. See batches/2026-09-04-es002-003/validation.log."
+    },
+    {
+      "command": "go test ./internal/grammarbundle ./internal/repository -run 'TestValidateEmbeddedBundleID|TestGrammar.*Bundle|TestGrammar.*Reorder' -count=1",
+      "result": "pass",
+      "evidence": "Both packages passed: grammarbundle 4.828s, repository 13.885s."
+    },
+    {
+      "command": "git diff --check && git -C courses/spanish-grammar diff --check && git -C courses/english-grammar diff --check",
+      "result": "pass",
+      "evidence": "All three commands exited 0."
+    }
+  ],
+  "verification_note": ""
+}

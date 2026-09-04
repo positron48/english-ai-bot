@@ -1,0 +1,49 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/chapters/003/es.04.b4_theory_agudas_llanas_written_accent.questions.json",
+  "source_sha256": "42297d840c15aa405dcaa692310f709e359d7836c4d62aa670c0fb6834dd9524",
+  "context_sha256": "9fdba53951595674bc94b4350a94f40a8664f9efd8ad982e25918ddab4725fd2",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "",
+  "phase": "awaiting_verification",
+  "reviewed_at": "2026-09-04T09:35:30.316331+00:00",
+  "verified_at": "",
+  "questions": [
+    {
+      "id": "q2",
+      "decision": "fixed",
+      "note": "Неизученная диакритическая tilde más заменена примером aguda café; объяснение согласовано.",
+      "verification": "pending"
+    },
+    {
+      "id": "q6",
+      "decision": "ok",
+      "note": "canción — единственная aguda на n в вариантах; ударение и tilde верны.",
+      "verification": "pending"
+    },
+    {
+      "id": "q10",
+      "decision": "ok",
+      "note": "papá — единственная aguda на гласную; причина tilde верна.",
+      "verification": "pending"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-04-es002-003/check.py",
+      "result": "pass",
+      "evidence": "250 IDs/contracts preserved; reports match current fingerprints; signatures current; no new ES training duplicates; source/final/embedded identical. See batches/2026-09-04-es002-003/validation.log."
+    },
+    {
+      "command": "go test ./internal/grammarbundle ./internal/repository -run 'TestValidateEmbeddedBundleID|TestGrammar.*Bundle|TestGrammar.*Reorder' -count=1",
+      "result": "pass",
+      "evidence": "Both packages passed: grammarbundle 4.828s, repository 13.885s."
+    },
+    {
+      "command": "git diff --check && git -C courses/spanish-grammar diff --check && git -C courses/english-grammar diff --check",
+      "result": "pass",
+      "evidence": "All three commands exited 0."
+    }
+  ],
+  "verification_note": ""
+}
