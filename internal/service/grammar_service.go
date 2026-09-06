@@ -613,32 +613,30 @@ func (s *GrammarService) filterQuestionBankForQuizzes(chapter *repository.Chapte
 		questionBank[key] = value
 	}
 	availableIDs := make(map[string]bool)
-	if questionBank != nil {
-		if questions, ok := questionBank["questions"].([]interface{}); ok {
-			filteredQuestions := make([]interface{}, 0)
+	if questions, ok := questionBank["questions"].([]interface{}); ok {
+		filteredQuestions := make([]interface{}, 0)
 
-			for _, qInterface := range questions {
-				q, ok := qInterface.(map[string]interface{})
-				if !ok {
-					continue
-				}
-
-				qID, ok := q["id"].(string)
-				if !ok {
-					continue
-				}
-
-				// Only include questions that are used in quizzes
-				if usedQuestionIDs[qID] && repository.GrammarQuestionAvailable(q) {
-					filteredQuestions = append(filteredQuestions, q)
-					availableIDs[qID] = true
-				}
+		for _, qInterface := range questions {
+			q, ok := qInterface.(map[string]interface{})
+			if !ok {
+				continue
 			}
 
-			// Update question bank with filtered questions
-			questionBank["questions"] = filteredQuestions
-			filteredChapter.QuestionBank = questionBank
+			qID, ok := q["id"].(string)
+			if !ok {
+				continue
+			}
+
+			// Only include questions that are used in quizzes
+			if usedQuestionIDs[qID] && repository.GrammarQuestionAvailable(q) {
+				filteredQuestions = append(filteredQuestions, q)
+				availableIDs[qID] = true
+			}
 		}
+
+		// Update question bank with filtered questions
+		questionBank["questions"] = filteredQuestions
+		filteredChapter.QuestionBank = questionBank
 	}
 
 	// Prune quiz references too, including quizzes left empty after filtering.
