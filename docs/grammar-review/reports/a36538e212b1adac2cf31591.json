@@ -1,0 +1,652 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/renunciar.json",
+  "source_sha256": "552105f622cfd58618dd5709d81f1d1db6dad0f9cf63aaa7aa4f5006a4bd5c24",
+  "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197",
+  "editor": "Helmholtz editor 2026-09-06",
+  "verifier": "Codex coordinator verifier 2026-09-06",
+  "phase": "done",
+  "reviewed_at": "2026-09-06",
+  "verified_at": "2026-09-06",
+  "questions": [
+    {
+      "id": "es.presente.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.presente.indicativo, 1:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.presente.indicativo, 2:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.presente.indicativo, 3:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.presente.indicativo, 1:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.presente.indicativo, 2:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.presente.indicativo, 3:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.preterito_imperfecto.indicativo, 1:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.preterito_imperfecto.indicativo, 2:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.preterito_imperfecto.indicativo, 3:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.preterito_imperfecto.indicativo, 1:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.preterito_imperfecto.indicativo, 2:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.preterito_imperfecto.indicativo, 3:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.preterito_indefinido.indicativo, 1:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.preterito_indefinido.indicativo, 2:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.preterito_indefinido.indicativo, 3:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.preterito_indefinido.indicativo, 1:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.preterito_indefinido.indicativo, 2:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.preterito_indefinido.indicativo, 3:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.futuro_simple.indicativo, 1:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.futuro_simple.indicativo, 2:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.futuro_simple.indicativo, 3:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.futuro_simple.indicativo, 1:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.futuro_simple.indicativo, 2:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.futuro_simple.indicativo, 3:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.condicional_simple.indicativo, 1:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.condicional_simple.indicativo, 2:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.condicional_simple.indicativo, 3:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.condicional_simple.indicativo, 1:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.condicional_simple.indicativo, 2:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.condicional_simple.indicativo, 3:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.preterito_perfecto_compuesto.indicativo, 1:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.preterito_perfecto_compuesto.indicativo, 2:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.preterito_perfecto_compuesto.indicativo, 3:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.preterito_perfecto_compuesto.indicativo, 1:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.preterito_perfecto_compuesto.indicativo, 2:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.preterito_perfecto_compuesto.indicativo, 3:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.preterito_pluscuamperfecto.indicativo, 1:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.preterito_pluscuamperfecto.indicativo, 2:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.preterito_pluscuamperfecto.indicativo, 3:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.preterito_pluscuamperfecto.indicativo, 1:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.preterito_pluscuamperfecto.indicativo, 2:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.preterito_pluscuamperfecto.indicativo, 3:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.preterito_anterior.indicativo, 1:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.preterito_anterior.indicativo, 2:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.preterito_anterior.indicativo, 3:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.preterito_anterior.indicativo, 1:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.preterito_anterior.indicativo, 2:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.preterito_anterior.indicativo, 3:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.futuro_perfecto.indicativo, 1:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.futuro_perfecto.indicativo, 2:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.futuro_perfecto.indicativo, 3:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.futuro_perfecto.indicativo, 1:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.futuro_perfecto.indicativo, 2:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.futuro_perfecto.indicativo, 3:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.condicional_perfecto.indicativo, 1:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.condicional_perfecto.indicativo, 2:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.condicional_perfecto.indicativo, 3:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.condicional_perfecto.indicativo, 1:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.condicional_perfecto.indicativo, 2:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.condicional_perfecto.indicativo, 3:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.presente.subjuntivo, 1:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.presente.subjuntivo, 2:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.presente.subjuntivo, 3:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.presente.subjuntivo, 1:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.presente.subjuntivo, 2:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.presente.subjuntivo, 3:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.preterito_imperfecto.subjuntivo, 1:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.preterito_imperfecto.subjuntivo, 2:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.preterito_imperfecto.subjuntivo, 3:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.preterito_imperfecto.subjuntivo, 1:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.preterito_imperfecto.subjuntivo, 2:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.preterito_imperfecto.subjuntivo, 3:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.futuro_simple.subjuntivo, 1:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.futuro_simple.subjuntivo, 2:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.futuro_simple.subjuntivo, 3:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.futuro_simple.subjuntivo, 1:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.futuro_simple.subjuntivo, 2:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.futuro_simple.subjuntivo, 3:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.preterito_perfecto.subjuntivo, 1:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.preterito_perfecto.subjuntivo, 2:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.preterito_perfecto.subjuntivo, 3:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.preterito_perfecto.subjuntivo, 1:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.preterito_perfecto.subjuntivo, 2:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.preterito_perfecto.subjuntivo, 3:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.preterito_pluscuamperfecto.subjuntivo, 1:singular. Главное сказуемое в контрфактическом результате согласовано с лицом и числом субъекта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.preterito_pluscuamperfecto.subjuntivo, 2:singular. Главное сказуемое в контрфактическом результате согласовано с лицом и числом субъекта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.preterito_pluscuamperfecto.subjuntivo, 3:singular. Главное сказуемое в контрфактическом результате согласовано с лицом и числом субъекта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.preterito_pluscuamperfecto.subjuntivo, 1:plural. Главное сказуемое в контрфактическом результате согласовано с лицом и числом субъекта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.preterito_pluscuamperfecto.subjuntivo, 2:plural. Главное сказуемое в контрфактическом результате согласовано с лицом и числом субъекта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.preterito_pluscuamperfecto.subjuntivo, 3:plural. Главное сказуемое в контрфактическом результате согласовано с лицом и числом субъекта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.futuro_perfecto.subjuntivo, 1:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.futuro_perfecto.subjuntivo, 2:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.futuro_perfecto.subjuntivo, 3:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.futuro_perfecto.subjuntivo, 1:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.futuro_perfecto.subjuntivo, 2:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, валентность renunciar a, самостоятельный контекст, полный RU и четыре уникальных same-scope варианта выверены для es.futuro_perfecto.subjuntivo, 3:plural.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 /tmp/validate_renunciar_review.py",
+      "result": "pass",
+      "evidence": "96/96 cards match Jehle, scope metadata, identity, renunciar a valency, standalone ES/RU semantic invariants and four unique same-scope options."
+    },
+    {
+      "command": "native validate_artifact(renunciar)",
+      "result": "pass",
+      "evidence": "Repository-native artifact validator accepted all 16 scopes × 6 slots."
+    },
+    {
+      "command": "go test ./internal/verbtraining",
+      "result": "pass",
+      "evidence": "Verb-training package tests passed."
+    },
+    {
+      "command": "git diff --check -- assigned renunciar paths",
+      "result": "pass",
+      "evidence": "No whitespace errors in source, embedded, report or checkpoint."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py status --source courses/spanish-grammar/training_pack/verb_forms/lemmas/renunciar.json",
+      "result": "pass",
+      "evidence": "Inventory reports awaiting_verification for all 96 cards with current fingerprints."
+    },
+    {
+      "command": "independent full-card read: renunciar (96/96)",
+      "result": "pass",
+      "evidence": "Coordinator verifier substituted every answer and checked Spanish/Russian semantics, renunciar a valency, person/number/tense agreement, rare-register labels and option uniqueness."
+    },
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-06-es-verbs-renunciar-requerir/preservation-check.py",
+      "result": "pass",
+      "evidence": "Preserved 25490 paths outside the authorized target set; 0 changed, missing or unexpectedly new."
+    },
+    {
+      "command": "native validate_artifact() for renunciar, repetir, representar, requerir",
+      "result": "pass",
+      "evidence": "Generator-native artifact validation accepted all four 96-card lemma banks."
+    },
+    {
+      "command": "go test ./internal/verbtraining ./cmd/sync_verb_training_json",
+      "result": "pass",
+      "evidence": "Both Go packages passed."
+    },
+    {
+      "command": "python3 scripts/grammar_review_test.py",
+      "result": "pass",
+      "evidence": "13 tests passed."
+    },
+    {
+      "command": "git diff --check in root and courses/spanish-grammar",
+      "result": "pass",
+      "evidence": "Both repositories report no whitespace errors."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py check --source courses/spanish-grammar/training_pack/verb_forms/lemmas/renunciar.json",
+      "result": "pass",
+      "evidence": "Inventory check reports done 96 questions, 1 done file."
+    }
+  ],
+  "verification_note": "Независимо перечитаны все 96 финальных карточек с подстановкой ответа. Формы совпадают с Jehle, лицо/число/время и русские переводы согласованы; обязательное управление renunciar a соблюдено во всех контекстах. Редкие pretérito anterior и futuro de subjuntivo явно обозначены как книжные или юридические, а De haberlo sabido передано условной конструкцией «Если бы ... знал/знали ...». Во всех карточках четыре уникальных варианта одного scope с единственным правильным ответом; identity, порядок и top-level поля сохранены, source и embedded совпадают побайтно, fingerprints актуальны."
+}

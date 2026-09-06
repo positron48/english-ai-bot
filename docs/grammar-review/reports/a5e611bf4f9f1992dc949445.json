@@ -1,0 +1,642 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/requerir.json",
+  "source_sha256": "88133dd402a67bfe79410495d0404efb6cc4c5c937b800aa2acfc43a78a1908f",
+  "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197",
+  "editor": "Codex coordinator editor 2026-09-06",
+  "verifier": "Laplace verifier 2026-09-06",
+  "phase": "done",
+  "reviewed_at": "2026-09-06",
+  "verified_at": "2026-09-06",
+  "questions": [
+    {
+      "id": "es.presente.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.presente.indicativo, 1:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.presente.indicativo, 2:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.presente.indicativo, 3:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.presente.indicativo, 1:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.presente.indicativo, 2:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.presente.indicativo, 3:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.preterito_imperfecto.indicativo, 1:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.preterito_imperfecto.indicativo, 2:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.preterito_imperfecto.indicativo, 3:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.preterito_imperfecto.indicativo, 1:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.preterito_imperfecto.indicativo, 2:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.preterito_imperfecto.indicativo, 3:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.preterito_indefinido.indicativo, 1:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.preterito_indefinido.indicativo, 2:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.preterito_indefinido.indicativo, 3:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.preterito_indefinido.indicativo, 1:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.preterito_indefinido.indicativo, 2:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.preterito_indefinido.indicativo, 3:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.futuro_simple.indicativo, 1:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.futuro_simple.indicativo, 2:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.futuro_simple.indicativo, 3:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.futuro_simple.indicativo, 1:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.futuro_simple.indicativo, 2:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.futuro_simple.indicativo, 3:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.condicional_simple.indicativo, 1:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.condicional_simple.indicativo, 2:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.condicional_simple.indicativo, 3:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.condicional_simple.indicativo, 1:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.condicional_simple.indicativo, 2:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.condicional_simple.indicativo, 3:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.preterito_perfecto_compuesto.indicativo, 1:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.preterito_perfecto_compuesto.indicativo, 2:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.preterito_perfecto_compuesto.indicativo, 3:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.preterito_perfecto_compuesto.indicativo, 1:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.preterito_perfecto_compuesto.indicativo, 2:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.preterito_perfecto_compuesto.indicativo, 3:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.preterito_pluscuamperfecto.indicativo, 1:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.preterito_pluscuamperfecto.indicativo, 2:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.preterito_pluscuamperfecto.indicativo, 3:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.preterito_pluscuamperfecto.indicativo, 1:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.preterito_pluscuamperfecto.indicativo, 2:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.preterito_pluscuamperfecto.indicativo, 3:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.preterito_anterior.indicativo, 1:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.preterito_anterior.indicativo, 2:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.preterito_anterior.indicativo, 3:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.preterito_anterior.indicativo, 1:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.preterito_anterior.indicativo, 2:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.preterito_anterior.indicativo, 3:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.futuro_perfecto.indicativo, 1:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.futuro_perfecto.indicativo, 2:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.futuro_perfecto.indicativo, 3:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.futuro_perfecto.indicativo, 1:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.futuro_perfecto.indicativo, 2:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.futuro_perfecto.indicativo, 3:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.condicional_perfecto.indicativo, 1:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.condicional_perfecto.indicativo, 2:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.condicional_perfecto.indicativo, 3:singular. Финальная сквозная вычитка уточнила причинную связь, временную перспективу или субъект действия.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.condicional_perfecto.indicativo, 1:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.condicional_perfecto.indicativo, 2:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.condicional_perfecto.indicativo, 3:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.presente.subjuntivo, 1:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.presente.subjuntivo, 2:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.presente.subjuntivo, 3:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.presente.subjuntivo, 1:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.presente.subjuntivo, 2:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.presente.subjuntivo, 3:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.preterito_imperfecto.subjuntivo, 1:singular. Финальная сквозная вычитка уточнила причинную связь, временную перспективу или субъект действия.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.preterito_imperfecto.subjuntivo, 2:singular. Финальная сквозная вычитка уточнила причинную связь, временную перспективу или субъект действия.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.preterito_imperfecto.subjuntivo, 3:singular. Финальная сквозная вычитка уточнила причинную связь, временную перспективу или субъект действия.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.preterito_imperfecto.subjuntivo, 1:plural. Финальная сквозная вычитка уточнила причинную связь, временную перспективу или субъект действия.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.preterito_imperfecto.subjuntivo, 2:plural. Финальная сквозная вычитка уточнила причинную связь, временную перспективу или субъект действия.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.preterito_imperfecto.subjuntivo, 3:plural. Финальная сквозная вычитка уточнила причинную связь, временную перспективу или субъект действия.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.futuro_simple.subjuntivo, 1:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.futuro_simple.subjuntivo, 2:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.futuro_simple.subjuntivo, 3:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.futuro_simple.subjuntivo, 1:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.futuro_simple.subjuntivo, 2:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.futuro_simple.subjuntivo, 3:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.preterito_perfecto.subjuntivo, 1:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.preterito_perfecto.subjuntivo, 2:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.preterito_perfecto.subjuntivo, 3:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.preterito_perfecto.subjuntivo, 1:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.preterito_perfecto.subjuntivo, 2:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.preterito_perfecto.subjuntivo, 3:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.preterito_pluscuamperfecto.subjuntivo, 1:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.preterito_pluscuamperfecto.subjuntivo, 2:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.preterito_pluscuamperfecto.subjuntivo, 3:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.preterito_pluscuamperfecto.subjuntivo, 1:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.preterito_pluscuamperfecto.subjuntivo, 2:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.preterito_pluscuamperfecto.subjuntivo, 3:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.futuro_perfecto.subjuntivo, 1:singular. Финальная сквозная вычитка уточнила причинную связь, временную перспективу или субъект действия.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.futuro_perfecto.subjuntivo, 2:singular. Финальная сквозная вычитка уточнила причинную связь, временную перспективу или субъект действия.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.futuro_perfecto.subjuntivo, 3:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.futuro_perfecto.subjuntivo, 1:plural. Финальная сквозная вычитка уточнила причинную связь, временную перспективу или субъект действия.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.futuro_perfecto.subjuntivo, 2:plural. Финальная сквозная вычитка уточнила причинную связь, временную перспективу или субъект действия.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, самостоятельный контекст, полный перевод и четыре уникальных same-scope варианта выверены для es.futuro_perfecto.subjuntivo, 3:plural.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 /tmp/edit_requerir.py focused assertions",
+      "result": "pass",
+      "evidence": "96/96 cards match Jehle; identity, contracts, ES/RU contexts and four unique same-scope options passed."
+    },
+    {
+      "command": "validate_artifact(requerir, cards)",
+      "result": "pass",
+      "evidence": "Native generator validator accepted the final 96-card artifact."
+    },
+    {
+      "command": "coordinator full-card semantic pass after initial edit",
+      "result": "pass",
+      "evidence": "All 96 cards reread; 11 targeted refinements improved causal coherence, Russian naturalness and future-perfect subject reference."
+    },
+    {
+      "command": "python3 /tmp/validate_requerir_independent.py",
+      "result": "pass",
+      "evidence": "Independent full-card semantic review and focused assertions passed: 96/96 Jehle forms and metadata correct; values requerir/request/need, ES/RU subject and causal links, rare registers and De haberlo sabido accepted; all option sets unique and same-scope; identity/order/top-level preserved; source equals embedded; fingerprints current; native validator passed."
+    },
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-06-es-verbs-renunciar-requerir/preservation-check.py",
+      "result": "pass",
+      "evidence": "Preserved 25490 paths outside the authorized target set; 0 changed, missing or unexpectedly new."
+    },
+    {
+      "command": "native validate_artifact() for renunciar, repetir, representar, requerir",
+      "result": "pass",
+      "evidence": "Generator-native artifact validation accepted all four 96-card lemma banks."
+    },
+    {
+      "command": "go test ./internal/verbtraining ./cmd/sync_verb_training_json",
+      "result": "pass",
+      "evidence": "Both Go packages passed."
+    },
+    {
+      "command": "python3 scripts/grammar_review_test.py",
+      "result": "pass",
+      "evidence": "13 tests passed."
+    },
+    {
+      "command": "git diff --check in root and courses/spanish-grammar",
+      "result": "pass",
+      "evidence": "Both repositories report no whitespace errors."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py check --source courses/spanish-grammar/training_pack/verb_forms/lemmas/requerir.json",
+      "result": "pass",
+      "evidence": "Inventory check reports done 96 questions, 1 done file."
+    }
+  ],
+  "verification_note": "Независимо прочитаны все 96 карточек с подстановкой форм. Значения «требовать», «запрашивать» и «требоваться», субъектные и причинные связи, русские переводы, явные конструкции «Если бы…», а также литературные и юридические контексты редких времён признаны точными и естественными; формы Jehle, metadata, четыре уникальных same-scope варианта, identity/order, source=embedded и fingerprints подтверждены."
+}

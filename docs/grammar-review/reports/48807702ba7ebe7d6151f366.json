@@ -1,0 +1,326 @@
+{
+  "version": 1,
+  "source": "courses/english-grammar/chapters/013.en.grammar.talking_about_things_nouns.there_is_are_existence/03-questions.json",
+  "source_sha256": "7719aad792230d8a12d3e4062b92ed43f9ef34f1376daf2a0039821f89698dc9",
+  "context_sha256": "841163194eb493038326cf411046b86774f3f6eebf8956e57828b999d0b05022",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
+  "reviewed_at": "2026-09-04T12:23:13.806462+00:00",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
+  "questions": [
+    {
+      "id": "q1",
+      "decision": "fixed",
+      "note": "Уточнены требуемая конструкция, время и сохраняемое количество; допустимая инверсия не объявляется ошибкой.",
+      "verification": "ok"
+    },
+    {
+      "id": "q4",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q5",
+      "decision": "fixed",
+      "note": "Уточнены требуемая конструкция, время и сохраняемое количество; допустимая инверсия не объявляется ошибкой.",
+      "verification": "ok"
+    },
+    {
+      "id": "q7",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q8",
+      "decision": "fixed",
+      "note": "Уточнены требуемая конструкция, время и сохраняемое количество; допустимая инверсия не объявляется ошибкой.",
+      "verification": "ok"
+    },
+    {
+      "id": "q11",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q12",
+      "decision": "fixed",
+      "note": "Уточнены требуемая конструкция, время и сохраняемое количество; допустимая инверсия не объявляется ошибкой.",
+      "verification": "ok"
+    },
+    {
+      "id": "q15",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q16",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q17",
+      "decision": "fixed",
+      "note": "Уточнены требуемая конструкция, время и сохраняемое количество; допустимая инверсия не объявляется ошибкой.",
+      "verification": "ok"
+    },
+    {
+      "id": "q18",
+      "decision": "fixed",
+      "note": "Уточнены требуемая конструкция, время и сохраняемое количество; допустимая инверсия не объявляется ошибкой.",
+      "verification": "ok"
+    },
+    {
+      "id": "q21",
+      "decision": "fixed",
+      "note": "Уточнены требуемая конструкция, время и сохраняемое количество; допустимая инверсия не объявляется ошибкой.",
+      "verification": "ok"
+    },
+    {
+      "id": "q22",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q25",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q28",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q29",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q31",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q32",
+      "decision": "fixed",
+      "note": "Уточнены требуемая конструкция, время и сохраняемое количество; допустимая инверсия не объявляется ошибкой.",
+      "verification": "ok"
+    },
+    {
+      "id": "q33",
+      "decision": "fixed",
+      "note": "Уточнены требуемая конструкция, время и сохраняемое количество; допустимая инверсия не объявляется ошибкой.",
+      "verification": "ok"
+    },
+    {
+      "id": "q34",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q36",
+      "decision": "fixed",
+      "note": "Уточнены время, обычный вопрос и границы правки; исправлены ложный запрет a после there are и правило отрицаний.",
+      "verification": "ok"
+    },
+    {
+      "id": "q37",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q40",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q43",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q44",
+      "decision": "fixed",
+      "note": "Уточнены время, обычный вопрос и границы правки; исправлены ложный запрет a после there are и правило отрицаний.",
+      "verification": "ok"
+    },
+    {
+      "id": "q46",
+      "decision": "fixed",
+      "note": "Уточнены время, обычный вопрос и границы правки; исправлены ложный запрет a после there are и правило отрицаний.",
+      "verification": "ok"
+    },
+    {
+      "id": "q47",
+      "decision": "fixed",
+      "note": "Уточнены время, обычный вопрос и границы правки; исправлены ложный запрет a после there are и правило отрицаний.",
+      "verification": "ok"
+    },
+    {
+      "id": "q48",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q49",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q50",
+      "decision": "fixed",
+      "note": "Уточнены время, обычный вопрос и границы правки; исправлены ложный запрет a после there are и правило отрицаний.",
+      "verification": "ok"
+    },
+    {
+      "id": "q51",
+      "decision": "fixed",
+      "note": "Уточнены время, обычный вопрос и границы правки; исправлены ложный запрет a после there are и правило отрицаний.",
+      "verification": "ok"
+    },
+    {
+      "id": "q52",
+      "decision": "fixed",
+      "note": "Уточнены время, обычный вопрос и границы правки; исправлены ложный запрет a после there are и правило отрицаний.",
+      "verification": "ok"
+    },
+    {
+      "id": "q55",
+      "decision": "fixed",
+      "note": "Уточнены время, обычный вопрос и границы правки; исправлены ложный запрет a после there are и правило отрицаний.",
+      "verification": "ok"
+    },
+    {
+      "id": "q56",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q58",
+      "decision": "fixed",
+      "note": "Уточнены время, обычный вопрос и границы правки; исправлены ложный запрет a после there are и правило отрицаний.",
+      "verification": "ok"
+    },
+    {
+      "id": "q59",
+      "decision": "fixed",
+      "note": "Уточнены время, обычный вопрос и границы правки; исправлены ложный запрет a после there are и правило отрицаний.",
+      "verification": "ok"
+    },
+    {
+      "id": "q61",
+      "decision": "fixed",
+      "note": "Уточнены время, обычный вопрос и границы правки; исправлены ложный запрет a после there are и правило отрицаний.",
+      "verification": "ok"
+    },
+    {
+      "id": "q63",
+      "decision": "fixed",
+      "note": "Уточнены время, обычный вопрос и границы правки; исправлены ложный запрет a после there are и правило отрицаний.",
+      "verification": "ok"
+    },
+    {
+      "id": "q64",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q65",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q67",
+      "decision": "fixed",
+      "note": "Добавлено естественное any в отрицаниях; уточнено правило согласования.",
+      "verification": "ok"
+    },
+    {
+      "id": "q70",
+      "decision": "fixed",
+      "note": "Добавлено естественное any в отрицаниях; уточнено правило согласования.",
+      "verification": "ok"
+    },
+    {
+      "id": "q71",
+      "decision": "fixed",
+      "note": "Добавлено естественное any в отрицаниях; уточнено правило согласования.",
+      "verification": "ok"
+    },
+    {
+      "id": "q73",
+      "decision": "fixed",
+      "note": "Добавлено естественное any в отрицаниях; уточнено правило согласования.",
+      "verification": "ok"
+    },
+    {
+      "id": "q74",
+      "decision": "fixed",
+      "note": "Добавлено естественное any в отрицаниях; уточнено правило согласования.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-04-en011-014/check.py",
+      "result": "pass",
+      "evidence": "All 390 IDs/contracts, metadata, decisions versus baseline and current source/context fingerprints verified. Native training validation, signatures, no new course-wide duplicate signatures and exact source-final-embedded equality; validation.log."
+    },
+    {
+      "command": "go test ./internal/grammarbundle ./internal/repository -run 'TestValidateEmbeddedBundleID|TestGrammar.*Bundle|TestGrammar.*Reorder' -count=1",
+      "result": "pass",
+      "evidence": "Both packages pass: 4.808s and 13.894s; go-tests.log."
+    },
+    {
+      "command": "git diff --check; git -C courses/spanish-grammar diff --check; git -C courses/english-grammar diff --check",
+      "result": "pass",
+      "evidence": "Three separately executed commands exit 0; diff-check.log. All 318 pre-existing files outside review docs preserved byte-for-byte; preservation.log."
+    },
+    {
+      "command": "cd courses/english-grammar && bash scripts/assemble-chapter.sh 013.en.grammar.talking_about_things_nouns.there_is_are_existence",
+      "result": "pass",
+      "evidence": "45 questions assembled; 013-assemble.log. Embedded AJV limitation recorded separately."
+    },
+    {
+      "command": "cd courses/english-grammar && bash scripts/validate-chapter.sh 013.en.grammar.talking_about_things_nouns.there_is_are_existence",
+      "result": "pass",
+      "evidence": "Before and after pass: 013-chapter-before.log and 013-chapter-after.log."
+    },
+    {
+      "command": "ajv validate --spec=draft2020 --validate-formats=false --all-errors -s courses/english-grammar/02-chapter-schema.json -d courses/english-grammar/chapters/013.en.grammar.talking_about_things_nouns.there_is_are_existence/05-final.json",
+      "result": "pass",
+      "evidence": "Before and after pass: 013-schema-before.log and 013-schema-after.log."
+    },
+    {
+      "command": "cd courses/english-grammar && ajv validate -s 02-chapter-schema.json -d chapters/013.en.grammar.talking_about_things_nouns.there_is_are_existence/05-final.json",
+      "result": "known_baseline",
+      "evidence": "013-assembler-ajv-before.log and 013-assembler-ajv-after.log are byte-identical: exit 1, no schema with key or ref https://json-schema.org/draft/2020-12/schema. Explicit draft2020 passes before and after."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    }
+  ],
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+}

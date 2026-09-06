@@ -1,0 +1,405 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/chapters/130.es.grammar.subjunctive_time_purpose_relative.relative_clauses_known_unknown_hypothetical_reference/03-questions.json",
+  "source_sha256": "adc70d697bccfe8cb68422aa713121daae917d5e0602bf348f7a06191e437deb",
+  "context_sha256": "97b1eec9fa84a41f06115b3954eb3be7e7072b5cb4b0bc516690172d3b2366b0",
+  "editor": "Codex editor 2026-09-06",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
+  "reviewed_at": "2026-09-05T23:43:36.572424Z",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
+  "questions": [
+    {
+      "id": "q130_b1_mcq_e",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q130_b1_mcq_m",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q130_b1_mcq_h",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q130_b2_mcq_e",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q130_b2_mcq_m",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q130_b2_mcq_h",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q130_b3_mcq_e",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q130_b3_mcq_m",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q130_b3_mcq_h",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q130_b4_mcq_e",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q130_b4_mcq_m",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q130_b4_mcq_h",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q130_b5_mcq_e",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q130_b5_mcq_m",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q130_b5_mcq_h",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q130_b6_mcq_e",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q130_b6_mcq_m",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q130_b6_mcq_h",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q130_b1_cloze",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q130_b2_cloze",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q130_b3_cloze",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q130_b4_cloze",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q130_b5_cloze",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q130_b6_cloze",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q130_b1_fill",
+      "decision": "fixed",
+      "note": "Исправлены или уточнены поля: correct_answer, explanation, prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
+      "verification": "ok"
+    },
+    {
+      "id": "q130_b3_fill",
+      "decision": "fixed",
+      "note": "Исправлены или уточнены поля: explanation. Устранена смысловая, языковая или ключевая неоднозначность.",
+      "verification": "ok"
+    },
+    {
+      "id": "q130_b5_fill",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q130_b4_fill",
+      "decision": "fixed",
+      "note": "Исправлены или уточнены поля: correct_answer, explanation, prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
+      "verification": "ok"
+    },
+    {
+      "id": "q130_b1_tf",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q130_b2_tf",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q130_b5_tf",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q130_b1_err",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q130_b2_err",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q130_b3_err",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q130_b4_err",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q130_b5_err",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q130_b6_err",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q130_b4_err2",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q130_b5_err2",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q130_b1_reorder",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q130_b3_reorder",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q130_b2_reorder",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q130_b5_reorder",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q130_b4_reorder",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q130_b6_reorder",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q130_b1_transform",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q130_b2_transform",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q130_b3_transform",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q130_b4_transform",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q130_b5_transform",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q130_b6_transform",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q130_b1_explain",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q130_b2_explain",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q130_b3_explain",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q130_b4_explain",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q130_b5_explain",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q130_b6_explain",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q130_b1_prod",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q130_b2_prod",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q130_b3_prod",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q130_b4_prod",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q130_b5_prod",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q130_b6_prod",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q130_b5_prod2",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    }
+  ],
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+}

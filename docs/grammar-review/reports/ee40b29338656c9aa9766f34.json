@@ -1,0 +1,81 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/chapters/060/es.01.b1_theory_memory_frame.questions.json",
+  "source_sha256": "782647feaee5e70ee6b596e1b892e8dcf3a4f2ece3d52462520ccb200b6704c4",
+  "context_sha256": "8fae8efd970a475de321a1f56f43ebef9da9abd39565395c3f5d5421b8e7edc6",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
+  "reviewed_at": "2026-09-04T20:44:25.048165+00:00",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
+  "questions": [
+    {
+      "id": "q1",
+      "decision": "fixed",
+      "note": "Добавлено событие, устраняющее конкуренцию с грамматичным standalone tuve N años.",
+      "verification": "ok"
+    },
+    {
+      "id": "q2",
+      "decision": "fixed",
+      "note": "Добавлено событие, устраняющее конкуренцию с грамматичным standalone tuve N años.",
+      "verification": "ok"
+    },
+    {
+      "id": "q3",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q4",
+      "decision": "fixed",
+      "note": "Добавлено событие, устраняющее конкуренцию с грамматичным standalone tuve N años.",
+      "verification": "ok"
+    },
+    {
+      "id": "q5",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q6",
+      "decision": "fixed",
+      "note": "Уникализирован вопрос о возрасте и привычке в парке.",
+      "verification": "ok"
+    },
+    {
+      "id": "q7",
+      "decision": "fixed",
+      "note": "Добавлено событие, устраняющее конкуренцию с грамматичным standalone tuve N años.",
+      "verification": "ok"
+    },
+    {
+      "id": "q8",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q9",
+      "decision": "fixed",
+      "note": "Уникализирован вопрос о возрасте и школьном периоде.",
+      "verification": "ok"
+    },
+    {
+      "id": "q10",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    }
+  ],
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+}

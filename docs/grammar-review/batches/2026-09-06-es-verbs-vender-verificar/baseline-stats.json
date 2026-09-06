@@ -1,0 +1,46 @@
+{
+  "vender": {
+    "wrong_surface_cards": 14,
+    "duplicate_option_cards": 27,
+    "answer_count_bad_cards": 34,
+    "offscope_option_entries": 138,
+    "offscope_option_cards": 62,
+    "invalid_union_entries": 34,
+    "invalid_union_cards": 32,
+    "metadata_cards": 0,
+    "blank_cards": 0
+  },
+  "venir": {
+    "wrong_surface_cards": 13,
+    "duplicate_option_cards": 30,
+    "answer_count_bad_cards": 41,
+    "offscope_option_entries": 193,
+    "offscope_option_cards": 60,
+    "invalid_union_entries": 1,
+    "invalid_union_cards": 1,
+    "metadata_cards": 0,
+    "blank_cards": 0
+  },
+  "ver": {
+    "wrong_surface_cards": 19,
+    "duplicate_option_cards": 20,
+    "answer_count_bad_cards": 35,
+    "offscope_option_entries": 82,
+    "offscope_option_cards": 25,
+    "invalid_union_entries": 1,
+    "invalid_union_cards": 1,
+    "metadata_cards": 0,
+    "blank_cards": 0
+  },
+  "verificar": {
+    "wrong_surface_cards": 35,
+    "duplicate_option_cards": 9,
+    "answer_count_bad_cards": 43,
+    "offscope_option_entries": 250,
+    "offscope_option_cards": 84,
+    "invalid_union_entries": 130,
+    "invalid_union_cards": 48,
+    "metadata_cards": 0,
+    "blank_cards": 48
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "existing_files": 25678,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/utilizar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/utilizar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/vaciar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/vaciar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/valer.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/valer.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/vencer.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/vencer.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-utilizar-vencer",
+    "docs/grammar-review/reports/488d24d58f178e8cb8c09d9e.json",
+    "docs/grammar-review/reports/b65aa6678b34f66b9ad3a5b6.json",
+    "docs/grammar-review/reports/65423599399100293e0592b1.json",
+    "docs/grammar-review/reports/e444f81270cf10bd9e612a9e.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/utilizar.json": "54ff0ff72ecb34d9fbfbe0a927c4bc790cf0f1936495882ec5b9eae921848cde",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/utilizar.json": "54ff0ff72ecb34d9fbfbe0a927c4bc790cf0f1936495882ec5b9eae921848cde",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/vaciar.json": "beb745290480929b861da48c728357ce3b9860a358b0cb0de0c96d8b35af66af",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/vaciar.json": "beb745290480929b861da48c728357ce3b9860a358b0cb0de0c96d8b35af66af",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/valer.json": "d59d65aebfae51eb1c56fc897bd7d1b382f8847b59b8bdb3c9da025b80946ab7",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/valer.json": "d59d65aebfae51eb1c56fc897bd7d1b382f8847b59b8bdb3c9da025b80946ab7",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/vencer.json": "7e9ee3bf520c5f06471971bf47dae563694fc8c5a121ea220833651191ba4c39",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/vencer.json": "7e9ee3bf520c5f06471971bf47dae563694fc8c5a121ea220833651191ba4c39"
+  },
+  "preexisting_missing_tracked": [
+    "courses/english-grammar/llm-benchmark/__pycache__/benchmark.cpython-314.pyc",
+    "courses/english-grammar/training-pack-admin/__pycache__/server.cpython-314.pyc",
+    "tools-local/complaints-worker/__pycache__/worker.cpython-314.pyc"
+  ]
+}

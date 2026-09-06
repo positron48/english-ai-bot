@@ -1,0 +1,667 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/representar.json",
+  "source_sha256": "0f15e75e4ad5336fe343d3506193d34b8e67e5059c841b4b9c8ece464e96d1a2",
+  "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197",
+  "editor": "Laplace editor 2026-09-06",
+  "verifier": "Aristotle verifier 2026-09-06",
+  "phase": "done",
+  "reviewed_at": "2026-09-06",
+  "verified_at": "2026-09-06",
+  "questions": [
+    {
+      "id": "es.presente.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.presente.indicativo, 1:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.presente.indicativo, 2:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.presente.indicativo, 3:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.presente.indicativo, 1:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.presente.indicativo, 2:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.presente.indicativo, 3:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_imperfecto.indicativo, 1:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_imperfecto.indicativo, 2:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_imperfecto.indicativo, 3:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_imperfecto.indicativo, 1:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_imperfecto.indicativo, 2:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_imperfecto.indicativo, 3:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_indefinido.indicativo, 1:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_indefinido.indicativo, 2:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_indefinido.indicativo, 3:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_indefinido.indicativo, 1:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_indefinido.indicativo, 2:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_indefinido.indicativo, 3:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.futuro_simple.indicativo, 1:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.futuro_simple.indicativo, 2:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.futuro_simple.indicativo, 3:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.futuro_simple.indicativo, 1:plural. После сквозной проверки дополнительно уточнена формулировка для естественности и точной причинной связи.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.futuro_simple.indicativo, 2:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.futuro_simple.indicativo, 3:plural. После сквозной проверки дополнительно уточнена формулировка для естественности и точной причинной связи.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.condicional_simple.indicativo, 1:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.condicional_simple.indicativo, 2:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.condicional_simple.indicativo, 3:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.condicional_simple.indicativo, 1:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.condicional_simple.indicativo, 2:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.condicional_simple.indicativo, 3:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_perfecto_compuesto.indicativo, 1:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_perfecto_compuesto.indicativo, 2:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_perfecto_compuesto.indicativo, 3:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_perfecto_compuesto.indicativo, 1:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_perfecto_compuesto.indicativo, 2:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_perfecto_compuesto.indicativo, 3:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_pluscuamperfecto.indicativo, 1:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_pluscuamperfecto.indicativo, 2:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_pluscuamperfecto.indicativo, 3:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_pluscuamperfecto.indicativo, 1:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_pluscuamperfecto.indicativo, 2:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_pluscuamperfecto.indicativo, 3:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_anterior.indicativo, 1:singular. После сквозной проверки уточнено значение представительства как действия от имени города или гильдии.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_anterior.indicativo, 2:singular. После сквозной проверки уточнено значение представительства как действия от имени города или гильдии.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_anterior.indicativo, 3:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_anterior.indicativo, 1:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_anterior.indicativo, 2:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_anterior.indicativo, 3:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.futuro_perfecto.indicativo, 1:singular. После барьерной проверки metadata исправлено: tense `futuro perfecto` → `futuro_perfecto` в соответствии со scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.futuro_perfecto.indicativo, 2:singular. После барьерной проверки metadata исправлено: tense `futuro perfecto` → `futuro_perfecto` в соответствии со scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.futuro_perfecto.indicativo, 3:singular. После барьерной проверки metadata исправлено: tense `futuro perfecto` → `futuro_perfecto` в соответствии со scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.futuro_perfecto.indicativo, 1:plural. После барьерной проверки metadata исправлено: tense `futuro perfecto` → `futuro_perfecto` в соответствии со scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.futuro_perfecto.indicativo, 2:plural. После барьерной проверки metadata исправлено: tense `futuro perfecto` → `futuro_perfecto` в соответствии со scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.futuro_perfecto.indicativo, 3:plural. После барьерной проверки metadata исправлено: tense `futuro perfecto` → `futuro_perfecto` в соответствии со scope. Независимая проверка: RU «К декабрю этот экспорт уже составит половину продаж» неестественно меняет множественное esas exportaciones на «этот экспорт»; заменить на «К декабрю эти экспортные поставки уже составят половину продаж». Исправление независимого verifier внесено в RU; строка оставлена needs_fix до повторной проверки.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.condicional_perfecto.indicativo, 1:singular. После барьерной проверки metadata исправлено: tense `condicional perfecto` → `condicional_perfecto` в соответствии со scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.condicional_perfecto.indicativo, 2:singular. После барьерной проверки metadata исправлено: tense `condicional perfecto` → `condicional_perfecto` в соответствии со scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.condicional_perfecto.indicativo, 3:singular. После барьерной проверки metadata исправлено: tense `condicional perfecto` → `condicional_perfecto` в соответствии со scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.condicional_perfecto.indicativo, 1:plural. После барьерной проверки metadata исправлено: tense `condicional perfecto` → `condicional_perfecto` в соответствии со scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.condicional_perfecto.indicativo, 2:plural. После барьерной проверки metadata исправлено: tense `condicional perfecto` → `condicional_perfecto` в соответствии со scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.condicional_perfecto.indicativo, 3:plural. После барьерной проверки metadata исправлено: tense `condicional perfecto` → `condicional_perfecto` в соответствии со scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.presente.subjuntivo, 1:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.presente.subjuntivo, 2:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.presente.subjuntivo, 3:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.presente.subjuntivo, 1:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.presente.subjuntivo, 2:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.presente.subjuntivo, 3:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_imperfecto.subjuntivo, 1:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_imperfecto.subjuntivo, 2:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_imperfecto.subjuntivo, 3:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_imperfecto.subjuntivo, 1:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_imperfecto.subjuntivo, 2:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_imperfecto.subjuntivo, 3:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.futuro_simple.subjuntivo, 1:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.futuro_simple.subjuntivo, 2:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.futuro_simple.subjuntivo, 3:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.futuro_simple.subjuntivo, 1:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.futuro_simple.subjuntivo, 2:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.futuro_simple.subjuntivo, 3:plural. После сквозной проверки дополнительно уточнена формулировка для естественности и точной причинной связи.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_perfecto.subjuntivo, 1:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_perfecto.subjuntivo, 2:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_perfecto.subjuntivo, 3:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_perfecto.subjuntivo, 1:plural. Независимая проверка: RU «Хорошо, что мы представили все регионы» двусмысленно и не фиксирует значение representar a как представительство; заменить на «Хорошо, что мы представляли интересы всех регионов». Исправление независимого verifier внесено в RU; строка оставлена needs_fix до повторной проверки.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_perfecto.subjuntivo, 2:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_perfecto.subjuntivo, 3:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_pluscuamperfecto.subjuntivo, 1:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_pluscuamperfecto.subjuntivo, 2:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_pluscuamperfecto.subjuntivo, 3:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_pluscuamperfecto.subjuntivo, 1:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_pluscuamperfecto.subjuntivo, 2:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_pluscuamperfecto.subjuntivo, 3:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.futuro_perfecto.subjuntivo, 1:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.futuro_perfecto.subjuntivo, 2:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.futuro_perfecto.subjuntivo, 3:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.futuro_perfecto.subjuntivo, 1:plural. После сквозной проверки дополнительно уточнена формулировка для естественности и точной причинной связи.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.futuro_perfecto.subjuntivo, 2:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Форма RAE, metadata, самостоятельный контекст со значением representar, полный русский перевод и четыре уникальных same-scope варианта выверены для es.futuro_perfecto.subjuntivo, 3:plural.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 /tmp/validate_representar.py",
+      "result": "pass",
+      "evidence": "96/96 cards match the official RAE DLE representar paradigm; Jehle absence recorded as an authoritative-gap check; metadata, contracts, ES/RU content and options passed."
+    },
+    {
+      "command": "validate_artifact(representar, cards)",
+      "result": "pass",
+      "evidence": "Native Spanish verb-card validator accepted all 96 final cards."
+    },
+    {
+      "command": "go test ./internal/grammartrainingpack",
+      "result": "pass",
+      "evidence": "Embedded grammar training pack tests passed."
+    },
+    {
+      "command": "cmp source embedded; git diff --check -- assigned paths",
+      "result": "pass",
+      "evidence": "Source and embedded are byte-identical; assigned JSON and patch whitespace checks passed."
+    },
+    {
+      "command": "RAE DLE https://dle.rae.es/representar, conjugation table reviewed 2026-09-06",
+      "result": "pass",
+      "evidence": "Local Jehle CSV and haber supplement contain 0 representar rows. Official RAE DLE lists the regular representar paradigm, including representare/representares/representare/representáremos/representareis/representaren and hubiere/hubieres/hubiere/hubiéremos/hubiereis/hubieren representado."
+    },
+    {
+      "command": "python3 /tmp/validate_representar_metadata_postfix.py",
+      "result": "pass",
+      "evidence": "Exactly 12 metadata fields changed: tense normalized to futuro_perfecto or condicional_perfecto; all 96 cards satisfy mood/tense tokens from scope; all other card fields, order and top-level data preserved; source equals embedded."
+    },
+    {
+      "command": "Independent full-card verification of representar against the batch RAE-backed table, immutable baseline, source/embedded and fingerprints",
+      "result": "pass",
+      "evidence": "96/96 cards read with forms substituted; all forms, 12 corrected tense fields, metadata/slots, options, rare registers and counterfactual wording checked. 94 cards accepted; two exact Russian translation defects recorded at es.futuro_perfecto.indicativo:3:plural and es.preterito_perfecto.subjuntivo:1:plural."
+    },
+    {
+      "command": "python3 /tmp/validate_representar_verifier_fixes.py",
+      "result": "pass",
+      "evidence": "Exactly two translation_ru_full values changed per verifier request; forms, options, metadata, scope/person/number/order, all other card fields and top-level data preserved; source equals embedded; report fingerprint refreshed; two rows remain needs_fix for re-verification."
+    },
+    {
+      "command": "Focused independent recheck of two corrected representar translations",
+      "result": "pass",
+      "evidence": "es.futuro_perfecto.indicativo:3:plural now preserves plural esas exportaciones as «эти экспортные поставки»; es.preterito_perfecto.subjuntivo:1:plural now unambiguously conveys representar a as «представляли интересы всех регионов». Source equals embedded and current source/report fingerprint is 0f15e75e4ad5336fe343d3506193d34b8e67e5059c841b4b9c8ece464e96d1a2."
+    },
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-06-es-verbs-renunciar-requerir/preservation-check.py",
+      "result": "pass",
+      "evidence": "Preserved 25490 paths outside the authorized target set; 0 changed, missing or unexpectedly new."
+    },
+    {
+      "command": "native validate_artifact() for renunciar, repetir, representar, requerir",
+      "result": "pass",
+      "evidence": "Generator-native artifact validation accepted all four 96-card lemma banks."
+    },
+    {
+      "command": "go test ./internal/verbtraining ./cmd/sync_verb_training_json",
+      "result": "pass",
+      "evidence": "Both Go packages passed."
+    },
+    {
+      "command": "python3 scripts/grammar_review_test.py",
+      "result": "pass",
+      "evidence": "13 tests passed."
+    },
+    {
+      "command": "git diff --check in root and courses/spanish-grammar",
+      "result": "pass",
+      "evidence": "Both repositories report no whitespace errors."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py check --source courses/spanish-grammar/training_pack/verb_forms/lemmas/representar.json",
+      "result": "pass",
+      "evidence": "Inventory check reports done 96 questions, 1 done file."
+    }
+  ],
+  "verification_note": "Независимая проверка завершена для всех 96 карточек representar. Повторно проверены две исправленные строки: es.futuro_perfecto.indicativo:3:plural естественно и точно передаёт esas exportaciones как «эти экспортные поставки»; es.preterito_perfecto.subjuntivo:1:plural однозначно передаёт representar a как «представляли интересы всех регионов». Их ES-контексты, формы, metadata и options сохранены; source=embedded и fingerprint 0f15e75e4ad5336fe343d3506193d34b8e67e5059c841b4b9c8ece464e96d1a2 подтверждены. Все 96 карточек приняты."
+}

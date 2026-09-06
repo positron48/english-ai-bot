@@ -1,0 +1,96 @@
+{
+  "version": 1,
+  "source": "courses/english-grammar/training_pack/chapters/034/en.04.b4_theory_was_were_negatives.questions.json",
+  "source_sha256": "7fd72bc782ae76d7961f1790512b88e28381e66d190a7f9c97e41d8602b1ab0b",
+  "context_sha256": "a5d1b960d388294b5961be830594704c67c95b310cff16914c3a589889257668",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
+  "reviewed_at": "2026-09-04T16:37:08.601150+00:00",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
+  "questions": [
+    {
+      "id": "q1",
+      "decision": "fixed",
+      "note": "Полная и сокращённая формы были одновременно правильны: условие требует сокращение; q8 заменяет нецелевой оборот friends на проверку согласования; q9 исправлен русский перевод.",
+      "verification": "ok"
+    },
+    {
+      "id": "q2",
+      "decision": "fixed",
+      "note": "Полная и сокращённая формы были одновременно правильны: условие требует сокращение; q8 заменяет нецелевой оборот friends на проверку согласования; q9 исправлен русский перевод.",
+      "verification": "ok"
+    },
+    {
+      "id": "q3",
+      "decision": "fixed",
+      "note": "Полная и сокращённая формы были одновременно правильны: условие требует сокращение; q8 заменяет нецелевой оборот friends на проверку согласования; q9 исправлен русский перевод.",
+      "verification": "ok"
+    },
+    {
+      "id": "q4",
+      "decision": "ok",
+      "note": "Ошибка We wasn’t однозначна; остальные формы согласованы верно.",
+      "verification": "ok"
+    },
+    {
+      "id": "q5",
+      "decision": "fixed",
+      "note": "Полная и сокращённая формы были одновременно правильны: условие требует сокращение; q8 заменяет нецелевой оборот friends на проверку согласования; q9 исправлен русский перевод.",
+      "verification": "ok"
+    },
+    {
+      "id": "q6",
+      "decision": "fixed",
+      "note": "Полная и сокращённая формы были одновременно правильны: условие требует сокращение; q8 заменяет нецелевой оборот friends на проверку согласования; q9 исправлен русский перевод.",
+      "verification": "ok"
+    },
+    {
+      "id": "q7",
+      "decision": "fixed",
+      "note": "Полная и сокращённая формы были одновременно правильны: условие требует сокращение; q8 заменяет нецелевой оборот friends на проверку согласования; q9 исправлен русский перевод.",
+      "verification": "ok"
+    },
+    {
+      "id": "q8",
+      "decision": "fixed",
+      "note": "Полная и сокращённая формы были одновременно правильны: условие требует сокращение; q8 заменяет нецелевой оборот friends на проверку согласования; q9 исправлен русский перевод.",
+      "verification": "ok"
+    },
+    {
+      "id": "q9",
+      "decision": "fixed",
+      "note": "Полная и сокращённая формы были одновременно правильны: условие требует сокращение; q8 заменяет нецелевой оборот friends на проверку согласования; q9 исправлен русский перевод.",
+      "verification": "ok"
+    },
+    {
+      "id": "q10",
+      "decision": "fixed",
+      "note": "Полная и сокращённая формы были одновременно правильны: условие требует сокращение; q8 заменяет нецелевой оборот friends на проверку согласования; q9 исправлен русский перевод.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-04-en031-034/check.py",
+      "result": "pass",
+      "evidence": "All 396 IDs/contracts, decisions versus clean pre-batch HEAD, fingerprints, native training validation, signatures and source-final-embedded equality; validation.log."
+    },
+    {
+      "command": "go test ./internal/grammarbundle ./internal/repository -run 'TestValidateEmbeddedBundleID|TestGrammar.*Bundle|TestGrammar.*Reorder' -count=1",
+      "result": "pass",
+      "evidence": "Both packages passed on final integrated data; go-tests.log."
+    },
+    {
+      "command": "git diff --check; git -C courses/spanish-grammar diff --check; git -C courses/english-grammar diff --check",
+      "result": "pass",
+      "evidence": "Three separately executed commands exit 0; diff-check.log. All 876 earlier dirty files outside review docs preserved; preservation.log."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    }
+  ],
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+}

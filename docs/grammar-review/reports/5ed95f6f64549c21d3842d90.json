@@ -1,0 +1,417 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/chapters/108.es.grammar.non_finite_forms_periphrases.gerundio_ongoing_action_manner_do/03-questions.json",
+  "source_sha256": "ccd5a753d5d8fdc423ceded32196de1bf6be822f00575e769c6db332475142c7",
+  "context_sha256": "7c0d0afdd9349352abf9f928ede82ebde9068c6eedc87c8da00a350d34f555b0",
+  "editor": "Codex editor 2026-09-06",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
+  "reviewed_at": "2026-09-05T21:30:42.978170Z",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
+  "questions": [
+    {
+      "id": "q001",
+      "decision": "fixed",
+      "note": "Исправлены или уточнены поля: correct_answer. Устранена смысловая, языковая или ключевая неоднозначность.",
+      "verification": "ok"
+    },
+    {
+      "id": "q002",
+      "decision": "fixed",
+      "note": "Исправлены или уточнены поля: correct_answer. Устранена смысловая, языковая или ключевая неоднозначность.",
+      "verification": "ok"
+    },
+    {
+      "id": "q003",
+      "decision": "fixed",
+      "note": "Исправлены или уточнены поля: correct_answer, explanation. Устранена смысловая, языковая или ключевая неоднозначность.",
+      "verification": "ok"
+    },
+    {
+      "id": "q004",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q005",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q006",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q007",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q008",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q009",
+      "decision": "fixed",
+      "note": "Исправлены или уточнены поля: correct_answer. Устранена смысловая, языковая или ключевая неоднозначность.",
+      "verification": "ok"
+    },
+    {
+      "id": "q010",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q011",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q012",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q013",
+      "decision": "fixed",
+      "note": "Исправлены или уточнены поля: choices, correct_answer, explanation, prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
+      "verification": "ok"
+    },
+    {
+      "id": "q014",
+      "decision": "fixed",
+      "note": "Исправлены или уточнены поля: correct_answer. Устранена смысловая, языковая или ключевая неоднозначность.",
+      "verification": "ok"
+    },
+    {
+      "id": "q015",
+      "decision": "fixed",
+      "note": "Исправлены или уточнены поля: correct_answer. Устранена смысловая, языковая или ключевая неоднозначность.",
+      "verification": "ok"
+    },
+    {
+      "id": "q016",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q017",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q018",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q019",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q020",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q021",
+      "decision": "fixed",
+      "note": "Исправлены или уточнены поля: correct_answer. Устранена смысловая, языковая или ключевая неоднозначность.",
+      "verification": "ok"
+    },
+    {
+      "id": "q022",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q023",
+      "decision": "fixed",
+      "note": "Исправлены или уточнены поля: correct_answer. Устранена смысловая, языковая или ключевая неоднозначность.",
+      "verification": "ok"
+    },
+    {
+      "id": "q024",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q025",
+      "decision": "fixed",
+      "note": "Исправлены или уточнены поля: correct_answer. Устранена смысловая, языковая или ключевая неоднозначность.",
+      "verification": "ok"
+    },
+    {
+      "id": "q026",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q027",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q028",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q029",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q030",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q031",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q032",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q033",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q034",
+      "decision": "fixed",
+      "note": "Исправлены или уточнены поля: correct_answer. Устранена смысловая, языковая или ключевая неоднозначность.",
+      "verification": "ok"
+    },
+    {
+      "id": "q035",
+      "decision": "fixed",
+      "note": "Исправлены или уточнены поля: correct_answer. Устранена смысловая, языковая или ключевая неоднозначность.",
+      "verification": "ok"
+    },
+    {
+      "id": "q036",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q037",
+      "decision": "fixed",
+      "note": "Исправлены или уточнены поля: correct_answer. Устранена смысловая, языковая или ключевая неоднозначность.",
+      "verification": "ok"
+    },
+    {
+      "id": "q038",
+      "decision": "fixed",
+      "note": "Исправлены или уточнены поля: explanation, prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
+      "verification": "ok"
+    },
+    {
+      "id": "q039",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q040",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q041",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q042",
+      "decision": "fixed",
+      "note": "Исправлены или уточнены поля: correct_answer. Устранена смысловая, языковая или ключевая неоднозначность.",
+      "verification": "ok"
+    },
+    {
+      "id": "q043",
+      "decision": "fixed",
+      "note": "Исправлены или уточнены поля: correct_answer, explanation, prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
+      "verification": "ok"
+    },
+    {
+      "id": "q044",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q045",
+      "decision": "fixed",
+      "note": "Исправлены или уточнены поля: correct_answer. Устранена смысловая, языковая или ключевая неоднозначность.",
+      "verification": "ok"
+    },
+    {
+      "id": "q046",
+      "decision": "fixed",
+      "note": "Исправлены или уточнены поля: correct_answer. Устранена смысловая, языковая или ключевая неоднозначность.",
+      "verification": "ok"
+    },
+    {
+      "id": "q047",
+      "decision": "fixed",
+      "note": "Исправлены или уточнены поля: correct_answer. Устранена смысловая, языковая или ключевая неоднозначность.",
+      "verification": "ok"
+    },
+    {
+      "id": "q048",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q049",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q050",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q051",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q052",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q053",
+      "decision": "fixed",
+      "note": "Исправлены или уточнены поля: correct_answer. Устранена смысловая, языковая или ключевая неоднозначность.",
+      "verification": "ok"
+    },
+    {
+      "id": "q054",
+      "decision": "fixed",
+      "note": "Исправлены или уточнены поля: correct_answer. Устранена смысловая, языковая или ключевая неоднозначность.",
+      "verification": "ok"
+    },
+    {
+      "id": "q055",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q056",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q057",
+      "decision": "fixed",
+      "note": "Исправлены или уточнены поля: choices, correct_answer, explanation, prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
+      "verification": "ok"
+    },
+    {
+      "id": "q058",
+      "decision": "fixed",
+      "note": "Исправлены или уточнены поля: correct_answer. Устранена смысловая, языковая или ключевая неоднозначность.",
+      "verification": "ok"
+    },
+    {
+      "id": "q059",
+      "decision": "fixed",
+      "note": "Исправлены или уточнены поля: correct_answer. Устранена смысловая, языковая или ключевая неоднозначность.",
+      "verification": "ok"
+    },
+    {
+      "id": "q060",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q061",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q062",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q063",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q064",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q065",
+      "decision": "fixed",
+      "note": "Исправлены или уточнены поля: correct_answer. Устранена смысловая, языковая или ключевая неоднозначность.",
+      "verification": "ok"
+    },
+    {
+      "id": "q066",
+      "decision": "fixed",
+      "note": "Исправлены или уточнены поля: correct_answer, explanation. Устранена смысловая, языковая или ключевая неоднозначность.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    }
+  ],
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+}

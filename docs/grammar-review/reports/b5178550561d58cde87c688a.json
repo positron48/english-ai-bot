@@ -1,0 +1,96 @@
+{
+  "version": 1,
+  "source": "courses/english-grammar/training_pack/chapters/003/en.02.b2_theory_statements.questions.json",
+  "source_sha256": "41a8d94950b5baba4cd69992a11e61233101b07eececfcb0f08e3be51e218f89",
+  "context_sha256": "cd21124817a5596805c430b2a8d1d68c841f10c245c6290b43b1a07988840465",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
+  "reviewed_at": "2026-09-04T09:53:41.096200+00:00",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
+  "questions": [
+    {
+      "id": "q1",
+      "decision": "fixed",
+      "note": "Термин statement ограничен утвердительным предложением, чтобы отрицательный statement не был вторым ответом; убрана ссылка на букву.",
+      "verification": "ok"
+    },
+    {
+      "id": "q2",
+      "decision": "fixed",
+      "note": "Убраны абсолютное «всегда» и ссылка на теорию блока; задан нейтральный пример.",
+      "verification": "ok"
+    },
+    {
+      "id": "q3",
+      "decision": "fixed",
+      "note": "Устранено ложное «всегда точка»; исключено восклицание явным условием.",
+      "verification": "ok"
+    },
+    {
+      "id": "q4",
+      "decision": "fixed",
+      "note": "Убрана ссылка на букву перемешиваемого ответа.",
+      "verification": "ok"
+    },
+    {
+      "id": "q5",
+      "decision": "fixed",
+      "note": "Уточнено утвердительное предложение без отрицания; варианты грамматически различимы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q6",
+      "decision": "fixed",
+      "note": "Задан нейтральный порядок, исключено вынесение дополнения в особом контексте.",
+      "verification": "ok"
+    },
+    {
+      "id": "q7",
+      "decision": "ok",
+      "note": "Вопрос Is the cat sleeping отличим от трёх утвердительных сообщений.",
+      "verification": "ok"
+    },
+    {
+      "id": "q8",
+      "decision": "ok",
+      "note": "В рамках положительных утверждений только сообщение факта соответствует определению.",
+      "verification": "ok"
+    },
+    {
+      "id": "q9",
+      "decision": "fixed",
+      "note": "Исправлен русский вопрос и указан нейтральный порядок.",
+      "verification": "ok"
+    },
+    {
+      "id": "q10",
+      "decision": "fixed",
+      "note": "Повтор неоднозначной пунктуации заменён практическим преобразованием вопроса в утверждение.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-04-en002-004/check.py",
+      "result": "pass",
+      "evidence": "All 282 IDs/contracts and metadata preserved; source/context fingerprints current; signatures valid; no new EN training duplicates; source/final/embedded equal. See validation.log."
+    },
+    {
+      "command": "go test ./internal/grammarbundle ./internal/repository -run 'TestValidateEmbeddedBundleID|TestGrammar.*Bundle|TestGrammar.*Reorder' -count=1",
+      "result": "pass",
+      "evidence": "Both packages passed: grammarbundle 4.709s, repository 13.893s."
+    },
+    {
+      "command": "git diff --check && git -C courses/spanish-grammar diff --check && git -C courses/english-grammar diff --check",
+      "result": "pass",
+      "evidence": "All three commands exited 0."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    }
+  ],
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+}

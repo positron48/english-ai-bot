@@ -1,0 +1,31 @@
+{
+  "existing_files": 25404,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/preparar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/preparar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/presentar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/presentar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/prever.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/prever.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/probar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/probar.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-preparar-probar",
+    "docs/grammar-review/reports/d80874c1308886099e001f2f.json",
+    "docs/grammar-review/reports/4b4b404e376c113061371964.json",
+    "docs/grammar-review/reports/3935e14fcfe001b2e0f1f823.json",
+    "docs/grammar-review/reports/9f28df9e578d5ecda8d302ae.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/preparar.json": "ba264727929f895747f8c6d123fc73ab3bb0f4b7ab3db8e7c35815ea1e46366f",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/preparar.json": "ba264727929f895747f8c6d123fc73ab3bb0f4b7ab3db8e7c35815ea1e46366f",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/presentar.json": "7cf7296daaaa0947316029e6ebb825efc7092b09e9073fb4bd437ab2acbfc233",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/presentar.json": "7cf7296daaaa0947316029e6ebb825efc7092b09e9073fb4bd437ab2acbfc233",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/prever.json": "f80d4db9fd0213da1f2340a62e74cb5d12ab7ba93ba8488aa10e64ceeadec729",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/prever.json": "f80d4db9fd0213da1f2340a62e74cb5d12ab7ba93ba8488aa10e64ceeadec729",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/probar.json": "ef1ffd248d0fabfaa0a691cc3a157fb0271136621c7a1b9a3981fa96ffd7a7d0",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/probar.json": "ef1ffd248d0fabfaa0a691cc3a157fb0271136621c7a1b9a3981fa96ffd7a7d0"
+  }
+}

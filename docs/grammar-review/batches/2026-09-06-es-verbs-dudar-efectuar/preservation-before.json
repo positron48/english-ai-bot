@@ -1,0 +1,31 @@
+{
+  "existing_files": 25120,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/dudar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/dudar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/durar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/durar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/echar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/echar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/efectuar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/efectuar.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-dudar-efectuar",
+    "docs/grammar-review/reports/2332f95260107c327cd114f3.json",
+    "docs/grammar-review/reports/520a751b16133d1cbdf00999.json",
+    "docs/grammar-review/reports/2dcfce79624e4c677b0f2ddc.json",
+    "docs/grammar-review/reports/eb138478c3c1502a13167f4f.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/dudar.json": "22060c813f02007d6779120f83c905162c08f3df4b3d2841324eb4ead1546be2",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/dudar.json": "22060c813f02007d6779120f83c905162c08f3df4b3d2841324eb4ead1546be2",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/durar.json": "bf8b0f1472329e309efde888cbccf4f5a6cba4b159544761629e7776b62820eb",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/durar.json": "bf8b0f1472329e309efde888cbccf4f5a6cba4b159544761629e7776b62820eb",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/echar.json": "cdbe781e4f3dc89acd79caf2f3293555dd64c045399943dd40e033322a3bee41",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/echar.json": "cdbe781e4f3dc89acd79caf2f3293555dd64c045399943dd40e033322a3bee41",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/efectuar.json": "16683e7f851ab04631aa556ed763bbeb43446794ab62547c19903e597241fe46",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/efectuar.json": "16683e7f851ab04631aa556ed763bbeb43446794ab62547c19903e597241fe46"
+  }
+}

@@ -1,0 +1,31 @@
+{
+  "existing_files": 25287,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/luchar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/luchar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/mandar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/mandar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/manejar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/manejar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/manifestar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/manifestar.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-luchar-manifestar",
+    "docs/grammar-review/reports/f4f35b9830bb5a6c384beb2d.json",
+    "docs/grammar-review/reports/20cb3b7b6ffbcd7817fafe19.json",
+    "docs/grammar-review/reports/5e62f129bf55fc12befb2bcd.json",
+    "docs/grammar-review/reports/ef7d6d9462d822e73cba6436.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/luchar.json": "1a289f89ce2aee09df80602fde9fc3f2b1321ca9d04e205ab3cd3c93f22a62fc",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/luchar.json": "1a289f89ce2aee09df80602fde9fc3f2b1321ca9d04e205ab3cd3c93f22a62fc",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/mandar.json": "03251ab153a68487b8be4a12b1ae02ed9bfffecd4ca8a7a2e6f7ca7b10452c43",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/mandar.json": "03251ab153a68487b8be4a12b1ae02ed9bfffecd4ca8a7a2e6f7ca7b10452c43",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/manejar.json": "4ca7c716858e0639093192fac3c85ea8cb2dd0d69834eacbb1ad8abe12c8f6fb",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/manejar.json": "4ca7c716858e0639093192fac3c85ea8cb2dd0d69834eacbb1ad8abe12c8f6fb",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/manifestar.json": "db321ae96652c9f25026d907251451751ee7a31894027cb659b76cb6ac70b185",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/manifestar.json": "db321ae96652c9f25026d907251451751ee7a31894027cb659b76cb6ac70b185"
+  }
+}

@@ -1,0 +1,81 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/chapters/055/es.01.b1_theory_imperfecto_three_jobs.questions.json",
+  "source_sha256": "0f847bd710e281cbcc84a11f4c4d06bcd30a2e75b9493a90cb3df65c88bcb84d",
+  "context_sha256": "52e59c1ce31a1790cd3aa8113c84448cac3591f5fe9688127f955d0508ce237f",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
+  "reviewed_at": "2026-09-04T20:06:58.073646+00:00",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
+  "questions": [
+    {
+      "id": "q1",
+      "decision": "fixed",
+      "note": "Уточнён контекст и разведены варианты, чтобы правильный ответ был единственным.",
+      "verification": "ok"
+    },
+    {
+      "id": "q2",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q3",
+      "decision": "fixed",
+      "note": "Уточнён контекст и разведены варианты, чтобы правильный ответ был единственным.",
+      "verification": "ok"
+    },
+    {
+      "id": "q4",
+      "decision": "fixed",
+      "note": "Уточнён контекст и разведены варианты, чтобы правильный ответ был единственным.",
+      "verification": "ok"
+    },
+    {
+      "id": "q5",
+      "decision": "fixed",
+      "note": "Исправлена неестественная испанская или смешанная формулировка.",
+      "verification": "ok"
+    },
+    {
+      "id": "q6",
+      "decision": "fixed",
+      "note": "Уточнён контекст и разведены варианты, чтобы правильный ответ был единственным.",
+      "verification": "ok"
+    },
+    {
+      "id": "q7",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q8",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q9",
+      "decision": "fixed",
+      "note": "Уточнён контекст и разведены варианты, чтобы правильный ответ был единственным.",
+      "verification": "ok"
+    },
+    {
+      "id": "q10",
+      "decision": "fixed",
+      "note": "Уточнён контекст и разведены варианты, чтобы правильный ответ был единственным.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    }
+  ],
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+}

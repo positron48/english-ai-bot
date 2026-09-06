@@ -1,0 +1,536 @@
+{
+  "_sources": {
+    "jehle_csv": "resources/verbs/jehle_verb_database.csv",
+    "sha256": "f77f01d536cd351584051d76902ff8051ab1b945a38e69c7ed02da78ab082ea8"
+  },
+  "_slots": [
+    "1:singular",
+    "2:singular",
+    "3:singular",
+    "1:plural",
+    "2:plural",
+    "3:plural"
+  ],
+  "forms": {
+    "vender": {
+      "es.presente.indicativo": [
+        "vendo",
+        "vendes",
+        "vende",
+        "vendemos",
+        "vendéis",
+        "venden"
+      ],
+      "es.preterito_imperfecto.indicativo": [
+        "vendía",
+        "vendías",
+        "vendía",
+        "vendíamos",
+        "vendíais",
+        "vendían"
+      ],
+      "es.preterito_indefinido.indicativo": [
+        "vendí",
+        "vendiste",
+        "vendió",
+        "vendimos",
+        "vendisteis",
+        "vendieron"
+      ],
+      "es.futuro_simple.indicativo": [
+        "venderé",
+        "venderás",
+        "venderá",
+        "venderemos",
+        "venderéis",
+        "venderán"
+      ],
+      "es.condicional_simple.indicativo": [
+        "vendería",
+        "venderías",
+        "vendería",
+        "venderíamos",
+        "venderíais",
+        "venderían"
+      ],
+      "es.preterito_perfecto_compuesto.indicativo": [
+        "he vendido",
+        "has vendido",
+        "ha vendido",
+        "hemos vendido",
+        "habéis vendido",
+        "han vendido"
+      ],
+      "es.preterito_pluscuamperfecto.indicativo": [
+        "había vendido",
+        "habías vendido",
+        "había vendido",
+        "habíamos vendido",
+        "habíais vendido",
+        "habían vendido"
+      ],
+      "es.preterito_anterior.indicativo": [
+        "hube vendido",
+        "hubiste vendido",
+        "hubo vendido",
+        "hubimos vendido",
+        "hubisteis vendido",
+        "hubieron vendido"
+      ],
+      "es.futuro_perfecto.indicativo": [
+        "habré vendido",
+        "habrás vendido",
+        "habrá vendido",
+        "habremos vendido",
+        "habréis vendido",
+        "habrán vendido"
+      ],
+      "es.condicional_perfecto.indicativo": [
+        "habría vendido",
+        "habrías vendido",
+        "habría vendido",
+        "habríamos vendido",
+        "habríais vendido",
+        "habrían vendido"
+      ],
+      "es.presente.subjuntivo": [
+        "venda",
+        "vendas",
+        "venda",
+        "vendamos",
+        "vendáis",
+        "vendan"
+      ],
+      "es.preterito_imperfecto.subjuntivo": [
+        "vendiera",
+        "vendieras",
+        "vendiera",
+        "vendiéramos",
+        "vendierais",
+        "vendieran"
+      ],
+      "es.futuro_simple.subjuntivo": [
+        "vendiere",
+        "vendieres",
+        "vendiere",
+        "vendiéremos",
+        "vendiereis",
+        "vendieren"
+      ],
+      "es.preterito_perfecto.subjuntivo": [
+        "haya vendido",
+        "hayas vendido",
+        "haya vendido",
+        "hayamos vendido",
+        "hayáis vendido",
+        "hayan vendido"
+      ],
+      "es.preterito_pluscuamperfecto.subjuntivo": [
+        "hubiera vendido",
+        "hubieras vendido",
+        "hubiera vendido",
+        "hubiéramos vendido",
+        "hubierais vendido",
+        "hubieran vendido"
+      ],
+      "es.futuro_perfecto.subjuntivo": [
+        "hubiere vendido",
+        "hubieres vendido",
+        "hubiere vendido",
+        "hubiéremos vendido",
+        "hubiereis vendido",
+        "hubieren vendido"
+      ]
+    },
+    "venir": {
+      "es.presente.indicativo": [
+        "vengo",
+        "vienes",
+        "viene",
+        "venimos",
+        "venís",
+        "vienen"
+      ],
+      "es.preterito_imperfecto.indicativo": [
+        "venía",
+        "venías",
+        "venía",
+        "veníamos",
+        "veníais",
+        "venían"
+      ],
+      "es.preterito_indefinido.indicativo": [
+        "vine",
+        "viniste",
+        "vino",
+        "vinimos",
+        "vinisteis",
+        "vinieron"
+      ],
+      "es.futuro_simple.indicativo": [
+        "vendré",
+        "vendrás",
+        "vendrá",
+        "vendremos",
+        "vendréis",
+        "vendrán"
+      ],
+      "es.condicional_simple.indicativo": [
+        "vendría",
+        "vendrías",
+        "vendría",
+        "vendríamos",
+        "vendríais",
+        "vendrían"
+      ],
+      "es.preterito_perfecto_compuesto.indicativo": [
+        "he venido",
+        "has venido",
+        "ha venido",
+        "hemos venido",
+        "habéis venido",
+        "han venido"
+      ],
+      "es.preterito_pluscuamperfecto.indicativo": [
+        "había venido",
+        "habías venido",
+        "había venido",
+        "habíamos venido",
+        "habíais venido",
+        "habían venido"
+      ],
+      "es.preterito_anterior.indicativo": [
+        "hube venido",
+        "hubiste venido",
+        "hubo venido",
+        "hubimos venido",
+        "hubisteis venido",
+        "hubieron venido"
+      ],
+      "es.futuro_perfecto.indicativo": [
+        "habré venido",
+        "habrás venido",
+        "habrá venido",
+        "habremos venido",
+        "habréis venido",
+        "habrán venido"
+      ],
+      "es.condicional_perfecto.indicativo": [
+        "habría venido",
+        "habrías venido",
+        "habría venido",
+        "habríamos venido",
+        "habríais venido",
+        "habrían venido"
+      ],
+      "es.presente.subjuntivo": [
+        "venga",
+        "vengas",
+        "venga",
+        "vengamos",
+        "vengáis",
+        "vengan"
+      ],
+      "es.preterito_imperfecto.subjuntivo": [
+        "viniera",
+        "vinieras",
+        "viniera",
+        "viniéramos",
+        "vinierais",
+        "vinieran"
+      ],
+      "es.futuro_simple.subjuntivo": [
+        "viniere",
+        "vinieres",
+        "viniere",
+        "viniéremos",
+        "viniereis",
+        "vinieren"
+      ],
+      "es.preterito_perfecto.subjuntivo": [
+        "haya venido",
+        "hayas venido",
+        "haya venido",
+        "hayamos venido",
+        "hayáis venido",
+        "hayan venido"
+      ],
+      "es.preterito_pluscuamperfecto.subjuntivo": [
+        "hubiera venido",
+        "hubieras venido",
+        "hubiera venido",
+        "hubiéramos venido",
+        "hubierais venido",
+        "hubieran venido"
+      ],
+      "es.futuro_perfecto.subjuntivo": [
+        "hubiere venido",
+        "hubieres venido",
+        "hubiere venido",
+        "hubiéremos venido",
+        "hubiereis venido",
+        "hubieren venido"
+      ]
+    },
+    "ver": {
+      "es.presente.indicativo": [
+        "veo",
+        "ves",
+        "ve",
+        "vemos",
+        "veis",
+        "ven"
+      ],
+      "es.preterito_imperfecto.indicativo": [
+        "veía",
+        "veías",
+        "veía",
+        "veíamos",
+        "veíais",
+        "veían"
+      ],
+      "es.preterito_indefinido.indicativo": [
+        "vi",
+        "viste",
+        "vio",
+        "vimos",
+        "visteis",
+        "vieron"
+      ],
+      "es.futuro_simple.indicativo": [
+        "veré",
+        "verás",
+        "verá",
+        "veremos",
+        "veréis",
+        "verán"
+      ],
+      "es.condicional_simple.indicativo": [
+        "vería",
+        "verías",
+        "vería",
+        "veríamos",
+        "veríais",
+        "verían"
+      ],
+      "es.preterito_perfecto_compuesto.indicativo": [
+        "he visto",
+        "has visto",
+        "ha visto",
+        "hemos visto",
+        "habéis visto",
+        "han visto"
+      ],
+      "es.preterito_pluscuamperfecto.indicativo": [
+        "había visto",
+        "habías visto",
+        "había visto",
+        "habíamos visto",
+        "habíais visto",
+        "habían visto"
+      ],
+      "es.preterito_anterior.indicativo": [
+        "hube visto",
+        "hubiste visto",
+        "hubo visto",
+        "hubimos visto",
+        "hubisteis visto",
+        "hubieron visto"
+      ],
+      "es.futuro_perfecto.indicativo": [
+        "habré visto",
+        "habrás visto",
+        "habrá visto",
+        "habremos visto",
+        "habréis visto",
+        "habrán visto"
+      ],
+      "es.condicional_perfecto.indicativo": [
+        "habría visto",
+        "habrías visto",
+        "habría visto",
+        "habríamos visto",
+        "habríais visto",
+        "habrían visto"
+      ],
+      "es.presente.subjuntivo": [
+        "vea",
+        "veas",
+        "vea",
+        "veamos",
+        "veáis",
+        "vean"
+      ],
+      "es.preterito_imperfecto.subjuntivo": [
+        "viera",
+        "vieras",
+        "viera",
+        "viéramos",
+        "vierais",
+        "vieran"
+      ],
+      "es.futuro_simple.subjuntivo": [
+        "viere",
+        "vieres",
+        "viere",
+        "viéremos",
+        "viereis",
+        "vieren"
+      ],
+      "es.preterito_perfecto.subjuntivo": [
+        "haya visto",
+        "hayas visto",
+        "haya visto",
+        "hayamos visto",
+        "hayáis visto",
+        "hayan visto"
+      ],
+      "es.preterito_pluscuamperfecto.subjuntivo": [
+        "hubiera visto",
+        "hubieras visto",
+        "hubiera visto",
+        "hubiéramos visto",
+        "hubierais visto",
+        "hubieran visto"
+      ],
+      "es.futuro_perfecto.subjuntivo": [
+        "hubiere visto",
+        "hubieres visto",
+        "hubiere visto",
+        "hubiéremos visto",
+        "hubiereis visto",
+        "hubieren visto"
+      ]
+    },
+    "verificar": {
+      "es.presente.indicativo": [
+        "verifico",
+        "verificas",
+        "verifica",
+        "verificamos",
+        "verificáis",
+        "verifican"
+      ],
+      "es.preterito_imperfecto.indicativo": [
+        "verificaba",
+        "verificabas",
+        "verificaba",
+        "verificábamos",
+        "verificabais",
+        "verificaban"
+      ],
+      "es.preterito_indefinido.indicativo": [
+        "verifiqué",
+        "verificaste",
+        "verificó",
+        "verificamos",
+        "verificasteis",
+        "verificaron"
+      ],
+      "es.futuro_simple.indicativo": [
+        "verificaré",
+        "verificarás",
+        "verificará",
+        "verificaremos",
+        "verificaréis",
+        "verificarán"
+      ],
+      "es.condicional_simple.indicativo": [
+        "verificaría",
+        "verificarías",
+        "verificaría",
+        "verificaríamos",
+        "verificaríais",
+        "verificarían"
+      ],
+      "es.preterito_perfecto_compuesto.indicativo": [
+        "he verificado",
+        "has verificado",
+        "ha verificado",
+        "hemos verificado",
+        "habéis verificado",
+        "han verificado"
+      ],
+      "es.preterito_pluscuamperfecto.indicativo": [
+        "había verificado",
+        "habías verificado",
+        "había verificado",
+        "habíamos verificado",
+        "habíais verificado",
+        "habían verificado"
+      ],
+      "es.preterito_anterior.indicativo": [
+        "hube verificado",
+        "hubiste verificado",
+        "hubo verificado",
+        "hubimos verificado",
+        "hubisteis verificado",
+        "hubieron verificado"
+      ],
+      "es.futuro_perfecto.indicativo": [
+        "habré verificado",
+        "habrás verificado",
+        "habrá verificado",
+        "habremos verificado",
+        "habréis verificado",
+        "habrán verificado"
+      ],
+      "es.condicional_perfecto.indicativo": [
+        "habría verificado",
+        "habrías verificado",
+        "habría verificado",
+        "habríamos verificado",
+        "habríais verificado",
+        "habrían verificado"
+      ],
+      "es.presente.subjuntivo": [
+        "verifique",
+        "verifiques",
+        "verifique",
+        "verifiquemos",
+        "verifiquéis",
+        "verifiquen"
+      ],
+      "es.preterito_imperfecto.subjuntivo": [
+        "verificara",
+        "verificaras",
+        "verificara",
+        "verificáramos",
+        "verificarais",
+        "verificaran"
+      ],
+      "es.futuro_simple.subjuntivo": [
+        "verificare",
+        "verificares",
+        "verificare",
+        "verificáremos",
+        "verificareis",
+        "verificaren"
+      ],
+      "es.preterito_perfecto.subjuntivo": [
+        "haya verificado",
+        "hayas verificado",
+        "haya verificado",
+        "hayamos verificado",
+        "hayáis verificado",
+        "hayan verificado"
+      ],
+      "es.preterito_pluscuamperfecto.subjuntivo": [
+        "hubiera verificado",
+        "hubieras verificado",
+        "hubiera verificado",
+        "hubiéramos verificado",
+        "hubierais verificado",
+        "hubieran verificado"
+      ],
+      "es.futuro_perfecto.subjuntivo": [
+        "hubiere verificado",
+        "hubieres verificado",
+        "hubiere verificado",
+        "hubiéremos verificado",
+        "hubiereis verificado",
+        "hubieren verificado"
+      ]
+    }
+  }
+}

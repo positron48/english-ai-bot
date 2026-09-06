@@ -1,0 +1,138 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/chapters/019/es.02.b2_theory_adjective_agreement_gender_number.questions.json",
+  "source_sha256": "bec6ca418c6d1accc19c7dab115b93214e1d7397f212987de31296648d9474ef",
+  "context_sha256": "92337289bbbf9345f944db9386816b6ec6d595e90ea3c0a63bdbe1f6a85672f8",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
+  "reviewed_at": "2026-09-04T13:47:41.230626+00:00",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
+  "questions": [
+    {
+      "id": "q1",
+      "decision": "fixed",
+      "note": "Исправлено требование выбрать окончание вместо полного слова или уточнена форма конкретного прилагательного без ложного общего правила.",
+      "verification": "ok"
+    },
+    {
+      "id": "q2",
+      "decision": "fixed",
+      "note": "Исправлено требование выбрать окончание вместо полного слова или уточнена форма конкретного прилагательного без ложного общего правила.",
+      "verification": "ok"
+    },
+    {
+      "id": "q3",
+      "decision": "fixed",
+      "note": "Исправлено требование выбрать окончание вместо полного слова или уточнена форма конкретного прилагательного без ложного общего правила.",
+      "verification": "ok"
+    },
+    {
+      "id": "q4",
+      "decision": "fixed",
+      "note": "Исправлено требование выбрать окончание вместо полного слова или уточнена форма конкретного прилагательного без ложного общего правила.",
+      "verification": "ok"
+    },
+    {
+      "id": "q5",
+      "decision": "fixed",
+      "note": "Исправлено требование выбрать окончание вместо полного слова или уточнена форма конкретного прилагательного без ложного общего правила.",
+      "verification": "ok"
+    },
+    {
+      "id": "q6",
+      "decision": "fixed",
+      "note": "Исправлено требование выбрать окончание вместо полного слова или уточнена форма конкретного прилагательного без ложного общего правила.",
+      "verification": "ok"
+    },
+    {
+      "id": "q7",
+      "decision": "fixed",
+      "note": "Исправлено требование выбрать окончание вместо полного слова или уточнена форма конкретного прилагательного без ложного общего правила.",
+      "verification": "ok"
+    },
+    {
+      "id": "q8",
+      "decision": "fixed",
+      "note": "Исправлено требование выбрать окончание вместо полного слова или уточнена форма конкретного прилагательного без ложного общего правила.",
+      "verification": "ok"
+    },
+    {
+      "id": "q9",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q10",
+      "decision": "fixed",
+      "note": "Исправлено требование выбрать окончание вместо полного слова или уточнена форма конкретного прилагательного без ложного общего правила.",
+      "verification": "ok"
+    },
+    {
+      "id": "q11",
+      "decision": "fixed",
+      "note": "Убрано абсолютное правило для всех прилагательных на -e.",
+      "verification": "ok"
+    },
+    {
+      "id": "q12",
+      "decision": "fixed",
+      "note": "Рабочие/трудолюбивые trabajadores ошибочно объяснялись окончанием -os вместо добавления -es.",
+      "verification": "ok"
+    },
+    {
+      "id": "q13",
+      "decision": "fixed",
+      "note": "Убраны служебная вставка и абсолютное правило всех прилагательных на -e.",
+      "verification": "ok"
+    },
+    {
+      "id": "q14",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q15",
+      "decision": "fixed",
+      "note": "Готовый ответ работadora удалён из условия.",
+      "verification": "ok"
+    },
+    {
+      "id": "q16",
+      "decision": "fixed",
+      "note": "Готовый ответ inteligentes удалён из условия; уточнено добавление -s.",
+      "verification": "ok"
+    },
+    {
+      "id": "q17",
+      "decision": "fixed",
+      "note": "Задан конкретный перенос на женский род, правило ограничено inteligente.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-04-es017-020/check.py",
+      "result": "pass",
+      "evidence": "All 561 IDs/contracts, question decisions versus baseline, fingerprints, native training validation, signatures and source-final-embedded equality; validation.log."
+    },
+    {
+      "command": "go test ./internal/grammarbundle ./internal/repository -run 'TestValidateEmbeddedBundleID|TestGrammar.*Bundle|TestGrammar.*Reorder' -count=1",
+      "result": "pass",
+      "evidence": "Both packages passed after integration of all four chapters; go-tests.log."
+    },
+    {
+      "command": "git diff --check; git -C courses/spanish-grammar diff --check; git -C courses/english-grammar diff --check",
+      "result": "pass",
+      "evidence": "Three separately executed commands exit 0; diff-check.log. All 484 earlier dirty files outside review docs preserved; preservation.log."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    }
+  ],
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+}

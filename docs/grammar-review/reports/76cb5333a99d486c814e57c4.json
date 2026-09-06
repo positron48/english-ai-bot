@@ -1,0 +1,652 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/saltar.json",
+  "source_sha256": "bde8099cc45161219a3694cec8a9464ba8a46b0d8b8d4dbe6f6f4330cf7b6973",
+  "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197",
+  "editor": "Aristotle editor 2026-09-06",
+  "verifier": "Helmholtz verifier 2026-09-06",
+  "phase": "done",
+  "reviewed_at": "2026-09-06",
+  "verified_at": "2026-09-06",
+  "questions": [
+    {
+      "id": "es.presente.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.presente.indicativo, 1:singular. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.presente.indicativo, 2:singular. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.presente.indicativo, 3:singular. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.presente.indicativo, 1:plural. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.presente.indicativo, 2:plural. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.presente.indicativo, 3:plural. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_imperfecto.indicativo, 1:singular. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_imperfecto.indicativo, 2:singular. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_imperfecto.indicativo, 3:singular. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_imperfecto.indicativo, 1:plural. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_imperfecto.indicativo, 2:plural. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_imperfecto.indicativo, 3:plural. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_indefinido.indicativo, 1:singular. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_indefinido.indicativo, 2:singular. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_indefinido.indicativo, 3:singular. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_indefinido.indicativo, 1:plural. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_indefinido.indicativo, 2:plural. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_indefinido.indicativo, 3:plural. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.futuro_simple.indicativo, 1:singular. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.futuro_simple.indicativo, 2:singular. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.futuro_simple.indicativo, 3:singular. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.futuro_simple.indicativo, 1:plural. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.futuro_simple.indicativo, 2:plural. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.futuro_simple.indicativo, 3:plural. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope. Финальная семантическая вычитка дополнительно уточнила точку отсчёта, причинную связь, субъект или естественную сочетаемость.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.condicional_simple.indicativo, 1:singular. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.condicional_simple.indicativo, 2:singular. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.condicional_simple.indicativo, 3:singular. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.condicional_simple.indicativo, 1:plural. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.condicional_simple.indicativo, 2:plural. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.condicional_simple.indicativo, 3:plural. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_perfecto_compuesto.indicativo, 1:singular. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_perfecto_compuesto.indicativo, 2:singular. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_perfecto_compuesto.indicativo, 3:singular. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_perfecto_compuesto.indicativo, 1:plural. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_perfecto_compuesto.indicativo, 2:plural. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_perfecto_compuesto.indicativo, 3:plural. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_pluscuamperfecto.indicativo, 1:singular. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_pluscuamperfecto.indicativo, 2:singular. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_pluscuamperfecto.indicativo, 3:singular. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_pluscuamperfecto.indicativo, 1:plural. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_pluscuamperfecto.indicativo, 2:plural. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_pluscuamperfecto.indicativo, 3:plural. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope. Финальная семантическая вычитка дополнительно уточнила точку отсчёта, причинную связь, субъект или естественную сочетаемость.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_anterior.indicativo, 1:singular. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_anterior.indicativo, 2:singular. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_anterior.indicativo, 3:singular. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_anterior.indicativo, 1:plural. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope. Финальная семантическая вычитка дополнительно уточнила точку отсчёта, причинную связь, субъект или естественную сочетаемость.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_anterior.indicativo, 2:plural. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_anterior.indicativo, 3:plural. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope. После независимой проверки уточнены причинно-временная связь и субъект действия либо временной ориентир будущего совершённого действия; юридический RU передаёт невыполнение требования.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.futuro_perfecto.indicativo, 1:singular. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.futuro_perfecto.indicativo, 2:singular. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope. После независимой проверки уточнены причинно-временная связь и субъект действия либо временной ориентир будущего совершённого действия; юридический RU передаёт невыполнение требования.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.futuro_perfecto.indicativo, 3:singular. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.futuro_perfecto.indicativo, 1:plural. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope. После независимой проверки уточнены причинно-временная связь и субъект действия либо временной ориентир будущего совершённого действия; юридический RU передаёт невыполнение требования.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.futuro_perfecto.indicativo, 2:plural. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.futuro_perfecto.indicativo, 3:plural. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.condicional_perfecto.indicativo, 1:singular. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.condicional_perfecto.indicativo, 2:singular. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.condicional_perfecto.indicativo, 3:singular. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.condicional_perfecto.indicativo, 1:plural. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.condicional_perfecto.indicativo, 2:plural. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.condicional_perfecto.indicativo, 3:plural. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.presente.subjuntivo, 1:singular. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.presente.subjuntivo, 2:singular. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.presente.subjuntivo, 3:singular. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.presente.subjuntivo, 1:plural. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.presente.subjuntivo, 2:plural. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.presente.subjuntivo, 3:plural. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope. Финальная семантическая вычитка дополнительно уточнила точку отсчёта, причинную связь, субъект или естественную сочетаемость.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_imperfecto.subjuntivo, 1:singular. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_imperfecto.subjuntivo, 2:singular. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_imperfecto.subjuntivo, 3:singular. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_imperfecto.subjuntivo, 1:plural. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_imperfecto.subjuntivo, 2:plural. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_imperfecto.subjuntivo, 3:plural. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.futuro_simple.subjuntivo, 1:singular. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.futuro_simple.subjuntivo, 2:singular. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope. Финальная семантическая вычитка дополнительно уточнила точку отсчёта, причинную связь, субъект или естественную сочетаемость.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.futuro_simple.subjuntivo, 3:singular. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.futuro_simple.subjuntivo, 1:plural. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope. Финальная семантическая вычитка дополнительно уточнила точку отсчёта, причинную связь, субъект или естественную сочетаемость.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.futuro_simple.subjuntivo, 2:plural. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.futuro_simple.subjuntivo, 3:plural. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope. После независимой проверки уточнены причинно-временная связь и субъект действия либо временной ориентир будущего совершённого действия; юридический RU передаёт невыполнение требования.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_perfecto.subjuntivo, 1:singular. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_perfecto.subjuntivo, 2:singular. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_perfecto.subjuntivo, 3:singular. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_perfecto.subjuntivo, 1:plural. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_perfecto.subjuntivo, 2:plural. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_perfecto.subjuntivo, 3:plural. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_pluscuamperfecto.subjuntivo, 1:singular. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_pluscuamperfecto.subjuntivo, 2:singular. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_pluscuamperfecto.subjuntivo, 3:singular. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_pluscuamperfecto.subjuntivo, 1:plural. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope. Финальная семантическая вычитка дополнительно уточнила точку отсчёта, причинную связь, субъект или естественную сочетаемость.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_pluscuamperfecto.subjuntivo, 2:plural. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_pluscuamperfecto.subjuntivo, 3:plural. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.futuro_perfecto.subjuntivo, 1:singular. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.futuro_perfecto.subjuntivo, 2:singular. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.futuro_perfecto.subjuntivo, 3:singular. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope. Финальная семантическая вычитка дополнительно уточнила точку отсчёта, причинную связь, субъект или естественную сочетаемость.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.futuro_perfecto.subjuntivo, 1:plural. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope. Финальная семантическая вычитка дополнительно уточнила точку отсчёта, причинную связь, субъект или естественную сочетаемость.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.futuro_perfecto.subjuntivo, 2:plural. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.futuro_perfecto.subjuntivo, 3:plural. Форма сверена с локальной Jehle; значения saltar/saltarse и клитика вне blank выверены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 /tmp/validate_saltar.py",
+      "result": "pass",
+      "evidence": "96/96 cards match Jehle; metadata, preserved contracts, one blank, clitics outside blank, ES/RU meaning and four unique same-scope options passed."
+    },
+    {
+      "command": "semantic full read with answer substitution: saltar 96/96",
+      "result": "pass",
+      "evidence": "All 96 final contexts read after substitution; jump/leap, jump over, omit and saltarse meanings distinguished; rare registers and explicit De haberlo sabido translations checked."
+    },
+    {
+      "command": "go test ./internal/grammartrainingpack",
+      "result": "pass",
+      "evidence": "Embedded grammar training pack tests passed."
+    },
+    {
+      "command": "cmp source embedded; python3 scripts/grammar-review.py check --source courses/spanish-grammar/training_pack/verb_forms/lemmas/saltar.json; git diff --check -- assigned paths",
+      "result": "pass",
+      "evidence": "Source and embedded byte-identical; fresh fingerprints; report awaits independent verification; whitespace checks passed."
+    },
+    {
+      "command": "python3 /tmp/verify_saltar_refinement.py; cmp source embedded; grammar-review.py check --source .../saltar.json",
+      "result": "pass",
+      "evidence": "Four verifier-returned cards updated exactly; answer substitution, Jehle forms, one blank, reflexive clitics outside blank, ES/RU alignment, identity/order and source=embedded rechecked. Report fingerprint refreshed; 96 verification rows reset to pending for independent recheck."
+    },
+    {
+      "command": "targeted four-card recheck; reverse exact replacements to prior fingerprint; PYTHONDONTWRITEBYTECODE=1 python3 /tmp/verify_saltar.py",
+      "result": "pass",
+      "evidence": "Four corrected cards are natural and semantically exact. Reversing only their requested text replacements reconstructs prior verified fingerprint 759c2deb067def7c32bb7964340c45c1e58b31a5344bf9297b2f4bb76072903c, proving the other 92 cards are unchanged. Current source fingerprint bde8099cc45161219a3694cec8a9464ba8a46b0d8b8d4dbe6f6f4330cf7b6973 matches the report; source=embedded and full structural checks pass."
+    },
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-06-es-verbs-salir-seguir/check.py",
+      "result": "pass",
+      "evidence": "All 384 cards pass exact Jehle forms, preserved contracts and order, one blank, four unique same-scope options with one answer, current report fingerprints, distinct editors/verifiers, 384 verification ok, and 24 primary checkpoints."
+    },
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-06-es-verbs-salir-seguir/preservation-check.py",
+      "result": "pass",
+      "evidence": "Preservation snapshot confirms 25542 files outside the allowed paths unchanged, with 0 changed, 0 missing, and 0 unexpected new files."
+    },
+    {
+      "command": "validate_artifact() for salir, saltar, salvar, seguir",
+      "result": "pass",
+      "evidence": "The generator native strict validator accepted all four final 96-card artifacts."
+    },
+    {
+      "command": "go test ./internal/verbtraining ./cmd/sync_verb_training_json",
+      "result": "pass",
+      "evidence": "Verb training and JSON synchronization package tests passed."
+    },
+    {
+      "command": "python3 scripts/grammar_review_test.py; git diff --check; git -C courses/spanish-grammar diff --check",
+      "result": "pass",
+      "evidence": "All 13 grammar-review tests and both root/submodule whitespace checks passed."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py check --source <each assigned lemma>; quick_validate.py linglow-grammar-review",
+      "result": "pass",
+      "evidence": "All four sources report done with 96 questions each; the reusable review skill validates successfully."
+    }
+  ],
+  "verification_note": "Независимо прочитаны 96/96 карточек saltar с подстановкой ответа. После редакторских исправлений повторно проверены четыре замечания: восстановлено согласование субъектности в pretérito anterior, заданы самостоятельные временные ориентиры в двух futuro perfecto, а юридический перевод futuro de subjuntivo стал естественным и сохраняет условное будущее значение. Побайтовая реконструкция предыдущей проверенной версии подтвердила, что остальные 92 карточки не менялись. Формы Jehle, saltar/saltarse, ES/RU смысл, редкие регистры, metadata и варианты приняты."
+}

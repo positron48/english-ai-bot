@@ -1,0 +1,144 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/chapters/018/es.05.b5_theory_word_order_question_word_plus_ser.questions.json",
+  "source_sha256": "e3d3c822b72e9f0628c3588d7ed8a670b813c3661dd246bed2ab198e53eb4f8a",
+  "context_sha256": "602bb79ab3c4134579eb697f137d8bdcad40e82fc56bc00e8f3ff945c395bdb0",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
+  "reviewed_at": "2026-09-04T13:39:02.148880+00:00",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
+  "questions": [
+    {
+      "id": "q1",
+      "decision": "fixed",
+      "note": "Задан конкретный смысл/порядок вопроса; согласование ser объясняется подлежащим, а не механическим правилом после вопросительного слова.",
+      "verification": "ok"
+    },
+    {
+      "id": "q2",
+      "decision": "fixed",
+      "note": "Ошибочное «после cuál используется cuáles» заменено образованием множественного числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "q3",
+      "decision": "fixed",
+      "note": "Задан конкретный смысл/порядок вопроса; согласование ser объясняется подлежащим, а не механическим правилом после вопросительного слова.",
+      "verification": "ok"
+    },
+    {
+      "id": "q4",
+      "decision": "fixed",
+      "note": "Задан конкретный смысл/порядок вопроса; согласование ser объясняется подлежащим, а не механическим правилом после вопросительного слова.",
+      "verification": "ok"
+    },
+    {
+      "id": "q5",
+      "decision": "fixed",
+      "note": "Удалена ссылка на букву ответа.",
+      "verification": "ok"
+    },
+    {
+      "id": "q6",
+      "decision": "fixed",
+      "note": "Задан конкретный смысл/порядок вопроса; согласование ser объясняется подлежащим, а не механическим правилом после вопросительного слова.",
+      "verification": "ok"
+    },
+    {
+      "id": "q7",
+      "decision": "fixed",
+      "note": "Задан конкретный смысл/порядок вопроса; согласование ser объясняется подлежащим, а не механическим правилом после вопросительного слова.",
+      "verification": "ok"
+    },
+    {
+      "id": "q8",
+      "decision": "fixed",
+      "note": "Два ошибочных варианта одновременно; один заменён нормативным множественным числом.",
+      "verification": "ok"
+    },
+    {
+      "id": "q9",
+      "decision": "fixed",
+      "note": "Задан конкретный смысл/порядок вопроса; согласование ser объясняется подлежащим, а не механическим правилом после вопросительного слова.",
+      "verification": "ok"
+    },
+    {
+      "id": "q10",
+      "decision": "fixed",
+      "note": "Задан конкретный смысл/порядок вопроса; согласование ser объясняется подлежащим, а не механическим правилом после вопросительного слова.",
+      "verification": "ok"
+    },
+    {
+      "id": "q11",
+      "decision": "fixed",
+      "note": "Задан конкретный смысл/порядок вопроса; согласование ser объясняется подлежащим, а не механическим правилом после вопросительного слова.",
+      "verification": "ok"
+    },
+    {
+      "id": "q12",
+      "decision": "fixed",
+      "note": "Задан конкретный смысл/порядок вопроса; согласование ser объясняется подлежащим, а не механическим правилом после вопросительного слова.",
+      "verification": "ok"
+    },
+    {
+      "id": "q13",
+      "decision": "fixed",
+      "note": "Задан конкретный смысл/порядок вопроса; согласование ser объясняется подлежащим, а не механическим правилом после вопросительного слова.",
+      "verification": "ok"
+    },
+    {
+      "id": "q14",
+      "decision": "fixed",
+      "note": "Задан конкретный смысл/порядок вопроса; согласование ser объясняется подлежащим, а не механическим правилом после вопросительного слова.",
+      "verification": "ok"
+    },
+    {
+      "id": "q15",
+      "decision": "fixed",
+      "note": "Задан конкретный смысл/порядок вопроса; согласование ser объясняется подлежащим, а не механическим правилом после вопросительного слова.",
+      "verification": "ok"
+    },
+    {
+      "id": "q16",
+      "decision": "fixed",
+      "note": "Задан конкретный смысл/порядок вопроса; согласование ser объясняется подлежащим, а не механическим правилом после вопросительного слова.",
+      "verification": "ok"
+    },
+    {
+      "id": "q17",
+      "decision": "fixed",
+      "note": "Задан конкретный смысл/порядок вопроса; согласование ser объясняется подлежащим, а не механическим правилом после вопросительного слова.",
+      "verification": "ok"
+    },
+    {
+      "id": "q18",
+      "decision": "fixed",
+      "note": "Задан конкретный смысл/порядок вопроса; согласование ser объясняется подлежащим, а не механическим правилом после вопросительного слова.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-04-es017-020/check.py",
+      "result": "pass",
+      "evidence": "All 561 IDs/contracts, question decisions versus baseline, fingerprints, native training validation, signatures and source-final-embedded equality; validation.log."
+    },
+    {
+      "command": "go test ./internal/grammarbundle ./internal/repository -run 'TestValidateEmbeddedBundleID|TestGrammar.*Bundle|TestGrammar.*Reorder' -count=1",
+      "result": "pass",
+      "evidence": "Both packages passed after integration of all four chapters; go-tests.log."
+    },
+    {
+      "command": "git diff --check; git -C courses/spanish-grammar diff --check; git -C courses/english-grammar diff --check",
+      "result": "pass",
+      "evidence": "Three separately executed commands exit 0; diff-check.log. All 484 earlier dirty files outside review docs preserved; preservation.log."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    }
+  ],
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+}

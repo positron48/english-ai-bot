@@ -1,0 +1,652 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/sentar.json",
+  "source_sha256": "abbe74639a0a897f7c360a64a35a8c3a40c0af209fc0cd419ac27a9d065d04a5",
+  "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197",
+  "editor": "Helmholtz editor 2026-09-06",
+  "verifier": "Codex coordinator verifier 2026-09-06",
+  "phase": "done",
+  "reviewed_at": "2026-09-06",
+  "verified_at": "2026-09-06",
+  "questions": [
+    {
+      "id": "es.presente.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.presente.indicativo:1:singular: форма Jehle «siento», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.presente.indicativo:2:singular: форма Jehle «sientas», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.presente.indicativo:3:singular: форма Jehle «sienta», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.presente.indicativo:1:plural: форма Jehle «sentamos», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.presente.indicativo:2:plural: форма Jehle «sentáis», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.presente.indicativo:3:plural: форма Jehle «sientan», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_imperfecto.indicativo:1:singular: форма Jehle «sentaba», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_imperfecto.indicativo:2:singular: форма Jehle «sentabas», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_imperfecto.indicativo:3:singular: форма Jehle «sentaba», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_imperfecto.indicativo:1:plural: форма Jehle «sentábamos», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_imperfecto.indicativo:2:plural: форма Jehle «sentabais», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_imperfecto.indicativo:3:plural: форма Jehle «sentaban», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_indefinido.indicativo:1:singular: форма Jehle «senté», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_indefinido.indicativo:2:singular: форма Jehle «sentaste», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_indefinido.indicativo:3:singular: форма Jehle «sentó», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_indefinido.indicativo:1:plural: форма Jehle «sentamos», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_indefinido.indicativo:2:plural: форма Jehle «sentasteis», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_indefinido.indicativo:3:plural: форма Jehle «sentaron», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.futuro_simple.indicativo:1:singular: форма Jehle «sentaré», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.futuro_simple.indicativo:2:singular: форма Jehle «sentarás», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.futuro_simple.indicativo:3:singular: форма Jehle «sentará», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ. При итоговом чтении дополнительно уточнена естественность ES/RU формулировки. После независимой проверки уточнён RU: «После поездки лёгкий суп хорошо тебе подойдёт.» → «После поездки лёгкий суп не вызовет у тебя недомогания.».",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.futuro_simple.indicativo:1:plural: форма Jehle «sentaremos», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.futuro_simple.indicativo:2:plural: форма Jehle «sentaréis», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.futuro_simple.indicativo:3:plural: форма Jehle «sentarán», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.condicional_simple.indicativo:1:singular: форма Jehle «sentaría», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.condicional_simple.indicativo:2:singular: форма Jehle «sentarías», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.condicional_simple.indicativo:3:singular: форма Jehle «sentaría», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.condicional_simple.indicativo:1:plural: форма Jehle «sentaríamos», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ. При итоговом чтении дополнительно уточнена естественность ES/RU формулировки.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.condicional_simple.indicativo:2:plural: форма Jehle «sentaríais», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.condicional_simple.indicativo:3:plural: форма Jehle «sentarían», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_perfecto_compuesto.indicativo:1:singular: форма Jehle «he sentado», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_perfecto_compuesto.indicativo:2:singular: форма Jehle «has sentado», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_perfecto_compuesto.indicativo:3:singular: форма Jehle «ha sentado», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_perfecto_compuesto.indicativo:1:plural: форма Jehle «hemos sentado», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_perfecto_compuesto.indicativo:2:plural: форма Jehle «habéis sentado», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_perfecto_compuesto.indicativo:3:plural: форма Jehle «han sentado», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_pluscuamperfecto.indicativo:1:singular: форма Jehle «había sentado», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_pluscuamperfecto.indicativo:2:singular: форма Jehle «habías sentado», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_pluscuamperfecto.indicativo:3:singular: форма Jehle «había sentado», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_pluscuamperfecto.indicativo:1:plural: форма Jehle «habíamos sentado», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ. При итоговом чтении дополнительно уточнена естественность ES/RU формулировки.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_pluscuamperfecto.indicativo:2:plural: форма Jehle «habíais sentado», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_pluscuamperfecto.indicativo:3:plural: форма Jehle «habían sentado», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_anterior.indicativo:1:singular: форма Jehle «hube sentado», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_anterior.indicativo:2:singular: форма Jehle «hubiste sentado», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_anterior.indicativo:3:singular: форма Jehle «hubo sentado», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_anterior.indicativo:1:plural: форма Jehle «hubimos sentado», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_anterior.indicativo:2:plural: форма Jehle «hubisteis sentado», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_anterior.indicativo:3:plural: форма Jehle «hubieron sentado», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.futuro_perfecto.indicativo:1:singular: форма Jehle «habré sentado», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.futuro_perfecto.indicativo:2:singular: форма Jehle «habrás sentado», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.futuro_perfecto.indicativo:3:singular: форма Jehle «habrá sentado», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.futuro_perfecto.indicativo:1:plural: форма Jehle «habremos sentado», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.futuro_perfecto.indicativo:2:plural: форма Jehle «habréis sentado», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.futuro_perfecto.indicativo:3:plural: форма Jehle «habrán sentado», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.condicional_perfecto.indicativo:1:singular: форма Jehle «habría sentado», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.condicional_perfecto.indicativo:2:singular: форма Jehle «habrías sentado», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.condicional_perfecto.indicativo:3:singular: форма Jehle «habría sentado», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.condicional_perfecto.indicativo:1:plural: форма Jehle «habríamos sentado», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.condicional_perfecto.indicativo:2:plural: форма Jehle «habríais sentado», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.condicional_perfecto.indicativo:3:plural: форма Jehle «habrían sentado», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ. При итоговом чтении дополнительно уточнена естественность ES/RU формулировки.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.presente.subjuntivo:1:singular: форма Jehle «siente», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.presente.subjuntivo:2:singular: форма Jehle «sientes», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.presente.subjuntivo:3:singular: форма Jehle «siente», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.presente.subjuntivo:1:plural: форма Jehle «sentemos», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.presente.subjuntivo:2:plural: форма Jehle «sentéis», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.presente.subjuntivo:3:plural: форма Jehle «sienten», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_imperfecto.subjuntivo:1:singular: форма Jehle «sentara», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ. При итоговом чтении дополнительно уточнена естественность ES/RU формулировки.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_imperfecto.subjuntivo:2:singular: форма Jehle «sentaras», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_imperfecto.subjuntivo:3:singular: форма Jehle «sentara», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_imperfecto.subjuntivo:1:plural: форма Jehle «sentáramos», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ. При итоговом чтении дополнительно уточнена естественность ES/RU формулировки.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_imperfecto.subjuntivo:2:plural: форма Jehle «sentarais», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ. При итоговом чтении дополнительно уточнена естественность ES/RU формулировки.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_imperfecto.subjuntivo:3:plural: форма Jehle «sentaran», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ. После независимой проверки уточнён RU: «Судьи сомневались, что те решения установят единый критерий.» → «Судьи сомневались, что те решения зададут единый подход.».",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.futuro_simple.subjuntivo:1:singular: форма Jehle «sentare», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ. Итоговая формулировка приведена к естественному юридическому регистру.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.futuro_simple.subjuntivo:2:singular: форма Jehle «sentares», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ. При итоговом чтении дополнительно уточнена естественность ES/RU формулировки.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.futuro_simple.subjuntivo:3:singular: форма Jehle «sentare», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.futuro_simple.subjuntivo:1:plural: форма Jehle «sentáremos», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.futuro_simple.subjuntivo:2:plural: форма Jehle «sentareis», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.futuro_simple.subjuntivo:3:plural: форма Jehle «sentaren», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_perfecto.subjuntivo:1:singular: форма Jehle «haya sentado», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_perfecto.subjuntivo:2:singular: форма Jehle «hayas sentado», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_perfecto.subjuntivo:3:singular: форма Jehle «haya sentado», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_perfecto.subjuntivo:1:plural: форма Jehle «hayamos sentado», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_perfecto.subjuntivo:2:plural: форма Jehle «hayáis sentado», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ. При итоговом чтении дополнительно уточнена естественность ES/RU формулировки.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_perfecto.subjuntivo:3:plural: форма Jehle «hayan sentado», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_pluscuamperfecto.subjuntivo:1:singular: форма Jehle «hubiera sentado», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_pluscuamperfecto.subjuntivo:2:singular: форма Jehle «hubieras sentado», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_pluscuamperfecto.subjuntivo:3:singular: форма Jehle «hubiera sentado», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_pluscuamperfecto.subjuntivo:1:plural: форма Jehle «hubiéramos sentado», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_pluscuamperfecto.subjuntivo:2:plural: форма Jehle «hubierais sentado», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_pluscuamperfecto.subjuntivo:3:plural: форма Jehle «hubieran sentado», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.futuro_perfecto.subjuntivo:1:singular: форма Jehle «hubiere sentado», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ. Итоговая формулировка приведена к естественному юридическому регистру.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.futuro_perfecto.subjuntivo:2:singular: форма Jehle «hubieres sentado», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.futuro_perfecto.subjuntivo:3:singular: форма Jehle «hubiere sentado», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.futuro_perfecto.subjuntivo:1:plural: форма Jehle «hubiéremos sentado», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.futuro_perfecto.subjuntivo:2:plural: форма Jehle «hubiereis sentado», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.futuro_perfecto.subjuntivo:3:plural: форма Jehle «hubieren sentado», валентность sentar/sentarse и полный ES/RU смысл проверены; клитика оставлена вне blank, четыре уникальные формы относятся к одному scope и содержат один ответ.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 /tmp/validate_sentar.py",
+      "result": "pass",
+      "evidence": "96/96 cards match all 16 Jehle scopes; metadata/slots, one blank, clitics outside the blank, four unique same-scope options with one answer, 96 unique signatures, source=embedded, preserved baseline top-level and identity/order, fresh fingerprints, rare-register markers and six 16-card checkpoints passed."
+    },
+    {
+      "command": "semantic full read with answer substitution: sentar 96/96",
+      "result": "pass",
+      "evidence": "All ES sentences and RU translations were read after substitution. Transitive sentar a alguien, reflexive sentarse, sentar bien/mal, sentar las bases, sentar precedente and sentar criterio are distinguished; compound tenses have explicit anchors; cards 43–48 are literary, 73–78 and 91–96 legal/literary, and all De haberlo sabido translations state explicit counterfactual conditions."
+    },
+    {
+      "command": "go test ./internal/grammartrainingpack",
+      "result": "pass",
+      "evidence": "Embedded grammar training pack tests passed."
+    },
+    {
+      "command": "cmp source embedded; python3 -m json.tool assigned JSON; python3 scripts/grammar-review.py check --source courses/spanish-grammar/training_pack/verb_forms/lemmas/sentar.json; git diff --check -- assigned paths",
+      "result": "pass",
+      "evidence": "Source and embedded are byte-identical; assigned JSON is valid; source/context fingerprints are current and report status is awaiting independent verification; root and submodule whitespace checks passed."
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 /tmp/validate_sentar.py; go test ./internal/grammartrainingpack; reconstruct pre-fix fingerprint; JSON/cmp/diff checks",
+      "result": "pass",
+      "evidence": "Only translation_ru_full changed in es.futuro_simple.indicativo:3:singular and es.preterito_imperfecto.subjuntivo:3:plural. Reversing those two strings reconstructs prior fingerprint 2ac2d8e465ccdb2ecdb4b38ce18a093c28a64f7d1afa3a6bf9030a2878e9123c. Current source fingerprint abbe74639a0a897f7c360a64a35a8c3a40c0af209fc0cd419ac27a9d065d04a5 is fresh; source=embedded, Jehle forms, ES prompts, options, metadata, identity/order and 96 pending verification rows pass."
+    },
+    {
+      "command": "independent semantic verification and recheck: sentar 96/96",
+      "result": "pass",
+      "evidence": "A verifier different from the editor checked all 96 ES/RU pairs and accepted two returned RU corrections after recheck; exact Jehle forms, contracts, options and source fingerprint are current."
+    },
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-06-es-verbs-sentar-servir/check.py",
+      "result": "pass",
+      "evidence": "All 384 cards pass exact Jehle forms, preserved contracts and order, one blank, four unique same-scope options with one answer, current report fingerprints, distinct editors/verifiers, 384 verification ok, and 24 primary checkpoints."
+    },
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-06-es-verbs-sentar-servir/preservation-check.py",
+      "result": "pass",
+      "evidence": "Preservation snapshot confirms 25555 files outside the allowed paths unchanged, with 0 changed, 0 missing, and 0 unexpected new files."
+    },
+    {
+      "command": "validate_artifact() for sentar, sentir, ser, servir",
+      "result": "pass",
+      "evidence": "The generator native strict validator accepted all four final 96-card artifacts."
+    },
+    {
+      "command": "go test ./internal/verbtraining ./cmd/sync_verb_training_json",
+      "result": "pass",
+      "evidence": "Verb training and JSON synchronization package tests passed."
+    },
+    {
+      "command": "python3 scripts/grammar_review_test.py; git diff --check; git -C courses/spanish-grammar diff --check",
+      "result": "pass",
+      "evidence": "All 13 grammar-review tests and both root/submodule whitespace checks passed."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py check --source <each assigned lemma>; quick_validate.py linglow-grammar-review",
+      "result": "pass",
+      "evidence": "All four sources report done with 96 questions each; the reusable review skill validates successfully."
+    }
+  ],
+  "verification_note": "Независимо прочитаны все 96 карточек с подстановкой формы. Две неточности русских переводов возвращены исходному редактору, исправлены и повторно приняты; формы Jehle, значения sentar/sentarse, варианты, временные опоры и редкие регистры подтверждены."
+}

@@ -1,0 +1,81 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/chapters/044/es.05.b5_theory_participio_double_forms_pedagogical.questions.json",
+  "source_sha256": "bf73af4ea79f4262fbf84057accb5bb53e47d7b8d8328dabe13ef116dc890733",
+  "context_sha256": "370ce528b30dfe67351c306e448015fc0392e8271f750299cc160c3f32731309",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
+  "reviewed_at": "2026-09-04T18:17:45.319216+00:00",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
+  "questions": [
+    {
+      "id": "q1",
+      "decision": "fixed",
+      "note": "Исправлен нормативный факт, контекст или неоднозначность.",
+      "verification": "ok"
+    },
+    {
+      "id": "q2",
+      "decision": "fixed",
+      "note": "Исправлен нормативный факт, контекст или неоднозначность.",
+      "verification": "ok"
+    },
+    {
+      "id": "q3",
+      "decision": "fixed",
+      "note": "Исправлен нормативный факт, контекст или неоднозначность.",
+      "verification": "ok"
+    },
+    {
+      "id": "q4",
+      "decision": "fixed",
+      "note": "Исправлен нормативный факт, контекст или неоднозначность.",
+      "verification": "ok"
+    },
+    {
+      "id": "q5",
+      "decision": "fixed",
+      "note": "Исправлен нормативный факт, контекст или неоднозначность.",
+      "verification": "ok"
+    },
+    {
+      "id": "q6",
+      "decision": "fixed",
+      "note": "Исправлен нормативный факт, контекст или неоднозначность.",
+      "verification": "ok"
+    },
+    {
+      "id": "q7",
+      "decision": "fixed",
+      "note": "Исправлен нормативный факт, контекст или неоднозначность.",
+      "verification": "ok"
+    },
+    {
+      "id": "q8",
+      "decision": "fixed",
+      "note": "Исправлен нормативный факт, контекст или неоднозначность.",
+      "verification": "ok"
+    },
+    {
+      "id": "q9",
+      "decision": "fixed",
+      "note": "Исправлен нормативный факт, контекст или неоднозначность.",
+      "verification": "ok"
+    },
+    {
+      "id": "q10",
+      "decision": "fixed",
+      "note": "Исправлен нормативный факт, контекст или неоднозначность.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    }
+  ],
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+}

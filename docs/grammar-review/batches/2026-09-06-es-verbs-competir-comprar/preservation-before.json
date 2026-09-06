@@ -1,0 +1,26 @@
+{
+  "existing_files": 24968,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/competir.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/competir.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/componer.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/componer.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/comprar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/comprar.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-competir-comprar",
+    "docs/grammar-review/reports/f7f64b0f7f591ae063d15d25.json",
+    "docs/grammar-review/reports/2a4b576a58b03af93c3ee1a6.json",
+    "docs/grammar-review/reports/41f241c9cd63fba5fee0090e.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/competir.json": "1847bd1ecd5c74c0b99055a11a3418263292fcd15a5a911e743ec9c2da7fa75e",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/competir.json": "1847bd1ecd5c74c0b99055a11a3418263292fcd15a5a911e743ec9c2da7fa75e",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/componer.json": "8667e4130b1f0c968afb79e26cfa6b8a54fb685931f6b6fad344f24755bdc97d",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/componer.json": "8667e4130b1f0c968afb79e26cfa6b8a54fb685931f6b6fad344f24755bdc97d",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/comprar.json": "afec840be64226c439cae6df1e68ebe66ec0436945797153713f397547405328",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/comprar.json": "afec840be64226c439cae6df1e68ebe66ec0436945797153713f397547405328"
+  }
+}

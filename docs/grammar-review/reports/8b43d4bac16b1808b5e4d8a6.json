@@ -1,0 +1,130 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/chapters/004/es.03.b3_theory_g_j_gu_gu_dieresis.questions.json",
+  "source_sha256": "21c2e2ab7729e3574de5a329e26c7a2bb410f58679fad00a31716d09e0595d72",
+  "context_sha256": "551e088cea2f26ecb7b925580bbd6420ceb8a70fbdf1aed3eb0cf8c7e5a80d1e",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
+  "reviewed_at": "2026-09-04T10:15:52.394319+00:00",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
+  "questions": [
+    {
+      "id": "q1",
+      "decision": "fixed",
+      "note": "Уточнена испанская немая h: без указания языка «как h» могло совпасть с региональным произношением j.",
+      "verification": "ok"
+    },
+    {
+      "id": "q2",
+      "decision": "fixed",
+      "note": "Текст прочитан и корректен; пересчитана исходно устаревшая signature штатной функцией курса.",
+      "verification": "ok"
+    },
+    {
+      "id": "q3",
+      "decision": "fixed",
+      "note": "Убрана подсказка наличием u; проверяется чтение конкретного слова.",
+      "verification": "ok"
+    },
+    {
+      "id": "q4",
+      "decision": "fixed",
+      "note": "Уточнён дистрактор h как испанская немая буква.",
+      "verification": "ok"
+    },
+    {
+      "id": "q7",
+      "decision": "fixed",
+      "note": "Убрана подсказка о видимом диэрезисе; проверяется произносимая u.",
+      "verification": "ok"
+    },
+    {
+      "id": "q8",
+      "decision": "fixed",
+      "note": "Уточнён неоднозначный дистрактор «как h».",
+      "verification": "ok"
+    },
+    {
+      "id": "q9",
+      "decision": "fixed",
+      "note": "Текст прочитан и корректен; пересчитана исходно устаревшая signature штатной функцией курса.",
+      "verification": "ok"
+    },
+    {
+      "id": "q10",
+      "decision": "ok",
+      "note": "Gente — корректный пример g перед e со звуком j.",
+      "verification": "ok"
+    },
+    {
+      "id": "q11",
+      "decision": "fixed",
+      "note": "Вместо поиска явно названного gue — определение немой u.",
+      "verification": "ok"
+    },
+    {
+      "id": "q12",
+      "decision": "fixed",
+      "note": "Исправлена ошибочная ссылка на güe в pingüino: здесь güi; условие больше не раскрывает ответ знаком.",
+      "verification": "ok"
+    },
+    {
+      "id": "q13",
+      "decision": "ok",
+      "note": "Gusano содержит gu с произносимой u и твёрдой g.",
+      "verification": "ok"
+    },
+    {
+      "id": "q14",
+      "decision": "ok",
+      "note": "Jamón — корректный пример j перед a.",
+      "verification": "ok"
+    },
+    {
+      "id": "q17",
+      "decision": "ok",
+      "note": "Gitano содержит g перед i, читаемую как j.",
+      "verification": "ok"
+    },
+    {
+      "id": "q19",
+      "decision": "fixed",
+      "note": "В исходном задании нет верного примера güe: pingüino содержит güi. Подставлено vergüenza, ключ и ID сохранены.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "cd courses/spanish-grammar && bash scripts/assemble-chapter.sh 004.es.grammar.orientation_alphabet_sounds.core_pronunciation_map_b_v_c_z_g && bash scripts/validate-chapter.sh 004.es.grammar.orientation_alphabet_sounds.core_pronunciation_map_b_v_c_z_g",
+      "result": "pass",
+      "evidence": "63 questions; seven theory blocks and inline quizzes; 49 chapter-test questions. See docs/grammar-review/batches/2026-09-04-es004/assemble-after.log and chapter-after.log."
+    },
+    {
+      "command": "ajv validate --spec=draft2020 --validate-formats=false --all-errors -s courses/spanish-grammar/02-chapter-schema.json -d courses/spanish-grammar/chapters/004.es.grammar.orientation_alphabet_sounds.core_pronunciation_map_b_v_c_z_g/05-final.json",
+      "result": "pass",
+      "evidence": "Baseline and final chapter schema pass. See docs/grammar-review/batches/2026-09-04-es004/schema-before.log and schema-after.log."
+    },
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-04-es004/check.py",
+      "result": "pass",
+      "evidence": "All 108 contracts, metadata, decisions, fingerprints, signatures, choices and bindings pass; no new ES pack duplicates; scoped embedded copies equal. See docs/grammar-review/batches/2026-09-04-es004/validation.log."
+    },
+    {
+      "command": "go test ./internal/grammarbundle ./internal/repository -run 'TestValidateEmbeddedBundleID|TestGrammar.*Bundle|TestGrammar.*Reorder' -count=1",
+      "result": "pass",
+      "evidence": "Both packages passed: 5.197s and 14.899s. See docs/grammar-review/batches/2026-09-04-es004/go-tests.log."
+    },
+    {
+      "command": "git diff --check && git -C courses/spanish-grammar diff --check && git -C courses/english-grammar diff --check",
+      "result": "pass",
+      "evidence": "All three commands exited 0."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    }
+  ],
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+}

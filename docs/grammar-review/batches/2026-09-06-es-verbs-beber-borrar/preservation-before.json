@@ -1,0 +1,26 @@
+{
+  "existing_files": 24905,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/beber.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/beber.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/bloquear.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/bloquear.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/borrar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/borrar.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-beber-borrar",
+    "docs/grammar-review/reports/f19ab5dd749b0893af46188b.json",
+    "docs/grammar-review/reports/084a50998e53adc5d29879e0.json",
+    "docs/grammar-review/reports/b7d26e551808514cd92d295b.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/beber.json": "1ab55eed19be5c522ffd22c144c09b713989c3b8f297a8fd110532d0449d3003",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/beber.json": "1ab55eed19be5c522ffd22c144c09b713989c3b8f297a8fd110532d0449d3003",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/bloquear.json": "e9c0d320ceb7a1ff96ac4a2412d1c60d3ad508f7af3256cc5dc34a33b8f78fd9",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/bloquear.json": "e9c0d320ceb7a1ff96ac4a2412d1c60d3ad508f7af3256cc5dc34a33b8f78fd9",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/borrar.json": "1edf5f53d58ae96d0fd321d25562687509ac684647ff36df8807a5f62c22cd1e",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/borrar.json": "1edf5f53d58ae96d0fd321d25562687509ac684647ff36df8807a5f62c22cd1e"
+  }
+}

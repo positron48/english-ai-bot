@@ -1,0 +1,452 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/chapters/025.es.grammar.existence_location_possession.possessives_mi_tu_su_nuestro_de_plus_noun/03-questions.json",
+  "source_sha256": "1a2873f7ada9d9c139d2dfe050b2479fd0b2703c3e8db4602e5f284c5ab5b201",
+  "context_sha256": "eb5b3ba1733f9e51b57ee50118b8152b711ff9545de3ea2921543f22334e5094",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
+  "reviewed_at": "2026-09-04T15:09:02.584987+00:00",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
+  "questions": [
+    {
+      "id": "q1",
+      "decision": "fixed",
+      "note": "Убраны отсылки к учебной модели; уточнены значение, орфография, владелец и допустимые варианты.",
+      "verification": "ok"
+    },
+    {
+      "id": "q2",
+      "decision": "fixed",
+      "note": "Убраны отсылки к учебной модели; уточнены значение, орфография, владелец и допустимые варианты.",
+      "verification": "ok"
+    },
+    {
+      "id": "q3",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q4",
+      "decision": "fixed",
+      "note": "Убраны отсылки к учебной модели; уточнены значение, орфография, владелец и допустимые варианты.",
+      "verification": "ok"
+    },
+    {
+      "id": "q6",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q7",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q8",
+      "decision": "fixed",
+      "note": "Убраны отсылки к учебной модели; уточнены значение, орфография, владелец и допустимые варианты.",
+      "verification": "ok"
+    },
+    {
+      "id": "q9",
+      "decision": "fixed",
+      "note": "Убраны отсылки к учебной модели; уточнены значение, орфография, владелец и допустимые варианты.",
+      "verification": "ok"
+    },
+    {
+      "id": "q10",
+      "decision": "fixed",
+      "note": "Убраны отсылки к учебной модели; уточнены значение, орфография, владелец и допустимые варианты.",
+      "verification": "ok"
+    },
+    {
+      "id": "q11",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q12",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q13",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q14",
+      "decision": "fixed",
+      "note": "Убраны отсылки к учебной модели; уточнены значение, орфография, владелец и допустимые варианты.",
+      "verification": "ok"
+    },
+    {
+      "id": "q15",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q16",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q18",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q19",
+      "decision": "fixed",
+      "note": "Убраны отсылки к учебной модели; уточнены значение, орфография, владелец и допустимые варианты.",
+      "verification": "ok"
+    },
+    {
+      "id": "q20",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q21",
+      "decision": "fixed",
+      "note": "Убраны отсылки к учебной модели; уточнены значение, орфография, владелец и допустимые варианты.",
+      "verification": "ok"
+    },
+    {
+      "id": "q22",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q23",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q24",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q25",
+      "decision": "fixed",
+      "note": "Явно задан владелец и смысл; устранены учебные отсылки и допустимые конструкции среди дистракторов.",
+      "verification": "ok"
+    },
+    {
+      "id": "q26",
+      "decision": "fixed",
+      "note": "Явно задан владелец и смысл; устранены учебные отсылки и допустимые конструкции среди дистракторов.",
+      "verification": "ok"
+    },
+    {
+      "id": "q27",
+      "decision": "fixed",
+      "note": "Явно задан владелец и смысл; устранены учебные отсылки и допустимые конструкции среди дистракторов.",
+      "verification": "ok"
+    },
+    {
+      "id": "q28",
+      "decision": "fixed",
+      "note": "Явно задан владелец и смысл; устранены учебные отсылки и допустимые конструкции среди дистракторов.",
+      "verification": "ok"
+    },
+    {
+      "id": "q30",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q31",
+      "decision": "fixed",
+      "note": "Явно задан владелец и смысл; устранены учебные отсылки и допустимые конструкции среди дистракторов.",
+      "verification": "ok"
+    },
+    {
+      "id": "q32",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q33",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q34",
+      "decision": "fixed",
+      "note": "Явно задан владелец и смысл; устранены учебные отсылки и допустимые конструкции среди дистракторов.",
+      "verification": "ok"
+    },
+    {
+      "id": "q35",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q36",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q37",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q38",
+      "decision": "fixed",
+      "note": "Явно задан владелец и смысл; устранены учебные отсылки и допустимые конструкции среди дистракторов.",
+      "verification": "ok"
+    },
+    {
+      "id": "q39",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q40",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q42",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q43",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q44",
+      "decision": "fixed",
+      "note": "Явно задан владелец и смысл; устранены учебные отсылки и допустимые конструкции среди дистракторов.",
+      "verification": "ok"
+    },
+    {
+      "id": "q45",
+      "decision": "fixed",
+      "note": "Уточнены перевод, грамматические функции и открытый ответ; убран ложный запрет tener с притяжательным.",
+      "verification": "ok"
+    },
+    {
+      "id": "q46",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q47",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q48",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q49",
+      "decision": "fixed",
+      "note": "Уточнены перевод, грамматические функции и открытый ответ; убран ложный запрет tener с притяжательным.",
+      "verification": "ok"
+    },
+    {
+      "id": "q50",
+      "decision": "fixed",
+      "note": "Уточнены перевод, грамматические функции и открытый ответ; убран ложный запрет tener с притяжательным.",
+      "verification": "ok"
+    },
+    {
+      "id": "q51",
+      "decision": "fixed",
+      "note": "Уточнены перевод, грамматические функции и открытый ответ; убран ложный запрет tener с притяжательным.",
+      "verification": "ok"
+    },
+    {
+      "id": "q52",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q54",
+      "decision": "fixed",
+      "note": "Уточнены перевод, грамматические функции и открытый ответ; убран ложный запрет tener с притяжательным.",
+      "verification": "ok"
+    },
+    {
+      "id": "q55",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q56",
+      "decision": "fixed",
+      "note": "Уточнены перевод, грамматические функции и открытый ответ; убран ложный запрет tener с притяжательным.",
+      "verification": "ok"
+    },
+    {
+      "id": "q57",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q58",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q59",
+      "decision": "fixed",
+      "note": "Уточнены перевод, грамматические функции и открытый ответ; убран ложный запрет tener с притяжательным.",
+      "verification": "ok"
+    },
+    {
+      "id": "q60",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q61",
+      "decision": "fixed",
+      "note": "Уточнены перевод, грамматические функции и открытый ответ; убран ложный запрет tener с притяжательным.",
+      "verification": "ok"
+    },
+    {
+      "id": "q62",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q63",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q64",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q66",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q67",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q68",
+      "decision": "fixed",
+      "note": "Уточнены орфография и согласование с предметом, без неточного сравнения с полом владельца.",
+      "verification": "ok"
+    },
+    {
+      "id": "q69",
+      "decision": "fixed",
+      "note": "Уточнены орфография и согласование с предметом, без неточного сравнения с полом владельца.",
+      "verification": "ok"
+    },
+    {
+      "id": "q70",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q71",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q72",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-04-es025-028/check.py",
+      "result": "pass",
+      "evidence": "All 536 IDs/contracts, decisions versus baseline, fingerprints, native training validation, signatures and source-final-embedded equality; validation.log."
+    },
+    {
+      "command": "go test ./internal/grammarbundle ./internal/repository -run 'TestValidateEmbeddedBundleID|TestGrammar.*Bundle|TestGrammar.*Reorder' -count=1",
+      "result": "pass",
+      "evidence": "Both packages passed on final integrated data; go-tests.log."
+    },
+    {
+      "command": "git diff --check; git -C courses/spanish-grammar diff --check; git -C courses/english-grammar diff --check",
+      "result": "pass",
+      "evidence": "Three separately executed commands exit 0; diff-check.log. All 706 earlier dirty files outside review docs preserved; preservation.log."
+    },
+    {
+      "command": "cd courses/spanish-grammar && bash scripts/assemble-chapter.sh 025.es.grammar.existence_location_possession.possessives_mi_tu_su_nuestro_de_plus_noun",
+      "result": "pass",
+      "evidence": "025-assemble.log: exit 0."
+    },
+    {
+      "command": "cd courses/spanish-grammar && bash scripts/validate-chapter.sh 025.es.grammar.existence_location_possession.possessives_mi_tu_su_nuestro_de_plus_noun",
+      "result": "pass",
+      "evidence": "025-chapter-after.log: exit 0."
+    },
+    {
+      "command": "cd courses/spanish-grammar && ajv validate --spec=draft2020 --validate-formats=false --all-errors -s 02-chapter-schema.json -d chapters/025.es.grammar.existence_location_possession.possessives_mi_tu_su_nuestro_de_plus_noun/05-final.json",
+      "result": "known_baseline",
+      "evidence": "025-schema-before.log and 025-schema-after.log are byte-identical, exit 1: pre-existing theory tags violate schema pattern; no question errors."
+    },
+    {
+      "command": "cd courses/spanish-grammar && ajv validate -s 02-chapter-schema.json -d chapters/025.es.grammar.existence_location_possession.possessives_mi_tu_su_nuestro_de_plus_noun/05-final.json",
+      "result": "known_baseline",
+      "evidence": "025-assembler-ajv-before.log and 025-assembler-ajv-after.log are byte-identical, exit 1: no draft2020 meta-schema selected. Explicit draft2020 results are recorded separately."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    }
+  ],
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+}

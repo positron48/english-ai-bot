@@ -1,0 +1,34 @@
+{
+  "alquilar": {
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/alquilar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/alquilar.json",
+    "report": "docs/grammar-review/reports/6097fcbb0eedc24adc99e46f.json",
+    "editor": "Codex editor 2026-09-06",
+    "source_sha256": "25a02a6902c4075dae6efed69ad7abc9b2a2684fdfa188c92cbfdd4fb4a9b621",
+    "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197"
+  },
+  "amenazar": {
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/amenazar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/amenazar.json",
+    "report": "docs/grammar-review/reports/1c0f9a97e4b6a9775de24b00.json",
+    "editor": "Codex editor 2026-09-06",
+    "source_sha256": "8f14c3786d0d6198a1956aa0637be009140651d621f4b21a8c903a5ae9c38828",
+    "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197"
+  },
+  "andar": {
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/andar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/andar.json",
+    "report": "docs/grammar-review/reports/0da887f8d8e7a7ac87b0fa62.json",
+    "editor": "Codex editor 2026-09-06",
+    "source_sha256": "1092afc95f3add09c5b042871976b34e626582015ec14d13e2eabe91dfafc874",
+    "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197"
+  },
+  "anunciar": {
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/anunciar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/anunciar.json",
+    "report": "docs/grammar-review/reports/d15aa5af8e8c484f5a740a45.json",
+    "editor": "Codex editor 2026-09-06",
+    "source_sha256": "c285da3d10f28dd6629c1740fade5d00d5291f68dd3664cd4750232fa2c3769b",
+    "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197"
+  }
+}

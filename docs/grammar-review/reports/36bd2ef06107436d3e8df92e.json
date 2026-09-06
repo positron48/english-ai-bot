@@ -1,0 +1,96 @@
+{
+  "version": 1,
+  "source": "courses/english-grammar/training_pack/chapters/016/en.04.b4_theory_questions_with_whose.questions.json",
+  "source_sha256": "b3cd1aeb8885568b4905c94c60a1c776ea829edb6f6b566c25f777b81f7606e5",
+  "context_sha256": "bcddc3293f15930f602112e155d52e48e3821b31ae1f7ba8512f90b6c73c01b0",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
+  "reviewed_at": "2026-09-04T13:10:31.664714+00:00",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
+  "questions": [
+    {
+      "id": "q1",
+      "decision": "fixed",
+      "note": "Уточнён краткий ответ, чтобы исключить второй правильный, или заменены искусственные Which’s/What’s на реальные ошибки формы и согласования.",
+      "verification": "ok"
+    },
+    {
+      "id": "q2",
+      "decision": "fixed",
+      "note": "Уточнён краткий ответ, чтобы исключить второй правильный, или заменены искусственные Which’s/What’s на реальные ошибки формы и согласования.",
+      "verification": "ok"
+    },
+    {
+      "id": "q3",
+      "decision": "fixed",
+      "note": "Уточнён краткий ответ, чтобы исключить второй правильный, или заменены искусственные Which’s/What’s на реальные ошибки формы и согласования.",
+      "verification": "ok"
+    },
+    {
+      "id": "q4",
+      "decision": "fixed",
+      "note": "Уточнён краткий ответ, чтобы исключить второй правильный, или заменены искусственные Which’s/What’s на реальные ошибки формы и согласования.",
+      "verification": "ok"
+    },
+    {
+      "id": "q5",
+      "decision": "fixed",
+      "note": "Уточнён краткий ответ, чтобы исключить второй правильный, или заменены искусственные Which’s/What’s на реальные ошибки формы и согласования.",
+      "verification": "ok"
+    },
+    {
+      "id": "q6",
+      "decision": "fixed",
+      "note": "Уточнён краткий ответ, чтобы исключить второй правильный, или заменены искусственные Which’s/What’s на реальные ошибки формы и согласования.",
+      "verification": "ok"
+    },
+    {
+      "id": "q7",
+      "decision": "fixed",
+      "note": "Уточнён краткий ответ, чтобы исключить второй правильный, или заменены искусственные Which’s/What’s на реальные ошибки формы и согласования.",
+      "verification": "ok"
+    },
+    {
+      "id": "q8",
+      "decision": "fixed",
+      "note": "Уточнён краткий ответ, чтобы исключить второй правильный, или заменены искусственные Which’s/What’s на реальные ошибки формы и согласования.",
+      "verification": "ok"
+    },
+    {
+      "id": "q9",
+      "decision": "fixed",
+      "note": "Уточнён краткий ответ, чтобы исключить второй правильный, или заменены искусственные Which’s/What’s на реальные ошибки формы и согласования.",
+      "verification": "ok"
+    },
+    {
+      "id": "q10",
+      "decision": "fixed",
+      "note": "Уточнён краткий ответ, чтобы исключить второй правильный, или заменены искусственные Which’s/What’s на реальные ошибки формы и согласования.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-04-en015-018/check.py",
+      "result": "pass",
+      "evidence": "All 395 IDs/contracts, metadata, decisions versus baseline and current source/context fingerprints verified. Native training validation, signatures, no new course-wide duplicate signatures and exact source-final-embedded equality; validation.log."
+    },
+    {
+      "command": "go test ./internal/grammarbundle ./internal/repository -run 'TestValidateEmbeddedBundleID|TestGrammar.*Bundle|TestGrammar.*Reorder' -count=1",
+      "result": "pass",
+      "evidence": "Both packages pass: 5.027s and 14.339s; go-tests.log."
+    },
+    {
+      "command": "git diff --check; git -C courses/spanish-grammar diff --check; git -C courses/english-grammar diff --check",
+      "result": "pass",
+      "evidence": "Three separately executed commands exit 0; diff-check.log. All 424 pre-existing files outside review docs preserved byte-for-byte; preservation.log."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    }
+  ],
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+}

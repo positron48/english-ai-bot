@@ -1,0 +1,90 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/chapters/008/es.03.b3_theory_spelling_change_z_ces.questions.json",
+  "source_sha256": "ee23943bf07b5ef04700da4e105f15f3a4f9235f6d7e9ff1fd832d31a82e68a2",
+  "context_sha256": "5922d42122cd1887d260aa717bb8a86715aa499dd6b385a3094a7edd1c904de1",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
+  "reviewed_at": "2026-09-04T11:00:45.360196+00:00",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
+  "questions": [
+    {
+      "id": "q1",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q2",
+      "decision": "fixed",
+      "note": "Ненормативная форма peza больше не названа неформальным окончанием.",
+      "verification": "ok"
+    },
+    {
+      "id": "q3",
+      "decision": "fixed",
+      "note": "Указаны оба изменения: z → c и добавление -es.",
+      "verification": "ok"
+    },
+    {
+      "id": "q4",
+      "decision": "fixed",
+      "note": "Указаны оба изменения: z → c и добавление -es.",
+      "verification": "ok"
+    },
+    {
+      "id": "q5",
+      "decision": "fixed",
+      "note": "Указаны оба изменения: z → c и добавление -es.",
+      "verification": "ok"
+    },
+    {
+      "id": "q6",
+      "decision": "fixed",
+      "note": "Убрано ошибочное объявление правильного cruces опечаткой и дубликатом.",
+      "verification": "ok"
+    },
+    {
+      "id": "q8",
+      "decision": "fixed",
+      "note": "Уточнены конкретные ошибки в сокращённых формах.",
+      "verification": "ok"
+    },
+    {
+      "id": "q9",
+      "decision": "fixed",
+      "note": "Дан естественный контекст множественного числа paz: hacer las paces.",
+      "verification": "ok"
+    },
+    {
+      "id": "q10",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-04-es005-008/check.py",
+      "result": "pass",
+      "evidence": "518 IDs/contracts preserved; source/context hashes current; signatures valid; no new course-wide duplicates; source/final/embedded equal. See batch validation.log."
+    },
+    {
+      "command": "go test ./internal/grammarbundle ./internal/repository -run 'TestValidateEmbeddedBundleID|TestGrammar.*Bundle|TestGrammar.*Reorder' -count=1",
+      "result": "pass",
+      "evidence": "grammarbundle 4.945s; repository 14.356s; see batch go-tests.log."
+    },
+    {
+      "command": "git diff --check; git -C courses/spanish-grammar diff --check; git -C courses/english-grammar diff --check",
+      "result": "pass",
+      "evidence": "Each command exited 0; see batch diff-check.log."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    }
+  ],
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+}

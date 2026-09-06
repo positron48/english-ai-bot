@@ -1,0 +1,31 @@
+{
+  "existing_files": 25242,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/intentar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/intentar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/interesar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/interesar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/interpretar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/interpretar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/introducir.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/introducir.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-intentar-introducir",
+    "docs/grammar-review/reports/b52c66e27fd1740b0cf82e50.json",
+    "docs/grammar-review/reports/8458dbafad81b0bc848e87be.json",
+    "docs/grammar-review/reports/d02f2f42efdd615e9c65cfad.json",
+    "docs/grammar-review/reports/3feba87ffb7733de5204dcd5.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/intentar.json": "6a9858e94c69df94c15a9bd73a869601b481bb3a85c363106f796d6fbd71a597",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/intentar.json": "6a9858e94c69df94c15a9bd73a869601b481bb3a85c363106f796d6fbd71a597",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/interesar.json": "e8e4fd51f8274e0731ecaa39191c8c1825501e737f9a1f30dbaea07b92eed62f",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/interesar.json": "e8e4fd51f8274e0731ecaa39191c8c1825501e737f9a1f30dbaea07b92eed62f",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/interpretar.json": "63b2aadbb2edc6eacf5c442b4625b4212045a0c53e3d431dfadc42c58da2ecc1",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/interpretar.json": "63b2aadbb2edc6eacf5c442b4625b4212045a0c53e3d431dfadc42c58da2ecc1",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/introducir.json": "a3fd0d4ca43f20dd59019c4a7548edba3c5f8eb00bc31e8923b5f612b0653bf3",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/introducir.json": "a3fd0d4ca43f20dd59019c4a7548edba3c5f8eb00bc31e8923b5f612b0653bf3"
+  }
+}

@@ -1,0 +1,662 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/significar.json",
+  "source_sha256": "77d98d4d57fe6500543588f5aa63d80a48fe70bf71f3cfc30d6d9eb87242eb64",
+  "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197",
+  "editor": "Aristotle editor 2026-09-06",
+  "verifier": "Laplace verifier 2026-09-06",
+  "phase": "done",
+  "reviewed_at": "2026-09-06",
+  "verified_at": "2026-09-06",
+  "questions": [
+    {
+      "id": "es.presente.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.presente.indicativo:1:singular; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.presente.indicativo:2:singular; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.presente.indicativo:3:singular; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.presente.indicativo:1:plural; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.presente.indicativo:2:plural; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.presente.indicativo:3:plural; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_imperfecto.indicativo:1:singular; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_imperfecto.indicativo:2:singular; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_imperfecto.indicativo:3:singular; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_imperfecto.indicativo:1:plural; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_imperfecto.indicativo:2:plural; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_imperfecto.indicativo:3:plural; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_indefinido.indicativo:1:singular; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_indefinido.indicativo:2:singular; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_indefinido.indicativo:3:singular; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_indefinido.indicativo:1:plural; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_indefinido.indicativo:2:plural; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_indefinido.indicativo:3:plural; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_simple.indicativo:1:singular; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_simple.indicativo:2:singular; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_simple.indicativo:3:singular; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_simple.indicativo:1:plural; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_simple.indicativo:2:plural; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_simple.indicativo:3:plural; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.condicional_simple.indicativo:1:singular; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.condicional_simple.indicativo:2:singular; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.condicional_simple.indicativo:3:singular; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.condicional_simple.indicativo:1:plural; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.condicional_simple.indicativo:2:plural; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.condicional_simple.indicativo:3:plural; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_perfecto_compuesto.indicativo:1:singular; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_perfecto_compuesto.indicativo:2:singular; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_perfecto_compuesto.indicativo:3:singular; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_perfecto_compuesto.indicativo:1:plural; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_perfecto_compuesto.indicativo:2:plural; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_perfecto_compuesto.indicativo:3:plural; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_pluscuamperfecto.indicativo:1:singular; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_pluscuamperfecto.indicativo:2:singular; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_pluscuamperfecto.indicativo:3:singular; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_pluscuamperfecto.indicativo:1:plural; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_pluscuamperfecto.indicativo:2:plural; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_pluscuamperfecto.indicativo:3:plural; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_anterior.indicativo:1:singular; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_anterior.indicativo:2:singular; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_anterior.indicativo:3:singular; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_anterior.indicativo:1:plural; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_anterior.indicativo:2:plural; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_anterior.indicativo:3:plural; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_perfecto.indicativo:1:singular; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope. После координаторской вычитки уточнены временная опора, причинная цепочка либо завершённость юридического условия.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_perfecto.indicativo:2:singular; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_perfecto.indicativo:3:singular; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_perfecto.indicativo:1:plural; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_perfecto.indicativo:2:plural; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_perfecto.indicativo:3:plural; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.condicional_perfecto.indicativo:1:singular; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope. После координаторской вычитки уточнены временная опора, причинная цепочка либо завершённость юридического условия.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.condicional_perfecto.indicativo:2:singular; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope. После координаторской вычитки уточнены временная опора, причинная цепочка либо завершённость юридического условия.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.condicional_perfecto.indicativo:3:singular; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope. После координаторской вычитки уточнены временная опора, причинная цепочка либо завершённость юридического условия.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.condicional_perfecto.indicativo:1:plural; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope. После координаторской вычитки уточнены временная опора, причинная цепочка либо завершённость юридического условия.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.condicional_perfecto.indicativo:2:plural; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope. После координаторской вычитки уточнены временная опора, причинная цепочка либо завершённость юридического условия.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.condicional_perfecto.indicativo:3:plural; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope. После координаторской вычитки уточнены временная опора, причинная цепочка либо завершённость юридического условия.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.presente.subjuntivo:1:singular; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.presente.subjuntivo:2:singular; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.presente.subjuntivo:3:singular; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.presente.subjuntivo:1:plural; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.presente.subjuntivo:2:plural; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.presente.subjuntivo:3:plural; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_imperfecto.subjuntivo:1:singular; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_imperfecto.subjuntivo:2:singular; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_imperfecto.subjuntivo:3:singular; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope. После независимой проверки русский перевод согласован с прошедшим временем матричного глагола: «означал».",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_imperfecto.subjuntivo:1:plural; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_imperfecto.subjuntivo:2:plural; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_imperfecto.subjuntivo:3:plural; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_simple.subjuntivo:1:singular; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_simple.subjuntivo:2:singular; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_simple.subjuntivo:3:singular; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_simple.subjuntivo:1:plural; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_simple.subjuntivo:2:plural; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_simple.subjuntivo:3:plural; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_perfecto.subjuntivo:1:singular; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_perfecto.subjuntivo:2:singular; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_perfecto.subjuntivo:3:singular; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_perfecto.subjuntivo:1:plural; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_perfecto.subjuntivo:2:plural; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_perfecto.subjuntivo:3:plural; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_pluscuamperfecto.subjuntivo:1:singular; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_pluscuamperfecto.subjuntivo:2:singular; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_pluscuamperfecto.subjuntivo:3:singular; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_pluscuamperfecto.subjuntivo:1:plural; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_pluscuamperfecto.subjuntivo:2:plural; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_pluscuamperfecto.subjuntivo:3:plural; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_perfecto.subjuntivo:1:singular; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_perfecto.subjuntivo:2:singular; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_perfecto.subjuntivo:3:singular; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope. После координаторской вычитки уточнены временная опора, причинная цепочка либо завершённость юридического условия.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_perfecto.subjuntivo:1:plural; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_perfecto.subjuntivo:2:plural; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_perfecto.subjuntivo:3:plural; форма сверена с Jehle, значение significar и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope. После координаторской вычитки уточнены временная опора, причинная цепочка либо завершённость юридического условия.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 /tmp/validate_significar.py",
+      "result": "pass",
+      "evidence": "96/96 exact Jehle forms; metadata, identity/order/top-level, one blank and four unique same-scope options with one answer passed."
+    },
+    {
+      "command": "semantic full read with answer substitution: significar 96/96",
+      "result": "pass",
+      "evidence": "All ES/RU contexts read manually; mean/denote, imply/entail, importance/representation, consequence and marked legal notification senses distinguished; person subjects used only where licensed."
+    },
+    {
+      "command": "cmp source embedded; python3 scripts/grammar-review.py check --source courses/spanish-grammar/training_pack/verb_forms/lemmas/significar.json",
+      "result": "pass",
+      "evidence": "Source and embedded byte-identical; fresh source/context fingerprints; report awaits independent verification."
+    },
+    {
+      "command": "go test ./internal/grammartrainingpack; git diff --check -- assigned paths",
+      "result": "pass",
+      "evidence": "Focused Go tests and whitespace validation passed."
+    },
+    {
+      "command": "python3 /tmp/validate_significar_refinement.py; targeted nine-card assertions; cmp source embedded",
+      "result": "pass",
+      "evidence": "Nine coordinator-returned contexts updated: future-perfect anchor, six explicit De haberlo sabido causal chains, and two completed legal future-perfect-subjunctive translations. Full 96-card Jehle/metadata/options/identity validation and source=embedded passed; report fingerprint refreshed and verification pending."
+    },
+    {
+      "command": "independent semantic verification: significar 96/96; targeted invariants; cmp; native validate_artifact; go test ./internal/grammartrainingpack",
+      "result": "pass",
+      "evidence": "Source and embedded are byte-identical; 96 Jehle forms, scope/person/number metadata, one blank, four unique same-scope options with one answer, 18 marked rare cards and six explicit De haberlo sabido translations passed. Card es.preterito_imperfecto.subjuntivo:3:singular alone needs RU tense correction: «означает» → «означал»."
+    },
+    {
+      "command": "python3 /tmp/validate_significar_independent_fix.py; targeted es.preterito_imperfecto.subjuntivo:3:singular; cmp source embedded",
+      "result": "pass",
+      "evidence": "RU tense corrected from означает to означал; ES, surface significara and options unchanged. Full 96-card Jehle/metadata/options/identity validation passed; source=embedded and fingerprint refreshed. Prior 95 verification ok retained; corrected ID pending recheck."
+    },
+    {
+      "command": "recheck es.preterito_imperfecto.subjuntivo:3:singular; fingerprint; cmp; native validate_artifact",
+      "result": "pass",
+      "evidence": "Corrected RU now reads «Никто не верил, что тот жест означал окончательное прощание.» and matches the past reference of creía/significara; source and embedded are byte-identical; canonical fingerprint 77d98d4d57fe6500543588f5aa63d80a48fe70bf71f3cfc30d6d9eb87242eb64 and native invariants passed."
+    },
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-06-es-verbs-senalar-sobrevivir/check.py",
+      "result": "pass",
+      "evidence": "384 cards pass exact Jehle forms, source/embedded equality, preserved contracts, report fingerprints, unique same-scope options, one answer, 24 checkpoints and no duplicate prompt+answer signatures."
+    },
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-06-es-verbs-senalar-sobrevivir/preservation-check.py",
+      "result": "pass",
+      "evidence": "25568 files outside the allowed batch set preserved; changed=0, missing=0, unexpected_new=0."
+    },
+    {
+      "command": "go test ./internal/verbtraining ./cmd/sync_verb_training_json",
+      "result": "pass",
+      "evidence": "Both focused Go packages pass."
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 scripts/grammar_review_test.py",
+      "result": "pass",
+      "evidence": "13 tests pass."
+    },
+    {
+      "command": "git diff --check && git -C courses/spanish-grammar diff --check",
+      "result": "pass",
+      "evidence": "Root and Spanish submodule diffs have no whitespace errors."
+    },
+    {
+      "command": "quick_validate.py /Users/antonfilatov/.codex/skills/linglow-grammar-review",
+      "result": "pass",
+      "evidence": "Skill is valid."
+    }
+  ],
+  "verification_note": "Независимо прочитаны 96/96 карточек с подстановкой форм. Формы Jehle, metadata, blank/options, значения significar и редкие юридические контексты корректны. Исправленный русский перевод es.preterito_imperfecto.subjuntivo:3:singular повторно проверен и точно согласован с прошедшим временем."
+}

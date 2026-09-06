@@ -1,0 +1,81 @@
+{
+  "version": 1,
+  "source": "courses/english-grammar/training_pack/chapters/058/en.02.b2_prohibitions_mustnt.questions.json",
+  "source_sha256": "4df2b5b04a7dd468a12dcb9306d0a1b8c28e101316c933ebc061d1d36025dd5c",
+  "context_sha256": "bbb4e957488ceff2dcfd25c812ec8aff1712d6be3a7756cff76cafceb84c8c01",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
+  "reviewed_at": "2026-09-04T20:23:07.513155+00:00",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
+  "questions": [
+    {
+      "id": "q1",
+      "decision": "fixed",
+      "note": "Исправлено чрезмерно абсолютное или неверное различие модальных конструкций.",
+      "verification": "ok"
+    },
+    {
+      "id": "q2",
+      "decision": "fixed",
+      "note": "Исправлено чрезмерно абсолютное или неверное различие модальных конструкций.",
+      "verification": "ok"
+    },
+    {
+      "id": "q3",
+      "decision": "fixed",
+      "note": "Исправлено чрезмерно абсолютное или неверное различие модальных конструкций.",
+      "verification": "ok"
+    },
+    {
+      "id": "q4",
+      "decision": "fixed",
+      "note": "Исправлено чрезмерно абсолютное или неверное различие модальных конструкций.",
+      "verification": "ok"
+    },
+    {
+      "id": "q5",
+      "decision": "fixed",
+      "note": "Исправлено чрезмерно абсолютное или неверное различие модальных конструкций.",
+      "verification": "ok"
+    },
+    {
+      "id": "q6",
+      "decision": "fixed",
+      "note": "Исправлено чрезмерно абсолютное или неверное различие модальных конструкций.",
+      "verification": "ok"
+    },
+    {
+      "id": "q7",
+      "decision": "fixed",
+      "note": "Исправлено чрезмерно абсолютное или неверное различие модальных конструкций.",
+      "verification": "ok"
+    },
+    {
+      "id": "q8",
+      "decision": "fixed",
+      "note": "Исправлено чрезмерно абсолютное или неверное различие модальных конструкций.",
+      "verification": "ok"
+    },
+    {
+      "id": "q9",
+      "decision": "fixed",
+      "note": "Исправлено чрезмерно абсолютное или неверное различие модальных конструкций.",
+      "verification": "ok"
+    },
+    {
+      "id": "q10",
+      "decision": "fixed",
+      "note": "Исправлено чрезмерно абсолютное или неверное различие модальных конструкций.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    }
+  ],
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+}

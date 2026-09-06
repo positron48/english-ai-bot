@@ -1,0 +1,101 @@
+{
+  "lemma": "aspirar",
+  "verifier": "edit_valer independent verifier 2026-09-06",
+  "source_sha256": "cb798f8086c3f27716d63671a6043fe36352fe37e5a825d61965a70d0204f5fd",
+  "replacements_by_zero_based_index": {
+    "12": {
+      "question_es_with_blank": "Durante la convocatoria del año pasado, yo _ a un ascenso. (aspirar)",
+      "translation_ru_full": "Во время прошлогоднего конкурса я претендовал на повышение."
+    },
+    "13": {
+      "question_es_with_blank": "Durante la convocatoria del año pasado, tú _ a la beca. (aspirar)",
+      "translation_ru_full": "Во время прошлогоднего конкурса ты претендовал на стипендию."
+    },
+    "14": {
+      "question_es_with_blank": "Durante la convocatoria del año pasado, él _ al puesto. (aspirar)",
+      "translation_ru_full": "Во время прошлогоднего конкурса он претендовал на должность."
+    },
+    "15": {
+      "question_es_with_blank": "Durante la convocatoria del año pasado, nosotros _ al premio. (aspirar)",
+      "translation_ru_full": "Во время прошлогоднего конкурса мы претендовали на награду."
+    },
+    "16": {
+      "question_es_with_blank": "Durante la negociación del año pasado, vosotros _ a mejores condiciones. (aspirar)",
+      "translation_ru_full": "Во время прошлогодних переговоров вы претендовали на лучшие условия."
+    },
+    "17": {
+      "question_es_with_blank": "Durante el torneo del año pasado, ellos _ a los primeros puestos. (aspirar)",
+      "translation_ru_full": "Во время прошлогоднего турнира они претендовали на первые места."
+    },
+    "42": {
+      "question_es_with_blank": "En estilo literario: apenas yo _ el humo, empecé a toser. (aspirar)",
+      "translation_ru_full": "В книжном стиле: едва я вдохнул дым, я закашлялся."
+    },
+    "43": {
+      "question_es_with_blank": "En estilo literario: apenas tú _ el humo, empezaste a toser. (aspirar)",
+      "translation_ru_full": "В книжном стиле: едва ты вдохнул дым, ты закашлялся."
+    },
+    "44": {
+      "question_es_with_blank": "En estilo literario: apenas él _ el humo, empezó a toser. (aspirar)",
+      "translation_ru_full": "В книжном стиле: едва он вдохнул дым, он закашлялся."
+    },
+    "45": {
+      "question_es_with_blank": "En estilo literario: apenas nosotros _ el humo, empezamos a toser. (aspirar)",
+      "translation_ru_full": "В книжном стиле: едва мы вдохнули дым, мы закашлялись."
+    },
+    "46": {
+      "question_es_with_blank": "En estilo literario: apenas vosotros _ el humo, empezasteis a toser. (aspirar)",
+      "translation_ru_full": "В книжном стиле: едва вы вдохнули дым, вы закашлялись."
+    },
+    "47": {
+      "question_es_with_blank": "En estilo literario: apenas ellos _ el humo, empezaron a toser. (aspirar)",
+      "translation_ru_full": "В книжном стиле: едва они вдохнули дым, они закашлялись."
+    },
+    "48": {
+      "question_es_with_blank": "Para el viernes, yo ya _ a un ascenso durante un año. (aspirar)",
+      "translation_ru_full": "К пятнице будет уже год, как я претендую на повышение."
+    },
+    "49": {
+      "question_es_with_blank": "Para el viernes, tú ya _ a la beca durante un año. (aspirar)",
+      "translation_ru_full": "К пятнице будет уже год, как ты претендуешь на стипендию."
+    },
+    "50": {
+      "question_es_with_blank": "Para el viernes, él ya _ al puesto durante un año. (aspirar)",
+      "translation_ru_full": "К пятнице будет уже год, как он претендует на должность."
+    },
+    "51": {
+      "question_es_with_blank": "Para el viernes, nosotros ya _ al premio durante un año. (aspirar)",
+      "translation_ru_full": "К пятнице будет уже год, как мы претендуем на награду."
+    },
+    "52": {
+      "question_es_with_blank": "Para el viernes, vosotros ya _ a mejores condiciones durante un año. (aspirar)",
+      "translation_ru_full": "К пятнице будет уже год, как вы претендуете на лучшие условия."
+    },
+    "53": {
+      "question_es_with_blank": "Para el viernes, ellos ya _ a los primeros puestos durante un año. (aspirar)",
+      "translation_ru_full": "К пятнице будет уже год, как они претендуют на первые места."
+    },
+    "78": {
+      "question_es_with_blank": "A la coordinadora le preocupa que yo ya _ a un ascenso. (aspirar)",
+      "translation_ru_full": "Координатора беспокоит, что я уже претендовал на повышение."
+    },
+    "90": {
+      "translation_ru_full": "В юридическом тексте: если окажется, что к этой дате я уже претендовал на повышение, кандидатура будет рассмотрена."
+    },
+    "91": {
+      "translation_ru_full": "В юридическом тексте: если окажется, что к этой дате ты уже претендовал на стипендию, кандидатура будет рассмотрена."
+    },
+    "92": {
+      "translation_ru_full": "В юридическом тексте: если окажется, что к этой дате он уже претендовал на должность, кандидатура будет рассмотрена."
+    },
+    "93": {
+      "translation_ru_full": "В юридическом тексте: если окажется, что к этой дате мы уже претендовали на награду, кандидатура будет рассмотрена."
+    },
+    "94": {
+      "translation_ru_full": "В юридическом тексте: если окажется, что к этой дате вы уже претендовали на лучшие условия, кандидатура будет рассмотрена."
+    },
+    "95": {
+      "translation_ru_full": "В юридическом тексте: если окажется, что к этой дате они уже претендовали на первые места, кандидатура будет рассмотрена."
+    }
+  }
+}

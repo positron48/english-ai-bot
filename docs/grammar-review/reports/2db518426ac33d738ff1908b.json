@@ -1,0 +1,96 @@
+{
+  "version": 1,
+  "source": "courses/english-grammar/training_pack/chapters/012/en.06.b6_theory_unchanged_plural.questions.json",
+  "source_sha256": "0f547dba1940aa0c636c663da405c9e56308f79bf26b4b597cf4395ba8874ce7",
+  "context_sha256": "f739ce8fe48df786e9c3c1200a3d1511c5c2ec68d9c69ff0c08563daba79c853",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
+  "reviewed_at": "2026-09-04T12:21:01.916027+00:00",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
+  "questions": [
+    {
+      "id": "q1",
+      "decision": "fixed",
+      "note": "Исправлены правило для box и ложные запреты fishes/deers; уточнена требуемая неизменённая форма.",
+      "verification": "ok"
+    },
+    {
+      "id": "q2",
+      "decision": "fixed",
+      "note": "Исправлены правило для box и ложные запреты fishes/deers; уточнена требуемая неизменённая форма.",
+      "verification": "ok"
+    },
+    {
+      "id": "q3",
+      "decision": "fixed",
+      "note": "Исправлены правило для box и ложные запреты fishes/deers; уточнена требуемая неизменённая форма.",
+      "verification": "ok"
+    },
+    {
+      "id": "q4",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q5",
+      "decision": "fixed",
+      "note": "Исправлены правило для box и ложные запреты fishes/deers; уточнена требуемая неизменённая форма.",
+      "verification": "ok"
+    },
+    {
+      "id": "q6",
+      "decision": "fixed",
+      "note": "Исправлены правило для box и ложные запреты fishes/deers; уточнена требуемая неизменённая форма.",
+      "verification": "ok"
+    },
+    {
+      "id": "q7",
+      "decision": "fixed",
+      "note": "Исправлены правило для box и ложные запреты fishes/deers; уточнена требуемая неизменённая форма.",
+      "verification": "ok"
+    },
+    {
+      "id": "q8",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q9",
+      "decision": "fixed",
+      "note": "Исправлены правило для box и ложные запреты fishes/deers; уточнена требуемая неизменённая форма.",
+      "verification": "ok"
+    },
+    {
+      "id": "q10",
+      "decision": "fixed",
+      "note": "Исправлены правило для box и ложные запреты fishes/deers; уточнена требуемая неизменённая форма.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-04-en011-014/check.py",
+      "result": "pass",
+      "evidence": "All 390 IDs/contracts, metadata, decisions versus baseline and current source/context fingerprints verified. Native training validation, signatures, no new course-wide duplicate signatures and exact source-final-embedded equality; validation.log."
+    },
+    {
+      "command": "go test ./internal/grammarbundle ./internal/repository -run 'TestValidateEmbeddedBundleID|TestGrammar.*Bundle|TestGrammar.*Reorder' -count=1",
+      "result": "pass",
+      "evidence": "Both packages pass: 4.808s and 13.894s; go-tests.log."
+    },
+    {
+      "command": "git diff --check; git -C courses/spanish-grammar diff --check; git -C courses/english-grammar diff --check",
+      "result": "pass",
+      "evidence": "Three separately executed commands exit 0; diff-check.log. All 318 pre-existing files outside review docs preserved byte-for-byte; preservation.log."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    }
+  ],
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+}

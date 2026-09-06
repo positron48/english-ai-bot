@@ -1,0 +1,31 @@
+{
+  "existing_files": 25072,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/desaparecer.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/desaparecer.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/desarrollar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/desarrollar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/desayunar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/desayunar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/descansar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/descansar.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-desaparecer-descansar",
+    "docs/grammar-review/reports/6b636eacb940224c154a8a59.json",
+    "docs/grammar-review/reports/303f4e734355c6a67270880c.json",
+    "docs/grammar-review/reports/4bdf8c94c33ce5a585d8218d.json",
+    "docs/grammar-review/reports/81a180600542310ed749446d.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/desaparecer.json": "6e2e930a0942bb24c54bee1702fbe075e847fc5e3164193447b854c1bf62a1ae",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/desaparecer.json": "6e2e930a0942bb24c54bee1702fbe075e847fc5e3164193447b854c1bf62a1ae",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/desarrollar.json": "ae5e2a825ef711810d9078292b478e40f1b836425d519ebd12837140fefef175",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/desarrollar.json": "ae5e2a825ef711810d9078292b478e40f1b836425d519ebd12837140fefef175",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/desayunar.json": "0cb6f880d1c8f84711f51ad4e9c72efde929875dbcdea455500946fda0e7b3a2",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/desayunar.json": "0cb6f880d1c8f84711f51ad4e9c72efde929875dbcdea455500946fda0e7b3a2",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/descansar.json": "783673b04901952fd453601e340d240f825fbdf5cbb63291ad48f8f9f438caab",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/descansar.json": "783673b04901952fd453601e340d240f825fbdf5cbb63291ad48f8f9f438caab"
+  }
+}

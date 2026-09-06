@@ -1,0 +1,647 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/sobrevivir.json",
+  "source_sha256": "1c192e958015e4ceff9b644b6e730a1c778b84051de7cd9a209ecf00a8802eb0",
+  "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197",
+  "editor": "Codex coordinator editor 2026-09-06",
+  "verifier": "Aristotle verifier 2026-09-06",
+  "phase": "done",
+  "reviewed_at": "2026-09-06T11:47:08+00:00",
+  "verified_at": "2026-09-06",
+  "questions": [
+    {
+      "id": "es.presente.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.presente.indicativo, 1:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.presente.indicativo, 2:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.presente.indicativo, 3:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.presente.indicativo, 1:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.presente.indicativo, 2:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.presente.indicativo, 3:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_imperfecto.indicativo, 1:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_imperfecto.indicativo, 2:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_imperfecto.indicativo, 3:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_imperfecto.indicativo, 1:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_imperfecto.indicativo, 2:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_imperfecto.indicativo, 3:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_indefinido.indicativo, 1:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_indefinido.indicativo, 2:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_indefinido.indicativo, 3:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_indefinido.indicativo, 1:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_indefinido.indicativo, 2:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_indefinido.indicativo, 3:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.futuro_simple.indicativo, 1:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.futuro_simple.indicativo, 2:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.futuro_simple.indicativo, 3:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.futuro_simple.indicativo, 1:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.futuro_simple.indicativo, 2:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.futuro_simple.indicativo, 3:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.condicional_simple.indicativo, 1:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.condicional_simple.indicativo, 2:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.condicional_simple.indicativo, 3:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.condicional_simple.indicativo, 1:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.condicional_simple.indicativo, 2:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.condicional_simple.indicativo, 3:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_perfecto_compuesto.indicativo, 1:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_perfecto_compuesto.indicativo, 2:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_perfecto_compuesto.indicativo, 3:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_perfecto_compuesto.indicativo, 1:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_perfecto_compuesto.indicativo, 2:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_perfecto_compuesto.indicativo, 3:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_pluscuamperfecto.indicativo, 1:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_pluscuamperfecto.indicativo, 2:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_pluscuamperfecto.indicativo, 3:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_pluscuamperfecto.indicativo, 1:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_pluscuamperfecto.indicativo, 2:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_pluscuamperfecto.indicativo, 3:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_anterior.indicativo, 1:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_anterior.indicativo, 2:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_anterior.indicativo, 3:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_anterior.indicativo, 1:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_anterior.indicativo, 2:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_anterior.indicativo, 3:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.futuro_perfecto.indicativo, 1:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.futuro_perfecto.indicativo, 2:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.futuro_perfecto.indicativo, 3:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.futuro_perfecto.indicativo, 1:plural. После независимого замечания временная опора заменена на самодостаточное прибытие спасателей.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.futuro_perfecto.indicativo, 2:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.futuro_perfecto.indicativo, 3:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.condicional_perfecto.indicativo, 1:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.condicional_perfecto.indicativo, 2:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.condicional_perfecto.indicativo, 3:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.condicional_perfecto.indicativo, 1:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.condicional_perfecto.indicativo, 2:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.condicional_perfecto.indicativo, 3:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.presente.subjuntivo, 1:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.presente.subjuntivo, 2:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.presente.subjuntivo, 3:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.presente.subjuntivo, 1:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.presente.subjuntivo, 2:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.presente.subjuntivo, 3:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_imperfecto.subjuntivo, 1:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_imperfecto.subjuntivo, 2:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_imperfecto.subjuntivo, 3:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_imperfecto.subjuntivo, 1:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_imperfecto.subjuntivo, 2:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_imperfecto.subjuntivo, 3:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.futuro_simple.subjuntivo, 1:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.futuro_simple.subjuntivo, 2:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.futuro_simple.subjuntivo, 3:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.futuro_simple.subjuntivo, 1:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.futuro_simple.subjuntivo, 2:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.futuro_simple.subjuntivo, 3:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_perfecto.subjuntivo, 1:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_perfecto.subjuntivo, 2:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_perfecto.subjuntivo, 3:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_perfecto.subjuntivo, 1:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_perfecto.subjuntivo, 2:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_perfecto.subjuntivo, 3:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_pluscuamperfecto.subjuntivo, 1:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_pluscuamperfecto.subjuntivo, 2:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_pluscuamperfecto.subjuntivo, 3:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_pluscuamperfecto.subjuntivo, 1:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_pluscuamperfecto.subjuntivo, 2:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.preterito_pluscuamperfecto.subjuntivo, 3:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.futuro_perfecto.subjuntivo, 1:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.futuro_perfecto.subjuntivo, 2:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.futuro_perfecto.subjuntivo, 3:singular.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.futuro_perfecto.subjuntivo, 1:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.futuro_perfecto.subjuntivo, 2:plural.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Форма Jehle, metadata, естественный контекст sobrevivir, полный русский перевод и четыре уникальных same-scope варианта выверены для es.futuro_perfecto.subjuntivo, 3:plural.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "manual editorial read of all 96 cards",
+      "result": "pass",
+      "evidence": "Checked Spanish context, exact target form, complete Russian translation, self-contained reference, distractors and register for every card; refined 9 cards."
+    },
+    {
+      "command": "source and embedded byte comparison",
+      "result": "pass",
+      "evidence": "Source and embedded JSON are byte-identical after coordinator refinement."
+    },
+    {
+      "command": "python3 /tmp/verify_sobrevivir.py; semantic full read with surface substitution: sobrevivir 96/96",
+      "result": "pass",
+      "evidence": "Initial semantic review accepted 95 cards and returned es.futuro_perfecto.indicativo:1:plural for a clearer temporal anchor. The editor applied the exact proposed correction; the subsequent independent recheck accepted it. Structural checks remained 96/96 throughout."
+    },
+    {
+      "command": "editor fix after independent review: es.futuro_perfecto.indicativo:1:plural",
+      "result": "pass",
+      "evidence": "Replaced ambiguous Para el rescate with explicit arrival of rescuers; source and embedded synchronized; 95 prior verification results preserved and corrected card reset to pending."
+    },
+    {
+      "command": "python3 /tmp/verify_sobrevivir.py; targeted recheck es.futuro_perfecto.indicativo:1:plural",
+      "result": "pass",
+      "evidence": "Corrected future-perfect context and RU accepted; fingerprint 1c192e958015e4ceff9b644b6e730a1c778b84051de7cd9a209ecf00a8802eb0, source=embedded, 96/96 Jehle/metadata/options/identity invariants confirmed. Prior 95 semantic verdicts retained."
+    },
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-06-es-verbs-senalar-sobrevivir/check.py",
+      "result": "pass",
+      "evidence": "384 cards pass exact Jehle forms, source/embedded equality, preserved contracts, report fingerprints, unique same-scope options, one answer, 24 checkpoints and no duplicate prompt+answer signatures."
+    },
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-06-es-verbs-senalar-sobrevivir/preservation-check.py",
+      "result": "pass",
+      "evidence": "25568 files outside the allowed batch set preserved; changed=0, missing=0, unexpected_new=0."
+    },
+    {
+      "command": "go test ./internal/verbtraining ./cmd/sync_verb_training_json",
+      "result": "pass",
+      "evidence": "Both focused Go packages pass."
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 scripts/grammar_review_test.py",
+      "result": "pass",
+      "evidence": "13 tests pass."
+    },
+    {
+      "command": "git diff --check && git -C courses/spanish-grammar diff --check",
+      "result": "pass",
+      "evidence": "Root and Spanish submodule diffs have no whitespace errors."
+    },
+    {
+      "command": "quick_validate.py /Users/antonfilatov/.codex/skills/linglow-grammar-review",
+      "result": "pass",
+      "evidence": "Skill is valid."
+    }
+  ],
+  "verification_note": "Независимо прочитаны 96/96 карточек с подстановкой surface_form; формы Jehle, metadata, identity/order, blanks/options, source=embedded, ES/RU и редкие регистры приняты. Повторно проверена исправленная es.futuro_perfecto.indicativo:1:plural: придаточное Cuando lleguen los rescatistas естественно задаёт будущую точку отсчёта, форма habremos sobrevivido и русский перевод точны."
+}

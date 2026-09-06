@@ -1,0 +1,36 @@
+{
+  "existing_files": 25591,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/soler.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/soler.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/sonar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/sonar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/sorprender.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/sorprender.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/subir.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/subir.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-soler-subir",
+    "docs/grammar-review/reports/1158494c987616cb829c6349.json",
+    "docs/grammar-review/reports/c93d4e52d86da061c77be5c0.json",
+    "docs/grammar-review/reports/eaa2135b95b3478291c04e5c.json",
+    "docs/grammar-review/reports/2f35ea3fd6c4d6b4bebb7652.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/soler.json": "5f7f891fb7d83e2febd563823c57593aece397ae106c9a9ba9993c763e81cea5",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/soler.json": "5f7f891fb7d83e2febd563823c57593aece397ae106c9a9ba9993c763e81cea5",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/sonar.json": "836cee358f360f3f25f586c5876c14dfd15790f0f28988afcd30958aa78de5bc",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/sonar.json": "836cee358f360f3f25f586c5876c14dfd15790f0f28988afcd30958aa78de5bc",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/sorprender.json": "69dee0003976fe9b265e21057f59c9d1a4014bde49511c8fe7c9a5cef57c7b67",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/sorprender.json": "69dee0003976fe9b265e21057f59c9d1a4014bde49511c8fe7c9a5cef57c7b67",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/subir.json": "b8b0864633d6fe42fee9d269578bfaf99d0929cecbd380c50320326e7b99118b",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/subir.json": "b8b0864633d6fe42fee9d269578bfaf99d0929cecbd380c50320326e7b99118b"
+  },
+  "preexisting_missing_tracked": [
+    "courses/english-grammar/llm-benchmark/__pycache__/benchmark.cpython-314.pyc",
+    "courses/english-grammar/training-pack-admin/__pycache__/server.cpython-314.pyc",
+    "tools-local/complaints-worker/__pycache__/worker.cpython-314.pyc"
+  ]
+}

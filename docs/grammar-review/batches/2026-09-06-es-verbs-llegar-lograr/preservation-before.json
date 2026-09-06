@@ -1,0 +1,31 @@
+{
+  "existing_files": 25278,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/llegar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/llegar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/llevar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/llevar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/llover.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/llover.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/lograr.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/lograr.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-llegar-lograr",
+    "docs/grammar-review/reports/60b78f2332a49ac9d5d30b78.json",
+    "docs/grammar-review/reports/bce9d50befec3e09ecf71b67.json",
+    "docs/grammar-review/reports/9d41dcb08234185a950d42a3.json",
+    "docs/grammar-review/reports/c0ac3b6c037f69eefec79636.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/llegar.json": "309c22b7d4ea6983c269be374c160f81557339b3c323b395903429db036a4661",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/llegar.json": "309c22b7d4ea6983c269be374c160f81557339b3c323b395903429db036a4661",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/llevar.json": "a0c5916bef521bdbec5ab10b241d9753edb17be25dc4c1702acd9119308eeefb",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/llevar.json": "a0c5916bef521bdbec5ab10b241d9753edb17be25dc4c1702acd9119308eeefb",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/llover.json": "47bea85cca5bf199755c40500b44fd552d7f3a68124cb934e00ce24ac08c201e",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/llover.json": "47bea85cca5bf199755c40500b44fd552d7f3a68124cb934e00ce24ac08c201e",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/lograr.json": "36f076d5586645e96fe5a427965be58b00fad2104f4477d1793adeff6753e24c",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/lograr.json": "36f076d5586645e96fe5a427965be58b00fad2104f4477d1793adeff6753e24c"
+  }
+}

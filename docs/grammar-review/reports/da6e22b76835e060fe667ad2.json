@@ -1,0 +1,350 @@
+{
+  "version": 1,
+  "source": "courses/english-grammar/chapters/039.en.grammar.past_1_past_simple.time_markers_yesterday_last/03-questions.json",
+  "source_sha256": "4a71e4d7dac04e0fa7d5b322b38711cfdc660164b33992f176140d88997a1528",
+  "context_sha256": "d0ee9de186e98bc6a9b256bb50e7d6b9d9d7138e306ebed4e1cf38e871f9caf4",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
+  "reviewed_at": "2026-09-04T17:51:20.847888+00:00",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
+  "questions": [
+    {
+      "id": "q1",
+      "decision": "fixed",
+      "note": "Убрана неподтверждённая частотность и обязательный выбор времени по одному слову.",
+      "verification": "ok"
+    },
+    {
+      "id": "q2",
+      "decision": "fixed",
+      "note": "Маркер определяет время события, а не единственное допустимое грамматическое время.",
+      "verification": "ok"
+    },
+    {
+      "id": "q3",
+      "decision": "fixed",
+      "note": "Уточнено значение и область правила без категорического требования Past Simple или общего запрета предлогов.",
+      "verification": "ok"
+    },
+    {
+      "id": "q4",
+      "decision": "ok",
+      "note": "Значение маркера, ключ и варианты согласованы; условие однозначно.",
+      "verification": "ok"
+    },
+    {
+      "id": "q6",
+      "decision": "fixed",
+      "note": "Не все временные маркеры указывают завершённость; проверяется конкретное значение.",
+      "verification": "ok"
+    },
+    {
+      "id": "q7",
+      "decision": "ok",
+      "note": "Значение маркера, ключ и варианты согласованы; условие однозначно.",
+      "verification": "ok"
+    },
+    {
+      "id": "q8",
+      "decision": "fixed",
+      "note": "Задан смысл «в году», исключающий другие подходящие предлоги.",
+      "verification": "ok"
+    },
+    {
+      "id": "q9",
+      "decision": "fixed",
+      "note": "Уточнено значение и область правила без категорического требования Past Simple или общего запрета предлогов.",
+      "verification": "ok"
+    },
+    {
+      "id": "q10",
+      "decision": "fixed",
+      "note": "Уточнено значение и область правила без категорического требования Past Simple или общего запрета предлогов.",
+      "verification": "ok"
+    },
+    {
+      "id": "q12",
+      "decision": "ok",
+      "note": "Значение маркера, ключ и варианты согласованы; условие однозначно.",
+      "verification": "ok"
+    },
+    {
+      "id": "q13",
+      "decision": "fixed",
+      "note": "Уточнено значение и область правила без категорического требования Past Simple или общего запрета предлогов.",
+      "verification": "ok"
+    },
+    {
+      "id": "q14",
+      "decision": "ok",
+      "note": "Значение маркера, ключ и варианты согласованы; условие однозначно.",
+      "verification": "ok"
+    },
+    {
+      "id": "q15",
+      "decision": "fixed",
+      "note": "Уточнено значение и область правила без категорического требования Past Simple или общего запрета предлогов.",
+      "verification": "ok"
+    },
+    {
+      "id": "q17",
+      "decision": "ok",
+      "note": "Значение маркера, ключ и варианты согласованы; условие однозначно.",
+      "verification": "ok"
+    },
+    {
+      "id": "q18",
+      "decision": "ok",
+      "note": "Значение маркера, ключ и варианты согласованы; условие однозначно.",
+      "verification": "ok"
+    },
+    {
+      "id": "q19",
+      "decision": "fixed",
+      "note": "Уточнено значение и область правила без категорического требования Past Simple или общего запрета предлогов.",
+      "verification": "ok"
+    },
+    {
+      "id": "q20",
+      "decision": "fixed",
+      "note": "Уточнено значение и область правила без категорического требования Past Simple или общего запрета предлогов.",
+      "verification": "ok"
+    },
+    {
+      "id": "q22",
+      "decision": "fixed",
+      "note": "Естественный русский перевод last summer.",
+      "verification": "ok"
+    },
+    {
+      "id": "q23",
+      "decision": "ok",
+      "note": "Значение маркера, ключ и варианты согласованы; условие однозначно.",
+      "verification": "ok"
+    },
+    {
+      "id": "q24",
+      "decision": "ok",
+      "note": "Значение маркера, ключ и варианты согласованы; условие однозначно.",
+      "verification": "ok"
+    },
+    {
+      "id": "q25",
+      "decision": "ok",
+      "note": "Правильное сочетание/форма и объяснение, единственный подходящий ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "q26",
+      "decision": "ok",
+      "note": "Правильное сочетание/форма и объяснение, единственный подходящий ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "q27",
+      "decision": "fixed",
+      "note": "Уточнены смысл или требуемая позиция; снято абсолютное требование времени, исключены допустимые альтернативы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q29",
+      "decision": "fixed",
+      "note": "Уточнены смысл или требуемая позиция; снято абсолютное требование времени, исключены допустимые альтернативы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q31",
+      "decision": "fixed",
+      "note": "Уточнены смысл или требуемая позиция; снято абсолютное требование времени, исключены допустимые альтернативы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q33",
+      "decision": "ok",
+      "note": "Правильное сочетание/форма и объяснение, единственный подходящий ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "q34",
+      "decision": "ok",
+      "note": "Правильное сочетание/форма и объяснение, единственный подходящий ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "q35",
+      "decision": "fixed",
+      "note": "Уточнены смысл или требуемая позиция; снято абсолютное требование времени, исключены допустимые альтернативы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q36",
+      "decision": "ok",
+      "note": "Правильное сочетание/форма и объяснение, единственный подходящий ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "q37",
+      "decision": "ok",
+      "note": "Правильное сочетание/форма и объяснение, единственный подходящий ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "q38",
+      "decision": "fixed",
+      "note": "Уточнены смысл или требуемая позиция; снято абсолютное требование времени, исключены допустимые альтернативы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q39",
+      "decision": "ok",
+      "note": "Правильное сочетание/форма и объяснение, единственный подходящий ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "q41",
+      "decision": "ok",
+      "note": "Правильное сочетание/форма и объяснение, единственный подходящий ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "q42",
+      "decision": "fixed",
+      "note": "Уточнены смысл или требуемая позиция; снято абсолютное требование времени, исключены допустимые альтернативы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q43",
+      "decision": "fixed",
+      "note": "Уточнены смысл или требуемая позиция; снято абсолютное требование времени, исключены допустимые альтернативы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q45",
+      "decision": "ok",
+      "note": "Правильное сочетание/форма и объяснение, единственный подходящий ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "q46",
+      "decision": "ok",
+      "note": "Правильное сочетание/форма и объяснение, единственный подходящий ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "q47",
+      "decision": "fixed",
+      "note": "Уточнены смысл или требуемая позиция; снято абсолютное требование времени, исключены допустимые альтернативы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q48",
+      "decision": "ok",
+      "note": "Правильное сочетание/форма и объяснение, единственный подходящий ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "q49",
+      "decision": "fixed",
+      "note": "Уточнены смысл или требуемая позиция; снято абсолютное требование времени, исключены допустимые альтернативы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q50",
+      "decision": "ok",
+      "note": "Смысл, ключ и позиция указателя времени согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q51",
+      "decision": "ok",
+      "note": "Смысл, ключ и позиция указателя времени согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q53",
+      "decision": "ok",
+      "note": "Смысл, ключ и позиция указателя времени согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q54",
+      "decision": "fixed",
+      "note": "Проверяется явно заданная позиция вместо субъективного выбора среди допустимых порядков; убрана ссылка на букву ответа.",
+      "verification": "ok"
+    },
+    {
+      "id": "q55",
+      "decision": "ok",
+      "note": "Смысл, ключ и позиция указателя времени согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q56",
+      "decision": "fixed",
+      "note": "Проверяется явно заданная позиция вместо субъективного выбора среди допустимых порядков; убрана ссылка на букву ответа.",
+      "verification": "ok"
+    },
+    {
+      "id": "q58",
+      "decision": "ok",
+      "note": "Смысл, ключ и позиция указателя времени согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q59",
+      "decision": "ok",
+      "note": "Смысл, ключ и позиция указателя времени согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q60",
+      "decision": "fixed",
+      "note": "Проверяется явно заданная позиция вместо субъективного выбора среди допустимых порядков; убрана ссылка на букву ответа.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-04-en039-042/check.py",
+      "result": "pass",
+      "evidence": "All 381 IDs/contracts, decisions versus clean pre-batch HEAD, fingerprints, native training validation, signatures and source-final-embedded equality; validation.log."
+    },
+    {
+      "command": "go test ./internal/grammarbundle ./internal/repository -run 'TestValidateEmbeddedBundleID|TestGrammar.*Bundle|TestGrammar.*Reorder' -count=1",
+      "result": "pass",
+      "evidence": "Both packages passed on final integrated data; go-tests.log."
+    },
+    {
+      "command": "git diff --check; git -C courses/spanish-grammar diff --check; git -C courses/english-grammar diff --check",
+      "result": "pass",
+      "evidence": "Three separately executed commands exit 0; diff-check.log. All 1100 earlier dirty files outside review docs preserved; preservation.log."
+    },
+    {
+      "command": "cd courses/english-grammar && bash scripts/assemble-chapter.sh 039.en.grammar.past_1_past_simple.time_markers_yesterday_last",
+      "result": "pass",
+      "evidence": "039-assemble.log: exit 0."
+    },
+    {
+      "command": "cd courses/english-grammar && bash scripts/validate-chapter.sh 039.en.grammar.past_1_past_simple.time_markers_yesterday_last",
+      "result": "pass",
+      "evidence": "039-chapter-after.log: exit 0."
+    },
+    {
+      "command": "cd courses/english-grammar && ajv validate --spec=draft2020 --validate-formats=false --all-errors -s 02-chapter-schema.json -d chapters/039.en.grammar.past_1_past_simple.time_markers_yesterday_last/05-final.json",
+      "result": "pass",
+      "evidence": "039-schema-after.log: exit 0."
+    },
+    {
+      "command": "cd courses/english-grammar && ajv validate -s 02-chapter-schema.json -d chapters/039.en.grammar.past_1_past_simple.time_markers_yesterday_last/05-final.json",
+      "result": "known_baseline",
+      "evidence": "039-assembler-ajv-before.log and 039-assembler-ajv-after.log are byte-identical, exit 1: no draft2020 meta-schema selected. Explicit draft2020 validation passes."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    }
+  ],
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+}

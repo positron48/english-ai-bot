@@ -1,0 +1,81 @@
+{
+  "version": 1,
+  "source": "courses/english-grammar/training_pack/chapters/092/en.02.b2_theory_markers_ever_never.questions.json",
+  "source_sha256": "278e106d0790f176b70374449ce88abd596ac8dfe20e6af6d651cb4f140f0417",
+  "context_sha256": "3e0689a48e7ad77802991a83aaa9e200738ca33cfc437a39990945fbc9e8cad7",
+  "editor": "Codex editor 2026-09-05",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
+  "reviewed_at": "2026-09-05T19:39:24.452507Z",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
+  "questions": [
+    {
+      "id": "q1",
+      "decision": "fixed",
+      "note": "Исправлены или уточнены поля: explanation, prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
+      "verification": "ok"
+    },
+    {
+      "id": "q2",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q3",
+      "decision": "fixed",
+      "note": "Исправлены или уточнены поля: choices, explanation. Устранена смысловая, языковая или ключевая неоднозначность.",
+      "verification": "ok"
+    },
+    {
+      "id": "q4",
+      "decision": "fixed",
+      "note": "Исправлены или уточнены поля: choices. Устранена смысловая, языковая или ключевая неоднозначность.",
+      "verification": "ok"
+    },
+    {
+      "id": "q5",
+      "decision": "fixed",
+      "note": "Исправлены или уточнены поля: explanation. Устранена смысловая, языковая или ключевая неоднозначность.",
+      "verification": "ok"
+    },
+    {
+      "id": "q6",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q7",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q8",
+      "decision": "fixed",
+      "note": "Исправлены или уточнены поля: explanation, prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
+      "verification": "ok"
+    },
+    {
+      "id": "q9",
+      "decision": "fixed",
+      "note": "Исправлены или уточнены поля: choices. Устранена смысловая, языковая или ключевая неоднозначность.",
+      "verification": "ok"
+    },
+    {
+      "id": "q10",
+      "decision": "fixed",
+      "note": "Исправлены или уточнены поля: choices, explanation. Устранена смысловая, языковая или ключевая неоднозначность.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    }
+  ],
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+}

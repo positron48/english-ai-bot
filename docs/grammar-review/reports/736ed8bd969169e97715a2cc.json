@@ -1,0 +1,652 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/resultar.json",
+  "source_sha256": "805e5b20c396990d47f0f01f0099d263e03817f271b137bf586990022351af3a",
+  "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197",
+  "editor": "Helmholtz editor 2026-09-06",
+  "verifier": "Codex coordinator verifier 2026-09-06",
+  "phase": "done",
+  "reviewed_at": "2026-09-06",
+  "verified_at": "2026-09-06",
+  "questions": [
+    {
+      "id": "es.presente.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены естественный контекст resultar, точный русский перевод и четыре уникальных same-scope варианта; форма подтверждена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены естественный контекст resultar, точный русский перевод и четыре уникальных same-scope варианта; форма подтверждена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены естественный контекст resultar, точный русский перевод и четыре уникальных same-scope варианта; форма подтверждена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены естественный контекст resultar, точный русский перевод и четыре уникальных same-scope варианта; форма подтверждена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены естественный контекст resultar, точный русский перевод и четыре уникальных same-scope варианта; форма подтверждена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены естественный контекст resultar, точный русский перевод и четыре уникальных same-scope варианта; форма подтверждена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены естественный контекст resultar, точный русский перевод и четыре уникальных same-scope варианта; форма подтверждена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены естественный контекст resultar, точный русский перевод и четыре уникальных same-scope варианта; форма подтверждена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены естественный контекст resultar, точный русский перевод и четыре уникальных same-scope варианта; форма подтверждена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены естественный контекст resultar, точный русский перевод и четыре уникальных same-scope варианта; форма подтверждена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены естественный контекст resultar, точный русский перевод и четыре уникальных same-scope варианта; форма подтверждена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены естественный контекст resultar, точный русский перевод и четыре уникальных same-scope варианта; форма подтверждена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены естественный контекст resultar, точный русский перевод и четыре уникальных same-scope варианта; форма подтверждена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены естественный контекст resultar, точный русский перевод и четыре уникальных same-scope варианта; форма подтверждена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены естественный контекст resultar, точный русский перевод и четыре уникальных same-scope варианта; форма подтверждена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены естественный контекст resultar, точный русский перевод и четыре уникальных same-scope варианта; форма подтверждена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены естественный контекст resultar, точный русский перевод и четыре уникальных same-scope варианта; форма подтверждена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены естественный контекст resultar, точный русский перевод и четыре уникальных same-scope варианта; форма подтверждена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены естественный контекст resultar, точный русский перевод и четыре уникальных same-scope варианта; форма подтверждена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены естественный контекст resultar, точный русский перевод и четыре уникальных same-scope варианта; форма подтверждена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены естественный контекст resultar, точный русский перевод и четыре уникальных same-scope варианта; форма подтверждена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены естественный контекст resultar, точный русский перевод и четыре уникальных same-scope варианта; форма подтверждена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены естественный контекст resultar, точный русский перевод и четыре уникальных same-scope варианта; форма подтверждена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены естественный контекст resultar, точный русский перевод и четыре уникальных same-scope варианта; форма подтверждена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены естественный контекст resultar, точный русский перевод и четыре уникальных same-scope варианта; форма подтверждена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены естественный контекст resultar, точный русский перевод и четыре уникальных same-scope варианта; форма подтверждена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены естественный контекст resultar, точный русский перевод и четыре уникальных same-scope варианта; форма подтверждена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены естественный контекст resultar, точный русский перевод и четыре уникальных same-scope варианта; форма подтверждена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены естественный контекст resultar, точный русский перевод и четыре уникальных same-scope варианта; форма подтверждена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены естественный контекст resultar, точный русский перевод и четыре уникальных same-scope варианта; форма подтверждена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены естественный контекст resultar, точный русский перевод и четыре уникальных same-scope варианта; форма подтверждена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены естественный контекст resultar, точный русский перевод и четыре уникальных same-scope варианта; форма подтверждена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены естественный контекст resultar, точный русский перевод и четыре уникальных same-scope варианта; форма подтверждена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены естественный контекст resultar, точный русский перевод и четыре уникальных same-scope варианта; форма подтверждена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены естественный контекст resultar, точный русский перевод и четыре уникальных same-scope варианта; форма подтверждена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены естественный контекст resultar, точный русский перевод и четыре уникальных same-scope варианта; форма подтверждена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены естественный контекст resultar, точный русский перевод и четыре уникальных same-scope варианта; форма подтверждена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены естественный контекст resultar, точный русский перевод и четыре уникальных same-scope варианта; форма подтверждена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены естественный контекст resultar, точный русский перевод и четыре уникальных same-scope варианта; форма подтверждена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены естественный контекст resultar, точный русский перевод и четыре уникальных same-scope варианта; форма подтверждена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены естественный контекст resultar, точный русский перевод и четыре уникальных same-scope варианта; форма подтверждена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены естественный контекст resultar, точный русский перевод и четыре уникальных same-scope варианта; форма подтверждена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлена карточка; форма сверена по Jehle, pretérito anterior помещён в явно маркированное старинное повествование, перевод и варианты уточнены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлена карточка; форма сверена по Jehle, pretérito anterior помещён в явно маркированное старинное повествование, перевод и варианты уточнены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлена карточка; форма сверена по Jehle, pretérito anterior помещён в явно маркированное старинное повествование, перевод и варианты уточнены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлена карточка; форма сверена по Jehle, pretérito anterior помещён в явно маркированное старинное повествование, перевод и варианты уточнены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлена карточка; форма сверена по Jehle, pretérito anterior помещён в явно маркированное старинное повествование, перевод и варианты уточнены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлена карточка; форма сверена по Jehle, pretérito anterior помещён в явно маркированное старинное повествование, перевод и варианты уточнены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены естественный контекст resultar, точный русский перевод и четыре уникальных same-scope варианта; форма подтверждена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены естественный контекст resultar, точный русский перевод и четыре уникальных same-scope варианта; форма подтверждена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены естественный контекст resultar, точный русский перевод и четыре уникальных same-scope варианта; форма подтверждена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены естественный контекст resultar, точный русский перевод и четыре уникальных same-scope варианта; форма подтверждена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены естественный контекст resultar, точный русский перевод и четыре уникальных same-scope варианта; форма подтверждена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены естественный контекст resultar, точный русский перевод и четыре уникальных same-scope варианта; форма подтверждена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма, контрфактический контекст, явный русский перевод с «Если бы…» и четыре уникальных варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма, контрфактический контекст, явный русский перевод с «Если бы…» и четыре уникальных варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма, контрфактический контекст, явный русский перевод с «Если бы…» и четыре уникальных варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма, контрфактический контекст, явный русский перевод с «Если бы…» и четыре уникальных варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма, контрфактический контекст, явный русский перевод с «Если бы…» и четыре уникальных варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма, контрфактический контекст, явный русский перевод с «Если бы…» и четыре уникальных варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены естественный контекст resultar, точный русский перевод и четыре уникальных same-scope варианта; форма подтверждена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены естественный контекст resultar, точный русский перевод и четыре уникальных same-scope варианта; форма подтверждена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены естественный контекст resultar, точный русский перевод и четыре уникальных same-scope варианта; форма подтверждена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены естественный контекст resultar, точный русский перевод и четыре уникальных same-scope варианта; форма подтверждена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены естественный контекст resultar, точный русский перевод и четыре уникальных same-scope варианта; форма подтверждена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены естественный контекст resultar, точный русский перевод и четыре уникальных same-scope варианта; форма подтверждена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены естественный контекст resultar, точный русский перевод и четыре уникальных same-scope варианта; форма подтверждена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены естественный контекст resultar, точный русский перевод и четыре уникальных same-scope варианта; форма подтверждена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены естественный контекст resultar, точный русский перевод и четыре уникальных same-scope варианта; форма подтверждена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены естественный контекст resultar, точный русский перевод и четыре уникальных same-scope варианта; форма подтверждена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены естественный контекст resultar, точный русский перевод и четыре уникальных same-scope варианта; форма подтверждена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены естественный контекст resultar, точный русский перевод и четыре уникальных same-scope варианта; форма подтверждена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлена карточка; форма сверена по Jehle, редкое будущее сослагательного помещено в явно маркированную старую юридическую формулу, перевод и варианты уточнены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлена карточка; форма сверена по Jehle, редкое будущее сослагательного помещено в явно маркированную старую юридическую формулу, перевод и варианты уточнены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлена карточка; форма сверена по Jehle, редкое будущее сослагательного помещено в явно маркированную старую юридическую формулу, перевод и варианты уточнены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлена карточка; форма сверена по Jehle, редкое будущее сослагательного помещено в явно маркированную старую юридическую формулу, перевод и варианты уточнены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлена карточка; форма сверена по Jehle, редкое будущее сослагательного помещено в явно маркированную старую юридическую формулу, перевод и варианты уточнены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлена карточка; форма сверена по Jehle, редкое будущее сослагательного помещено в явно маркированную старую юридическую формулу, перевод и варианты уточнены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены естественный контекст resultar, точный русский перевод и четыре уникальных same-scope варианта; форма подтверждена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены естественный контекст resultar, точный русский перевод и четыре уникальных same-scope варианта; форма подтверждена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены естественный контекст resultar, точный русский перевод и четыре уникальных same-scope варианта; форма подтверждена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены естественный контекст resultar, точный русский перевод и четыре уникальных same-scope варианта; форма подтверждена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены естественный контекст resultar, точный русский перевод и четыре уникальных same-scope варианта; форма подтверждена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены естественный контекст resultar, точный русский перевод и четыре уникальных same-scope варианта; форма подтверждена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены естественный контекст resultar, точный русский перевод и четыре уникальных same-scope варианта; форма подтверждена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены естественный контекст resultar, точный русский перевод и четыре уникальных same-scope варианта; форма подтверждена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены естественный контекст resultar, точный русский перевод и четыре уникальных same-scope варианта; форма подтверждена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены естественный контекст resultar, точный русский перевод и четыре уникальных same-scope варианта; форма подтверждена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены естественный контекст resultar, точный русский перевод и четыре уникальных same-scope варианта; форма подтверждена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены естественный контекст resultar, точный русский перевод и четыре уникальных same-scope варианта; форма подтверждена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлена карточка; форма сверена по Jehle, редкое будущее сослагательного помещено в явно маркированную старую юридическую формулу, перевод и варианты уточнены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлена карточка; форма сверена по Jehle, редкое будущее сослагательного помещено в явно маркированную старую юридическую формулу, перевод и варианты уточнены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлена карточка; форма сверена по Jehle, редкое будущее сослагательного помещено в явно маркированную старую юридическую формулу, перевод и варианты уточнены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлена карточка; форма сверена по Jehle, редкое будущее сослагательного помещено в явно маркированную старую юридическую формулу, перевод и варианты уточнены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлена карточка; форма сверена по Jehle, редкое будущее сослагательного помещено в явно маркированную старую юридическую формулу, перевод и варианты уточнены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлена карточка; форма сверена по Jehle, редкое будущее сослагательного помещено в явно маркированную старую юридическую формулу, перевод и варианты уточнены.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 focused resultar Jehle and card-contract validator",
+      "result": "pass",
+      "evidence": "96/96 forms match 16 local Jehle rows; metadata, slots, blank and same-scope option contracts pass."
+    },
+    {
+      "command": "python3 full rendered ES/RU semantic review for resultar",
+      "result": "pass",
+      "evidence": "96/96 contexts read after substitution; natural senses of resultar are used without Russian calques, and rare registers plus counterfactuals are explicit."
+    },
+    {
+      "command": "cmp source embedded and baseline identity/top-level diff check",
+      "result": "pass",
+      "evidence": "Source and embedded are byte-identical; top-level fields and all scope/person/number identities retain their original order."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py check --source courses/spanish-grammar/training_pack/verb_forms/lemmas/resultar.json",
+      "result": "pass",
+      "evidence": "Report resolves to awaiting_verification with 96 completed editorial decisions and current fingerprints."
+    },
+    {
+      "command": "go test ./internal/grammartrainingpack ./internal/verbtraining",
+      "result": "pass",
+      "evidence": "Both focused Go packages passed."
+    },
+    {
+      "command": "python3 -m json.tool for source, embedded and report; parse six JSONL checkpoints; git diff --check in root and Spanish course",
+      "result": "pass",
+      "evidence": "All files parse, exactly six contiguous 16-card checkpoints exist, and both diffs have no whitespace errors."
+    },
+    {
+      "command": "independent full-card read: resultar (96/96)",
+      "result": "pass",
+      "evidence": "Coordinator verifier substituted every answer and checked Jehle forms, ES/RU semantics, resultar meanings, agreement, rare registers, option uniqueness and source/report consistency."
+    },
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-06-es-verbs-resultar-reir/preservation-check.py",
+      "result": "pass",
+      "evidence": "Preserved 25516 paths outside the authorized target set; 0 changed, missing or unexpectedly new."
+    },
+    {
+      "command": "native validate_artifact() for resultar, reunir, revelar, reír",
+      "result": "pass",
+      "evidence": "Generator-native validation accepted all four 96-card lemma banks."
+    },
+    {
+      "command": "go test ./internal/verbtraining ./cmd/sync_verb_training_json",
+      "result": "pass",
+      "evidence": "Both focused Go packages passed."
+    },
+    {
+      "command": "python3 scripts/grammar_review_test.py",
+      "result": "pass",
+      "evidence": "13 tests passed."
+    },
+    {
+      "command": "git diff --check in root and courses/spanish-grammar",
+      "result": "pass",
+      "evidence": "Both repositories report no whitespace errors."
+    }
+  ],
+  "verification_note": "Независимо перечитаны все 96 финальных карточек с подстановкой ответа. Формы совпадают с Jehle; лицо, число, время, metadata и четыре уникальных same-scope варианта согласованы. Контексты естественно разводят значения «оказаться», «получиться» и «быть результатом», без кальки «результировать»; пассивные результаты и субъектные связи точно переданы по-русски. Pretérito anterior и futuros de subjuntivo явно отмечены как старые повествовательные или юридические формулы, а De haberlo sabido переведено явным условием «Если бы». Identity, порядок, top-level, source=embedded и fingerprints проверены."
+}

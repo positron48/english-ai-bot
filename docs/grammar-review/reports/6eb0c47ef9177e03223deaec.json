@@ -1,0 +1,398 @@
+{
+  "version": 1,
+  "source": "courses/english-grammar/chapters/028.en.grammar.now_present_continuous_contrast.form_am_is_are/03-questions.json",
+  "source_sha256": "ac8b6cac21116f0ff09f0b37caafd03b3bc0c856be4aaa730ab8dd338ed6c9a5",
+  "context_sha256": "aa22202c06ab3dfe5db3c9dcd3cad2ba8c65a75d66f0cd64c6e525cb95f7cd37",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
+  "reviewed_at": "2026-09-04T15:36:19.424794+00:00",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
+  "questions": [
+    {
+      "id": "q1",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q2",
+      "decision": "fixed",
+      "note": "Явно задано настоящее время формы be, чтобы исключить was/were.",
+      "verification": "ok"
+    },
+    {
+      "id": "q3",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q5",
+      "decision": "fixed",
+      "note": "Явно задано настоящее время формы be, чтобы исключить was/were.",
+      "verification": "ok"
+    },
+    {
+      "id": "q6",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q7",
+      "decision": "fixed",
+      "note": "Явно задано настоящее время формы be, чтобы исключить was/were.",
+      "verification": "ok"
+    },
+    {
+      "id": "q8",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q10",
+      "decision": "fixed",
+      "note": "Явно задано настоящее время формы be, чтобы исключить was/were.",
+      "verification": "ok"
+    },
+    {
+      "id": "q11",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q12",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q13",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q14",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q15",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q16",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q17",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q18",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q19",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q21",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q22",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q23",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q25",
+      "decision": "fixed",
+      "note": "Удалён дубликат правильного ответа swimming, уточнено правило e или улучшены орфографические дистракторы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q26",
+      "decision": "fixed",
+      "note": "Удалён дубликат правильного ответа swimming, уточнено правило e или улучшены орфографические дистракторы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q27",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q29",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q30",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q31",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q33",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q34",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q35",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q37",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q38",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q39",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q41",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q42",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q43",
+      "decision": "fixed",
+      "note": "Удалён дубликат правильного ответа swimming, уточнено правило e или улучшены орфографические дистракторы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q45",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q46",
+      "decision": "fixed",
+      "note": "Удалён дубликат правильного ответа swimming, уточнено правило e или улучшены орфографические дистракторы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q47",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q49",
+      "decision": "fixed",
+      "note": "Удалён дубликат правильного ответа swimming, уточнено правило e или улучшены орфографические дистракторы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q50",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q52",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q53",
+      "decision": "fixed",
+      "note": "Уточнено значение die или учтён допустимый словарный вариант tieing.",
+      "verification": "ok"
+    },
+    {
+      "id": "q54",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q56",
+      "decision": "fixed",
+      "note": "Уточнено значение die или учтён допустимый словарный вариант tieing.",
+      "verification": "ok"
+    },
+    {
+      "id": "q57",
+      "decision": "fixed",
+      "note": "Уточнено значение die или учтён допустимый словарный вариант tieing.",
+      "verification": "ok"
+    },
+    {
+      "id": "q59",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q60",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q62",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q63",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q64",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q65",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q66",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q67",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q68",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q69",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q72",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q75",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-04-en027-030/check.py",
+      "result": "pass",
+      "evidence": "All 422 IDs/contracts, decisions versus baseline, fingerprints, native training validation, signatures and source-final-embedded equality; validation.log."
+    },
+    {
+      "command": "go test ./internal/grammarbundle ./internal/repository -run 'TestValidateEmbeddedBundleID|TestGrammar.*Bundle|TestGrammar.*Reorder' -count=1",
+      "result": "pass",
+      "evidence": "Both packages passed on final integrated data; go-tests.log."
+    },
+    {
+      "command": "git diff --check; git -C courses/spanish-grammar diff --check; git -C courses/english-grammar diff --check",
+      "result": "pass",
+      "evidence": "Three separately executed commands exit 0; diff-check.log. All 764 earlier dirty files outside review docs preserved; preservation.log."
+    },
+    {
+      "command": "cd courses/english-grammar && bash scripts/assemble-chapter.sh 028.en.grammar.now_present_continuous_contrast.form_am_is_are",
+      "result": "pass",
+      "evidence": "028-assemble.log: exit 0."
+    },
+    {
+      "command": "cd courses/english-grammar && bash scripts/validate-chapter.sh 028.en.grammar.now_present_continuous_contrast.form_am_is_are",
+      "result": "pass",
+      "evidence": "028-chapter-after.log: exit 0."
+    },
+    {
+      "command": "cd courses/english-grammar && ajv validate --spec=draft2020 --validate-formats=false --all-errors -s 02-chapter-schema.json -d chapters/028.en.grammar.now_present_continuous_contrast.form_am_is_are/05-final.json",
+      "result": "pass",
+      "evidence": "028-schema-after.log: exit 0."
+    },
+    {
+      "command": "cd courses/english-grammar && ajv validate -s 02-chapter-schema.json -d chapters/028.en.grammar.now_present_continuous_contrast.form_am_is_are/05-final.json",
+      "result": "known_baseline",
+      "evidence": "028-assembler-ajv-before.log and 028-assembler-ajv-after.log are byte-identical, exit 1: no draft2020 meta-schema selected. Explicit draft2020 validation passes."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    }
+  ],
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+}

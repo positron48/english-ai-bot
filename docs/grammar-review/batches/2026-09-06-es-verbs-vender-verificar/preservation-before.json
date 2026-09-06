@@ -1,0 +1,36 @@
+{
+  "existing_files": 25693,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/vender.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/vender.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/venir.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/venir.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/ver.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/ver.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/verificar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/verificar.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-vender-verificar",
+    "docs/grammar-review/reports/83d0cbb36d8561c5f043ae02.json",
+    "docs/grammar-review/reports/1cfd8c9c044ad8f9d78aa61b.json",
+    "docs/grammar-review/reports/37519c3b4a4c1d9467abb17c.json",
+    "docs/grammar-review/reports/d0a04c0f479c4d41762b1f01.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/vender.json": "b43a5bef8fb755563387722019965164f4dc7982dd4b262814b99680de76bd20",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/vender.json": "b43a5bef8fb755563387722019965164f4dc7982dd4b262814b99680de76bd20",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/venir.json": "006c822d64a649ae0d3ab6756ea4bf8f610515d3a3a7d223a5038a70bd8bdd37",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/venir.json": "006c822d64a649ae0d3ab6756ea4bf8f610515d3a3a7d223a5038a70bd8bdd37",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/ver.json": "66e42b9b285697270b0c7ff4a9eff97ff3052dd56ed4c2d1cc947ddedc90e375",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/ver.json": "66e42b9b285697270b0c7ff4a9eff97ff3052dd56ed4c2d1cc947ddedc90e375",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/verificar.json": "d4403b7637a4efa9c8944d59af327096df0fa96dafd99a6dc0212a82627937f7",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/verificar.json": "d4403b7637a4efa9c8944d59af327096df0fa96dafd99a6dc0212a82627937f7"
+  },
+  "preexisting_missing_tracked": [
+    "courses/english-grammar/llm-benchmark/__pycache__/benchmark.cpython-314.pyc",
+    "courses/english-grammar/training-pack-admin/__pycache__/server.cpython-314.pyc",
+    "tools-local/complaints-worker/__pycache__/worker.cpython-314.pyc"
+  ]
+}

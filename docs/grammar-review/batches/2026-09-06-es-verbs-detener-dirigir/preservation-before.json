@@ -1,0 +1,31 @@
+{
+  "existing_files": 25096,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/detener.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/detener.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/devolver.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/devolver.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/devorar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/devorar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/dirigir.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/dirigir.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-detener-dirigir",
+    "docs/grammar-review/reports/976f95e251fc494b92748031.json",
+    "docs/grammar-review/reports/d874eaa075c57c3bf8450d37.json",
+    "docs/grammar-review/reports/0e27d1657226bd0a0dec2f05.json",
+    "docs/grammar-review/reports/29aa2ad21696991373d7481e.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/detener.json": "a080fe6bf9795d0e2cbd97f8022d51f883effe925bd7ca7b707754d798de25f7",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/detener.json": "a080fe6bf9795d0e2cbd97f8022d51f883effe925bd7ca7b707754d798de25f7",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/devolver.json": "796936d5529f7f8a5d954d39a2de467cc517be1f193ae4fa1d61ba27c88d7744",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/devolver.json": "796936d5529f7f8a5d954d39a2de467cc517be1f193ae4fa1d61ba27c88d7744",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/devorar.json": "c0441e0f37c23616c17280487be283a70240b1eb59ebb212b2a6a2fb1f52381e",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/devorar.json": "c0441e0f37c23616c17280487be283a70240b1eb59ebb212b2a6a2fb1f52381e",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/dirigir.json": "f4302ca85764b9b5f9c3de08e74f33be6aa856b2307d5fd6dcc3d047273c4653",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/dirigir.json": "f4302ca85764b9b5f9c3de08e74f33be6aa856b2307d5fd6dcc3d047273c4653"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "existing_files": 25010,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/consumir.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/consumir.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/contar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/contar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/contener.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/contener.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-consumir-contener",
+    "docs/grammar-review/reports/1747dda33873c417515a1b99.json",
+    "docs/grammar-review/reports/85f3e6254d95e8b07181a3d8.json",
+    "docs/grammar-review/reports/ef495dc8592adda1a64394f3.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/consumir.json": "c5a34696dfdddfb601e36e79d13202b8fbf54d3379a4cfa7a921bd1c800afaaf",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/consumir.json": "c5a34696dfdddfb601e36e79d13202b8fbf54d3379a4cfa7a921bd1c800afaaf",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/contar.json": "0cc0ab575e7d38667540f398333ac053b8fc296644d303211e6efdb7c0c855eb",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/contar.json": "0cc0ab575e7d38667540f398333ac053b8fc296644d303211e6efdb7c0c855eb",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/contener.json": "b9cd3ad6974d67022c61d65d7d9db95c6ec0fc89a1786594195af384c602e509",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/contener.json": "b9cd3ad6974d67022c61d65d7d9db95c6ec0fc89a1786594195af384c602e509"
+  }
+}

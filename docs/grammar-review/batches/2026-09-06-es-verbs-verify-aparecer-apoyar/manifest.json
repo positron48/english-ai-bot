@@ -1,0 +1,34 @@
+{
+  "aparecer": {
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/aparecer.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/aparecer.json",
+    "report": "docs/grammar-review/reports/89de62208d14b43c5fe8d0ec.json",
+    "editor": "Codex editor 2026-09-06",
+    "source_sha256": "6dfd941a9b6b6b042087117b92a3a48913d216cb03a2c15f91ab7b7b2f069e16",
+    "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197"
+  },
+  "aplicar": {
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/aplicar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/aplicar.json",
+    "report": "docs/grammar-review/reports/920aef2eb16b243a945f39e1.json",
+    "editor": "Codex editor 2026-09-06",
+    "source_sha256": "b842af6c7b4796d4fae554fb641b7d6112aff0162e44fe8f70443519a726879b",
+    "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197"
+  },
+  "apostar": {
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/apostar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/apostar.json",
+    "report": "docs/grammar-review/reports/783da360bf746916a9b697de.json",
+    "editor": "Codex editor 2026-09-06",
+    "source_sha256": "47321c1e8413bc4f61977c141d6d6292efbb1b42ccf16bdb68aa4f7082b3f561",
+    "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197"
+  },
+  "apoyar": {
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/apoyar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/apoyar.json",
+    "report": "docs/grammar-review/reports/10d25122aafc2b328ebab030.json",
+    "editor": "Codex editor 2026-09-06",
+    "source_sha256": "be7403287df1d2f48fa8532021dfa87561e2545765c5f2f7455bc5fd5f40c50e",
+    "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197"
+  }
+}

@@ -1,0 +1,36 @@
+{
+  "existing_files": 25578,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/señalar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/señalar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/significar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/significar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/situar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/situar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/sobrevivir.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/sobrevivir.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-senalar-sobrevivir",
+    "docs/grammar-review/reports/58c5052f68d663fcf95ef6a1.json",
+    "docs/grammar-review/reports/034e7f58a02f064c3a4af6dc.json",
+    "docs/grammar-review/reports/8c858a362880115916d3515d.json",
+    "docs/grammar-review/reports/07176ea68abc048a6ab3de34.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/señalar.json": "494405181e6fb431519bf12a016fd1581d05c05ef79399c1ec9d4edd9d62d3d3",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/señalar.json": "494405181e6fb431519bf12a016fd1581d05c05ef79399c1ec9d4edd9d62d3d3",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/significar.json": "c435809a72cf6a83285705aad907471570c8bbf092315145e6e9b08409c0538d",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/significar.json": "c435809a72cf6a83285705aad907471570c8bbf092315145e6e9b08409c0538d",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/situar.json": "e8251c1a91583aa2bcd49ed5f7de0293d408a1c30abcb9351c003d1948840230",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/situar.json": "e8251c1a91583aa2bcd49ed5f7de0293d408a1c30abcb9351c003d1948840230",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/sobrevivir.json": "ea7048b6d3d258adda7a0924f321b8927909a80e43586220d507ae3d204f8d9f",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/sobrevivir.json": "ea7048b6d3d258adda7a0924f321b8927909a80e43586220d507ae3d204f8d9f"
+  },
+  "preexisting_missing_tracked": [
+    "courses/english-grammar/llm-benchmark/__pycache__/benchmark.cpython-314.pyc",
+    "courses/english-grammar/training-pack-admin/__pycache__/server.cpython-314.pyc",
+    "tools-local/complaints-worker/__pycache__/worker.cpython-314.pyc"
+  ]
+}

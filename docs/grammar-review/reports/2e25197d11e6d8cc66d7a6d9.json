@@ -1,0 +1,632 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/romper.json",
+  "source_sha256": "51c54ab21a7e0c61493b216fb97de6ef1d5c43b967c9eac0feba3d270ba3caac",
+  "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197",
+  "editor": "Aristotle editor 2026-09-06",
+  "verifier": "Helmholtz verifier 2026-09-06",
+  "phase": "done",
+  "reviewed_at": "2026-09-06",
+  "verified_at": "2026-09-06",
+  "questions": [
+    {
+      "id": "es.presente.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.presente.indicativo, 1:singular. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.presente.indicativo, 2:singular. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.presente.indicativo, 3:singular. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.presente.indicativo, 1:plural. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.presente.indicativo, 2:plural. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.presente.indicativo, 3:plural. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_imperfecto.indicativo, 1:singular. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_imperfecto.indicativo, 2:singular. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_imperfecto.indicativo, 3:singular. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_imperfecto.indicativo, 1:plural. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope. Финальная семантическая вычитка дополнительно уточнила вид, сочетаемость или юридический объект.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_imperfecto.indicativo, 2:plural. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_imperfecto.indicativo, 3:plural. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_indefinido.indicativo, 1:singular. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_indefinido.indicativo, 2:singular. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_indefinido.indicativo, 3:singular. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_indefinido.indicativo, 1:plural. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_indefinido.indicativo, 2:plural. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_indefinido.indicativo, 3:plural. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.futuro_simple.indicativo, 1:singular. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.futuro_simple.indicativo, 2:singular. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.futuro_simple.indicativo, 3:singular. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.futuro_simple.indicativo, 1:plural. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.futuro_simple.indicativo, 2:plural. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.futuro_simple.indicativo, 3:plural. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.condicional_simple.indicativo, 1:singular. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.condicional_simple.indicativo, 2:singular. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.condicional_simple.indicativo, 3:singular. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.condicional_simple.indicativo, 1:plural. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.condicional_simple.indicativo, 2:plural. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.condicional_simple.indicativo, 3:plural. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_perfecto_compuesto.indicativo, 1:singular. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_perfecto_compuesto.indicativo, 2:singular. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope. Финальная семантическая вычитка дополнительно уточнила вид, сочетаемость или юридический объект.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_perfecto_compuesto.indicativo, 3:singular. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_perfecto_compuesto.indicativo, 1:plural. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_perfecto_compuesto.indicativo, 2:plural. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_perfecto_compuesto.indicativo, 3:plural. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_pluscuamperfecto.indicativo, 1:singular. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_pluscuamperfecto.indicativo, 2:singular. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_pluscuamperfecto.indicativo, 3:singular. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_pluscuamperfecto.indicativo, 1:plural. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_pluscuamperfecto.indicativo, 2:plural. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_pluscuamperfecto.indicativo, 3:plural. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope. После замечания Helmholtz добавлена явная последующая точка отсчёта «Al terminar la emisión, quedó claro...», чтобы habían roto однозначно выражало pluscuamperfecto; verdict needs_fix сохранён до повторной проверки.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_anterior.indicativo, 1:singular. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_anterior.indicativo, 2:singular. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_anterior.indicativo, 3:singular. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_anterior.indicativo, 1:plural. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_anterior.indicativo, 2:plural. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_anterior.indicativo, 3:plural. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.futuro_perfecto.indicativo, 1:singular. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.futuro_perfecto.indicativo, 2:singular. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.futuro_perfecto.indicativo, 3:singular. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.futuro_perfecto.indicativo, 1:plural. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.futuro_perfecto.indicativo, 2:plural. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.futuro_perfecto.indicativo, 3:plural. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.condicional_perfecto.indicativo, 1:singular. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope. Финальная семантическая вычитка дополнительно уточнила вид, сочетаемость или юридический объект.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.condicional_perfecto.indicativo, 2:singular. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.condicional_perfecto.indicativo, 3:singular. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.condicional_perfecto.indicativo, 1:plural. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.condicional_perfecto.indicativo, 2:plural. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.condicional_perfecto.indicativo, 3:plural. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.presente.subjuntivo, 1:singular. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.presente.subjuntivo, 2:singular. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.presente.subjuntivo, 3:singular. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.presente.subjuntivo, 1:plural. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.presente.subjuntivo, 2:plural. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.presente.subjuntivo, 3:plural. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_imperfecto.subjuntivo, 1:singular. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_imperfecto.subjuntivo, 2:singular. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_imperfecto.subjuntivo, 3:singular. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_imperfecto.subjuntivo, 1:plural. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_imperfecto.subjuntivo, 2:plural. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_imperfecto.subjuntivo, 3:plural. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.futuro_simple.subjuntivo, 1:singular. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope. Финальная семантическая вычитка дополнительно уточнила вид, сочетаемость или юридический объект.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.futuro_simple.subjuntivo, 2:singular. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.futuro_simple.subjuntivo, 3:singular. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.futuro_simple.subjuntivo, 1:plural. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.futuro_simple.subjuntivo, 2:plural. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.futuro_simple.subjuntivo, 3:plural. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_perfecto.subjuntivo, 1:singular. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_perfecto.subjuntivo, 2:singular. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_perfecto.subjuntivo, 3:singular. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_perfecto.subjuntivo, 1:plural. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_perfecto.subjuntivo, 2:plural. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_perfecto.subjuntivo, 3:plural. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_pluscuamperfecto.subjuntivo, 1:singular. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_pluscuamperfecto.subjuntivo, 2:singular. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_pluscuamperfecto.subjuntivo, 3:singular. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_pluscuamperfecto.subjuntivo, 1:plural. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_pluscuamperfecto.subjuntivo, 2:plural. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.preterito_pluscuamperfecto.subjuntivo, 3:plural. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.futuro_perfecto.subjuntivo, 1:singular. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope. Финальная семантическая вычитка дополнительно уточнила вид, сочетаемость или юридический объект.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.futuro_perfecto.subjuntivo, 2:singular. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.futuro_perfecto.subjuntivo, 3:singular. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.futuro_perfecto.subjuntivo, 1:plural. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.futuro_perfecto.subjuntivo, 2:plural. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный ES-контекст, полный RU-перевод и варианты для es.futuro_perfecto.subjuntivo, 3:plural. Форма, включая неправильное причастие roto, сверена с локальной Jehle; значения romper/romperse и управление разведены, четыре уникальных варианта относятся к одному scope. Финальная семантическая вычитка дополнительно уточнила вид, сочетаемость или юридический объект.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 /tmp/validate_romper.py",
+      "result": "pass",
+      "evidence": "96/96 cards match Jehle including roto; metadata, one blank, ES/RU meaning, four unique same-scope options, identity/order/top-level passed."
+    },
+    {
+      "command": "semantic full read with answer substitution: romper 96/96",
+      "result": "pass",
+      "evidence": "All 96 final contexts independently read after substitution; romper/romperse and break/violate/tear/interrupt meanings distinguished; rare registers and explicit De haberlo sabido translations checked."
+    },
+    {
+      "command": "go test ./internal/grammartrainingpack",
+      "result": "pass",
+      "evidence": "Embedded grammar training pack tests passed."
+    },
+    {
+      "command": "cmp source embedded; python3 scripts/grammar-review.py check --source courses/spanish-grammar/training_pack/verb_forms/lemmas/romper.json; git diff --check -- assigned paths",
+      "result": "pass",
+      "evidence": "Source and embedded are byte-identical; report has fresh source/context fingerprints and awaits independent verification; whitespace checks passed."
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 /tmp/verify_romper.py; semantic verification with answer substitution: romper 96/96",
+      "result": "pass",
+      "evidence": "96 forms match 16 Jehle scopes; metadata/slots, one blank, four unique same-scope options with one answer, source=embedded, preserved baseline identity/order/top-level and fresh source/context fingerprints pass. Full semantic read accepted 95 cards and isolated one missing past reference point in es.preterito_pluscuamperfecto.indicativo:3:plural."
+    },
+    {
+      "command": "post-verifier correction: romper es.preterito_pluscuamperfecto.indicativo:3:plural; source=embedded; invariants; fingerprint refresh",
+      "result": "pass",
+      "evidence": "Applied exact requested ES/RU reference-point correction only; form habían roto, metadata, options, IDs/order/top-level preserved; source=embedded; source_sha256 51c54ab21a7e0c61493b216fb97de6ef1d5c43b967c9eac0feba3d270ba3caac; report remains 95 ok + 1 needs_fix for Helmholtz recheck."
+    },
+    {
+      "command": "targeted romper recheck; reconstruct prior bytes; PYTHONDONTWRITEBYTECODE=1 python3 /tmp/verify_romper.py",
+      "result": "pass",
+      "evidence": "Corrected card es.preterito_pluscuamperfecto.indicativo:3:plural now has an explicit later past reference point and an exact RU translation. Replacing only its two corrected text fields reconstructs the prior reviewed fingerprint 939ecab4c9369822bfd8bd7454e8db69a04bfede1cba42825d2d69dfe28b1220, proving the other 95 cards are unchanged. Current source fingerprint is 51c54ab21a7e0c61493b216fb97de6ef1d5c43b967c9eac0feba3d270ba3caac; source=embedded and all structural/Jehlé checks pass."
+    },
+    {
+      "command": "final batch validation: check.py, validate_artifact, focused grammar-review, Go and review tests, diff and preservation checks",
+      "result": "pass",
+      "evidence": "384 cards passed exact Jehle/contracts/fingerprint checks and native validation; four focused sources are done; Go packages and 13 grammar-review tests passed; root/course diffs and 25529 preserved files passed; skill quick validation passed."
+    }
+  ],
+  "verification_note": "Независимая полная проверка 96/96 карточек romper завершена. После исправления повторно проверена es.preterito_pluscuamperfecto.indicativo:3:plural: оборот «Al terminar la emisión, quedó claro que...» задаёт явную более позднюю точку отсчёта для «habían roto», а русский перевод полностью и естественно передаёт временную связь. Реконструкция предыдущей проверенной версии дала прежний fingerprint 939ecab4c9369822bfd8bd7454e8db69a04bfede1cba42825d2d69dfe28b1220, что подтверждает отсутствие изменений в остальных 95 карточках. Все 96 карточек приняты."
+}

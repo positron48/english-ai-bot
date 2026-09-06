@@ -1,0 +1,31 @@
+{
+  "existing_files": 25323,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/mostrar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/mostrar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/mover.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/mover.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/nacer.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/nacer.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/nadar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/nadar.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-mostrar-nadar",
+    "docs/grammar-review/reports/659524619570eb85e204b47a.json",
+    "docs/grammar-review/reports/74943a889399fd11a2f20ace.json",
+    "docs/grammar-review/reports/fa9bfc0bf4b4e17c39e89ce6.json",
+    "docs/grammar-review/reports/4c26575c8a35b130e870873e.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/mostrar.json": "814e48dddba9a35694ba8a6b15936bcf8fb405cc980c3d9c12f8e3253983247a",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/mostrar.json": "814e48dddba9a35694ba8a6b15936bcf8fb405cc980c3d9c12f8e3253983247a",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/mover.json": "478228235c36f8831829ed24801aaa9d3d6f114c4dc921206875b776458cce45",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/mover.json": "478228235c36f8831829ed24801aaa9d3d6f114c4dc921206875b776458cce45",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/nacer.json": "b961d95d7833142d1f768ce4fa6dc2db18660d050a876d6a6d33957ff4b8f534",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/nacer.json": "b961d95d7833142d1f768ce4fa6dc2db18660d050a876d6a6d33957ff4b8f534",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/nadar.json": "0e963d1e7f1b5b23e760fd68cf194dfcb7fc1611682a858040ed1c5be88f9d08",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/nadar.json": "0e963d1e7f1b5b23e760fd68cf194dfcb7fc1611682a858040ed1c5be88f9d08"
+  }
+}

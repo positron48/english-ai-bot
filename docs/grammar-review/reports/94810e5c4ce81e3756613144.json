@@ -1,0 +1,672 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/acercar.json",
+  "source_sha256": "66e493951e2d644743b88d39117311a70ab5e0b9653dc53a4de999a1c3700d66",
+  "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197",
+  "editor": "Codex editor 2026-09-06",
+  "verifier": "edit_vaciar independent verifier 2026-09-06",
+  "phase": "done",
+  "reviewed_at": "2026-09-06",
+  "verified_at": "2026-09-06T16:08:08Z",
+  "questions": [
+    {
+      "id": "es.presente.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны. Русский перевод контрфактического условия исправлен на явную конструкцию «Если бы … знал/знали …».",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны. Русский перевод контрфактического условия исправлен на явную конструкцию «Если бы … знал/знали …».",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны. Русский перевод контрфактического условия исправлен на явную конструкцию «Если бы … знал/знали …».",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны. Русский перевод контрфактического условия исправлен на явную конструкцию «Если бы … знал/знали …».",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны. Русский перевод контрфактического условия исправлен на явную конструкцию «Если бы … знал/знали …».",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны. Русский перевод контрфактического условия исправлен на явную конструкцию «Если бы … знал/знали …».",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны. Независимая проверка: Me preocupa que yo haya... с совпадающим субъектом неестественно без контрастного контекста; явный внешний субъект исправляет конструкцию. Замена: ES: A la coordinadora le preocupa que yo ya _ la silla a la mesa. (acercar) RU: Координатора беспокоит, что я уже подвинул стул к столу.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны. Независимая проверка: Русский текст должен явно обозначать уже завершённое действие futuro perfecto de subjuntivo. Замена: RU: В юридическом тексте: если окажется, что к этой дате я уже подвинул стул к столу, новую расстановку утвердят.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны. Независимая проверка: Русский текст должен явно обозначать уже завершённое действие futuro perfecto de subjuntivo. Замена: RU: В юридическом тексте: если окажется, что к этой дате ты уже подвинул лампу к стене, новую расстановку утвердят.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны. Независимая проверка: Русский текст должен явно обозначать уже завершённое действие futuro perfecto de subjuntivo. Замена: RU: В юридическом тексте: если окажется, что к этой дате он уже подвинул коробку к двери, новую расстановку утвердят.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны. Независимая проверка: Русский текст должен явно обозначать уже завершённое действие futuro perfecto de subjuntivo. Замена: RU: В юридическом тексте: если окажется, что к этой дате мы уже подвинули столы к сцене, новую расстановку утвердят.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны. Независимая проверка: Русский текст должен явно обозначать уже завершённое действие futuro perfecto de subjuntivo. Замена: RU: В юридическом тексте: если окажется, что к этой дате вы уже подвинули кресла к огню, новую расстановку утвердят.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; контекст, перевод и уникальные варианты ответа переписаны. Независимая проверка: Русский текст должен явно обозначать уже завершённое действие futuro perfecto de subjuntivo. Замена: RU: В юридическом тексте: если окажется, что к этой дате они уже подвинули тележки ко входу, новую расстановку утвердят.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-06-es-verbs-acabar-acercar/check.py",
+      "result": "pass",
+      "evidence": "288/288: exact Jehle forms, stable identities/order, canonical scope coordinates, unique options, matching embedded files and fingerprints; 18 checkpoints."
+    },
+    {
+      "command": "validate_artifact() from courses/spanish-grammar/scripts/generate-verb-forms-training.py for all three lemmas",
+      "result": "pass",
+      "evidence": "Strict 16 scopes x 6 slots validation passed for acabar, aceptar and acercar."
+    },
+    {
+      "command": "go test ./internal/verbtraining ./cmd/sync_verb_training_json",
+      "result": "pass",
+      "evidence": "Both focused Go packages passed."
+    },
+    {
+      "command": "python3 scripts/grammar_review_test.py",
+      "result": "pass",
+      "evidence": "13 tests passed."
+    },
+    {
+      "command": "git diff --check && git -C courses/spanish-grammar diff --check",
+      "result": "pass",
+      "evidence": "No whitespace errors in root or Spanish course diff."
+    },
+    {
+      "command": "compare 24818 pre-batch SHA-256 hashes outside allowed paths",
+      "result": "pass",
+      "evidence": "24818 preserved; 0 changed; 0 missing."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py check --language es --bank verbs --source courses/spanish-grammar/training_pack/verb_forms/lemmas/acercar.json",
+      "result": "known_baseline",
+      "evidence": "Exit 1 solely because all 96 editorial decisions await an independent verifier; source/context fingerprints and coverage are current."
+    },
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-06-es-verbs-counterfactual-fix/check.py",
+      "result": "pass",
+      "evidence": "Targeted campaign-wide correction: six condicional perfecto translations per lemma now use an explicit Russian counterfactual condition; source/embedded and report fingerprints remain synchronized."
+    },
+    {
+      "command": "independent semantic full read of all 96 final acercar cards with each authoritative form substituted and all four options inspected",
+      "result": "known_baseline",
+      "evidence": "Read cards 0–95 in identity order and checked natural ES, exact RU, acercar meaning, standalone ambiguity, person/number and tense/aspect. Findings are limited to indexes 78 and 90–95; the other 89 cards pass."
+    },
+    {
+      "command": "independent Jehle, immutable-baseline identity/order/top-level, blank/options, source=embedded, manifest/report fingerprint and native validate_artifact checks for acercar",
+      "result": "pass",
+      "evidence": "96/96 exact Jehle forms and metadata; one blank; four unique same-scope options with answer once; identity/order/top-level preserved; source and embedded byte-identical; source/report/manifest fingerprint 9f49c6f9e6e22ddebfd45a1a4ff74d385594ffc594a6dcc475ab907df2c532e9; native validator passed."
+    },
+    {
+      "command": "independent rare-tense and counterfactual review for acercar",
+      "result": "known_baseline",
+      "evidence": "Pretérito anterior and both future subjunctives have explicit literary/legal framing; all six De haberlo sabido Russian translations begin with explicit Если бы ... знал/знали. Indexes 90–95 need Russian wording that explicitly presents the future-perfect-subjunctive action as already completed; exact replacements are recorded."
+    },
+    {
+      "command": "go test ./internal/grammartrainingpack; report JSON and exact-path diff-check",
+      "result": "pass",
+      "evidence": "Focused embedded-data test passed; report is valid JSON with no whitespace errors. Source, embedded, manifest and shared docs were not edited by this verifier."
+    },
+    {
+      "command": "post-verification repair of acercar indices 78 and 90–95 by edit_utilizar",
+      "result": "pass",
+      "evidence": "Applied the exact verifier-requested ES/RU pair at 78 and exact RU replacements at 90–95 while preserving those six Spanish prompts. Forms/options/identity/order remain unchanged; source and embedded synchronized. Only the seven repaired verification items were reset to pending for edit_vaciar recheck."
+    },
+    {
+      "command": "post-repair native validate_artifact, focused grammar-review status, go test ./internal/grammartrainingpack and assigned-path diff checks",
+      "result": "pass",
+      "evidence": "Native validator accepted 96 cards; focused status is awaiting_verification with repaired indexes 78 and 90–95 pending; embedded Go tests passed; source=embedded, manifest/report/repair fingerprints and scoped whitespace checks pass at 66e493951e2d644743b88d39117311a70ab5e0b9653dc53a4de999a1c3700d66."
+    },
+    {
+      "command": "same-verifier recheck of repaired acercar indexes 78 and 90–95; exact substituted ES/RU, source=embedded, manifest/report fingerprint, Jehle/forms/options, baseline identity/order/top-level, native validate_artifact and Go embedded-data test",
+      "result": "pass",
+      "evidence": "All seven requested fixes match the recorded replacements and resolve the original naturalness and completed-action findings. The other 89 accepted cards remain unchanged; all 96 verification rows are now ok. Fingerprint 66e493951e2d644743b88d39117311a70ab5e0b9653dc53a4de999a1c3700d66 is consistent across source, report and manifest; source equals embedded."
+    },
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-06-es-verbs-verify-aceptar-acordar/check.py",
+      "result": "pass",
+      "evidence": "Coordinator final batch check passed for all 384 cards; acercar is independently verified at fingerprint 66e493951e2d644743b88d39117311a70ab5e0b9653dc53a4de999a1c3700d66."
+    }
+  ],
+  "verification_note": "Независимая полная проверка всех 96 карточек сначала выявила 7 замечаний на индексах 78 и 90–95. После редакторских исправлений тот же verifier повторно проверил точные ES/RU строки с подставленными формами: индекс 78 теперь использует естественный внешний субъект, а 90–95 явно передают завершённость futuro perfecto de subjuntivo. Source=embedded, manifest/report fingerprints, Jehle forms, options, identity/order/top-level и native validation повторно прошли; итоговые 96/96 карточек приняты."
+}

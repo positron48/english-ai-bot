@@ -1,0 +1,667 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/viajar.json",
+  "source_sha256": "5640fe83a237bd5c297a48f5cf228d6d8f4759dec807b43fb8b5abef1fa58460",
+  "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197",
+  "editor": "edit_utilizar editor 2026-09-06",
+  "verifier": "edit_valer independent verifier 2026-09-06",
+  "phase": "done",
+  "reviewed_at": "2026-09-06",
+  "verified_at": "2026-09-06T15:29:51Z",
+  "questions": [
+    {
+      "id": "es.presente.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:1:singular переписана и лично проверена: authoritative форма «viajo», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:2:singular переписана и лично проверена: authoritative форма «viajas», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:3:singular переписана и лично проверена: authoritative форма «viaja», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:1:plural переписана и лично проверена: authoritative форма «viajamos», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:2:plural переписана и лично проверена: authoritative форма «viajáis», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:3:plural переписана и лично проверена: authoritative форма «viajan», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:1:singular переписана и лично проверена: authoritative форма «viajaba», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:2:singular переписана и лично проверена: authoritative форма «viajabas», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:3:singular переписана и лично проверена: authoritative форма «viajaba», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:1:plural переписана и лично проверена: authoritative форма «viajábamos», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:2:plural переписана и лично проверена: authoritative форма «viajabais», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:3:plural переписана и лично проверена: authoritative форма «viajaban», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:1:singular переписана и лично проверена: authoritative форма «viajé», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:2:singular переписана и лично проверена: authoritative форма «viajaste», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:3:singular переписана и лично проверена: authoritative форма «viajó», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:1:plural переписана и лично проверена: authoritative форма «viajamos», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:2:plural переписана и лично проверена: authoritative форма «viajasteis», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:3:plural переписана и лично проверена: authoritative форма «viajaron», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:1:singular переписана и лично проверена: authoritative форма «viajaré», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:2:singular переписана и лично проверена: authoritative форма «viajarás», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:3:singular переписана и лично проверена: authoritative форма «viajará», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:1:plural переписана и лично проверена: authoritative форма «viajaremos», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:2:plural переписана и лично проверена: authoritative форма «viajaréis», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:3:plural переписана и лично проверена: authoritative форма «viajarán», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:1:singular переписана и лично проверена: authoritative форма «viajaría», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:2:singular переписана и лично проверена: authoritative форма «viajarías», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:3:singular переписана и лично проверена: authoritative форма «viajaría», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:1:plural переписана и лично проверена: authoritative форма «viajaríamos», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:2:plural переписана и лично проверена: authoritative форма «viajaríais», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:3:plural переписана и лично проверена: authoritative форма «viajarían», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:1:singular переписана и лично проверена: authoritative форма «he viajado», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:2:singular переписана и лично проверена: authoritative форма «has viajado», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:3:singular переписана и лично проверена: authoritative форма «ha viajado», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:1:plural переписана и лично проверена: authoritative форма «hemos viajado», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:2:plural переписана и лично проверена: authoritative форма «habéis viajado», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:3:plural переписана и лично проверена: authoritative форма «han viajado», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:1:singular переписана и лично проверена: authoritative форма «había viajado», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:2:singular переписана и лично проверена: authoritative форма «habías viajado», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:3:singular переписана и лично проверена: authoritative форма «había viajado», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:1:plural переписана и лично проверена: authoritative форма «habíamos viajado», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:2:plural переписана и лично проверена: authoritative форма «habíais viajado», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:3:plural переписана и лично проверена: authoritative форма «habían viajado», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:1:singular переписана и лично проверена: authoritative форма «hube viajado», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:2:singular переписана и лично проверена: authoritative форма «hubiste viajado», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:3:singular переписана и лично проверена: authoritative форма «hubo viajado», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:1:plural переписана и лично проверена: authoritative форма «hubimos viajado», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:2:plural переписана и лично проверена: authoritative форма «hubisteis viajado», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:3:plural переписана и лично проверена: authoritative форма «hubieron viajado», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:1:singular переписана и лично проверена: authoritative форма «habré viajado», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:2:singular переписана и лично проверена: authoritative форма «habrás viajado», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:3:singular переписана и лично проверена: authoritative форма «habrá viajado», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:1:plural переписана и лично проверена: authoritative форма «habremos viajado», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:2:plural переписана и лично проверена: authoritative форма «habréis viajado», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:3:plural переписана и лично проверена: authoritative форма «habrán viajado», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:1:singular переписана и лично проверена: authoritative форма «habría viajado», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:2:singular переписана и лично проверена: authoritative форма «habrías viajado», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:3:singular переписана и лично проверена: authoritative форма «habría viajado», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:1:plural переписана и лично проверена: authoritative форма «habríamos viajado», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:2:plural переписана и лично проверена: authoritative форма «habríais viajado», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:3:plural переписана и лично проверена: authoritative форма «habrían viajado», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:1:singular переписана и лично проверена: authoritative форма «viaje», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:2:singular переписана и лично проверена: authoritative форма «viajes», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:3:singular переписана и лично проверена: authoritative форма «viaje», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:1:plural переписана и лично проверена: authoritative форма «viajemos», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:2:plural переписана и лично проверена: authoritative форма «viajéis», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:3:plural переписана и лично проверена: authoritative форма «viajen», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:1:singular переписана и лично проверена: authoritative форма «viajara», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:2:singular переписана и лично проверена: authoritative форма «viajaras», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:3:singular переписана и лично проверена: authoritative форма «viajara», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:1:plural переписана и лично проверена: authoritative форма «viajáramos», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:2:plural переписана и лично проверена: authoritative форма «viajarais», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:3:plural переписана и лично проверена: authoritative форма «viajaran», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:1:singular переписана и лично проверена: authoritative форма «viajare», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:2:singular переписана и лично проверена: authoritative форма «viajares», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:3:singular переписана и лично проверена: authoritative форма «viajare», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:1:plural переписана и лично проверена: authoritative форма «viajáremos», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:2:plural переписана и лично проверена: authoritative форма «viajareis», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:3:plural переписана и лично проверена: authoritative форма «viajaren», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:1:singular переписана и лично проверена: authoritative форма «haya viajado», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:2:singular переписана и лично проверена: authoritative форма «hayas viajado», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:3:singular переписана и лично проверена: authoritative форма «haya viajado», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:1:plural переписана и лично проверена: authoritative форма «hayamos viajado», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:2:plural переписана и лично проверена: authoritative форма «hayáis viajado», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:3:plural переписана и лично проверена: authoritative форма «hayan viajado», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:1:singular переписана и лично проверена: authoritative форма «hubiera viajado», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:2:singular переписана и лично проверена: authoritative форма «hubieras viajado», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:3:singular переписана и лично проверена: authoritative форма «hubiera viajado», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:1:plural переписана и лично проверена: authoritative форма «hubiéramos viajado», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:2:plural переписана и лично проверена: authoritative форма «hubierais viajado», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:3:plural переписана и лично проверена: authoritative форма «hubieran viajado», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:1:singular переписана и лично проверена: authoritative форма «hubiere viajado», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:2:singular переписана и лично проверена: authoritative форма «hubieres viajado», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:3:singular переписана и лично проверена: authoritative форма «hubiere viajado», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:1:plural переписана и лично проверена: authoritative форма «hubiéremos viajado», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:2:plural переписана и лично проверена: authoritative форма «hubiereis viajado», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:3:plural переписана и лично проверена: authoritative форма «hubieren viajado», естественный контекст viajar, точный полный RU, однозначное лицо, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "manual editorial read of all 96 viajar cards in six 16-card chunks",
+      "result": "pass",
+      "evidence": "Every final Spanish sentence and Russian translation was read with the authoritative answer substituted; routes, transport, work trips, research travel and legal contexts are natural and distinct."
+    },
+    {
+      "command": "editor self-review refinements: viajar indices 3, 42, 43, 44, 45, 46, 47, 61, 67, 71, 79, 81, 87, 92",
+      "result": "pass",
+      "evidence": "Fourteen refinements align purpose and route details, remove marked subject pronouns from literary sequences while keeping person explicit in the following clause, improve travel collocations, preserve completed journeys, remove RU lexical shifts and clarify completed hypothetical or legal travel."
+    },
+    {
+      "command": "Jehle comparison for 16 scopes and six person-number slots",
+      "result": "pass",
+      "evidence": "All 96 surface forms match the pinned local authoritative forms dataset."
+    },
+    {
+      "command": "same-scope option and answer multiplicity validation",
+      "result": "pass",
+      "evidence": "Every card has four distinct options from its own scope and the authoritative answer occurs exactly once."
+    },
+    {
+      "command": "rare-register, future completion and counterfactual semantic review",
+      "result": "pass",
+      "evidence": "Pretérito anterior and both future subjunctives are explicitly literary or legal; future-perfect Russian states completed travel; all six De haberlo sabido translations begin with explicit Russian counterfactuals using знал, знала or знали."
+    },
+    {
+      "command": "baseline identity and source-embedded byte comparison",
+      "result": "pass",
+      "evidence": "Top-level fields and scope/person/number order match the immutable baseline; source and embedded copy are byte-identical."
+    },
+    {
+      "command": "native validate_artifact(viajar, 96 final cards)",
+      "result": "pass",
+      "evidence": "The repository generator validator accepted all 96 final cards."
+    },
+    {
+      "command": "focused viajar authoritative, identity, option, report and checkpoint validation",
+      "result": "pass",
+      "evidence": "All 96 forms match authoritative-forms.json; top-level metadata and scope/person/number order preserve the immutable baseline; source=embedded; one blank and four unique same-scope options with one answer; report fingerprint is current and six checkpoints cover [0,96]."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py status --source courses/spanish-grammar/training_pack/verb_forms/lemmas/viajar.json",
+      "result": "pass",
+      "evidence": "Status is awaiting_verification for exactly 96 cards, as required before independent review."
+    },
+    {
+      "command": "git diff --check for assigned viajar root and Spanish paths",
+      "result": "pass",
+      "evidence": "No whitespace errors in source, embedded, report or personal checkpoint log."
+    },
+    {
+      "command": "baseline-to-final viajar defect statistics and fingerprint",
+      "result": "pass",
+      "evidence": "Baseline wrong/duplicate/answer/offscope entries/offscope cards/invalid entries/invalid cards/metadata/blank = 15/21/29/160/61/56/20/0/0; final values are all zero; current fingerprint 5640fe83a237bd5c297a48f5cf228d6d8f4759dec807b43fb8b5abef1fa58460."
+    },
+    {
+      "command": "coordinator editorial refinements: viajar indices 23, 55, 61 and 63",
+      "result": "pass",
+      "evidence": "Adjusted the future trip purpose at 23, aligned masculine second-person Russian at 55, removed a Russian чтобы-clause calque at 61, and rendered the project obligation naturally at 63; authoritative forms and card identities remain unchanged."
+    },
+    {
+      "command": "independent semantic cross-verification: viajar 96/96",
+      "result": "pass",
+      "evidence": "A verifier who did not edit viajar read all 96 final ES/RU pairs in order with each answer substituted and inspected all four options. Travel meaning, destination and transport phrasing, person/number/tense, Russian aspect, unambiguous subjects, literary preterite anterior, archaic/legal future subjunctives, explicit De haberlo sabido counterfactuals and completed future-perfect conditions are natural and exact; no findings."
+    },
+    {
+      "command": "independent final source/report contract at fingerprint 5640fe83a237bd5c297a48f5cf228d6d8f4759dec807b43fb8b5abef1fa58460",
+      "result": "pass",
+      "evidence": "Source equals embedded byte-for-byte; all 96 surface forms match authoritative-forms.json; immutable top-level fields and scope/person/number order match baseline; mood/tense, one blank, four unique same-scope options and answer once pass; report covers all 96 identities with verification ok."
+    },
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-06-es-verbs-viajar-volar/check.py; preservation-check.py; focused grammar-review checks",
+      "result": "pass",
+      "evidence": "Coordinator final barrier passed 384 cards, 24 normalized checkpoints, current source fingerprints, independent editor/verifier identities, source=embedded equality, exact Jehle forms, cross-unit uniqueness and preservation of 25698 files."
+    }
+  ],
+  "verification_note": "Independent verifier read all 96 final viajar cards with the authoritative answer substituted and reviewed every Spanish prompt, Russian translation and option set. No semantic or contract findings remain after the coordinator refinements."
+}

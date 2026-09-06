@@ -1,0 +1,96 @@
+{
+  "version": 1,
+  "source": "courses/english-grammar/training_pack/chapters/004/en.02.b2_theory_am_is_are_forms.questions.json",
+  "source_sha256": "8d36fa1776911d894de54d50e7d98bced7fb6ded89e656c59c11b0830591d7af",
+  "context_sha256": "ac3df0f43ebd81d15580d874d6030cf03caf98fd9de0089ed1bb131a07bc3320",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
+  "reviewed_at": "2026-09-04T09:57:14.529708+00:00",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
+  "questions": [
+    {
+      "id": "q1",
+      "decision": "fixed",
+      "note": "Явно задано Present Simple; проверена пара I am, прошедшее was не подходит.",
+      "verification": "ok"
+    },
+    {
+      "id": "q2",
+      "decision": "fixed",
+      "note": "Явно задано Present Simple; проверена пара he is, прошедшее was не подходит.",
+      "verification": "ok"
+    },
+    {
+      "id": "q3",
+      "decision": "fixed",
+      "note": "Явно задано Present Simple; проверена пара she is, прошедшее was не подходит.",
+      "verification": "ok"
+    },
+    {
+      "id": "q4",
+      "decision": "fixed",
+      "note": "Явно задано Present Simple; проверена пара it is, прошедшее was не подходит.",
+      "verification": "ok"
+    },
+    {
+      "id": "q5",
+      "decision": "fixed",
+      "note": "Явно задано Present Simple; проверена пара you are, прошедшее was не подходит.",
+      "verification": "ok"
+    },
+    {
+      "id": "q6",
+      "decision": "fixed",
+      "note": "Явно задано Present Simple; проверена пара we are, прошедшее was не подходит.",
+      "verification": "ok"
+    },
+    {
+      "id": "q7",
+      "decision": "fixed",
+      "note": "Явно задано Present Simple; проверена пара they are, прошедшее was не подходит.",
+      "verification": "ok"
+    },
+    {
+      "id": "q8",
+      "decision": "fixed",
+      "note": "Без времени подходили is и was; задано Present Simple, ключ is однозначен для She.",
+      "verification": "ok"
+    },
+    {
+      "id": "q9",
+      "decision": "fixed",
+      "note": "Без времени подходили is и was; задано Present Simple, ключ is однозначен для He.",
+      "verification": "ok"
+    },
+    {
+      "id": "q10",
+      "decision": "fixed",
+      "note": "Без времени подходили is и was; задано Present Simple, ключ is однозначен для It.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-04-en002-004/check.py",
+      "result": "pass",
+      "evidence": "All 282 IDs/contracts and metadata preserved; source/context fingerprints current; signatures valid; no new EN training duplicates; source/final/embedded equal. See validation.log."
+    },
+    {
+      "command": "go test ./internal/grammarbundle ./internal/repository -run 'TestValidateEmbeddedBundleID|TestGrammar.*Bundle|TestGrammar.*Reorder' -count=1",
+      "result": "pass",
+      "evidence": "Both packages passed: grammarbundle 4.709s, repository 13.893s."
+    },
+    {
+      "command": "git diff --check && git -C courses/spanish-grammar diff --check && git -C courses/english-grammar diff --check",
+      "result": "pass",
+      "evidence": "All three commands exited 0."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    }
+  ],
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+}

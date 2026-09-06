@@ -1,0 +1,88 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/chapters/004/es.07.b7_theory_decoding_algorithm_and_regional_notes.questions.json",
+  "source_sha256": "237c2eb1e9485c324e2b4b624aebe46e8161fa8774f2ba308c40ac0ac9f6c52a",
+  "context_sha256": "551e088cea2f26ecb7b925580bbd6420ceb8a70fbdf1aed3eb0cf8c7e5a80d1e",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
+  "reviewed_at": "2026-09-04T10:15:52.396538+00:00",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
+  "questions": [
+    {
+      "id": "q1",
+      "decision": "fixed",
+      "note": "Текст прочитан и корректен; пересчитана исходно устаревшая signature штатной функцией курса.",
+      "verification": "ok"
+    },
+    {
+      "id": "q2",
+      "decision": "fixed",
+      "note": "Устранён альтернативно верный [h] в региональном произношении g/j и исправлен русский вопрос.",
+      "verification": "ok"
+    },
+    {
+      "id": "q3",
+      "decision": "fixed",
+      "note": "Вместо неоднозначных «одинарный/твёрдый r» и вопроса о любом звуке слова — конкретное чтение rr.",
+      "verification": "ok"
+    },
+    {
+      "id": "q4",
+      "decision": "fixed",
+      "note": "Исправлены [j], пример союза y и универсальное обобщение; точно определён yeísmo без второго ответа c/z.",
+      "verification": "ok"
+    },
+    {
+      "id": "q5",
+      "decision": "fixed",
+      "note": "Исправлены неверное правило о g перед u и пример agüita для güe; проверяется роль диэрезиса.",
+      "verification": "ok"
+    },
+    {
+      "id": "q6",
+      "decision": "fixed",
+      "note": "Региональная норма задана прямо, а не отождествлена со всей Испанией.",
+      "verification": "ok"
+    },
+    {
+      "id": "q8",
+      "decision": "fixed",
+      "note": "Pingüino содержит güi, не güe; диэрезис показывает произносимую u, а не изменение g.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "cd courses/spanish-grammar && bash scripts/assemble-chapter.sh 004.es.grammar.orientation_alphabet_sounds.core_pronunciation_map_b_v_c_z_g && bash scripts/validate-chapter.sh 004.es.grammar.orientation_alphabet_sounds.core_pronunciation_map_b_v_c_z_g",
+      "result": "pass",
+      "evidence": "63 questions; seven theory blocks and inline quizzes; 49 chapter-test questions. See docs/grammar-review/batches/2026-09-04-es004/assemble-after.log and chapter-after.log."
+    },
+    {
+      "command": "ajv validate --spec=draft2020 --validate-formats=false --all-errors -s courses/spanish-grammar/02-chapter-schema.json -d courses/spanish-grammar/chapters/004.es.grammar.orientation_alphabet_sounds.core_pronunciation_map_b_v_c_z_g/05-final.json",
+      "result": "pass",
+      "evidence": "Baseline and final chapter schema pass. See docs/grammar-review/batches/2026-09-04-es004/schema-before.log and schema-after.log."
+    },
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-04-es004/check.py",
+      "result": "pass",
+      "evidence": "All 108 contracts, metadata, decisions, fingerprints, signatures, choices and bindings pass; no new ES pack duplicates; scoped embedded copies equal. See docs/grammar-review/batches/2026-09-04-es004/validation.log."
+    },
+    {
+      "command": "go test ./internal/grammarbundle ./internal/repository -run 'TestValidateEmbeddedBundleID|TestGrammar.*Bundle|TestGrammar.*Reorder' -count=1",
+      "result": "pass",
+      "evidence": "Both packages passed: 5.197s and 14.899s. See docs/grammar-review/batches/2026-09-04-es004/go-tests.log."
+    },
+    {
+      "command": "git diff --check && git -C courses/spanish-grammar diff --check && git -C courses/english-grammar diff --check",
+      "result": "pass",
+      "evidence": "All three commands exited 0."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    }
+  ],
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+}

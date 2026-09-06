@@ -4,370 +4,370 @@
   "source_sha256": "e2d3aeb4fe9c49fcc5e709c2c12eae8c6d43fe3548cfc3797744da0dcee7183e",
   "context_sha256": "d0a557c0645a3ca31310e8120b5677abebd38e4a4ce14054534dfa5840d62cf6",
   "editor": "Codex editor 2026-09-04",
-  "verifier": "",
-  "phase": "awaiting_verification",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
   "reviewed_at": "2026-09-04T09:24:57.331635+00:00",
-  "verified_at": "",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
   "questions": [
     {
       "id": "q1",
       "decision": "ok",
       "note": "i/u — две закрытые слабые гласные.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q2",
       "decision": "fixed",
       "note": "Убрано необоснованное обобщение «ломает все правила», дано определение группы.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q3",
       "decision": "ok",
       "note": "u — единственная débil.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q4",
       "decision": "ok",
       "note": "o сильная, i слабая.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q5",
       "decision": "fixed",
       "note": "Единственная u ошибочно названа множественным débiles.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q6",
       "decision": "ok",
       "note": "u и i принадлежат одной группе.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q7",
       "decision": "fixed",
       "note": "Задание преждевременно проверяло условие дифтонга; заменено классификацией по текущему блоку.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q8",
       "decision": "fixed",
       "note": "Для fuertes также допустимо abiertas; открытый ответ заменён однозначной недостающей буквой.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q9",
       "decision": "fixed",
       "note": "Уточнена форма испанского термина, убран метатекст о назначении классификации.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q10",
       "decision": "ok",
       "note": "Одна полностью слабая пара i/u.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q11",
       "decision": "ok",
       "note": "ca-sa — два слога.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q12",
       "decision": "ok",
       "note": "a-mi-go — три слога.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q13",
       "decision": "ok",
       "note": "sol единственный односложный вариант.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q14",
       "decision": "ok",
       "note": "me-sa, одна интервокальная согласная.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q15",
       "decision": "ok",
       "note": "amigo три, sol/flor один, mesa два.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q16",
       "decision": "ok",
       "note": "Гласное ядро обязательно для обычного испанского слога.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q17",
       "decision": "ok",
       "note": "Дифтонг опровергает всегда два слога.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q18",
       "decision": "fixed",
       "note": "Для ответа не требуется неизученное числительное dos: указана цифра, объяснение без метатекста.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q19",
       "decision": "ok",
       "note": "В sol ядро o, однозначная буква.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q20",
       "decision": "ok",
       "note": "a-re-na, все неверные деления проверены.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q21",
       "decision": "ok",
       "note": "me-sa: второй слог начинается с s.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q22",
       "decision": "ok",
       "note": "to-ma-te, три ядра.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q23",
       "decision": "ok",
       "note": "a-re-na, все границы проверены.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q24",
       "decision": "ok",
       "note": "arena единственное слово с начальным отдельным a.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q25",
       "decision": "ok",
       "note": "a-mi-go, m/g отходят к следующему слогу.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q26",
       "decision": "ok",
       "note": "Правило ограничено простой моделью mesa.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q27",
       "decision": "ok",
       "note": "am-igo — неверное полное слогоделение.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q28",
       "decision": "ok",
       "note": "me — однозначный первый слог.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q29",
       "decision": "ok",
       "note": "te — однозначный последний слог.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q30",
       "decision": "ok",
       "note": "to-ma-te, все альтернативы неверны.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q31",
       "decision": "fixed",
       "note": "Неопределённое «не влияет» заменено сопоставимыми утверждениями о произношении ai.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q32",
       "decision": "ok",
       "note": "fue-go — два слога.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q33",
       "decision": "fixed",
       "note": "Различены орфографический разбор и вариативное произношение закрытых гласных.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q34",
       "decision": "fixed",
       "note": "Расплывчатое «чаще всего» заменено конкретными сочетаниями в словах.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q35",
       "decision": "ok",
       "note": "cuidado с ui; остальные примеры хиата.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q36",
       "decision": "ok",
       "note": "Определение дифтонга корректно.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q37",
       "decision": "ok",
       "note": "Не всякая пара гласных образует хиат.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q38",
       "decision": "fixed",
       "note": "Для открытого ответа задан испанский язык и единственное число.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q39",
       "decision": "fixed",
       "note": "Для открытого ответа заданы язык, число и орфографический контекст ui.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q40",
       "decision": "ok",
       "note": "pau-sa — нормативное деление, au не разрывается.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q41",
       "decision": "ok",
       "note": "te-a-tro, две открытые гласные разделяются.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q42",
       "decision": "ok",
       "note": "pa-ís, ударная закрытая с открытой.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q43",
       "decision": "fixed",
       "note": "Вариант ri-o имел те же границы, но терял знак; требование сохранить написание сделано явным.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q44",
       "decision": "fixed",
       "note": "Обычно без контекста давало вариативность; вопрос привязан к орфографическому правилу двух открытых.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q45",
       "decision": "ok",
       "note": "Для país tilde на закрытой указывает хиат; остальные знаки не подходят.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q46",
       "decision": "ok",
       "note": "Две открытые часто образуют хиат, без абсолютного фонетического запрета.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q47",
       "decision": "ok",
       "note": "país двусложное.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q48",
       "decision": "fixed",
       "note": "Задан цифровой ответ без проверки неизученных испанских числительных.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q49",
       "decision": "fixed",
       "note": "Указаны испанский язык и единственное число открытого ответа.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q50",
       "decision": "fixed",
       "note": "Уточнено сохранение ударения и исключены дублирующие формулировки о двух слогах.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q51",
       "decision": "ok",
       "note": "bonito 3; grande/limpio/fuerte 2 в обычном делении.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q52",
       "decision": "fixed",
       "note": "Неясное «особенно важно проверить» заменено поиском пропущенного знака.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q53",
       "decision": "ok",
       "note": "Ma-rí-a, один полностью верный вариант.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q54",
       "decision": "fixed",
       "note": "Мета-вопрос о шаге алгоритма заменён применением к María.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q55",
       "decision": "fixed",
       "note": "Мета-вопрос о последовательности шагов заменён разбором дифтонга в fuego.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q56",
       "decision": "fixed",
       "note": "Уточнено соседство с открытой гласной: ударная закрытая с другой закрытой не обязана давать хиат.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q57",
       "decision": "ok",
       "note": "muy односложное, конечная y входит в сочетание.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q58",
       "decision": "fixed",
       "note": "acento/tilde — альтернативно верные ответы; заменено однозначным подсчётом слогов hoy.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q59",
       "decision": "fixed",
       "note": "Число слогов вводится цифрой, без неизученного tres.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q60",
       "decision": "fixed",
       "note": "Объяснение ограничено í+a, без ложного правила для любой соседней гласной.",
-      "verification": "pending"
+      "verification": "ok"
     }
   ],
   "checks": [
@@ -390,7 +390,12 @@
       "command": "git diff --check && git -C courses/spanish-grammar diff --check && git -C courses/english-grammar diff --check",
       "result": "pass",
       "evidence": "All three commands exited 0."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
     }
   ],
-  "verification_note": ""
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
 }

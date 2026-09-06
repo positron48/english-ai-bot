@@ -1,0 +1,488 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/chapters/037.es.grammar.present_irregulars_reflexives_gustar.reflexive_verbs_llamarse_levantarse_sentirse/03-questions.json",
+  "source_sha256": "f655f781c04ff2982199a703468f9b76813784ba962d0113b7ed36b96cdb0cc0",
+  "context_sha256": "83882eb2526a239efdb9190f1c920bbc9e90ab7ac9f6cd4c75dc6f4d4f89adc3",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
+  "reviewed_at": "2026-09-04T17:24:17.303281+00:00",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
+  "questions": [
+    {
+      "id": "q037_b1_01",
+      "decision": "ok",
+      "note": "Возвратное местоимение, лицо, значение и ключ согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q037_b1_02",
+      "decision": "ok",
+      "note": "Возвратное местоимение, лицо, значение и ключ согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q037_b1_03",
+      "decision": "ok",
+      "note": "Возвратное местоимение, лицо, значение и ключ согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q037_b1_04",
+      "decision": "fixed",
+      "note": "Уточнён возвратный смысл и роли участников: невозвратные местоимения могут быть грамматически допустимы; исправлена русская формулировка.",
+      "verification": "ok"
+    },
+    {
+      "id": "q037_b1_05",
+      "decision": "fixed",
+      "note": "Уточнён возвратный смысл и роли участников: невозвратные местоимения могут быть грамматически допустимы; исправлена русская формулировка.",
+      "verification": "ok"
+    },
+    {
+      "id": "q037_b1_06",
+      "decision": "ok",
+      "note": "Возвратное местоимение, лицо, значение и ключ согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q037_b1_07",
+      "decision": "ok",
+      "note": "Возвратное местоимение, лицо, значение и ключ согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q037_b1_08",
+      "decision": "fixed",
+      "note": "Уточнён возвратный смысл и роли участников: невозвратные местоимения могут быть грамматически допустимы; исправлена русская формулировка.",
+      "verification": "ok"
+    },
+    {
+      "id": "q037_b1_09",
+      "decision": "ok",
+      "note": "Возвратное местоимение, лицо, значение и ключ согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q037_b1_10",
+      "decision": "ok",
+      "note": "Возвратное местоимение, лицо, значение и ключ согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q037_b1_11",
+      "decision": "fixed",
+      "note": "Уточнён возвратный смысл и роли участников: невозвратные местоимения могут быть грамматически допустимы; исправлена русская формулировка.",
+      "verification": "ok"
+    },
+    {
+      "id": "q037_b1_12",
+      "decision": "ok",
+      "note": "Возвратное местоимение, лицо, значение и ключ согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q037_b2_01",
+      "decision": "ok",
+      "note": "Возвратное местоимение, лицо, значение и ключ согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q037_b2_02",
+      "decision": "ok",
+      "note": "Возвратное местоимение, лицо, значение и ключ согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q037_b2_03",
+      "decision": "fixed",
+      "note": "Уточнён возвратный смысл и роли участников: невозвратные местоимения могут быть грамматически допустимы; исправлена русская формулировка.",
+      "verification": "ok"
+    },
+    {
+      "id": "q037_b2_04",
+      "decision": "fixed",
+      "note": "Уточнён возвратный смысл и роли участников: невозвратные местоимения могут быть грамматически допустимы; исправлена русская формулировка.",
+      "verification": "ok"
+    },
+    {
+      "id": "q037_b2_05",
+      "decision": "ok",
+      "note": "Возвратное местоимение, лицо, значение и ключ согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q037_b2_06",
+      "decision": "fixed",
+      "note": "Уточнён возвратный смысл и роли участников: невозвратные местоимения могут быть грамматически допустимы; исправлена русская формулировка.",
+      "verification": "ok"
+    },
+    {
+      "id": "q037_b2_07",
+      "decision": "fixed",
+      "note": "Уточнён возвратный смысл и роли участников: невозвратные местоимения могут быть грамматически допустимы; исправлена русская формулировка.",
+      "verification": "ok"
+    },
+    {
+      "id": "q037_b2_08",
+      "decision": "fixed",
+      "note": "Уточнён возвратный смысл и роли участников: невозвратные местоимения могут быть грамматически допустимы; исправлена русская формулировка.",
+      "verification": "ok"
+    },
+    {
+      "id": "q037_b2_09",
+      "decision": "fixed",
+      "note": "Устранены альтернативное невозвратное значение и допустимое voseo; уточнено presente de indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "q037_b2_10",
+      "decision": "ok",
+      "note": "Лицо, инфинитив, возвратное значение и единственный ответ согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q037_b2_11",
+      "decision": "ok",
+      "note": "Лицо, инфинитив, возвратное значение и единственный ответ согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q037_b2_12",
+      "decision": "ok",
+      "note": "Лицо, инфинитив, возвратное значение и единственный ответ согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q037_b3_01",
+      "decision": "ok",
+      "note": "Лицо, инфинитив, возвратное значение и единственный ответ согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q037_b3_02",
+      "decision": "ok",
+      "note": "Лицо, инфинитив, возвратное значение и единственный ответ согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q037_b3_03",
+      "decision": "ok",
+      "note": "Лицо, инфинитив, возвратное значение и единственный ответ согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q037_b3_04",
+      "decision": "ok",
+      "note": "Лицо, инфинитив, возвратное значение и единственный ответ согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q037_b3_05",
+      "decision": "ok",
+      "note": "Лицо, инфинитив, возвратное значение и единственный ответ согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q037_b3_06",
+      "decision": "ok",
+      "note": "Лицо, инфинитив, возвратное значение и единственный ответ согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q037_b3_07",
+      "decision": "ok",
+      "note": "Лицо, инфинитив, возвратное значение и единственный ответ согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q037_b3_08",
+      "decision": "ok",
+      "note": "Лицо, инфинитив, возвратное значение и единственный ответ согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q037_b3_09",
+      "decision": "ok",
+      "note": "Лицо, инфинитив, возвратное значение и единственный ответ согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q037_b3_10",
+      "decision": "ok",
+      "note": "Лицо, инфинитив, возвратное значение и единственный ответ согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q037_b3_11",
+      "decision": "ok",
+      "note": "Лицо, инфинитив, возвратное значение и единственный ответ согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q037_b3_12",
+      "decision": "ok",
+      "note": "Лицо, инфинитив, возвратное значение и единственный ответ согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q037_b4_01",
+      "decision": "ok",
+      "note": "Лицо, инфинитив, возвратное значение и единственный ответ согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q037_b4_02",
+      "decision": "fixed",
+      "note": "Устранены альтернативное невозвратное значение и допустимое voseo; уточнено presente de indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "q037_b4_03",
+      "decision": "ok",
+      "note": "Лицо, инфинитив, возвратное значение и единственный ответ согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q037_b4_04",
+      "decision": "fixed",
+      "note": "Устранены альтернативное невозвратное значение и допустимое voseo; уточнено presente de indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "q037_b4_05",
+      "decision": "ok",
+      "note": "Cansada согласуется с говорящей.",
+      "verification": "ok"
+    },
+    {
+      "id": "q037_b4_06",
+      "decision": "ok",
+      "note": "Самочувствие требует me siento.",
+      "verification": "ok"
+    },
+    {
+      "id": "q037_b4_07",
+      "decision": "fixed",
+      "note": "Явное sentirse исключает чужой объект.",
+      "verification": "ok"
+    },
+    {
+      "id": "q037_b4_08",
+      "decision": "ok",
+      "note": "Ellos + sentirse однозначно se.",
+      "verification": "ok"
+    },
+    {
+      "id": "q037_b4_09",
+      "decision": "ok",
+      "note": "Состояние и согласование дают b.",
+      "verification": "ok"
+    },
+    {
+      "id": "q037_b4_10",
+      "decision": "fixed",
+      "note": "Смысл самочувствия исключает чужой объект.",
+      "verification": "ok"
+    },
+    {
+      "id": "q037_b4_11",
+      "decision": "fixed",
+      "note": "Уточнено значение времени и структура.",
+      "verification": "ok"
+    },
+    {
+      "id": "q037_b4_12",
+      "decision": "ok",
+      "note": "Tú te sientes согласуется с субъектом.",
+      "verification": "ok"
+    },
+    {
+      "id": "q037_b5_01",
+      "decision": "fixed",
+      "note": "Убран дательный me при переходном levantar, добавлен ясный контраст.",
+      "verification": "ok"
+    },
+    {
+      "id": "q037_b5_02",
+      "decision": "ok",
+      "note": "Я встаю соответствует только me levanto.",
+      "verification": "ok"
+    },
+    {
+      "id": "q037_b5_03",
+      "decision": "ok",
+      "note": "Внешний объект la caja определяет b.",
+      "verification": "ok"
+    },
+    {
+      "id": "q037_b5_04",
+      "decision": "ok",
+      "note": "Имя и обращение к брату различены.",
+      "verification": "ok"
+    },
+    {
+      "id": "q037_b5_05",
+      "decision": "ok",
+      "note": "В значении вставать нужно levantarse.",
+      "verification": "ok"
+    },
+    {
+      "id": "q037_b5_06",
+      "decision": "ok",
+      "note": "La mano — внешний объект.",
+      "verification": "ok"
+    },
+    {
+      "id": "q037_b5_07",
+      "decision": "ok",
+      "note": "Контраст двух действий однозначен.",
+      "verification": "ok"
+    },
+    {
+      "id": "q037_b5_08",
+      "decision": "ok",
+      "note": "Sienta означает садится, а не чувствует себя.",
+      "verification": "ok"
+    },
+    {
+      "id": "q037_b5_09",
+      "decision": "ok",
+      "note": "Sentarse указан; siento однозначно в presente.",
+      "verification": "ok"
+    },
+    {
+      "id": "q037_b5_10",
+      "decision": "ok",
+      "note": "В значении вставать нужен me.",
+      "verification": "ok"
+    },
+    {
+      "id": "q037_b5_11",
+      "decision": "ok",
+      "note": "Обе части пары d естественны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q037_b5_12",
+      "decision": "ok",
+      "note": "Llamar и llamarse различаются значением.",
+      "verification": "ok"
+    },
+    {
+      "id": "q037_b6_01",
+      "decision": "ok",
+      "note": "Команда tú с ударением levántate; levantate относится к vos.",
+      "verification": "ok"
+    },
+    {
+      "id": "q037_b6_02",
+      "decision": "ok",
+      "note": "Команда usted levántese.",
+      "verification": "ok"
+    },
+    {
+      "id": "q037_b6_03",
+      "decision": "ok",
+      "note": "Отрицательная команда tú no te levantes.",
+      "verification": "ok"
+    },
+    {
+      "id": "q037_b6_04",
+      "decision": "fixed",
+      "note": "Удалена подсказка se из условия, уточнён смысл.",
+      "verification": "ok"
+    },
+    {
+      "id": "q037_b6_05",
+      "decision": "fixed",
+      "note": "Разграничены повелительное и обычное утверждение.",
+      "verification": "ok"
+    },
+    {
+      "id": "q037_b6_06",
+      "decision": "ok",
+      "note": "Tú te levantas соответствует смыслу.",
+      "verification": "ok"
+    },
+    {
+      "id": "q037_b6_07",
+      "decision": "fixed",
+      "note": "Явно задана команда tú и её смысл.",
+      "verification": "ok"
+    },
+    {
+      "id": "q037_b6_08",
+      "decision": "ok",
+      "note": "Pronominal tú даёт te.",
+      "verification": "ok"
+    },
+    {
+      "id": "q037_b6_09",
+      "decision": "ok",
+      "note": "Me levantas допустимо, но означает поднимаешь меня.",
+      "verification": "ok"
+    },
+    {
+      "id": "q037_b6_10",
+      "decision": "ok",
+      "note": "Ограничения позиции задают порядок.",
+      "verification": "ok"
+    },
+    {
+      "id": "q037_b6_11",
+      "decision": "ok",
+      "note": "Ella se levanta — она сама встаёт.",
+      "verification": "ok"
+    },
+    {
+      "id": "q037_b6_12",
+      "decision": "fixed",
+      "note": "Уточнено значение вставать вместо безусловного запрета levantar.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-04-es037-040/check.py",
+      "result": "pass",
+      "evidence": "All 572 IDs/contracts, decisions versus clean pre-batch HEAD, fingerprints, native training validation, signatures and source-final-embedded equality; validation.log."
+    },
+    {
+      "command": "go test ./internal/grammarbundle ./internal/repository -run 'TestValidateEmbeddedBundleID|TestGrammar.*Bundle|TestGrammar.*Reorder' -count=1",
+      "result": "pass",
+      "evidence": "Both packages passed on final integrated data; go-tests.log."
+    },
+    {
+      "command": "git diff --check; git -C courses/spanish-grammar diff --check; git -C courses/english-grammar diff --check",
+      "result": "pass",
+      "evidence": "Three separately executed commands exit 0; diff-check.log. All 1040 earlier dirty files outside review docs preserved; preservation.log."
+    },
+    {
+      "command": "cd courses/spanish-grammar && bash scripts/assemble-chapter.sh 037.es.grammar.present_irregulars_reflexives_gustar.reflexive_verbs_llamarse_levantarse_sentirse",
+      "result": "pass",
+      "evidence": "037-assemble.log: exit 0."
+    },
+    {
+      "command": "cd courses/spanish-grammar && bash scripts/validate-chapter.sh 037.es.grammar.present_irregulars_reflexives_gustar.reflexive_verbs_llamarse_levantarse_sentirse",
+      "result": "pass",
+      "evidence": "037-chapter-after.log: exit 0."
+    },
+    {
+      "command": "cd courses/spanish-grammar && ajv validate --spec=draft2020 --validate-formats=false --all-errors -s 02-chapter-schema.json -d chapters/037.es.grammar.present_irregulars_reflexives_gustar.reflexive_verbs_llamarse_levantarse_sentirse/05-final.json",
+      "result": "pass",
+      "evidence": "037-schema-after.log: exit 0."
+    },
+    {
+      "command": "cd courses/spanish-grammar && ajv validate -s 02-chapter-schema.json -d chapters/037.es.grammar.present_irregulars_reflexives_gustar.reflexive_verbs_llamarse_levantarse_sentirse/05-final.json",
+      "result": "known_baseline",
+      "evidence": "037-assembler-ajv-before.log and 037-assembler-ajv-after.log are byte-identical, exit 1: no draft2020 meta-schema selected. Explicit draft2020 validation passes."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    }
+  ],
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+}

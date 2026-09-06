@@ -1,0 +1,96 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/chapters/037/es.02.b2_theory_llamarse_introduce_name.questions.json",
+  "source_sha256": "8eef3fbea2fa1791da0b3c76e62dfc85f8934efb34fa17c665b71905fda097ef",
+  "context_sha256": "60d39233fdb7969ed1e9d8672c244fbd74d740abd9e71474eb8efa9056d17157",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
+  "reviewed_at": "2026-09-04T17:27:36.924378+00:00",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
+  "questions": [
+    {
+      "id": "q1",
+      "decision": "fixed",
+      "note": "Убрана русская вставка, уточнён смысл llama.",
+      "verification": "ok"
+    },
+    {
+      "id": "q2",
+      "decision": "fixed",
+      "note": "Исправлено неверное объяснение лица вопроса.",
+      "verification": "ok"
+    },
+    {
+      "id": "q3",
+      "decision": "fixed",
+      "note": "Убран смешанный язык в отвлекающем варианте.",
+      "verification": "ok"
+    },
+    {
+      "id": "q4",
+      "decision": "fixed",
+      "note": "Объяснение пропуска me без привязки к перемешиваемой букве.",
+      "verification": "ok"
+    },
+    {
+      "id": "q5",
+      "decision": "ok",
+      "note": "Третье лицо ella se llama.",
+      "verification": "ok"
+    },
+    {
+      "id": "q6",
+      "decision": "fixed",
+      "note": "Убран смешанный язык и запрет дополнительных сведений.",
+      "verification": "ok"
+    },
+    {
+      "id": "q7",
+      "decision": "fixed",
+      "note": "Согласованы имя брата, вопрос и объяснение.",
+      "verification": "ok"
+    },
+    {
+      "id": "q8",
+      "decision": "fixed",
+      "note": "Убран смешанный язык.",
+      "verification": "ok"
+    },
+    {
+      "id": "q9",
+      "decision": "fixed",
+      "note": "Устранены несколько неправильных ответов; ключ b сохранён.",
+      "verification": "ok"
+    },
+    {
+      "id": "q10",
+      "decision": "fixed",
+      "note": "Убран смешанный язык, восстановлено ударение Sofía.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-04-es037-040/check.py",
+      "result": "pass",
+      "evidence": "All 572 IDs/contracts, decisions versus clean pre-batch HEAD, fingerprints, native training validation, signatures and source-final-embedded equality; validation.log."
+    },
+    {
+      "command": "go test ./internal/grammarbundle ./internal/repository -run 'TestValidateEmbeddedBundleID|TestGrammar.*Bundle|TestGrammar.*Reorder' -count=1",
+      "result": "pass",
+      "evidence": "Both packages passed on final integrated data; go-tests.log."
+    },
+    {
+      "command": "git diff --check; git -C courses/spanish-grammar diff --check; git -C courses/english-grammar diff --check",
+      "result": "pass",
+      "evidence": "Three separately executed commands exit 0; diff-check.log. All 1040 earlier dirty files outside review docs preserved; preservation.log."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    }
+  ],
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+}

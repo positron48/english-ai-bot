@@ -1,0 +1,138 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/chapters/005/es.05.b5_theory_exclamations_and_common_formulas.questions.json",
+  "source_sha256": "b87bdf48d04e15e51b913a7005b7a1104872b84c8e66f617cd33132c448e26f9",
+  "context_sha256": "c8808c511ed6a62fc5f15ef75ab6013afbbc138c675c3818b4a34e59a1d0221f",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
+  "reviewed_at": "2026-09-04T10:49:32.651893+00:00",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
+  "questions": [
+    {
+      "id": "q1",
+      "decision": "fixed",
+      "note": "Исправлено русское согласование обеими знаками.",
+      "verification": "ok"
+    },
+    {
+      "id": "q2",
+      "decision": "fixed",
+      "note": "Убрано ложное обязательное восклицательное оформление приветствия; вопрос о готовой записи.",
+      "verification": "ok"
+    },
+    {
+      "id": "q3",
+      "decision": "fixed",
+      "note": "Убрана ссылка на букву ответа.",
+      "verification": "ok"
+    },
+    {
+      "id": "q4",
+      "decision": "fixed",
+      "note": "Нейтральная реакция с точкой заменена однозначно неполной парой знаков.",
+      "verification": "ok"
+    },
+    {
+      "id": "q5",
+      "decision": "fixed",
+      "note": "Убрана ссылка на букву ответа.",
+      "verification": "ok"
+    },
+    {
+      "id": "q6",
+      "decision": "fixed",
+      "note": "Убрана ссылка на букву ответа.",
+      "verification": "ok"
+    },
+    {
+      "id": "q7",
+      "decision": "fixed",
+      "note": "Убрано ложное требование оформлять любое Hola как восклицание.",
+      "verification": "ok"
+    },
+    {
+      "id": "q8",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q9",
+      "decision": "fixed",
+      "note": "Правило ограничено восклицательной интонацией приветствия.",
+      "verification": "ok"
+    },
+    {
+      "id": "q10",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q11",
+      "decision": "fixed",
+      "note": "Убрано обязательное восклицание для любой благодарности.",
+      "verification": "ok"
+    },
+    {
+      "id": "q12",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q13",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q14",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q15",
+      "decision": "fixed",
+      "note": "Естественный русский перевод пожелания; уточнена область правила.",
+      "verification": "ok"
+    },
+    {
+      "id": "q16",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q17",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-04-es005-008/check.py",
+      "result": "pass",
+      "evidence": "518 IDs/contracts preserved; source/context hashes current; signatures valid; no new course-wide duplicates; source/final/embedded equal. See batch validation.log."
+    },
+    {
+      "command": "go test ./internal/grammarbundle ./internal/repository -run 'TestValidateEmbeddedBundleID|TestGrammar.*Bundle|TestGrammar.*Reorder' -count=1",
+      "result": "pass",
+      "evidence": "grammarbundle 4.945s; repository 14.356s; see batch go-tests.log."
+    },
+    {
+      "command": "git diff --check; git -C courses/spanish-grammar diff --check; git -C courses/english-grammar diff --check",
+      "result": "pass",
+      "evidence": "Each command exited 0; see batch diff-check.log."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    }
+  ],
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+}

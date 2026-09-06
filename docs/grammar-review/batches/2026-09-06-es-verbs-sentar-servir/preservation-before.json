@@ -1,0 +1,36 @@
+{
+  "existing_files": 25565,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/sentar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/sentar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/sentir.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/sentir.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/ser.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/ser.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/servir.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/servir.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-sentar-servir",
+    "docs/grammar-review/reports/dd83c369056f19661e989ea0.json",
+    "docs/grammar-review/reports/935bc9d7074197901b865778.json",
+    "docs/grammar-review/reports/e293856a89e9cdb1442ef9e0.json",
+    "docs/grammar-review/reports/c6931f5334434b915bf14af9.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/sentar.json": "7260f3ae5ec21779f44365025fbc8f5fe5ea40771a44ffca6b5c39e9fb35ee26",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/sentar.json": "7260f3ae5ec21779f44365025fbc8f5fe5ea40771a44ffca6b5c39e9fb35ee26",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/sentir.json": "3e7e0da554ef0f32e7e3af8fa7bed7a5d4cb009e461031daf4fd22617ba376ae",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/sentir.json": "3e7e0da554ef0f32e7e3af8fa7bed7a5d4cb009e461031daf4fd22617ba376ae",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/ser.json": "859b5486afbd6e89395e337ee73e8c955e4756096b14e78a2018295e97d11750",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/ser.json": "859b5486afbd6e89395e337ee73e8c955e4756096b14e78a2018295e97d11750",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/servir.json": "0d1ce6e8cb274d817ff3d36ef369380093993468a29c14cc33a0d95c513d8124",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/servir.json": "0d1ce6e8cb274d817ff3d36ef369380093993468a29c14cc33a0d95c513d8124"
+  },
+  "preexisting_missing_tracked": [
+    "courses/english-grammar/llm-benchmark/__pycache__/benchmark.cpython-314.pyc",
+    "courses/english-grammar/training-pack-admin/__pycache__/server.cpython-314.pyc",
+    "tools-local/complaints-worker/__pycache__/worker.cpython-314.pyc"
+  ]
+}

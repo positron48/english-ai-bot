@@ -1,0 +1,31 @@
+{
+  "existing_files": 25064,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/defender.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/defender.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/dejar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/dejar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/demostrar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/demostrar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/depender.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/depender.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-defender-depender",
+    "docs/grammar-review/reports/e7d917d423a3147a505f307b.json",
+    "docs/grammar-review/reports/ddc6a09489ae66b958bb4d74.json",
+    "docs/grammar-review/reports/6dc7932db3a539de24ac6c8d.json",
+    "docs/grammar-review/reports/15484fa9e14718980993f379.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/defender.json": "3c1dbbf94a8580916892d403e2b306ee05406d235273c12106718afc65805b28",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/defender.json": "3c1dbbf94a8580916892d403e2b306ee05406d235273c12106718afc65805b28",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/dejar.json": "7f41c081ac592832d0c4b9fb8be957714484e376781e8940d60ed77bf0b33740",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/dejar.json": "7f41c081ac592832d0c4b9fb8be957714484e376781e8940d60ed77bf0b33740",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/demostrar.json": "74d9024eea96718f8b801c28aa07dc6b49949d6a5f35da042609cc7d83bd1a9d",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/demostrar.json": "74d9024eea96718f8b801c28aa07dc6b49949d6a5f35da042609cc7d83bd1a9d",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/depender.json": "081dc2d433cd5b38a48fbb587c6624016709b779a6941d0ec3ac6a0a510a5c30",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/depender.json": "081dc2d433cd5b38a48fbb587c6624016709b779a6941d0ec3ac6a0a510a5c30"
+  }
+}

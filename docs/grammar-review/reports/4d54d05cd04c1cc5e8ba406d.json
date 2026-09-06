@@ -1,0 +1,662 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/resolver.json",
+  "source_sha256": "7377ffa5cf9082c098ff043d63342ced9cee45fb938643eefed1cd7921e5fcd2",
+  "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197",
+  "editor": "Helmholtz editor 2026-09-06",
+  "verifier": "Codex coordinator verifier 2026-09-06",
+  "phase": "done",
+  "reviewed_at": "2026-09-06",
+  "verified_at": "2026-09-06",
+  "questions": [
+    {
+      "id": "es.presente.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма при необходимости, самостоятельный естественный контекст, точный русский перевод и четыре уникальных варианта; форма сверена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма при необходимости, самостоятельный естественный контекст, точный русский перевод и четыре уникальных варианта; форма сверена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма при необходимости, самостоятельный естественный контекст, точный русский перевод и четыре уникальных варианта; форма сверена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма при необходимости, самостоятельный естественный контекст, точный русский перевод и четыре уникальных варианта; форма сверена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма при необходимости, самостоятельный естественный контекст, точный русский перевод и четыре уникальных варианта; форма сверена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма при необходимости, самостоятельный естественный контекст, точный русский перевод и четыре уникальных варианта; форма сверена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма при необходимости, самостоятельный естественный контекст, точный русский перевод и четыре уникальных варианта; форма сверена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма при необходимости, самостоятельный естественный контекст, точный русский перевод и четыре уникальных варианта; форма сверена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма при необходимости, самостоятельный естественный контекст, точный русский перевод и четыре уникальных варианта; форма сверена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма при необходимости, самостоятельный естественный контекст, точный русский перевод и четыре уникальных варианта; форма сверена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма при необходимости, самостоятельный естественный контекст, точный русский перевод и четыре уникальных варианта; форма сверена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма при необходимости, самостоятельный естественный контекст, точный русский перевод и четыре уникальных варианта; форма сверена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма при необходимости, самостоятельный естественный контекст, точный русский перевод и четыре уникальных варианта; форма сверена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма при необходимости, самостоятельный естественный контекст, точный русский перевод и четыре уникальных варианта; форма сверена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма при необходимости, самостоятельный естественный контекст, точный русский перевод и четыре уникальных варианта; форма сверена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма при необходимости, самостоятельный естественный контекст, точный русский перевод и четыре уникальных варианта; форма сверена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма при необходимости, самостоятельный естественный контекст, точный русский перевод и четыре уникальных варианта; форма сверена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма при необходимости, самостоятельный естественный контекст, точный русский перевод и четыре уникальных варианта; форма сверена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма при необходимости, самостоятельный естественный контекст, точный русский перевод и четыре уникальных варианта; форма сверена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма при необходимости, самостоятельный естественный контекст, точный русский перевод и четыре уникальных варианта; форма сверена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма при необходимости, самостоятельный естественный контекст, точный русский перевод и четыре уникальных варианта; форма сверена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма при необходимости, самостоятельный естественный контекст, точный русский перевод и четыре уникальных варианта; форма сверена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма при необходимости, самостоятельный естественный контекст, точный русский перевод и четыре уникальных варианта; форма сверена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма при необходимости, самостоятельный естественный контекст, точный русский перевод и четыре уникальных варианта; форма сверена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма при необходимости, самостоятельный естественный контекст, точный русский перевод и четыре уникальных варианта; форма сверена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма при необходимости, самостоятельный естественный контекст, точный русский перевод и четыре уникальных варианта; форма сверена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма при необходимости, самостоятельный естественный контекст, точный русский перевод и четыре уникальных варианта; форма сверена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма при необходимости, самостоятельный естественный контекст, точный русский перевод и четыре уникальных варианта; форма сверена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма при необходимости, самостоятельный естественный контекст, точный русский перевод и четыре уникальных варианта; форма сверена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма при необходимости, самостоятельный естественный контекст, точный русский перевод и четыре уникальных варианта; форма сверена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма при необходимости, самостоятельный естественный контекст, точный русский перевод и четыре уникальных варианта; форма сверена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма при необходимости, самостоятельный естественный контекст, точный русский перевод и четыре уникальных варианта; форма сверена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма при необходимости, самостоятельный естественный контекст, точный русский перевод и четыре уникальных варианта; форма сверена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма при необходимости, самостоятельный естественный контекст, точный русский перевод и четыре уникальных варианта; форма сверена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма при необходимости, самостоятельный естественный контекст, точный русский перевод и четыре уникальных варианта; форма сверена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма при необходимости, самостоятельный естественный контекст, точный русский перевод и четыре уникальных варианта; форма сверена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма при необходимости, самостоятельный естественный контекст, точный русский перевод и четыре уникальных варианта; форма сверена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма при необходимости, самостоятельный естественный контекст, точный русский перевод и четыре уникальных варианта; форма сверена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма при необходимости, самостоятельный естественный контекст, точный русский перевод и четыре уникальных варианта; форма сверена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма при необходимости, самостоятельный естественный контекст, точный русский перевод и четыре уникальных варианта; форма сверена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма при необходимости, самостоятельный естественный контекст, точный русский перевод и четыре уникальных варианта; форма сверена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма при необходимости, самостоятельный естественный контекст, точный русский перевод и четыре уникальных варианта; форма сверена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, контекст, перевод и варианты; pretérito anterior помещён в явно маркированное старинное повествование.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, контекст, перевод и варианты; pretérito anterior помещён в явно маркированное старинное повествование.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, контекст, перевод и варианты; pretérito anterior помещён в явно маркированное старинное повествование.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, контекст, перевод и варианты; pretérito anterior помещён в явно маркированное старинное повествование.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, контекст, перевод и варианты; pretérito anterior помещён в явно маркированное старинное повествование.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, контекст, перевод и варианты; pretérito anterior помещён в явно маркированное старинное повествование.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма при необходимости, самостоятельный естественный контекст, точный русский перевод и четыре уникальных варианта; форма сверена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма при необходимости, самостоятельный естественный контекст, точный русский перевод и четыре уникальных варианта; форма сверена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма при необходимости, самостоятельный естественный контекст, точный русский перевод и четыре уникальных варианта; форма сверена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма при необходимости, самостоятельный естественный контекст, точный русский перевод и четыре уникальных варианта; форма сверена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма при необходимости, самостоятельный естественный контекст, точный русский перевод и четыре уникальных варианта; форма сверена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма при необходимости, самостоятельный естественный контекст, точный русский перевод и четыре уникальных варианта; форма сверена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный контрфактический контекст, точный перевод с «Если бы…» и уникальные варианты.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный контрфактический контекст, точный перевод с «Если бы…» и уникальные варианты.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный контрфактический контекст, точный перевод с «Если бы…» и уникальные варианты.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный контрфактический контекст, точный перевод с «Если бы…» и уникальные варианты.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный контрфактический контекст, точный перевод с «Если бы…» и уникальные варианты.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, самостоятельный контрфактический контекст, точный перевод с «Если бы…» и уникальные варианты.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма при необходимости, самостоятельный естественный контекст, точный русский перевод и четыре уникальных варианта; форма сверена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма при необходимости, самостоятельный естественный контекст, точный русский перевод и четыре уникальных варианта; форма сверена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма при необходимости, самостоятельный естественный контекст, точный русский перевод и четыре уникальных варианта; форма сверена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма при необходимости, самостоятельный естественный контекст, точный русский перевод и четыре уникальных варианта; форма сверена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма при необходимости, самостоятельный естественный контекст, точный русский перевод и четыре уникальных варианта; форма сверена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма при необходимости, самостоятельный естественный контекст, точный русский перевод и четыре уникальных варианта; форма сверена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма при необходимости, самостоятельный естественный контекст, точный русский перевод и четыре уникальных варианта; форма сверена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма при необходимости, самостоятельный естественный контекст, точный русский перевод и четыре уникальных варианта; форма сверена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма при необходимости, самостоятельный естественный контекст, точный русский перевод и четыре уникальных варианта; форма сверена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма при необходимости, самостоятельный естественный контекст, точный русский перевод и четыре уникальных варианта; форма сверена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма при необходимости, самостоятельный естественный контекст, точный русский перевод и четыре уникальных варианта; форма сверена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма при необходимости, самостоятельный естественный контекст, точный русский перевод и четыре уникальных варианта; форма сверена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, контекст, перевод и варианты; редкое будущее сослагательного наклонения помещено в явно маркированную старую юридическую формулу.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, контекст, перевод и варианты; редкое будущее сослагательного наклонения помещено в явно маркированную старую юридическую формулу.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, контекст, перевод и варианты; редкое будущее сослагательного наклонения помещено в явно маркированную старую юридическую формулу.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, контекст, перевод и варианты; редкое будущее сослагательного наклонения помещено в явно маркированную старую юридическую формулу.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, контекст, перевод и варианты; редкое будущее сослагательного наклонения помещено в явно маркированную старую юридическую формулу.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, контекст, перевод и варианты; редкое будущее сослагательного наклонения помещено в явно маркированную старую юридическую формулу.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма при необходимости, самостоятельный естественный контекст, точный русский перевод и четыре уникальных варианта; форма сверена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма при необходимости, самостоятельный естественный контекст, точный русский перевод и четыре уникальных варианта; форма сверена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма при необходимости, самостоятельный естественный контекст, точный русский перевод и четыре уникальных варианта; форма сверена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма при необходимости, самостоятельный естественный контекст, точный русский перевод и четыре уникальных варианта; форма сверена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма при необходимости, самостоятельный естественный контекст, точный русский перевод и четыре уникальных варианта; форма сверена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма при необходимости, самостоятельный естественный контекст, точный русский перевод и четыре уникальных варианта; форма сверена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма при необходимости, самостоятельный естественный контекст, точный русский перевод и четыре уникальных варианта; форма сверена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма при необходимости, самостоятельный естественный контекст, точный русский перевод и четыре уникальных варианта; форма сверена по Jehle. Независимая проверка: сочетание «la reunión habría empezado puntual» неидиоматично; заменить наречную часть на «a tiempo», сохранив точное соответствие русскому «вовремя». После независимой проверки исправлено неидиоматичное сочетание «empezado puntual» на «empezado a tiempo»; русский перевод «вовремя» уже был точным.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма при необходимости, самостоятельный естественный контекст, точный русский перевод и четыре уникальных варианта; форма сверена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма при необходимости, самостоятельный естественный контекст, точный русский перевод и четыре уникальных варианта; форма сверена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма при необходимости, самостоятельный естественный контекст, точный русский перевод и четыре уникальных варианта; форма сверена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма при необходимости, самостоятельный естественный контекст, точный русский перевод и четыре уникальных варианта; форма сверена по Jehle.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, контекст, перевод и варианты; редкое будущее сослагательного наклонения помещено в явно маркированную старую юридическую формулу.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, контекст, перевод и варианты; редкое будущее сослагательного наклонения помещено в явно маркированную старую юридическую формулу.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, контекст, перевод и варианты; редкое будущее сослагательного наклонения помещено в явно маркированную старую юридическую формулу.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, контекст, перевод и варианты; редкое будущее сослагательного наклонения помещено в явно маркированную старую юридическую формулу.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, контекст, перевод и варианты; редкое будущее сослагательного наклонения помещено в явно маркированную старую юридическую формулу.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, контекст, перевод и варианты; редкое будущее сослагательного наклонения помещено в явно маркированную старую юридическую формулу.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 focused resolver Jehle and card-contract validator",
+      "result": "pass",
+      "evidence": "96/96 surface forms match the 16 local Jehle rows; mood, tense, scope, person, number and slot order match."
+    },
+    {
+      "command": "python3 focused resolver semantic and option validator",
+      "result": "pass",
+      "evidence": "96/96 cards have one blank, a standalone Spanish context, full Russian translation, and four unique same-scope options containing the answer exactly once; all 96 were read semantically."
+    },
+    {
+      "command": "cmp source embedded && baseline identity/top-level diff check",
+      "result": "pass",
+      "evidence": "Source and embedded files are byte-identical; top-level fields and all 96 scope/person/number identities remain in their original order."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py check --source courses/spanish-grammar/training_pack/verb_forms/lemmas/resolver.json",
+      "result": "pass",
+      "evidence": "Report resolves to awaiting_verification with all 96 editorial decisions complete and current source/context fingerprints."
+    },
+    {
+      "command": "go test ./internal/grammartrainingpack ./internal/verbtraining",
+      "result": "pass",
+      "evidence": "Both focused Go packages passed."
+    },
+    {
+      "command": "python3 -m json.tool on source, embedded and report; JSONL parse; git diff --check in root and Spanish course",
+      "result": "pass",
+      "evidence": "All JSON and six checkpoint records parse; root and course diffs contain no whitespace errors."
+    },
+    {
+      "command": "independent full-card read: resolver (96/96)",
+      "result": "pass",
+      "evidence": "Coordinator verifier checked all 96 final ES/RU contexts; 95 accepted and one exact idiomatic defect returned to the original editor."
+    },
+    {
+      "command": "python3 focused post-verifier resolver recheck for es.preterito_pluscuamperfecto.subjuntivo:2:singular",
+      "result": "pass",
+      "evidence": "Changed only «la reunión habría empezado puntual» to idiomatic «la reunión habría empezado a tiempo»; Russian translation, form, options and metadata are unchanged; source and embedded are byte-identical and fingerprint refreshed."
+    },
+    {
+      "command": "independent recheck: resolver es.preterito_pluscuamperfecto.subjuntivo:2:singular",
+      "result": "pass",
+      "evidence": "The original editor replaced empezado puntual with idiomatic habría empezado a tiempo; ES/RU agreement, source=embedded and fingerprint were rechecked."
+    },
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-06-es-verbs-resolver-restar/preservation-check.py",
+      "result": "pass",
+      "evidence": "Preserved 25503 paths outside the authorized target set; 0 changed, missing or unexpectedly new."
+    },
+    {
+      "command": "native validate_artifact() for resolver, respetar, responder, restar",
+      "result": "pass",
+      "evidence": "Generator-native validation accepted all four 96-card lemma banks."
+    },
+    {
+      "command": "go test ./internal/verbtraining ./cmd/sync_verb_training_json",
+      "result": "pass",
+      "evidence": "Both focused Go packages passed."
+    },
+    {
+      "command": "python3 scripts/grammar_review_test.py",
+      "result": "pass",
+      "evidence": "13 tests passed."
+    },
+    {
+      "command": "git diff --check in root and courses/spanish-grammar",
+      "result": "pass",
+      "evidence": "Both repositories report no whitespace errors."
+    }
+  ],
+  "verification_note": "Независимо перечитаны все 96 карточек с подстановкой ответа. Формы Jehle, metadata, slots, options, значения resolver/resolverse, русские переводы и редкие регистры приняты в 95 карточках. Одна карточка возвращена исходному редактору из-за неидиоматичного наречного сочетания «empezado puntual»; требуется «empezado a tiempo». Identity, порядок, top-level, source=embedded и fingerprints проверены. Повторная проверка подтвердила исправление: идиоматичное «habría empezado a tiempo» точно соответствует русскому «началось бы вовремя»; карточка принята."
+}

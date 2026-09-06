@@ -1,0 +1,411 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/chapters/008.es.grammar.noun_gender_articles_agreement.singular_plural_s_es_common_spelling_changes/03-questions.json",
+  "source_sha256": "3c34003e427cba949a82a20b2523980f349cc96d0f5179d7796fac04d97242fe",
+  "context_sha256": "e57bb4615e87856c1ecc963757c9275634e6bb0809dd45e789d28403864de7a6",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
+  "reviewed_at": "2026-09-04T10:59:34.601549+00:00",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
+  "questions": [
+    {
+      "id": "q1",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q2",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q3",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q4",
+      "decision": "fixed",
+      "note": "Уточнено образование множественного числа и безударная гласная.",
+      "verification": "ok"
+    },
+    {
+      "id": "q5",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q6",
+      "decision": "fixed",
+      "note": "Объяснение ограничено определённым артиклем; также существует unos.",
+      "verification": "ok"
+    },
+    {
+      "id": "q7",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q8",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q9",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q10",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q11",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q12",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q13",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q14",
+      "decision": "fixed",
+      "note": "Заданы конкретные типичные согласные и образование множественного числа вместо слишком широкого правила.",
+      "verification": "ok"
+    },
+    {
+      "id": "q15",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q16",
+      "decision": "fixed",
+      "note": "Проверяется определённая группа окончаний без ссылки на уровень A1.",
+      "verification": "ok"
+    },
+    {
+      "id": "q17",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q18",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q19",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q20",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q21",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q22",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q23",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q24",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q25",
+      "decision": "fixed",
+      "note": "Дистракторы об отсутствующих артикле и акценте заменены возможными ошибками написания.",
+      "verification": "ok"
+    },
+    {
+      "id": "q26",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q27",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q28",
+      "decision": "fixed",
+      "note": "Поэтические голоса города заменены обычным контекстом голосов девочек.",
+      "verification": "ok"
+    },
+    {
+      "id": "q29",
+      "decision": "fixed",
+      "note": "Объяснено сохранение акцента, которое отличает один из вариантов.",
+      "verification": "ok"
+    },
+    {
+      "id": "q30",
+      "decision": "fixed",
+      "note": "Объяснение точно указывает единственную исправляемую ошибку luzes.",
+      "verification": "ok"
+    },
+    {
+      "id": "q31",
+      "decision": "fixed",
+      "note": "Объяснено неизменяемое окончание -s после безударного слога.",
+      "verification": "ok"
+    },
+    {
+      "id": "q32",
+      "decision": "fixed",
+      "note": "Объяснено правило неизменяемого crisis без намёка на факультативность.",
+      "verification": "ok"
+    },
+    {
+      "id": "q33",
+      "decision": "fixed",
+      "note": "Объяснено снятие акцента в compases, отличающее один из вариантов.",
+      "verification": "ok"
+    },
+    {
+      "id": "q34",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q35",
+      "decision": "fixed",
+      "note": "Уточнено образование множественного числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "q36",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q37",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q38",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q39",
+      "decision": "fixed",
+      "note": "Объяснено снятие акцента в форме множественного числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "q40",
+      "decision": "fixed",
+      "note": "Указано сохранение лица говорящего, чтобы другое лицо не считалось альтернативной правкой.",
+      "verification": "ok"
+    },
+    {
+      "id": "q41",
+      "decision": "fixed",
+      "note": "Уточнён именно определённый артикль el.",
+      "verification": "ok"
+    },
+    {
+      "id": "q42",
+      "decision": "fixed",
+      "note": "Уточнён определённый артикль la: unas тоже женский множественный.",
+      "verification": "ok"
+    },
+    {
+      "id": "q43",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q44",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q45",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q46",
+      "decision": "fixed",
+      "note": "Не все формы обязаны внешне меняться; сформулирована проверка согласования.",
+      "verification": "ok"
+    },
+    {
+      "id": "q47",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q48",
+      "decision": "fixed",
+      "note": "Указан определённый артикль, чтобы исключить unas.",
+      "verification": "ok"
+    },
+    {
+      "id": "q49",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q50",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q51",
+      "decision": "fixed",
+      "note": "В условии явно задан переход во множественное число.",
+      "verification": "ok"
+    },
+    {
+      "id": "q52",
+      "decision": "fixed",
+      "note": "В условии явно задан переход во множественное число.",
+      "verification": "ok"
+    },
+    {
+      "id": "q53",
+      "decision": "fixed",
+      "note": "Вопрос о видимом согласовании вместо факта проверки.",
+      "verification": "ok"
+    },
+    {
+      "id": "q54",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q55",
+      "decision": "fixed",
+      "note": "В условии явно задан переход во множественное число.",
+      "verification": "ok"
+    },
+    {
+      "id": "q56",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q57",
+      "decision": "fixed",
+      "note": "Добавлен отсутствовавший контекст перехода во множественное число.",
+      "verification": "ok"
+    },
+    {
+      "id": "q58",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q59",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q60",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-04-es005-008/check.py",
+      "result": "pass",
+      "evidence": "518 IDs/contracts preserved; source/context hashes current; signatures valid; no new course-wide duplicates; source/final/embedded equal. See batch validation.log."
+    },
+    {
+      "command": "go test ./internal/grammarbundle ./internal/repository -run 'TestValidateEmbeddedBundleID|TestGrammar.*Bundle|TestGrammar.*Reorder' -count=1",
+      "result": "pass",
+      "evidence": "grammarbundle 4.945s; repository 14.356s; see batch go-tests.log."
+    },
+    {
+      "command": "bash scripts/assemble-chapter.sh 008.es.grammar.noun_gender_articles_agreement.singular_plural_s_es_common_spelling_changes",
+      "result": "pass",
+      "evidence": "60 questions, 6 theory blocks and inline quizzes, 48 test-pool IDs; see 008-assemble-after.log."
+    },
+    {
+      "command": "bash scripts/validate-chapter.sh 008.es.grammar.noun_gender_articles_agreement.singular_plural_s_es_common_spelling_changes",
+      "result": "pass",
+      "evidence": "Passed before and after editing; see 008-chapter-before/after.log."
+    },
+    {
+      "command": "ajv validate --spec=draft2020 --validate-formats=false --all-errors -s 02-chapter-schema.json -d chapters/008.es.grammar.noun_gender_articles_agreement.singular_plural_s_es_common_spelling_changes/05-final.json",
+      "result": "pass",
+      "evidence": "Passed before and after editing; see chapter schema logs in batch directory."
+    },
+    {
+      "command": "git diff --check; git -C courses/spanish-grammar diff --check; git -C courses/english-grammar diff --check",
+      "result": "pass",
+      "evidence": "Each command exited 0; see batch diff-check.log."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    }
+  ],
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+}

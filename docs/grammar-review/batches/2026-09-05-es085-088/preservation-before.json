@@ -1,0 +1,53 @@
+{
+  "existing_files": 3540,
+  "allowed_paths": [
+    "courses/spanish-grammar/chapters/085.es.grammar.prepositions_verb_patterns.verb_plus_preposition_patterns_pensar_en_depender_de/03-questions.json",
+    "courses/spanish-grammar/chapters/085.es.grammar.prepositions_verb_patterns.verb_plus_preposition_patterns_pensar_en_depender_de/05-final.json",
+    "courses/spanish-grammar/chapters/086.es.grammar.prepositions_verb_patterns.adjective_plus_preposition_patterns_contento_con_parecido_lleno/03-questions.json",
+    "courses/spanish-grammar/chapters/086.es.grammar.prepositions_verb_patterns.adjective_plus_preposition_patterns_contento_con_parecido_lleno/05-final.json",
+    "courses/spanish-grammar/chapters/087.es.grammar.prepositions_verb_patterns.build_speak_directions_reasons_goals_relationships/03-questions.json",
+    "courses/spanish-grammar/chapters/087.es.grammar.prepositions_verb_patterns.build_speak_directions_reasons_goals_relationships/05-final.json",
+    "courses/spanish-grammar/chapters/088.es.grammar.pronouns_direct_indirect.direct_object_pronouns_lo_la_los_las/03-questions.json",
+    "courses/spanish-grammar/chapters/088.es.grammar.pronouns_direct_indirect.direct_object_pronouns_lo_la_los_las/05-final.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-05-es085-088",
+    "docs/grammar-review/reports/03bb78e95188ea776dd2ffa1.json",
+    "docs/grammar-review/reports/37713727c7b07bd089ff0af3.json",
+    "docs/grammar-review/reports/8e57b8783aa3de865344fbd2.json",
+    "docs/grammar-review/reports/ea91d276dce2fae754de8379.json",
+    "internal/grammarbundle/es/chapters/es.grammar.prepositions_verb_patterns.adjective_plus_preposition_patterns_contento_con_parecido_lleno.json",
+    "internal/grammarbundle/es/chapters/es.grammar.prepositions_verb_patterns.build_speak_directions_reasons_goals_relationships.json",
+    "internal/grammarbundle/es/chapters/es.grammar.prepositions_verb_patterns.verb_plus_preposition_patterns_pensar_en_depender_de.json",
+    "internal/grammarbundle/es/chapters/es.grammar.pronouns_direct_indirect.direct_object_pronouns_lo_la_los_las.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/chapters/085.es.grammar.prepositions_verb_patterns.verb_plus_preposition_patterns_pensar_en_depender_de/03-questions.json": "a27dfe430766989bed1a35c6ddf2612bd4240cb3eee340a1b1ae7e91780ea2c0",
+    "courses/spanish-grammar/chapters/085.es.grammar.prepositions_verb_patterns.verb_plus_preposition_patterns_pensar_en_depender_de/05-final.json": "822ddde6fb879452112fe02f84a5ad20ca0e3ae5680352ba2b0bdef8cc2d8796",
+    "internal/grammarbundle/es/chapters/es.grammar.prepositions_verb_patterns.verb_plus_preposition_patterns_pensar_en_depender_de.json": "822ddde6fb879452112fe02f84a5ad20ca0e3ae5680352ba2b0bdef8cc2d8796",
+    "courses/spanish-grammar/chapters/086.es.grammar.prepositions_verb_patterns.adjective_plus_preposition_patterns_contento_con_parecido_lleno/03-questions.json": "747d2a498b22ec659813ba1db9a3ab708f93f626a8f8ac8bb6d9bb627abf095d",
+    "courses/spanish-grammar/chapters/086.es.grammar.prepositions_verb_patterns.adjective_plus_preposition_patterns_contento_con_parecido_lleno/05-final.json": "e68d41d113a025cdb62cc8ecadd9ea027550ca5542926c3583e89dafa4b24d0a",
+    "internal/grammarbundle/es/chapters/es.grammar.prepositions_verb_patterns.adjective_plus_preposition_patterns_contento_con_parecido_lleno.json": "e68d41d113a025cdb62cc8ecadd9ea027550ca5542926c3583e89dafa4b24d0a",
+    "courses/spanish-grammar/chapters/087.es.grammar.prepositions_verb_patterns.build_speak_directions_reasons_goals_relationships/03-questions.json": "0087f7b44e4bd70c5473b8bd5022acf00a34f2708b3fc321bab3a2ebc894696c",
+    "courses/spanish-grammar/chapters/087.es.grammar.prepositions_verb_patterns.build_speak_directions_reasons_goals_relationships/05-final.json": "0964100ee4e530420ad9a35d9a927d0d869e70439d6fa58a2a8a9ff2fac0946e",
+    "internal/grammarbundle/es/chapters/es.grammar.prepositions_verb_patterns.build_speak_directions_reasons_goals_relationships.json": "0964100ee4e530420ad9a35d9a927d0d869e70439d6fa58a2a8a9ff2fac0946e",
+    "courses/spanish-grammar/chapters/088.es.grammar.pronouns_direct_indirect.direct_object_pronouns_lo_la_los_las/03-questions.json": "357f63856028f44b27f02c45234907a6ff337c971ce78d9672ebd61b58c8713a",
+    "courses/spanish-grammar/chapters/088.es.grammar.pronouns_direct_indirect.direct_object_pronouns_lo_la_los_las/05-final.json": "d1f82410b31e68e7f971ee1967b489e38dd74272f319d6dc44a907a667d08f1f",
+    "internal/grammarbundle/es/chapters/es.grammar.pronouns_direct_indirect.direct_object_pronouns_lo_la_los_las.json": "d1f82410b31e68e7f971ee1967b489e38dd74272f319d6dc44a907a667d08f1f"
+  },
+  "baseline_exit_codes": {
+    "085-chapter-before.log": 0,
+    "085-schema-before.log": 1,
+    "085-assembler-ajv-before.log": 1,
+    "086-chapter-before.log": 0,
+    "086-schema-before.log": 1,
+    "086-assembler-ajv-before.log": 1,
+    "087-chapter-before.log": 0,
+    "087-schema-before.log": 1,
+    "087-assembler-ajv-before.log": 1,
+    "088-chapter-before.log": 0,
+    "088-schema-before.log": 1,
+    "088-assembler-ajv-before.log": 1
+  }
+}

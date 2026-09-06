@@ -1,0 +1,488 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/chapters/040.es.grammar.present_irregulars_reflexives_gustar.estar_plus_gerundio_happening_right_now/03-questions.json",
+  "source_sha256": "10f73ba6c0184e4dee05fd68436132d7513038f85ea01520b27496cf924212a9",
+  "context_sha256": "5cbb440ad9fc9c3d13d288b891b8c31e0c97383d48ed0e7c2c704832882e89ad",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
+  "reviewed_at": "2026-09-04T17:39:09.777935+00:00",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
+  "questions": [
+    {
+      "id": "q040_b1_01",
+      "decision": "fixed",
+      "note": "Убрано утверждение об обязательности прогрессива для сейчас.",
+      "verification": "ok"
+    },
+    {
+      "id": "q040_b1_02",
+      "decision": "fixed",
+      "note": "Объяснён выбор, не запрещено простое настоящее.",
+      "verification": "ok"
+    },
+    {
+      "id": "q040_b1_03",
+      "decision": "fixed",
+      "note": "Краткий герундий признан допустимым; задана полная конструкция.",
+      "verification": "ok"
+    },
+    {
+      "id": "q040_b1_04",
+      "decision": "fixed",
+      "note": "Указаны возможные времена вспомогательного estar.",
+      "verification": "ok"
+    },
+    {
+      "id": "q040_b1_05",
+      "decision": "ok",
+      "note": "Лицо и число выражает estamos.",
+      "verification": "ok"
+    },
+    {
+      "id": "q040_b1_06",
+      "decision": "ok",
+      "note": "Из вариантов только estar + esperando верно.",
+      "verification": "ok"
+    },
+    {
+      "id": "q040_b1_07",
+      "decision": "ok",
+      "note": "Работа каждый день не совпадает с сейчас.",
+      "verification": "ok"
+    },
+    {
+      "id": "q040_b1_08",
+      "decision": "fixed",
+      "note": "Вместо неопределённой грамматической опоры названы формы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q040_b1_09",
+      "decision": "ok",
+      "note": "Estamos poniendo соответствует мы сейчас.",
+      "verification": "ok"
+    },
+    {
+      "id": "q040_b1_10",
+      "decision": "fixed",
+      "note": "Уточнено реальное употребление presente для сейчас.",
+      "verification": "ok"
+    },
+    {
+      "id": "q040_b1_11",
+      "decision": "fixed",
+      "note": "Зафиксирована позиция подлежащего для единственного порядка.",
+      "verification": "ok"
+    },
+    {
+      "id": "q040_b1_12",
+      "decision": "fixed",
+      "note": "Убран ложный запрет краткой реплики.",
+      "verification": "ok"
+    },
+    {
+      "id": "q040_b2_01",
+      "decision": "ok",
+      "note": "Yo соответствует estoy.",
+      "verification": "ok"
+    },
+    {
+      "id": "q040_b2_02",
+      "decision": "ok",
+      "note": "Ellos соответствует están.",
+      "verification": "ok"
+    },
+    {
+      "id": "q040_b2_03",
+      "decision": "ok",
+      "note": "Usted соответствует está.",
+      "verification": "ok"
+    },
+    {
+      "id": "q040_b2_04",
+      "decision": "fixed",
+      "note": "Указано время, убрана служебная фраза про скобки.",
+      "verification": "ok"
+    },
+    {
+      "id": "q040_b2_05",
+      "decision": "fixed",
+      "note": "Исправлено ложное различие по месту ударения.",
+      "verification": "ok"
+    },
+    {
+      "id": "q040_b2_06",
+      "decision": "ok",
+      "note": "El niño соответствует está.",
+      "verification": "ok"
+    },
+    {
+      "id": "q040_b2_07",
+      "decision": "ok",
+      "note": "Ser не образует эту конструкцию.",
+      "verification": "ok"
+    },
+    {
+      "id": "q040_b2_08",
+      "decision": "fixed",
+      "note": "Исправлено ложное различие по ударению.",
+      "verification": "ok"
+    },
+    {
+      "id": "q040_b2_09",
+      "decision": "ok",
+      "note": "Место и процесс используют estar.",
+      "verification": "ok"
+    },
+    {
+      "id": "q040_b2_10",
+      "decision": "fixed",
+      "note": "Исправлен русский про второе лицо.",
+      "verification": "ok"
+    },
+    {
+      "id": "q040_b2_11",
+      "decision": "fixed",
+      "note": "Исправлено ложное объяснение знака ударения и правильный вариант.",
+      "verification": "ok"
+    },
+    {
+      "id": "q040_b2_12",
+      "decision": "ok",
+      "note": "Порядок задан, форма durmiendo верна.",
+      "verification": "ok"
+    },
+    {
+      "id": "q040_b3_01",
+      "decision": "ok",
+      "note": "Hablar → hablando.",
+      "verification": "ok"
+    },
+    {
+      "id": "q040_b3_02",
+      "decision": "fixed",
+      "note": "Убрана ложная омофония с португальским.",
+      "verification": "ok"
+    },
+    {
+      "id": "q040_b3_03",
+      "decision": "ok",
+      "note": "Vivir → viviendo.",
+      "verification": "ok"
+    },
+    {
+      "id": "q040_b3_04",
+      "decision": "fixed",
+      "note": "Убрана служебная фраза про скобки.",
+      "verification": "ok"
+    },
+    {
+      "id": "q040_b3_05",
+      "decision": "ok",
+      "note": "Escribir → escribiendo.",
+      "verification": "ok"
+    },
+    {
+      "id": "q040_b3_06",
+      "decision": "fixed",
+      "note": "Добавлено необходимое чередование e → i.",
+      "verification": "ok"
+    },
+    {
+      "id": "q040_b3_07",
+      "decision": "ok",
+      "note": "После estar в перифразе герундий.",
+      "verification": "ok"
+    },
+    {
+      "id": "q040_b3_08",
+      "decision": "ok",
+      "note": "Герундий не согласуется.",
+      "verification": "ok"
+    },
+    {
+      "id": "q040_b3_09",
+      "decision": "fixed",
+      "note": "Убран допустимый вариант с дополнительным y mal.",
+      "verification": "ok"
+    },
+    {
+      "id": "q040_b3_10",
+      "decision": "fixed",
+      "note": "Исправлено ложное добавление u перед a.",
+      "verification": "ok"
+    },
+    {
+      "id": "q040_b3_11",
+      "decision": "ok",
+      "note": "Estoy comiendo ahora соответствует сейчас.",
+      "verification": "ok"
+    },
+    {
+      "id": "q040_b3_12",
+      "decision": "ok",
+      "note": "Позиции в reorder зафиксированы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q040_b4_01",
+      "decision": "ok",
+      "note": "Leer → leyendo.",
+      "verification": "ok"
+    },
+    {
+      "id": "q040_b4_02",
+      "decision": "ok",
+      "note": "Dormir → durmiendo.",
+      "verification": "ok"
+    },
+    {
+      "id": "q040_b4_03",
+      "decision": "fixed",
+      "note": "Дана точная особая форма без лишнего ярлыка.",
+      "verification": "ok"
+    },
+    {
+      "id": "q040_b4_04",
+      "decision": "ok",
+      "note": "Decir → diciendo.",
+      "verification": "ok"
+    },
+    {
+      "id": "q040_b4_05",
+      "decision": "ok",
+      "note": "Pedir → pidiendo.",
+      "verification": "ok"
+    },
+    {
+      "id": "q040_b4_06",
+      "decision": "fixed",
+      "note": "Убрана служебная ссылка на скобки.",
+      "verification": "ok"
+    },
+    {
+      "id": "q040_b4_07",
+      "decision": "ok",
+      "note": "Ir → yendo.",
+      "verification": "ok"
+    },
+    {
+      "id": "q040_b4_08",
+      "decision": "ok",
+      "note": "Dormir → durmiendo.",
+      "verification": "ok"
+    },
+    {
+      "id": "q040_b4_09",
+      "decision": "ok",
+      "note": "Oír → oyendo.",
+      "verification": "ok"
+    },
+    {
+      "id": "q040_b4_10",
+      "decision": "ok",
+      "note": "Leendo неверно.",
+      "verification": "ok"
+    },
+    {
+      "id": "q040_b4_11",
+      "decision": "ok",
+      "note": "Decir → diciendo.",
+      "verification": "ok"
+    },
+    {
+      "id": "q040_b4_12",
+      "decision": "ok",
+      "note": "Условия задают порядок.",
+      "verification": "ok"
+    },
+    {
+      "id": "q040_b5_01",
+      "decision": "fixed",
+      "note": "Устранено пересечение двух описаний позиции no.",
+      "verification": "ok"
+    },
+    {
+      "id": "q040_b5_02",
+      "decision": "fixed",
+      "note": "Убрана служебная вставка sin tilde в отвлекающем варианте.",
+      "verification": "ok"
+    },
+    {
+      "id": "q040_b5_03",
+      "decision": "fixed",
+      "note": "Исправлено ложное ударение на do, убрана подсказка из условия.",
+      "verification": "ok"
+    },
+    {
+      "id": "q040_b5_04",
+      "decision": "ok",
+      "note": "Нейтральное отрицание перед estar.",
+      "verification": "ok"
+    },
+    {
+      "id": "q040_b5_05",
+      "decision": "ok",
+      "note": "Оба положения me допустимы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q040_b5_06",
+      "decision": "ok",
+      "note": "Первая фраза отрицательна, вторая утвердительна.",
+      "verification": "ok"
+    },
+    {
+      "id": "q040_b5_07",
+      "decision": "ok",
+      "note": "Buscándolo требует ударения; только один вариант верен.",
+      "verification": "ok"
+    },
+    {
+      "id": "q040_b5_08",
+      "decision": "ok",
+      "note": "Дублирование me на одном действии ошибочно.",
+      "verification": "ok"
+    },
+    {
+      "id": "q040_b5_09",
+      "decision": "ok",
+      "note": "Порядок наречия и места указан.",
+      "verification": "ok"
+    },
+    {
+      "id": "q040_b5_10",
+      "decision": "ok",
+      "note": "Порядок задан началом и концом.",
+      "verification": "ok"
+    },
+    {
+      "id": "q040_b5_11",
+      "decision": "fixed",
+      "note": "Добавлено отсутствовавшее лицо yo и время.",
+      "verification": "ok"
+    },
+    {
+      "id": "q040_b5_12",
+      "decision": "fixed",
+      "note": "Учтён допустимый вынесенный герундий, задан нейтральный порядок.",
+      "verification": "ok"
+    },
+    {
+      "id": "q040_b6_01",
+      "decision": "fixed",
+      "note": "Явно задано простое presente, не запрещено прогрессивное habitual.",
+      "verification": "ok"
+    },
+    {
+      "id": "q040_b6_02",
+      "decision": "ok",
+      "note": "Точная ситуация переезда отличает нужный вариант.",
+      "verification": "ok"
+    },
+    {
+      "id": "q040_b6_03",
+      "decision": "fixed",
+      "note": "Убран служебный критерий безопасной базовой нормы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q040_b6_04",
+      "decision": "ok",
+      "note": "Presente подходит для расписания и факта.",
+      "verification": "ok"
+    },
+    {
+      "id": "q040_b6_05",
+      "decision": "fixed",
+      "note": "Признано допустимым estoy entendiendo, задана нужная форма.",
+      "verification": "ok"
+    },
+    {
+      "id": "q040_b6_06",
+      "decision": "ok",
+      "note": "Общий факт отличается от ahora mismo.",
+      "verification": "ok"
+    },
+    {
+      "id": "q040_b6_07",
+      "decision": "fixed",
+      "note": "Убран ложный запрет habitual progressive.",
+      "verification": "ok"
+    },
+    {
+      "id": "q040_b6_08",
+      "decision": "ok",
+      "note": "Только estoy estudiando правильно образует конструкцию.",
+      "verification": "ok"
+    },
+    {
+      "id": "q040_b6_09",
+      "decision": "ok",
+      "note": "Контекст определяет выбор.",
+      "verification": "ok"
+    },
+    {
+      "id": "q040_b6_10",
+      "decision": "ok",
+      "note": "Условия задают порядок.",
+      "verification": "ok"
+    },
+    {
+      "id": "q040_b6_11",
+      "decision": "ok",
+      "note": "Прогрессив не исключает соседнее простое presente.",
+      "verification": "ok"
+    },
+    {
+      "id": "q040_b6_12",
+      "decision": "fixed",
+      "note": "Объяснён выбор без утверждения абсолютной обязательности.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-04-es037-040/check.py",
+      "result": "pass",
+      "evidence": "All 572 IDs/contracts, decisions versus clean pre-batch HEAD, fingerprints, native training validation, signatures and source-final-embedded equality; validation.log."
+    },
+    {
+      "command": "go test ./internal/grammarbundle ./internal/repository -run 'TestValidateEmbeddedBundleID|TestGrammar.*Bundle|TestGrammar.*Reorder' -count=1",
+      "result": "pass",
+      "evidence": "Both packages passed on final integrated data; go-tests.log."
+    },
+    {
+      "command": "git diff --check; git -C courses/spanish-grammar diff --check; git -C courses/english-grammar diff --check",
+      "result": "pass",
+      "evidence": "Three separately executed commands exit 0; diff-check.log. All 1040 earlier dirty files outside review docs preserved; preservation.log."
+    },
+    {
+      "command": "cd courses/spanish-grammar && bash scripts/assemble-chapter.sh 040.es.grammar.present_irregulars_reflexives_gustar.estar_plus_gerundio_happening_right_now",
+      "result": "pass",
+      "evidence": "040-assemble.log: exit 0."
+    },
+    {
+      "command": "cd courses/spanish-grammar && bash scripts/validate-chapter.sh 040.es.grammar.present_irregulars_reflexives_gustar.estar_plus_gerundio_happening_right_now",
+      "result": "pass",
+      "evidence": "040-chapter-after.log: exit 0."
+    },
+    {
+      "command": "cd courses/spanish-grammar && ajv validate --spec=draft2020 --validate-formats=false --all-errors -s 02-chapter-schema.json -d chapters/040.es.grammar.present_irregulars_reflexives_gustar.estar_plus_gerundio_happening_right_now/05-final.json",
+      "result": "pass",
+      "evidence": "040-schema-after.log: exit 0."
+    },
+    {
+      "command": "cd courses/spanish-grammar && ajv validate -s 02-chapter-schema.json -d chapters/040.es.grammar.present_irregulars_reflexives_gustar.estar_plus_gerundio_happening_right_now/05-final.json",
+      "result": "known_baseline",
+      "evidence": "040-assembler-ajv-before.log and 040-assembler-ajv-after.log are byte-identical, exit 1: no draft2020 meta-schema selected. Explicit draft2020 validation passes."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    }
+  ],
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+}

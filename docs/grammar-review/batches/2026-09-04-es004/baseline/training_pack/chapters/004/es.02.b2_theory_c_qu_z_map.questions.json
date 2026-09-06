@@ -1,0 +1,225 @@
+{
+  "chapter_id": "es.grammar.orientation_alphabet_sounds.core_pronunciation_map_b_v_c_z_g",
+  "theory_block_id": "b2_theory_c_qu_z_map",
+  "course_version": "1.0.0",
+  "questions": [
+    {
+      "type": "mcq_single",
+      "prompt": "Какой из слов имеет звук 'k' перед гласной 'a'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "cama"
+        },
+        {
+          "id": "b",
+          "text": "cera"
+        },
+        {
+          "id": "c",
+          "text": "queso"
+        },
+        {
+          "id": "d",
+          "text": "zapato"
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Буква 'c' перед 'a', 'o', 'u' произносится как 'k'. Слово 'cama' (кровать) соответствует этому правилу, тогда как 'cera' (воск) имеет 'c' перед 'e', что относится к s/θ-классу.",
+      "theory_block_id": "b2_theory_c_qu_z_map",
+      "chapter_id": "es.grammar.orientation_alphabet_sounds.core_pronunciation_map_b_v_c_z_g",
+      "concept_id": "c_qu_z_basic_map",
+      "difficulty": 1,
+      "id": "q1",
+      "signature": "f0fb8aeb44bbabe7"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой из слов имеет звук 's' или 'θ' перед гласной 'a'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "zorro"
+        },
+        {
+          "id": "b",
+          "text": "zanahoria"
+        },
+        {
+          "id": "c",
+          "text": "cama"
+        },
+        {
+          "id": "d",
+          "text": "queso"
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Буква 'z' перед 'a', 'o', 'u' относится к s/θ-классу. Слово 'zanahoria' (морковь) имеет 'z' перед 'a', что соответствует этому правилу.",
+      "theory_block_id": "b2_theory_c_qu_z_map",
+      "chapter_id": "es.grammar.orientation_alphabet_sounds.core_pronunciation_map_b_v_c_z_g",
+      "concept_id": "c_qu_z_basic_map",
+      "difficulty": 1,
+      "id": "q2",
+      "signature": "653ded14dddc983e"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой из следующих примеров относится к звуку 's'/'θ' перед 'a'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "casa"
+        },
+        {
+          "id": "b",
+          "text": "zanahoria"
+        },
+        {
+          "id": "c",
+          "text": "queso"
+        },
+        {
+          "id": "d",
+          "text": "cama"
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Слово 'zanahoria' (морковь) имеет 'z' перед 'a', что относится к s/θ-классу, в отличие от 'casa' и 'cama', где 'c' перед 'a' даёт 'k'.",
+      "theory_block_id": "b2_theory_c_qu_z_map",
+      "chapter_id": "es.grammar.orientation_alphabet_sounds.core_pronunciation_map_b_v_c_z_g",
+      "concept_id": "c_qu_z_basic_map",
+      "difficulty": 1,
+      "id": "q4",
+      "signature": "7ee7f7bed30bc15f"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какое слово произносится с звуком 's' или 'θ' перед 'e'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "cereza"
+        },
+        {
+          "id": "b",
+          "text": "casa"
+        },
+        {
+          "id": "c",
+          "text": "queso"
+        },
+        {
+          "id": "d",
+          "text": "zorro"
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Буква 'c' перед 'e' или 'i' произносится как 's' или 'θ', например, в слове 'cereza'.",
+      "theory_block_id": "b2_theory_c_qu_z_map",
+      "chapter_id": "es.grammar.orientation_alphabet_sounds.core_pronunciation_map_b_v_c_z_g",
+      "concept_id": "c_qu_z_basic_map",
+      "difficulty": 1,
+      "id": "q8",
+      "signature": "b34bee783dcbea26"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какое слово произносится с звуком 's' или 'θ' перед 'e'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "cebo"
+        },
+        {
+          "id": "b",
+          "text": "casa"
+        },
+        {
+          "id": "c",
+          "text": "queso"
+        },
+        {
+          "id": "d",
+          "text": "zorro"
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Буква 'c' перед 'e' произносится как 's' или 'θ', например, в слове 'cebo'.",
+      "theory_block_id": "b2_theory_c_qu_z_map",
+      "chapter_id": "es.grammar.orientation_alphabet_sounds.core_pronunciation_map_b_v_c_z_g",
+      "concept_id": "c_qu_z_basic_map",
+      "difficulty": 1,
+      "id": "q11",
+      "signature": "dd17f5c018c27517"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какое слово произносится с звуком 'k' перед 'o'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "coco"
+        },
+        {
+          "id": "b",
+          "text": "cine"
+        },
+        {
+          "id": "c",
+          "text": "queso"
+        },
+        {
+          "id": "d",
+          "text": "zorro"
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Перед гласными 'a', 'o', 'u' буква 'c' произносится как 'k', например, в слове 'coco'.",
+      "theory_block_id": "b2_theory_c_qu_z_map",
+      "chapter_id": "es.grammar.orientation_alphabet_sounds.core_pronunciation_map_b_v_c_z_g",
+      "concept_id": "c_qu_z_basic_map",
+      "difficulty": 1,
+      "id": "q15",
+      "signature": "f01da73e18368b5f"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какое слово произносится с звуком 's' или 'θ' перед 'a'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "zapatilla"
+        },
+        {
+          "id": "b",
+          "text": "casa"
+        },
+        {
+          "id": "c",
+          "text": "queso"
+        },
+        {
+          "id": "d",
+          "text": "quince"
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Буква 'z' перед 'a' произносится как 's' или 'θ', например, в слове 'zapatilla'.",
+      "theory_block_id": "b2_theory_c_qu_z_map",
+      "chapter_id": "es.grammar.orientation_alphabet_sounds.core_pronunciation_map_b_v_c_z_g",
+      "concept_id": "c_qu_z_basic_map",
+      "difficulty": 1,
+      "id": "q16",
+      "signature": "23d994a563bc4cd8"
+    }
+  ],
+  "meta": {
+    "generated_at": "2026-04-28T07:02:14Z",
+    "source": "llm-only",
+    "questions_per_block": 10,
+    "chapter_number_filter": 4,
+    "block_number_filter": 2,
+    "append": true
+  }
+}

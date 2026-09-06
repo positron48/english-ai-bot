@@ -1,0 +1,291 @@
+{
+  "version": 1,
+  "source": "courses/english-grammar/chapters/004.en.grammar.first_sentences_be_as.personal_pronouns_am_is/03-questions.json",
+  "source_sha256": "5bf149f67ebc756350ea4a01c4c76343f1a7e7d3965be0cf4300081fb04030e9",
+  "context_sha256": "8b2f13824c1567ed24b812e37b28ba3382b10d58515d79ab1d71ec66df899ead",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
+  "reviewed_at": "2026-09-04T09:56:47.061916+00:00",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
+  "questions": [
+    {
+      "id": "q1",
+      "decision": "ok",
+      "note": "I соответствует «я»; все distractor feedback верны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q2",
+      "decision": "ok",
+      "note": "She соответствует «она»; один перевод среди вариантов.",
+      "verification": "ok"
+    },
+    {
+      "id": "q3",
+      "decision": "fixed",
+      "note": "Задан множественный референт they без отрицания употребления singular they.",
+      "verification": "ok"
+    },
+    {
+      "id": "q4",
+      "decision": "ok",
+      "note": "Русская подсказка «я» и am однозначно задают I.",
+      "verification": "ok"
+    },
+    {
+      "id": "q5",
+      "decision": "ok",
+      "note": "Русская подсказка «она» и is задают She.",
+      "verification": "ok"
+    },
+    {
+      "id": "q6",
+      "decision": "ok",
+      "note": "Русская подсказка «мы» и are задают We.",
+      "verification": "ok"
+    },
+    {
+      "id": "q7",
+      "decision": "ok",
+      "note": "Русская подсказка «он» задаёт He в изучаемом значении.",
+      "verification": "ok"
+    },
+    {
+      "id": "q8",
+      "decision": "ok",
+      "note": "Русская подсказка «они» задаёт They.",
+      "verification": "ok"
+    },
+    {
+      "id": "q9",
+      "decision": "ok",
+      "note": "You относится к одному или нескольким людям; false верно.",
+      "verification": "ok"
+    },
+    {
+      "id": "q10",
+      "decision": "ok",
+      "note": "It может относиться к животному, не только предмету; false верно.",
+      "verification": "ok"
+    },
+    {
+      "id": "q13",
+      "decision": "fixed",
+      "note": "Уточнено утвердительное Present Simple вместо абсолютного «всегда am».",
+      "verification": "ok"
+    },
+    {
+      "id": "q14",
+      "decision": "fixed",
+      "note": "Уточнено Present Simple, чтобы не распространять на was/be.",
+      "verification": "ok"
+    },
+    {
+      "id": "q15",
+      "decision": "fixed",
+      "note": "Уточнено Present Simple, чтобы не распространять на were/be.",
+      "verification": "ok"
+    },
+    {
+      "id": "q16",
+      "decision": "fixed",
+      "note": "Указано Present Simple: прежний ввод допускал was; объяснение ограничено контекстом.",
+      "verification": "ok"
+    },
+    {
+      "id": "q17",
+      "decision": "fixed",
+      "note": "Указано Present Simple: исключена также подходящая форма was.",
+      "verification": "ok"
+    },
+    {
+      "id": "q18",
+      "decision": "fixed",
+      "note": "Указано Present Simple: исключена также подходящая форма were.",
+      "verification": "ok"
+    },
+    {
+      "id": "q19",
+      "decision": "fixed",
+      "note": "Указано Present Simple: исключена также подходящая форма was.",
+      "verification": "ok"
+    },
+    {
+      "id": "q20",
+      "decision": "fixed",
+      "note": "Указано Present Simple: исключена также подходящая форма were.",
+      "verification": "ok"
+    },
+    {
+      "id": "q21",
+      "decision": "fixed",
+      "note": "Убрано избыточное абсолютное «без исключений», оставлена точная пара I am.",
+      "verification": "ok"
+    },
+    {
+      "id": "q22",
+      "decision": "fixed",
+      "note": "Правило is ограничено утвердительным Present Simple.",
+      "verification": "ok"
+    },
+    {
+      "id": "q25",
+      "decision": "fixed",
+      "note": "Убрано абсолютное «всегда»; am относится к заданному утверждению Present Simple.",
+      "verification": "ok"
+    },
+    {
+      "id": "q26",
+      "decision": "fixed",
+      "note": "Убрано абсолютное «всегда»; are относится к заданному утверждению Present Simple.",
+      "verification": "ok"
+    },
+    {
+      "id": "q27",
+      "decision": "fixed",
+      "note": "Убрано абсолютное «всегда»; is относится к заданному утверждению Present Simple.",
+      "verification": "ok"
+    },
+    {
+      "id": "q28",
+      "decision": "fixed",
+      "note": "Указано Present Simple, исключено was; правило не распространяется на все времена.",
+      "verification": "ok"
+    },
+    {
+      "id": "q29",
+      "decision": "fixed",
+      "note": "Указано Present Simple, исключено was; правило сужено.",
+      "verification": "ok"
+    },
+    {
+      "id": "q30",
+      "decision": "fixed",
+      "note": "Указано Present Simple, исключено were; правило сужено.",
+      "verification": "ok"
+    },
+    {
+      "id": "q31",
+      "decision": "fixed",
+      "note": "Указано Present Simple, исключено were; you are верно для одного адресата.",
+      "verification": "ok"
+    },
+    {
+      "id": "q32",
+      "decision": "fixed",
+      "note": "Указано Present Simple, исключено was; правило сужено.",
+      "verification": "ok"
+    },
+    {
+      "id": "q33",
+      "decision": "fixed",
+      "note": "Убрано обобщение «никогда are» с исключением aren’t I; проверяется конкретное I is happy.",
+      "verification": "ok"
+    },
+    {
+      "id": "q34",
+      "decision": "fixed",
+      "note": "Убрано универсальное «всегда are»; задано утвердительное Present Simple.",
+      "verification": "ok"
+    },
+    {
+      "id": "q37",
+      "decision": "ok",
+      "note": "We однозначно выражает «мы», множественное число среди I/he.",
+      "verification": "ok"
+    },
+    {
+      "id": "q38",
+      "decision": "fixed",
+      "note": "Исключена неоднозначность singular they: проверяется точный перевод «она»; feedback не отрицает singular they.",
+      "verification": "ok"
+    },
+    {
+      "id": "q42",
+      "decision": "ok",
+      "note": "They может заменять предметы; утверждение «только люди» ложно.",
+      "verification": "ok"
+    },
+    {
+      "id": "q51",
+      "decision": "ok",
+      "note": "Перевод «Я студент» и начальное I задают I am a student.",
+      "verification": "ok"
+    },
+    {
+      "id": "q52",
+      "decision": "ok",
+      "note": "Перевод «Она счастлива» и начальное She задают She is happy.",
+      "verification": "ok"
+    },
+    {
+      "id": "q53",
+      "decision": "fixed",
+      "note": "Убрана подсказка, полностью раскрывавшая три слова ответа.",
+      "verification": "ok"
+    },
+    {
+      "id": "q58",
+      "decision": "ok",
+      "note": "Паттерн pronoun + be + adjective верен; пример happy соответствует.",
+      "verification": "ok"
+    },
+    {
+      "id": "q59",
+      "decision": "ok",
+      "note": "Перевод и начальное They задают нейтральное They are at home.",
+      "verification": "ok"
+    },
+    {
+      "id": "q60",
+      "decision": "ok",
+      "note": "Перевод и начальное He задают He is a doctor.",
+      "verification": "ok"
+    },
+    {
+      "id": "q11",
+      "decision": "fixed",
+      "note": "Пример с двумя названными людьми заменяет абстрактную неоднозначную классификацию they; позиция ID сохранена.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "cd courses/english-grammar && bash scripts/assemble-chapter.sh 004.en.grammar.first_sentences_be_as.personal_pronouns_am_is && bash scripts/validate-chapter.sh 004.en.grammar.first_sentences_be_as.personal_pronouns_am_is",
+      "result": "pass",
+      "evidence": "Chapter assembled; final chapter validator passes, 40 questions. Logs in docs/grammar-review/batches/2026-09-04-en002-004/004-assemble-after.log and 004-chapter-after.log."
+    },
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-04-en002-004/check.py",
+      "result": "pass",
+      "evidence": "All 282 IDs/contracts and metadata preserved; source/context fingerprints current; signatures valid; no new EN training duplicates; source/final/embedded equal. See validation.log."
+    },
+    {
+      "command": "go test ./internal/grammarbundle ./internal/repository -run 'TestValidateEmbeddedBundleID|TestGrammar.*Bundle|TestGrammar.*Reorder' -count=1",
+      "result": "pass",
+      "evidence": "Both packages passed: grammarbundle 4.709s, repository 13.893s."
+    },
+    {
+      "command": "git diff --check && git -C courses/spanish-grammar diff --check && git -C courses/english-grammar diff --check",
+      "result": "pass",
+      "evidence": "All three commands exited 0."
+    },
+    {
+      "command": "ajv validate --spec=draft2020 --validate-formats=false --all-errors -s courses/english-grammar/02-chapter-schema.json -d courses/english-grammar/chapters/004.en.grammar.first_sentences_be_as.personal_pronouns_am_is/05-final.json",
+      "result": "pass",
+      "evidence": "Before and after both exit 0; see 004-schema-before.log and 004-schema-after.log."
+    },
+    {
+      "command": "ajv validate -s courses/english-grammar/02-chapter-schema.json -d courses/english-grammar/chapters/004.en.grammar.first_sentences_be_as.personal_pronouns_am_is/05-final.json",
+      "result": "known_baseline",
+      "evidence": "Assembler calls AJV without draft2020; schema meta-ref unavailable. Same error demonstrated on baseline and current chapter 002 in assembler-ajv-before/after.log; explicit draft2020 validation passes for this chapter."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    }
+  ],
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+}

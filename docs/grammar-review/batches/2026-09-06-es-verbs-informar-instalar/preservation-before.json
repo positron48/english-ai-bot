@@ -1,0 +1,31 @@
+{
+  "existing_files": 25233,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/informar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/informar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/iniciar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/iniciar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/insistir.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/insistir.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/instalar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/instalar.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-informar-instalar",
+    "docs/grammar-review/reports/e1548678294b9474ab2c31fb.json",
+    "docs/grammar-review/reports/6fccf37cf2fa360dcf6f03c4.json",
+    "docs/grammar-review/reports/fa37b2c84fdb2b1a7f1b0236.json",
+    "docs/grammar-review/reports/c2f990da08df190563c1603f.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/informar.json": "c39ba20320c95c141bd0740e8445f135b9194d2d3304e06f09405567acf62720",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/informar.json": "c39ba20320c95c141bd0740e8445f135b9194d2d3304e06f09405567acf62720",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/iniciar.json": "5accf05e52bae5691dc48ce8ef53b3139731aab558478583745c748bce38e824",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/iniciar.json": "5accf05e52bae5691dc48ce8ef53b3139731aab558478583745c748bce38e824",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/insistir.json": "6175fca48d051bcafa6c15ea25f83226f57a9889f8f89912f1ec2b63b24c97d4",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/insistir.json": "6175fca48d051bcafa6c15ea25f83226f57a9889f8f89912f1ec2b63b24c97d4",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/instalar.json": "a4778eda860bd7bd26e3a5c37aac639562ae723394e9fbedf17fe7a166c71e50",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/instalar.json": "a4778eda860bd7bd26e3a5c37aac639562ae723394e9fbedf17fe7a166c71e50"
+  }
+}

@@ -1,0 +1,647 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/vencer.json",
+  "source_sha256": "3f4ce5d9348b840b00bc9d224505317784547e93b8f7bf5e5cdb5ff108511b8a",
+  "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197",
+  "editor": "Codex coordinator editor 2026-09-06",
+  "verifier": "edit_utilizar independent verifier 2026-09-06",
+  "phase": "done",
+  "reviewed_at": "2026-09-06",
+  "verified_at": "2026-09-06T14:49:58Z",
+  "questions": [
+    {
+      "id": "es.presente.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:1:singular переписана и лично проверена: authoritative форма «venzo», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:2:singular переписана и лично проверена: authoritative форма «vences», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:3:singular переписана и лично проверена: authoritative форма «vence», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:1:plural переписана и лично проверена: authoritative форма «vencemos», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:2:plural переписана и лично проверена: authoritative форма «vencéis», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:3:plural переписана и лично проверена: authoritative форма «vencen», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:1:singular переписана и лично проверена: authoritative форма «vencía», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:2:singular переписана и лично проверена: authoritative форма «vencías», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:3:singular переписана и лично проверена: authoritative форма «vencía», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:1:plural переписана и лично проверена: authoritative форма «vencíamos», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:2:plural переписана и лично проверена: authoritative форма «vencíais», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:3:plural переписана и лично проверена: authoritative форма «vencían», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:1:singular переписана и лично проверена: authoritative форма «vencí», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом. Independent verifier finding: RU «страх перед самолётами» меняет испанское miedo a volar («страх летать»). Точная замена ES: «Ayer yo _ el miedo a volar durante mi primer viaje. (vencer)»; RU: «Вчера во время первого полёта я преодолел страх перед полётами.»",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:2:singular переписана и лично проверена: authoritative форма «venciste», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:3:singular переписана и лично проверена: authoritative форма «venció», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:1:plural переписана и лично проверена: authoritative форма «vencimos», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:2:plural переписана и лично проверена: authoritative форма «vencisteis», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом. Independent verifier finding: В спортивной рамке vencer a los defensores звучит как победа над отдельными защитниками, а не над соперником в матче. Точная замена ES: «Vosotros _ al vigente campeón en el último minuto. (vencer)»; RU: «На последней минуте вы победили действующего чемпиона.»",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:3:plural переписана и лично проверена: authoritative форма «vencieron», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:1:singular переписана и лично проверена: authoritative форма «venceré», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:2:singular переписана и лично проверена: authoritative форма «vencerás», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:3:singular переписана и лично проверена: authoritative форма «vencerá», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:1:plural переписана и лично проверена: authoritative форма «venceremos», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом. Independent verifier finding: Juntos nosotros — ненужное и неестественное сочетание обстоятельства с явным местоимением в нейтральном контексте. Точная замена ES: «Juntos _ los obstáculos del proyecto. (vencer)»; RU: «Вместе мы преодолеем препятствия в проекте.»",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:2:plural переписана и лично проверена: authoritative форма «venceréis», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:3:plural переписана и лично проверена: authoritative форма «vencerán», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:1:singular переписана и лично проверена: authoritative форма «vencería», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:2:singular переписана и лично проверена: authoritative форма «vencerías», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:3:singular переписана и лично проверена: authoritative форма «vencería», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:1:plural переписана и лично проверена: authoritative форма «venceríamos», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:2:plural переписана и лично проверена: authoritative форма «venceríais», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:3:plural переписана и лично проверена: authoritative форма «vencerían», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:1:singular переписана и лично проверена: authoritative форма «he vencido», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:2:singular переписана и лично проверена: authoritative форма «has vencido», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:3:singular переписана и лично проверена: authoritative форма «ha vencido», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:1:plural переписана и лично проверена: authoritative форма «hemos vencido», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:2:plural переписана и лично проверена: authoritative форма «habéis vencido», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:3:plural переписана и лично проверена: authoritative форма «han vencido», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:1:singular переписана и лично проверена: authoritative форма «había vencido», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:2:singular переписана и лично проверена: authoritative форма «habías vencido», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:3:singular переписана и лично проверена: authoritative форма «había vencido», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:1:plural переписана и лично проверена: authoritative форма «habíamos vencido», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом. Independent verifier finding: vencer el problema técnico — слабая коллокация, а RU «устранили препятствие» дополнительно меняет действие и объект. Точная замена ES: «Antes del lanzamiento, nosotros ya _ el principal obstáculo técnico. (vencer)»; RU: «До запуска мы уже преодолели главное техническое препятствие.»",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:2:plural переписана и лично проверена: authoritative форма «habíais vencido», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:3:plural переписана и лично проверена: authoritative форма «habían vencido», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:1:singular переписана и лично проверена: authoritative форма «hube vencido», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:2:singular переписана и лично проверена: authoritative форма «hubiste vencido», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:3:singular переписана и лично проверена: authoritative форма «hubo vencido», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:1:plural переписана и лично проверена: authoritative форма «hubimos vencido», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:2:plural переписана и лично проверена: authoritative форма «hubisteis vencido», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:3:plural переписана и лично проверена: authoritative форма «hubieron vencido», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:1:singular переписана и лично проверена: authoritative форма «habré vencido», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:2:singular переписана и лично проверена: authoritative форма «habrás vencido», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:3:singular переписана и лично проверена: authoritative форма «habrá vencido», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:1:plural переписана и лично проверена: authoritative форма «habremos vencido», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:2:plural переписана и лично проверена: authoritative форма «habréis vencido», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:3:plural переписана и лично проверена: authoritative форма «habrán vencido», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:1:singular переписана и лично проверена: authoritative форма «habría vencido», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:2:singular переписана и лично проверена: authoritative форма «habrías vencido», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:3:singular переписана и лично проверена: authoritative форма «habría vencido», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:1:plural переписана и лично проверена: authoritative форма «habríamos vencido», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:2:plural переписана и лично проверена: authoritative форма «habríais vencido», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:3:plural переписана и лично проверена: authoritative форма «habrían vencido», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:1:singular переписана и лично проверена: authoritative форма «venza», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:2:singular переписана и лично проверена: authoritative форма «venzas», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:3:singular переписана и лично проверена: authoritative форма «venza», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:1:plural переписана и лично проверена: authoritative форма «venzamos», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:2:plural переписана и лично проверена: authoritative форма «venzáis», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:3:plural переписана и лично проверена: authoritative форма «venzan», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:1:singular переписана и лично проверена: authoritative форма «venciera», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:2:singular переписана и лично проверена: authoritative форма «vencieras», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:3:singular переписана и лично проверена: authoritative форма «venciera», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:1:plural переписана и лично проверена: authoritative форма «venciéramos», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:2:plural переписана и лично проверена: authoritative форма «vencierais», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:3:plural переписана и лично проверена: authoritative форма «vencieran», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:1:singular переписана и лично проверена: authoritative форма «venciere», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:2:singular переписана и лично проверена: authoritative форма «vencieres», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:3:singular переписана и лично проверена: authoritative форма «venciere», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:1:plural переписана и лично проверена: authoritative форма «venciéremos», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:2:plural переписана и лично проверена: authoritative форма «venciereis», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:3:plural переписана и лично проверена: authoritative форма «vencieren», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:1:singular переписана и лично проверена: authoritative форма «haya vencido», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:2:singular переписана и лично проверена: authoritative форма «hayas vencido», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:3:singular переписана и лично проверена: authoritative форма «haya vencido», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:1:plural переписана и лично проверена: authoritative форма «hayamos vencido», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:2:plural переписана и лично проверена: authoritative форма «hayáis vencido», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:3:plural переписана и лично проверена: authoritative форма «hayan vencido», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:1:singular переписана и лично проверена: authoritative форма «hubiera vencido», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:2:singular переписана и лично проверена: authoritative форма «hubieras vencido», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:3:singular переписана и лично проверена: authoritative форма «hubiera vencido», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:1:plural переписана и лично проверена: authoritative форма «hubiéramos vencido», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:2:plural переписана и лично проверена: authoritative форма «hubierais vencido», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:3:plural переписана и лично проверена: authoritative форма «hubieran vencido», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:1:singular переписана и лично проверена: authoritative форма «hubiere vencido», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:2:singular переписана и лично проверена: authoritative форма «hubieres vencido», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:3:singular переписана и лично проверена: authoritative форма «hubiere vencido», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:1:plural переписана и лично проверена: authoritative форма «hubiéremos vencido», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:2:plural переписана и лично проверена: authoritative форма «hubiereis vencido», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:3:plural переписана и лично проверена: authoritative форма «hubieren vencido», естественное значение vencer, точный RU, metadata и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "manual editorial read of all 96 vencer cards in six 16-card chunks",
+      "result": "pass",
+      "evidence": "Every Spanish sentence and Russian translation was read with the authoritative answer substituted; defeating opponents, overcoming obstacles and expiry meanings are explicit."
+    },
+    {
+      "command": "Jehle comparison across 16 scopes and six slots",
+      "result": "pass",
+      "evidence": "All 96 surface forms match the pinned local Jehle dataset."
+    },
+    {
+      "command": "same-scope options and answer multiplicity",
+      "result": "pass",
+      "evidence": "Each card has four distinct options from its scope and exactly one authoritative answer."
+    },
+    {
+      "command": "rare-register and counterfactual review",
+      "result": "pass",
+      "evidence": "Pretérito anterior and both future subjunctives use explicit literary or legal frames; six De haberlo sabido translations are explicit Russian counterfactuals."
+    },
+    {
+      "command": "baseline identity and source-embedded comparison",
+      "result": "pass",
+      "evidence": "Top-level fields and scope/person/number order are unchanged; source and embedded are byte-identical."
+    },
+    {
+      "command": "coordinator self-review refinements: vencer indices 14, 16, 22, 37, 51, 52, 56, 59, 67, 74",
+      "result": "pass",
+      "evidence": "Ten ES/RU refinements correct score phrasing, subject translation, natural vencer collocations, counterfactual subjects and legal maturity semantics; forms/options/metadata/identity remain unchanged."
+    },
+    {
+      "command": "independent semantic verification of all 96 vencer cards at fingerprint b00fa936d98fb1693e6debc35a0feef604fef7fb8bfacf4a6f6ffb2ec7f5f6f4",
+      "result": "pass",
+      "evidence": "Independent verifier read all 96 final ES/RU pairs with each authoritative answer substituted and checked person/number/tense, blank, distractors, rare-register framing and counterfactuals. Four unresolved editorial findings remain at zero-based indexes 12, 16, 21 and 39; all other cards remain pending until the corrected fingerprint is rechecked."
+    },
+    {
+      "command": "post-verification fix for vencer indices 12, 16, 21 and 39",
+      "result": "pass",
+      "evidence": "Applied independent verifier wording fixes for exact Russian meaning, natural champion phrasing, unambiguous first-person plural future and aspectually complete technical obstacle; source and embedded synchronized. All verification fields reset to pending for same-verifier recheck."
+    },
+    {
+      "command": "same-verifier recheck of corrected vencer indices 12, 16, 21 and 39",
+      "result": "pass",
+      "evidence": "Accepted exact miedo a volar translation at 12, natural reigning-champion sports context at 16, neutral Juntos word order at 21, and idiomatic obstacle collocation with exact RU at 39."
+    },
+    {
+      "command": "independent final verification of vencer 96/96 at fingerprint 3f4ce5d9348b840b00bc9d224505317784547e93b8f7bf5e5cdb5ff108511b8a",
+      "result": "pass",
+      "evidence": "The independent verifier confirms all 96 cards: authoritative forms and person/number/tense, natural ES, exact RU, one unambiguous blank, four unique same-scope options with one answer, explicit literary/legal rare forms, six explicit Russian counterfactuals, preserved baseline identity and source=embedded."
+    },
+    {
+      "command": "coordinator final batch barrier: check.py, preservation-check.py, native validate_artifact, focused status, Go tests, grammar_review_test.py and scoped diff checks",
+      "result": "pass",
+      "evidence": "Final vencer report is independently done at fingerprint 3f4ce5d9348b840b00bc9d224505317784547e93b8f7bf5e5cdb5ff108511b8a; the 384-card batch passed authoritative forms/contracts, 24 checkpoints, source=embedded, preservation (25668 unchanged out-of-scope files), native validation, Go tests, 13 grammar-review tests and whitespace checks."
+    }
+  ],
+  "verification_note": "Независимо прочитаны все 96 финальных карточек vencer с подстановкой authoritative формы. Первичная проверка выявила замечания на индексах 12, 16, 21 и 39; после исправлений те же четыре пары повторно проверены и приняты. Подтверждены естественные ES-контексты, точные RU-переводы, лица/числа/времена, однозначный пропуск, варианты, редкий регистр, контрфактивы, baseline identity и синхронность source/embedded."
+}

@@ -1,0 +1,111 @@
+{
+  "version": 1,
+  "source": "courses/english-grammar/training_pack/chapters/005/en.04.b4_theory_contractions.questions.json",
+  "source_sha256": "6ac85ca3ed6f903233db26bdc1954352c8dc4e60cf5f580bbb741b48250086a3",
+  "context_sha256": "a10f8cb9575cff5aa8e5c56f78dd4e7270570af29e20db939dc539e2d60c7329",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
+  "reviewed_at": "2026-09-04T10:32:25.131142+00:00",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
+  "questions": [
+    {
+      "id": "q1",
+      "decision": "ok",
+      "note": "She’s — нужное сокращение; отрицательная форма меняет смысл.",
+      "verification": "ok"
+    },
+    {
+      "id": "q2",
+      "decision": "ok",
+      "note": "He’s соответствует He is.",
+      "verification": "ok"
+    },
+    {
+      "id": "q3",
+      "decision": "fixed",
+      "note": "Убран категорический запрет сокращений в официальных текстах.",
+      "verification": "ok"
+    },
+    {
+      "id": "q4",
+      "decision": "ok",
+      "note": "We’re соответствует We are.",
+      "verification": "ok"
+    },
+    {
+      "id": "q5",
+      "decision": "fixed",
+      "note": "Удалено недоказанное утверждение о самом распространённом сокращении.",
+      "verification": "ok"
+    },
+    {
+      "id": "q6",
+      "decision": "ok",
+      "note": "Только You’re late содержит корректное сокращение.",
+      "verification": "ok"
+    },
+    {
+      "id": "q7",
+      "decision": "ok",
+      "note": "They’re students — единственное верное предложение с сокращением.",
+      "verification": "ok"
+    },
+    {
+      "id": "q8",
+      "decision": "ok",
+      "note": "They’re соответствует They are.",
+      "verification": "ok"
+    },
+    {
+      "id": "q9",
+      "decision": "ok",
+      "note": "You’re соответствует You are.",
+      "verification": "ok"
+    },
+    {
+      "id": "q10",
+      "decision": "ok",
+      "note": "We are here содержит полную форму.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "cd courses/english-grammar && bash scripts/assemble-chapter.sh 005.en.grammar.first_sentences_be_as.statements_with_be_identity && bash scripts/validate-chapter.sh 005.en.grammar.first_sentences_be_as.statements_with_be_identity",
+      "result": "pass",
+      "evidence": "Chapter assembled and validator passes. See docs/grammar-review/batches/2026-09-04-en005-006/005-assemble-after.log and 005-chapter-after.log."
+    },
+    {
+      "command": "ajv validate --spec=draft2020 --validate-formats=false --all-errors -s courses/english-grammar/02-chapter-schema.json -d courses/english-grammar/chapters/005.en.grammar.first_sentences_be_as.statements_with_be_identity/05-final.json",
+      "result": "pass",
+      "evidence": "Baseline and final schemas pass; see docs/grammar-review/batches/2026-09-04-en005-006/005-schema-before.log and 005-schema-after.log."
+    },
+    {
+      "command": "ajv validate -s courses/english-grammar/02-chapter-schema.json -d courses/english-grammar/chapters/005.en.grammar.first_sentences_be_as.statements_with_be_identity/05-final.json",
+      "result": "known_baseline",
+      "evidence": "Stock assembler omits draft2020; same missing meta-schema error before and after. Explicit draft2020 passes. See docs/grammar-review/batches/2026-09-04-en005-006/005-assembler-ajv-before.log and 005-assembler-ajv-after.log."
+    },
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-04-en005-006/check.py",
+      "result": "pass",
+      "evidence": "All 196 contracts and metadata preserved, decisions match changes, fingerprints and signatures current, no new EN pack duplicates, source/final/embedded equal. See docs/grammar-review/batches/2026-09-04-en005-006/validation.log."
+    },
+    {
+      "command": "go test ./internal/grammarbundle ./internal/repository -run 'TestValidateEmbeddedBundleID|TestGrammar.*Bundle|TestGrammar.*Reorder' -count=1",
+      "result": "pass",
+      "evidence": "Both packages passed in 5.069s and 14.507s; see docs/grammar-review/batches/2026-09-04-en005-006/go-tests.log."
+    },
+    {
+      "command": "git diff --check && git -C courses/english-grammar diff --check && git -C courses/spanish-grammar diff --check",
+      "result": "pass",
+      "evidence": "All three commands exited 0."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    }
+  ],
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+}

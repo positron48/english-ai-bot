@@ -1,0 +1,297 @@
+{
+  "version": 1,
+  "source": "courses/english-grammar/chapters/002.en.grammar.orientation_how_to_read.verb_forms_v1_v2/03-questions.json",
+  "source_sha256": "9bee982ac28de9e43284fffd57c12d641ea7fa34a5c9a2b957a6278a735428ea",
+  "context_sha256": "c91d68d36eca1072f8bbec298744549ac914139a2318e6565e9d2c32fe024246",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
+  "reviewed_at": "2026-09-04T09:59:22.213225+00:00",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
+  "questions": [
+    {
+      "id": "q1",
+      "decision": "ok",
+      "note": "V1 go в контексте привычки; ключ и обратная связь согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q2",
+      "decision": "fixed",
+      "note": "Правило V2 сужено до утвердительного Past Simple, исключая вопросы с did.",
+      "verification": "ok"
+    },
+    {
+      "id": "q3",
+      "decision": "fixed",
+      "note": "Неоднозначное утверждение о всём прошлом заменено конкретным утверждением Past Simple.",
+      "verification": "ok"
+    },
+    {
+      "id": "q5",
+      "decision": "ok",
+      "note": "Went — V2 в предложении с last year; один ответ и верный feedback.",
+      "verification": "ok"
+    },
+    {
+      "id": "q6",
+      "decision": "fixed",
+      "note": "Добавлен смысл отсутствия после отъезда, чтобы отличить gone от been при описании посещения.",
+      "verification": "ok"
+    },
+    {
+      "id": "q7",
+      "decision": "fixed",
+      "note": "Убрано неверное обобщение на все глаголы, включая дефектные модальные; три формы проверяются на go.",
+      "verification": "ok"
+    },
+    {
+      "id": "q9",
+      "decision": "ok",
+      "note": "Gone — V3 после have; предложение и варианты согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q10",
+      "decision": "fixed",
+      "note": "Русская подсказка допускала walk; дана форма went, которую нужно преобразовать в V1, без раскрытия ответа.",
+      "verification": "ok"
+    },
+    {
+      "id": "q11",
+      "decision": "fixed",
+      "note": "Исправлен ложный ответ: учебные словари действительно приводят V2/V3 рядом с V1.",
+      "verification": "ok"
+    },
+    {
+      "id": "q13",
+      "decision": "ok",
+      "note": "Go — V1 с I; форма и обратная связь верны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q14",
+      "decision": "fixed",
+      "note": "Уточнено точное окончание -es и утвердительный Present Simple.",
+      "verification": "ok"
+    },
+    {
+      "id": "q15",
+      "decision": "ok",
+      "note": "После вспомогательных do/does смысловой глагол без -s; false верно.",
+      "verification": "ok"
+    },
+    {
+      "id": "q17",
+      "decision": "ok",
+      "note": "В вопросе после Do используется go V1; все варианты/feedback верны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q18",
+      "decision": "fixed",
+      "note": "Вместо неоднозначного перевода дана went для преобразования в базовую форму после don’t.",
+      "verification": "ok"
+    },
+    {
+      "id": "q19",
+      "decision": "ok",
+      "note": "После перечисленных can/must/should базовая форма; true верно.",
+      "verification": "ok"
+    },
+    {
+      "id": "q21",
+      "decision": "ok",
+      "note": "После can используется do V1; все варианты согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q22",
+      "decision": "fixed",
+      "note": "Вместо неоднозначного перевода дана went для преобразования в базовую форму после must.",
+      "verification": "ok"
+    },
+    {
+      "id": "q23",
+      "decision": "fixed",
+      "note": "Общее правило ограничено утверждением Present Simple с go; исключены can/does/be.",
+      "verification": "ok"
+    },
+    {
+      "id": "q26",
+      "decision": "fixed",
+      "note": "Уточнено, что V2 нужна в данном утверждении Past Simple.",
+      "verification": "ok"
+    },
+    {
+      "id": "q27",
+      "decision": "fixed",
+      "note": "Убрано обобщение о полной неизменяемости V2 с исключением was/were; проверяется went.",
+      "verification": "ok"
+    },
+    {
+      "id": "q29",
+      "decision": "ok",
+      "note": "Saw — V2 see, контекст yesterday и feedback согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q30",
+      "decision": "ok",
+      "note": "Один ожидаемый worked от заданного work в Past Simple.",
+      "verification": "ok"
+    },
+    {
+      "id": "q31",
+      "decision": "ok",
+      "note": "Смысловой глагол после didn’t имеет базовую форму; примеры верны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q32",
+      "decision": "ok",
+      "note": "Есть русский контекст и начальное I; порядок I didn’t see him единственный нейтральный.",
+      "verification": "ok"
+    },
+    {
+      "id": "q33",
+      "decision": "ok",
+      "note": "Did — V2 смыслового do; вопрос и feedback верны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q35",
+      "decision": "ok",
+      "note": "Утверждение о всех -ed ложно, went/saw подтверждают исключение.",
+      "verification": "ok"
+    },
+    {
+      "id": "q36",
+      "decision": "fixed",
+      "note": "Точный повтор q30 заменён правильным глаголом play; перевод обновлён.",
+      "verification": "ok"
+    },
+    {
+      "id": "q38",
+      "decision": "ok",
+      "note": "После have требуется seen от заданного see; ответ однозначен.",
+      "verification": "ok"
+    },
+    {
+      "id": "q39",
+      "decision": "fixed",
+      "note": "Уточнён смысловой глагол, поскольку was/were в пассиве сами имеют форму V2.",
+      "verification": "ok"
+    },
+    {
+      "id": "q41",
+      "decision": "ok",
+      "note": "Seen — V3, has + V3; варианты и feedback верны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q42",
+      "decision": "ok",
+      "note": "The work is done — корректный пассив/результат; do задан.",
+      "verification": "ok"
+    },
+    {
+      "id": "q43",
+      "decision": "ok",
+      "note": "Had + V3 в Past Perfect соответствует теории.",
+      "verification": "ok"
+    },
+    {
+      "id": "q45",
+      "decision": "ok",
+      "note": "Done — V3 в вопросе Present Perfect; ключ верен.",
+      "verification": "ok"
+    },
+    {
+      "id": "q46",
+      "decision": "ok",
+      "note": "Seen после haven’t; форма от see однозначна.",
+      "verification": "ok"
+    },
+    {
+      "id": "q47",
+      "decision": "fixed",
+      "note": "Исправлено ложное «только правильные»: у put и других неправильных V2/V3 также совпадают.",
+      "verification": "ok"
+    },
+    {
+      "id": "q49",
+      "decision": "fixed",
+      "note": "Общий тезис о необходимости учёбы заменён распознаванием went в предложении.",
+      "verification": "ok"
+    },
+    {
+      "id": "q51",
+      "decision": "fixed",
+      "note": "Метавопрос о знании правил заменён обнаружением saw после has.",
+      "verification": "ok"
+    },
+    {
+      "id": "q53",
+      "decision": "fixed",
+      "note": "Общий тезис заменён определением V3 worked по контексту have.",
+      "verification": "ok"
+    },
+    {
+      "id": "q55",
+      "decision": "fixed",
+      "note": "Совет не игнорировать глаголы заменён конкретной проверкой went/goed.",
+      "verification": "ok"
+    },
+    {
+      "id": "q57",
+      "decision": "fixed",
+      "note": "Общий тезис о подготовке заменён сопоставлением V3 в двух изученных конструкциях.",
+      "verification": "ok"
+    },
+    {
+      "id": "q59",
+      "decision": "fixed",
+      "note": "Тавтология о правильных временах заменена сравнением V1 после didn’t и V2 в утверждении.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "cd courses/english-grammar && bash scripts/assemble-chapter.sh 002.en.grammar.orientation_how_to_read.verb_forms_v1_v2 && bash scripts/validate-chapter.sh 002.en.grammar.orientation_how_to_read.verb_forms_v1_v2",
+      "result": "pass",
+      "evidence": "Chapter assembled; final chapter validator passes, 41 questions. Logs in docs/grammar-review/batches/2026-09-04-en002-004/002-assemble-after.log and 002-chapter-after.log."
+    },
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-04-en002-004/check.py",
+      "result": "pass",
+      "evidence": "All 282 IDs/contracts and metadata preserved; source/context fingerprints current; signatures valid; no new EN training duplicates; source/final/embedded equal. See validation.log."
+    },
+    {
+      "command": "go test ./internal/grammarbundle ./internal/repository -run 'TestValidateEmbeddedBundleID|TestGrammar.*Bundle|TestGrammar.*Reorder' -count=1",
+      "result": "pass",
+      "evidence": "Both packages passed: grammarbundle 4.709s, repository 13.893s."
+    },
+    {
+      "command": "git diff --check && git -C courses/spanish-grammar diff --check && git -C courses/english-grammar diff --check",
+      "result": "pass",
+      "evidence": "All three commands exited 0."
+    },
+    {
+      "command": "ajv validate --spec=draft2020 --validate-formats=false --all-errors -s courses/english-grammar/02-chapter-schema.json -d courses/english-grammar/chapters/002.en.grammar.orientation_how_to_read.verb_forms_v1_v2/05-final.json",
+      "result": "pass",
+      "evidence": "Before and after both exit 0; see 002-schema-before.log and 002-schema-after.log."
+    },
+    {
+      "command": "ajv validate -s courses/english-grammar/02-chapter-schema.json -d courses/english-grammar/chapters/002.en.grammar.orientation_how_to_read.verb_forms_v1_v2/05-final.json",
+      "result": "known_baseline",
+      "evidence": "Assembler calls AJV without draft2020; schema meta-ref unavailable. Same error demonstrated on baseline and current chapter 002 in assembler-ajv-before/after.log; explicit draft2020 validation passes for this chapter."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    }
+  ],
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+}

@@ -1,0 +1,31 @@
+{
+  "existing_files": 25513,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/resolver.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/resolver.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/respetar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/respetar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/responder.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/responder.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/restar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/restar.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-resolver-restar",
+    "docs/grammar-review/reports/4d54d05cd04c1cc5e8ba406d.json",
+    "docs/grammar-review/reports/b319bbebbf195127c1dcd7ab.json",
+    "docs/grammar-review/reports/6b84583ef43bc6888c0ec4a5.json",
+    "docs/grammar-review/reports/9280d08abb80c2b2c6ce691d.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/resolver.json": "b73e5677176b27a1ba1f7bb8bc37896fe9f5b857e4cf0b908633bde1da3b428a",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/resolver.json": "b73e5677176b27a1ba1f7bb8bc37896fe9f5b857e4cf0b908633bde1da3b428a",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/respetar.json": "1bb572aaf725c4401e434f37e73dbd1fc9968d2f9a2f7d40255015ceadefa282",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/respetar.json": "1bb572aaf725c4401e434f37e73dbd1fc9968d2f9a2f7d40255015ceadefa282",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/responder.json": "9985866a9c5c94da17eb61f6dec57308d2f5461d8addc3d801a6d39e5491e626",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/responder.json": "9985866a9c5c94da17eb61f6dec57308d2f5461d8addc3d801a6d39e5491e626",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/restar.json": "ea5e61cc5bd88a02ad063fc466555815910d50de94536a63aca0af8604803aeb",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/restar.json": "ea5e61cc5bd88a02ad063fc466555815910d50de94536a63aca0af8604803aeb"
+  }
+}

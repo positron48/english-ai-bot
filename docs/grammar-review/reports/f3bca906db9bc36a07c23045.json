@@ -1,0 +1,96 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/chapters/013/es.06.b6_theory_full_sentence_check_strategy.questions.json",
+  "source_sha256": "fd696929e5909dec6e810814ac4b7ef5f8f309b10755abe622ac496023bd92f3",
+  "context_sha256": "d8ee582ebfeda97b28854452565cee6d113c6b262b66457d2d464ee15aabd380",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
+  "reviewed_at": "2026-09-04T12:39:41.871609+00:00",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
+  "questions": [
+    {
+      "id": "q1",
+      "decision": "fixed",
+      "note": "Устранены несколько правильных ответов, путаница артикля и указательного, неверное описание rojas и предмета ошибки.",
+      "verification": "ok"
+    },
+    {
+      "id": "q2",
+      "decision": "fixed",
+      "note": "Устранены несколько правильных ответов, путаница артикля и указательного, неверное описание rojas и предмета ошибки.",
+      "verification": "ok"
+    },
+    {
+      "id": "q3",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q4",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q5",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q6",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q7",
+      "decision": "fixed",
+      "note": "Устранены несколько правильных ответов, путаница артикля и указательного, неверное описание rojas и предмета ошибки.",
+      "verification": "ok"
+    },
+    {
+      "id": "q8",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q9",
+      "decision": "fixed",
+      "note": "Устранены несколько правильных ответов, путаница артикля и указательного, неверное описание rojas и предмета ошибки.",
+      "verification": "ok"
+    },
+    {
+      "id": "q10",
+      "decision": "fixed",
+      "note": "Устранены несколько правильных ответов, путаница артикля и указательного, неверное описание rojas и предмета ошибки.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-04-es013-016/check.py",
+      "result": "pass",
+      "evidence": "All 539 IDs/contracts, metadata, decisions versus baseline and current source/context fingerprints verified. Native training validation, signatures, no new course-wide duplicate signatures and exact source-final-embedded equality; validation.log."
+    },
+    {
+      "command": "go test ./internal/grammarbundle ./internal/repository -run 'TestValidateEmbeddedBundleID|TestGrammar.*Bundle|TestGrammar.*Reorder' -count=1",
+      "result": "pass",
+      "evidence": "Both packages pass after complete final integration; go-tests.log."
+    },
+    {
+      "command": "git diff --check; git -C courses/spanish-grammar diff --check; git -C courses/english-grammar diff --check",
+      "result": "pass",
+      "evidence": "Three separately executed commands exit 0; diff-check.log. All 368 pre-existing files outside review docs preserved byte-for-byte; preservation.log."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    }
+  ],
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+}

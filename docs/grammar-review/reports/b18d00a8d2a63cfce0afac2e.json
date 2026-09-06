@@ -1,0 +1,66 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/chapters/006/es.01.b1_theory_decode_syllable_chunks.questions.json",
+  "source_sha256": "8ae7373192d682a9142fc004493258b802148183eee72817c701d339adc010e6",
+  "context_sha256": "7b4080409224b61605b28b7c1aa34127c05a91350fc85ea3414bcdd64f546699",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
+  "reviewed_at": "2026-09-04T10:52:47.457288+00:00",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
+  "questions": [
+    {
+      "id": "q1",
+      "decision": "fixed",
+      "note": "Неверный ключ cal-le исправлен на ca-lle: ll нельзя делить.",
+      "verification": "ok"
+    },
+    {
+      "id": "q2",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q3",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q4",
+      "decision": "fixed",
+      "note": "Случайный пробел в неверном делении заменён однозначной границей слога.",
+      "verification": "ok"
+    },
+    {
+      "id": "q5",
+      "decision": "fixed",
+      "note": "Исправлено ошибочное деление per-ro: диграф rr сохраняется в pe-rro.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-04-es005-008/check.py",
+      "result": "pass",
+      "evidence": "518 IDs/contracts preserved; source/context hashes current; signatures valid; no new course-wide duplicates; source/final/embedded equal. See batch validation.log."
+    },
+    {
+      "command": "go test ./internal/grammarbundle ./internal/repository -run 'TestValidateEmbeddedBundleID|TestGrammar.*Bundle|TestGrammar.*Reorder' -count=1",
+      "result": "pass",
+      "evidence": "grammarbundle 4.945s; repository 14.356s; see batch go-tests.log."
+    },
+    {
+      "command": "git diff --check; git -C courses/spanish-grammar diff --check; git -C courses/english-grammar diff --check",
+      "result": "pass",
+      "evidence": "Each command exited 0; see batch diff-check.log."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    }
+  ],
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+}

@@ -1,0 +1,96 @@
+{
+  "version": 1,
+  "source": "courses/english-grammar/training_pack/chapters/010/en.02.b2_theory_describing_people.questions.json",
+  "source_sha256": "2443d45a32e3dc159b15ea4540c43b82827c71d3d9b78456be147cfd0cc5e6df",
+  "context_sha256": "318dc15cdd816e162c19494dfd2d575136eea8a18f7e38c01de1c664dd18c2ba",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
+  "reviewed_at": "2026-09-04T11:45:21.542558+00:00",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
+  "questions": [
+    {
+      "id": "q1",
+      "decision": "fixed",
+      "note": "Убраны альтернативно верные предложения и ложное противопоставление постоянного/временного состояния.",
+      "verification": "ok"
+    },
+    {
+      "id": "q2",
+      "decision": "fixed",
+      "note": "Убраны альтернативно верные предложения и ложное противопоставление постоянного/временного состояния.",
+      "verification": "ok"
+    },
+    {
+      "id": "q3",
+      "decision": "fixed",
+      "note": "Убраны альтернативно верные предложения и ложное противопоставление постоянного/временного состояния.",
+      "verification": "ok"
+    },
+    {
+      "id": "q4",
+      "decision": "fixed",
+      "note": "Убраны альтернативно верные предложения и ложное противопоставление постоянного/временного состояния.",
+      "verification": "ok"
+    },
+    {
+      "id": "q5",
+      "decision": "fixed",
+      "note": "Убраны альтернативно верные предложения и ложное противопоставление постоянного/временного состояния.",
+      "verification": "ok"
+    },
+    {
+      "id": "q6",
+      "decision": "fixed",
+      "note": "Убраны альтернативно верные предложения и ложное противопоставление постоянного/временного состояния.",
+      "verification": "ok"
+    },
+    {
+      "id": "q7",
+      "decision": "fixed",
+      "note": "Убраны альтернативно верные предложения и ложное противопоставление постоянного/временного состояния.",
+      "verification": "ok"
+    },
+    {
+      "id": "q8",
+      "decision": "fixed",
+      "note": "Убраны альтернативно верные предложения и ложное противопоставление постоянного/временного состояния.",
+      "verification": "ok"
+    },
+    {
+      "id": "q9",
+      "decision": "fixed",
+      "note": "Убраны альтернативно верные предложения и ложное противопоставление постоянного/временного состояния.",
+      "verification": "ok"
+    },
+    {
+      "id": "q10",
+      "decision": "fixed",
+      "note": "Убраны альтернативно верные предложения и ложное противопоставление постоянного/временного состояния.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-04-en007-010/check.py",
+      "result": "pass",
+      "evidence": "validation.log: 378 contracts preserved; decisions match changes; source/context hashes current; native training validation, signatures and course-wide duplicate check pass; embedded bytes match."
+    },
+    {
+      "command": "go test ./internal/grammarbundle ./internal/repository -run 'TestValidateEmbeddedBundleID|TestGrammar.*Bundle|TestGrammar.*Reorder' -count=1",
+      "result": "pass",
+      "evidence": "go-tests.log: both packages pass (4.823s and 14.045s)."
+    },
+    {
+      "command": "git diff --check; git -C courses/english-grammar diff --check; git -C courses/spanish-grammar diff --check",
+      "result": "pass",
+      "evidence": "All three commands exit=0. preservation.log: 214 pre-existing changed files retain their SHA-256."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    }
+  ],
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+}

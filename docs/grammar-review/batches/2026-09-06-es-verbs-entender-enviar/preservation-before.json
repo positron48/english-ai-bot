@@ -1,0 +1,31 @@
+{
+  "existing_files": 25144,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/entender.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/entender.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/entrar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/entrar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/entregar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/entregar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/enviar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/enviar.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-entender-enviar",
+    "docs/grammar-review/reports/b79c056ea9dcadf074ac9f3f.json",
+    "docs/grammar-review/reports/2d0394a63e419a17e2a21f32.json",
+    "docs/grammar-review/reports/8205b9e901f75d34e6c33e3b.json",
+    "docs/grammar-review/reports/784f11f03685a10141ff35d7.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/entender.json": "87652511225f8000e28223a53dbf635bccb33ba13fe15a958a807029e6b532ba",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/entender.json": "87652511225f8000e28223a53dbf635bccb33ba13fe15a958a807029e6b532ba",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/entrar.json": "eef59dec2517074a7c6b5cb731f02bbdf6cfb5901465e375dca316e475618d29",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/entrar.json": "eef59dec2517074a7c6b5cb731f02bbdf6cfb5901465e375dca316e475618d29",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/entregar.json": "28a85dfde4a06a7fe47f6f13cda7d4879b740c04c9013c6fdb7210c9315f899a",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/entregar.json": "28a85dfde4a06a7fe47f6f13cda7d4879b740c04c9013c6fdb7210c9315f899a",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/enviar.json": "a56775426dab1b0ea76be21d29bc18501fbaa4c629ea644d6dd4eaf82eb47414",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/enviar.json": "a56775426dab1b0ea76be21d29bc18501fbaa4c629ea644d6dd4eaf82eb47414"
+  }
+}

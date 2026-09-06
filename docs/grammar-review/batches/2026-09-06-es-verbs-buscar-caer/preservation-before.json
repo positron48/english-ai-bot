@@ -1,0 +1,26 @@
+{
+  "existing_files": 24912,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/buscar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/buscar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/caber.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/caber.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/caer.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/caer.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-buscar-caer",
+    "docs/grammar-review/reports/4fb1ebf771f833526d8d08c3.json",
+    "docs/grammar-review/reports/b6b2fd3b090271be1c01349a.json",
+    "docs/grammar-review/reports/b50497d414634771e08960ea.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/buscar.json": "9f393c5a9a5c0597a9df6b5eec3ab43473780eadf248217f8ccf5daeab3af486",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/buscar.json": "9f393c5a9a5c0597a9df6b5eec3ab43473780eadf248217f8ccf5daeab3af486",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/caber.json": "9ff110c613f80619669a9eb8f13814c110bb58f03854c4215266f148f6e1cb93",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/caber.json": "9ff110c613f80619669a9eb8f13814c110bb58f03854c4215266f148f6e1cb93",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/caer.json": "b928165054121de75f5b58e89bd7c5f9f249348407bf0be684fc64d22dcf3198",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/caer.json": "b928165054121de75f5b58e89bd7c5f9f249348407bf0be684fc64d22dcf3198"
+  }
+}

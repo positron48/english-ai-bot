@@ -1,0 +1,59 @@
+{
+  "lemmas": {
+    "tener": {
+      "wrong_surface": 12,
+      "duplicate_option_cards": 17,
+      "answer_count_bad_cards": 28,
+      "offscope_entries": 87,
+      "offscope_cards": 27,
+      "invalid_union_entries": 11,
+      "invalid_union_cards": 10,
+      "metadata": 0,
+      "blank": 0
+    },
+    "terminar": {
+      "wrong_surface": 12,
+      "duplicate_option_cards": 1,
+      "answer_count_bad_cards": 13,
+      "offscope_entries": 80,
+      "offscope_cards": 39,
+      "invalid_union_entries": 0,
+      "invalid_union_cards": 0,
+      "metadata": 0,
+      "blank": 6
+    },
+    "tirar": {
+      "wrong_surface": 3,
+      "duplicate_option_cards": 12,
+      "answer_count_bad_cards": 14,
+      "offscope_entries": 146,
+      "offscope_cards": 64,
+      "invalid_union_entries": 31,
+      "invalid_union_cards": 31,
+      "metadata": 0,
+      "blank": 0
+    },
+    "tocar": {
+      "wrong_surface": 14,
+      "duplicate_option_cards": 9,
+      "answer_count_bad_cards": 16,
+      "offscope_entries": 114,
+      "offscope_cards": 38,
+      "invalid_union_entries": 32,
+      "invalid_union_cards": 19,
+      "metadata": 0,
+      "blank": 0
+    }
+  },
+  "totals": {
+    "wrong_surface": 41,
+    "duplicate_option_cards": 39,
+    "answer_count_bad_cards": 71,
+    "offscope_entries": 427,
+    "offscope_cards": 168,
+    "invalid_union_entries": 74,
+    "invalid_union_cards": 60,
+    "metadata": 0,
+    "blank": 6
+  }
+}

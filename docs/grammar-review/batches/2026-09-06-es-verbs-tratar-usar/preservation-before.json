@@ -1,0 +1,36 @@
+{
+  "existing_files": 25663,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/tratar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/tratar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/ubicar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/ubicar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/unir.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/unir.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/usar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/usar.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-tratar-usar",
+    "docs/grammar-review/reports/57dd45035b8c930a1964f256.json",
+    "docs/grammar-review/reports/4fc768eda02937b2a58da37b.json",
+    "docs/grammar-review/reports/20a4c9e6ccb318edb73735ee.json",
+    "docs/grammar-review/reports/b1db259a5177a3019a08a415.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/tratar.json": "34cec389330694365f7330a5ee370aa16ce9527c7ffe74cfc6008224f7356456",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/tratar.json": "34cec389330694365f7330a5ee370aa16ce9527c7ffe74cfc6008224f7356456",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/ubicar.json": "b50a409f6b890e4f39abed24ff70aa278189a8380727ef8399089a05eaba49eb",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/ubicar.json": "b50a409f6b890e4f39abed24ff70aa278189a8380727ef8399089a05eaba49eb",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/unir.json": "604e6ead47b92d79ef7e6ecb1e0aa6f90f085cd044f72d6afa7f74381d73dbec",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/unir.json": "604e6ead47b92d79ef7e6ecb1e0aa6f90f085cd044f72d6afa7f74381d73dbec",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/usar.json": "b8a5dc24ea669bcb9893a19fd480c3081dd72498c1320e983e97496e17abafb0",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/usar.json": "b8a5dc24ea669bcb9893a19fd480c3081dd72498c1320e983e97496e17abafb0"
+  },
+  "preexisting_missing_tracked": [
+    "courses/english-grammar/llm-benchmark/__pycache__/benchmark.cpython-314.pyc",
+    "courses/english-grammar/training-pack-admin/__pycache__/server.cpython-314.pyc",
+    "tools-local/complaints-worker/__pycache__/worker.cpython-314.pyc"
+  ]
+}

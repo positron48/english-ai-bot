@@ -1,0 +1,687 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/utilizar.json",
+  "source_sha256": "819844f91b7b1ce0d19149e7c1282de0edbaa52b522f7d441850e16e99e205de",
+  "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197",
+  "editor": "edit_utilizar editor 2026-09-06",
+  "verifier": "edit_valer independent verifier 2026-09-06",
+  "phase": "done",
+  "reviewed_at": "2026-09-06",
+  "verified_at": "2026-09-06T14:52:42.882865Z",
+  "questions": [
+    {
+      "id": "es.presente.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:1:singular переписана и лично проверена: authoritative форма «utilizo», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:2:singular переписана и лично проверена: authoritative форма «utilizas», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:3:singular переписана и лично проверена: authoritative форма «utiliza», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:1:plural переписана и лично проверена: authoritative форма «utilizamos», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:2:plural переписана и лично проверена: authoritative форма «utilizáis», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:3:plural переписана и лично проверена: authoritative форма «utilizan», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:1:singular переписана и лично проверена: authoritative форма «utilizaba», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:2:singular переписана и лично проверена: authoritative форма «utilizabas», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:3:singular переписана и лично проверена: authoritative форма «utilizaba», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:1:plural переписана и лично проверена: authoritative форма «utilizábamos», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:2:plural переписана и лично проверена: authoritative форма «utilizabais», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:3:plural переписана и лично проверена: authoritative форма «utilizaban», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:1:singular переписана и лично проверена: authoritative форма «utilicé», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:2:singular переписана и лично проверена: authoritative форма «utilizaste», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:3:singular переписана и лично проверена: authoritative форма «utilizó», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:1:plural переписана и лично проверена: authoritative форма «utilizamos», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:2:plural переписана и лично проверена: authoritative форма «utilizasteis», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:3:plural переписана и лично проверена: authoritative форма «utilizaron», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:1:singular переписана и лично проверена: authoritative форма «utilizaré», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:2:singular переписана и лично проверена: authoritative форма «utilizarás», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:3:singular переписана и лично проверена: authoritative форма «utilizará», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:1:plural переписана и лично проверена: authoritative форма «utilizaremos», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:2:plural переписана и лично проверена: authoritative форма «utilizaréis», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:3:plural переписана и лично проверена: authoritative форма «utilizarán», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:1:singular переписана и лично проверена: authoritative форма «utilizaría», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:2:singular переписана и лично проверена: authoritative форма «utilizarías», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:3:singular переписана и лично проверена: authoritative форма «utilizaría», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:1:plural переписана и лично проверена: authoritative форма «utilizaríamos», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:2:plural переписана и лично проверена: authoritative форма «utilizaríais», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:3:plural переписана и лично проверена: authoritative форма «utilizarían», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:1:singular переписана и лично проверена: authoritative форма «he utilizado», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:2:singular переписана и лично проверена: authoritative форма «has utilizado», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:3:singular переписана и лично проверена: authoritative форма «ha utilizado», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:1:plural переписана и лично проверена: authoritative форма «hemos utilizado», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:2:plural переписана и лично проверена: authoritative форма «habéis utilizado», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:3:plural переписана и лично проверена: authoritative форма «han utilizado», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:1:singular переписана и лично проверена: authoritative форма «había utilizado», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:2:singular переписана и лично проверена: authoritative форма «habías utilizado», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:3:singular переписана и лично проверена: authoritative форма «había utilizado», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:1:plural переписана и лично проверена: authoritative форма «habíamos utilizado», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:2:plural переписана и лично проверена: authoritative форма «habíais utilizado», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:3:plural переписана и лично проверена: authoritative форма «habían utilizado», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:1:singular переписана и лично проверена: authoritative форма «hube utilizado», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:2:singular переписана и лично проверена: authoritative форма «hubiste utilizado», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:3:singular переписана и лично проверена: authoritative форма «hubo utilizado», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:1:plural переписана и лично проверена: authoritative форма «hubimos utilizado», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:2:plural переписана и лично проверена: authoritative форма «hubisteis utilizado», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку. Independent verifier finding: «apenas vosotros hubisteis utilizado» is unnecessarily heavy in literary narration, and the Russian repeats «вы». Exact replacement ES: «En la narración, apenas _ la llave de plata, cruzasteis el umbral. (utilizar)»; RU: «В повествовании: едва вы воспользовались серебряным ключом, как переступили порог.»",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:3:plural переписана и лично проверена: authoritative форма «hubieron utilizado», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:1:singular переписана и лично проверена: authoritative форма «habré utilizado», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:2:singular переписана и лично проверена: authoritative форма «habrás utilizado», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:3:singular переписана и лично проверена: authoritative форма «habrá utilizado», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:1:plural переписана и лично проверена: authoritative форма «habremos utilizado», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:2:plural переписана и лично проверена: authoritative форма «habréis utilizado», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:3:plural переписана и лично проверена: authoritative форма «habrán utilizado», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:1:singular переписана и лично проверена: authoritative форма «habría utilizado», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:2:singular переписана и лично проверена: authoritative форма «habrías utilizado», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:3:singular переписана и лично проверена: authoritative форма «habría utilizado», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:1:plural переписана и лично проверена: authoritative форма «habríamos utilizado», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:2:plural переписана и лично проверена: authoritative форма «habríais utilizado», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:3:plural переписана и лично проверена: authoritative форма «habrían utilizado», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:1:singular переписана и лично проверена: authoritative форма «utilice», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:2:singular переписана и лично проверена: authoritative форма «utilices», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:3:singular переписана и лично проверена: authoritative форма «utilice», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:1:plural переписана и лично проверена: authoritative форма «utilicemos», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:2:plural переписана и лично проверена: authoritative форма «utilicéis», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:3:plural переписана и лично проверена: authoritative форма «utilicen», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:1:singular переписана и лично проверена: authoritative форма «utilizara», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:2:singular переписана и лично проверена: authoritative форма «utilizaras», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:3:singular переписана и лично проверена: authoritative форма «utilizara», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:1:plural переписана и лично проверена: authoritative форма «utilizáramos», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом. Independent verifier finding: Russian «боковой тропой» is unnatural for a route chosen because of mud. Exact replacement ES: «La guía sugirió que _ el sendero alternativo debido al barro. (utilizar)»; RU: «Гид предложила, чтобы из-за грязи мы воспользовались обходной тропой.»",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:2:plural переписана и лично проверена: authoritative форма «utilizarais», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:3:plural переписана и лично проверена: authoritative форма «utilizaran», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:1:singular переписана и лично проверена: authoritative форма «utilizare», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:2:singular переписана и лично проверена: authoritative форма «utilizares», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:3:singular переписана и лично проверена: authoritative форма «utilizare», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:1:plural переписана и лично проверена: authoritative форма «utilizáremos», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:2:plural переписана и лично проверена: authoritative форма «utilizareis», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:3:plural переписана и лично проверена: authoritative форма «utilizaren», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:1:singular переписана и лично проверена: authoritative форма «haya utilizado», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:2:singular переписана и лично проверена: authoritative форма «hayas utilizado», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:3:singular переписана и лично проверена: authoritative форма «haya utilizado», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:1:plural переписана и лично проверена: authoritative форма «hayamos utilizado», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:2:plural переписана и лично проверена: authoritative форма «hayáis utilizado», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:3:plural переписана и лично проверена: authoritative форма «hayan utilizado», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:1:singular переписана и лично проверена: authoritative форма «hubiera utilizado», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:2:singular переписана и лично проверена: authoritative форма «hubieras utilizado», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:3:singular переписана и лично проверена: authoritative форма «hubiera utilizado», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:1:plural переписана и лично проверена: authoritative форма «hubiéramos utilizado», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:2:plural переписана и лично проверена: authoritative форма «hubierais utilizado», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:3:plural переписана и лично проверена: authoritative форма «hubieran utilizado», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:1:singular переписана и лично проверена: authoritative форма «hubiere utilizado», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку. Independent verifier finding: «согласно юридической декларации» is not an exact or natural translation of «En esta declaración jurada»; declaración jurada is a sworn declaration. Keep current ES. Exact replacement RU: «В этой декларации под присягой говорится: если окажется, что я использовал государственные средства, я представлю подтверждающие документы.»",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:2:singular переписана и лично проверена: authoritative форма «hubieres utilizado», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:3:singular переписана и лично проверена: authoritative форма «hubiere utilizado», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:1:plural переписана и лично проверена: authoritative форма «hubiéremos utilizado», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:2:plural переписана и лично проверена: authoritative форма «hubiereis utilizado», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:3:plural переписана и лично проверена: authoritative форма «hubieren utilizado», естественный контекст utilizar, полный точный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "manual editorial read of all 96 utilizar cards in six 16-card chunks",
+      "result": "pass",
+      "evidence": "Every final Spanish sentence and Russian translation was read with the authoritative form substituted; contexts cover tools, methods, data, materials, resources and routes without mechanical repetition."
+    },
+    {
+      "command": "editor self-review refinements: utilizar indices 13, 14, 16, 43, 50, 56, 59, 62, 64, 69, 70, 78, 87",
+      "result": "pass",
+      "evidence": "Thirteen refinements remove an ambiguous past-time cue, align route/workshop and restoration wording, make counterfactual subjects natural, tighten noun and route semantics, and strengthen temporal, causal or subject reference."
+    },
+    {
+      "command": "Jehle comparison for 16 scopes and six person-number slots",
+      "result": "pass",
+      "evidence": "All 96 surface forms match the pinned local Jehle dataset in authoritative-forms.json."
+    },
+    {
+      "command": "same-scope option and answer multiplicity validation",
+      "result": "pass",
+      "evidence": "Every card has four distinct options from its own scope and the authoritative answer occurs exactly once."
+    },
+    {
+      "command": "rare-register and counterfactual semantic review",
+      "result": "pass",
+      "evidence": "Pretérito anterior and both future subjunctives are explicitly literary or legal; all six De haberlo sabido translations begin with an explicit Russian counterfactual using знал, знала or знали."
+    },
+    {
+      "command": "baseline identity and source-embedded byte comparison",
+      "result": "pass",
+      "evidence": "Top-level fields and scope/person/number order match the immutable baseline; source and embedded copy are byte-identical."
+    },
+    {
+      "command": "native validate_artifact(utilizar, 96 final cards)",
+      "result": "pass",
+      "evidence": "The repository generator validator accepted all 96 final cards."
+    },
+    {
+      "command": "focused utilizar contract, report and checkpoint validation",
+      "result": "pass",
+      "evidence": "Source equals embedded byte-for-byte; top-level metadata and 96 scope/person/number identities preserve the baseline; report fingerprint is current; six contiguous checkpoints cover [0,96]."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py status --source courses/spanish-grammar/training_pack/verb_forms/lemmas/utilizar.json",
+      "result": "pass",
+      "evidence": "Status is awaiting_verification for exactly 96 cards, as required before independent review."
+    },
+    {
+      "command": "git diff --check for assigned root and Spanish paths",
+      "result": "pass",
+      "evidence": "No whitespace errors in the source, embedded copy, report or personal checkpoint log."
+    },
+    {
+      "command": "baseline-to-final defect statistics and fingerprint",
+      "result": "pass",
+      "evidence": "Baseline wrong/duplicate/answer/offscope/invalid/metadata/blank = 18/15/33/178/108/0/0; final values remain all zero after verification fixes; current fingerprint 819844f91b7b1ce0d19149e7c1282de0edbaa52b522f7d441850e16e99e205de."
+    },
+    {
+      "command": "coordinator refinements: utilizar indices 0, 1, 3, 4, 15, 21, 27, 28, 31, 33, 34, 38, 42, 44, 46, 72, 90, 91, 92, 93, 94, 95",
+      "result": "pass",
+      "evidence": "Applied 22 requested refinements. Conflicting RU-only proposals at 42 and 90–95 were replaced with coordinator-approved translations matching the current ES; index 72 keeps the 1st-singular identity; ES-only simplifications retain exact matching RU."
+    },
+    {
+      "command": "post-coordinator native, contract, focused status and diff validation",
+      "result": "pass",
+      "evidence": "Native validate_artifact accepted 96/96; source=embedded; Jehle, metadata, blank and option contracts pass; report remains awaiting_verification with 96 pending verifications; focused status and diff checks pass at fingerprint 8d1c527b2a9771b129e27e48878d943f09be6e92c35ac7e63f2d3b9676011fb5."
+    },
+    {
+      "command": "independent semantic verification of all 96 utilizar cards at fingerprint 8d1c527b2a9771b129e27e48878d943f09be6e92c35ac7e63f2d3b9676011fb5",
+      "result": "pass",
+      "evidence": "Independent verifier read all 96 final ES/RU pairs with each answer substituted and checked person/number/tense, blank ambiguity, same-scope distractors, literary/legal framing, six explicit counterfactuals and completed future-perfect-subjunctive Russian aspect. Three unresolved editorial findings remain at zero-based indexes 46, 69 and 90; all other cards remain pending until the corrected fingerprint is rechecked."
+    },
+    {
+      "command": "original editor corrections after independent utilizar verification: indices 46, 69 and 90",
+      "result": "pass",
+      "evidence": "Applied all three requested corrections exactly: natural pretérito-anterior sequence with como, unambiguous alternative-route wording, and an exact declaration-under-oath Russian translation. Forms, options, metadata and identity/order remain unchanged; all 96 verifications reset to pending for same-verifier recheck."
+    },
+    {
+      "command": "post-verification-fix native, contract, focused status and diff validation",
+      "result": "pass",
+      "evidence": "Native validate_artifact accepted 96/96; exact Jehle forms, metadata, one blank, four unique same-scope options, answer once, baseline identity and source=embedded pass. Report has 96 pending verifications and focused status is awaiting_verification at fingerprint 819844f91b7b1ce0d19149e7c1282de0edbaa52b522f7d441850e16e99e205de; focused diff checks pass."
+    },
+    {
+      "command": "same independent verifier recheck: utilizar indices 46, 69 and 90",
+      "result": "pass",
+      "evidence": "All three requested replacements match exactly: natural literary pretérito-anterior syntax, an unambiguous alternative route with idiomatic Russian, and precise declaración jurada wording with completed future-perfect-subjunctive Russian aspect."
+    },
+    {
+      "command": "independent final source/report integrity check: utilizar 96/96 at fingerprint 819844f91b7b1ce0d19149e7c1282de0edbaa52b522f7d441850e16e99e205de",
+      "result": "pass",
+      "evidence": "The other 93 cards are unchanged from the independently read fingerprint except for the three requested fixes; source equals embedded; authoritative forms, person/number/tense, one blank, four unique same-scope options, answer once, rare-register framing and all Russian tense/aspect contracts pass. All 96 verification fields are ok."
+    },
+    {
+      "command": "coordinator final batch barrier: check.py, preservation-check.py, native validate_artifact, focused status, Go tests, grammar_review_test.py and scoped diff checks",
+      "result": "pass",
+      "evidence": "Final utilizar report is independently done at fingerprint 819844f91b7b1ce0d19149e7c1282de0edbaa52b522f7d441850e16e99e205de; the 384-card batch passed authoritative forms/contracts, 24 checkpoints, source=embedded, preservation (25668 unchanged out-of-scope files), native validation, Go tests, 13 grammar-review tests and whitespace checks."
+    }
+  ],
+  "verification_note": "Независимый верификатор первоначально нашёл три замечания в индексах 46, 69 и 90. Исходный редактор применил все три точные замены; тот же верификатор повторно проверил исправленные карточки, неизменённые 93 карточки и полный контракт нового fingerprint. Все 96 карточек приняты."
+}

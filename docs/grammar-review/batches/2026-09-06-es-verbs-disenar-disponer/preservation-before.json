@@ -1,0 +1,31 @@
+{
+  "existing_files": 25104,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/diseñar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/diseñar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/disfrutar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/disfrutar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/disminuir.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/disminuir.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/disponer.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/disponer.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-disenar-disponer",
+    "docs/grammar-review/reports/b488908e4c8785bfd810a411.json",
+    "docs/grammar-review/reports/314ee1d185fc82b56d91566a.json",
+    "docs/grammar-review/reports/4839c79308c0ffeff4db1eef.json",
+    "docs/grammar-review/reports/5c8f67b7f408e3047a93c674.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/diseñar.json": "7d6632607f07ab5de7d4227ece843d1d70459a3c3434847650ff419dae711d37",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/diseñar.json": "7d6632607f07ab5de7d4227ece843d1d70459a3c3434847650ff419dae711d37",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/disfrutar.json": "1f5d8bd280c281ad37169c6ac6073761d828687b547cbbfe03be1474e6f67720",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/disfrutar.json": "1f5d8bd280c281ad37169c6ac6073761d828687b547cbbfe03be1474e6f67720",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/disminuir.json": "7ca7079c48ec29e81f2d51bb038b0f0c03019f679e9b4d65247cf1cf82758c6c",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/disminuir.json": "7ca7079c48ec29e81f2d51bb038b0f0c03019f679e9b4d65247cf1cf82758c6c",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/disponer.json": "3e1d714d01467aee824b26208e43a6e2eda94b2a11c53699ba6f04de6470a695",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/disponer.json": "3e1d714d01467aee824b26208e43a6e2eda94b2a11c53699ba6f04de6470a695"
+  }
+}

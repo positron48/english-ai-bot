@@ -1,0 +1,129 @@
+{
+  "version": 1,
+  "source": "courses/english-grammar/training_pack/chapters/005/en.01.b1_theory_identity_statements.questions.json",
+  "source_sha256": "26b5701104627b10d8279badbf3f4677c31821f8f06625bef5be402eaacf4bd9",
+  "context_sha256": "a10f8cb9575cff5aa8e5c56f78dd4e7270570af29e20db939dc539e2d60c7329",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
+  "reviewed_at": "2026-09-04T10:30:31.171099+00:00",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
+  "questions": [
+    {
+      "id": "q1",
+      "decision": "fixed",
+      "note": "Задано первое лицо: исходно I’m и She’s оба подходили.",
+      "verification": "ok"
+    },
+    {
+      "id": "q2",
+      "decision": "fixed",
+      "note": "Явно задан неопределённый артикль и конкретное предложение.",
+      "verification": "ok"
+    },
+    {
+      "id": "q3",
+      "decision": "fixed",
+      "note": "Запрет артиклей ограничен a/an.",
+      "verification": "ok"
+    },
+    {
+      "id": "q4",
+      "decision": "fixed",
+      "note": "Исправлен начальный звук engineer: /e/, не /ɪ/.",
+      "verification": "ok"
+    },
+    {
+      "id": "q5",
+      "decision": "fixed",
+      "note": "Исключён альтернативно верный the: требуется неопределённый артикль.",
+      "verification": "ok"
+    },
+    {
+      "id": "q6",
+      "decision": "fixed",
+      "note": "Допустимый We are the students заменён ошибочным согласованием, исправлено обобщение про артикли.",
+      "verification": "ok"
+    },
+    {
+      "id": "q7",
+      "decision": "fixed",
+      "note": "Исключён the и исправлен начальный звук engineer.",
+      "verification": "ok"
+    },
+    {
+      "id": "q8",
+      "decision": "fixed",
+      "note": "Объяснение ограничено a вместо запрета любых артиклей.",
+      "verification": "ok"
+    },
+    {
+      "id": "q9",
+      "decision": "fixed",
+      "note": "Исправлена ложная транскрипция /ʌ/ как согласного: начальный звук /j/; задан a/an.",
+      "verification": "ok"
+    },
+    {
+      "id": "q10",
+      "decision": "ok",
+      "note": "I’m a student — единственный вариант с правильным артиклем.",
+      "verification": "ok"
+    },
+    {
+      "id": "q11",
+      "decision": "fixed",
+      "note": "Явно требуется неопределённый артикль; the/some больше не альтернативные ответы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q12",
+      "decision": "fixed",
+      "note": "Устранён допустимый the doctors и общее отрицание артиклей при множественном числе.",
+      "verification": "ok"
+    },
+    {
+      "id": "q13",
+      "decision": "fixed",
+      "note": "Явно требуется неопределённый артикль, исключены the/some.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "cd courses/english-grammar && bash scripts/assemble-chapter.sh 005.en.grammar.first_sentences_be_as.statements_with_be_identity && bash scripts/validate-chapter.sh 005.en.grammar.first_sentences_be_as.statements_with_be_identity",
+      "result": "pass",
+      "evidence": "Chapter assembled and validator passes. See docs/grammar-review/batches/2026-09-04-en005-006/005-assemble-after.log and 005-chapter-after.log."
+    },
+    {
+      "command": "ajv validate --spec=draft2020 --validate-formats=false --all-errors -s courses/english-grammar/02-chapter-schema.json -d courses/english-grammar/chapters/005.en.grammar.first_sentences_be_as.statements_with_be_identity/05-final.json",
+      "result": "pass",
+      "evidence": "Baseline and final schemas pass; see docs/grammar-review/batches/2026-09-04-en005-006/005-schema-before.log and 005-schema-after.log."
+    },
+    {
+      "command": "ajv validate -s courses/english-grammar/02-chapter-schema.json -d courses/english-grammar/chapters/005.en.grammar.first_sentences_be_as.statements_with_be_identity/05-final.json",
+      "result": "known_baseline",
+      "evidence": "Stock assembler omits draft2020; same missing meta-schema error before and after. Explicit draft2020 passes. See docs/grammar-review/batches/2026-09-04-en005-006/005-assembler-ajv-before.log and 005-assembler-ajv-after.log."
+    },
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-04-en005-006/check.py",
+      "result": "pass",
+      "evidence": "All 196 contracts and metadata preserved, decisions match changes, fingerprints and signatures current, no new EN pack duplicates, source/final/embedded equal. See docs/grammar-review/batches/2026-09-04-en005-006/validation.log."
+    },
+    {
+      "command": "go test ./internal/grammarbundle ./internal/repository -run 'TestValidateEmbeddedBundleID|TestGrammar.*Bundle|TestGrammar.*Reorder' -count=1",
+      "result": "pass",
+      "evidence": "Both packages passed in 5.069s and 14.507s; see docs/grammar-review/batches/2026-09-04-en005-006/go-tests.log."
+    },
+    {
+      "command": "git diff --check && git -C courses/english-grammar diff --check && git -C courses/spanish-grammar diff --check",
+      "result": "pass",
+      "evidence": "All three commands exited 0."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    }
+  ],
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+}

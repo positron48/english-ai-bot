@@ -1,0 +1,39 @@
+{
+  "existing_files": 25774,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/alquilar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/alquilar.json",
+    "docs/grammar-review/reports/6097fcbb0eedc24adc99e46f.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/amenazar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/amenazar.json",
+    "docs/grammar-review/reports/1c0f9a97e4b6a9775de24b00.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/andar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/andar.json",
+    "docs/grammar-review/reports/0da887f8d8e7a7ac87b0fa62.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/anunciar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/anunciar.json",
+    "docs/grammar-review/reports/d15aa5af8e8c484f5a740a45.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-verify-alquilar-anunciar"
+  ],
+  "assigned_dirty_before": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/alquilar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/amenazar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/andar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/anunciar.json",
+    "docs/grammar-review/reports/0da887f8d8e7a7ac87b0fa62.json",
+    "docs/grammar-review/reports/1c0f9a97e4b6a9775de24b00.json",
+    "docs/grammar-review/reports/6097fcbb0eedc24adc99e46f.json",
+    "docs/grammar-review/reports/d15aa5af8e8c484f5a740a45.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/alquilar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/amenazar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/andar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/anunciar.json"
+  ],
+  "preexisting_missing_tracked": [
+    "courses/english-grammar/llm-benchmark/__pycache__/benchmark.cpython-314.pyc",
+    "courses/english-grammar/training-pack-admin/__pycache__/server.cpython-314.pyc",
+    "tools-local/complaints-worker/__pycache__/worker.cpython-314.pyc"
+  ]
+}

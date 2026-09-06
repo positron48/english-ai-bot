@@ -1,0 +1,66 @@
+{
+  "lemma": "acabar",
+  "verifier": "Codex coordinator independent verifier 2026-09-06",
+  "findings": [
+    {
+      "index": 0,
+      "question_es_with_blank": "Cada viernes, yo _ el informe semanal antes de comer. (acabar)",
+      "translation_ru_full": "Каждую пятницу я заканчиваю еженедельный отчёт до обеда."
+    },
+    {
+      "index": 1,
+      "question_es_with_blank": "Tú siempre _ las tareas urgentes antes del almuerzo. (acabar)",
+      "translation_ru_full": "Ты всегда заканчиваешь срочные задачи до обеда."
+    },
+    {
+      "index": 2,
+      "question_es_with_blank": "El carpintero _ cada encargo con una capa de barniz. (acabar)",
+      "translation_ru_full": "Столяр завершает каждый заказ слоем лака."
+    },
+    {
+      "index": 3,
+      "question_es_with_blank": "Nosotros _ cada fase del proyecto antes del plazo. (acabar)",
+      "translation_ru_full": "Мы заканчиваем каждый этап проекта раньше срока."
+    },
+    {
+      "index": 4,
+      "question_es_with_blank": "Vosotros _ las revisiones semanales los viernes. (acabar)",
+      "translation_ru_full": "Вы заканчиваете еженедельные проверки по пятницам."
+    },
+    {
+      "index": 5,
+      "question_es_with_blank": "Los alumnos _ cada módulo con una prueba breve. (acabar)",
+      "translation_ru_full": "Ученики заканчивают каждый модуль короткой проверочной работой."
+    },
+    {
+      "index": 6,
+      "question_es_with_blank": "Cuando trabajaba en el periódico, yo _ la crónica antes del cierre. (acabar)",
+      "translation_ru_full": "Когда я работал в газете, я заканчивал хронику до сдачи номера."
+    },
+    {
+      "index": 7,
+      "question_es_with_blank": "De estudiante, tú _ los ejercicios antes que nadie. (acabar)",
+      "translation_ru_full": "В студенческие годы ты заканчивал упражнения раньше всех."
+    },
+    {
+      "index": 8,
+      "question_es_with_blank": "El técnico _ cada reparación con una prueba de seguridad. (acabar)",
+      "translation_ru_full": "Специалист завершал каждый ремонт проверкой безопасности."
+    },
+    {
+      "index": 9,
+      "question_es_with_blank": "Durante aquel año, nosotros _ los encargos antes del plazo. (acabar)",
+      "translation_ru_full": "В том году мы заканчивали заказы раньше срока."
+    },
+    {
+      "index": 10,
+      "question_es_with_blank": "En la editorial, vosotros _ las revisiones los viernes. (acabar)",
+      "translation_ru_full": "В издательстве вы заканчивали проверки по пятницам."
+    },
+    {
+      "index": 11,
+      "question_es_with_blank": "Los alumnos _ cada módulo con un debate. (acabar)",
+      "translation_ru_full": "Ученики заканчивали каждый модуль обсуждением."
+    }
+  ]
+}

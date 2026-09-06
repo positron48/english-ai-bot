@@ -1,0 +1,31 @@
+{
+  "existing_files": 25395,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/poner.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/poner.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/practicar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/practicar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/preferir.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/preferir.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/preguntar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/preguntar.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-poner-preguntar",
+    "docs/grammar-review/reports/2b9df5aa2ccd832aef799971.json",
+    "docs/grammar-review/reports/313c3657478777d6ce879e64.json",
+    "docs/grammar-review/reports/b3e57e3f8ca6cd8f2989494c.json",
+    "docs/grammar-review/reports/ffbb819362df1261cd79f111.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/poner.json": "5a3b68cb651604ea0a697528c3df5a2dc2cc65515576d353ff790d995db13466",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/poner.json": "5a3b68cb651604ea0a697528c3df5a2dc2cc65515576d353ff790d995db13466",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/practicar.json": "fe4a1be852b8423fdddd2504f0d327d27ad71f3c1101f0e02698533aea001e2c",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/practicar.json": "fe4a1be852b8423fdddd2504f0d327d27ad71f3c1101f0e02698533aea001e2c",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/preferir.json": "33f61a64cd9ee7357f8780b2ed0580e245b0bc65f559cf43870405104450f177",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/preferir.json": "33f61a64cd9ee7357f8780b2ed0580e245b0bc65f559cf43870405104450f177",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/preguntar.json": "6d80f4cd57af6f2ead0289cf30e0b52e4f477b303e3b4a4b218a31535ad161df",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/preguntar.json": "6d80f4cd57af6f2ead0289cf30e0b52e4f477b303e3b4a4b218a31535ad161df"
+  }
+}

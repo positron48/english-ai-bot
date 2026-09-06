@@ -1,0 +1,647 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/proteger.json",
+  "source_sha256": "1a59499019eca9e424176f538cab48260a0d2179d045e449bf804b299d575a04",
+  "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197",
+  "editor": "Helmholtz editor 2026-09-06",
+  "verifier": "Codex coordinator verifier 2026-09-06",
+  "phase": "done",
+  "reviewed_at": "2026-09-06",
+  "verified_at": "2026-09-06T08:20:30+00:00",
+  "questions": [
+    {
+      "id": "es.presente.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «protejo» сверена по Jehle; контекст presente indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «proteges» сверена по Jehle; контекст presente indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «protege» сверена по Jehle; контекст presente indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «protegemos» сверена по Jehle; контекст presente indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «protegéis» сверена по Jehle; контекст presente indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «protegen» сверена по Jehle; контекст presente indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «protegía» сверена по Jehle; контекст preterito_imperfecto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «protegías» сверена по Jehle; контекст preterito_imperfecto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «protegía» сверена по Jehle; контекст preterito_imperfecto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «protegíamos» сверена по Jehle; контекст preterito_imperfecto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «protegíais» сверена по Jehle; контекст preterito_imperfecto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «protegían» сверена по Jehle; контекст preterito_imperfecto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «protegí» сверена по Jehle; контекст preterito_indefinido indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «protegiste» сверена по Jehle; контекст preterito_indefinido indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «protegió» сверена по Jehle; контекст preterito_indefinido indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «protegimos» сверена по Jehle; контекст preterito_indefinido indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «protegisteis» сверена по Jehle; контекст preterito_indefinido indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «protegieron» сверена по Jehle; контекст preterito_indefinido indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «protegeré» сверена по Jehle; контекст futuro_simple indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «protegerás» сверена по Jehle; контекст futuro_simple indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «protegerá» сверена по Jehle; контекст futuro_simple indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «protegeremos» сверена по Jehle; контекст futuro_simple indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «protegeréis» сверена по Jehle; контекст futuro_simple indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «protegerán» сверена по Jehle; контекст futuro_simple indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «protegería» сверена по Jehle; контекст condicional_simple indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «protegerías» сверена по Jehle; контекст condicional_simple indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «protegería» сверена по Jehle; контекст condicional_simple indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «protegeríamos» сверена по Jehle; контекст condicional_simple indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «protegeríais» сверена по Jehle; контекст condicional_simple indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «protegerían» сверена по Jehle; контекст condicional_simple indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «he protegido» сверена по Jehle; контекст preterito_perfecto_compuesto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «has protegido» сверена по Jehle; контекст preterito_perfecto_compuesto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «ha protegido» сверена по Jehle; контекст preterito_perfecto_compuesto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hemos protegido» сверена по Jehle; контекст preterito_perfecto_compuesto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habéis protegido» сверена по Jehle; контекст preterito_perfecto_compuesto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «han protegido» сверена по Jehle; контекст preterito_perfecto_compuesto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «había protegido» сверена по Jehle; контекст preterito_pluscuamperfecto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habías protegido» сверена по Jehle; контекст preterito_pluscuamperfecto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «había protegido» сверена по Jehle; контекст preterito_pluscuamperfecto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habíamos protegido» сверена по Jehle; контекст preterito_pluscuamperfecto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habíais protegido» сверена по Jehle; контекст preterito_pluscuamperfecto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habían protegido» сверена по Jehle; контекст preterito_pluscuamperfecto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hube protegido» сверена по Jehle; контекст preterito_anterior indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubiste protegido» сверена по Jehle; контекст preterito_anterior indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubo protegido» сверена по Jehle; контекст preterito_anterior indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubimos protegido» сверена по Jehle; контекст preterito_anterior indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubisteis protegido» сверена по Jehle; контекст preterito_anterior indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubieron protegido» сверена по Jehle; контекст preterito_anterior indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habré protegido» сверена по Jehle; контекст futuro_perfecto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habrás protegido» сверена по Jehle; контекст futuro_perfecto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habrá protegido» сверена по Jehle; контекст futuro_perfecto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habremos protegido» сверена по Jehle; контекст futuro_perfecto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habréis protegido» сверена по Jehle; контекст futuro_perfecto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habrán protegido» сверена по Jehle; контекст futuro_perfecto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habría protegido» сверена по Jehle; контекст condicional_perfecto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habrías protegido» сверена по Jehle; контекст condicional_perfecto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habría protegido» сверена по Jehle; контекст condicional_perfecto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habríamos protegido» сверена по Jehle; контекст condicional_perfecto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habríais protegido» сверена по Jehle; контекст condicional_perfecto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habrían protegido» сверена по Jehle; контекст condicional_perfecto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «proteja» сверена по Jehle; контекст presente subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «protejas» сверена по Jehle; контекст presente subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «proteja» сверена по Jehle; контекст presente subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «protejamos» сверена по Jehle; контекст presente subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «protejáis» сверена по Jehle; контекст presente subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «protejan» сверена по Jehle; контекст presente subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «protegiera» сверена по Jehle; контекст preterito_imperfecto subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «protegieras» сверена по Jehle; контекст preterito_imperfecto subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «protegiera» сверена по Jehle; контекст preterito_imperfecto subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «protegiéramos» сверена по Jehle; контекст preterito_imperfecto subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «protegierais» сверена по Jehle; контекст preterito_imperfecto subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «protegieran» сверена по Jehle; контекст preterito_imperfecto subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «protegiere» сверена по Jehle; контекст futuro_simple subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «protegieres» сверена по Jehle; контекст futuro_simple subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «protegiere» сверена по Jehle; контекст futuro_simple subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «protegiéremos» сверена по Jehle; контекст futuro_simple subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «protegiereis» сверена по Jehle; контекст futuro_simple subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «protegieren» сверена по Jehle; контекст futuro_simple subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «haya protegido» сверена по Jehle; контекст preterito_perfecto subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hayas protegido» сверена по Jehle; контекст preterito_perfecto subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «haya protegido» сверена по Jehle; контекст preterito_perfecto subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hayamos protegido» сверена по Jehle; контекст preterito_perfecto subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hayáis protegido» сверена по Jehle; контекст preterito_perfecto subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hayan protegido» сверена по Jehle; контекст preterito_perfecto subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubiera protegido» сверена по Jehle; контекст preterito_pluscuamperfecto subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubieras protegido» сверена по Jehle; контекст preterito_pluscuamperfecto subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubiera protegido» сверена по Jehle; контекст preterito_pluscuamperfecto subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubiéramos protegido» сверена по Jehle; контекст preterito_pluscuamperfecto subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubierais protegido» сверена по Jehle; контекст preterito_pluscuamperfecto subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubieran protegido» сверена по Jehle; контекст preterito_pluscuamperfecto subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubiere protegido» сверена по Jehle; контекст futuro_perfecto subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubieres protegido» сверена по Jehle; контекст futuro_perfecto subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubiere protegido» сверена по Jehle; контекст futuro_perfecto subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubiéremos protegido» сверена по Jehle; контекст futuro_perfecto subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubiereis protegido» сверена по Jehle; контекст futuro_perfecto subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubieren protegido» сверена по Jehle; контекст futuro_perfecto subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 - (focused proteger baseline/Jehle/content validator)",
+      "result": "pass",
+      "evidence": "96 карточек: identity/order, top-level contract, Jehle forms, metadata, естественные ES/RU контексты, 4 уникальных same-scope options, fresh fingerprints и source=embedded."
+    },
+    {
+      "command": "go test ./internal/grammartrainingpack",
+      "result": "pass",
+      "evidence": "Embedded training-pack package passes focused Go tests."
+    },
+    {
+      "command": "git diff --check -- internal/grammartrainingpack/es/verb_forms/lemmas/proteger.json docs/grammar-review/reports/a6d2947eafa9719fa18d431b.json && git -C courses/spanish-grammar diff --check -- training_pack/verb_forms/lemmas/proteger.json",
+      "result": "pass",
+      "evidence": "No whitespace errors in the assigned source, embedded copy or report."
+    },
+    {
+      "command": "independent full-card review of proteger against Jehle, immutable baseline and final source",
+      "result": "pass",
+      "evidence": "All 96 final cards were re-read after the editorial barrier; Spanish contexts, Russian meanings, tense and mood cues, reference forms, same-scope options, identity/order, source-to-embedded equality and the explicit counterfactual were confirmed."
+    },
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-06-es-verbs-proteger-quedar/check.py",
+      "result": "pass",
+      "evidence": "384/384 exact Jehle forms, stable identities and original order, canonical metadata, unique same-scope options, matching embedded files, fresh fingerprints and 24 primary editorial checkpoints."
+    },
+    {
+      "command": "validate_artifact() from courses/spanish-grammar/scripts/generate-verb-forms-training.py for all four lemmas",
+      "result": "pass",
+      "evidence": "Repository-native strict validation passed for all 16 scopes x 6 slots in proteger, provocar, publicar and quedar."
+    },
+    {
+      "command": "go test ./internal/verbtraining ./cmd/sync_verb_training_json",
+      "result": "pass",
+      "evidence": "Both focused Go packages passed."
+    },
+    {
+      "command": "python3 scripts/grammar_review_test.py",
+      "result": "pass",
+      "evidence": "13 grammar-review tracking tests passed."
+    },
+    {
+      "command": "git diff --check && git -C courses/spanish-grammar diff --check",
+      "result": "pass",
+      "evidence": "No whitespace errors in the root or Spanish course diff."
+    },
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-06-es-verbs-proteger-quedar/preservation-check.py",
+      "result": "pass",
+      "evidence": "25425 files outside the allowed batch paths were preserved; 0 changed, 0 missing and 0 unexpected new files."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py inventory --source <each batch lemma source>",
+      "result": "pass",
+      "evidence": "All four current reports resolve to done with matching source and context fingerprints."
+    }
+  ],
+  "verification_note": "Independently re-read all 96 final cards after the editorial barrier. Spanish contexts, Russian meanings, tense and mood cues, Jehle forms, same-scope distractors, identity/order, source-to-embedded equality and the explicit Russian counterfactual were confirmed."
+}

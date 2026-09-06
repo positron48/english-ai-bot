@@ -1,0 +1,26 @@
+{
+  "existing_files": 24898,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/añadir.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/añadir.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/bailar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/bailar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/bajar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/bajar.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-anadir-bajar",
+    "docs/grammar-review/reports/9460af416eb70be132b89622.json",
+    "docs/grammar-review/reports/da24c666225e449d9f7a05d3.json",
+    "docs/grammar-review/reports/1e03325a6ecdcfb02087d80a.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/añadir.json": "ce32d5e423d473f258406ee9daea36e4bb806872ad5ade98218a92a39787aa2f",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/añadir.json": "ce32d5e423d473f258406ee9daea36e4bb806872ad5ade98218a92a39787aa2f",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/bailar.json": "aca71a571707ac5c9b41bd870ab53e56d6901e28da0f66d669f3b1c0ac7b0319",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/bailar.json": "aca71a571707ac5c9b41bd870ab53e56d6901e28da0f66d669f3b1c0ac7b0319",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/bajar.json": "1a27efda08c801489873873449a81cf020a63231c5cbf579ef01b6bc2e170bea",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/bajar.json": "1a27efda08c801489873873449a81cf020a63231c5cbf579ef01b6bc2e170bea"
+  }
+}

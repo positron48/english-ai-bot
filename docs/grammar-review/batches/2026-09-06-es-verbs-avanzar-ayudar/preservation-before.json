@@ -1,0 +1,26 @@
+{
+  "existing_files": 24891,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/avanzar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/avanzar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/avisar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/avisar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/ayudar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/ayudar.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-avanzar-ayudar",
+    "docs/grammar-review/reports/c835ca756bf2d2bff2ebb893.json",
+    "docs/grammar-review/reports/4f3e77b2356ab13db6f8c442.json",
+    "docs/grammar-review/reports/603c2782fa02949feca16cf2.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/avanzar.json": "23db705b79c672df0deaf8015eb4a5a015006bf6ecb311efdddc4758657c79d3",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/avanzar.json": "23db705b79c672df0deaf8015eb4a5a015006bf6ecb311efdddc4758657c79d3",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/avisar.json": "2f07f28cfb181a05f7639780f86ceb2f8748a7e948e954e29a47f3f9bfee8167",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/avisar.json": "2f07f28cfb181a05f7639780f86ceb2f8748a7e948e954e29a47f3f9bfee8167",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/ayudar.json": "76ee280a195fc8aa6a4e9be9ec72f329af721004a78944a0adcda9c3df0150fc",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/ayudar.json": "76ee280a195fc8aa6a4e9be9ec72f329af721004a78944a0adcda9c3df0150fc"
+  }
+}

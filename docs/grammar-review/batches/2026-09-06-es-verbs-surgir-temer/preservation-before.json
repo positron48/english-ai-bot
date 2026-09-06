@@ -1,0 +1,36 @@
+{
+  "existing_files": 25618,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/surgir.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/surgir.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/sustituir.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/sustituir.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/tardar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/tardar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/temer.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/temer.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-surgir-temer",
+    "docs/grammar-review/reports/1165095c71952dec10e34db0.json",
+    "docs/grammar-review/reports/b98e864615d6b880483a2fb8.json",
+    "docs/grammar-review/reports/84bc231a65ad25585d91597c.json",
+    "docs/grammar-review/reports/cfba4c38ddf50f6115f4c77d.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/surgir.json": "eba3500767e46bc7b38676b1645f8a4271596b92293f7bcfb78356e7a3f1e357",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/surgir.json": "eba3500767e46bc7b38676b1645f8a4271596b92293f7bcfb78356e7a3f1e357",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/sustituir.json": "aed175b86f447aafddfaeebf983d40704a30e244025b9c04b68635ffcdef5dac",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/sustituir.json": "aed175b86f447aafddfaeebf983d40704a30e244025b9c04b68635ffcdef5dac",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/tardar.json": "1f3eaebf357897f2a57b44e0a9c6f592a76f26e9fb4eb0010eff7725300a590c",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/tardar.json": "1f3eaebf357897f2a57b44e0a9c6f592a76f26e9fb4eb0010eff7725300a590c",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/temer.json": "627da17b3a250d0b9752b435ed45b2208c3f25e98bcdb9bddf7c9df0511fe956",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/temer.json": "627da17b3a250d0b9752b435ed45b2208c3f25e98bcdb9bddf7c9df0511fe956"
+  },
+  "preexisting_missing_tracked": [
+    "courses/english-grammar/llm-benchmark/__pycache__/benchmark.cpython-314.pyc",
+    "courses/english-grammar/training-pack-admin/__pycache__/server.cpython-314.pyc",
+    "tools-local/complaints-worker/__pycache__/worker.cpython-314.pyc"
+  ]
+}

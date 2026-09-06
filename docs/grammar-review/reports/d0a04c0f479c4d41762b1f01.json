@@ -1,0 +1,647 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/verificar.json",
+  "source_sha256": "0764aaaab5d107a62b7d51bf67bb7f2567cfb6430072d535e900842363a7b2d3",
+  "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197",
+  "editor": "Codex coordinator editor 2026-09-06",
+  "verifier": "edit_utilizar independent verifier 2026-09-06",
+  "phase": "done",
+  "reviewed_at": "2026-09-06",
+  "verified_at": "2026-09-06T15:09:26Z",
+  "questions": [
+    {
+      "id": "es.presente.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа. Independent verifier finding: RU «если бы получила доступ» меняет состояние si tuviera acceso на отдельное событие получения доступа. Точная замена ES: «La especialista _ la autenticidad del cuadro si tuviera acceso al archivo. (verificar)»; RU: «Специалист проверила бы подлинность картины, если бы у неё был доступ к архиву.»",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа. Independent verifier finding: RU «До проверки вы проверите» лексически тавтологичен и звучит как служебный шаблон. Точная замена ES: «Antes de la visita del inspector, vosotros _ todos los extintores. (verificar)»; RU: «До прихода инспектора вы проверите все огнетушители.»",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма и варианты по Jehle; создан однозначный естественный контекст и точный русский перевод с сохранением времени, лица и числа.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "manual editorial review of all 96 verificar cards in six 16-card chunks",
+      "result": "pass",
+      "evidence": "Every final Spanish prompt and Russian translation was read with the authoritative answer substituted; all cards were rewritten for natural, unambiguous verificar usage."
+    },
+    {
+      "command": "authoritative forms from batch authoritative-forms.json (Jehle CSV)",
+      "result": "pass",
+      "evidence": "All 96 surface forms match the fixed Jehle paradigm for scope, person and number."
+    },
+    {
+      "command": "identity/order/top-level and source-embedded contract checks",
+      "result": "pass",
+      "evidence": "Top-level fields and exact scope/person/number order match the immutable baseline; source and embedded bytes are identical."
+    },
+    {
+      "command": "same-scope options, answer multiplicity and blank checks",
+      "result": "pass",
+      "evidence": "Every card has exactly one blank and four unique options from its scope, with the authoritative answer exactly once."
+    },
+    {
+      "command": "rare-register and counterfactual semantic review",
+      "result": "pass",
+      "evidence": "Pretérito anterior and both future subjunctives have explicit literary/legal frames; all De haberlo sabido translations begin with explicit Russian counterfactual conditions; future perfect subjunctive translations state completed verification."
+    },
+    {
+      "command": "coordinator self-review refinements: verificar indices 7, 42-46, 53, 68, 77, 90, 91, 93 and 95",
+      "result": "pass",
+      "evidence": "Thirteen ES/RU refinements remove repeated temporal wording and heavy explicit subjects, repair escribano gender, preserve completed future meaning, improve technical/legal collocations, and sharpen future-subjunctive clauses; forms/options/metadata/identity unchanged."
+    },
+    {
+      "command": "independent semantic verification of all 96 verificar cards at fingerprint c47b9ec55ddc896bacb997aad8788409e80cf86326b9a60b2f1485d8294f1c45",
+      "result": "pass",
+      "evidence": "Independent verifier read all 96 final ES/RU pairs with authoritative forms substituted and checked meaning/aspect, person/number/tense, blank/options, rare literary/legal framing, counterfactuals and completed future-perfect Russian. Two unresolved editorial findings remain at zero-based indexes 26 and 52; all other cards remain pending until the corrected fingerprint is rechecked."
+    },
+    {
+      "command": "post-verification fix for verificar indices 26 and 52",
+      "result": "pass",
+      "evidence": "Applied the independent verifier corrections for an idiomatic Russian access condition and an unambiguous future-perfect deadline before the inspector visit; source and embedded synchronized, verification reset for same-verifier recheck."
+    },
+    {
+      "command": "same-verifier recheck of corrected verificar indices 26 and 52",
+      "result": "pass",
+      "evidence": "Accepted state-preserving si tuviera acceso translation at 26 and natural inspector-visit future-perfect context at 52; both retain authoritative forms, identities and option contracts."
+    },
+    {
+      "command": "independent final verification of verificar 96/96 at fingerprint 0764aaaab5d107a62b7d51bf67bb7f2567cfb6430072d535e900842363a7b2d3",
+      "result": "pass",
+      "evidence": "The independent verifier confirms all 96 cards: natural ES, exact RU meaning/aspect, authoritative person/number/tense forms, one blank, four unique same-scope options with one answer, explicit literary/legal rare forms, explicit counterfactuals and completed future-perfect Russian."
+    },
+    {
+      "command": "coordinator final batch barrier: check.py, preservation-check.py, native validate_artifact, focused status, Go tests, grammar_review_test.py and scoped diff checks",
+      "result": "pass",
+      "evidence": "Final verificar report is independently done at fingerprint 0764aaaab5d107a62b7d51bf67bb7f2567cfb6430072d535e900842363a7b2d3; the 384-card batch passed authoritative forms/contracts, 24 checkpoints, source=embedded, preservation (25683 unchanged out-of-scope files), native validation, Go tests, 13 grammar-review tests and whitespace checks."
+    }
+  ],
+  "verification_note": "Независимо прочитаны все 96 финальных карточек verificar с подстановкой authoritative формы. Первичная проверка выявила замечания на индексах 26 и 52; после исправлений обе пары повторно проверены и приняты. Подтверждены естественные ES-контексты, точные RU-переводы и аспект, лица/числа/времена, однозначный пропуск, варианты, литературный/юридический регистр, контрфактивы, завершённость future perfect, baseline identity и source/embedded."
+}

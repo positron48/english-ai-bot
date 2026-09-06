@@ -1,0 +1,31 @@
+{
+  "existing_files": 25161,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/establecer.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/establecer.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/estar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/estar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/estimar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/estimar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/estudiar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/estudiar.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-establecer-estudiar",
+    "docs/grammar-review/reports/fed7cbb8de1900d8abe6abcc.json",
+    "docs/grammar-review/reports/cd716e39c3a824f7d809e38c.json",
+    "docs/grammar-review/reports/8acecb2e85d4067f3d1bfba0.json",
+    "docs/grammar-review/reports/0297fac9df13b3cc2e9e60aa.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/establecer.json": "2020f7182d65c2fbddd15163c0d85d848765e7301a62505f48274f06083c90ec",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/establecer.json": "2020f7182d65c2fbddd15163c0d85d848765e7301a62505f48274f06083c90ec",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/estar.json": "f6cf50e44c1913be3aab9f813f72d0620abda50ca6a464c57e6d0334b00cd20a",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/estar.json": "f6cf50e44c1913be3aab9f813f72d0620abda50ca6a464c57e6d0334b00cd20a",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/estimar.json": "972ad7a7de1f4a5e1adc3d05c0d501ab6a6e265a59000f56284d04c86d7c9427",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/estimar.json": "972ad7a7de1f4a5e1adc3d05c0d501ab6a6e265a59000f56284d04c86d7c9427",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/estudiar.json": "93a51e27183e0842059570c2d3e9dc781d85a58cf1e520653432dbad167af0f4",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/estudiar.json": "93a51e27183e0842059570c2d3e9dc781d85a58cf1e520653432dbad167af0f4"
+  }
+}

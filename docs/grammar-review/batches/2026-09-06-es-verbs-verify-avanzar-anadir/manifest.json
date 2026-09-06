@@ -1,0 +1,34 @@
+{
+  "avanzar": {
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/avanzar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/avanzar.json",
+    "report": "docs/grammar-review/reports/c835ca756bf2d2bff2ebb893.json",
+    "editor": "Codex editor 2026-09-06",
+    "source_sha256": "da86029ef4c941c6db974b9631a1236093b6841c7b3c9cd45051f5eda8824774",
+    "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197"
+  },
+  "avisar": {
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/avisar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/avisar.json",
+    "report": "docs/grammar-review/reports/4f3e77b2356ab13db6f8c442.json",
+    "editor": "Codex editor 2026-09-06",
+    "source_sha256": "2d097876c86ef5ef2c0686b591bb2bf07dd61c7b262d7e13602fa0f7e5cd064e",
+    "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197"
+  },
+  "ayudar": {
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/ayudar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/ayudar.json",
+    "report": "docs/grammar-review/reports/603c2782fa02949feca16cf2.json",
+    "editor": "Codex editor 2026-09-06",
+    "source_sha256": "035f2c556a97d76f56d32004ada10e48ab444d9205eeb8e8f97e240e5e2941a8",
+    "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197"
+  },
+  "añadir": {
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/añadir.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/añadir.json",
+    "report": "docs/grammar-review/reports/9460af416eb70be132b89622.json",
+    "editor": "Codex editor 2026-09-06",
+    "source_sha256": "a7ab7820f9cf8ed72e6e6df9976fcee04b0c8e8b08ba5278066966ae66c20bbb",
+    "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197"
+  }
+}

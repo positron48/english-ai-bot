@@ -1,0 +1,26 @@
+{
+  "existing_files": 24982,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/conducir.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/conducir.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/confesar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/confesar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/confiar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/confiar.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-conducir-confiar",
+    "docs/grammar-review/reports/4fe185014f17a906d9707035.json",
+    "docs/grammar-review/reports/82ffeacfe2e5252439cb33e6.json",
+    "docs/grammar-review/reports/248e33d374be8034d24f15b6.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/conducir.json": "848990332a6a6d01b7c490ed1ec1410afedd46d18c72b4ab619970fa60262083",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/conducir.json": "848990332a6a6d01b7c490ed1ec1410afedd46d18c72b4ab619970fa60262083",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/confesar.json": "3213c5c2b4c54523ccde8ab91c34e5ac36ea556d6b950428e7ee9e9abfacdc05",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/confesar.json": "3213c5c2b4c54523ccde8ab91c34e5ac36ea556d6b950428e7ee9e9abfacdc05",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/confiar.json": "5c30e461a865991cc8e64ac5e5999945edd4fd9c486e2771d214aa882021c19b",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/confiar.json": "5c30e461a865991cc8e64ac5e5999945edd4fd9c486e2771d214aa882021c19b"
+  }
+}

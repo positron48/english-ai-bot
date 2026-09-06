@@ -1,0 +1,536 @@
+{
+  "_sources": {
+    "jehle_csv": "resources/verbs/jehle_verb_database.csv",
+    "sha256": "f77f01d536cd351584051d76902ff8051ab1b945a38e69c7ed02da78ab082ea8"
+  },
+  "_slots": [
+    "1:singular",
+    "2:singular",
+    "3:singular",
+    "1:plural",
+    "2:plural",
+    "3:plural"
+  ],
+  "forms": {
+    "tener": {
+      "es.presente.indicativo": [
+        "tengo",
+        "tienes",
+        "tiene",
+        "tenemos",
+        "tenéis",
+        "tienen"
+      ],
+      "es.preterito_imperfecto.indicativo": [
+        "tenía",
+        "tenías",
+        "tenía",
+        "teníamos",
+        "teníais",
+        "tenían"
+      ],
+      "es.preterito_indefinido.indicativo": [
+        "tuve",
+        "tuviste",
+        "tuvo",
+        "tuvimos",
+        "tuvisteis",
+        "tuvieron"
+      ],
+      "es.futuro_simple.indicativo": [
+        "tendré",
+        "tendrás",
+        "tendrá",
+        "tendremos",
+        "tendréis",
+        "tendrán"
+      ],
+      "es.condicional_simple.indicativo": [
+        "tendría",
+        "tendrías",
+        "tendría",
+        "tendríamos",
+        "tendríais",
+        "tendrían"
+      ],
+      "es.preterito_perfecto_compuesto.indicativo": [
+        "he tenido",
+        "has tenido",
+        "ha tenido",
+        "hemos tenido",
+        "habéis tenido",
+        "han tenido"
+      ],
+      "es.preterito_pluscuamperfecto.indicativo": [
+        "había tenido",
+        "habías tenido",
+        "había tenido",
+        "habíamos tenido",
+        "habíais tenido",
+        "habían tenido"
+      ],
+      "es.preterito_anterior.indicativo": [
+        "hube tenido",
+        "hubiste tenido",
+        "hubo tenido",
+        "hubimos tenido",
+        "hubisteis tenido",
+        "hubieron tenido"
+      ],
+      "es.futuro_perfecto.indicativo": [
+        "habré tenido",
+        "habrás tenido",
+        "habrá tenido",
+        "habremos tenido",
+        "habréis tenido",
+        "habrán tenido"
+      ],
+      "es.condicional_perfecto.indicativo": [
+        "habría tenido",
+        "habrías tenido",
+        "habría tenido",
+        "habríamos tenido",
+        "habríais tenido",
+        "habrían tenido"
+      ],
+      "es.presente.subjuntivo": [
+        "tenga",
+        "tengas",
+        "tenga",
+        "tengamos",
+        "tengáis",
+        "tengan"
+      ],
+      "es.preterito_imperfecto.subjuntivo": [
+        "tuviera",
+        "tuvieras",
+        "tuviera",
+        "tuviéramos",
+        "tuvierais",
+        "tuvieran"
+      ],
+      "es.futuro_simple.subjuntivo": [
+        "tuviere",
+        "tuvieres",
+        "tuviere",
+        "tuviéremos",
+        "tuviereis",
+        "tuvieren"
+      ],
+      "es.preterito_perfecto.subjuntivo": [
+        "haya tenido",
+        "hayas tenido",
+        "haya tenido",
+        "hayamos tenido",
+        "hayáis tenido",
+        "hayan tenido"
+      ],
+      "es.preterito_pluscuamperfecto.subjuntivo": [
+        "hubiera tenido",
+        "hubieras tenido",
+        "hubiera tenido",
+        "hubiéramos tenido",
+        "hubierais tenido",
+        "hubieran tenido"
+      ],
+      "es.futuro_perfecto.subjuntivo": [
+        "hubiere tenido",
+        "hubieres tenido",
+        "hubiere tenido",
+        "hubiéremos tenido",
+        "hubiereis tenido",
+        "hubieren tenido"
+      ]
+    },
+    "terminar": {
+      "es.presente.indicativo": [
+        "termino",
+        "terminas",
+        "termina",
+        "terminamos",
+        "termináis",
+        "terminan"
+      ],
+      "es.preterito_imperfecto.indicativo": [
+        "terminaba",
+        "terminabas",
+        "terminaba",
+        "terminábamos",
+        "terminabais",
+        "terminaban"
+      ],
+      "es.preterito_indefinido.indicativo": [
+        "terminé",
+        "terminaste",
+        "terminó",
+        "terminamos",
+        "terminasteis",
+        "terminaron"
+      ],
+      "es.futuro_simple.indicativo": [
+        "terminaré",
+        "terminarás",
+        "terminará",
+        "terminaremos",
+        "terminaréis",
+        "terminarán"
+      ],
+      "es.condicional_simple.indicativo": [
+        "terminaría",
+        "terminarías",
+        "terminaría",
+        "terminaríamos",
+        "terminaríais",
+        "terminarían"
+      ],
+      "es.preterito_perfecto_compuesto.indicativo": [
+        "he terminado",
+        "has terminado",
+        "ha terminado",
+        "hemos terminado",
+        "habéis terminado",
+        "han terminado"
+      ],
+      "es.preterito_pluscuamperfecto.indicativo": [
+        "había terminado",
+        "habías terminado",
+        "había terminado",
+        "habíamos terminado",
+        "habíais terminado",
+        "habían terminado"
+      ],
+      "es.preterito_anterior.indicativo": [
+        "hube terminado",
+        "hubiste terminado",
+        "hubo terminado",
+        "hubimos terminado",
+        "hubisteis terminado",
+        "hubieron terminado"
+      ],
+      "es.futuro_perfecto.indicativo": [
+        "habré terminado",
+        "habrás terminado",
+        "habrá terminado",
+        "habremos terminado",
+        "habréis terminado",
+        "habrán terminado"
+      ],
+      "es.condicional_perfecto.indicativo": [
+        "habría terminado",
+        "habrías terminado",
+        "habría terminado",
+        "habríamos terminado",
+        "habríais terminado",
+        "habrían terminado"
+      ],
+      "es.presente.subjuntivo": [
+        "termine",
+        "termines",
+        "termine",
+        "terminemos",
+        "terminéis",
+        "terminen"
+      ],
+      "es.preterito_imperfecto.subjuntivo": [
+        "terminara",
+        "terminaras",
+        "terminara",
+        "termináramos",
+        "terminarais",
+        "terminaran"
+      ],
+      "es.futuro_simple.subjuntivo": [
+        "terminare",
+        "terminares",
+        "terminare",
+        "termináremos",
+        "terminareis",
+        "terminaren"
+      ],
+      "es.preterito_perfecto.subjuntivo": [
+        "haya terminado",
+        "hayas terminado",
+        "haya terminado",
+        "hayamos terminado",
+        "hayáis terminado",
+        "hayan terminado"
+      ],
+      "es.preterito_pluscuamperfecto.subjuntivo": [
+        "hubiera terminado",
+        "hubieras terminado",
+        "hubiera terminado",
+        "hubiéramos terminado",
+        "hubierais terminado",
+        "hubieran terminado"
+      ],
+      "es.futuro_perfecto.subjuntivo": [
+        "hubiere terminado",
+        "hubieres terminado",
+        "hubiere terminado",
+        "hubiéremos terminado",
+        "hubiereis terminado",
+        "hubieren terminado"
+      ]
+    },
+    "tirar": {
+      "es.presente.indicativo": [
+        "tiro",
+        "tiras",
+        "tira",
+        "tiramos",
+        "tiráis",
+        "tiran"
+      ],
+      "es.preterito_imperfecto.indicativo": [
+        "tiraba",
+        "tirabas",
+        "tiraba",
+        "tirábamos",
+        "tirabais",
+        "tiraban"
+      ],
+      "es.preterito_indefinido.indicativo": [
+        "tiré",
+        "tiraste",
+        "tiró",
+        "tiramos",
+        "tirasteis",
+        "tiraron"
+      ],
+      "es.futuro_simple.indicativo": [
+        "tiraré",
+        "tirarás",
+        "tirará",
+        "tiraremos",
+        "tiraréis",
+        "tirarán"
+      ],
+      "es.condicional_simple.indicativo": [
+        "tiraría",
+        "tirarías",
+        "tiraría",
+        "tiraríamos",
+        "tiraríais",
+        "tirarían"
+      ],
+      "es.preterito_perfecto_compuesto.indicativo": [
+        "he tirado",
+        "has tirado",
+        "ha tirado",
+        "hemos tirado",
+        "habéis tirado",
+        "han tirado"
+      ],
+      "es.preterito_pluscuamperfecto.indicativo": [
+        "había tirado",
+        "habías tirado",
+        "había tirado",
+        "habíamos tirado",
+        "habíais tirado",
+        "habían tirado"
+      ],
+      "es.preterito_anterior.indicativo": [
+        "hube tirado",
+        "hubiste tirado",
+        "hubo tirado",
+        "hubimos tirado",
+        "hubisteis tirado",
+        "hubieron tirado"
+      ],
+      "es.futuro_perfecto.indicativo": [
+        "habré tirado",
+        "habrás tirado",
+        "habrá tirado",
+        "habremos tirado",
+        "habréis tirado",
+        "habrán tirado"
+      ],
+      "es.condicional_perfecto.indicativo": [
+        "habría tirado",
+        "habrías tirado",
+        "habría tirado",
+        "habríamos tirado",
+        "habríais tirado",
+        "habrían tirado"
+      ],
+      "es.presente.subjuntivo": [
+        "tire",
+        "tires",
+        "tire",
+        "tiremos",
+        "tiréis",
+        "tiren"
+      ],
+      "es.preterito_imperfecto.subjuntivo": [
+        "tirara",
+        "tiraras",
+        "tirara",
+        "tiráramos",
+        "tirarais",
+        "tiraran"
+      ],
+      "es.futuro_simple.subjuntivo": [
+        "tirare",
+        "tirares",
+        "tirare",
+        "tiráremos",
+        "tirareis",
+        "tiraren"
+      ],
+      "es.preterito_perfecto.subjuntivo": [
+        "haya tirado",
+        "hayas tirado",
+        "haya tirado",
+        "hayamos tirado",
+        "hayáis tirado",
+        "hayan tirado"
+      ],
+      "es.preterito_pluscuamperfecto.subjuntivo": [
+        "hubiera tirado",
+        "hubieras tirado",
+        "hubiera tirado",
+        "hubiéramos tirado",
+        "hubierais tirado",
+        "hubieran tirado"
+      ],
+      "es.futuro_perfecto.subjuntivo": [
+        "hubiere tirado",
+        "hubieres tirado",
+        "hubiere tirado",
+        "hubiéremos tirado",
+        "hubiereis tirado",
+        "hubieren tirado"
+      ]
+    },
+    "tocar": {
+      "es.presente.indicativo": [
+        "toco",
+        "tocas",
+        "toca",
+        "tocamos",
+        "tocáis",
+        "tocan"
+      ],
+      "es.preterito_imperfecto.indicativo": [
+        "tocaba",
+        "tocabas",
+        "tocaba",
+        "tocábamos",
+        "tocabais",
+        "tocaban"
+      ],
+      "es.preterito_indefinido.indicativo": [
+        "toqué",
+        "tocaste",
+        "tocó",
+        "tocamos",
+        "tocasteis",
+        "tocaron"
+      ],
+      "es.futuro_simple.indicativo": [
+        "tocaré",
+        "tocarás",
+        "tocará",
+        "tocaremos",
+        "tocaréis",
+        "tocarán"
+      ],
+      "es.condicional_simple.indicativo": [
+        "tocaría",
+        "tocarías",
+        "tocaría",
+        "tocaríamos",
+        "tocaríais",
+        "tocarían"
+      ],
+      "es.preterito_perfecto_compuesto.indicativo": [
+        "he tocado",
+        "has tocado",
+        "ha tocado",
+        "hemos tocado",
+        "habéis tocado",
+        "han tocado"
+      ],
+      "es.preterito_pluscuamperfecto.indicativo": [
+        "había tocado",
+        "habías tocado",
+        "había tocado",
+        "habíamos tocado",
+        "habíais tocado",
+        "habían tocado"
+      ],
+      "es.preterito_anterior.indicativo": [
+        "hube tocado",
+        "hubiste tocado",
+        "hubo tocado",
+        "hubimos tocado",
+        "hubisteis tocado",
+        "hubieron tocado"
+      ],
+      "es.futuro_perfecto.indicativo": [
+        "habré tocado",
+        "habrás tocado",
+        "habrá tocado",
+        "habremos tocado",
+        "habréis tocado",
+        "habrán tocado"
+      ],
+      "es.condicional_perfecto.indicativo": [
+        "habría tocado",
+        "habrías tocado",
+        "habría tocado",
+        "habríamos tocado",
+        "habríais tocado",
+        "habrían tocado"
+      ],
+      "es.presente.subjuntivo": [
+        "toque",
+        "toques",
+        "toque",
+        "toquemos",
+        "toquéis",
+        "toquen"
+      ],
+      "es.preterito_imperfecto.subjuntivo": [
+        "tocara",
+        "tocaras",
+        "tocara",
+        "tocáramos",
+        "tocarais",
+        "tocaran"
+      ],
+      "es.futuro_simple.subjuntivo": [
+        "tocare",
+        "tocares",
+        "tocare",
+        "tocáremos",
+        "tocareis",
+        "tocaren"
+      ],
+      "es.preterito_perfecto.subjuntivo": [
+        "haya tocado",
+        "hayas tocado",
+        "haya tocado",
+        "hayamos tocado",
+        "hayáis tocado",
+        "hayan tocado"
+      ],
+      "es.preterito_pluscuamperfecto.subjuntivo": [
+        "hubiera tocado",
+        "hubieras tocado",
+        "hubiera tocado",
+        "hubiéramos tocado",
+        "hubierais tocado",
+        "hubieran tocado"
+      ],
+      "es.futuro_perfecto.subjuntivo": [
+        "hubiere tocado",
+        "hubieres tocado",
+        "hubiere tocado",
+        "hubiéremos tocado",
+        "hubiereis tocado",
+        "hubieren tocado"
+      ]
+    }
+  }
+}

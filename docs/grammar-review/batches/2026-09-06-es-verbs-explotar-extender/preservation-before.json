@@ -1,0 +1,31 @@
+{
+  "existing_files": 25179,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/explotar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/explotar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/exponer.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/exponer.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/expresar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/expresar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/extender.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/extender.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-explotar-extender",
+    "docs/grammar-review/reports/23dbec725c487b2800292ea9.json",
+    "docs/grammar-review/reports/c5886835dfc59cb12db7ea6b.json",
+    "docs/grammar-review/reports/6b1e3e4135a3936cec0a21dd.json",
+    "docs/grammar-review/reports/2233c8afc5d1e2732f78039d.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/explotar.json": "05995bd9c8bd371656a72caf02c6d8ff6767587b1ddba252e2891a0a7b65ff55",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/explotar.json": "05995bd9c8bd371656a72caf02c6d8ff6767587b1ddba252e2891a0a7b65ff55",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/exponer.json": "01518f6da2f335a62fef29b4589085c23ecf8129728dedc5a4c1770d1bbb14c9",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/exponer.json": "01518f6da2f335a62fef29b4589085c23ecf8129728dedc5a4c1770d1bbb14c9",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/expresar.json": "9f624886cfd565cfcd8507bbf36718ce63ba72a39615949614a336b939aa70f2",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/expresar.json": "9f624886cfd565cfcd8507bbf36718ce63ba72a39615949614a336b939aa70f2",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/extender.json": "a33802e58cc4da45c2bf28820de1140478d694f5273d2f2ea50316495770b6b4",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/extender.json": "a33802e58cc4da45c2bf28820de1140478d694f5273d2f2ea50316495770b6b4"
+  }
+}

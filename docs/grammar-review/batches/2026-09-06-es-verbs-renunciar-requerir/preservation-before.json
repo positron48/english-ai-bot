@@ -1,0 +1,31 @@
+{
+  "existing_files": 25500,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/renunciar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/renunciar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/repetir.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/repetir.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/representar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/representar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/requerir.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/requerir.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-renunciar-requerir",
+    "docs/grammar-review/reports/a36538e212b1adac2cf31591.json",
+    "docs/grammar-review/reports/f777f61f3e1e0007a65ab810.json",
+    "docs/grammar-review/reports/5d9f972e37650431a44c1c37.json",
+    "docs/grammar-review/reports/a5e611bf4f9f1992dc949445.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/renunciar.json": "48f31ab0f82d430fc0d6601e4f7241ced8a0e4b966af17aed8087de687a09219",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/renunciar.json": "48f31ab0f82d430fc0d6601e4f7241ced8a0e4b966af17aed8087de687a09219",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/repetir.json": "2e6a46e5ad5758f969f5062a2fc2b7bc26ad802b04e6cd657461381b80871dcd",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/repetir.json": "2e6a46e5ad5758f969f5062a2fc2b7bc26ad802b04e6cd657461381b80871dcd",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/representar.json": "7beb8945846e18b47f56602a7643c215e0a2d950fd8a9949dd5e5144de2d82f9",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/representar.json": "7beb8945846e18b47f56602a7643c215e0a2d950fd8a9949dd5e5144de2d82f9",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/requerir.json": "1192993e72c9feaacbe7364bff9c0501bab713784aa70aec8371c95d20ab8a79",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/requerir.json": "1192993e72c9feaacbe7364bff9c0501bab713784aa70aec8371c95d20ab8a79"
+  }
+}

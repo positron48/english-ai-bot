@@ -1,0 +1,54 @@
+{
+  "version": 1,
+  "source": "courses/english-grammar/training_pack/chapters/007/en.02.b2_theory_contractions_isnt_arent.questions.json",
+  "source_sha256": "c6172e91c5634cce7a665eb799abed3d4a811fdf8d1866f7234a82c3889993f8",
+  "context_sha256": "b20ed0eeaed87e2e77441c04b305882234ac9bbc3540357c1d956e40dbee2e2d",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
+  "reviewed_at": "2026-09-04T11:34:56.863090+00:00",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
+  "questions": [
+    {
+      "id": "q1",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q2",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q3",
+      "decision": "fixed",
+      "note": "Полные формы допустимы в разговоре; проверяется отсутствие сокращения, а не запрет регистра.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-04-en007-010/check.py",
+      "result": "pass",
+      "evidence": "validation.log: 378 contracts preserved; decisions match changes; source/context hashes current; native training validation, signatures and course-wide duplicate check pass; embedded bytes match."
+    },
+    {
+      "command": "go test ./internal/grammarbundle ./internal/repository -run 'TestValidateEmbeddedBundleID|TestGrammar.*Bundle|TestGrammar.*Reorder' -count=1",
+      "result": "pass",
+      "evidence": "go-tests.log: both packages pass (4.823s and 14.045s)."
+    },
+    {
+      "command": "git diff --check; git -C courses/english-grammar diff --check; git -C courses/spanish-grammar diff --check",
+      "result": "pass",
+      "evidence": "All three commands exit=0. preservation.log: 214 pre-existing changed files retain their SHA-256."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    }
+  ],
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+}

@@ -4,82 +4,82 @@
   "source_sha256": "875af0305837d8059d3f98e0aecd8ede51dc9393e4d1080fee99fc8679d68d5d",
   "context_sha256": "e51b0e0494fd7379a0459ae2d61b76621c8e0b85513b67c3fb4438ecadbc4cf3",
   "editor": "Codex editor 2026-09-04",
-  "verifier": "",
-  "phase": "awaiting_verification",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
   "reviewed_at": "2026-09-04T09:31:55.573304+00:00",
-  "verified_at": "",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
   "questions": [
     {
       "id": "q1",
       "decision": "fixed",
       "note": "Устранено ложное правило, будто ударение создаёт слог; проверено pa-pá.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q2",
       "decision": "fixed",
       "note": "Устранена ложная причинность ударения; ió объяснён как дифтонг.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q3",
       "decision": "fixed",
       "note": "Устранена ложная причинность ударения; все варианты сохраняют música.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q4",
       "decision": "fixed",
       "note": "Исправлено ti-a без tilde; проверка применяет правило хиата.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q5",
       "decision": "fixed",
       "note": "Устранено ложное правило об ударении; ca-fé объяснено согласной между гласными.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q6",
       "decision": "fixed",
       "note": "Устранено ложное объяснение через ударение; проверены одиночные согласные.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q7",
       "decision": "fixed",
       "note": "Устранено ложное объяснение через ударение; проверено có-le-ra.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q8",
       "decision": "fixed",
       "note": "Вместо ошибочного le-ción и неверного ударения дано знакомое María с изученным хиатом.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q9",
       "decision": "fixed",
       "note": "Устранено ложное объяснение через ударение; проверены дифтонг и полные варианты.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q10",
       "decision": "fixed",
       "note": "Исправлено неверное te-le-fó-no на te-lé-fo-no; объяснение и все варианты согласованы.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q11",
       "decision": "fixed",
       "note": "Исправлено ложное ударение на u; указана орфографическая трактовка iu.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q12",
       "decision": "fixed",
       "note": "Неизученное правило rb заменено применением обоих изученных типов соседних гласных.",
-      "verification": "pending"
+      "verification": "ok"
     }
   ],
   "checks": [
@@ -97,7 +97,12 @@
       "command": "git diff --check && git -C courses/spanish-grammar diff --check && git -C courses/english-grammar diff --check",
       "result": "pass",
       "evidence": "All three commands exited 0."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
     }
   ],
-  "verification_note": ""
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
 }

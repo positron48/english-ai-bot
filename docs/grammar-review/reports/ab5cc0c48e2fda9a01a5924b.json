@@ -1,0 +1,637 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/traducir.json",
+  "source_sha256": "bb63103b9d05d22d2e67c9b10563d70ffc4d54e184dc4744a36e728706ca4afd",
+  "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197",
+  "editor": "Laplace editor 2026-09-06",
+  "verifier": "Aristotle verifier 2026-09-06",
+  "phase": "done",
+  "reviewed_at": "2026-09-06",
+  "verified_at": "2026-09-06",
+  "questions": [
+    {
+      "id": "es.presente.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:1:singular полностью переписана и вручную проверена: форма «traduzco», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:2:singular полностью переписана и вручную проверена: форма «traduces», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:3:singular полностью переписана и вручную проверена: форма «traduce», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:1:plural полностью переписана и вручную проверена: форма «traducimos», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:2:plural полностью переписана и вручную проверена: форма «traducís», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:3:plural полностью переписана и вручную проверена: форма «traducen», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:1:singular полностью переписана и вручную проверена: форма «traducía», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:2:singular полностью переписана и вручную проверена: форма «traducías», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:3:singular полностью переписана и вручную проверена: форма «traducía», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:1:plural полностью переписана и вручную проверена: форма «traducíamos», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:2:plural полностью переписана и вручную проверена: форма «traducíais», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:3:plural полностью переписана и вручную проверена: форма «traducían», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:1:singular полностью переписана и вручную проверена: форма «traduje», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:2:singular полностью переписана и вручную проверена: форма «tradujiste», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope. По координаторскому чтению уточнён полный RU или самостоятельность литературного ES-контекста; форма/options/identity сохранены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:3:singular полностью переписана и вручную проверена: форма «tradujo», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:1:plural полностью переписана и вручную проверена: форма «tradujimos», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:2:plural полностью переписана и вручную проверена: форма «tradujisteis», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:3:plural полностью переписана и вручную проверена: форма «tradujeron», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:1:singular полностью переписана и вручную проверена: форма «traduciré», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope. По координаторскому чтению уточнён полный RU или самостоятельность литературного ES-контекста; форма/options/identity сохранены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:2:singular полностью переписана и вручную проверена: форма «traducirás», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope. При финальном подстановочном чтении уточнены согласование, языковое направление или естественное управление.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:3:singular полностью переписана и вручную проверена: форма «traducirá», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:1:plural полностью переписана и вручную проверена: форма «traduciremos», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:2:plural полностью переписана и вручную проверена: форма «traduciréis», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:3:plural полностью переписана и вручную проверена: форма «traducirán», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope. При финальном подстановочном чтении уточнены согласование, языковое направление или естественное управление.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:1:singular полностью переписана и вручную проверена: форма «traduciría», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:2:singular полностью переписана и вручную проверена: форма «traducirías», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:3:singular полностью переписана и вручную проверена: форма «traduciría», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:1:plural полностью переписана и вручную проверена: форма «traduciríamos», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope. По координаторскому чтению уточнён полный RU или самостоятельность литературного ES-контекста; форма/options/identity сохранены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:2:plural полностью переписана и вручную проверена: форма «traduciríais», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:3:plural полностью переписана и вручную проверена: форма «traducirían», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:1:singular полностью переписана и вручную проверена: форма «he traducido», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:2:singular полностью переписана и вручную проверена: форма «has traducido», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope. При финальном подстановочном чтении уточнены согласование, языковое направление или естественное управление.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:3:singular полностью переписана и вручную проверена: форма «ha traducido», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:1:plural полностью переписана и вручную проверена: форма «hemos traducido», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:2:plural полностью переписана и вручную проверена: форма «habéis traducido», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:3:plural полностью переписана и вручную проверена: форма «han traducido», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:1:singular полностью переписана и вручную проверена: форма «había traducido», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:2:singular полностью переписана и вручную проверена: форма «habías traducido», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:3:singular полностью переписана и вручную проверена: форма «había traducido», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:1:plural полностью переписана и вручную проверена: форма «habíamos traducido», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:2:plural полностью переписана и вручную проверена: форма «habíais traducido», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:3:plural полностью переписана и вручную проверена: форма «habían traducido», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope. По координаторскому чтению уточнён полный RU или самостоятельность литературного ES-контекста; форма/options/identity сохранены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:1:singular полностью переписана и вручную проверена: форма «hube traducido», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope. При финальном подстановочном чтении уточнены согласование, языковое направление или естественное управление.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:2:singular полностью переписана и вручную проверена: форма «hubiste traducido», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope. По координаторскому чтению уточнён полный RU или самостоятельность литературного ES-контекста; форма/options/identity сохранены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:3:singular полностью переписана и вручную проверена: форма «hubo traducido», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:1:plural полностью переписана и вручную проверена: форма «hubimos traducido», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:2:plural полностью переписана и вручную проверена: форма «hubisteis traducido», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:3:plural полностью переписана и вручную проверена: форма «hubieron traducido», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope. По координаторскому чтению уточнён полный RU или самостоятельность литературного ES-контекста; форма/options/identity сохранены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:1:singular полностью переписана и вручную проверена: форма «habré traducido», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:2:singular полностью переписана и вручную проверена: форма «habrás traducido», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:3:singular полностью переписана и вручную проверена: форма «habrá traducido», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope. При финальном подстановочном чтении уточнены согласование, языковое направление или естественное управление.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:1:plural полностью переписана и вручную проверена: форма «habremos traducido», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:2:plural полностью переписана и вручную проверена: форма «habréis traducido», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:3:plural полностью переписана и вручную проверена: форма «habrán traducido», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:1:singular полностью переписана и вручную проверена: форма «habría traducido», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:2:singular полностью переписана и вручную проверена: форма «habrías traducido», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:3:singular полностью переписана и вручную проверена: форма «habría traducido», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:1:plural полностью переписана и вручную проверена: форма «habríamos traducido», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:2:plural полностью переписана и вручную проверена: форма «habríais traducido», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:3:plural полностью переписана и вручную проверена: форма «habrían traducido», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:1:singular полностью переписана и вручную проверена: форма «traduzca», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:2:singular полностью переписана и вручную проверена: форма «traduzcas», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:3:singular полностью переписана и вручную проверена: форма «traduzca», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:1:plural полностью переписана и вручную проверена: форма «traduzcamos», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:2:plural полностью переписана и вручную проверена: форма «traduzcáis», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope. При финальном подстановочном чтении уточнены согласование, языковое направление или естественное управление.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:3:plural полностью переписана и вручную проверена: форма «traduzcan», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:1:singular полностью переписана и вручную проверена: форма «tradujera», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:2:singular полностью переписана и вручную проверена: форма «tradujeras», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:3:singular полностью переписана и вручную проверена: форма «tradujera», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:1:plural полностью переписана и вручную проверена: форма «tradujéramos», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:2:plural полностью переписана и вручную проверена: форма «tradujerais», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope. При финальном подстановочном чтении уточнены согласование, языковое направление или естественное управление.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:3:plural полностью переписана и вручную проверена: форма «tradujeran», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope. При финальном подстановочном чтении уточнены согласование, языковое направление или естественное управление.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:1:singular полностью переписана и вручную проверена: форма «tradujere», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:2:singular полностью переписана и вручную проверена: форма «tradujeres», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:3:singular полностью переписана и вручную проверена: форма «tradujere», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:1:plural полностью переписана и вручную проверена: форма «tradujéremos», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:2:plural полностью переписана и вручную проверена: форма «tradujereis», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:3:plural полностью переписана и вручную проверена: форма «tradujeren», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:1:singular полностью переписана и вручную проверена: форма «haya traducido», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:2:singular полностью переписана и вручную проверена: форма «hayas traducido», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:3:singular полностью переписана и вручную проверена: форма «haya traducido», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:1:plural полностью переписана и вручную проверена: форма «hayamos traducido», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:2:plural полностью переписана и вручную проверена: форма «hayáis traducido», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:3:plural полностью переписана и вручную проверена: форма «hayan traducido», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope. По finding Aristotle RU уточнён как передача ответов при устном переводе; ES/form/options/identity сохранены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:1:singular полностью переписана и вручную проверена: форма «hubiera traducido», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:2:singular полностью переписана и вручную проверена: форма «hubieras traducido», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:3:singular полностью переписана и вручную проверена: форма «hubiera traducido», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:1:plural полностью переписана и вручную проверена: форма «hubiéramos traducido», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:2:plural полностью переписана и вручную проверена: форма «hubierais traducido», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:3:plural полностью переписана и вручную проверена: форма «hubieran traducido», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:1:singular полностью переписана и вручную проверена: форма «hubiere traducido», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:2:singular полностью переписана и вручную проверена: форма «hubieres traducido», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:3:singular полностью переписана и вручную проверена: форма «hubiere traducido», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:1:plural полностью переписана и вручную проверена: форма «hubiéremos traducido», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:2:plural полностью переписана и вручную проверена: форма «hubiereis traducido», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:3:plural полностью переписана и вручную проверена: форма «hubieren traducido», управление traducir, смысл перевода/результата, временная опора, точный RU и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "full manual 96-card semantic rewrite/read with substituted forms: traducir meanings and ES/RU alignment",
+      "result": "pass",
+      "evidence": "96/96 contexts rewritten around written/oral translation, technical localization and explicit traducirse en results; language directions and Russian meanings checked."
+    },
+    {
+      "command": "authoritative Jehle forms; metadata; one blank; four unique same-scope options; one answer; baseline identity/order/top-level",
+      "result": "pass",
+      "evidence": "All 96 cards use the exact irregular paradigm and preserve the 16 scopes × 6 slots contract."
+    },
+    {
+      "command": "compound temporal anchors; rare-register framing; six explicit counterfactual translations",
+      "result": "pass",
+      "evidence": "All compound tenses have explicit anchors; 18 rare cards are literary/legal; six De haberlo sabido translations explicitly begin with Если бы."
+    },
+    {
+      "command": "validate_artifact(traducir); cmp source embedded; focused status; Go/JSON/diff checks",
+      "result": "pass",
+      "evidence": "Native validate_artifact accepted all 96 cards; source and embedded are byte-identical; focused status, Go package test, JSON parsing and root/course diff checks pass."
+    },
+    {
+      "command": "coordinator refinement: six traducir ES/RU precision fixes; exact assertions; form/options/identity preservation",
+      "result": "pass",
+      "evidence": "Clarified number and lexical meaning in four Russian translations and made two literary contexts fully explicit; target forms, options, metadata, order and all other cards remain unchanged."
+    },
+    {
+      "command": "independent full-read verification: traducir 96/96 with surface substitution",
+      "result": "pass",
+      "evidence": "All irregular Jehle forms, metadata, one blank, four unique same-scope options, single answer, language direction, localization, traducirse en, temporal anchors, rare registers and six explicit counterfactual translations checked. 95 accepted; es.preterito_perfecto.subjuntivo:3:plural needs the exact RU oral-translation clarification recorded in verification_note. Finding was corrected by the original editor and accepted in the independent recheck."
+    },
+    {
+      "command": "post-verifier correction: traducir present perfect subjunctive 3p exact RU replacement; ES/form/options/identity preservation",
+      "result": "pass",
+      "evidence": "Russian wording now explicitly describes inaccurate rendering during oral interpretation; Spanish context, target form, options, metadata and all other cards remain unchanged."
+    },
+    {
+      "command": "independent recheck after traducir editor fix: es.preterito_perfecto.subjuntivo:3:plural",
+      "result": "pass",
+      "evidence": "Exact requested RU accepted with unchanged ES, surface hayan traducido and four unique same-scope options; fingerprint bb63103b9d05d22d2e67c9b10563d70ffc4d54e184dc4744a36e728706ca4afd, source=embedded, full structural validation passed."
+    },
+    {
+      "command": "final batch barrier: check.py; native validate_artifact; focused Go tests; grammar_review_test.py; focused/full status; preservation; root/course diff checks; skill quick_validate",
+      "result": "pass",
+      "evidence": "PASS: 384 cards and 24 checkpoints; native 96/96 each; Go packages pass; 13 grammar-review tests pass; four focused sources done; preservation 25638/0/0/0; diff checks and skill validation pass."
+    }
+  ],
+  "verification_note": "Повторно проверена исправленная карточка es.preterito_perfecto.subjuntivo:3:plural: русский текст теперь явно и естественно передаёт устный перевод ответов, сохраняя субъектность и значение испанской фразы. Все остальные 95 карточек сохраняют ранее вынесенный вердикт ok; новый fingerprint и byte-identical source/embedded подтверждены. Итог: 96/96 verification ok."
+}

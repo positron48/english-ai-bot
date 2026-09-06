@@ -1,0 +1,31 @@
+{
+  "existing_files": 25341,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/obligar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/obligar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/obtener.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/obtener.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/ocupar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/ocupar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/ocurrir.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/ocurrir.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-obligar-ocurrir",
+    "docs/grammar-review/reports/ca47b06cc31a9e3881d1d05a.json",
+    "docs/grammar-review/reports/ea0d15dcccded339277779ff.json",
+    "docs/grammar-review/reports/73e441d2b83273b090957a74.json",
+    "docs/grammar-review/reports/ab586755b9820787e6e419cb.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/obligar.json": "31476473ba3e46adbef4ed3ab7ee18aee202c9d90dbf5ed358c83c50da8603c7",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/obligar.json": "31476473ba3e46adbef4ed3ab7ee18aee202c9d90dbf5ed358c83c50da8603c7",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/obtener.json": "35f0571ad83b6cd6615db1978f1f936ec1d5056dc98db74238489529ea42ca90",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/obtener.json": "35f0571ad83b6cd6615db1978f1f936ec1d5056dc98db74238489529ea42ca90",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/ocupar.json": "94baab8167349591f6259b65b3484c99335646f5c5b4d90a52700607d7077848",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/ocupar.json": "94baab8167349591f6259b65b3484c99335646f5c5b4d90a52700607d7077848",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/ocurrir.json": "f497bb8ab543e3f28de9d18b8d343a6052e908ac095a33202f982205e285e7be",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/ocurrir.json": "f497bb8ab543e3f28de9d18b8d343a6052e908ac095a33202f982205e285e7be"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "source": "courses/spanish-grammar/chapters/059.es.grammar.past_imperfecto_contrast.weather_age_time_setting_stories/03-questions.json",
+  "question_id": "q059_b5_06",
+  "baseline_question": {
+    "id": "q059_b5_06",
+    "type": "true_false",
+    "prompt": "Верно ли, что в рассказе о прошлом imperfecto часто описывает обстановку и служит фоном для событий?",
+    "theory_block_id": "b5_theory_place_and_atmosphere",
+    "difficulty": 2,
+    "correct_answer": "true",
+    "explanation": "Imperfecto описывает, какой была обстановка: Hacía frío, la calle estaba vacía. Завершённые события обычно передают с помощью indefinido.",
+    "tags": [
+      "b5",
+      "tf"
+    ]
+  },
+  "git_question": {
+    "id": "q059_b5_06",
+    "type": "true_false",
+    "prompt": "В этом блоке описание места и атмосферы обычно работает как фон, а не как сюжетный толчок.",
+    "theory_block_id": "b5_theory_place_and_atmosphere",
+    "difficulty": 2,
+    "correct_answer": "true",
+    "explanation": "Да, цель этих форм — дать кадр сцены перед действием.",
+    "tags": [
+      "b5",
+      "tf"
+    ]
+  }
+}

@@ -4,70 +4,70 @@
   "source_sha256": "87615b21ff05b9dbf5c57da5c3dc7be9150eed006b3a6ed454906695aad66591",
   "context_sha256": "9fdba53951595674bc94b4350a94f40a8664f9efd8ad982e25918ddab4725fd2",
   "editor": "Codex editor 2026-09-04",
-  "verifier": "",
-  "phase": "awaiting_verification",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
   "reviewed_at": "2026-09-04T09:38:41.721798+00:00",
-  "verified_at": "",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
   "questions": [
     {
       "id": "q1",
       "decision": "fixed",
       "note": "Ударный me, правило гласной и ключ согласованы. Только техническая правка: пересчитана исходно устаревшая signature штатной функцией; содержание сохранено.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q2",
       "decision": "fixed",
       "note": "Ударный pel по окончанию l; один правильный слог. Только техническая правка: пересчитана исходно устаревшая signature штатной функцией; содержание сохранено.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q3",
       "decision": "fixed",
       "note": "Визуальное обнаружение tilde заменено исправлением реального ошибочного чтения café.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q4",
       "decision": "fixed",
       "note": "Исправлен ошибочный cal: диграф ll нельзя разделять, слоги ca-lle.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q5",
       "decision": "fixed",
       "note": "Уточнена согласная l и отличие от n/s; проверены дистракторы.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q6",
       "decision": "fixed",
       "note": "Ударный ta в TA-za; один верный вариант. Только техническая правка: пересчитана исходно устаревшая signature штатной функцией; содержание сохранено.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q7",
       "decision": "fixed",
       "note": "Повтор поиска tilde заменён определением ударного слога teléfono; варианты независимы от регистра.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q8",
       "decision": "fixed",
       "note": "LU-nes по окончанию s; объяснение и ключ верны. Только техническая правка: пересчитана исходно устаревшая signature штатной функцией; содержание сохранено.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q9",
       "decision": "fixed",
       "note": "Исправлено неверное указание tilde над í: в camión ударная ó, слог mión целиком.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q10",
       "decision": "fixed",
       "note": "au-to-bús, ударный bús по tilde над ú; ключ верен. Только техническая правка: пересчитана исходно устаревшая signature штатной функцией; содержание сохранено.",
-      "verification": "pending"
+      "verification": "ok"
     }
   ],
   "checks": [
@@ -85,7 +85,12 @@
       "command": "git diff --check && git -C courses/spanish-grammar diff --check && git -C courses/english-grammar diff --check",
       "result": "pass",
       "evidence": "All three commands exited 0."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
     }
   ],
-  "verification_note": ""
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
 }

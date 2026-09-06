@@ -1,0 +1,642 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/referir.json",
+  "source_sha256": "1d07016ea0a878d12caf3d1d314aec7f08978602d07f6023a97c8e9eaab73ef0",
+  "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197",
+  "editor": "Codex coordinator editor 2026-09-06",
+  "verifier": "Laplace verifier 2026-09-06",
+  "phase": "done",
+  "reviewed_at": "2026-09-06",
+  "verified_at": "2026-09-06",
+  "questions": [
+    {
+      "id": "es.presente.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «refiero» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.presente.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «refieres» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.presente.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «refiere» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.presente.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «referimos» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.presente.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «referís» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.presente.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «refieren» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.presente.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «refería» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_imperfecto.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «referías» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_imperfecto.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «refería» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_imperfecto.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «referíamos» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_imperfecto.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «referíais» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_imperfecto.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «referían» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_imperfecto.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «referí» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_indefinido.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «referiste» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_indefinido.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «refirió» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_indefinido.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «referimos» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_indefinido.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «referisteis» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_indefinido.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «refirieron» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_indefinido.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «referiré» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.futuro_simple.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «referirás» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.futuro_simple.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «referirá» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.futuro_simple.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «referiremos» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.futuro_simple.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «referiréis» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.futuro_simple.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «referirán» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.futuro_simple.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «referiría» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.condicional_simple.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «referirías» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.condicional_simple.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «referiría» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.condicional_simple.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «referiríamos» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.condicional_simple.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «referiríais» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.condicional_simple.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «referirían» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.condicional_simple.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «he referido» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_perfecto_compuesto.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «has referido» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_perfecto_compuesto.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «ha referido» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_perfecto_compuesto.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hemos referido» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_perfecto_compuesto.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habéis referido» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_perfecto_compuesto.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «han referido» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_perfecto_compuesto.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «había referido» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_pluscuamperfecto.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habías referido» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_pluscuamperfecto.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «había referido» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_pluscuamperfecto.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habíamos referido» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_pluscuamperfecto.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habíais referido» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_pluscuamperfecto.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habían referido» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_pluscuamperfecto.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hube referido» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_anterior.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubiste referido» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_anterior.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubo referido» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_anterior.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubimos referido» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_anterior.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubisteis referido» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_anterior.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubieron referido» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_anterior.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habré referido» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.futuro_perfecto.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habrás referido» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.futuro_perfecto.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habrá referido» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.futuro_perfecto.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habremos referido» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.futuro_perfecto.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habréis referido» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.futuro_perfecto.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habrán referido» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.futuro_perfecto.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habría referido» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.condicional_perfecto.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habrías referido» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.condicional_perfecto.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habría referido» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.condicional_perfecto.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habríamos referido» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.condicional_perfecto.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habríais referido» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.condicional_perfecto.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habrían referido» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.condicional_perfecto.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «refiera» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.presente.subjuntivo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «refieras» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.presente.subjuntivo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «refiera» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.presente.subjuntivo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «refiramos» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.presente.subjuntivo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «refiráis» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.presente.subjuntivo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «refieran» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.presente.subjuntivo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «refiriera» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_imperfecto.subjuntivo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «refirieras» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_imperfecto.subjuntivo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «refiriera» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_imperfecto.subjuntivo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «refiriéramos» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_imperfecto.subjuntivo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «refirierais» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_imperfecto.subjuntivo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «refirieran» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_imperfecto.subjuntivo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «refiriere» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.futuro_simple.subjuntivo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «refirieres» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.futuro_simple.subjuntivo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «refiriere» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.futuro_simple.subjuntivo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «refiriéremos» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.futuro_simple.subjuntivo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «refiriereis» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.futuro_simple.subjuntivo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «refirieren» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.futuro_simple.subjuntivo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «haya referido» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_perfecto.subjuntivo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hayas referido» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_perfecto.subjuntivo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «haya referido» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_perfecto.subjuntivo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hayamos referido» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_perfecto.subjuntivo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hayáis referido» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_perfecto.subjuntivo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hayan referido» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_perfecto.subjuntivo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubiera referido» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_pluscuamperfecto.subjuntivo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubieras referido» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_pluscuamperfecto.subjuntivo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubiera referido» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_pluscuamperfecto.subjuntivo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubiéramos referido» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_pluscuamperfecto.subjuntivo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubierais referido» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_pluscuamperfecto.subjuntivo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubieran referido» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_pluscuamperfecto.subjuntivo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubiere referido» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.futuro_perfecto.subjuntivo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubieres referido» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.futuro_perfecto.subjuntivo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubiere referido» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.futuro_perfecto.subjuntivo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubiéremos referido» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.futuro_perfecto.subjuntivo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubiereis referido» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.futuro_perfecto.subjuntivo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubieren referido» сверена по Jehle; значение referir, испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.futuro_perfecto.subjuntivo.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 /tmp/edit_referir.py; RAE DLE https://dle.rae.es/referir",
+      "result": "pass",
+      "evidence": "96 карточек вычитаны и переписаны; baseline: wrong forms 9, duplicate options 23, incorrect answer multiplicity 19, off-scope options 49, metadata defects 0."
+    },
+    {
+      "command": "python3 - (focused referir structural audit)",
+      "result": "pass",
+      "evidence": "Source=embedded; top-level, identity/order preserved; 96 Jehle forms, canonical metadata and unique same-scope options verified."
+    },
+    {
+      "command": "python3 - (coordinator post-edit naturalness pass)",
+      "result": "pass",
+      "evidence": "Уточнены две временные рамки futuro perfecto: para el cierre de la edición и para finales de mes."
+    },
+    {
+      "command": "python3 /tmp/validate_referir_independent.py; independent semantic read of all 96 cards",
+      "result": "pass",
+      "evidence": "96/96 forms match the RAE-backed batch reference table; metadata and four unique same-scope options passed; transitive referir semantics, RU translations, counterfactuals and rare registers were read independently; baseline identity/order/top-level, unique prompts, source/embedded equality and fingerprints confirmed."
+    },
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-06-es-verbs-recordar-referir/check.py",
+      "result": "pass",
+      "evidence": "384 cards passed exact reference forms, source/embedded parity, preserved contracts, report fingerprints, independent verification and 24-checkpoint coverage."
+    },
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-06-es-verbs-recordar-referir/preservation-check.py",
+      "result": "pass",
+      "evidence": "25464 files outside the allowed batch set remained unchanged; no missing or unexpected new paths."
+    },
+    {
+      "command": "validate_artifact() for recordar, recuperar, reducir and referir",
+      "result": "pass",
+      "evidence": "The generator native artifact validator accepted all four 96-card sources."
+    },
+    {
+      "command": "go test ./internal/verbtraining ./cmd/sync_verb_training_json",
+      "result": "pass",
+      "evidence": "Focused verb training and sync tests passed."
+    },
+    {
+      "command": "python3 scripts/grammar_review_test.py",
+      "result": "pass",
+      "evidence": "All 13 grammar review workflow tests passed."
+    },
+    {
+      "command": "git diff --check && git -C courses/spanish-grammar diff --check",
+      "result": "pass",
+      "evidence": "Root and Spanish submodule diffs contain no whitespace errors."
+    }
+  ],
+  "verification_note": "Независимо перечитаны все 96 финальных карточек с подстановкой формы. Переходный referir последовательно употреблён в формальном значении «излагать / пересказывать / сообщать» и не смешивается с возвратным referirse a. Испанские контексты и русские переводы согласованы по смыслу, времени, лицу и числу. Формы совпадают с проверенной по RAE reference table партии; во всех карточках четыре уникальных варианта одного scope с единственным ответом. Pretérito anterior явно маркирован книжным регистром, оба futuro de subjuntivo — юридическим; De haberlo sabido переведено явным контрфактическим условием. Identity, порядок и top-level поля сохранены, source и embedded совпадают побайтно, fingerprints актуальны."
+}

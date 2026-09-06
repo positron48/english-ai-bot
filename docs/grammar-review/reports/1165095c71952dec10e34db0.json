@@ -1,0 +1,632 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/surgir.json",
+  "source_sha256": "6cc7b11e4f669f1d8b14e3ab1f8f7ff954dfdcfde97a7d15878f412073f3fc15",
+  "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197",
+  "editor": "Helmholtz editor 2026-09-06",
+  "verifier": "Codex coordinator verifier 2026-09-06",
+  "phase": "done",
+  "reviewed_at": "2026-09-06",
+  "verified_at": "2026-09-06",
+  "questions": [
+    {
+      "id": "es.presente.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:1:singular переписана и вручную проверена: authoritative форма «surjo», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:2:singular переписана и вручную проверена: authoritative форма «surges», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:3:singular переписана и вручную проверена: authoritative форма «surge», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:1:plural переписана и вручную проверена: authoritative форма «surgimos», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом. После финальной подстановки формулировка дополнительно уточнена для естественного управления и точной временной опоры.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:2:plural переписана и вручную проверена: authoritative форма «surgís», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:3:plural переписана и вручную проверена: authoritative форма «surgen», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:1:singular переписана и вручную проверена: authoritative форма «surgía», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом. Coordinator refinement: человеческое surgir точно передано как выдвижение или заявление о себе в соответствующем временном плане.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:2:singular переписана и вручную проверена: authoritative форма «surgías», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:3:singular переписана и вручную проверена: authoritative форма «surgía», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:1:plural переписана и вручную проверена: authoritative форма «surgíamos», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:2:plural переписана и вручную проверена: authoritative форма «surgíais», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:3:plural переписана и вручную проверена: authoritative форма «surgían», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:1:singular переписана и вручную проверена: authoritative форма «surgí», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:2:singular переписана и вручную проверена: authoritative форма «surgiste», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:3:singular переписана и вручную проверена: authoritative форма «surgió», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:1:plural переписана и вручную проверена: authoritative форма «surgimos», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом. После финальной подстановки формулировка дополнительно уточнена для естественного управления и точной временной опоры.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:2:plural переписана и вручную проверена: authoritative форма «surgisteis», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:3:plural переписана и вручную проверена: authoritative форма «surgieron», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:1:singular переписана и вручную проверена: authoritative форма «surgiré», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:2:singular переписана и вручную проверена: authoritative форма «surgirás», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:3:singular переписана и вручную проверена: authoritative форма «surgirá», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:1:plural переписана и вручную проверена: authoritative форма «surgiremos», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом. После финальной подстановки формулировка дополнительно уточнена для естественного управления и точной временной опоры.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:2:plural переписана и вручную проверена: authoritative форма «surgiréis», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:3:plural переписана и вручную проверена: authoritative форма «surgirán», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:1:singular переписана и вручную проверена: authoritative форма «surgiría», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:2:singular переписана и вручную проверена: authoritative форма «surgirías», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:3:singular переписана и вручную проверена: authoritative форма «surgiría», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:1:plural переписана и вручную проверена: authoritative форма «surgiríamos», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом. После финальной подстановки формулировка дополнительно уточнена для естественного управления и точной временной опоры.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:2:plural переписана и вручную проверена: authoritative форма «surgiríais», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:3:plural переписана и вручную проверена: authoritative форма «surgirían», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:1:singular переписана и вручную проверена: authoritative форма «he surgido», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом. Coordinator refinement: человеческое surgir точно передано как выдвижение или заявление о себе в соответствующем временном плане.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:2:singular переписана и вручную проверена: authoritative форма «has surgido», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:3:singular переписана и вручную проверена: authoritative форма «ha surgido», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:1:plural переписана и вручную проверена: authoritative форма «hemos surgido», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:2:plural переписана и вручную проверена: authoritative форма «habéis surgido», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:3:plural переписана и вручную проверена: authoritative форма «han surgido», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:1:singular переписана и вручную проверена: authoritative форма «había surgido», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом. Coordinator refinement: человеческое surgir точно передано как выдвижение или заявление о себе в соответствующем временном плане.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:2:singular переписана и вручную проверена: authoritative форма «habías surgido», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:3:singular переписана и вручную проверена: authoritative форма «había surgido», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:1:plural переписана и вручную проверена: authoritative форма «habíamos surgido», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:2:plural переписана и вручную проверена: authoritative форма «habíais surgido», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:3:plural переписана и вручную проверена: authoritative форма «habían surgido», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:1:singular переписана и вручную проверена: authoritative форма «hube surgido», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом; редкий scope явно отмечен литературной/юридической рамкой. После финальной подстановки формулировка дополнительно уточнена для естественного управления и точной временной опоры. Coordinator refinement: человеческое surgir точно передано как выдвижение или заявление о себе в соответствующем временном плане.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:2:singular переписана и вручную проверена: authoritative форма «hubiste surgido», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом; редкий scope явно отмечен литературной/юридической рамкой.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:3:singular переписана и вручную проверена: authoritative форма «hubo surgido», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом; редкий scope явно отмечен литературной/юридической рамкой.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:1:plural переписана и вручную проверена: authoritative форма «hubimos surgido», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом; редкий scope явно отмечен литературной/юридической рамкой.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:2:plural переписана и вручную проверена: authoritative форма «hubisteis surgido», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом; редкий scope явно отмечен литературной/юридической рамкой.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:3:plural переписана и вручную проверена: authoritative форма «hubieron surgido», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом; редкий scope явно отмечен литературной/юридической рамкой.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:1:singular переписана и вручную проверена: authoritative форма «habré surgido», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:2:singular переписана и вручную проверена: authoritative форма «habrás surgido», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:3:singular переписана и вручную проверена: authoritative форма «habrá surgido», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:1:plural переписана и вручную проверена: authoritative форма «habremos surgido», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:2:plural переписана и вручную проверена: authoritative форма «habréis surgido», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом. После финальной подстановки формулировка дополнительно уточнена для естественного управления и точной временной опоры.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:3:plural переписана и вручную проверена: authoritative форма «habrán surgido», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:1:singular переписана и вручную проверена: authoritative форма «habría surgido», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:2:singular переписана и вручную проверена: authoritative форма «habrías surgido», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:3:singular переписана и вручную проверена: authoritative форма «habría surgido», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:1:plural переписана и вручную проверена: authoritative форма «habríamos surgido», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:2:plural переписана и вручную проверена: authoritative форма «habríais surgido», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:3:plural переписана и вручную проверена: authoritative форма «habrían surgido», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:1:singular переписана и вручную проверена: authoritative форма «surja», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:2:singular переписана и вручную проверена: authoritative форма «surjas», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:3:singular переписана и вручную проверена: authoritative форма «surja», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:1:plural переписана и вручную проверена: authoritative форма «surjamos», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом. После финальной подстановки формулировка дополнительно уточнена для естественного управления и точной временной опоры.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:2:plural переписана и вручную проверена: authoritative форма «surjáis», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:3:plural переписана и вручную проверена: authoritative форма «surjan», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:1:singular переписана и вручную проверена: authoritative форма «surgiera», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:2:singular переписана и вручную проверена: authoritative форма «surgieras», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:3:singular переписана и вручную проверена: authoritative форма «surgiera», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:1:plural переписана и вручную проверена: authoritative форма «surgiéramos», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:2:plural переписана и вручную проверена: authoritative форма «surgierais», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:3:plural переписана и вручную проверена: authoritative форма «surgieran», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:1:singular переписана и вручную проверена: authoritative форма «surgiere», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом; редкий scope явно отмечен литературной/юридической рамкой.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:2:singular переписана и вручную проверена: authoritative форма «surgieres», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом; редкий scope явно отмечен литературной/юридической рамкой.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:3:singular переписана и вручную проверена: authoritative форма «surgiere», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом; редкий scope явно отмечен литературной/юридической рамкой.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:1:plural переписана и вручную проверена: authoritative форма «surgiéremos», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом; редкий scope явно отмечен литературной/юридической рамкой.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:2:plural переписана и вручную проверена: authoritative форма «surgiereis», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом; редкий scope явно отмечен литературной/юридической рамкой.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:3:plural переписана и вручную проверена: authoritative форма «surgieren», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом; редкий scope явно отмечен литературной/юридической рамкой.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:1:singular переписана и вручную проверена: authoritative форма «haya surgido», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:2:singular переписана и вручную проверена: authoritative форма «hayas surgido», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:3:singular переписана и вручную проверена: authoritative форма «haya surgido», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:1:plural переписана и вручную проверена: authoritative форма «hayamos surgido», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом. После финальной подстановки формулировка дополнительно уточнена для естественного управления и точной временной опоры.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:2:plural переписана и вручную проверена: authoritative форма «hayáis surgido», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:3:plural переписана и вручную проверена: authoritative форма «hayan surgido», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:1:singular переписана и вручную проверена: authoritative форма «hubiera surgido», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:2:singular переписана и вручную проверена: authoritative форма «hubieras surgido», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:3:singular переписана и вручную проверена: authoritative форма «hubiera surgido», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:1:plural переписана и вручную проверена: authoritative форма «hubiéramos surgido», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:2:plural переписана и вручную проверена: authoritative форма «hubierais surgido», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:3:plural переписана и вручную проверена: authoritative форма «hubieran surgido», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:1:singular переписана и вручную проверена: authoritative форма «hubiere surgido», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом; редкий scope явно отмечен литературной/юридической рамкой.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:2:singular переписана и вручную проверена: authoritative форма «hubieres surgido», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом; редкий scope явно отмечен литературной/юридической рамкой.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:3:singular переписана и вручную проверена: authoritative форма «hubiere surgido», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом; редкий scope явно отмечен литературной/юридической рамкой.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:1:plural переписана и вручную проверена: authoritative форма «hubiéremos surgido», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом; редкий scope явно отмечен литературной/юридической рамкой.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:2:plural переписана и вручную проверена: authoritative форма «hubiereis surgido», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом; редкий scope явно отмечен литературной/юридической рамкой.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:3:plural переписана и вручную проверена: authoritative форма «hubieren surgido», естественный контекст возникновения/появления, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом; редкий scope явно отмечен литературной/юридической рамкой.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "authoritative-forms.json surgir vs final 16 scopes x 6 slots",
+      "result": "pass",
+      "evidence": "96/96 surface forms and all option sets match the batch authoritative Jehle table."
+    },
+    {
+      "command": "manual semantic full read with answer substitution: surgir 96/96",
+      "result": "pass",
+      "evidence": "Every ES/RU pair was read after substitution; contexts naturally express problems, ideas, opportunities, conflicts, emergence from groups and appearance in literary scenes without mechanical city-arrival templates."
+    },
+    {
+      "command": "targeted identity/order/top-level, metadata, blanks, options, counterfactual and rare-register validation",
+      "result": "pass",
+      "evidence": "Exact baseline identity/order/top-level preserved; every card has one blank, exact scope metadata, four unique same-scope forms and one answer; rare scopes are literary/legal and six De haberlo sabido translations start with explicit Russian conditions."
+    },
+    {
+      "command": "baseline defect recount against authoritative forms",
+      "result": "pass",
+      "evidence": "wrong surface 4; duplicate-option cards 18; answer-count cards 22; off-scope 112 entries in 63 cards; invalid-union 68 entries in 36 cards; metadata 0; blank 0."
+    },
+    {
+      "command": "native validate_artifact; go test ./internal/grammartrainingpack ./internal/verbtraining; grammar-review.py status --source .../surgir.json; cmp; JSON; diff --check",
+      "result": "pass",
+      "evidence": "Native validator accepted 96 cards; both focused Go packages passed; status reports 96 awaiting_verification; source and embedded are byte-identical; JSON and assigned diffs pass."
+    },
+    {
+      "command": "coordinator refinement: targeted recheck of four first-person singular surgir contexts",
+      "result": "pass",
+      "evidence": "Four ES/RU contexts now express natural candidacy/emergence meanings and preserve their exact tense; surface forms, options, metadata and all other cards are unchanged."
+    },
+    {
+      "command": "independent verification: full 96-card surgir semantic reread; Jehle forms; source/embedded fingerprint and structural invariants",
+      "result": "pass",
+      "evidence": "All 96 ES/RU contexts accepted after four coordinator refinements; exact forms, identity/order, metadata, one blank, four unique same-scope options, six explicit counterfactual translations and rare-register framing passed."
+    },
+    {
+      "command": "final batch barrier: check.py; preservation-check.py; native validate_artifact; go test ./internal/verbtraining ./cmd/sync_verb_training_json; grammar_review_test.py; focused grammar-review check; git diff --check; skill quick_validate.py",
+      "result": "pass",
+      "evidence": "384 final cards and 24 primary checkpoints passed against Jehle forms; source/embedded and fingerprints fresh; 25608 paths preserved; Go tests and 13 grammar-review tests passed; each source reports done; root and Spanish diffs clean; skill valid."
+    }
+  ],
+  "verification_note": "Независимо перечитаны все 96 карточек после редакторского барьера. Значения возникновения явлений, проблем, идей, организаций и появления людей разведены по естественным контекстам; четыре координаторских уточнения приняты. Формы Jehle, редкие регистры, русский перевод, source/embedded и fingerprint проверены."
+}

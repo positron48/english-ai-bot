@@ -1,0 +1,637 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/sufrir.json",
+  "source_sha256": "5855348c53ebd45cef605e858f1e0e4e1610b3ebf67dbc35251624cfc1f71070",
+  "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197",
+  "editor": "Aristotle editor 2026-09-06",
+  "verifier": "Helmholtz verifier 2026-09-06",
+  "phase": "done",
+  "reviewed_at": "2026-09-06",
+  "verified_at": "2026-09-06",
+  "questions": [
+    {
+      "id": "es.presente.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:1:singular полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:2:singular полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:3:singular полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:1:plural полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены. Финальная полная вычитка уточнила формулировку для естественного и точного соответствия ES/RU.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:2:plural полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:3:plural полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:1:singular полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:2:singular полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:3:singular полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:1:plural полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:2:plural полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:3:plural полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:1:singular полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:2:singular полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:3:singular полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:1:plural полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:2:plural полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:3:plural полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:1:singular полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:2:singular полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:3:singular полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:1:plural полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:2:plural полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:3:plural полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:1:singular полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:2:singular полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:3:singular полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:1:plural полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:2:plural полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:3:plural полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:1:singular полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:2:singular полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:3:singular полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:1:plural полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены. Финальная полная вычитка уточнила формулировку для естественного и точного соответствия ES/RU.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:2:plural полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:3:plural полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:1:singular полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:2:singular полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:3:singular полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:1:plural полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:2:plural полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:3:plural полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:1:singular полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:2:singular полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:3:singular полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:1:plural полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:2:plural полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:3:plural полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:1:singular полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:2:singular полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены. Финальная полная вычитка уточнила формулировку для естественного и точного соответствия ES/RU.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:3:singular полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:1:plural полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены. Финальная полная вычитка уточнила формулировку для естественного и точного соответствия ES/RU.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:2:plural полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:3:plural полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:1:singular полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:2:singular полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:3:singular полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:1:plural полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:2:plural полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:3:plural полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:1:singular полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:2:singular полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:3:singular полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:1:plural полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:2:plural полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:3:plural полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:1:singular полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:2:singular полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:3:singular полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:1:plural полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:2:plural полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:3:plural полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:1:singular полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:2:singular полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:3:singular полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:1:plural полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:2:plural полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:3:plural полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:1:singular полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:2:singular полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:3:singular полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:1:plural полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:2:plural полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены. Финальная полная вычитка уточнила формулировку для естественного и точного соответствия ES/RU.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:3:plural полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены. Уточнение после coordinator barrier: Se añadió la preposición exigida en la construcción dudar de que.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:1:singular полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:2:singular полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:3:singular полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены. Уточнение после coordinator barrier: El sujeto se cambió de la fábrica a la tubería para que sufrir una fuga resulte natural; el RU se alineó exactamente.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:1:plural полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены. Финальная полная вычитка уточнила формулировку для естественного и точного соответствия ES/RU.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:2:plural полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:3:plural полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:1:singular полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:2:singular полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:3:singular полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:1:plural полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:2:plural полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:3:plural полностью переписана и вручную проверена: форма взята из authoritative RAE-backed таблицы для sufrir; scope/mood/tense/person/number, самостоятельный ES-контекст, полный RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "authoritative-forms.json sufrir vs final 16 scopes x 6 slots",
+      "result": "pass",
+      "evidence": "96/96 surface forms and all option sets match the batch authoritative table. The official RAE DLE conjugation at https://dle.rae.es/sufrir was checked directly and confirms sufrís, suframos, sufriera/sufriéramos, sufriere/sufriéremos and all compound paradigms; local Jehle was not used as authority."
+    },
+    {
+      "command": "semantic full read with answer substitution: sufrir 96/96",
+      "result": "pass",
+      "evidence": "Every final ES/RU pair was read after substitution. Contexts distinguish pain, illness, pressure, damage, loss, disruption and consequences; all six De haberlo sabido conditions are explicit in Russian; rare scopes carry literary, historical or legal framing."
+    },
+    {
+      "command": "targeted structural validator: identity/order/top-level, metadata, blanks, options, counterfactual and rare-register checks",
+      "result": "pass",
+      "evidence": "Top-level fields and all 96 scope/person/number identities remain in exact baseline order; every card has one blank, exact metadata, four unique current-scope forms and one answer."
+    },
+    {
+      "command": "baseline defect recount against authoritative RAE-backed forms",
+      "result": "pass",
+      "evidence": "{\"answer_multiplicity_cards\": 25, \"blank_cards\": 0, \"duplicate_option_cards\": 9, \"invalid_union_entries\": 24, \"metadata_cards\": 0, \"off_scope_cards\": 68, \"off_scope_entries\": 150, \"wrong_surface\": 16}"
+    },
+    {
+      "command": "cmp source embedded; JSON/JSONL parse; six 16-card checkpoints; fingerprint validation",
+      "result": "pass",
+      "evidence": "Source and embedded are byte-identical; assigned JSON and checkpoints parse; final source fingerprint is 5855348c53ebd45cef605e858f1e0e4e1610b3ebf67dbc35251624cfc1f71070."
+    },
+    {
+      "command": "final 96-card semantic reread and six targeted naturalness refinements",
+      "result": "pass",
+      "evidence": "Refined Russian wording for delays and discomfort, aligned obra/obras, made the 48-hour insomnia anchor natural, and replaced an impossible human subject with a natural first-person plural injury context. Forms, options, metadata and identity/order unchanged."
+    },
+    {
+      "command": "coordinator refinement: exact two-card assertions; full authoritative/structural validation; cmp/native/status/diff checks",
+      "result": "pass",
+      "evidence": "Added dudar de que in present-perfect subjunctive 3p and replaced fábrica with tubería in pluperfect-subjunctive 3s, with exact RU alignment. Forms, options, metadata, identities and all other card content remain unchanged; source fingerprint refreshed."
+    },
+    {
+      "command": "independent verifier full read: sufrir 96/96; authoritative forms, baseline identity, ES/RU substitution, options, rare scopes and counterfactuals",
+      "result": "pass",
+      "evidence": "Helmholtz verifier independently read every final card after answer substitution. All 96 forms/slots and four-option sets are correct; all translations preserve the subject, event and tense meaning; rare scopes are marked; six De haberlo sabido cards have explicit Russian conditions; no content defects found."
+    },
+    {
+      "command": "final batch barrier: check.py; preservation-check.py; native validate_artifact; go test ./internal/verbtraining ./cmd/sync_verb_training_json; grammar_review_test.py; focused grammar-review check; git diff --check; skill quick_validate.py",
+      "result": "pass",
+      "evidence": "384 final cards and 24 primary checkpoints passed against authoritative RAE forms; source/embedded and fingerprints fresh; 25594 paths preserved; Go tests and 13 grammar-review tests passed; each source reports done; root and Spanish diffs clean; skill valid."
+    }
+  ],
+  "verification_note": "Независимо прочитаны все 96 карточек с подстановкой surface_form. Подтверждены authoritative RAE-backed формы, точные metadata и порядок, естественные значения sufrir для боли, ущерба, потерь и последствий, полные ES↔RU соответствия, редкие литературные/юридические рамки и шесть явных русских контрфактических условий. Точных дефектов не обнаружено."
+}

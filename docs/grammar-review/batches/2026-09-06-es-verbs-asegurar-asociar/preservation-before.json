@@ -1,0 +1,26 @@
+{
+  "existing_files": 24870,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/asegurar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/asegurar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/asistir.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/asistir.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/asociar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/asociar.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-asegurar-asociar",
+    "docs/grammar-review/reports/df35b07b44056da534912144.json",
+    "docs/grammar-review/reports/a82bcec52f4bdc019b6bb08a.json",
+    "docs/grammar-review/reports/1fbbfc3e9fbb114a604eeb84.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/asegurar.json": "b456221b52ff4cc0a33b6e13c72cd43d06cab5e3af2a9ef92babc522bbd49160",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/asegurar.json": "b456221b52ff4cc0a33b6e13c72cd43d06cab5e3af2a9ef92babc522bbd49160",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/asistir.json": "2aecd3ed8938f02568d81ce48070305da1b4309b3cac3aa61036fc2246fbad01",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/asistir.json": "2aecd3ed8938f02568d81ce48070305da1b4309b3cac3aa61036fc2246fbad01",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/asociar.json": "428a2d33f29c8efdafae59c59f486efbef6be0b3edbac36a4d34175179a0de7d",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/asociar.json": "428a2d33f29c8efdafae59c59f486efbef6be0b3edbac36a4d34175179a0de7d"
+  }
+}

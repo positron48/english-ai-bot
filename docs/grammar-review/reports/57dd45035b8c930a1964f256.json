@@ -1,0 +1,657 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/tratar.json",
+  "source_sha256": "33ed8b8b8faff7a88379986e3f4dfee35088f0b8a98e4e1ccf7795f0b4138365",
+  "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197",
+  "editor": "edit_tratar editor 2026-09-06",
+  "verifier": "edit_unir verifier 2026-09-06",
+  "phase": "done",
+  "reviewed_at": "2026-09-06",
+  "verified_at": "2026-09-06",
+  "questions": [
+    {
+      "id": "es.presente.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:1:singular полностью переписана и вручную проверена после подстановки «trato»: естественная конструкция tratar un asunto, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:2:singular полностью переписана и вручную проверена после подстановки «tratas»: естественная конструкция tratar a alguien, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:3:singular полностью переписана и вручную проверена после подстановки «trata»: естественная конструкция tratar de + infinitivo, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:1:plural полностью переписана и вручную проверена после подстановки «tratamos»: естественная конструкция tratar un material, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:2:plural полностью переписана и вручную проверена после подстановки «tratáis»: естественная конструкция tratar un tema, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:3:plural полностью переписана и вручную проверена после подстановки «tratan»: естественная конструкция tratar de + infinitivo, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:1:singular полностью переписана и вручную проверена после подстановки «trataba»: естественная конструкция tratar a alguien, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:2:singular полностью переписана и вручную проверена после подстановки «tratabas»: естественная конструкция tratar de + infinitivo, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:3:singular полностью переписана и вручную проверена после подстановки «trataba»: естественная конструкция tratar una enfermedad, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:1:plural полностью переписана и вручную проверена после подстановки «tratábamos»: естественная конструкция tratar un asunto, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:2:plural полностью переписана и вручную проверена после подстановки «tratabais»: естественная конструкция tratar un material, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:3:plural полностью переписана и вручную проверена после подстановки «trataban»: естественная конструкция tratar de + infinitivo, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:1:singular полностью переписана и вручную проверена после подстановки «traté»: естественная конструкция tratar un asunto, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:2:singular полностью переписана и вручную проверена после подстановки «trataste»: естественная конструкция tratar a alguien, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:3:singular полностью переписана и вручную проверена после подстановки «trató»: естественная конструкция tratar una lesión, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:1:plural полностью переписана и вручную проверена после подстановки «tratamos»: естественная конструкция tratar de + infinitivo, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:2:plural полностью переписана и вручную проверена после подстановки «tratasteis»: естественная конструкция tratar una sustancia, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:3:plural полностью переписана и вручную проверена после подстановки «trataron»: естественная конструкция tratar propuestas, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:1:singular полностью переписана и вручную проверена после подстановки «trataré»: естественная конструкция tratar un asunto, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:2:singular полностью переписана и вручную проверена после подстановки «tratarás»: естественная конструкция tratar a alguien, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом. Независимая проверка: RU неестественен из-за повтора «с гостями с тем же». Предлагаемая замена translation_ru_full: «Ты будешь так же радушно обращаться с гостями, как и всегда.» Исправление внесено исходным редактором; карточка возвращена в pending для независимой повторной проверки.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:3:singular полностью переписана и вручную проверена после подстановки «tratará»: естественная конструкция tratar una lesión, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:1:plural полностью переписана и вручную проверена после подстановки «trataremos»: естественная конструкция tratar de + infinitivo, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:2:plural полностью переписана и вручную проверена после подстановки «trataréis»: естественная конструкция tratar muestras, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:3:plural полностью переписана и вручную проверена после подстановки «tratarán»: естественная конструкция tratar un punto, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:1:singular полностью переписана и вручную проверена после подстановки «trataría»: естественная конструкция tratar un asunto, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:2:singular полностью переписана и вручную проверена после подстановки «tratarías»: естественная конструкция tratar a alguien, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:3:singular полностью переписана и вручную проверена после подстановки «trataría»: естественная конструкция tratar una enfermedad, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:1:plural полностью переписана и вручную проверена после подстановки «trataríamos»: естественная конструкция tratar de + infinitivo, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:2:plural полностью переписана и вручную проверена после подстановки «trataríais»: естественная конструкция tratar un material, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:3:plural полностью переписана и вручную проверена после подстановки «tratarían»: естественная конструкция tratar una reclamación, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:1:singular полностью переписана и вручную проверена после подстановки «he tratado»: естественная конструкция tratar un asunto, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:2:singular полностью переписана и вручную проверена после подстановки «has tratado»: естественная конструкция tratar a alguien, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:3:singular полностью переписана и вручную проверена после подстановки «ha tratado»: естественная конструкция tratar una lesión, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:1:plural полностью переписана и вручную проверена после подстановки «hemos tratado»: естественная конструкция tratar de + infinitivo, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:2:plural полностью переписана и вручную проверена после подстановки «habéis tratado»: естественная конструкция tratar datos, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:3:plural полностью переписана и вручную проверена после подстановки «han tratado»: естественная конструкция tratar reclamaciones, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:1:singular полностью переписана и вручную проверена после подстановки «había tratado»: естественная конструкция tratar un asunto, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:2:singular полностью переписана и вручную проверена после подстановки «habías tratado»: естественная конструкция tratar a alguien, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:3:singular полностью переписана и вручную проверена после подстановки «había tratado»: естественная конструкция tratar una afección, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:1:plural полностью переписана и вручную проверена после подстановки «habíamos tratado»: естественная конструкция tratar de + infinitivo, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:2:plural полностью переписана и вручную проверена после подстановки «habíais tratado»: естественная конструкция tratar muestras, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:3:plural полностью переписана и вручную проверена после подстановки «habían tratado»: естественная конструкция tratar una cuestión, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:1:singular полностью переписана и вручную проверена после подстановки «hube tratado»: естественная конструкция tratar un asunto; pretérito anterior literario, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:2:singular полностью переписана и вручную проверена после подстановки «hubiste tratado»: естественная конструкция tratar a alguien como; pretérito anterior literario, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:3:singular полностью переписана и вручную проверена после подстановки «hubo tratado»: естественная конструкция tratar una lesión; pretérito anterior literario, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом. Независимая проверка: местоимение «он» после «рану короля» создаёт двусмысленность, кто покинул покои. Предлагаемая замена translation_ru_full: «В хронике говорится: едва врач обработал рану короля, врач покинул покои.» Исправление внесено исходным редактором; карточка возвращена в pending для независимой повторной проверки.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:1:plural полностью переписана и вручную проверена после подстановки «hubimos tratado»: естественная конструкция tratar de + infinitivo; pretérito anterior literario, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:2:plural полностью переписана и вручную проверена после подстановки «hubisteis tratado»: естественная конструкция tratar condiciones; pretérito anterior literario, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:3:plural полностью переписана и вручную проверена после подстановки «hubieron tratado»: естественная конструкция tratar un asunto; pretérito anterior literario, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:1:singular полностью переписана и вручную проверена после подстановки «habré tratado»: естественная конструкция tratar un asunto, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:2:singular полностью переписана и вручную проверена после подстановки «habrás tratado»: естественная конструкция tratar a pacientes, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:3:singular полностью переписана и вручную проверена после подстановки «habrá tratado»: естественная конструкция tratar una lesión, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:1:plural полностью переписана и вручную проверена после подстановки «habremos tratado»: естественная конструкция tratar de + infinitivo, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:2:plural полностью переписана и вручную проверена после подстановки «habréis tratado»: естественная конструкция tratar un material, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:3:plural полностью переписана и вручную проверена после подстановки «habrán tratado»: естественная конструкция tratar recursos, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:1:singular полностью переписана и вручную проверена после подстановки «habría tratado»: естественная конструкция tratar un problema, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:2:singular полностью переписана и вручную проверена после подстановки «habrías tratado»: естественная конструкция tratar a alguien, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:3:singular полностью переписана и вручную проверена после подстановки «habría tratado»: естественная конструкция tratar una enfermedad, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:1:plural полностью переписана и вручную проверена после подстановки «habríamos tratado»: естественная конструкция tratar de + infinitivo, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:2:plural полностью переписана и вручную проверена после подстановки «habríais tratado»: естественная конструкция tratar muestras, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:3:plural полностью переписана и вручную проверена после подстановки «habrían tratado»: естественная конструкция tratar una queja, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:1:singular полностью переписана и вручную проверена после подстановки «trate»: естественная конструкция tratar un asunto, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:2:singular полностью переписана и вручную проверена после подстановки «trates»: естественная конструкция tratar a alguien, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:3:singular полностью переписана и вручную проверена после подстановки «trate»: естественная конструкция tratar una enfermedad, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:1:plural полностью переписана и вручную проверена после подстановки «tratemos»: естественная конструкция tratar de + infinitivo, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:2:plural полностью переписана и вручную проверена после подстановки «tratéis»: естественная конструкция tratar un material, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:3:plural полностью переписана и вручную проверена после подстановки «traten»: естественная конструкция tratar reclamaciones, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:1:singular полностью переписана и вручную проверена после подстановки «tratara»: естественная конструкция tratar un asunto, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:2:singular полностью переписана и вручную проверена после подстановки «trataras»: естественная конструкция tratar a alguien, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:3:singular полностью переписана и вручную проверена после подстановки «tratara»: естественная конструкция tratar una lesión, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:1:plural полностью переписана и вручную проверена после подстановки «tratáramos»: естественная конструкция tratar de + infinitivo, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:2:plural полностью переписана и вручную проверена после подстановки «tratarais»: естественная конструкция tratar muestras, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:3:plural полностью переписана и вручную проверена после подстановки «trataran»: естественная конструкция tratar alegaciones, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:1:singular полностью переписана и вручную проверена после подстановки «tratare»: естественная конструкция tratar datos; futuro de subjuntivo jurídico, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:2:singular полностью переписана и вручную проверена после подстановки «tratares»: естественная конструкция tratar a alguien; futuro de subjuntivo jurídico, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:3:singular полностью переписана и вручную проверена после подстановки «tratare»: естественная конструкция tratar una reclamación; futuro de subjuntivo jurídico, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом. Независимая проверка: «оставит письменную запись» — неестественная калька dejar constancia escrita. Предлагаемая замена translation_ru_full: «В архаичной юридической статье: компания, которая рассмотрит эту жалобу, зафиксирует это письменно.» Исправление внесено исходным редактором; карточка возвращена в pending для независимой повторной проверки.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:1:plural полностью переписана и вручную проверена после подстановки «tratáremos»: естественная конструкция tratar condiciones; futuro de subjuntivo jurídico, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:2:plural полностью переписана и вручную проверена после подстановки «tratareis»: естественная конструкция tratar piezas; futuro de subjuntivo jurídico, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:3:plural полностью переписана и вручную проверена после подстановки «trataren»: естественная конструкция tratar de + infinitivo; futuro de subjuntivo jurídico, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:1:singular полностью переписана и вручную проверена после подстановки «haya tratado»: естественная конструкция tratar un asunto, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:2:singular полностью переписана и вручную проверена после подстановки «hayas tratado»: естественная конструкция tratar a alguien, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:3:singular полностью переписана и вручную проверена после подстановки «haya tratado»: естественная конструкция tratar una enfermedad, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:1:plural полностью переписана и вручную проверена после подстановки «hayamos tratado»: естественная конструкция tratar de + infinitivo, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:2:plural полностью переписана и вручную проверена после подстановки «hayáis tratado»: естественная конструкция tratar muestras, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:3:plural полностью переписана и вручную проверена после подстановки «hayan tratado»: естественная конструкция tratar objeciones, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:1:singular полностью переписана и вручную проверена после подстановки «hubiera tratado»: естественная конструкция tratar un asunto; contrafactual, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:2:singular полностью переписана и вручную проверена после подстановки «hubieras tratado»: естественная конструкция tratar a alguien; contrafactual, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:3:singular полностью переписана и вручную проверена после подстановки «hubiera tratado»: естественная конструкция tratar una lesión; contrafactual, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:1:plural полностью переписана и вручную проверена после подстановки «hubiéramos tratado»: естественная конструкция tratar de + infinitivo; contrafactual, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:2:plural полностью переписана и вручную проверена после подстановки «hubierais tratado»: естественная конструкция tratar un material; contrafactual, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:3:plural полностью переписана и вручную проверена после подстановки «hubieran tratado»: естественная конструкция tratar una disputa; contrafactual, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:1:singular полностью переписана и вручную проверена после подстановки «hubiere tratado»: естественная конструкция tratar un expediente; futuro perfecto de subjuntivo jurídico, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:2:singular полностью переписана и вручную проверена после подстановки «hubieres tratado»: естественная конструкция tratar datos; futuro perfecto de subjuntivo jurídico, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:3:singular полностью переписана и вручную проверена после подстановки «hubiere tratado»: естественная конструкция tratar una reclamación; futuro perfecto de subjuntivo jurídico, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:1:plural полностью переписана и вручную проверена после подстановки «hubiéremos tratado»: естественная конструкция tratar condiciones; futuro perfecto de subjuntivo jurídico, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:2:plural полностью переписана и вручную проверена после подстановки «hubiereis tratado»: естественная конструкция tratar un material; futuro perfecto de subjuntivo jurídico, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:3:plural полностью переписана и вручную проверена после подстановки «hubieren tratado»: естественная конструкция tratar objeciones; futuro perfecto de subjuntivo jurídico, точный полный RU, корректные metadata и четыре уникальные same-scope формы с одним ответом.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "authoritative-forms.json tratar vs edited 16 scopes x 6 slots",
+      "result": "pass",
+      "evidence": "96/96 surface forms and all option values match the batch Jehle-derived authoritative table."
+    },
+    {
+      "command": "editor semantic full read with answer substitution: tratar 96/96",
+      "result": "pass",
+      "evidence": "Every ES/RU pair was manually read after substitution; tratar algo, tratar a alguien, tratar de + infinitivo and material/medical processing are explicit and unambiguous."
+    },
+    {
+      "command": "editor rare-register and counterfactual review",
+      "result": "pass",
+      "evidence": "All 18 preterite-anterior and future-subjunctive cards explicitly signal literary, archaic or legal register; all six De haberlo sabido Russian translations begin with explicit Если бы ... знал/знала/знали wording."
+    },
+    {
+      "command": "editor identity, metadata, blank, options and source-embedded contract checks",
+      "result": "pass",
+      "evidence": "Top-level data and exact scope/person/number order are preserved; every card has one blank, four unique same-scope options and the answer exactly once; source and embedded bytes match."
+    },
+    {
+      "command": "baseline defect recount against authoritative forms",
+      "result": "pass",
+      "evidence": "wrong surface 12; duplicate-option cards 15; answer-count cards 17; off-scope 121 entries in 59 cards; invalid-union 1 entry in 1 card; metadata 0; blank 0."
+    },
+    {
+      "command": "native validate_artifact; focused grammar-review status; JSON/JSONL and scoped diff checks",
+      "result": "pass",
+      "evidence": "Native validate_artifact accepted 96 cards; focused status correctly reports 96 awaiting_verification; JSON and six JSONL checkpoints parse; source/embedded contract and scoped diff checks pass at fingerprint ab0e2d48b35d1ef67cf9b968cb892154177b4bb2c66d1819ccdd7c9e344274a8."
+    },
+    {
+      "command": "coordinator semantic refinement: tratar indexes 19, 44, 74, 89",
+      "result": "pass",
+      "evidence": "Four requested ES/RU refinements applied: exact tratar a meaning for guests, unambiguous literary physician action, explicit archaic legal framing, and non-resultative handling of a dispute; forms, options, metadata and identity/order unchanged."
+    },
+    {
+      "command": "independent semantic read with answer substitution: tratar 96/96",
+      "result": "pass",
+      "evidence": "All 96 final ES/RU pairs were read in order; 93 accepted and three precise RU findings recorded at indices 19, 44 and 74."
+    },
+    {
+      "command": "independent authoritative forms, identity, rare-register and counterfactual contract check: tratar",
+      "result": "pass",
+      "evidence": "96/96 exact authoritative forms; preserved top-level and scope/person/number order; mood/tense, one blank, four unique same-scope options and answer-once pass; all rare forms are framed and six De haberlo sabido translations are explicit Russian counterfactuals."
+    },
+    {
+      "command": "independent native validate_artifact('tratar') and source/embedded/fingerprint check",
+      "result": "pass",
+      "evidence": "Native validator accepted 96 cards; source and embedded bytes match; report fingerprint remains 9ddf5e71e7a7c93138dd6672628a73f001586bc0c536b1a0c09a66319d6c26ed."
+    },
+    {
+      "command": "original editor fixes after edit_unir verification: tratar indexes 19, 44, 74",
+      "result": "pass",
+      "evidence": "Applied the three requested Russian formulations exactly while retaining current Spanish, authoritative forms, options, metadata and identity/order; source and embedded synchronized and all verification fields reset to pending."
+    },
+    {
+      "command": "same independent verifier recheck: tratar indices 19, 44 and 74; full contract and native validator",
+      "result": "pass",
+      "evidence": "All three requested RU replacements match exactly; ES, authoritative forms, options, metadata, top-level identity and scope/person/number order remain valid; source equals embedded; fingerprint 33ed8b8b8faff7a88379986e3f4dfee35088f0b8a98e4e1ccf7795f0b4138365; native validator passes."
+    },
+    {
+      "command": "final batch barrier: check.py; native validate_artifact; focused Go tests; grammar_review_test.py; focused/full status; preservation; root/course diff checks; skill quick_validate",
+      "result": "pass",
+      "evidence": "PASS: 384 cards and 24 checkpoints; native 96/96 each; Go packages pass; 13 grammar-review tests pass; four focused sources done; preservation 25653/0/0/0; diff checks and skill validation pass."
+    }
+  ],
+  "verification_note": "Независимо прочитаны 96/96 карточек. После исправления трёх замечаний тот же проверяющий повторно сверил индексы 19, 44 и 74 с полным контекстом; все 96 карточек приняты."
+}

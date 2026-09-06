@@ -1,0 +1,16 @@
+{
+  "course_head": "501044644954d5aaa474f7d1eaee99518a4ebd9d",
+  "captured_at": "2026-09-04",
+  "note": "Working-tree baseline, including seven existing question fixes; captured before this editorial batch.",
+  "files": {
+    "chapters/004.es.grammar.orientation_alphabet_sounds.core_pronunciation_map_b_v_c_z_g/03-questions.json": "0b3835f8bbb9434a39530f18596405b11c20e3c9bda9fed22219f68d449dd064",
+    "chapters/004.es.grammar.orientation_alphabet_sounds.core_pronunciation_map_b_v_c_z_g/05-final.json": "4733b72935189bf6bb314e65d5d5372373dbed2ddfb068e98f1d0f428606c53c",
+    "training_pack/chapters/004/es.01.b1_theory_b_v_one_family.questions.json": "59c3d715eb53088d7a769f88487cd0eb89e5acbbdab80d3824af5314a50ead57",
+    "training_pack/chapters/004/es.02.b2_theory_c_qu_z_map.questions.json": "58a38a90a6451f15a277ab18a1d5f5e934bd90a070306bb8028be4b6a3368a8d",
+    "training_pack/chapters/004/es.03.b3_theory_g_j_gu_gu_dieresis.questions.json": "4de9e3d296474f74e129df1c45a93d9987058f3c62bc60d3e71e5d701084b8dd",
+    "training_pack/chapters/004/es.04.b4_theory_ll_y_modern_pronunciation.questions.json": "8baf2efca9ef14a9f4597a3fea3126edc8e71c84c00a193bf36efff2f3107570",
+    "training_pack/chapters/004/es.05.b5_theory_n_tilde_and_silent_h.questions.json": "39623ba3247d9e59c623babb429575201ea7295b56915c8fe95d081304bf36ea",
+    "training_pack/chapters/004/es.06.b6_theory_r_rr_contrast.questions.json": "c04773ff826e6e2678459fe06dcbe6467c111e90ff3efaa4e4a76addb0c3e452",
+    "training_pack/chapters/004/es.07.b7_theory_decoding_algorithm_and_regional_notes.questions.json": "47fc3dca2cebd8eeed94bb3b5ef9eeefa47a86aff3eeba0302b5a072944c73d0"
+  }
+}

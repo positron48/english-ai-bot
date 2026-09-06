@@ -1,0 +1,344 @@
+{
+  "version": 1,
+  "source": "courses/english-grammar/chapters/037.en.grammar.past_1_past_simple.questions_with_did_did/03-questions.json",
+  "source_sha256": "9b6340f6c3f364e04050068da3e8195f9c3651564d1169e69e17dd436813d5e2",
+  "context_sha256": "41e9aecaf6de5ab0e528645570b73207aad83873c67e52a9dad30acf4d01b3ee",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
+  "reviewed_at": "2026-09-04T17:13:06.046977+00:00",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
+  "questions": [
+    {
+      "id": "q1",
+      "decision": "fixed",
+      "note": "Уточнены Past Simple без отрицания и обычный вопрос вместо переспроса; убраны раскрытый ответ, повтор и оценка простоты.",
+      "verification": "ok"
+    },
+    {
+      "id": "q2",
+      "decision": "fixed",
+      "note": "Уточнены Past Simple без отрицания и обычный вопрос вместо переспроса; убраны раскрытый ответ, повтор и оценка простоты.",
+      "verification": "ok"
+    },
+    {
+      "id": "q3",
+      "decision": "fixed",
+      "note": "Уточнены Past Simple без отрицания и обычный вопрос вместо переспроса; убраны раскрытый ответ, повтор и оценка простоты.",
+      "verification": "ok"
+    },
+    {
+      "id": "q5",
+      "decision": "fixed",
+      "note": "Уточнены Past Simple без отрицания и обычный вопрос вместо переспроса; убраны раскрытый ответ, повтор и оценка простоты.",
+      "verification": "ok"
+    },
+    {
+      "id": "q6",
+      "decision": "fixed",
+      "note": "Уточнены Past Simple без отрицания и обычный вопрос вместо переспроса; убраны раскрытый ответ, повтор и оценка простоты.",
+      "verification": "ok"
+    },
+    {
+      "id": "q7",
+      "decision": "ok",
+      "note": "Структура вопроса, согласование и ключ верны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q9",
+      "decision": "fixed",
+      "note": "Уточнены Past Simple без отрицания и обычный вопрос вместо переспроса; убраны раскрытый ответ, повтор и оценка простоты.",
+      "verification": "ok"
+    },
+    {
+      "id": "q11",
+      "decision": "ok",
+      "note": "Структура вопроса, согласование и ключ верны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q13",
+      "decision": "ok",
+      "note": "Структура вопроса, согласование и ключ верны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q14",
+      "decision": "fixed",
+      "note": "Уточнены Past Simple без отрицания и обычный вопрос вместо переспроса; убраны раскрытый ответ, повтор и оценка простоты.",
+      "verification": "ok"
+    },
+    {
+      "id": "q15",
+      "decision": "fixed",
+      "note": "Уточнены Past Simple без отрицания и обычный вопрос вместо переспроса; убраны раскрытый ответ, повтор и оценка простоты.",
+      "verification": "ok"
+    },
+    {
+      "id": "q16",
+      "decision": "fixed",
+      "note": "Уточнены Past Simple без отрицания и обычный вопрос вместо переспроса; убраны раскрытый ответ, повтор и оценка простоты.",
+      "verification": "ok"
+    },
+    {
+      "id": "q17",
+      "decision": "fixed",
+      "note": "Уточнены Past Simple без отрицания и обычный вопрос вместо переспроса; убраны раскрытый ответ, повтор и оценка простоты.",
+      "verification": "ok"
+    },
+    {
+      "id": "q18",
+      "decision": "fixed",
+      "note": "Уточнены Past Simple без отрицания и обычный вопрос вместо переспроса; убраны раскрытый ответ, повтор и оценка простоты.",
+      "verification": "ok"
+    },
+    {
+      "id": "q19",
+      "decision": "fixed",
+      "note": "Уточнены Past Simple без отрицания и обычный вопрос вместо переспроса; убраны раскрытый ответ, повтор и оценка простоты.",
+      "verification": "ok"
+    },
+    {
+      "id": "q20",
+      "decision": "ok",
+      "note": "Структура вопроса, согласование и ключ верны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q22",
+      "decision": "fixed",
+      "note": "Уточнены Past Simple без отрицания и обычный вопрос вместо переспроса; убраны раскрытый ответ, повтор и оценка простоты.",
+      "verification": "ok"
+    },
+    {
+      "id": "q23",
+      "decision": "fixed",
+      "note": "Уточнены Past Simple без отрицания и обычный вопрос вместо переспроса; убраны раскрытый ответ, повтор и оценка простоты.",
+      "verification": "ok"
+    },
+    {
+      "id": "q24",
+      "decision": "ok",
+      "note": "Структура вопроса, согласование и ключ верны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q25",
+      "decision": "fixed",
+      "note": "Уточнены Past Simple без отрицания и обычный вопрос вместо переспроса; убраны раскрытый ответ, повтор и оценка простоты.",
+      "verification": "ok"
+    },
+    {
+      "id": "q26",
+      "decision": "fixed",
+      "note": "Уточнены время без отрицания, тип вопроса и различие с переспросом; исправлен перевод where и роль there.",
+      "verification": "ok"
+    },
+    {
+      "id": "q27",
+      "decision": "ok",
+      "note": "Форма после did, значение и порядок слов согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q29",
+      "decision": "fixed",
+      "note": "Уточнены время без отрицания, тип вопроса и различие с переспросом; исправлен перевод where и роль there.",
+      "verification": "ok"
+    },
+    {
+      "id": "q30",
+      "decision": "fixed",
+      "note": "Уточнены время без отрицания, тип вопроса и различие с переспросом; исправлен перевод where и роль there.",
+      "verification": "ok"
+    },
+    {
+      "id": "q32",
+      "decision": "ok",
+      "note": "Форма после did, значение и порядок слов согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q33",
+      "decision": "ok",
+      "note": "Форма после did, значение и порядок слов согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q34",
+      "decision": "fixed",
+      "note": "Уточнены время без отрицания, тип вопроса и различие с переспросом; исправлен перевод where и роль there.",
+      "verification": "ok"
+    },
+    {
+      "id": "q36",
+      "decision": "fixed",
+      "note": "Уточнены время без отрицания, тип вопроса и различие с переспросом; исправлен перевод where и роль there.",
+      "verification": "ok"
+    },
+    {
+      "id": "q37",
+      "decision": "fixed",
+      "note": "Уточнены время без отрицания, тип вопроса и различие с переспросом; исправлен перевод where и роль there.",
+      "verification": "ok"
+    },
+    {
+      "id": "q38",
+      "decision": "ok",
+      "note": "Форма после did, значение и порядок слов согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q39",
+      "decision": "fixed",
+      "note": "Уточнены время без отрицания, тип вопроса и различие с переспросом; исправлен перевод where и роль there.",
+      "verification": "ok"
+    },
+    {
+      "id": "q41",
+      "decision": "fixed",
+      "note": "Уточнены время без отрицания, тип вопроса и различие с переспросом; исправлен перевод where и роль there.",
+      "verification": "ok"
+    },
+    {
+      "id": "q43",
+      "decision": "fixed",
+      "note": "Уточнены время без отрицания, тип вопроса и различие с переспросом; исправлен перевод where и роль there.",
+      "verification": "ok"
+    },
+    {
+      "id": "q44",
+      "decision": "ok",
+      "note": "Форма после did, значение и порядок слов согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q45",
+      "decision": "fixed",
+      "note": "Уточнены время без отрицания, тип вопроса и различие с переспросом; исправлен перевод where и роль there.",
+      "verification": "ok"
+    },
+    {
+      "id": "q47",
+      "decision": "ok",
+      "note": "Форма после did, значение и порядок слов согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q48",
+      "decision": "ok",
+      "note": "Форма после did, значение и порядок слов согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q49",
+      "decision": "fixed",
+      "note": "Уточнены время без отрицания, тип вопроса и различие с переспросом; исправлен перевод where и роль there.",
+      "verification": "ok"
+    },
+    {
+      "id": "q52",
+      "decision": "ok",
+      "note": "Форма после did, значение и порядок слов согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q53",
+      "decision": "ok",
+      "note": "Форма после did, значение и порядок слов согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q55",
+      "decision": "ok",
+      "note": "Базовая форма после did и значение согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q56",
+      "decision": "fixed",
+      "note": "Уточнён требуемый формат краткого ответа без отклонения допустимого полного; исправлено объяснение форм после вспомогательных глаголов.",
+      "verification": "ok"
+    },
+    {
+      "id": "q59",
+      "decision": "ok",
+      "note": "Базовая форма после did и значение согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q61",
+      "decision": "fixed",
+      "note": "Уточнён требуемый формат краткого ответа без отклонения допустимого полного; исправлено объяснение форм после вспомогательных глаголов.",
+      "verification": "ok"
+    },
+    {
+      "id": "q63",
+      "decision": "fixed",
+      "note": "Уточнён требуемый формат краткого ответа без отклонения допустимого полного; исправлено объяснение форм после вспомогательных глаголов.",
+      "verification": "ok"
+    },
+    {
+      "id": "q66",
+      "decision": "fixed",
+      "note": "Уточнён требуемый формат краткого ответа без отклонения допустимого полного; исправлено объяснение форм после вспомогательных глаголов.",
+      "verification": "ok"
+    },
+    {
+      "id": "q69",
+      "decision": "fixed",
+      "note": "Уточнён требуемый формат краткого ответа без отклонения допустимого полного; исправлено объяснение форм после вспомогательных глаголов.",
+      "verification": "ok"
+    },
+    {
+      "id": "q71",
+      "decision": "fixed",
+      "note": "Уточнён требуемый формат краткого ответа без отклонения допустимого полного; исправлено объяснение форм после вспомогательных глаголов.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-04-en035-038/check.py",
+      "result": "pass",
+      "evidence": "All 420 IDs/contracts, decisions versus clean pre-batch HEAD, fingerprints, native training validation, signatures and source-final-embedded equality; validation.log."
+    },
+    {
+      "command": "go test ./internal/grammarbundle ./internal/repository -run 'TestValidateEmbeddedBundleID|TestGrammar.*Bundle|TestGrammar.*Reorder' -count=1",
+      "result": "pass",
+      "evidence": "Both packages passed on final integrated data; go-tests.log."
+    },
+    {
+      "command": "git diff --check; git -C courses/spanish-grammar diff --check; git -C courses/english-grammar diff --check",
+      "result": "pass",
+      "evidence": "Three separately executed commands exit 0; diff-check.log. All 986 earlier dirty files outside review docs preserved; preservation.log."
+    },
+    {
+      "command": "cd courses/english-grammar && bash scripts/assemble-chapter.sh 037.en.grammar.past_1_past_simple.questions_with_did_did",
+      "result": "pass",
+      "evidence": "037-assemble.log: exit 0."
+    },
+    {
+      "command": "cd courses/english-grammar && bash scripts/validate-chapter.sh 037.en.grammar.past_1_past_simple.questions_with_did_did",
+      "result": "pass",
+      "evidence": "037-chapter-after.log: exit 0."
+    },
+    {
+      "command": "cd courses/english-grammar && ajv validate --spec=draft2020 --validate-formats=false --all-errors -s 02-chapter-schema.json -d chapters/037.en.grammar.past_1_past_simple.questions_with_did_did/05-final.json",
+      "result": "pass",
+      "evidence": "037-schema-after.log: exit 0."
+    },
+    {
+      "command": "cd courses/english-grammar && ajv validate -s 02-chapter-schema.json -d chapters/037.en.grammar.past_1_past_simple.questions_with_did_did/05-final.json",
+      "result": "known_baseline",
+      "evidence": "037-assembler-ajv-before.log and 037-assembler-ajv-after.log are byte-identical, exit 1: no draft2020 meta-schema selected. Explicit draft2020 validation passes."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    }
+  ],
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+}

@@ -1,0 +1,422 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/chapters/028.es.grammar.present_regular_actions.infinitives_present_tense_endings_ar_er_ir/03-questions.json",
+  "source_sha256": "d07b63fb4c32298cf2faededcca416a722baf59858a1a2455536870a067541b2",
+  "context_sha256": "2d32a86a74a9b02dd3d5a76b3e1fbe09bf96e7172f51ae72d64af4207a6f970e",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
+  "reviewed_at": "2026-09-04T15:28:39.030106+00:00",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
+  "questions": [
+    {
+      "id": "q1",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q2",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q3",
+      "decision": "fixed",
+      "note": "Ограничен лексический выбор личной формой без раскрытия требуемого инфинитива.",
+      "verification": "ok"
+    },
+    {
+      "id": "q4",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q5",
+      "decision": "fixed",
+      "note": "Уточнены время, единственность открытого ответа или условие выбора между двумя верными конструкциями.",
+      "verification": "ok"
+    },
+    {
+      "id": "q6",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q7",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q8",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q9",
+      "decision": "fixed",
+      "note": "Уточнены время, единственность открытого ответа или условие выбора между двумя верными конструкциями.",
+      "verification": "ok"
+    },
+    {
+      "id": "q10",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q12",
+      "decision": "fixed",
+      "note": "Уточнены время, единственность открытого ответа или условие выбора между двумя верными конструкциями.",
+      "verification": "ok"
+    },
+    {
+      "id": "q13",
+      "decision": "fixed",
+      "note": "Уточнены время, единственность открытого ответа или условие выбора между двумя верными конструкциями.",
+      "verification": "ok"
+    },
+    {
+      "id": "q14",
+      "decision": "fixed",
+      "note": "Уточнены время, единственность открытого ответа или условие выбора между двумя верными конструкциями.",
+      "verification": "ok"
+    },
+    {
+      "id": "q15",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q16",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q17",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q18",
+      "decision": "fixed",
+      "note": "Уточнены время, единственность открытого ответа или условие выбора между двумя верными конструкциями.",
+      "verification": "ok"
+    },
+    {
+      "id": "q19",
+      "decision": "fixed",
+      "note": "Уточнены время, единственность открытого ответа или условие выбора между двумя верными конструкциями.",
+      "verification": "ok"
+    },
+    {
+      "id": "q20",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q21",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q22",
+      "decision": "fixed",
+      "note": "Уточнены время открытого ответа, грамматический термин или допустимость формы corrés для другого лица.",
+      "verification": "ok"
+    },
+    {
+      "id": "q23",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q24",
+      "decision": "fixed",
+      "note": "Уточнены время открытого ответа, грамматический термин или допустимость формы corrés для другого лица.",
+      "verification": "ok"
+    },
+    {
+      "id": "q25",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q26",
+      "decision": "fixed",
+      "note": "Уточнены время открытого ответа, грамматический термин или допустимость формы corrés для другого лица.",
+      "verification": "ok"
+    },
+    {
+      "id": "q27",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q28",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q29",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q30",
+      "decision": "fixed",
+      "note": "Уточнены время открытого ответа, грамматический термин или допустимость формы corrés для другого лица.",
+      "verification": "ok"
+    },
+    {
+      "id": "q31",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q32",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q34",
+      "decision": "fixed",
+      "note": "Уточнены время открытого ответа, грамматический термин или допустимость формы corrés для другого лица.",
+      "verification": "ok"
+    },
+    {
+      "id": "q35",
+      "decision": "fixed",
+      "note": "Уточнены время открытого ответа, грамматический термин или допустимость формы corrés для другого лица.",
+      "verification": "ok"
+    },
+    {
+      "id": "q36",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q37",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q38",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q39",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q40",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q41",
+      "decision": "fixed",
+      "note": "Уточнены время открытого ответа, грамматический термин или допустимость формы corrés для другого лица.",
+      "verification": "ok"
+    },
+    {
+      "id": "q42",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q43",
+      "decision": "fixed",
+      "note": "Исправлены служебная формулировка, неоднозначное время/наклонение или правило ударения и ustedes.",
+      "verification": "ok"
+    },
+    {
+      "id": "q45",
+      "decision": "fixed",
+      "note": "Исправлены служебная формулировка, неоднозначное время/наклонение или правило ударения и ustedes.",
+      "verification": "ok"
+    },
+    {
+      "id": "q46",
+      "decision": "fixed",
+      "note": "Исправлены служебная формулировка, неоднозначное время/наклонение или правило ударения и ustedes.",
+      "verification": "ok"
+    },
+    {
+      "id": "q47",
+      "decision": "fixed",
+      "note": "Исправлены служебная формулировка, неоднозначное время/наклонение или правило ударения и ustedes.",
+      "verification": "ok"
+    },
+    {
+      "id": "q48",
+      "decision": "fixed",
+      "note": "Исправлены служебная формулировка, неоднозначное время/наклонение или правило ударения и ustedes.",
+      "verification": "ok"
+    },
+    {
+      "id": "q49",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q50",
+      "decision": "fixed",
+      "note": "Исправлены служебная формулировка, неоднозначное время/наклонение или правило ударения и ustedes.",
+      "verification": "ok"
+    },
+    {
+      "id": "q51",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q52",
+      "decision": "fixed",
+      "note": "Исправлены служебная формулировка, неоднозначное время/наклонение или правило ударения и ustedes.",
+      "verification": "ok"
+    },
+    {
+      "id": "q53",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q54",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q56",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q57",
+      "decision": "fixed",
+      "note": "Исправлены служебная формулировка, неоднозначное время/наклонение или правило ударения и ustedes.",
+      "verification": "ok"
+    },
+    {
+      "id": "q58",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q59",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q60",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q61",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q62",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q63",
+      "decision": "fixed",
+      "note": "Исправлены служебная формулировка, неоднозначное время/наклонение или правило ударения и ustedes.",
+      "verification": "ok"
+    },
+    {
+      "id": "q64",
+      "decision": "fixed",
+      "note": "Исправлены служебная формулировка, неоднозначное время/наклонение или правило ударения и ustedes.",
+      "verification": "ok"
+    },
+    {
+      "id": "q65",
+      "decision": "fixed",
+      "note": "Уточнён смысл самостоятельного утверждения вместо общего запрета инфинитива в рассказе.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-04-es025-028/check.py",
+      "result": "pass",
+      "evidence": "All 536 IDs/contracts, decisions versus baseline, fingerprints, native training validation, signatures and source-final-embedded equality; validation.log."
+    },
+    {
+      "command": "go test ./internal/grammarbundle ./internal/repository -run 'TestValidateEmbeddedBundleID|TestGrammar.*Bundle|TestGrammar.*Reorder' -count=1",
+      "result": "pass",
+      "evidence": "Both packages passed on final integrated data; go-tests.log."
+    },
+    {
+      "command": "git diff --check; git -C courses/spanish-grammar diff --check; git -C courses/english-grammar diff --check",
+      "result": "pass",
+      "evidence": "Three separately executed commands exit 0; diff-check.log. All 706 earlier dirty files outside review docs preserved; preservation.log."
+    },
+    {
+      "command": "cd courses/spanish-grammar && bash scripts/assemble-chapter.sh 028.es.grammar.present_regular_actions.infinitives_present_tense_endings_ar_er_ir",
+      "result": "pass",
+      "evidence": "028-assemble.log: exit 0."
+    },
+    {
+      "command": "cd courses/spanish-grammar && bash scripts/validate-chapter.sh 028.es.grammar.present_regular_actions.infinitives_present_tense_endings_ar_er_ir",
+      "result": "pass",
+      "evidence": "028-chapter-after.log: exit 0."
+    },
+    {
+      "command": "cd courses/spanish-grammar && ajv validate --spec=draft2020 --validate-formats=false --all-errors -s 02-chapter-schema.json -d chapters/028.es.grammar.present_regular_actions.infinitives_present_tense_endings_ar_er_ir/05-final.json",
+      "result": "known_baseline",
+      "evidence": "028-schema-before.log and 028-schema-after.log are byte-identical, exit 1: pre-existing theory tags violate schema pattern; no question errors."
+    },
+    {
+      "command": "cd courses/spanish-grammar && ajv validate -s 02-chapter-schema.json -d chapters/028.es.grammar.present_regular_actions.infinitives_present_tense_endings_ar_er_ir/05-final.json",
+      "result": "known_baseline",
+      "evidence": "028-assembler-ajv-before.log and 028-assembler-ajv-after.log are byte-identical, exit 1: no draft2020 meta-schema selected. Explicit draft2020 results are recorded separately."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    }
+  ],
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+}

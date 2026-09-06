@@ -1,0 +1,31 @@
+{
+  "existing_files": 25350,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/ofrecer.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/ofrecer.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/olvidar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/olvidar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/oponer.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/oponer.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/organizar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/organizar.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-ofrecer-organizar",
+    "docs/grammar-review/reports/2d1e42d9ae78df1c6be7d665.json",
+    "docs/grammar-review/reports/12b15e63fae01cbcc497e47d.json",
+    "docs/grammar-review/reports/ebe2f091a550ed08b07d1e42.json",
+    "docs/grammar-review/reports/7e6d91543859517daa02dda7.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/ofrecer.json": "b7577bf071ddcb9d01bb50b15675a7ba15fdbca31715382a9dac64818ecc2aae",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/ofrecer.json": "b7577bf071ddcb9d01bb50b15675a7ba15fdbca31715382a9dac64818ecc2aae",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/olvidar.json": "d789ad92c0284e8999f3b689d19988b1e541e15ac1b7e0c4059ec50f90115947",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/olvidar.json": "d789ad92c0284e8999f3b689d19988b1e541e15ac1b7e0c4059ec50f90115947",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/oponer.json": "aaa7b371067754a38618463314e51e8d847cb33707a13581d75526d965887712",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/oponer.json": "aaa7b371067754a38618463314e51e8d847cb33707a13581d75526d965887712",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/organizar.json": "6f2006b4c74d0ff9bf72cfc5737e341b1383b8175d43ef645032a2adc5be24d0",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/organizar.json": "6f2006b4c74d0ff9bf72cfc5737e341b1383b8175d43ef645032a2adc5be24d0"
+  }
+}

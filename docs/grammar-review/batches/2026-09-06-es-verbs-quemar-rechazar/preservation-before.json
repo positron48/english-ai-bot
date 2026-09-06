@@ -1,0 +1,31 @@
+{
+  "existing_files": 25448,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/quemar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/quemar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/querer.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/querer.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/realizar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/realizar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/rechazar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/rechazar.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-quemar-rechazar",
+    "docs/grammar-review/reports/a2fe5f3b244a76e5f4d0d5b8.json",
+    "docs/grammar-review/reports/7a2df82aa6774fc874cfbbac.json",
+    "docs/grammar-review/reports/b508dfe263064403d8060859.json",
+    "docs/grammar-review/reports/cfba7e06db0bdaf856b97b69.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/quemar.json": "91118f6c25990e1c7a935f114c39a0da105131b26eb0fae794c3fca023c58555",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/quemar.json": "91118f6c25990e1c7a935f114c39a0da105131b26eb0fae794c3fca023c58555",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/querer.json": "2059c86e4692898753d076cefeb8b1d1478e69ede749fbc369d08b6d50e4befd",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/querer.json": "2059c86e4692898753d076cefeb8b1d1478e69ede749fbc369d08b6d50e4befd",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/realizar.json": "b707795cf039462a66f8d290f2e67db0a0b105f7b911bc65178c5bb05458f8f1",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/realizar.json": "b707795cf039462a66f8d290f2e67db0a0b105f7b911bc65178c5bb05458f8f1",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/rechazar.json": "67b56148707533094270436fcf1962c8a6a1f896b4828439f79c5500ad769c7a",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/rechazar.json": "67b56148707533094270436fcf1962c8a6a1f896b4828439f79c5500ad769c7a"
+  }
+}

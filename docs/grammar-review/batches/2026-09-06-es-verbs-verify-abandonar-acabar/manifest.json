@@ -1,0 +1,34 @@
+{
+  "abandonar": {
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/abandonar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/abandonar.json",
+    "report": "docs/grammar-review/reports/f0566d23c167dd3b93172290.json",
+    "editor": "Codex editor 2026-09-06",
+    "source_sha256": "bbfa8de3370efb61aa0f06b7f0c0c3cd66433db89a632e294c872ed511557ac0",
+    "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197"
+  },
+  "abordar": {
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/abordar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/abordar.json",
+    "report": "docs/grammar-review/reports/ca3615ffec3de616c6d263f7.json",
+    "editor": "Codex editor 2026-09-06",
+    "source_sha256": "e072daece5bf061e27b33c377adf9343451064c3a7711eea761268fa645ecde1",
+    "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197"
+  },
+  "abrir": {
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/abrir.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/abrir.json",
+    "report": "docs/grammar-review/reports/d05efeee10bddf44584c3f13.json",
+    "editor": "Codex editor 2026-09-06",
+    "source_sha256": "74011a92d244e24a047881bba70262d671368a538ce67d81b0f0d6064caaab25",
+    "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197"
+  },
+  "acabar": {
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/acabar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/acabar.json",
+    "report": "docs/grammar-review/reports/7f938579fdbb300050b29afc.json",
+    "editor": "Codex editor 2026-09-06",
+    "source_sha256": "4f6b1e0cbcee3bcdf803b6a54000f1f37b559e378359deca7b3e9b7447041a8b",
+    "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197"
+  }
+}

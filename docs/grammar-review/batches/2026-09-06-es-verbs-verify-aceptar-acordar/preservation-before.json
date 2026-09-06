@@ -1,0 +1,39 @@
+{
+  "existing_files": 25744,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/aceptar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/aceptar.json",
+    "docs/grammar-review/reports/1dc2c119af76486dcdb8988b.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/acercar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/acercar.json",
+    "docs/grammar-review/reports/94810e5c4ce81e3756613144.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/acompañar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/acompañar.json",
+    "docs/grammar-review/reports/7f62e70e5743a19a220a744f.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/acordar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/acordar.json",
+    "docs/grammar-review/reports/b7b548ceac6a3b82717d54eb.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-verify-aceptar-acordar"
+  ],
+  "assigned_dirty_before": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/aceptar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/acercar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/acompañar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/acordar.json",
+    "docs/grammar-review/reports/1dc2c119af76486dcdb8988b.json",
+    "docs/grammar-review/reports/7f62e70e5743a19a220a744f.json",
+    "docs/grammar-review/reports/94810e5c4ce81e3756613144.json",
+    "docs/grammar-review/reports/b7b548ceac6a3b82717d54eb.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/aceptar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/acercar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/acompañar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/acordar.json"
+  ],
+  "preexisting_missing_tracked": [
+    "courses/english-grammar/llm-benchmark/__pycache__/benchmark.cpython-314.pyc",
+    "courses/english-grammar/training-pack-admin/__pycache__/server.cpython-314.pyc",
+    "tools-local/complaints-worker/__pycache__/worker.cpython-314.pyc"
+  ]
+}

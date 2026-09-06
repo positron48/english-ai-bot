@@ -1,0 +1,26 @@
+{
+  "existing_files": 24828,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/admitir.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/admitir.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/advertir.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/advertir.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/afectar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/afectar.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-admitir-afectar",
+    "docs/grammar-review/reports/e8c7c65b5c5e4acbcb5385db.json",
+    "docs/grammar-review/reports/2f91f9a7058edd3d76945041.json",
+    "docs/grammar-review/reports/4887f9691e031cf9727ad2f6.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/admitir.json": "553d4978473ec076781a5c714ed1147d3d082baf6f063f0c38cf203f4bb79ea5",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/admitir.json": "553d4978473ec076781a5c714ed1147d3d082baf6f063f0c38cf203f4bb79ea5",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/advertir.json": "9cbbd7306c60db34aea6e199559bcc95ce796240aaabaff3a20906ed9f23d8a2",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/advertir.json": "9cbbd7306c60db34aea6e199559bcc95ce796240aaabaff3a20906ed9f23d8a2",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/afectar.json": "8d057363b150a063177466f252abc6d2c314cd9b691863789811a97166fc4f22",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/afectar.json": "8d057363b150a063177466f252abc6d2c314cd9b691863789811a97166fc4f22"
+  }
+}

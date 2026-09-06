@@ -1,0 +1,90 @@
+{
+  "lemma": "asegurar",
+  "verifier": "Codex coordinator independent verifier 2026-09-06",
+  "source_sha256": "dd33dd31f904496eb85ca41e685a8d2e94b09a42f7ee6f7aee395032dd2b5fc1",
+  "replacements_by_zero_based_index": {
+    "3": {
+      "question_es_with_blank": "Por lo general, nosotros _ la protección. (asegurar)",
+      "translation_ru_full": "Обычно мы обеспечиваем защиту."
+    },
+    "9": {
+      "question_es_with_blank": "Antes, nosotros _ la protección con frecuencia. (asegurar)",
+      "translation_ru_full": "Раньше мы часто обеспечивали защиту."
+    },
+    "15": {
+      "question_es_with_blank": "Ayer, nosotros _ la protección sin demora. (asegurar)",
+      "translation_ru_full": "Вчера мы сразу обеспечили защиту."
+    },
+    "21": {
+      "question_es_with_blank": "Mañana, nosotros _ la protección. (asegurar)",
+      "translation_ru_full": "Завтра мы обеспечим защиту."
+    },
+    "27": {
+      "question_es_with_blank": "En esas circunstancias, nosotros _ la protección. (asegurar)",
+      "translation_ru_full": "В таких обстоятельствах мы обеспечили бы защиту."
+    },
+    "33": {
+      "question_es_with_blank": "Esta semana, nosotros ya _ la protección. (asegurar)",
+      "translation_ru_full": "На этой неделе мы уже обеспечили защиту."
+    },
+    "39": {
+      "question_es_with_blank": "Para entonces, nosotros ya _ la protección. (asegurar)",
+      "translation_ru_full": "К тому моменту мы уже обеспечили защиту."
+    },
+    "45": {
+      "question_es_with_blank": "En estilo literario: apenas nosotros _ la protección, cambió la situación. (asegurar)",
+      "translation_ru_full": "В книжном стиле: как только мы обеспечили защиту, ситуация изменилась."
+    },
+    "51": {
+      "question_es_with_blank": "Para el viernes, nosotros ya _ la protección. (asegurar)",
+      "translation_ru_full": "К пятнице мы уже обеспечим защиту."
+    },
+    "57": {
+      "question_es_with_blank": "De haberlo sabido, nosotros _ la protección. (asegurar)",
+      "translation_ru_full": "Если бы мы знали об этом заранее, мы бы обеспечили защиту."
+    },
+    "63": {
+      "question_es_with_blank": "Dudo que nosotros _ la protección hoy. (asegurar)",
+      "translation_ru_full": "Сомневаюсь, что сегодня мы обеспечим защиту."
+    },
+    "69": {
+      "question_es_with_blank": "Nadie creía que nosotros _ la protección tan pronto. (asegurar)",
+      "translation_ru_full": "Никто не верил, что мы так скоро обеспечим защиту."
+    },
+    "75": {
+      "question_es_with_blank": "En lenguaje jurídico: si nosotros _ la protección conforme al contrato, se tendrá por cumplida la obligación. (asegurar)",
+      "translation_ru_full": "В юридическом тексте: если мы обеспечим защиту согласно договору, обязательство будет считаться выполненным."
+    },
+    "78": {
+      "question_es_with_blank": "A la coordinadora le preocupa que yo ya _ el acceso. (asegurar)",
+      "translation_ru_full": "Координатора беспокоит, что я уже обеспечил доступ."
+    },
+    "81": {
+      "question_es_with_blank": "Me preocupa que nosotros ya _ la protección. (asegurar)",
+      "translation_ru_full": "Меня беспокоит, что мы уже обеспечили защиту."
+    },
+    "87": {
+      "question_es_with_blank": "Si nosotros _ la protección antes, se habría evitado el problema. (asegurar)",
+      "translation_ru_full": "Если бы мы обеспечили защиту раньше, проблемы удалось бы избежать."
+    },
+    "90": {
+      "translation_ru_full": "В юридическом тексте: если окажется, что к этой дате я уже обеспечил доступ, можно будет запустить услугу."
+    },
+    "91": {
+      "translation_ru_full": "В юридическом тексте: если окажется, что к этой дате ты уже обеспечил доставку, можно будет запустить услугу."
+    },
+    "92": {
+      "translation_ru_full": "В юридическом тексте: если окажется, что к этой дате он уже обеспечил качество, можно будет запустить услугу."
+    },
+    "93": {
+      "question_es_with_blank": "En lenguaje jurídico: si para esa fecha nosotros _ la protección, podrá iniciarse el servicio. (asegurar)",
+      "translation_ru_full": "В юридическом тексте: если окажется, что к этой дате мы уже обеспечили защиту, можно будет запустить услугу."
+    },
+    "94": {
+      "translation_ru_full": "В юридическом тексте: если окажется, что к этой дате вы уже обеспечили условия, можно будет запустить услугу."
+    },
+    "95": {
+      "translation_ru_full": "В юридическом тексте: если окажется, что к этой дате они уже обеспечили ресурсы, можно будет запустить услугу."
+    }
+  }
+}

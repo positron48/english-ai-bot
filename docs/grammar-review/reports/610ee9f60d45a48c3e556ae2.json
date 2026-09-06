@@ -1,0 +1,111 @@
+{
+  "version": 1,
+  "source": "courses/english-grammar/training_pack/chapters/005/en.02.b2_theory_description_statements.questions.json",
+  "source_sha256": "69697b832839b91f187554d49b4c7c9d65041fcb35aa067013f25fdfc06aea07",
+  "context_sha256": "a10f8cb9575cff5aa8e5c56f78dd4e7270570af29e20db939dc539e2d60c7329",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
+  "reviewed_at": "2026-09-04T10:31:20.410915+00:00",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
+  "questions": [
+    {
+      "id": "q1",
+      "decision": "fixed",
+      "note": "Уточнено самостоятельное прилагательное после be, а не запрет артиклей во всех конструкциях.",
+      "verification": "ok"
+    },
+    {
+      "id": "q2",
+      "decision": "ok",
+      "note": "You’re tired — единственный грамматически верный вариант.",
+      "verification": "ok"
+    },
+    {
+      "id": "q3",
+      "decision": "fixed",
+      "note": "Убрана ссылка на теорию и уточнена роль busy в данном предложении.",
+      "verification": "ok"
+    },
+    {
+      "id": "q4",
+      "decision": "fixed",
+      "note": "Исправлено объяснение: ошибка в лишнем a, а не в якобы существительной форме happy.",
+      "verification": "ok"
+    },
+    {
+      "id": "q5",
+      "decision": "ok",
+      "note": "Busy не получает окончания числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "q6",
+      "decision": "ok",
+      "note": "I’m tired соответствует данной структуре.",
+      "verification": "ok"
+    },
+    {
+      "id": "q7",
+      "decision": "fixed",
+      "note": "Запрет a относится к tired без существительного, а не ко всем словам после be.",
+      "verification": "ok"
+    },
+    {
+      "id": "q8",
+      "decision": "fixed",
+      "note": "Убрана неоднозначная формулировка о том, какой вариант требует артикля, и ссылка на теорию.",
+      "verification": "ok"
+    },
+    {
+      "id": "q9",
+      "decision": "fixed",
+      "note": "Устранён второй правильный ответ It’s happy.",
+      "verification": "ok"
+    },
+    {
+      "id": "q10",
+      "decision": "fixed",
+      "note": "Исправлено «нужен прилагательный» и уточнена самостоятельная роль busy.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "cd courses/english-grammar && bash scripts/assemble-chapter.sh 005.en.grammar.first_sentences_be_as.statements_with_be_identity && bash scripts/validate-chapter.sh 005.en.grammar.first_sentences_be_as.statements_with_be_identity",
+      "result": "pass",
+      "evidence": "Chapter assembled and validator passes. See docs/grammar-review/batches/2026-09-04-en005-006/005-assemble-after.log and 005-chapter-after.log."
+    },
+    {
+      "command": "ajv validate --spec=draft2020 --validate-formats=false --all-errors -s courses/english-grammar/02-chapter-schema.json -d courses/english-grammar/chapters/005.en.grammar.first_sentences_be_as.statements_with_be_identity/05-final.json",
+      "result": "pass",
+      "evidence": "Baseline and final schemas pass; see docs/grammar-review/batches/2026-09-04-en005-006/005-schema-before.log and 005-schema-after.log."
+    },
+    {
+      "command": "ajv validate -s courses/english-grammar/02-chapter-schema.json -d courses/english-grammar/chapters/005.en.grammar.first_sentences_be_as.statements_with_be_identity/05-final.json",
+      "result": "known_baseline",
+      "evidence": "Stock assembler omits draft2020; same missing meta-schema error before and after. Explicit draft2020 passes. See docs/grammar-review/batches/2026-09-04-en005-006/005-assembler-ajv-before.log and 005-assembler-ajv-after.log."
+    },
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-04-en005-006/check.py",
+      "result": "pass",
+      "evidence": "All 196 contracts and metadata preserved, decisions match changes, fingerprints and signatures current, no new EN pack duplicates, source/final/embedded equal. See docs/grammar-review/batches/2026-09-04-en005-006/validation.log."
+    },
+    {
+      "command": "go test ./internal/grammarbundle ./internal/repository -run 'TestValidateEmbeddedBundleID|TestGrammar.*Bundle|TestGrammar.*Reorder' -count=1",
+      "result": "pass",
+      "evidence": "Both packages passed in 5.069s and 14.507s; see docs/grammar-review/batches/2026-09-04-en005-006/go-tests.log."
+    },
+    {
+      "command": "git diff --check && git -C courses/english-grammar diff --check && git -C courses/spanish-grammar diff --check",
+      "result": "pass",
+      "evidence": "All three commands exited 0."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    }
+  ],
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+}

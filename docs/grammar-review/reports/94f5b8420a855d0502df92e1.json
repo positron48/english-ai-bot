@@ -1,0 +1,662 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/recoger.json",
+  "source_sha256": "ab40f9dd8cafe7c73e833f8211a5081e1a9c915a9c6a6c3c52df6ee44f1b30f2",
+  "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197",
+  "editor": "Aristotle editor 2026-09-06",
+  "verifier": "Helmholtz verifier 2026-09-06",
+  "phase": "done",
+  "reviewed_at": "2026-09-06",
+  "verified_at": "2026-09-06",
+  "questions": [
+    {
+      "id": "es.presente.indicativo:1:singular",
+      "decision": "ok",
+      "note": "Форма, metadata, самостоятельный контекст, русский перевод и четыре уникальных same-scope варианта проверены без изменений.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:singular",
+      "decision": "ok",
+      "note": "Форма, metadata, самостоятельный контекст, русский перевод и четыре уникальных same-scope варианта проверены без изменений.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:singular",
+      "decision": "ok",
+      "note": "Форма, metadata, самостоятельный контекст, русский перевод и четыре уникальных same-scope варианта проверены без изменений.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:1:plural",
+      "decision": "ok",
+      "note": "Форма, metadata, самостоятельный контекст, русский перевод и четыре уникальных same-scope варианта проверены без изменений.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:plural",
+      "decision": "ok",
+      "note": "Форма, metadata, самостоятельный контекст, русский перевод и четыре уникальных same-scope варианта проверены без изменений.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Форма, metadata, самостоятельный контекст, русский перевод и четыре уникальных same-scope варианта проверены без изменений. Замечание независимой проверки исправлено: русский перевод согласован с числом и значением испанского дополнения; повторная независимая проверка приняла исправление.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:singular",
+      "decision": "ok",
+      "note": "Форма, metadata, самостоятельный контекст, русский перевод и четыре уникальных same-scope варианта проверены без изменений.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:singular",
+      "decision": "ok",
+      "note": "Форма, metadata, самостоятельный контекст, русский перевод и четыре уникальных same-scope варианта проверены без изменений.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, options или двуязычный контекст; результат сверён с Jehle и scope, русский перевод согласован по значению и времени. Замечание независимой проверки исправлено: русский перевод согласован с числом и значением испанского дополнения; повторная независимая проверка приняла исправление.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:plural",
+      "decision": "ok",
+      "note": "Форма, metadata, самостоятельный контекст, русский перевод и четыре уникальных same-scope варианта проверены без изменений.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:plural",
+      "decision": "ok",
+      "note": "Форма, metadata, самостоятельный контекст, русский перевод и четыре уникальных same-scope варианта проверены без изменений.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:plural",
+      "decision": "ok",
+      "note": "Форма, metadata, самостоятельный контекст, русский перевод и четыре уникальных same-scope варианта проверены без изменений.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, options или двуязычный контекст; результат сверён с Jehle и scope, русский перевод согласован по значению и времени.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, options или двуязычный контекст; результат сверён с Jehle и scope, русский перевод согласован по значению и времени.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:singular",
+      "decision": "ok",
+      "note": "Форма, metadata, самостоятельный контекст, русский перевод и четыре уникальных same-scope варианта проверены без изменений.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:plural",
+      "decision": "ok",
+      "note": "Форма, metadata, самостоятельный контекст, русский перевод и четыре уникальных same-scope варианта проверены без изменений.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:plural",
+      "decision": "ok",
+      "note": "Форма, metadata, самостоятельный контекст, русский перевод и четыре уникальных same-scope варианта проверены без изменений.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Форма, metadata, самостоятельный контекст, русский перевод и четыре уникальных same-scope варианта проверены без изменений. Замечание независимой проверки исправлено: русский перевод согласован с числом и значением испанского дополнения; повторная независимая проверка приняла исправление.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:singular",
+      "decision": "ok",
+      "note": "Форма, metadata, самостоятельный контекст, русский перевод и четыре уникальных same-scope варианта проверены без изменений.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:singular",
+      "decision": "ok",
+      "note": "Форма, metadata, самостоятельный контекст, русский перевод и четыре уникальных same-scope варианта проверены без изменений.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:singular",
+      "decision": "ok",
+      "note": "Форма, metadata, самостоятельный контекст, русский перевод и четыре уникальных same-scope варианта проверены без изменений.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:plural",
+      "decision": "ok",
+      "note": "Форма, metadata, самостоятельный контекст, русский перевод и четыре уникальных same-scope варианта проверены без изменений.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:plural",
+      "decision": "ok",
+      "note": "Форма, metadata, самостоятельный контекст, русский перевод и четыре уникальных same-scope варианта проверены без изменений.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Форма, metadata, самостоятельный контекст, русский перевод и четыре уникальных same-scope варианта проверены без изменений. Замечание независимой проверки исправлено: русский перевод согласован с числом и значением испанского дополнения; повторная независимая проверка приняла исправление.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, options или двуязычный контекст; результат сверён с Jehle и scope, русский перевод согласован по значению и времени.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, options или двуязычный контекст; результат сверён с Jehle и scope, русский перевод согласован по значению и времени.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, options или двуязычный контекст; результат сверён с Jehle и scope, русский перевод согласован по значению и времени.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, options или двуязычный контекст; результат сверён с Jehle и scope, русский перевод согласован по значению и времени.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, options или двуязычный контекст; результат сверён с Jehle и scope, русский перевод согласован по значению и времени.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, options или двуязычный контекст; результат сверён с Jehle и scope, русский перевод согласован по значению и времени.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, options или двуязычный контекст; результат сверён с Jehle и scope, русский перевод согласован по значению и времени.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, options или двуязычный контекст; результат сверён с Jehle и scope, русский перевод согласован по значению и времени.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, options или двуязычный контекст; результат сверён с Jehle и scope, русский перевод согласован по значению и времени.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, options или двуязычный контекст; результат сверён с Jehle и scope, русский перевод согласован по значению и времени.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, options или двуязычный контекст; результат сверён с Jehle и scope, русский перевод согласован по значению и времени.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, options или двуязычный контекст; результат сверён с Jehle и scope, русский перевод согласован по значению и времени.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, options или двуязычный контекст; результат сверён с Jehle и scope, русский перевод согласован по значению и времени.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, options или двуязычный контекст; результат сверён с Jehle и scope, русский перевод согласован по значению и времени.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, options или двуязычный контекст; результат сверён с Jehle и scope, русский перевод согласован по значению и времени.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, options или двуязычный контекст; результат сверён с Jehle и scope, русский перевод согласован по значению и времени.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, options или двуязычный контекст; результат сверён с Jehle и scope, русский перевод согласован по значению и времени.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, options или двуязычный контекст; результат сверён с Jehle и scope, русский перевод согласован по значению и времени.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, options или двуязычный контекст; результат сверён с Jehle и scope, русский перевод согласован по значению и времени.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, options или двуязычный контекст; результат сверён с Jehle и scope, русский перевод согласован по значению и времени.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, options или двуязычный контекст; результат сверён с Jehle и scope, русский перевод согласован по значению и времени.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, options или двуязычный контекст; результат сверён с Jehle и scope, русский перевод согласован по значению и времени.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, options или двуязычный контекст; результат сверён с Jehle и scope, русский перевод согласован по значению и времени.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, options или двуязычный контекст; результат сверён с Jehle и scope, русский перевод согласован по значению и времени.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, options или двуязычный контекст; результат сверён с Jehle и scope, русский перевод согласован по значению и времени.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:singular",
+      "decision": "ok",
+      "note": "Форма, metadata, самостоятельный контекст, русский перевод и четыре уникальных same-scope варианта проверены без изменений.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, options или двуязычный контекст; результат сверён с Jehle и scope, русский перевод согласован по значению и времени.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:plural",
+      "decision": "ok",
+      "note": "Форма, metadata, самостоятельный контекст, русский перевод и четыре уникальных same-scope варианта проверены без изменений.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:plural",
+      "decision": "ok",
+      "note": "Форма, metadata, самостоятельный контекст, русский перевод и четыре уникальных same-scope варианта проверены без изменений.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:plural",
+      "decision": "ok",
+      "note": "Форма, metadata, самостоятельный контекст, русский перевод и четыре уникальных same-scope варианта проверены без изменений.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, options или двуязычный контекст; результат сверён с Jehle и scope, русский перевод согласован по значению и времени.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, options или двуязычный контекст; результат сверён с Jehle и scope, русский перевод согласован по значению и времени.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, options или двуязычный контекст; результат сверён с Jehle и scope, русский перевод согласован по значению и времени.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, options или двуязычный контекст; результат сверён с Jehle и scope, русский перевод согласован по значению и времени.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, options или двуязычный контекст; результат сверён с Jehle и scope, русский перевод согласован по значению и времени.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, options или двуязычный контекст; результат сверён с Jehle и scope, русский перевод согласован по значению и времени.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:singular",
+      "decision": "ok",
+      "note": "Форма, metadata, самостоятельный контекст, русский перевод и четыре уникальных same-scope варианта проверены без изменений.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:singular",
+      "decision": "ok",
+      "note": "Форма, metadata, самостоятельный контекст, русский перевод и четыре уникальных same-scope варианта проверены без изменений.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:singular",
+      "decision": "ok",
+      "note": "Форма, metadata, самостоятельный контекст, русский перевод и четыре уникальных same-scope варианта проверены без изменений.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:plural",
+      "decision": "ok",
+      "note": "Форма, metadata, самостоятельный контекст, русский перевод и четыре уникальных same-scope варианта проверены без изменений.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:plural",
+      "decision": "ok",
+      "note": "Форма, metadata, самостоятельный контекст, русский перевод и четыре уникальных same-scope варианта проверены без изменений.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:plural",
+      "decision": "ok",
+      "note": "Форма, metadata, самостоятельный контекст, русский перевод и четыре уникальных same-scope варианта проверены без изменений.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:singular",
+      "decision": "ok",
+      "note": "Форма, metadata, самостоятельный контекст, русский перевод и четыре уникальных same-scope варианта проверены без изменений.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, options или двуязычный контекст; результат сверён с Jehle и scope, русский перевод согласован по значению и времени.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, options или двуязычный контекст; результат сверён с Jehle и scope, русский перевод согласован по значению и времени.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, options или двуязычный контекст; результат сверён с Jehle и scope, русский перевод согласован по значению и времени.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, options или двуязычный контекст; результат сверён с Jehle и scope, русский перевод согласован по значению и времени.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, options или двуязычный контекст; результат сверён с Jehle и scope, русский перевод согласован по значению и времени.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, options или двуязычный контекст; результат сверён с Jehle и scope, русский перевод согласован по значению и времени.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, options или двуязычный контекст; результат сверён с Jehle и scope, русский перевод согласован по значению и времени.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, options или двуязычный контекст; результат сверён с Jehle и scope, русский перевод согласован по значению и времени.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, options или двуязычный контекст; результат сверён с Jehle и scope, русский перевод согласован по значению и времени.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, options или двуязычный контекст; результат сверён с Jehle и scope, русский перевод согласован по значению и времени.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, options или двуязычный контекст; результат сверён с Jehle и scope, русский перевод согласован по значению и времени.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, options или двуязычный контекст; результат сверён с Jehle и scope, русский перевод согласован по значению и времени.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, options или двуязычный контекст; результат сверён с Jehle и scope, русский перевод согласован по значению и времени.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, options или двуязычный контекст; результат сверён с Jehle и scope, русский перевод согласован по значению и времени.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, options или двуязычный контекст; результат сверён с Jehle и scope, русский перевод согласован по значению и времени.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, options или двуязычный контекст; результат сверён с Jehle и scope, русский перевод согласован по значению и времени.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, options или двуязычный контекст; результат сверён с Jehle и scope, русский перевод согласован по значению и времени.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, options или двуязычный контекст; результат сверён с Jehle и scope, русский перевод согласован по значению и времени.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, options или двуязычный контекст; результат сверён с Jehle и scope, русский перевод согласован по значению и времени.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, options или двуязычный контекст; результат сверён с Jehle и scope, русский перевод согласован по значению и времени.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, options или двуязычный контекст; результат сверён с Jehle и scope, русский перевод согласован по значению и времени.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, options или двуязычный контекст; результат сверён с Jehle и scope, русский перевод согласован по значению и времени.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, options или двуязычный контекст; результат сверён с Jehle и scope, русский перевод согласован по значению и времени.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, options или двуязычный контекст; результат сверён с Jehle и scope, русский перевод согласован по значению и времени.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, options или двуязычный контекст; результат сверён с Jehle и scope, русский перевод согласован по значению и времени.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма, options или двуязычный контекст; результат сверён с Jehle и scope, русский перевод согласован по значению и времени.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, options или двуязычный контекст; результат сверён с Jehle и scope, русский перевод согласован по значению и времени.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, options или двуязычный контекст; результат сверён с Jehle и scope, русский перевод согласован по значению и времени.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма, options или двуязычный контекст; результат сверён с Jehle и scope, русский перевод согласован по значению и времени.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 - (focused strict recoger checker)",
+      "result": "pass",
+      "evidence": "96/96 exact Jehle forms and canonical scope metadata; four unique same-scope options containing the answer exactly once; stable identity/order/top-level fields; explicit De haberlo sabido Russian counterfactual; byte-identical source and embedded; six checkpoints."
+    },
+    {
+      "command": "validate_artifact() from courses/spanish-grammar/scripts/generate-verb-forms-training.py for recoger",
+      "result": "pass",
+      "evidence": "Repository-native validation passed for all 16 scopes x 6 person/number slots."
+    },
+    {
+      "command": "manual full-card semantic review of recoger",
+      "result": "pass",
+      "evidence": "All 96 Spanish sentences were read with the answer inserted and compared with the full Russian meaning and tense; recoger el paquete is translated as «забрать посылку», and rare tenses use literary or legal contexts."
+    },
+    {
+      "command": "go test ./internal/verbtraining ./cmd/sync_verb_training_json",
+      "result": "pass",
+      "evidence": "Both focused Go packages passed."
+    },
+    {
+      "command": "git diff --check -- <assigned recoger root paths> && git -C courses/spanish-grammar diff --check -- training_pack/verb_forms/lemmas/recoger.json",
+      "result": "pass",
+      "evidence": "No whitespace errors in assigned source, embedded, report or checkpoint changes."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py check --language es --bank verbs --source courses/spanish-grammar/training_pack/verb_forms/lemmas/recoger.json",
+      "result": "known_baseline",
+      "evidence": "Exit 1 solely because all 96 editorial decisions await an independent verifier; coverage and source/context fingerprints are current."
+    },
+    {
+      "command": "python3 - (independent focused recoger verifier: Jehle, metadata, substitution, options, identity, embedded and fingerprints)",
+      "result": "pass",
+      "evidence": "96/96 форм и metadata совпадают с Jehle/scope; у каждой карточки четыре уникальных same-scope варианта и один ответ; source=embedded; identity/order/top-level и fingerprints актуальны. Семантическое чтение выявило 4 RU-дефекта."
+    },
+    {
+      "command": "Focused recoger post-verification correction for four requested IDs; exact field-delta, source/embedded, fingerprints and semantic checks",
+      "result": "pass",
+      "evidence": "Changed only translation_ru_full in es.presente.indicativo:3:plural, es.preterito_indefinido.indicativo:3:plural, es.futuro_simple.indicativo:3:plural and es.preterito_imperfecto.indicativo:3:singular; los papeles now maps to plural «бумаги», recoger el correo to «забирал почту»."
+    },
+    {
+      "command": "python3 - (four-row recoger recheck with previous-source fingerprint reconstruction)",
+      "result": "pass",
+      "evidence": "Current source fingerprint ab40f9dd8cafe7c73e833f8211a5081e1a9c915a9c6a6c3c52df6ee44f1b30f2; source=embedded. Reverting only the four corrected RU translations reconstructs prior fingerprint 781945b9059176b45a792f4a3ed2df93bf7d4c1f06676d76a42411056a36f4a5; all four new translations are semantically accepted."
+    },
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-06-es-verbs-recibir-reconocer/check.py",
+      "result": "pass",
+      "evidence": "384 cards passed exact Jehle forms, source/embedded equality, preserved contracts, report fingerprints, unique same-scope options, independent sign-off and 24 checkpoints."
+    },
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-06-es-verbs-recibir-reconocer/preservation-check.py",
+      "result": "pass",
+      "evidence": "25451 paths outside the allowed batch set remained unchanged; no missing or unexpected new paths."
+    },
+    {
+      "command": "validate_artifact() from courses/spanish-grammar/scripts/generate-verb-forms-training.py",
+      "result": "pass",
+      "evidence": "Native strict artifact validation passed for recibir, recoger, recomendar and reconocer."
+    },
+    {
+      "command": "python3 scripts/grammar_review_test.py",
+      "result": "pass",
+      "evidence": "All 13 grammar-review workflow tests passed."
+    },
+    {
+      "command": "git diff --check && git -C courses/spanish-grammar diff --check",
+      "result": "pass",
+      "evidence": "No whitespace errors in root or Spanish submodule diffs."
+    }
+  ],
+  "verification_note": "Повторная независимая проверка приняла четыре исправленных перевода: los papeles передано множественным «бумаги», recoger el correo — естественным «забирал почту». Реконструкция прежних значений вернула fingerprint 781945b9059176b45a792f4a3ed2df93bf7d4c1f06676d76a42411056a36f4a5, подтверждая отсутствие иных изменений после полного чтения; все 96 карточек приняты."
+}

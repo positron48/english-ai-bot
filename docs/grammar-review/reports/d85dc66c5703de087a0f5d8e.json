@@ -1,0 +1,102 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/chapters/008/es.04.b4_theory_words_ending_s_x.questions.json",
+  "source_sha256": "96803bf631b77685ce26ae8297065e1d54596695c714da71e43d60f1805c79dc",
+  "context_sha256": "5922d42122cd1887d260aa717bb8a86715aa499dd6b385a3094a7edd1c904de1",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
+  "reviewed_at": "2026-09-04T11:01:19.294777+00:00",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
+  "questions": [
+    {
+      "id": "q1",
+      "decision": "fixed",
+      "note": "Análisis и virus оба неизменяемы; análisis заменено на mes.",
+      "verification": "ok"
+    },
+    {
+      "id": "q2",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q3",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q4",
+      "decision": "fixed",
+      "note": "Неверно объявленное неизменяемым póker вне темы -s/-x заменено примером tórax.",
+      "verification": "ok"
+    },
+    {
+      "id": "q5",
+      "decision": "fixed",
+      "note": "Неверный ключ bus исправлен на buses.",
+      "verification": "ok"
+    },
+    {
+      "id": "q6",
+      "decision": "fixed",
+      "note": "В lunes ударение на предпоследнем слоге; это регулярный неизменяемый случай, а не исключение.",
+      "verification": "ok"
+    },
+    {
+      "id": "q7",
+      "decision": "fixed",
+      "note": "Объяснено регулярное правило вместо объявления crisis исключением.",
+      "verification": "ok"
+    },
+    {
+      "id": "q9",
+      "decision": "fixed",
+      "note": "Объяснено регулярное правило вместо объявления síntesis заимствованным исключением.",
+      "verification": "ok"
+    },
+    {
+      "id": "q10",
+      "decision": "fixed",
+      "note": "Условие соответствует выбору сочетания, а не одного слова.",
+      "verification": "ok"
+    },
+    {
+      "id": "q11",
+      "decision": "fixed",
+      "note": "Условие соответствует выбору сочетания для регулярного действия.",
+      "verification": "ok"
+    },
+    {
+      "id": "q12",
+      "decision": "fixed",
+      "note": "Убрано неестественное El viernes es libre; условие соответствует сочетанию в вариантах.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-04-es005-008/check.py",
+      "result": "pass",
+      "evidence": "518 IDs/contracts preserved; source/context hashes current; signatures valid; no new course-wide duplicates; source/final/embedded equal. See batch validation.log."
+    },
+    {
+      "command": "go test ./internal/grammarbundle ./internal/repository -run 'TestValidateEmbeddedBundleID|TestGrammar.*Bundle|TestGrammar.*Reorder' -count=1",
+      "result": "pass",
+      "evidence": "grammarbundle 4.945s; repository 14.356s; see batch go-tests.log."
+    },
+    {
+      "command": "git diff --check; git -C courses/spanish-grammar diff --check; git -C courses/english-grammar diff --check",
+      "result": "pass",
+      "evidence": "Each command exited 0; see batch diff-check.log."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    }
+  ],
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+}

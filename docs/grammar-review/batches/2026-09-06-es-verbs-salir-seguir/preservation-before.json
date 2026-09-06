@@ -1,0 +1,36 @@
+{
+  "existing_files": 25549,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/salir.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/salir.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/saltar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/saltar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/salvar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/salvar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/seguir.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/seguir.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-salir-seguir",
+    "docs/grammar-review/reports/fefeb799c5be5d46a2ecf16a.json",
+    "docs/grammar-review/reports/76cb5333a99d486c814e57c4.json",
+    "docs/grammar-review/reports/39f5295a1def777f3e49a116.json",
+    "docs/grammar-review/reports/ddbdecb51339985525636f43.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/salir.json": "3435248ef45237c227bfadc2ed7b8e49150c7365bece9db0f0108744c5d5eb62",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/salir.json": "3435248ef45237c227bfadc2ed7b8e49150c7365bece9db0f0108744c5d5eb62",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/saltar.json": "2a93803356184a200d2f5613ef14b309f7cc015e85f1a33bd696b88842a463b3",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/saltar.json": "2a93803356184a200d2f5613ef14b309f7cc015e85f1a33bd696b88842a463b3",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/salvar.json": "7ca2064ef6098fae1b60d4936244b6a9c0a2aeb1f05ab4ec28ea1262a3688200",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/salvar.json": "7ca2064ef6098fae1b60d4936244b6a9c0a2aeb1f05ab4ec28ea1262a3688200",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/seguir.json": "6d4a8390d30649e5207d31a2a8ee972f9d5787612bf737c7db215ebe60f36a0b",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/seguir.json": "6d4a8390d30649e5207d31a2a8ee972f9d5787612bf737c7db215ebe60f36a0b"
+  },
+  "preexisting_missing_tracked": [
+    "courses/english-grammar/llm-benchmark/__pycache__/benchmark.cpython-314.pyc",
+    "courses/english-grammar/training-pack-admin/__pycache__/server.cpython-314.pyc",
+    "tools-local/complaints-worker/__pycache__/worker.cpython-314.pyc"
+  ]
+}

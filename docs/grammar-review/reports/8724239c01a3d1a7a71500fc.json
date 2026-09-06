@@ -1,0 +1,632 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/suponer.json",
+  "source_sha256": "e04dcc6720a987495deafc0b5135ff499e32a243c0b8746c589adc0392610bc5",
+  "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197",
+  "editor": "Codex coordinator editor 2026-09-06",
+  "verifier": "Laplace verifier 2026-09-06",
+  "phase": "done",
+  "reviewed_at": "2026-09-06",
+  "verified_at": "2026-09-06",
+  "questions": [
+    {
+      "id": "es.presente.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer. Координаторский смысловой проход уточнил временную опору или точность формулировки.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer. Координаторский смысловой проход уточнил временную опору или точность формулировки. Исправлено точное замечание независимой проверки; форма, options и metadata сохранены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer. Координаторский смысловой проход уточнил временную опору или точность формулировки.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer. Исправлено точное замечание независимой проверки; форма, options и metadata сохранены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer. Исправлено точное замечание независимой проверки; форма, options и metadata сохранены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer. Координаторский смысловой проход уточнил временную опору или точность формулировки.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer. Исправлено точное замечание независимой проверки; форма, options и metadata сохранены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer. Координаторский смысловой проход уточнил временную опору или точность формулировки.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены форма по RAE, варианты своего scope и полностью переписанный самодостаточный ES/RU контекст для значения suponer.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "RAE authoritative forms for suponer; baseline defect audit",
+      "result": "pass",
+      "evidence": "96 forms checked against DLE suponer (conjugated like poner, irregular participle supuesto); baseline had 1 wrong surface, 28 duplicate-option cards, 26 answer multiplicity failures, 175 off-scope entries on 72 cards and 49 invalid-union entries."
+    },
+    {
+      "command": "manual semantic read and answer substitution: suponer 96/96",
+      "result": "pass",
+      "evidence": "All ES/RU contexts read; assume, entail, represent value and explicit hypothesis uses kept distinct; rare scopes carry literary/legal framing."
+    },
+    {
+      "command": "source/embedded cmp; identity/order/top-level preservation; options and blanks",
+      "result": "pass",
+      "evidence": "Source equals embedded; 16 scopes x 6 slots preserved; one blank, four unique same-scope options and one answer on every card; all six counterfactual translations explicit."
+    },
+    {
+      "command": "coordinator semantic refinement: five suponer cards",
+      "result": "pass",
+      "evidence": "Clarified one anterior relation, two future-perfect anchors, one archaic legal predicate and one present-perfect-subjunctive governing clause; forms/options/identity unchanged."
+    },
+    {
+      "command": "independent full read suponer 96/96; authoritative forms; baseline identity/order; cmp; native validate_artifact; go test ./internal/grammartrainingpack",
+      "result": "pass",
+      "evidence": "Source=embedded; all 96 RAE-derived forms, scope/person/number metadata, one blank, four unique same-scope options with one answer, rare registers and six explicit counterfactual translations checked. Four rows marked needs_fix for future-perfect sequencing, Russian conditional-perfect aspect and legal causality."
+    },
+    {
+      "command": "post-verifier correction: four suponer semantic findings; exact assertions; fingerprint/cmp; authoritative forms and structural invariants",
+      "result": "pass",
+      "evidence": "Aligned future-perfect temporal sequence in two contexts, corrected Russian perfective aspect in conditional perfect, and repaired the legal cause/effect chain. Only requested ES/RU fields changed; four rows returned to pending, other 92 remain ok; source=embedded and fingerprint refreshed."
+    },
+    {
+      "command": "recheck four suponer findings; fingerprint; cmp; native validate_artifact",
+      "result": "pass",
+      "evidence": "Accepted future-perfect 1s son posibles, future-perfect 2p comparison anchor, conditional-perfect 1p Russian perfective aspect and future-subjunctive 2p coherent document admission. Other 92 verification rows remained ok before closure; source=embedded and fingerprint e04dcc6720a987495deafc0b5135ff499e32a243c0b8746c589adc0392610bc5."
+    },
+    {
+      "command": "final batch barrier: check.py; preservation-check.py; native validate_artifact; go test ./internal/verbtraining ./cmd/sync_verb_training_json; grammar_review_test.py; focused grammar-review check; git diff --check; skill quick_validate.py",
+      "result": "pass",
+      "evidence": "384 final cards and 24 primary checkpoints passed against authoritative RAE forms; source/embedded and fingerprints fresh; 25594 paths preserved; Go tests and 13 grammar-review tests passed; each source reports done; root and Spanish diffs clean; skill valid."
+    }
+  ],
+  "verification_note": "Независимо прочитаны 96/96 карточек с подстановкой формы. Authoritative RAE forms, participio supuesto, metadata, options, identity/order, редкие регистры и шесть De haberlo sabido прошли. Четыре исправленных контекста повторно проверены: времена, аспект и юридическая причинность теперь точны."
+}

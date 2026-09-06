@@ -1,0 +1,31 @@
+{
+  "existing_files": 25112,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/disputar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/disputar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/distinguir.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/distinguir.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/distribuir.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/distribuir.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/dormir.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/dormir.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-disputar-dormir",
+    "docs/grammar-review/reports/b9afdc9f4925b5547538d5c3.json",
+    "docs/grammar-review/reports/aad8a769fa8c02df9d7c3a88.json",
+    "docs/grammar-review/reports/ff9c451c8a0151e37642380c.json",
+    "docs/grammar-review/reports/52a7f711f873e199ad7036b8.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/disputar.json": "56aff9b20c1fce831c664123f3019a56c4bc899f15ef258f6afec334c889b1a0",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/disputar.json": "56aff9b20c1fce831c664123f3019a56c4bc899f15ef258f6afec334c889b1a0",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/distinguir.json": "1e742be766d69837a712ace4fa08b416a2015bdb045b5f536d8d41cc190ced05",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/distinguir.json": "1e742be766d69837a712ace4fa08b416a2015bdb045b5f536d8d41cc190ced05",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/distribuir.json": "f6d0d2a44e8f5700d5ba1ec6c7b26a76a0e96b562ed79f1d9ffe2de94e3724a9",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/distribuir.json": "f6d0d2a44e8f5700d5ba1ec6c7b26a76a0e96b562ed79f1d9ffe2de94e3724a9",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/dormir.json": "68abdabc13997fad513526062b674b9e87974efe51e6ce05a306ac1479b56c2e",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/dormir.json": "68abdabc13997fad513526062b674b9e87974efe51e6ce05a306ac1479b56c2e"
+  }
+}

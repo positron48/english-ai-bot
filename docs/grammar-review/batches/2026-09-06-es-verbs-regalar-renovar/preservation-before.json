@@ -1,0 +1,31 @@
+{
+  "existing_files": 25487,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/regalar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/regalar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/registrar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/registrar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/regresar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/regresar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/renovar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/renovar.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-regalar-renovar",
+    "docs/grammar-review/reports/9af51af4f3b90efc70b193d7.json",
+    "docs/grammar-review/reports/c426b044c74cb3333847a6d9.json",
+    "docs/grammar-review/reports/600e4bdfec86729392cff9aa.json",
+    "docs/grammar-review/reports/1b5a3f0b0c5aaef5a01db08e.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/regalar.json": "8161fd7d4810863c2b2904f5f642fecf064f3f9ba4b9eed4c8da2f4c64b86020",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/regalar.json": "8161fd7d4810863c2b2904f5f642fecf064f3f9ba4b9eed4c8da2f4c64b86020",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/registrar.json": "2e740229211f1419426f754fcf453d20ee83644fd56220366f8e4389cfb09427",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/registrar.json": "2e740229211f1419426f754fcf453d20ee83644fd56220366f8e4389cfb09427",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/regresar.json": "3dfd9a54973a9e8cd90b248eb666e419ea03f8cebd214284d02831124078271c",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/regresar.json": "3dfd9a54973a9e8cd90b248eb666e419ea03f8cebd214284d02831124078271c",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/renovar.json": "121b14e5218a386fc4dc2d43c317174f5ddf3cce6eda84677b76ebd96ab6a2fc",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/renovar.json": "121b14e5218a386fc4dc2d43c317174f5ddf3cce6eda84677b76ebd96ab6a2fc"
+  }
+}

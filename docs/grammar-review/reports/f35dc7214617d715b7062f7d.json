@@ -1,0 +1,242 @@
+{
+  "version": 1,
+  "source": "courses/english-grammar/chapters/011.en.grammar.first_sentences_be_as.build_speak_mini_dialogues/03-questions.json",
+  "source_sha256": "b3c468dbfd7aca65c7c1d08c05fb03f990fc26dda92922e622ee105c24303b8e",
+  "context_sha256": "8998236d97764148df0d636ceddf31a79d6a19910860158b886b0248c6ab9156",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
+  "reviewed_at": "2026-09-04T12:15:39.532282+00:00",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
+  "questions": [
+    {
+      "id": "q1",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q2",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q5",
+      "decision": "fixed",
+      "note": "Уточнены контекст и смысл реплик; убраны ложные обобщения, удвоение подлежащего и ошибочное объяснение.",
+      "verification": "ok"
+    },
+    {
+      "id": "q7",
+      "decision": "fixed",
+      "note": "Уточнены контекст и смысл реплик; убраны ложные обобщения, удвоение подлежащего и ошибочное объяснение.",
+      "verification": "ok"
+    },
+    {
+      "id": "q9",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q13",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q17",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q21",
+      "decision": "fixed",
+      "note": "Уточнены контекст и смысл реплик; убраны ложные обобщения, удвоение подлежащего и ошибочное объяснение.",
+      "verification": "ok"
+    },
+    {
+      "id": "q25",
+      "decision": "fixed",
+      "note": "Уточнены контекст и смысл реплик; убраны ложные обобщения, удвоение подлежащего и ошибочное объяснение.",
+      "verification": "ok"
+    },
+    {
+      "id": "q28",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q29",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q30",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q31",
+      "decision": "fixed",
+      "note": "Уточнены контекст и смысл реплик; убраны ложные обобщения, удвоение подлежащего и ошибочное объяснение.",
+      "verification": "ok"
+    },
+    {
+      "id": "q32",
+      "decision": "fixed",
+      "note": "Уточнены контекст и смысл реплик; убраны ложные обобщения, удвоение подлежащего и ошибочное объяснение.",
+      "verification": "ok"
+    },
+    {
+      "id": "q33",
+      "decision": "fixed",
+      "note": "Уточнены контекст и смысл реплик; убраны ложные обобщения, удвоение подлежащего и ошибочное объяснение.",
+      "verification": "ok"
+    },
+    {
+      "id": "q35",
+      "decision": "fixed",
+      "note": "Уточнены контекст и смысл реплик; убраны ложные обобщения, удвоение подлежащего и ошибочное объяснение.",
+      "verification": "ok"
+    },
+    {
+      "id": "q36",
+      "decision": "fixed",
+      "note": "Уточнены контекст и смысл реплик; убраны ложные обобщения, удвоение подлежащего и ошибочное объяснение.",
+      "verification": "ok"
+    },
+    {
+      "id": "q38",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q39",
+      "decision": "fixed",
+      "note": "Уточнены контекст и смысл реплик; убраны ложные обобщения, удвоение подлежащего и ошибочное объяснение.",
+      "verification": "ok"
+    },
+    {
+      "id": "q40",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q41",
+      "decision": "fixed",
+      "note": "Уточнены ближнее указание, время и состав диалога; правильные альтернативы не объявляются ошибками.",
+      "verification": "ok"
+    },
+    {
+      "id": "q42",
+      "decision": "fixed",
+      "note": "Уточнены ближнее указание, время и состав диалога; правильные альтернативы не объявляются ошибками.",
+      "verification": "ok"
+    },
+    {
+      "id": "q44",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q45",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q46",
+      "decision": "fixed",
+      "note": "Уточнены ближнее указание, время и состав диалога; правильные альтернативы не объявляются ошибками.",
+      "verification": "ok"
+    },
+    {
+      "id": "q47",
+      "decision": "fixed",
+      "note": "Уточнены ближнее указание, время и состав диалога; правильные альтернативы не объявляются ошибками.",
+      "verification": "ok"
+    },
+    {
+      "id": "q49",
+      "decision": "fixed",
+      "note": "Уточнены ближнее указание, время и состав диалога; правильные альтернативы не объявляются ошибками.",
+      "verification": "ok"
+    },
+    {
+      "id": "q51",
+      "decision": "fixed",
+      "note": "Уточнены ближнее указание, время и состав диалога; правильные альтернативы не объявляются ошибками.",
+      "verification": "ok"
+    },
+    {
+      "id": "q53",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q57",
+      "decision": "fixed",
+      "note": "Уточнены ближнее указание, время и состав диалога; правильные альтернативы не объявляются ошибками.",
+      "verification": "ok"
+    },
+    {
+      "id": "q58",
+      "decision": "fixed",
+      "note": "Уточнены ближнее указание, время и состав диалога; правильные альтернативы не объявляются ошибками.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-04-en011-014/check.py",
+      "result": "pass",
+      "evidence": "All 390 IDs/contracts, metadata, decisions versus baseline and current source/context fingerprints verified. Native training validation, signatures, no new course-wide duplicate signatures and exact source-final-embedded equality; validation.log."
+    },
+    {
+      "command": "go test ./internal/grammarbundle ./internal/repository -run 'TestValidateEmbeddedBundleID|TestGrammar.*Bundle|TestGrammar.*Reorder' -count=1",
+      "result": "pass",
+      "evidence": "Both packages pass: 4.808s and 13.894s; go-tests.log."
+    },
+    {
+      "command": "git diff --check; git -C courses/spanish-grammar diff --check; git -C courses/english-grammar diff --check",
+      "result": "pass",
+      "evidence": "Three separately executed commands exit 0; diff-check.log. All 318 pre-existing files outside review docs preserved byte-for-byte; preservation.log."
+    },
+    {
+      "command": "cd courses/english-grammar && bash scripts/assemble-chapter.sh 011.en.grammar.first_sentences_be_as.build_speak_mini_dialogues",
+      "result": "pass",
+      "evidence": "31 questions assembled; 011-assemble.log. Embedded AJV limitation recorded separately."
+    },
+    {
+      "command": "cd courses/english-grammar && bash scripts/validate-chapter.sh 011.en.grammar.first_sentences_be_as.build_speak_mini_dialogues",
+      "result": "pass",
+      "evidence": "Before and after pass: 011-chapter-before.log and 011-chapter-after.log."
+    },
+    {
+      "command": "ajv validate --spec=draft2020 --validate-formats=false --all-errors -s courses/english-grammar/02-chapter-schema.json -d courses/english-grammar/chapters/011.en.grammar.first_sentences_be_as.build_speak_mini_dialogues/05-final.json",
+      "result": "pass",
+      "evidence": "Before and after pass: 011-schema-before.log and 011-schema-after.log."
+    },
+    {
+      "command": "cd courses/english-grammar && ajv validate -s 02-chapter-schema.json -d chapters/011.en.grammar.first_sentences_be_as.build_speak_mini_dialogues/05-final.json",
+      "result": "known_baseline",
+      "evidence": "011-assembler-ajv-before.log and 011-assembler-ajv-after.log are byte-identical: exit 1, no schema with key or ref https://json-schema.org/draft/2020-12/schema. Explicit draft2020 passes before and after."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    }
+  ],
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+}

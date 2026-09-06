@@ -4,10 +4,10 @@
   "source_sha256": "548b31a66659be3dedf9f973177d9ce4eb0ec5230d3e4f730144e1eeb9bce65a",
   "context_sha256": "9fdba53951595674bc94b4350a94f40a8664f9efd8ad982e25918ddab4725fd2",
   "editor": "Codex editor 2026-09-04",
-  "verifier": "",
-  "phase": "awaiting_verification",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
   "reviewed_at": "2026-09-04T09:35:30.314804+00:00",
-  "verified_at": "",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
   "questions": [],
   "checks": [
     {
@@ -29,7 +29,12 @@
       "command": "python3 -m unittest discover -s scripts -p grammar_review_test.py -v",
       "result": "pass",
       "evidence": "13 tests passed, including empty source awaiting verification and invalid unsigned done. Source questions=[]; no questions added."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
     }
   ],
-  "verification_note": ""
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
 }

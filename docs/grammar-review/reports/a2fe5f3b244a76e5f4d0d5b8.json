@@ -1,0 +1,642 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/quemar.json",
+  "source_sha256": "9be35ab1ab6df615e610b70b4944c8843d5b1e6dc051b81e8e3b0e40b4191241",
+  "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197",
+  "editor": "Helmholtz editor 2026-09-06",
+  "verifier": "Codex coordinator verifier 2026-09-06",
+  "phase": "done",
+  "reviewed_at": "2026-09-06",
+  "verified_at": "2026-09-06",
+  "questions": [
+    {
+      "id": "es.presente.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «quemo» сверена по Jehle; контекст presente indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «quemas» сверена по Jehle; контекст presente indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «quema» сверена по Jehle; контекст presente indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «quemamos» сверена по Jehle; контекст presente indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «quemáis» сверена по Jehle; контекст presente indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «queman» сверена по Jehle; контекст presente indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «quemaba» сверена по Jehle; контекст preterito_imperfecto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «quemabas» сверена по Jehle; контекст preterito_imperfecto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «quemaba» сверена по Jehle; контекст preterito_imperfecto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «quemábamos» сверена по Jehle; контекст preterito_imperfecto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «quemabais» сверена по Jehle; контекст preterito_imperfecto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «quemaban» сверена по Jehle; контекст preterito_imperfecto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «quemé» сверена по Jehle; контекст preterito_indefinido indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «quemaste» сверена по Jehle; контекст preterito_indefinido indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «quemó» сверена по Jehle; контекст preterito_indefinido indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «quemamos» сверена по Jehle; контекст preterito_indefinido indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «quemasteis» сверена по Jehle; контекст preterito_indefinido indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «quemaron» сверена по Jehle; контекст preterito_indefinido indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «quemaré» сверена по Jehle; контекст futuro_simple indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «quemarás» сверена по Jehle; контекст futuro_simple indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «quemará» сверена по Jehle; контекст futuro_simple indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «quemaremos» сверена по Jehle; контекст futuro_simple indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «quemaréis» сверена по Jehle; контекст futuro_simple indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «quemarán» сверена по Jehle; контекст futuro_simple indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «quemaría» сверена по Jehle; контекст condicional_simple indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «quemarías» сверена по Jehle; контекст condicional_simple indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «quemaría» сверена по Jehle; контекст condicional_simple indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «quemaríamos» сверена по Jehle; контекст condicional_simple indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «quemaríais» сверена по Jehle; контекст condicional_simple indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «quemarían» сверена по Jehle; контекст condicional_simple indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «he quemado» сверена по Jehle; контекст preterito_perfecto_compuesto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «has quemado» сверена по Jehle; контекст preterito_perfecto_compuesto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «ha quemado» сверена по Jehle; контекст preterito_perfecto_compuesto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hemos quemado» сверена по Jehle; контекст preterito_perfecto_compuesto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habéis quemado» сверена по Jehle; контекст preterito_perfecto_compuesto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «han quemado» сверена по Jehle; контекст preterito_perfecto_compuesto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «había quemado» сверена по Jehle; контекст preterito_pluscuamperfecto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habías quemado» сверена по Jehle; контекст preterito_pluscuamperfecto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «había quemado» сверена по Jehle; контекст preterito_pluscuamperfecto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habíamos quemado» сверена по Jehle; контекст preterito_pluscuamperfecto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habíais quemado» сверена по Jehle; контекст preterito_pluscuamperfecto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habían quemado» сверена по Jehle; контекст preterito_pluscuamperfecto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hube quemado» сверена по Jehle; контекст preterito_anterior indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubiste quemado» сверена по Jehle; контекст preterito_anterior indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubo quemado» сверена по Jehle; контекст preterito_anterior indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubimos quemado» сверена по Jehle; контекст preterito_anterior indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubisteis quemado» сверена по Jehle; контекст preterito_anterior indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubieron quemado» сверена по Jehle; контекст preterito_anterior indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habré quemado» сверена по Jehle; контекст futuro_perfecto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habrás quemado» сверена по Jehle; контекст futuro_perfecto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habrá quemado» сверена по Jehle; контекст futuro_perfecto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habremos quemado» сверена по Jehle; контекст futuro_perfecto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habréis quemado» сверена по Jehle; контекст futuro_perfecto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habrán quemado» сверена по Jehle; контекст futuro_perfecto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habría quemado» сверена по Jehle; контекст condicional_perfecto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habrías quemado» сверена по Jehle; контекст condicional_perfecto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habría quemado» сверена по Jehle; контекст condicional_perfecto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habríamos quemado» сверена по Jehle; контекст condicional_perfecto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habríais quemado» сверена по Jehle; контекст condicional_perfecto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habrían quemado» сверена по Jehle; контекст condicional_perfecto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «queme» сверена по Jehle; контекст presente subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «quemes» сверена по Jehle; контекст presente subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «queme» сверена по Jehle; контекст presente subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «quememos» сверена по Jehle; контекст presente subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «queméis» сверена по Jehle; контекст presente subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «quemen» сверена по Jehle; контекст presente subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «quemara» сверена по Jehle; контекст preterito_imperfecto subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «quemaras» сверена по Jehle; контекст preterito_imperfecto subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «quemara» сверена по Jehle; контекст preterito_imperfecto subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «quemáramos» сверена по Jehle; контекст preterito_imperfecto subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «quemarais» сверена по Jehle; контекст preterito_imperfecto subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «quemaran» сверена по Jehle; контекст preterito_imperfecto subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «quemare» сверена по Jehle; контекст futuro_simple subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «quemares» сверена по Jehle; контекст futuro_simple subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «quemare» сверена по Jehle; контекст futuro_simple subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «quemáremos» сверена по Jehle; контекст futuro_simple subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «quemareis» сверена по Jehle; контекст futuro_simple subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «quemaren» сверена по Jehle; контекст futuro_simple subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «haya quemado» сверена по Jehle; контекст preterito_perfecto subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hayas quemado» сверена по Jehle; контекст preterito_perfecto subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «haya quemado» сверена по Jehle; контекст preterito_perfecto subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hayamos quemado» сверена по Jehle; контекст preterito_perfecto subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hayáis quemado» сверена по Jehle; контекст preterito_perfecto subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hayan quemado» сверена по Jehle; контекст preterito_perfecto subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubiera quemado» сверена по Jehle; контекст preterito_pluscuamperfecto subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubieras quemado» сверена по Jehle; контекст preterito_pluscuamperfecto subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubiera quemado» сверена по Jehle; контекст preterito_pluscuamperfecto subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubiéramos quemado» сверена по Jehle; контекст preterito_pluscuamperfecto subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubierais quemado» сверена по Jehle; контекст preterito_pluscuamperfecto subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubieran quemado» сверена по Jehle; контекст preterito_pluscuamperfecto subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubiere quemado» сверена по Jehle; контекст futuro_perfecto subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubieres quemado» сверена по Jehle; контекст futuro_perfecto subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubiere quemado» сверена по Jehle; контекст futuro_perfecto subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubiéremos quemado» сверена по Jehle; контекст futuro_perfecto subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubiereis quemado» сверена по Jehle; контекст futuro_perfecto subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubieren quemado» сверена по Jehle; контекст futuro_perfecto subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 - (focused quemar baseline/Jehle/content validator)",
+      "result": "pass",
+      "evidence": "96 карточек: identity/order, top-level contract, Jehle forms, ES/RU tense and meaning, four unique same-scope options, explicit counterfactuals, fresh fingerprints and source=embedded."
+    },
+    {
+      "command": "go test ./internal/grammartrainingpack",
+      "result": "pass",
+      "evidence": "Embedded training-pack package passes focused Go tests."
+    },
+    {
+      "command": "git diff --check -- internal/grammartrainingpack/es/verb_forms/lemmas/quemar.json docs/grammar-review/reports/a2fe5f3b244a76e5f4d0d5b8.json && git -C courses/spanish-grammar diff --check -- training_pack/verb_forms/lemmas/quemar.json",
+      "result": "pass",
+      "evidence": "No whitespace errors in assigned source, embedded copy or report."
+    },
+    {
+      "command": "python3 - (independent coordinator semantic and structural verification of all 96 quemar cards)",
+      "result": "pass",
+      "evidence": "Все 96 карточек прочитаны после редакторского барьера; формы сверены с Jehle, source и embedded совпадают, identity/order/top-level сохранены, options уникальны и принадлежат тому же scope."
+    },
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-06-es-verbs-quemar-rechazar/check.py",
+      "result": "pass",
+      "evidence": "384 cards passed exact Jehle forms, source/embedded equality, preserved contracts, report fingerprints, unique same-scope options, independent sign-off and 24 checkpoints."
+    },
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-06-es-verbs-quemar-rechazar/preservation-check.py",
+      "result": "pass",
+      "evidence": "25438 paths outside the allowed batch set remained unchanged; no missing or unexpected new paths."
+    },
+    {
+      "command": "validate_artifact() from courses/spanish-grammar/scripts/generate-verb-forms-training.py",
+      "result": "pass",
+      "evidence": "Native strict artifact validation passed for quemar, querer, realizar and rechazar."
+    },
+    {
+      "command": "go test ./internal/verbtraining ./cmd/sync_verb_training_json",
+      "result": "pass",
+      "evidence": "Focused runtime and embedded synchronization tests passed."
+    },
+    {
+      "command": "python3 scripts/grammar_review_test.py",
+      "result": "pass",
+      "evidence": "All 13 grammar-review workflow tests passed."
+    },
+    {
+      "command": "git diff --check && git -C courses/spanish-grammar diff --check",
+      "result": "pass",
+      "evidence": "No whitespace errors in root or Spanish submodule diffs."
+    }
+  ],
+  "verification_note": "Независимо прочитаны все 96 карточек: испанские контексты и русские переводы согласованы с формой, временем, наклонением, лицом и числом; редкие времена явно маркированы; варианты ответа однозначны; контрфактические условия переданы полностью."
+}

@@ -1,0 +1,632 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/traer.json",
+  "source_sha256": "fa6e74ada2606c56478dfca8603295f48083424bd7b9c0c1ba5bdcdf404b5701",
+  "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197",
+  "editor": "Codex coordinator editor 2026-09-06",
+  "verifier": "Laplace verifier 2026-09-06",
+  "phase": "done",
+  "reviewed_at": "2026-09-06",
+  "verified_at": "2026-09-06",
+  "questions": [
+    {
+      "id": "es.presente.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:1:singular полностью переписана: форма Jehle «traigo», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:2:singular полностью переписана: форма Jehle «traes», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:3:singular полностью переписана: форма Jehle «trae», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены. Исходный редактор исправил замечание независимой проверки: дейктический ориентир или точное число/значение русского сказуемого восстановлено.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:1:plural полностью переписана: форма Jehle «traemos», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:2:plural полностью переписана: форма Jehle «traéis», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:3:plural полностью переписана: форма Jehle «traen», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:1:singular полностью переписана: форма Jehle «traía», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:2:singular полностью переписана: форма Jehle «traías», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:3:singular полностью переписана: форма Jehle «traía», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:1:plural полностью переписана: форма Jehle «traíamos», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены. Координатор уточнил контекст или русский перевод после полной вычитки, сохранив форму, identity и варианты.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:2:plural полностью переписана: форма Jehle «traíais», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:3:plural полностью переписана: форма Jehle «traían», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:1:singular полностью переписана: форма Jehle «traje», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:2:singular полностью переписана: форма Jehle «trajiste», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:3:singular полностью переписана: форма Jehle «trajo», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены. Координатор уточнил контекст или русский перевод после полной вычитки, сохранив форму, identity и варианты.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:1:plural полностью переписана: форма Jehle «trajimos», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:2:plural полностью переписана: форма Jehle «trajisteis», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:3:plural полностью переписана: форма Jehle «trajeron», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:1:singular полностью переписана: форма Jehle «traeré», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:2:singular полностью переписана: форма Jehle «traerás», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:3:singular полностью переписана: форма Jehle «traerá», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:1:plural полностью переписана: форма Jehle «traeremos», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:2:plural полностью переписана: форма Jehle «traeréis», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:3:plural полностью переписана: форма Jehle «traerán», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:1:singular полностью переписана: форма Jehle «traería», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:2:singular полностью переписана: форма Jehle «traerías», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:3:singular полностью переписана: форма Jehle «traería», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:1:plural полностью переписана: форма Jehle «traeríamos», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:2:plural полностью переписана: форма Jehle «traeríais», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:3:plural полностью переписана: форма Jehle «traerían», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:1:singular полностью переписана: форма Jehle «he traído», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:2:singular полностью переписана: форма Jehle «has traído», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:3:singular полностью переписана: форма Jehle «ha traído», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:1:plural полностью переписана: форма Jehle «hemos traído», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:2:plural полностью переписана: форма Jehle «habéis traído», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:3:plural полностью переписана: форма Jehle «han traído», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:1:singular полностью переписана: форма Jehle «había traído», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены. Координатор уточнил контекст или русский перевод после полной вычитки, сохранив форму, identity и варианты.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:2:singular полностью переписана: форма Jehle «habías traído», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:3:singular полностью переписана: форма Jehle «había traído», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:1:plural полностью переписана: форма Jehle «habíamos traído», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:2:plural полностью переписана: форма Jehle «habíais traído», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:3:plural полностью переписана: форма Jehle «habían traído», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:1:singular полностью переписана: форма Jehle «hube traído», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:2:singular полностью переписана: форма Jehle «hubiste traído», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:3:singular полностью переписана: форма Jehle «hubo traído», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:1:plural полностью переписана: форма Jehle «hubimos traído», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:2:plural полностью переписана: форма Jehle «hubisteis traído», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:3:plural полностью переписана: форма Jehle «hubieron traído», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:1:singular полностью переписана: форма Jehle «habré traído», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:2:singular полностью переписана: форма Jehle «habrás traído», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены. Координатор уточнил контекст или русский перевод после полной вычитки, сохранив форму, identity и варианты.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:3:singular полностью переписана: форма Jehle «habrá traído», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены. Координатор уточнил контекст или русский перевод после полной вычитки, сохранив форму, identity и варианты.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:1:plural полностью переписана: форма Jehle «habremos traído», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:2:plural полностью переписана: форма Jehle «habréis traído», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:3:plural полностью переписана: форма Jehle «habrán traído», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:1:singular полностью переписана: форма Jehle «habría traído», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:2:singular полностью переписана: форма Jehle «habrías traído», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:3:singular полностью переписана: форма Jehle «habría traído», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:1:plural полностью переписана: форма Jehle «habríamos traído», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:2:plural полностью переписана: форма Jehle «habríais traído», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:3:plural полностью переписана: форма Jehle «habrían traído», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:1:singular полностью переписана: форма Jehle «traiga», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:2:singular полностью переписана: форма Jehle «traigas», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:3:singular полностью переписана: форма Jehle «traiga», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:1:plural полностью переписана: форма Jehle «traigamos», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:2:plural полностью переписана: форма Jehle «traigáis», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:3:plural полностью переписана: форма Jehle «traigan», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:1:singular полностью переписана: форма Jehle «trajera», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:2:singular полностью переписана: форма Jehle «trajeras», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:3:singular полностью переписана: форма Jehle «trajera», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:1:plural полностью переписана: форма Jehle «trajéramos», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:2:plural полностью переписана: форма Jehle «trajerais», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:3:plural полностью переписана: форма Jehle «trajeran», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены. Координатор уточнил контекст или русский перевод после полной вычитки, сохранив форму, identity и варианты.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:1:singular полностью переписана: форма Jehle «haya traído», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:2:singular полностью переписана: форма Jehle «hayas traído», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:3:singular полностью переписана: форма Jehle «haya traído», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены. Координатор уточнил контекст или русский перевод после полной вычитки, сохранив форму, identity и варианты.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:1:plural полностью переписана: форма Jehle «hayamos traído», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:2:plural полностью переписана: форма Jehle «hayáis traído», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:3:plural полностью переписана: форма Jehle «hayan traído», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:1:singular полностью переписана: форма Jehle «hubiera traído», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:2:singular полностью переписана: форма Jehle «hubieras traído», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:3:singular полностью переписана: форма Jehle «hubiera traído», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:1:plural полностью переписана: форма Jehle «hubiéramos traído», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:2:plural полностью переписана: форма Jehle «hubierais traído», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:3:plural полностью переписана: форма Jehle «hubieran traído», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены. Исходный редактор исправил замечание независимой проверки: дейктический ориентир или точное число/значение русского сказуемого восстановлено.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:1:singular полностью переписана: форма Jehle «trajere», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:2:singular полностью переписана: форма Jehle «trajeres», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:3:singular полностью переписана: форма Jehle «trajere», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:1:plural полностью переписана: форма Jehle «trajéremos», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:2:plural полностью переписана: форма Jehle «trajereis», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:3:plural полностью переписана: форма Jehle «trajeren», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:1:singular полностью переписана: форма Jehle «hubiere traído», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:2:singular полностью переписана: форма Jehle «hubieres traído», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:3:singular полностью переписана: форма Jehle «hubiere traído», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:1:plural полностью переписана: форма Jehle «hubiéremos traído», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:2:plural полностью переписана: форма Jehle «hubiereis traído», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены. Исходный редактор исправил замечание независимой проверки: дейктический ориентир или точное число/значение русского сказуемого восстановлено.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:3:plural полностью переписана: форма Jehle «hubieren traído», значение traer, направление переноса, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "full 96-card semantic editorial read: traer direction, literal and causal meanings, ES/RU alignment and rare-register framing",
+      "result": "pass",
+      "evidence": "All 96 contexts rewritten and read with the form inserted; bringing people and objects toward the reference point, bringing news/results/consequences and fixed traer a colación are explicit."
+    },
+    {
+      "command": "Jehle forms; metadata; one blank; four unique same-scope options; one answer; identity/order/top-level preservation",
+      "result": "pass",
+      "evidence": "96 exact forms; all options, blanks, metadata and preserved contracts pass."
+    },
+    {
+      "command": "six De haberlo sabido counterfactual translations",
+      "result": "pass",
+      "evidence": "All six Russian translations begin with explicit Если бы and preserve hypothetical meaning."
+    },
+    {
+      "command": "coordinator refinement after full 96-card read",
+      "result": "pass",
+      "evidence": "Adjusted seven contexts/translations for exact number, neutral professional wording, explicit temporal anchors and clear reference."
+    },
+    {
+      "command": "independent full read 96/96 with substituted forms; /tmp/verify_traer.py; authoritative Jehle forms; cmp; baseline identity/order/top-level; validate_artifact(traer); go test ./internal/grammartrainingpack",
+      "result": "known_baseline",
+      "evidence": "93/96 semantic cards accepted. All 96 form/metadata/option/blank checks, compound anchors, 18 rare-register contexts, six explicit counterfactual translations, source=embedded, canonical fingerprint and native/Go validation pass. Three exact deictic/number/result-meaning findings remain. All three findings were corrected and accepted in the final recheck at fingerprint fa6e74ada2606c56478dfca8603295f48083424bd7b9c0c1ba5bdcdf404b5701."
+    },
+    {
+      "command": "original editor corrections after independent traer verification",
+      "result": "pass",
+      "evidence": "Added an explicit deictic destination and corrected singular investment and proceder al análisis translations; forms, options, metadata and identity preserved."
+    },
+    {
+      "command": "final independent recheck: traer indices 2,83,94; exact ES/RU assertions; fingerprint/cmp; validate_artifact; Go test",
+      "result": "pass",
+      "evidence": "All three replacements match the requested wording and are semantically accepted; forms/options/metadata remain valid. Source=embedded, fingerprint fa6e74ada2606c56478dfca8603295f48083424bd7b9c0c1ba5bdcdf404b5701, native validation and Go test pass; all 96 verification rows are ok."
+    },
+    {
+      "command": "final batch barrier: check.py; native validate_artifact; focused Go tests; grammar_review_test.py; focused/full status; preservation; root/course diff checks; skill quick_validate",
+      "result": "pass",
+      "evidence": "PASS: 384 cards and 24 checkpoints; native 96/96 each; Go packages pass; 13 grammar-review tests pass; four focused sources done; preservation 25638/0/0/0; diff checks and skill validation pass."
+    }
+  ],
+  "verification_note": "Независимая проверка завершена: 96/96 карточек приняты. Повторно проверены три исправления: автобус теперь движется к явно заданному дейктическому центру, русский субъект «инвестиция» согласован с la inversión, а se procederá al análisis точно передано как начало анализа. Формы/options/metadata сохранены; source и embedded совпадают, fingerprint актуален."
+}

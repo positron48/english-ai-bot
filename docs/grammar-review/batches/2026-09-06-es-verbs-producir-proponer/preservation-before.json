@@ -1,0 +1,31 @@
+{
+  "existing_files": 25413,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/producir.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/producir.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/prohibir.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/prohibir.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/prometer.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/prometer.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/proponer.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/proponer.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-producir-proponer",
+    "docs/grammar-review/reports/9728ef0f3905ee3e27e40b12.json",
+    "docs/grammar-review/reports/85800971abf4b12a44023e95.json",
+    "docs/grammar-review/reports/468f6527f8af9392bd1e97fc.json",
+    "docs/grammar-review/reports/2f12206bda90b5ce5cf423ed.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/producir.json": "19121b1b00d179a1469daf4636ab4484adea4534a7fd57e3efe23319ba5e3c32",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/producir.json": "19121b1b00d179a1469daf4636ab4484adea4534a7fd57e3efe23319ba5e3c32",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/prohibir.json": "f56d60f40de9f72a90c274f1b091e0196a5c937505a838c68c0dd0d57520f0f3",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/prohibir.json": "f56d60f40de9f72a90c274f1b091e0196a5c937505a838c68c0dd0d57520f0f3",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/prometer.json": "831871b87c77eaaa8e02accd8caf4bd33b9e81d648ac48c79589563457bb5ae0",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/prometer.json": "831871b87c77eaaa8e02accd8caf4bd33b9e81d648ac48c79589563457bb5ae0",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/proponer.json": "a200dc5e14e5564141e1725f981bd76641ca2f1b5aa54b1ed8fa1ad446531210",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/proponer.json": "a200dc5e14e5564141e1725f981bd76641ca2f1b5aa54b1ed8fa1ad446531210"
+  }
+}

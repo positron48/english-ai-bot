@@ -1,0 +1,290 @@
+{
+  "version": 1,
+  "source": "courses/english-grammar/chapters/041.en.grammar.past_1_past_simple.build_speak_a_short/03-questions.json",
+  "source_sha256": "7e52dec4111219c2da68da99e0a1894d1c60d82894600424565413e4b664cff5",
+  "context_sha256": "1fb4e2541c9195d1869101adfc453f3507dd3d7abb06499aa3d5fc7e9eebcb28",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
+  "reviewed_at": "2026-09-04T17:59:22.698694+00:00",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
+  "questions": [
+    {
+      "id": "q2",
+      "decision": "fixed",
+      "note": "Уточнены смысл, форма или учебная рекомендация; устранены допустимые альтернативы и слишком широкие правила.",
+      "verification": "ok"
+    },
+    {
+      "id": "q3",
+      "decision": "fixed",
+      "note": "Уточнены смысл, форма или учебная рекомендация; устранены допустимые альтернативы и слишком широкие правила.",
+      "verification": "ok"
+    },
+    {
+      "id": "q5",
+      "decision": "fixed",
+      "note": "Уточнены смысл, форма или учебная рекомендация; устранены допустимые альтернативы и слишком широкие правила.",
+      "verification": "ok"
+    },
+    {
+      "id": "q6",
+      "decision": "ok",
+      "note": "Задание и ключ соответствуют последовательности рассказа; открытый ответ задан однозначно.",
+      "verification": "ok"
+    },
+    {
+      "id": "q7",
+      "decision": "fixed",
+      "note": "Уточнены смысл, форма или учебная рекомендация; устранены допустимые альтернативы и слишком широкие правила.",
+      "verification": "ok"
+    },
+    {
+      "id": "q8",
+      "decision": "fixed",
+      "note": "Уточнены смысл, форма или учебная рекомендация; устранены допустимые альтернативы и слишком широкие правила.",
+      "verification": "ok"
+    },
+    {
+      "id": "q9",
+      "decision": "ok",
+      "note": "Задание и ключ соответствуют последовательности рассказа; открытый ответ задан однозначно.",
+      "verification": "ok"
+    },
+    {
+      "id": "q11",
+      "decision": "ok",
+      "note": "Задание и ключ соответствуют последовательности рассказа; открытый ответ задан однозначно.",
+      "verification": "ok"
+    },
+    {
+      "id": "q12",
+      "decision": "fixed",
+      "note": "Уточнены смысл, форма или учебная рекомендация; устранены допустимые альтернативы и слишком широкие правила.",
+      "verification": "ok"
+    },
+    {
+      "id": "q13",
+      "decision": "fixed",
+      "note": "Уточнены смысл, форма или учебная рекомендация; устранены допустимые альтернативы и слишком широкие правила.",
+      "verification": "ok"
+    },
+    {
+      "id": "q15",
+      "decision": "fixed",
+      "note": "Уточнены смысл, форма или учебная рекомендация; устранены допустимые альтернативы и слишком широкие правила.",
+      "verification": "ok"
+    },
+    {
+      "id": "q16",
+      "decision": "ok",
+      "note": "Задание и ключ соответствуют последовательности рассказа; открытый ответ задан однозначно.",
+      "verification": "ok"
+    },
+    {
+      "id": "q17",
+      "decision": "fixed",
+      "note": "Уточнены смысл, форма или учебная рекомендация; устранены допустимые альтернативы и слишком широкие правила.",
+      "verification": "ok"
+    },
+    {
+      "id": "q18",
+      "decision": "ok",
+      "note": "Задание и ключ соответствуют последовательности рассказа; открытый ответ задан однозначно.",
+      "verification": "ok"
+    },
+    {
+      "id": "q19",
+      "decision": "ok",
+      "note": "Задание и ключ соответствуют последовательности рассказа; открытый ответ задан однозначно.",
+      "verification": "ok"
+    },
+    {
+      "id": "q20",
+      "decision": "fixed",
+      "note": "Уточнены смысл, форма или учебная рекомендация; устранены допустимые альтернативы и слишком широкие правила.",
+      "verification": "ok"
+    },
+    {
+      "id": "q21",
+      "decision": "fixed",
+      "note": "Уточнены смысл, форма или учебная рекомендация; устранены допустимые альтернативы и слишком широкие правила.",
+      "verification": "ok"
+    },
+    {
+      "id": "q23",
+      "decision": "fixed",
+      "note": "Уточнены смысл, форма или учебная рекомендация; устранены допустимые альтернативы и слишком широкие правила.",
+      "verification": "ok"
+    },
+    {
+      "id": "q25",
+      "decision": "fixed",
+      "note": "Уточнены смысл, форма или учебная рекомендация; устранены допустимые альтернативы и слишком широкие правила.",
+      "verification": "ok"
+    },
+    {
+      "id": "q26",
+      "decision": "fixed",
+      "note": "Уточнены смысл, форма или учебная рекомендация; устранены допустимые альтернативы и слишком широкие правила.",
+      "verification": "ok"
+    },
+    {
+      "id": "q27",
+      "decision": "fixed",
+      "note": "Уточнено содержание итоговой фразы, грамматическая форма или область правила вместо субъективного предпочтения и ложного обязательного did.",
+      "verification": "ok"
+    },
+    {
+      "id": "q29",
+      "decision": "fixed",
+      "note": "Уточнено содержание итоговой фразы, грамматическая форма или область правила вместо субъективного предпочтения и ложного обязательного did.",
+      "verification": "ok"
+    },
+    {
+      "id": "q30",
+      "decision": "ok",
+      "note": "Форма, ключ и логика рассказа согласованы; допустимая рекомендация.",
+      "verification": "ok"
+    },
+    {
+      "id": "q32",
+      "decision": "fixed",
+      "note": "Уточнено содержание итоговой фразы, грамматическая форма или область правила вместо субъективного предпочтения и ложного обязательного did.",
+      "verification": "ok"
+    },
+    {
+      "id": "q35",
+      "decision": "fixed",
+      "note": "Уточнено содержание итоговой фразы, грамматическая форма или область правила вместо субъективного предпочтения и ложного обязательного did.",
+      "verification": "ok"
+    },
+    {
+      "id": "q36",
+      "decision": "ok",
+      "note": "Форма, ключ и логика рассказа согласованы; допустимая рекомендация.",
+      "verification": "ok"
+    },
+    {
+      "id": "q37",
+      "decision": "fixed",
+      "note": "Уточнено содержание итоговой фразы, грамматическая форма или область правила вместо субъективного предпочтения и ложного обязательного did.",
+      "verification": "ok"
+    },
+    {
+      "id": "q40",
+      "decision": "fixed",
+      "note": "Уточнено содержание итоговой фразы, грамматическая форма или область правила вместо субъективного предпочтения и ложного обязательного did.",
+      "verification": "ok"
+    },
+    {
+      "id": "q41",
+      "decision": "ok",
+      "note": "Форма, ключ и логика рассказа согласованы; допустимая рекомендация.",
+      "verification": "ok"
+    },
+    {
+      "id": "q42",
+      "decision": "fixed",
+      "note": "Уточнено содержание итоговой фразы, грамматическая форма или область правила вместо субъективного предпочтения и ложного обязательного did.",
+      "verification": "ok"
+    },
+    {
+      "id": "q44",
+      "decision": "ok",
+      "note": "Форма, ключ и логика рассказа согласованы; допустимая рекомендация.",
+      "verification": "ok"
+    },
+    {
+      "id": "q45",
+      "decision": "fixed",
+      "note": "Уточнено содержание итоговой фразы, грамматическая форма или область правила вместо субъективного предпочтения и ложного обязательного did.",
+      "verification": "ok"
+    },
+    {
+      "id": "q46",
+      "decision": "ok",
+      "note": "Форма, ключ и логика рассказа согласованы; допустимая рекомендация.",
+      "verification": "ok"
+    },
+    {
+      "id": "q50",
+      "decision": "fixed",
+      "note": "Уточнено содержание итоговой фразы, грамматическая форма или область правила вместо субъективного предпочтения и ложного обязательного did.",
+      "verification": "ok"
+    },
+    {
+      "id": "q53",
+      "decision": "fixed",
+      "note": "Задана конкретная лексема saw → see; подсказка не повторяет ответ, сохранён штатный формат.",
+      "verification": "ok"
+    },
+    {
+      "id": "q54",
+      "decision": "fixed",
+      "note": "Уточнено содержание итоговой фразы, грамматическая форма или область правила вместо субъективного предпочтения и ложного обязательного did.",
+      "verification": "ok"
+    },
+    {
+      "id": "q57",
+      "decision": "ok",
+      "note": "Форма, ключ и логика рассказа согласованы; допустимая рекомендация.",
+      "verification": "ok"
+    },
+    {
+      "id": "q58",
+      "decision": "fixed",
+      "note": "Уточнено содержание итоговой фразы, грамматическая форма или область правила вместо субъективного предпочтения и ложного обязательного did.",
+      "verification": "ok"
+    },
+    {
+      "id": "q59",
+      "decision": "fixed",
+      "note": "Уточнено содержание итоговой фразы, грамматическая форма или область правила вместо субъективного предпочтения и ложного обязательного did.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-04-en039-042/check.py",
+      "result": "pass",
+      "evidence": "All 381 IDs/contracts, decisions versus clean pre-batch HEAD, fingerprints, native training validation, signatures and source-final-embedded equality; validation.log."
+    },
+    {
+      "command": "go test ./internal/grammarbundle ./internal/repository -run 'TestValidateEmbeddedBundleID|TestGrammar.*Bundle|TestGrammar.*Reorder' -count=1",
+      "result": "pass",
+      "evidence": "Both packages passed on final integrated data; go-tests.log."
+    },
+    {
+      "command": "git diff --check; git -C courses/spanish-grammar diff --check; git -C courses/english-grammar diff --check",
+      "result": "pass",
+      "evidence": "Three separately executed commands exit 0; diff-check.log. All 1100 earlier dirty files outside review docs preserved; preservation.log."
+    },
+    {
+      "command": "cd courses/english-grammar && bash scripts/assemble-chapter.sh 041.en.grammar.past_1_past_simple.build_speak_a_short",
+      "result": "pass",
+      "evidence": "041-assemble.log: exit 0."
+    },
+    {
+      "command": "cd courses/english-grammar && bash scripts/validate-chapter.sh 041.en.grammar.past_1_past_simple.build_speak_a_short",
+      "result": "pass",
+      "evidence": "041-chapter-after.log: exit 0."
+    },
+    {
+      "command": "cd courses/english-grammar && ajv validate --spec=draft2020 --validate-formats=false --all-errors -s 02-chapter-schema.json -d chapters/041.en.grammar.past_1_past_simple.build_speak_a_short/05-final.json",
+      "result": "pass",
+      "evidence": "041-schema-after.log: exit 0."
+    },
+    {
+      "command": "cd courses/english-grammar && ajv validate -s 02-chapter-schema.json -d chapters/041.en.grammar.past_1_past_simple.build_speak_a_short/05-final.json",
+      "result": "known_baseline",
+      "evidence": "041-assembler-ajv-before.log and 041-assembler-ajv-after.log are byte-identical, exit 1: no draft2020 meta-schema selected. Explicit draft2020 validation passes."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    }
+  ],
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+}

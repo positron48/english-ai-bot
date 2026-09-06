@@ -1,0 +1,96 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/chapters/035/es.04.b4_theory_e_i_family.questions.json",
+  "source_sha256": "162791ad0156f2d43943818a89b4eb4f79d95026b876497049b43456963bde61",
+  "context_sha256": "914b6456c37e48358233b0f4049e0a78290115047ead086c4c030ead1f20182d",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
+  "reviewed_at": "2026-09-04T16:53:04.400183+00:00",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
+  "questions": [
+    {
+      "id": "q1",
+      "decision": "ok",
+      "note": "Форма pedir и лицо однозначны, правило e → i корректно.",
+      "verification": "ok"
+    },
+    {
+      "id": "q2",
+      "decision": "fixed",
+      "note": "Исправлены ложные формы repetен/повторения и сведения о прошедшем, разграничены e → i и e → ie; уточнено настоящее время при правильных прошедших отвлекающих вариантах.",
+      "verification": "ok"
+    },
+    {
+      "id": "q3",
+      "decision": "fixed",
+      "note": "Исправлены ложные формы repetен/повторения и сведения о прошедшем, разграничены e → i и e → ie; уточнено настоящее время при правильных прошедших отвлекающих вариантах.",
+      "verification": "ok"
+    },
+    {
+      "id": "q4",
+      "decision": "fixed",
+      "note": "Исправлены ложные формы repetен/повторения и сведения о прошедшем, разграничены e → i и e → ie; уточнено настоящее время при правильных прошедших отвлекающих вариантах.",
+      "verification": "ok"
+    },
+    {
+      "id": "q5",
+      "decision": "ok",
+      "note": "Форма pedir и лицо однозначны, правило e → i корректно.",
+      "verification": "ok"
+    },
+    {
+      "id": "q6",
+      "decision": "fixed",
+      "note": "Исправлены ложные формы repetен/повторения и сведения о прошедшем, разграничены e → i и e → ie; уточнено настоящее время при правильных прошедших отвлекающих вариантах.",
+      "verification": "ok"
+    },
+    {
+      "id": "q7",
+      "decision": "fixed",
+      "note": "Исправлены ложные формы repetен/повторения и сведения о прошедшем, разграничены e → i и e → ie; уточнено настоящее время при правильных прошедших отвлекающих вариантах.",
+      "verification": "ok"
+    },
+    {
+      "id": "q8",
+      "decision": "fixed",
+      "note": "Исправлены ложные формы repetен/повторения и сведения о прошедшем, разграничены e → i и e → ie; уточнено настоящее время при правильных прошедших отвлекающих вариантах.",
+      "verification": "ok"
+    },
+    {
+      "id": "q9",
+      "decision": "fixed",
+      "note": "Исправлены ложные формы repetен/повторения и сведения о прошедшем, разграничены e → i и e → ie; уточнено настоящее время при правильных прошедших отвлекающих вариантах.",
+      "verification": "ok"
+    },
+    {
+      "id": "q10",
+      "decision": "fixed",
+      "note": "Исправлены ложные формы repetен/повторения и сведения о прошедшем, разграничены e → i и e → ie; уточнено настоящее время при правильных прошедших отвлекающих вариантах.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-04-es033-036/check.py",
+      "result": "pass",
+      "evidence": "All 549 IDs/contracts, decisions versus clean pre-batch HEAD, fingerprints, native training validation, signatures and source-final-embedded equality; validation.log."
+    },
+    {
+      "command": "go test ./internal/grammarbundle ./internal/repository -run 'TestValidateEmbeddedBundleID|TestGrammar.*Bundle|TestGrammar.*Reorder' -count=1",
+      "result": "pass",
+      "evidence": "Both packages passed on final integrated data; go-tests.log."
+    },
+    {
+      "command": "git diff --check; git -C courses/spanish-grammar diff --check; git -C courses/english-grammar diff --check",
+      "result": "pass",
+      "evidence": "Three separately executed commands exit 0; diff-check.log. All 928 earlier dirty files outside review docs preserved; preservation.log."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    }
+  ],
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+}

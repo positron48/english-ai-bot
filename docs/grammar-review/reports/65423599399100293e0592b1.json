@@ -1,0 +1,647 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/valer.json",
+  "source_sha256": "ff4a0a931dcbc3515d51e89030e80d58f606a8952e2e6972d66e3221725a2324",
+  "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197",
+  "editor": "edit_valer editor 2026-09-06",
+  "verifier": "edit_vaciar independent verifier 2026-09-06",
+  "phase": "done",
+  "reviewed_at": "2026-09-06",
+  "verified_at": "2026-09-06T14:49:06Z",
+  "questions": [
+    {
+      "id": "es.presente.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Rewritten with the exact authoritative valer form, a natural person-specific context, and a precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Rewritten with the exact authoritative valer form, a natural person-specific context, and a precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Rewritten with the exact authoritative valer form, a natural person-specific context, and a precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Rewritten with the exact authoritative valer form, a natural person-specific context, and a precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Rewritten with the exact authoritative valer form, a natural person-specific context, and a precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Rewritten with the exact authoritative valer form, a natural person-specific context, and a precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Rewritten with the exact authoritative valer form, a natural person-specific context, and a precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Rewritten with the exact authoritative valer form, a natural person-specific context, and a precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Rewritten with the exact authoritative valer form, a natural person-specific context, and a precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Rewritten with the exact authoritative valer form, a natural person-specific context, and a precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Rewritten and refined after coordinator review for idiomatic Spanish, exact valer semantics, tense aspect, and precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Rewritten with the exact authoritative valer form, a natural person-specific context, and a precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Rewritten with the exact authoritative valer form, a natural person-specific context, and a precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually refined for the exact authoritative valer form, idiomatic valerse de semantics, person agreement, and precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually refined for the exact authoritative valer form, natural semantics, person agreement, and precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Rewritten with the exact authoritative valer form, a natural person-specific context, and a precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually refined for the exact authoritative valer form, idiomatic valerse de semantics, person agreement, and precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Rewritten with the exact authoritative valer form, a natural person-specific context, and a precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Rewritten with the exact authoritative valer form, a natural person-specific context, and a precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Rewritten with the exact authoritative valer form, a natural person-specific context, and a precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Rewritten with the exact authoritative valer form, a natural person-specific context, and a precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Rewritten with the exact authoritative valer form, a natural person-specific context, and a precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Rewritten with the exact authoritative valer form, a natural person-specific context, and a precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Rewritten with the exact authoritative valer form, a natural person-specific context, and a precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Rewritten with the exact authoritative valer form, a natural person-specific context, and a precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Rewritten with the exact authoritative valer form, a natural person-specific context, and a precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Rewritten with the exact authoritative valer form, a natural person-specific context, and a precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Rewritten with the exact authoritative valer form, a natural person-specific context, and a precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Rewritten with the exact authoritative valer form, a natural person-specific context, and a precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Rewritten with the exact authoritative valer form, a natural person-specific context, and a precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Rewritten with the exact authoritative valer form, a natural person-specific context, and a precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually refined for the exact authoritative valer form, idiomatic valerse de semantics, person agreement, and precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Rewritten and refined after coordinator review for idiomatic Spanish, exact valer semantics, tense aspect, and precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually refined for the exact authoritative valer form, natural semantics, person agreement, and precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Rewritten with the exact authoritative valer form, a natural person-specific context, and a precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Rewritten with the exact authoritative valer form, a natural person-specific context, and a precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Rewritten with the exact authoritative valer form, a natural person-specific context, and a precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually refined for the exact authoritative valer form, idiomatic valerse de semantics, person agreement, and precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Rewritten with the exact authoritative valer form, a natural person-specific context, and a precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Rewritten with the exact authoritative valer form, a natural person-specific context, and a precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Rewritten with the exact authoritative valer form, a natural person-specific context, and a precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Rewritten with the exact authoritative valer form, a natural person-specific context, and a precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Rewritten and refined after coordinator review for idiomatic Spanish, exact valer semantics, tense aspect, and precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Rewritten and refined after coordinator review for idiomatic Spanish, exact valer semantics, tense aspect, and precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Rewritten and refined after coordinator review for idiomatic Spanish, exact valer semantics, tense aspect, and precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Rewritten and refined after coordinator review for idiomatic Spanish, exact valer semantics, tense aspect, and precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Rewritten and refined after coordinator review for idiomatic Spanish, exact valer semantics, tense aspect, and precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Rewritten and refined after coordinator review for idiomatic Spanish, exact valer semantics, tense aspect, and precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Rewritten with the exact authoritative valer form, a natural person-specific context, and a precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually refined for the exact authoritative valer form, idiomatic valerse de semantics, person agreement, and precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Rewritten and refined after coordinator review for idiomatic Spanish, exact valer semantics, tense aspect, and precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Rewritten with the exact authoritative valer form, a natural person-specific context, and a precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Rewritten with the exact authoritative valer form, a natural person-specific context, and a precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Rewritten with the exact authoritative valer form, a natural person-specific context, and a precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Rewritten with the exact authoritative valer form, a natural person-specific context, and a precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually refined for the exact authoritative valer form, idiomatic valerse de semantics, person agreement, and precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Rewritten and corrected after independent verification: the Russian warranty phrasing now uses the idiomatic распространялась на while preserving Spanish, form and identity.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Rewritten with the exact authoritative valer form, a natural person-specific context, and a precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Rewritten with the exact authoritative valer form, a natural person-specific context, and a precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually refined for the exact authoritative valer form, natural semantics, person agreement, and precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Rewritten with the exact authoritative valer form, a natural person-specific context, and a precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Rewritten with the exact authoritative valer form, a natural person-specific context, and a precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Rewritten with the exact authoritative valer form, a natural person-specific context, and a precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Rewritten with the exact authoritative valer form, a natural person-specific context, and a precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Rewritten with the exact authoritative valer form, a natural person-specific context, and a precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Rewritten with the exact authoritative valer form, a natural person-specific context, and a precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Rewritten with the exact authoritative valer form, a natural person-specific context, and a precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Rewritten with the exact authoritative valer form, a natural person-specific context, and a precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Rewritten with the exact authoritative valer form, a natural person-specific context, and a precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Rewritten with the exact authoritative valer form, a natural person-specific context, and a precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Rewritten with the exact authoritative valer form, a natural person-specific context, and a precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Rewritten with the exact authoritative valer form, a natural person-specific context, and a precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Rewritten with the exact authoritative valer form, a natural person-specific context, and a precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Rewritten and refined after coordinator review for idiomatic Spanish, exact valer semantics, tense aspect, and precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Rewritten with the exact authoritative valer form, a natural person-specific context, and a precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Rewritten with the exact authoritative valer form, a natural person-specific context, and a precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Rewritten with the exact authoritative valer form, a natural person-specific context, and a precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Rewritten with the exact authoritative valer form, a natural person-specific context, and a precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Rewritten with the exact authoritative valer form, a natural person-specific context, and a precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually refined for the exact authoritative valer form, natural semantics, person agreement, and precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Rewritten with the exact authoritative valer form, a natural person-specific context, and a precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Rewritten with the exact authoritative valer form, a natural person-specific context, and a precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Rewritten with the exact authoritative valer form, a natural person-specific context, and a precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Rewritten with the exact authoritative valer form, a natural person-specific context, and a precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Rewritten with the exact authoritative valer form, a natural person-specific context, and a precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Rewritten with the exact authoritative valer form, a natural person-specific context, and a precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually refined for the exact authoritative valer form, natural semantics, person agreement, and precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Rewritten with the exact authoritative valer form, a natural person-specific context, and a precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Rewritten with the exact authoritative valer form, a natural person-specific context, and a precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Rewritten with the exact authoritative valer form, a natural person-specific context, and a precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Rewritten and refined after coordinator review for idiomatic Spanish, exact valer semantics, tense aspect, and precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Rewritten and refined after coordinator review for idiomatic Spanish, exact valer semantics, tense aspect, and precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Rewritten and refined after coordinator review for idiomatic Spanish, exact valer semantics, tense aspect, and precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Rewritten and refined after coordinator review for idiomatic Spanish, exact valer semantics, tense aspect, and precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Rewritten and refined after coordinator review for idiomatic Spanish, exact valer semantics, tense aspect, and precise Russian translation.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Rewritten and refined after coordinator review for idiomatic Spanish, exact valer semantics, tense aspect, and precise Russian translation.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "manual editorial read with answer substitution: valer 96/96",
+      "result": "pass",
+      "evidence": "Every Spanish sentence and Russian translation was read in order after substituting the answer; cost, validity, suitability, value, valer para and valerse de meanings are explicit and person-consistent."
+    },
+    {
+      "command": "authoritative-forms.json valer vs edited 16 scopes x 6 slots",
+      "result": "pass",
+      "evidence": "All 96 surface forms and all option values match the batch Jehle-derived authoritative table."
+    },
+    {
+      "command": "editor rare-register and counterfactual review",
+      "result": "pass",
+      "evidence": "All six preterite-anterior cards explicitly identify literary narration; all twelve future-subjunctive cards explicitly identify legal language; all six De haberlo sabido translations begin with explicit Если бы ... знал/знали wording."
+    },
+    {
+      "command": "editor identity, metadata, blank, options and source-embedded contract checks",
+      "result": "pass",
+      "evidence": "Top-level data and exact scope/person/number order match the immutable baseline; every card has one blank, four unique same-scope options and the answer exactly once; source and embedded bytes match."
+    },
+    {
+      "command": "baseline defect recount against authoritative forms",
+      "result": "pass",
+      "evidence": "wrong surface 18; duplicate-option cards 49; answer-count cards 57; off-scope 201 entries in 86 cards; invalid-union 84 entries in 36 cards; metadata 0; blank 0."
+    },
+    {
+      "command": "native validate_artifact; focused grammar-review check; JSON/JSONL and scoped diff checks",
+      "result": "pass",
+      "evidence": "Native validate_artifact accepted 96 cards; focused review check reports the expected 96 awaiting_verification; JSON and six JSONL checkpoints parse; scoped contract and diff checks pass at fingerprint aec73558f297ee065c4611c0fa5565adab91b7fc45a06608ed41129e67a6984e."
+    },
+    {
+      "command": "coordinator semantic refinement: valer indexes 10, 32, 42-47, 50, 73, 90-95",
+      "result": "pass",
+      "evidence": "Applied all 16 requested ES/RU refinements: idiomatic negotiation and warranty wording, lighter literary preterite-anterior syntax with preserved clitics, natural month boundary, precise emergency phrasing, and explicitly completed future-perfect legal conditions; forms, options, metadata and identity/order unchanged."
+    },
+    {
+      "command": "original editor correction after independent valer verification: index 56",
+      "result": "pass",
+      "evidence": "Replaced the calqued Russian warranty wording with «Гарантия распространялась бы на эту поломку, если бы её срок не истёк.»; Spanish, authoritative form, options, metadata and identity/order remain unchanged; all verification fields reset to pending."
+    },
+    {
+      "command": "independent semantic verification of all 96 final valer cards",
+      "result": "pass",
+      "evidence": "A verifier who did not edit valer read every final card for natural Spanish, exact Russian, person/number/tense, blank ambiguity, clitics and valer/valerse meaning, same-scope distractors, literary/legal framing and completed future-perfect-subjunctive meaning. One RU finding was returned at zero-based index 56; no other findings were found."
+    },
+    {
+      "command": "independent recheck of valer zero-based index 56 and refreshed source/context fingerprints",
+      "result": "pass",
+      "evidence": "Index 56 now reads «Гарантия распространялась бы на эту поломку, если бы её срок не истёк.» and correctly matches La garantía habría valido para esta avería si no hubiera caducado. Source and embedded are byte-identical; source fingerprint is ff4a0a931dcbc3515d51e89030e80d58f606a8952e2e6972d66e3221725a2324 and context fingerprint remains current."
+    },
+    {
+      "command": "coordinator final batch barrier: check.py, preservation-check.py, native validate_artifact, focused status, Go tests, grammar_review_test.py and scoped diff checks",
+      "result": "pass",
+      "evidence": "Final valer report is independently done at fingerprint ff4a0a931dcbc3515d51e89030e80d58f606a8952e2e6972d66e3221725a2324; the 384-card batch passed authoritative forms/contracts, 24 checkpoints, source=embedded, preservation (25668 unchanged out-of-scope files), native validation, Go tests, 13 grammar-review tests and whitespace checks."
+    }
+  ],
+  "verification_note": "Independent verifier read all 96 final cards semantically. The initial finding at zero-based index 56 was the unnatural Russian calque «действовала бы для этой поломки»; the editor replaced it with «Гарантия распространялась бы на эту поломку, если бы её срок не истёк.». The same verifier rechecked the corrected card, its tense/person/meaning/options, source-embedded equality and the refreshed source/context fingerprints; the finding is resolved and no other findings remain."
+}

@@ -1,0 +1,34 @@
+{
+  "apreciar": {
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/apreciar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/apreciar.json",
+    "report": "docs/grammar-review/reports/e2f56c50386a818ecd6a999d.json",
+    "editor": "Codex editor 2026-09-06",
+    "source_sha256": "9429eba1a5857fb63d046acbfb4799f87e56ea4c0b63a00df1fa05781ed4253e",
+    "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197"
+  },
+  "aprender": {
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/aprender.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/aprender.json",
+    "report": "docs/grammar-review/reports/428032e933a18e0b99444cbe.json",
+    "editor": "Codex editor 2026-09-06",
+    "source_sha256": "e1fa9ad0b0fe14aa39b29d82b615731623b5e0c04dc42caec40116073c677c3a",
+    "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197"
+  },
+  "aprobar": {
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/aprobar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/aprobar.json",
+    "report": "docs/grammar-review/reports/c43223a820f41e89682a07a0.json",
+    "editor": "Codex editor 2026-09-06",
+    "source_sha256": "8a1645f6e879fe731c1ffb491d18f0673443ca733f19f32dacf31095f7e35d98",
+    "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197"
+  },
+  "asegurar": {
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/asegurar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/asegurar.json",
+    "report": "docs/grammar-review/reports/df35b07b44056da534912144.json",
+    "editor": "Codex editor 2026-09-06",
+    "source_sha256": "420d6c119b1528cec82c7114718a5fc05eb5789795534744ee4182adde811f6d",
+    "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197"
+  }
+}

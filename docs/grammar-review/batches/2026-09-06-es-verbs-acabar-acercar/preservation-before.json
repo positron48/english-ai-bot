@@ -1,0 +1,26 @@
+{
+  "existing_files": 24818,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/acabar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/aceptar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/acercar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/acabar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/aceptar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/acercar.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-acabar-acercar",
+    "docs/grammar-review/reports/7f938579fdbb300050b29afc.json",
+    "docs/grammar-review/reports/1dc2c119af76486dcdb8988b.json",
+    "docs/grammar-review/reports/94810e5c4ce81e3756613144.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/acabar.json": "eb3423288282f3ab89ebb52d3b22e81e895624fd507f929dd12ca5b3ec575b9e",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/aceptar.json": "02b624820be6aa45341fc7330a3f9c47e325e26ec3a3d137cfffce70313ca925",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/acercar.json": "c3d3600edfb9ed1e14e3616cac3532b368110e49b0a191634f91b039e508ffaa",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/acabar.json": "eb3423288282f3ab89ebb52d3b22e81e895624fd507f929dd12ca5b3ec575b9e",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/aceptar.json": "02b624820be6aa45341fc7330a3f9c47e325e26ec3a3d137cfffce70313ca925",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/acercar.json": "c3d3600edfb9ed1e14e3616cac3532b368110e49b0a191634f91b039e508ffaa"
+  }
+}

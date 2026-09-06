@@ -1,0 +1,637 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/usar.json",
+  "source_sha256": "b271810f3ec7d6568869001eca6596ee1ac888ce60aa6d2cb3606cce8f69199b",
+  "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197",
+  "editor": "Codex coordinator editor 2026-09-06",
+  "verifier": "edit_tratar verifier 2026-09-06",
+  "phase": "done",
+  "reviewed_at": "2026-09-06",
+  "verified_at": "2026-09-06",
+  "questions": [
+    {
+      "id": "es.presente.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:1:singular переписана и лично проверена: authoritative форма «uso», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:2:singular переписана и лично проверена: authoritative форма «usas», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:3:singular переписана и лично проверена: authoritative форма «usa», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:1:plural переписана и лично проверена: authoritative форма «usamos», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:2:plural переписана и лично проверена: authoritative форма «usáis», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:3:plural переписана и лично проверена: authoritative форма «usan», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:1:singular переписана и лично проверена: authoritative форма «usaba», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:2:singular переписана и лично проверена: authoritative форма «usabas», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:3:singular переписана и лично проверена: authoritative форма «usaba», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:1:plural переписана и лично проверена: authoritative форма «usábamos», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:2:plural переписана и лично проверена: authoritative форма «usabais», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:3:plural переписана и лично проверена: authoritative форма «usaban», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:1:singular переписана и лично проверена: authoritative форма «usé», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:2:singular переписана и лично проверена: authoritative форма «usaste», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:3:singular переписана и лично проверена: authoritative форма «usó», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:1:plural переписана и лично проверена: authoritative форма «usamos», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:2:plural переписана и лично проверена: authoritative форма «usasteis», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:3:plural переписана и лично проверена: authoritative форма «usaron», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:1:singular переписана и лично проверена: authoritative форма «usaré», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:2:singular переписана и лично проверена: authoritative форма «usarás», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:3:singular переписана и лично проверена: authoritative форма «usará», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:1:plural переписана и лично проверена: authoritative форма «usaremos», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:2:plural переписана и лично проверена: authoritative форма «usaréis», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:3:plural переписана и лично проверена: authoritative форма «usarán», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:1:singular переписана и лично проверена: authoritative форма «usaría», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:2:singular переписана и лично проверена: authoritative форма «usarías», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:3:singular переписана и лично проверена: authoritative форма «usaría», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:1:plural переписана и лично проверена: authoritative форма «usaríamos», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:2:plural переписана и лично проверена: authoritative форма «usaríais», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:3:plural переписана и лично проверена: authoritative форма «usarían», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:1:singular переписана и лично проверена: authoritative форма «he usado», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:2:singular переписана и лично проверена: authoritative форма «has usado», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:3:singular переписана и лично проверена: authoritative форма «ha usado», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:1:plural переписана и лично проверена: authoritative форма «hemos usado», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:2:plural переписана и лично проверена: authoritative форма «habéis usado», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:3:plural переписана и лично проверена: authoritative форма «han usado», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:1:singular переписана и лично проверена: authoritative форма «había usado», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:2:singular переписана и лично проверена: authoritative форма «habías usado», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:3:singular переписана и лично проверена: authoritative форма «había usado», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:1:plural переписана и лично проверена: authoritative форма «habíamos usado», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:2:plural переписана и лично проверена: authoritative форма «habíais usado», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:3:plural переписана и лично проверена: authoritative форма «habían usado», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:1:singular переписана и лично проверена: authoritative форма «hube usado», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:2:singular переписана и лично проверена: authoritative форма «hubiste usado», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:3:singular переписана и лично проверена: authoritative форма «hubo usado», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:1:plural переписана и лично проверена: authoritative форма «hubimos usado», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:2:plural переписана и лично проверена: authoritative форма «hubisteis usado», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:3:plural переписана и лично проверена: authoritative форма «hubieron usado», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:1:singular переписана и лично проверена: authoritative форма «habré usado», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:2:singular переписана и лично проверена: authoritative форма «habrás usado», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:3:singular переписана и лично проверена: authoritative форма «habrá usado», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:1:plural переписана и лично проверена: authoritative форма «habremos usado», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:2:plural переписана и лично проверена: authoritative форма «habréis usado», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:3:plural переписана и лично проверена: authoritative форма «habrán usado», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:1:singular переписана и лично проверена: authoritative форма «habría usado», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:2:singular переписана и лично проверена: authoritative форма «habrías usado», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:3:singular переписана и лично проверена: authoritative форма «habría usado», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:1:plural переписана и лично проверена: authoritative форма «habríamos usado», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:2:plural переписана и лично проверена: authoritative форма «habríais usado», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:3:plural переписана и лично проверена: authoritative форма «habrían usado», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:1:singular переписана и лично проверена: authoritative форма «use», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:2:singular переписана и лично проверена: authoritative форма «uses», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:3:singular переписана и лично проверена: authoritative форма «use», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:1:plural переписана и лично проверена: authoritative форма «usemos», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:2:plural переписана и лично проверена: authoritative форма «uséis», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:3:plural переписана и лично проверена: authoritative форма «usen», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:1:singular переписана и лично проверена: authoritative форма «usara», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:2:singular переписана и лично проверена: authoritative форма «usaras», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:3:singular переписана и лично проверена: authoritative форма «usara», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:1:plural переписана и лично проверена: authoritative форма «usáramos», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:2:plural переписана и лично проверена: authoritative форма «usarais», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:3:plural переписана и лично проверена: authoritative форма «usaran», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:1:singular переписана и лично проверена: authoritative форма «usare», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:2:singular переписана и лично проверена: authoritative форма «usares», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:3:singular переписана и лично проверена: authoritative форма «usare», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:1:plural переписана и лично проверена: authoritative форма «usáremos», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:2:plural переписана и лично проверена: authoritative форма «usareis», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:3:plural переписана и лично проверена: authoritative форма «usaren», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:1:singular переписана и лично проверена: authoritative форма «haya usado», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:2:singular переписана и лично проверена: authoritative форма «hayas usado», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:3:singular переписана и лично проверена: authoritative форма «haya usado», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:1:plural переписана и лично проверена: authoritative форма «hayamos usado», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:2:plural переписана и лично проверена: authoritative форма «hayáis usado», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:3:plural переписана и лично проверена: authoritative форма «hayan usado», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:1:singular переписана и лично проверена: authoritative форма «hubiera usado», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:2:singular переписана и лично проверена: authoritative форма «hubieras usado», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:3:singular переписана и лично проверена: authoritative форма «hubiera usado», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:1:plural переписана и лично проверена: authoritative форма «hubiéramos usado», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:2:plural переписана и лично проверена: authoritative форма «hubierais usado», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:3:plural переписана и лично проверена: authoritative форма «hubieran usado», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:1:singular переписана и лично проверена: authoritative форма «hubiere usado», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:2:singular переписана и лично проверена: authoritative форма «hubieres usado», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:3:singular переписана и лично проверена: authoritative форма «hubiere usado», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:1:plural переписана и лично проверена: authoritative форма «hubiéremos usado», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:2:plural переписана и лично проверена: authoritative форма «hubiereis usado», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:3:plural переписана и лично проверена: authoritative форма «hubieren usado», естественное значение usar, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "manual editorial read of all 96 usar cards in six 16-card chunks",
+      "result": "pass",
+      "evidence": "Every final Spanish sentence and Russian translation was read with the authoritative form substituted; use of tools, resources, routes, language, methods and permissions is explicit and natural."
+    },
+    {
+      "command": "Jehle comparison for 16 scopes and six person-number slots",
+      "result": "pass",
+      "evidence": "All 96 surface forms match the pinned local Jehle dataset."
+    },
+    {
+      "command": "same-scope option and answer multiplicity validation",
+      "result": "pass",
+      "evidence": "Every card has four distinct options from its own scope and the authoritative answer occurs exactly once."
+    },
+    {
+      "command": "rare-register and counterfactual semantic review",
+      "result": "pass",
+      "evidence": "Pretérito anterior and both future subjunctives are explicitly literary or legal; all six De haberlo sabido translations begin with an explicit Russian counterfactual."
+    },
+    {
+      "command": "baseline identity and source-embedded byte comparison",
+      "result": "pass",
+      "evidence": "Top-level fields and scope/person/number order match the baseline; source and embedded copy are byte-identical."
+    },
+    {
+      "command": "coordinator self-review refinements: usar indices 6, 8, 21, 42, 48, 50, 51, 53, 56, 59, 85, 89, 92",
+      "result": "pass",
+      "evidence": "Thirteen ES/RU refinements remove incomplete phrasing, clarify future outcomes and legal/counterfactual subjects, and preserve forms, options, metadata and identity."
+    },
+    {
+      "command": "original editor corrections after independent usar verification: indices 17, 24, 42, 43, 45, 46, 72, 74, 83, 85, 94",
+      "result": "pass",
+      "evidence": "Applied all eleven requested semantic and stylistic corrections exactly; forms, options, metadata, identity/order and unrelated cards remain unchanged."
+    },
+    {
+      "command": "independent verifier full read and correction recheck: usar 96/96",
+      "result": "pass",
+      "evidence": "edit_tratar independently read all 96 final ES/RU pairs with the authoritative answer substituted, then rechecked corrected indexes 17, 24, 42, 43, 45, 46, 72, 74, 83, 85 and 94. Exact Jehle forms, scope/person/number, mood/tense, temporal meaning, one blank, four unique same-scope options, answer once, rare-register framing, six explicit counterfactuals, baseline identity, source=embedded and native validation pass at fingerprint b271810f3ec7d6568869001eca6596ee1ac888ce60aa6d2cb3606cce8f69199b."
+    },
+    {
+      "command": "final batch barrier: check.py; native validate_artifact; focused Go tests; grammar_review_test.py; focused/full status; preservation; root/course diff checks; skill quick_validate",
+      "result": "pass",
+      "evidence": "PASS: 384 cards and 24 checkpoints; native 96/96 each; Go packages pass; 13 grammar-review tests pass; four focused sources done; preservation 25653/0/0/0; diff checks and skill validation pass."
+    }
+  ],
+  "verification_note": "Независимо прочитаны все 96 финальных карточек usar с подстановкой ответа. После исправления одиннадцати замечаний подтверждены естественные ES-контексты и точные полные RU-переводы, лица/числа, аспект и временные опоры, все формы Jehle, metadata, варианты, явный редкий регистр, контрфактивы, исходный порядок и синхронность source/embedded."
+}

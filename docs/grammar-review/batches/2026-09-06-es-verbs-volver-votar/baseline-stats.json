@@ -1,0 +1,24 @@
+{
+  "volver": {
+    "wrong_surface_cards": 14,
+    "duplicate_option_cards": 21,
+    "answer_count_bad_cards": 26,
+    "offscope_option_entries": 118,
+    "offscope_option_cards": 55,
+    "invalid_union_entries": 6,
+    "invalid_union_cards": 6,
+    "metadata_cards": 0,
+    "blank_cards": 0
+  },
+  "votar": {
+    "wrong_surface_cards": 30,
+    "duplicate_option_cards": 30,
+    "answer_count_bad_cards": 34,
+    "offscope_option_entries": 141,
+    "offscope_option_cards": 42,
+    "invalid_union_entries": 85,
+    "invalid_union_cards": 25,
+    "metadata_cards": 0,
+    "blank_cards": 0
+  }
+}

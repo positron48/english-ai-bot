@@ -1,0 +1,536 @@
+{
+  "_sources": {
+    "jehle_csv": "resources/verbs/jehle_verb_database.csv",
+    "sha256": "f77f01d536cd351584051d76902ff8051ab1b945a38e69c7ed02da78ab082ea8"
+  },
+  "_slots": [
+    "1:singular",
+    "2:singular",
+    "3:singular",
+    "1:plural",
+    "2:plural",
+    "3:plural"
+  ],
+  "forms": {
+    "viajar": {
+      "es.presente.indicativo": [
+        "viajo",
+        "viajas",
+        "viaja",
+        "viajamos",
+        "viajáis",
+        "viajan"
+      ],
+      "es.preterito_imperfecto.indicativo": [
+        "viajaba",
+        "viajabas",
+        "viajaba",
+        "viajábamos",
+        "viajabais",
+        "viajaban"
+      ],
+      "es.preterito_indefinido.indicativo": [
+        "viajé",
+        "viajaste",
+        "viajó",
+        "viajamos",
+        "viajasteis",
+        "viajaron"
+      ],
+      "es.futuro_simple.indicativo": [
+        "viajaré",
+        "viajarás",
+        "viajará",
+        "viajaremos",
+        "viajaréis",
+        "viajarán"
+      ],
+      "es.condicional_simple.indicativo": [
+        "viajaría",
+        "viajarías",
+        "viajaría",
+        "viajaríamos",
+        "viajaríais",
+        "viajarían"
+      ],
+      "es.preterito_perfecto_compuesto.indicativo": [
+        "he viajado",
+        "has viajado",
+        "ha viajado",
+        "hemos viajado",
+        "habéis viajado",
+        "han viajado"
+      ],
+      "es.preterito_pluscuamperfecto.indicativo": [
+        "había viajado",
+        "habías viajado",
+        "había viajado",
+        "habíamos viajado",
+        "habíais viajado",
+        "habían viajado"
+      ],
+      "es.preterito_anterior.indicativo": [
+        "hube viajado",
+        "hubiste viajado",
+        "hubo viajado",
+        "hubimos viajado",
+        "hubisteis viajado",
+        "hubieron viajado"
+      ],
+      "es.futuro_perfecto.indicativo": [
+        "habré viajado",
+        "habrás viajado",
+        "habrá viajado",
+        "habremos viajado",
+        "habréis viajado",
+        "habrán viajado"
+      ],
+      "es.condicional_perfecto.indicativo": [
+        "habría viajado",
+        "habrías viajado",
+        "habría viajado",
+        "habríamos viajado",
+        "habríais viajado",
+        "habrían viajado"
+      ],
+      "es.presente.subjuntivo": [
+        "viaje",
+        "viajes",
+        "viaje",
+        "viajemos",
+        "viajéis",
+        "viajen"
+      ],
+      "es.preterito_imperfecto.subjuntivo": [
+        "viajara",
+        "viajaras",
+        "viajara",
+        "viajáramos",
+        "viajarais",
+        "viajaran"
+      ],
+      "es.futuro_simple.subjuntivo": [
+        "viajare",
+        "viajares",
+        "viajare",
+        "viajáremos",
+        "viajareis",
+        "viajaren"
+      ],
+      "es.preterito_perfecto.subjuntivo": [
+        "haya viajado",
+        "hayas viajado",
+        "haya viajado",
+        "hayamos viajado",
+        "hayáis viajado",
+        "hayan viajado"
+      ],
+      "es.preterito_pluscuamperfecto.subjuntivo": [
+        "hubiera viajado",
+        "hubieras viajado",
+        "hubiera viajado",
+        "hubiéramos viajado",
+        "hubierais viajado",
+        "hubieran viajado"
+      ],
+      "es.futuro_perfecto.subjuntivo": [
+        "hubiere viajado",
+        "hubieres viajado",
+        "hubiere viajado",
+        "hubiéremos viajado",
+        "hubiereis viajado",
+        "hubieren viajado"
+      ]
+    },
+    "visitar": {
+      "es.presente.indicativo": [
+        "visito",
+        "visitas",
+        "visita",
+        "visitamos",
+        "visitáis",
+        "visitan"
+      ],
+      "es.preterito_imperfecto.indicativo": [
+        "visitaba",
+        "visitabas",
+        "visitaba",
+        "visitábamos",
+        "visitabais",
+        "visitaban"
+      ],
+      "es.preterito_indefinido.indicativo": [
+        "visité",
+        "visitaste",
+        "visitó",
+        "visitamos",
+        "visitasteis",
+        "visitaron"
+      ],
+      "es.futuro_simple.indicativo": [
+        "visitaré",
+        "visitarás",
+        "visitará",
+        "visitaremos",
+        "visitaréis",
+        "visitarán"
+      ],
+      "es.condicional_simple.indicativo": [
+        "visitaría",
+        "visitarías",
+        "visitaría",
+        "visitaríamos",
+        "visitaríais",
+        "visitarían"
+      ],
+      "es.preterito_perfecto_compuesto.indicativo": [
+        "he visitado",
+        "has visitado",
+        "ha visitado",
+        "hemos visitado",
+        "habéis visitado",
+        "han visitado"
+      ],
+      "es.preterito_pluscuamperfecto.indicativo": [
+        "había visitado",
+        "habías visitado",
+        "había visitado",
+        "habíamos visitado",
+        "habíais visitado",
+        "habían visitado"
+      ],
+      "es.preterito_anterior.indicativo": [
+        "hube visitado",
+        "hubiste visitado",
+        "hubo visitado",
+        "hubimos visitado",
+        "hubisteis visitado",
+        "hubieron visitado"
+      ],
+      "es.futuro_perfecto.indicativo": [
+        "habré visitado",
+        "habrás visitado",
+        "habrá visitado",
+        "habremos visitado",
+        "habréis visitado",
+        "habrán visitado"
+      ],
+      "es.condicional_perfecto.indicativo": [
+        "habría visitado",
+        "habrías visitado",
+        "habría visitado",
+        "habríamos visitado",
+        "habríais visitado",
+        "habrían visitado"
+      ],
+      "es.presente.subjuntivo": [
+        "visite",
+        "visites",
+        "visite",
+        "visitemos",
+        "visitéis",
+        "visiten"
+      ],
+      "es.preterito_imperfecto.subjuntivo": [
+        "visitara",
+        "visitaras",
+        "visitara",
+        "visitáramos",
+        "visitarais",
+        "visitaran"
+      ],
+      "es.futuro_simple.subjuntivo": [
+        "visitare",
+        "visitares",
+        "visitare",
+        "visitáremos",
+        "visitareis",
+        "visitaren"
+      ],
+      "es.preterito_perfecto.subjuntivo": [
+        "haya visitado",
+        "hayas visitado",
+        "haya visitado",
+        "hayamos visitado",
+        "hayáis visitado",
+        "hayan visitado"
+      ],
+      "es.preterito_pluscuamperfecto.subjuntivo": [
+        "hubiera visitado",
+        "hubieras visitado",
+        "hubiera visitado",
+        "hubiéramos visitado",
+        "hubierais visitado",
+        "hubieran visitado"
+      ],
+      "es.futuro_perfecto.subjuntivo": [
+        "hubiere visitado",
+        "hubieres visitado",
+        "hubiere visitado",
+        "hubiéremos visitado",
+        "hubiereis visitado",
+        "hubieren visitado"
+      ]
+    },
+    "vivir": {
+      "es.presente.indicativo": [
+        "vivo",
+        "vives",
+        "vive",
+        "vivimos",
+        "vivís",
+        "viven"
+      ],
+      "es.preterito_imperfecto.indicativo": [
+        "vivía",
+        "vivías",
+        "vivía",
+        "vivíamos",
+        "vivíais",
+        "vivían"
+      ],
+      "es.preterito_indefinido.indicativo": [
+        "viví",
+        "viviste",
+        "vivió",
+        "vivimos",
+        "vivisteis",
+        "vivieron"
+      ],
+      "es.futuro_simple.indicativo": [
+        "viviré",
+        "vivirás",
+        "vivirá",
+        "viviremos",
+        "viviréis",
+        "vivirán"
+      ],
+      "es.condicional_simple.indicativo": [
+        "viviría",
+        "vivirías",
+        "viviría",
+        "viviríamos",
+        "viviríais",
+        "vivirían"
+      ],
+      "es.preterito_perfecto_compuesto.indicativo": [
+        "he vivido",
+        "has vivido",
+        "ha vivido",
+        "hemos vivido",
+        "habéis vivido",
+        "han vivido"
+      ],
+      "es.preterito_pluscuamperfecto.indicativo": [
+        "había vivido",
+        "habías vivido",
+        "había vivido",
+        "habíamos vivido",
+        "habíais vivido",
+        "habían vivido"
+      ],
+      "es.preterito_anterior.indicativo": [
+        "hube vivido",
+        "hubiste vivido",
+        "hubo vivido",
+        "hubimos vivido",
+        "hubisteis vivido",
+        "hubieron vivido"
+      ],
+      "es.futuro_perfecto.indicativo": [
+        "habré vivido",
+        "habrás vivido",
+        "habrá vivido",
+        "habremos vivido",
+        "habréis vivido",
+        "habrán vivido"
+      ],
+      "es.condicional_perfecto.indicativo": [
+        "habría vivido",
+        "habrías vivido",
+        "habría vivido",
+        "habríamos vivido",
+        "habríais vivido",
+        "habrían vivido"
+      ],
+      "es.presente.subjuntivo": [
+        "viva",
+        "vivas",
+        "viva",
+        "vivamos",
+        "viváis",
+        "vivan"
+      ],
+      "es.preterito_imperfecto.subjuntivo": [
+        "viviera",
+        "vivieras",
+        "viviera",
+        "viviéramos",
+        "vivierais",
+        "vivieran"
+      ],
+      "es.futuro_simple.subjuntivo": [
+        "viviere",
+        "vivieres",
+        "viviere",
+        "viviéremos",
+        "viviereis",
+        "vivieren"
+      ],
+      "es.preterito_perfecto.subjuntivo": [
+        "haya vivido",
+        "hayas vivido",
+        "haya vivido",
+        "hayamos vivido",
+        "hayáis vivido",
+        "hayan vivido"
+      ],
+      "es.preterito_pluscuamperfecto.subjuntivo": [
+        "hubiera vivido",
+        "hubieras vivido",
+        "hubiera vivido",
+        "hubiéramos vivido",
+        "hubierais vivido",
+        "hubieran vivido"
+      ],
+      "es.futuro_perfecto.subjuntivo": [
+        "hubiere vivido",
+        "hubieres vivido",
+        "hubiere vivido",
+        "hubiéremos vivido",
+        "hubiereis vivido",
+        "hubieren vivido"
+      ]
+    },
+    "volar": {
+      "es.presente.indicativo": [
+        "vuelo",
+        "vuelas",
+        "vuela",
+        "volamos",
+        "voláis",
+        "vuelan"
+      ],
+      "es.preterito_imperfecto.indicativo": [
+        "volaba",
+        "volabas",
+        "volaba",
+        "volábamos",
+        "volabais",
+        "volaban"
+      ],
+      "es.preterito_indefinido.indicativo": [
+        "volé",
+        "volaste",
+        "voló",
+        "volamos",
+        "volasteis",
+        "volaron"
+      ],
+      "es.futuro_simple.indicativo": [
+        "volaré",
+        "volarás",
+        "volará",
+        "volaremos",
+        "volaréis",
+        "volarán"
+      ],
+      "es.condicional_simple.indicativo": [
+        "volaría",
+        "volarías",
+        "volaría",
+        "volaríamos",
+        "volaríais",
+        "volarían"
+      ],
+      "es.preterito_perfecto_compuesto.indicativo": [
+        "he volado",
+        "has volado",
+        "ha volado",
+        "hemos volado",
+        "habéis volado",
+        "han volado"
+      ],
+      "es.preterito_pluscuamperfecto.indicativo": [
+        "había volado",
+        "habías volado",
+        "había volado",
+        "habíamos volado",
+        "habíais volado",
+        "habían volado"
+      ],
+      "es.preterito_anterior.indicativo": [
+        "hube volado",
+        "hubiste volado",
+        "hubo volado",
+        "hubimos volado",
+        "hubisteis volado",
+        "hubieron volado"
+      ],
+      "es.futuro_perfecto.indicativo": [
+        "habré volado",
+        "habrás volado",
+        "habrá volado",
+        "habremos volado",
+        "habréis volado",
+        "habrán volado"
+      ],
+      "es.condicional_perfecto.indicativo": [
+        "habría volado",
+        "habrías volado",
+        "habría volado",
+        "habríamos volado",
+        "habríais volado",
+        "habrían volado"
+      ],
+      "es.presente.subjuntivo": [
+        "vuele",
+        "vueles",
+        "vuele",
+        "volemos",
+        "voléis",
+        "vuelen"
+      ],
+      "es.preterito_imperfecto.subjuntivo": [
+        "volara",
+        "volaras",
+        "volara",
+        "voláramos",
+        "volarais",
+        "volaran"
+      ],
+      "es.futuro_simple.subjuntivo": [
+        "volare",
+        "volares",
+        "volare",
+        "voláremos",
+        "volareis",
+        "volaren"
+      ],
+      "es.preterito_perfecto.subjuntivo": [
+        "haya volado",
+        "hayas volado",
+        "haya volado",
+        "hayamos volado",
+        "hayáis volado",
+        "hayan volado"
+      ],
+      "es.preterito_pluscuamperfecto.subjuntivo": [
+        "hubiera volado",
+        "hubieras volado",
+        "hubiera volado",
+        "hubiéramos volado",
+        "hubierais volado",
+        "hubieran volado"
+      ],
+      "es.futuro_perfecto.subjuntivo": [
+        "hubiere volado",
+        "hubieres volado",
+        "hubiere volado",
+        "hubiéremos volado",
+        "hubiereis volado",
+        "hubieren volado"
+      ]
+    }
+  }
+}

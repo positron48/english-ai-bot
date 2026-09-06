@@ -1,0 +1,416 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/chapters/026.es.grammar.existence_location_possession.basic_time_date_weather_expressions/03-questions.json",
+  "source_sha256": "b16abf29ad92197a108185405978e06c61b6d488efd9b0af6f77650784f9b34b",
+  "context_sha256": "ba25312e99bf93765d27b50fb2ab947bf6ca0c0731ddddb90153d32044d96aa2",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
+  "reviewed_at": "2026-09-04T15:20:33.006429+00:00",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
+  "questions": [
+    {
+      "id": "q1",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q2",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q4",
+      "decision": "fixed",
+      "note": "Уточнены текущее время и часть суток; исключены регионально допустимые предлоги из неверных вариантов.",
+      "verification": "ok"
+    },
+    {
+      "id": "q5",
+      "decision": "fixed",
+      "note": "Уточнены текущее время и часть суток; исключены регионально допустимые предлоги из неверных вариантов.",
+      "verification": "ok"
+    },
+    {
+      "id": "q6",
+      "decision": "fixed",
+      "note": "Уточнены текущее время и часть суток; исключены регионально допустимые предлоги из неверных вариантов.",
+      "verification": "ok"
+    },
+    {
+      "id": "q7",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q8",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q9",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q10",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q11",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q12",
+      "decision": "fixed",
+      "note": "Уточнены текущее время и часть суток; исключены регионально допустимые предлоги из неверных вариантов.",
+      "verification": "ok"
+    },
+    {
+      "id": "q13",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q15",
+      "decision": "fixed",
+      "note": "Уточнены текущее время и часть суток; исключены регионально допустимые предлоги из неверных вариантов.",
+      "verification": "ok"
+    },
+    {
+      "id": "q16",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q17",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q18",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q19",
+      "decision": "fixed",
+      "note": "Уточнены текущее время и часть суток; исключены регионально допустимые предлоги из неверных вариантов.",
+      "verification": "ok"
+    },
+    {
+      "id": "q20",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q21",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q22",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q23",
+      "decision": "fixed",
+      "note": "Убраны ложные обязательности артиклей и неоднозначные дистракторы; уточнена орфографическая задача.",
+      "verification": "ok"
+    },
+    {
+      "id": "q24",
+      "decision": "fixed",
+      "note": "Убраны ложные обязательности артиклей и неоднозначные дистракторы; уточнена орфографическая задача.",
+      "verification": "ok"
+    },
+    {
+      "id": "q26",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q27",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q28",
+      "decision": "fixed",
+      "note": "Убраны ложные обязательности артиклей и неоднозначные дистракторы; уточнена орфографическая задача.",
+      "verification": "ok"
+    },
+    {
+      "id": "q29",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q30",
+      "decision": "fixed",
+      "note": "Убраны ложные обязательности артиклей и неоднозначные дистракторы; уточнена орфографическая задача.",
+      "verification": "ok"
+    },
+    {
+      "id": "q31",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q32",
+      "decision": "fixed",
+      "note": "Варианты проверяют написание месяца; устранены прежние несколько правильных ответов и совпадение после нормализации регистра.",
+      "verification": "ok"
+    },
+    {
+      "id": "q33",
+      "decision": "fixed",
+      "note": "Убраны ложные обязательности артиклей и неоднозначные дистракторы; уточнена орфографическая задача.",
+      "verification": "ok"
+    },
+    {
+      "id": "q34",
+      "decision": "fixed",
+      "note": "Убраны ложные обязательности артиклей и неоднозначные дистракторы; уточнена орфографическая задача.",
+      "verification": "ok"
+    },
+    {
+      "id": "q35",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q37",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q38",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q39",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q40",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q41",
+      "decision": "fixed",
+      "note": "Убраны ложные обязательности артиклей и неоднозначные дистракторы; уточнена орфографическая задача.",
+      "verification": "ok"
+    },
+    {
+      "id": "q42",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q43",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q44",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q45",
+      "decision": "fixed",
+      "note": "Уточнены настоящее время и безличные формы, сняты альтернативные погодные конструкции среди дистракторов.",
+      "verification": "ok"
+    },
+    {
+      "id": "q46",
+      "decision": "fixed",
+      "note": "Уточнены настоящее время и безличные формы, сняты альтернативные погодные конструкции среди дистракторов.",
+      "verification": "ok"
+    },
+    {
+      "id": "q48",
+      "decision": "fixed",
+      "note": "Уточнены настоящее время и безличные формы, сняты альтернативные погодные конструкции среди дистракторов.",
+      "verification": "ok"
+    },
+    {
+      "id": "q49",
+      "decision": "fixed",
+      "note": "Уточнены настоящее время и безличные формы, сняты альтернативные погодные конструкции среди дистракторов.",
+      "verification": "ok"
+    },
+    {
+      "id": "q50",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q51",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q52",
+      "decision": "fixed",
+      "note": "Уточнены настоящее время и безличные формы, сняты альтернативные погодные конструкции среди дистракторов.",
+      "verification": "ok"
+    },
+    {
+      "id": "q53",
+      "decision": "fixed",
+      "note": "Уточнены настоящее время и безличные формы, сняты альтернативные погодные конструкции среди дистракторов.",
+      "verification": "ok"
+    },
+    {
+      "id": "q54",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q55",
+      "decision": "fixed",
+      "note": "Уточнены настоящее время и безличные формы, сняты альтернативные погодные конструкции среди дистракторов.",
+      "verification": "ok"
+    },
+    {
+      "id": "q56",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q57",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q59",
+      "decision": "fixed",
+      "note": "Уточнены настоящее время и безличные формы, сняты альтернативные погодные конструкции среди дистракторов.",
+      "verification": "ok"
+    },
+    {
+      "id": "q60",
+      "decision": "fixed",
+      "note": "Уточнены настоящее время и безличные формы, сняты альтернативные погодные конструкции среди дистракторов.",
+      "verification": "ok"
+    },
+    {
+      "id": "q61",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q62",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q63",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q64",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q65",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q66",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-04-es025-028/check.py",
+      "result": "pass",
+      "evidence": "All 536 IDs/contracts, decisions versus baseline, fingerprints, native training validation, signatures and source-final-embedded equality; validation.log."
+    },
+    {
+      "command": "go test ./internal/grammarbundle ./internal/repository -run 'TestValidateEmbeddedBundleID|TestGrammar.*Bundle|TestGrammar.*Reorder' -count=1",
+      "result": "pass",
+      "evidence": "Both packages passed on final integrated data; go-tests.log."
+    },
+    {
+      "command": "git diff --check; git -C courses/spanish-grammar diff --check; git -C courses/english-grammar diff --check",
+      "result": "pass",
+      "evidence": "Three separately executed commands exit 0; diff-check.log. All 706 earlier dirty files outside review docs preserved; preservation.log."
+    },
+    {
+      "command": "cd courses/spanish-grammar && bash scripts/assemble-chapter.sh 026.es.grammar.existence_location_possession.basic_time_date_weather_expressions",
+      "result": "pass",
+      "evidence": "026-assemble.log: exit 0."
+    },
+    {
+      "command": "cd courses/spanish-grammar && bash scripts/validate-chapter.sh 026.es.grammar.existence_location_possession.basic_time_date_weather_expressions",
+      "result": "pass",
+      "evidence": "026-chapter-after.log: exit 0."
+    },
+    {
+      "command": "cd courses/spanish-grammar && ajv validate --spec=draft2020 --validate-formats=false --all-errors -s 02-chapter-schema.json -d chapters/026.es.grammar.existence_location_possession.basic_time_date_weather_expressions/05-final.json",
+      "result": "pass",
+      "evidence": "026-schema-after.log: exit 0."
+    },
+    {
+      "command": "cd courses/spanish-grammar && ajv validate -s 02-chapter-schema.json -d chapters/026.es.grammar.existence_location_possession.basic_time_date_weather_expressions/05-final.json",
+      "result": "known_baseline",
+      "evidence": "026-assembler-ajv-before.log and 026-assembler-ajv-after.log are byte-identical, exit 1: no draft2020 meta-schema selected. Explicit draft2020 results are recorded separately."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    }
+  ],
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+}

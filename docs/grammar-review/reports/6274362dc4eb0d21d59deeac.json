@@ -1,0 +1,102 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/chapters/017/es.03.b3_theory_question_marks_and_subject_position.questions.json",
+  "source_sha256": "e0c9edea85f9731bfe08b634dcc22f1b4c208a8f45a9a6bdba8b6185a92c934d",
+  "context_sha256": "1d4dd276576cbe2d22c6460fd62bb5521c3a2b50b7203139ebe18110e940d6e2",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
+  "reviewed_at": "2026-09-04T13:30:35.772940+00:00",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
+  "questions": [
+    {
+      "id": "q1",
+      "decision": "fixed",
+      "note": "Исправлены формулировка или объяснение: явные местоимения допустимы, нужен однозначный критерий выбора; ссылки на буквы удалены.",
+      "verification": "ok"
+    },
+    {
+      "id": "q2",
+      "decision": "fixed",
+      "note": "Исправлены формулировка или объяснение: явные местоимения допустимы, нужен однозначный критерий выбора; ссылки на буквы удалены.",
+      "verification": "ok"
+    },
+    {
+      "id": "q3",
+      "decision": "fixed",
+      "note": "Исправлены формулировка или объяснение: явные местоимения допустимы, нужен однозначный критерий выбора; ссылки на буквы удалены.",
+      "verification": "ok"
+    },
+    {
+      "id": "q4",
+      "decision": "fixed",
+      "note": "Исправлены формулировка или объяснение: явные местоимения допустимы, нужен однозначный критерий выбора; ссылки на буквы удалены.",
+      "verification": "ok"
+    },
+    {
+      "id": "q5",
+      "decision": "fixed",
+      "note": "Исправлены формулировка или объяснение: явные местоимения допустимы, нужен однозначный критерий выбора; ссылки на буквы удалены.",
+      "verification": "ok"
+    },
+    {
+      "id": "q6",
+      "decision": "fixed",
+      "note": "Исправлены формулировка или объяснение: явные местоимения допустимы, нужен однозначный критерий выбора; ссылки на буквы удалены.",
+      "verification": "ok"
+    },
+    {
+      "id": "q7",
+      "decision": "fixed",
+      "note": "Исправлены формулировка или объяснение: явные местоимения допустимы, нужен однозначный критерий выбора; ссылки на буквы удалены.",
+      "verification": "ok"
+    },
+    {
+      "id": "q8",
+      "decision": "fixed",
+      "note": "Исправлены формулировка или объяснение: явные местоимения допустимы, нужен однозначный критерий выбора; ссылки на буквы удалены.",
+      "verification": "ok"
+    },
+    {
+      "id": "q9",
+      "decision": "fixed",
+      "note": "Исправлены формулировка или объяснение: явные местоимения допустимы, нужен однозначный критерий выбора; ссылки на буквы удалены.",
+      "verification": "ok"
+    },
+    {
+      "id": "q10",
+      "decision": "fixed",
+      "note": "Исправлены формулировка или объяснение: явные местоимения допустимы, нужен однозначный критерий выбора; ссылки на буквы удалены.",
+      "verification": "ok"
+    },
+    {
+      "id": "q12",
+      "decision": "fixed",
+      "note": "Исправлены формулировка или объяснение: явные местоимения допустимы, нужен однозначный критерий выбора; ссылки на буквы удалены.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-04-es017-020/check.py",
+      "result": "pass",
+      "evidence": "All 561 IDs/contracts, question decisions versus baseline, fingerprints, native training validation, signatures and source-final-embedded equality; validation.log."
+    },
+    {
+      "command": "go test ./internal/grammarbundle ./internal/repository -run 'TestValidateEmbeddedBundleID|TestGrammar.*Bundle|TestGrammar.*Reorder' -count=1",
+      "result": "pass",
+      "evidence": "Both packages passed after integration of all four chapters; go-tests.log."
+    },
+    {
+      "command": "git diff --check; git -C courses/spanish-grammar diff --check; git -C courses/english-grammar diff --check",
+      "result": "pass",
+      "evidence": "Three separately executed commands exit 0; diff-check.log. All 484 earlier dirty files outside review docs preserved; preservation.log."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    }
+  ],
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+}

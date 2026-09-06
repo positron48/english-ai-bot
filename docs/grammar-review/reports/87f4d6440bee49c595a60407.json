@@ -1,0 +1,111 @@
+{
+  "version": 1,
+  "source": "courses/english-grammar/training_pack/chapters/005/en.05.b5_theory_combining_types.questions.json",
+  "source_sha256": "81cee40e099bda3affeed9112000616d118f8f0c81b73c7c772f790ef96ecfd2",
+  "context_sha256": "a10f8cb9575cff5aa8e5c56f78dd4e7270570af29e20db939dc539e2d60c7329",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
+  "reviewed_at": "2026-09-04T10:32:25.133585+00:00",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
+  "questions": [
+    {
+      "id": "q1",
+      "decision": "fixed",
+      "note": "Устранены несколько правильных вариантов и ложный запрет повторять be; проверяется полнота частей.",
+      "verification": "ok"
+    },
+    {
+      "id": "q2",
+      "decision": "fixed",
+      "note": "Устранён второй верный ответ и запрет повторения be.",
+      "verification": "ok"
+    },
+    {
+      "id": "q3",
+      "decision": "fixed",
+      "note": "Полные части с повторением be признаны верными; дистракторы различаются грамматически.",
+      "verification": "ok"
+    },
+    {
+      "id": "q4",
+      "decision": "fixed",
+      "note": "Корректное повторение be больше не ошибка; введена реальная ошибка согласования we is.",
+      "verification": "ok"
+    },
+    {
+      "id": "q5",
+      "decision": "fixed",
+      "note": "Устранены два верных перевода и запрет повторять be.",
+      "verification": "ok"
+    },
+    {
+      "id": "q6",
+      "decision": "fixed",
+      "note": "Устранён альтернативный верный вариант; объяснено допустимое общее be.",
+      "verification": "ok"
+    },
+    {
+      "id": "q7",
+      "decision": "fixed",
+      "note": "Два нормативных способа больше не конкурируют; неверные варианты нарушают согласование и структуру.",
+      "verification": "ok"
+    },
+    {
+      "id": "q8",
+      "decision": "fixed",
+      "note": "Правильный повтор be заменён реальной ошибкой he are; остальные варианты грамматичны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q9",
+      "decision": "fixed",
+      "note": "Устранён бессмысленный перенос погодного it в местоположение предмета; пример про погоду на пляже.",
+      "verification": "ok"
+    },
+    {
+      "id": "q10",
+      "decision": "fixed",
+      "note": "Повтор be не запрещён; варианты получили однозначные ошибки.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "cd courses/english-grammar && bash scripts/assemble-chapter.sh 005.en.grammar.first_sentences_be_as.statements_with_be_identity && bash scripts/validate-chapter.sh 005.en.grammar.first_sentences_be_as.statements_with_be_identity",
+      "result": "pass",
+      "evidence": "Chapter assembled and validator passes. See docs/grammar-review/batches/2026-09-04-en005-006/005-assemble-after.log and 005-chapter-after.log."
+    },
+    {
+      "command": "ajv validate --spec=draft2020 --validate-formats=false --all-errors -s courses/english-grammar/02-chapter-schema.json -d courses/english-grammar/chapters/005.en.grammar.first_sentences_be_as.statements_with_be_identity/05-final.json",
+      "result": "pass",
+      "evidence": "Baseline and final schemas pass; see docs/grammar-review/batches/2026-09-04-en005-006/005-schema-before.log and 005-schema-after.log."
+    },
+    {
+      "command": "ajv validate -s courses/english-grammar/02-chapter-schema.json -d courses/english-grammar/chapters/005.en.grammar.first_sentences_be_as.statements_with_be_identity/05-final.json",
+      "result": "known_baseline",
+      "evidence": "Stock assembler omits draft2020; same missing meta-schema error before and after. Explicit draft2020 passes. See docs/grammar-review/batches/2026-09-04-en005-006/005-assembler-ajv-before.log and 005-assembler-ajv-after.log."
+    },
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-04-en005-006/check.py",
+      "result": "pass",
+      "evidence": "All 196 contracts and metadata preserved, decisions match changes, fingerprints and signatures current, no new EN pack duplicates, source/final/embedded equal. See docs/grammar-review/batches/2026-09-04-en005-006/validation.log."
+    },
+    {
+      "command": "go test ./internal/grammarbundle ./internal/repository -run 'TestValidateEmbeddedBundleID|TestGrammar.*Bundle|TestGrammar.*Reorder' -count=1",
+      "result": "pass",
+      "evidence": "Both packages passed in 5.069s and 14.507s; see docs/grammar-review/batches/2026-09-04-en005-006/go-tests.log."
+    },
+    {
+      "command": "git diff --check && git -C courses/english-grammar diff --check && git -C courses/spanish-grammar diff --check",
+      "result": "pass",
+      "evidence": "All three commands exited 0."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    }
+  ],
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+}

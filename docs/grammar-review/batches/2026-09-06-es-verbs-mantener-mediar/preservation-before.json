@@ -1,0 +1,31 @@
+{
+  "existing_files": 25296,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/mantener.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/mantener.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/marcar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/marcar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/matar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/matar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/mediar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/mediar.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-mantener-mediar",
+    "docs/grammar-review/reports/c33a9e86945249c11081de2e.json",
+    "docs/grammar-review/reports/bdcee8ecc4dca61cb8fbf5b9.json",
+    "docs/grammar-review/reports/d73a0744fa24a6cb3dd6c6e3.json",
+    "docs/grammar-review/reports/73319a559990382c9cef3401.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/mantener.json": "9ccf6fb4d25b45e92c4d48d872625946024b4b1bb4c90afca10b9458fd8cf31c",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/mantener.json": "9ccf6fb4d25b45e92c4d48d872625946024b4b1bb4c90afca10b9458fd8cf31c",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/marcar.json": "f09e5098c245d14a89e8b890a01151179603f4ca5b30923dc6c3d783fa295f1e",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/marcar.json": "f09e5098c245d14a89e8b890a01151179603f4ca5b30923dc6c3d783fa295f1e",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/matar.json": "a72f474a3a1f44dc4c38599846f219cd38d8b260ce64686727cfe3ea921162dc",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/matar.json": "a72f474a3a1f44dc4c38599846f219cd38d8b260ce64686727cfe3ea921162dc",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/mediar.json": "733640b46868e196f8ebb1740bdafed7042b6029a9ec8b7a0180d669c85e2ddb",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/mediar.json": "733640b46868e196f8ebb1740bdafed7042b6029a9ec8b7a0180d669c85e2ddb"
+  }
+}

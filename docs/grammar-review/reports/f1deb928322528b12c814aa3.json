@@ -1,0 +1,81 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/chapters/041/es.01.b1_theory_bridge_from_ch040_two_lenses.questions.json",
+  "source_sha256": "7e3c68b632537b6f140f84919a73422041258fea99d57dede1344cae2788dd5b",
+  "context_sha256": "8bc4e8c5a6924ed23abcc7bebb8c364d46aefe08f35617eea12cbc088461a038",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
+  "reviewed_at": "2026-09-04T18:09:04.720121+00:00",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
+  "questions": [
+    {
+      "id": "q1",
+      "decision": "fixed",
+      "note": "Устранены несколько правильных ответов и ложные запреты ahora/cada día; формат задаёт конструкцию и отсутствие дополнительного маркера.",
+      "verification": "ok"
+    },
+    {
+      "id": "q2",
+      "decision": "fixed",
+      "note": "Устранены несколько правильных ответов и ложные запреты ahora/cada día; формат задаёт конструкцию и отсутствие дополнительного маркера.",
+      "verification": "ok"
+    },
+    {
+      "id": "q3",
+      "decision": "fixed",
+      "note": "Устранены несколько правильных ответов и ложные запреты ahora/cada día; формат задаёт конструкцию и отсутствие дополнительного маркера.",
+      "verification": "ok"
+    },
+    {
+      "id": "q4",
+      "decision": "fixed",
+      "note": "Устранены несколько правильных ответов и ложные запреты ahora/cada día; формат задаёт конструкцию и отсутствие дополнительного маркера.",
+      "verification": "ok"
+    },
+    {
+      "id": "q5",
+      "decision": "fixed",
+      "note": "Устранены несколько правильных ответов и ложные запреты ahora/cada día; формат задаёт конструкцию и отсутствие дополнительного маркера.",
+      "verification": "ok"
+    },
+    {
+      "id": "q6",
+      "decision": "fixed",
+      "note": "Устранены несколько правильных ответов и ложные запреты ahora/cada día; формат задаёт конструкцию и отсутствие дополнительного маркера.",
+      "verification": "ok"
+    },
+    {
+      "id": "q7",
+      "decision": "fixed",
+      "note": "Устранены несколько правильных ответов и ложные запреты ahora/cada día; формат задаёт конструкцию и отсутствие дополнительного маркера.",
+      "verification": "ok"
+    },
+    {
+      "id": "q8",
+      "decision": "fixed",
+      "note": "Устранены несколько правильных ответов и ложные запреты ahora/cada día; формат задаёт конструкцию и отсутствие дополнительного маркера.",
+      "verification": "ok"
+    },
+    {
+      "id": "q9",
+      "decision": "fixed",
+      "note": "Устранены несколько правильных ответов и ложные запреты ahora/cada día; формат задаёт конструкцию и отсутствие дополнительного маркера.",
+      "verification": "ok"
+    },
+    {
+      "id": "q10",
+      "decision": "fixed",
+      "note": "Устранены несколько правильных ответов и ложные запреты ahora/cada día; формат задаёт конструкцию и отсутствие дополнительного маркера.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    }
+  ],
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+}

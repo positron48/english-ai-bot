@@ -1,0 +1,435 @@
+{
+  "chapter_id": "es.grammar.orientation_alphabet_sounds.core_pronunciation_map_b_v_c_z_g",
+  "theory_block_id": "b3_theory_g_j_gu_gu_dieresis",
+  "course_version": "1.0.0",
+  "questions": [
+    {
+      "type": "mcq_single",
+      "prompt": "Как произносится буква 'g' в слове 'gimnasio'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "как 'j' (хрипло)"
+        },
+        {
+          "id": "b",
+          "text": "как 'g' в 'gato'"
+        },
+        {
+          "id": "c",
+          "text": "как 'h'"
+        },
+        {
+          "id": "d",
+          "text": "как 'k'"
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "В слове 'gimnasio' буква 'g' стоит перед 'i', поэтому произносится как 'j' (хрипло), как в 'gente' и 'gitano'.",
+      "theory_block_id": "b3_theory_g_j_gu_gu_dieresis",
+      "chapter_id": "es.grammar.orientation_alphabet_sounds.core_pronunciation_map_b_v_c_z_g",
+      "concept_id": "g_j_gu_gue_gui_dieresis",
+      "difficulty": 2,
+      "id": "q1",
+      "signature": "f870c7bd3597a256"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "В каком слове буква 'g' произносится твёрдо, как в 'gato'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "gente"
+        },
+        {
+          "id": "b",
+          "text": "gordo"
+        },
+        {
+          "id": "c",
+          "text": "jamón"
+        },
+        {
+          "id": "d",
+          "text": "giro"
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "В слове 'gordo' буква 'g' стоит перед 'o', поэтому произносится твёрдо, как в 'gato'.",
+      "theory_block_id": "b3_theory_g_j_gu_gu_dieresis",
+      "chapter_id": "es.grammar.orientation_alphabet_sounds.core_pronunciation_map_b_v_c_z_g",
+      "concept_id": "g_j_gu_gue_gui_dieresis",
+      "difficulty": 2,
+      "id": "q2",
+      "signature": "7f5c1c8874f5db4e"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "В каком слове 'g' перед 'e' произносится твёрдо, потому что есть 'u'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "gente"
+        },
+        {
+          "id": "b",
+          "text": "guerra"
+        },
+        {
+          "id": "c",
+          "text": "giro"
+        },
+        {
+          "id": "d",
+          "text": "jamón"
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "В слове 'guerra' сочетание 'gu' сохраняет твёрдое 'g' перед 'e', а 'u' не произносится.",
+      "theory_block_id": "b3_theory_g_j_gu_gu_dieresis",
+      "chapter_id": "es.grammar.orientation_alphabet_sounds.core_pronunciation_map_b_v_c_z_g",
+      "concept_id": "g_j_gu_gue_gui_dieresis",
+      "difficulty": 3,
+      "id": "q3",
+      "signature": "0196590a89d1d5dd"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Как произносится 'g' в слове 'girar'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "как 'g' в 'gato'"
+        },
+        {
+          "id": "b",
+          "text": "как 'j' в 'jamón'"
+        },
+        {
+          "id": "c",
+          "text": "как 'h'"
+        },
+        {
+          "id": "d",
+          "text": "как 'k'"
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "В слове 'girar' буква 'g' стоит перед 'i', поэтому произносится как 'j' (хрипло), как в 'gente'.",
+      "theory_block_id": "b3_theory_g_j_gu_gu_dieresis",
+      "chapter_id": "es.grammar.orientation_alphabet_sounds.core_pronunciation_map_b_v_c_z_g",
+      "concept_id": "g_j_gu_gue_gui_dieresis",
+      "difficulty": 2,
+      "id": "q4",
+      "signature": "c20f47579626b32a"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "В каком слове 'u' произносится, потому что над ней стоит диэрезис?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "guerra"
+        },
+        {
+          "id": "b",
+          "text": "guisante"
+        },
+        {
+          "id": "c",
+          "text": "pingüino"
+        },
+        {
+          "id": "d",
+          "text": "gato"
+        }
+      ],
+      "correct_answer": "c",
+      "explanation": "В слове 'pingüino' над 'u' стоит диэрезис, поэтому 'u' произносится, как в 'güe' и 'güi'.",
+      "theory_block_id": "b3_theory_g_j_gu_gu_dieresis",
+      "chapter_id": "es.grammar.orientation_alphabet_sounds.core_pronunciation_map_b_v_c_z_g",
+      "concept_id": "g_j_gu_gue_gui_dieresis",
+      "difficulty": 3,
+      "id": "q7",
+      "signature": "501d072c381c0c3e"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Как произносится 'g' в слове 'gordo'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "как 'j' в 'jamón'"
+        },
+        {
+          "id": "b",
+          "text": "как 'g' в 'gato'"
+        },
+        {
+          "id": "c",
+          "text": "как 'h'"
+        },
+        {
+          "id": "d",
+          "text": "как 'k'"
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "В слове 'gordo' буква 'g' стоит перед 'o', поэтому произносится твёрдо, как в 'gato'.",
+      "theory_block_id": "b3_theory_g_j_gu_gu_dieresis",
+      "chapter_id": "es.grammar.orientation_alphabet_sounds.core_pronunciation_map_b_v_c_z_g",
+      "concept_id": "g_j_gu_gue_gui_dieresis",
+      "difficulty": 2,
+      "id": "q8",
+      "signature": "9899742ca7beafa9"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "В каком слове 'gu' используется для сохранения твёрдого 'g' перед 'e'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "gente"
+        },
+        {
+          "id": "b",
+          "text": "guerra"
+        },
+        {
+          "id": "c",
+          "text": "giro"
+        },
+        {
+          "id": "d",
+          "text": "jamón"
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "В слове 'guerra' сочетание 'gu' сохраняет твёрдое 'g' перед 'e', а 'u' не произносится.",
+      "theory_block_id": "b3_theory_g_j_gu_gu_dieresis",
+      "chapter_id": "es.grammar.orientation_alphabet_sounds.core_pronunciation_map_b_v_c_z_g",
+      "concept_id": "g_j_gu_gue_gui_dieresis",
+      "difficulty": 3,
+      "id": "q9",
+      "signature": "f5df15db89786f51"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой пример демонстрирует использование 'g' перед 'e', которое читается как 'j'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "gato"
+        },
+        {
+          "id": "b",
+          "text": "gente"
+        },
+        {
+          "id": "c",
+          "text": "guerra"
+        },
+        {
+          "id": "d",
+          "text": "guitarra"
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Перед 'e' и 'i' 'g' переходит в хриплый класс, как 'j', например, 'gente' [ˈxente].",
+      "theory_block_id": "b3_theory_g_j_gu_gu_dieresis",
+      "chapter_id": "es.grammar.orientation_alphabet_sounds.core_pronunciation_map_b_v_c_z_g",
+      "concept_id": "g_j_gu_gue_gui_dieresis",
+      "difficulty": 2,
+      "id": "q10",
+      "signature": "72db04838c8a7a75"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какое слово использует 'gue' для сохранения твёрдого звука 'g' перед 'e'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "gente"
+        },
+        {
+          "id": "b",
+          "text": "guerra"
+        },
+        {
+          "id": "c",
+          "text": "gato"
+        },
+        {
+          "id": "d",
+          "text": "jamón"
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "В 'guerra' 'gue' сохраняет твёрдый 'g', а 'u' не произносится, как в 'guerra' [ˈɡera].",
+      "theory_block_id": "b3_theory_g_j_gu_gu_dieresis",
+      "chapter_id": "es.grammar.orientation_alphabet_sounds.core_pronunciation_map_b_v_c_z_g",
+      "concept_id": "g_j_gu_gue_gui_dieresis",
+      "difficulty": 2,
+      "id": "q11",
+      "signature": "d211da70b8d45697"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "В каком слове диэрезис (ü) указывает на произношение буквы 'u'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "guerra"
+        },
+        {
+          "id": "b",
+          "text": "guiso"
+        },
+        {
+          "id": "c",
+          "text": "pingüino"
+        },
+        {
+          "id": "d",
+          "text": "guitarra"
+        }
+      ],
+      "correct_answer": "c",
+      "explanation": "В 'pingüino' диэрезис в 'güe' показывает, что 'u' произносится, как в 'pingüino' [piŋˈɡwino].",
+      "theory_block_id": "b3_theory_g_j_gu_gu_dieresis",
+      "chapter_id": "es.grammar.orientation_alphabet_sounds.core_pronunciation_map_b_v_c_z_g",
+      "concept_id": "g_j_gu_gue_gui_dieresis",
+      "difficulty": 3,
+      "id": "q12",
+      "signature": "e05489992ca840b1"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "В каком слове 'g' перед 'u' произносится твёрдо?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "gato"
+        },
+        {
+          "id": "b",
+          "text": "gusano"
+        },
+        {
+          "id": "c",
+          "text": "gente"
+        },
+        {
+          "id": "d",
+          "text": "jamón"
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Перед 'u' 'g' имеет твёрдое произношение, как в 'gusano' [ɡuˈsano].",
+      "theory_block_id": "b3_theory_g_j_gu_gu_dieresis",
+      "chapter_id": "es.grammar.orientation_alphabet_sounds.core_pronunciation_map_b_v_c_z_g",
+      "concept_id": "g_j_gu_gue_gui_dieresis",
+      "difficulty": 2,
+      "id": "q13",
+      "signature": "47b5505a3c0692f5"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой пример иллюстрирует хриплый звук 'j' перед 'a'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "gato"
+        },
+        {
+          "id": "b",
+          "text": "jamón"
+        },
+        {
+          "id": "c",
+          "text": "guerra"
+        },
+        {
+          "id": "d",
+          "text": "guitarra"
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "В 'jamón' 'j' перед 'a' читается как хриплый звук, как в 'jamón' [xaˈmon].",
+      "theory_block_id": "b3_theory_g_j_gu_gu_dieresis",
+      "chapter_id": "es.grammar.orientation_alphabet_sounds.core_pronunciation_map_b_v_c_z_g",
+      "concept_id": "g_j_gu_gue_gui_dieresis",
+      "difficulty": 2,
+      "id": "q14",
+      "signature": "22a6ee612eb31bc9"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "Какой пример иллюстрирует использование 'g' перед 'i', которое читается как 'j'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "gato"
+        },
+        {
+          "id": "b",
+          "text": "gitano"
+        },
+        {
+          "id": "c",
+          "text": "guerra"
+        },
+        {
+          "id": "d",
+          "text": "guitarra"
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Перед 'i' 'g' переходит в хриплый класс, как 'j', например, 'gitano' [xiˈtano].",
+      "theory_block_id": "b3_theory_g_j_gu_gu_dieresis",
+      "chapter_id": "es.grammar.orientation_alphabet_sounds.core_pronunciation_map_b_v_c_z_g",
+      "concept_id": "g_j_gu_gue_gui_dieresis",
+      "difficulty": 2,
+      "id": "q17",
+      "signature": "053cf097669348df"
+    },
+    {
+      "type": "mcq_single",
+      "prompt": "В каком слове сочетание 'güe' используется с диэрезисом для произношения 'u'?",
+      "choices": [
+        {
+          "id": "a",
+          "text": "guerra"
+        },
+        {
+          "id": "b",
+          "text": "guiso"
+        },
+        {
+          "id": "c",
+          "text": "pingüino"
+        },
+        {
+          "id": "d",
+          "text": "guitarra"
+        }
+      ],
+      "correct_answer": "c",
+      "explanation": "В 'pingüino' сочетание 'güe' с диэрезисом показывает, что 'u' произносится, как в 'pingüino' [piŋˈɡwino].",
+      "theory_block_id": "b3_theory_g_j_gu_gu_dieresis",
+      "chapter_id": "es.grammar.orientation_alphabet_sounds.core_pronunciation_map_b_v_c_z_g",
+      "concept_id": "g_j_gu_gue_gui_dieresis",
+      "difficulty": 3,
+      "id": "q19",
+      "signature": "0dd4b41eea6ed5e0"
+    }
+  ],
+  "meta": {
+    "generated_at": "2026-04-28T07:05:57Z",
+    "source": "llm-only",
+    "questions_per_block": 10,
+    "chapter_number_filter": 4,
+    "block_number_filter": 3,
+    "append": true
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "existing_files": 25764,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/afirmar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/afirmar.json",
+    "docs/grammar-review/reports/3d8a6b9dfa2717b8ffb11970.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/agradecer.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/agradecer.json",
+    "docs/grammar-review/reports/f14f851ec99e68ffe9e19f5c.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/alcanzar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/alcanzar.json",
+    "docs/grammar-review/reports/cac1f3b103c1cfe918926785.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/almorzar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/almorzar.json",
+    "docs/grammar-review/reports/89392692d12dcc3bc9dbf0c5.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-verify-afirmar-almorzar"
+  ],
+  "assigned_dirty_before": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/afirmar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/agradecer.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/alcanzar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/almorzar.json",
+    "docs/grammar-review/reports/3d8a6b9dfa2717b8ffb11970.json",
+    "docs/grammar-review/reports/89392692d12dcc3bc9dbf0c5.json",
+    "docs/grammar-review/reports/cac1f3b103c1cfe918926785.json",
+    "docs/grammar-review/reports/f14f851ec99e68ffe9e19f5c.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/afirmar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/agradecer.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/alcanzar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/almorzar.json"
+  ],
+  "preexisting_missing_tracked": [
+    "courses/english-grammar/llm-benchmark/__pycache__/benchmark.cpython-314.pyc",
+    "courses/english-grammar/training-pack-admin/__pycache__/server.cpython-314.pyc",
+    "tools-local/complaints-worker/__pycache__/worker.cpython-314.pyc"
+  ]
+}

@@ -1,0 +1,637 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/robar.json",
+  "source_sha256": "c3532cd719f74616bcb45b2fbbb0d77f5f63f6643df824c6e9154c3e42e9b77d",
+  "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197",
+  "editor": "Helmholtz editor 2026-09-06",
+  "verifier": "Codex coordinator verifier 2026-09-06",
+  "phase": "done",
+  "reviewed_at": "2026-09-06",
+  "verified_at": "2026-09-06T10:51:15+00:00",
+  "questions": [
+    {
+      "id": "es.presente.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма при необходимости, естественный контекст robar, точный русский перевод и четыре уникальных same-scope варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма при необходимости, естественный контекст robar, точный русский перевод и четыре уникальных same-scope варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма при необходимости, естественный контекст robar, точный русский перевод и четыре уникальных same-scope варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма при необходимости, естественный контекст robar, точный русский перевод и четыре уникальных same-scope варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма при необходимости, естественный контекст robar, точный русский перевод и четыре уникальных same-scope варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма при необходимости, естественный контекст robar, точный русский перевод и четыре уникальных same-scope варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма при необходимости, естественный контекст robar, точный русский перевод и четыре уникальных same-scope варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма при необходимости, естественный контекст robar, точный русский перевод и четыре уникальных same-scope варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма при необходимости, естественный контекст robar, точный русский перевод и четыре уникальных same-scope варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма при необходимости, естественный контекст robar, точный русский перевод и четыре уникальных same-scope варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма при необходимости, естественный контекст robar, точный русский перевод и четыре уникальных same-scope варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма при необходимости, естественный контекст robar, точный русский перевод и четыре уникальных same-scope варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма при необходимости, естественный контекст robar, точный русский перевод и четыре уникальных same-scope варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма при необходимости, естественный контекст robar, точный русский перевод и четыре уникальных same-scope варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма при необходимости, естественный контекст robar, точный русский перевод и четыре уникальных same-scope варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма при необходимости, естественный контекст robar, точный русский перевод и четыре уникальных same-scope варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма при необходимости, естественный контекст robar, точный русский перевод и четыре уникальных same-scope варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма при необходимости, естественный контекст robar, точный русский перевод и четыре уникальных same-scope варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма при необходимости, естественный контекст robar, точный русский перевод и четыре уникальных same-scope варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма при необходимости, естественный контекст robar, точный русский перевод и четыре уникальных same-scope варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма при необходимости, естественный контекст robar, точный русский перевод и четыре уникальных same-scope варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма при необходимости, естественный контекст robar, точный русский перевод и четыре уникальных same-scope варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма при необходимости, естественный контекст robar, точный русский перевод и четыре уникальных same-scope варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма при необходимости, естественный контекст robar, точный русский перевод и четыре уникальных same-scope варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма при необходимости, естественный контекст robar, точный русский перевод и четыре уникальных same-scope варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма при необходимости, естественный контекст robar, точный русский перевод и четыре уникальных same-scope варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма при необходимости, естественный контекст robar, точный русский перевод и четыре уникальных same-scope варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма при необходимости, естественный контекст robar, точный русский перевод и четыре уникальных same-scope варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма при необходимости, естественный контекст robar, точный русский перевод и четыре уникальных same-scope варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма при необходимости, естественный контекст robar, точный русский перевод и четыре уникальных same-scope варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма при необходимости, естественный контекст robar, точный русский перевод и четыре уникальных same-scope варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма при необходимости, естественный контекст robar, точный русский перевод и четыре уникальных same-scope варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма при необходимости, естественный контекст robar, точный русский перевод и четыре уникальных same-scope варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма при необходимости, естественный контекст robar, точный русский перевод и четыре уникальных same-scope варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма при необходимости, естественный контекст robar, точный русский перевод и четыре уникальных same-scope варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма при необходимости, естественный контекст robar, точный русский перевод и четыре уникальных same-scope варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма при необходимости, естественный контекст robar, точный русский перевод и четыре уникальных same-scope варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма при необходимости, естественный контекст robar, точный русский перевод и четыре уникальных same-scope варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма при необходимости, естественный контекст robar, точный русский перевод и четыре уникальных same-scope варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма при необходимости, естественный контекст robar, точный русский перевод и четыре уникальных same-scope варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма при необходимости, естественный контекст robar, точный русский перевод и четыре уникальных same-scope варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма при необходимости, естественный контекст robar, точный русский перевод и четыре уникальных same-scope варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлена карточка: форма Jehle, литературный контекст pretérito anterior, точный перевод и уникальные same-scope варианты.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлена карточка: форма Jehle, литературный контекст pretérito anterior, точный перевод и уникальные same-scope варианты.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлена карточка: форма Jehle, литературный контекст pretérito anterior, точный перевод и уникальные same-scope варианты.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлена карточка: форма Jehle, литературный контекст pretérito anterior, точный перевод и уникальные same-scope варианты.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлена карточка: форма Jehle, литературный контекст pretérito anterior, точный перевод и уникальные same-scope варианты.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлена карточка: форма Jehle, литературный контекст pretérito anterior, точный перевод и уникальные same-scope варианты.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма при необходимости, естественный контекст robar, точный русский перевод и четыре уникальных same-scope варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма при необходимости, естественный контекст robar, точный русский перевод и четыре уникальных same-scope варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма при необходимости, естественный контекст robar, точный русский перевод и четыре уникальных same-scope варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма при необходимости, естественный контекст robar, точный русский перевод и четыре уникальных same-scope варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма при необходимости, естественный контекст robar, точный русский перевод и четыре уникальных same-scope варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма при необходимости, естественный контекст robar, точный русский перевод и четыре уникальных same-scope варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма, явный контрфактический контекст с «Если бы…», субъектность, перевод и варианты.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма, явный контрфактический контекст с «Если бы…», субъектность, перевод и варианты.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма, явный контрфактический контекст с «Если бы…», субъектность, перевод и варианты.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма, явный контрфактический контекст с «Если бы…», субъектность, перевод и варианты.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма, явный контрфактический контекст с «Если бы…», субъектность, перевод и варианты.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма, явный контрфактический контекст с «Если бы…», субъектность, перевод и варианты.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма при необходимости, естественный контекст robar, точный русский перевод и четыре уникальных same-scope варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма при необходимости, естественный контекст robar, точный русский перевод и четыре уникальных same-scope варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма при необходимости, естественный контекст robar, точный русский перевод и четыре уникальных same-scope варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма при необходимости, естественный контекст robar, точный русский перевод и четыре уникальных same-scope варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма при необходимости, естественный контекст robar, точный русский перевод и четыре уникальных same-scope варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма при необходимости, естественный контекст robar, точный русский перевод и четыре уникальных same-scope варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма при необходимости, естественный контекст robar, точный русский перевод и четыре уникальных same-scope варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма при необходимости, естественный контекст robar, точный русский перевод и четыре уникальных same-scope варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма при необходимости, естественный контекст robar, точный русский перевод и четыре уникальных same-scope варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма при необходимости, естественный контекст robar, точный русский перевод и четыре уникальных same-scope варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма при необходимости, естественный контекст robar, точный русский перевод и четыре уникальных same-scope варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма при необходимости, естественный контекст robar, точный русский перевод и четыре уникальных same-scope варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлена карточка: форма Jehle, явно маркированная старая юридическая формула, точный перевод и уникальные same-scope варианты.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлена карточка: форма Jehle, явно маркированная старая юридическая формула, точный перевод и уникальные same-scope варианты.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлена карточка: форма Jehle, явно маркированная старая юридическая формула, точный перевод и уникальные same-scope варианты.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлена карточка: форма Jehle, явно маркированная старая юридическая формула, точный перевод и уникальные same-scope варианты.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлена карточка: форма Jehle, явно маркированная старая юридическая формула, точный перевод и уникальные same-scope варианты.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлена карточка: форма Jehle, явно маркированная старая юридическая формула, точный перевод и уникальные same-scope варианты. После координаторской проверки `piezas del archivo` заменено на точное `documentos del archivo`, соответствующее русскому «документы из архива».",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма при необходимости, естественный контекст robar, точный русский перевод и четыре уникальных same-scope варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма при необходимости, естественный контекст robar, точный русский перевод и четыре уникальных same-scope варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма при необходимости, естественный контекст robar, точный русский перевод и четыре уникальных same-scope варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма при необходимости, естественный контекст robar, точный русский перевод и четыре уникальных same-scope варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма при необходимости, естественный контекст robar, точный русский перевод и четыре уникальных same-scope варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма при необходимости, естественный контекст robar, точный русский перевод и четыре уникальных same-scope варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма при необходимости, естественный контекст robar, точный русский перевод и четыре уникальных same-scope варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма при необходимости, естественный контекст robar, точный русский перевод и четыре уникальных same-scope варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма при необходимости, естественный контекст robar, точный русский перевод и четыре уникальных same-scope варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма при необходимости, естественный контекст robar, точный русский перевод и четыре уникальных same-scope варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма при необходимости, естественный контекст robar, точный русский перевод и четыре уникальных same-scope варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлены форма при необходимости, естественный контекст robar, точный русский перевод и четыре уникальных same-scope варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлена карточка: форма Jehle, явно маркированная старая юридическая формула, точный перевод и уникальные same-scope варианты.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлена карточка: форма Jehle, явно маркированная старая юридическая формула, точный перевод и уникальные same-scope варианты.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью исправлена карточка: форма Jehle, явно маркированная старая юридическая формула, точный перевод и уникальные same-scope варианты.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлена карточка: форма Jehle, явно маркированная старая юридическая формула, точный перевод и уникальные same-scope варианты.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлена карточка: форма Jehle, явно маркированная старая юридическая формула, точный перевод и уникальные same-scope варианты.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью исправлена карточка: форма Jehle, явно маркированная старая юридическая формула, точный перевод и уникальные same-scope варианты. После координаторской проверки `piezas del archivo` заменено на точное `documentos del archivo`, соответствующее русскому «документы из архива».",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 focused robar Jehle and card-contract validator",
+      "result": "pass",
+      "evidence": "96/96 forms match 16 local Jehle rows; metadata, slots, one blank and same-scope options pass."
+    },
+    {
+      "command": "python3 full rendered ES/RU semantic review for robar",
+      "result": "pass",
+      "evidence": "96/96 read after substitution; direct, indirect-object, sports/game and figurative meanings are explicit, with crime confined to marked narrative, police or legal contexts."
+    },
+    {
+      "command": "cmp source embedded and baseline identity/top-level diff check",
+      "result": "pass",
+      "evidence": "Source and embedded are byte-identical; top-level fields and all scope/person/number identities retain original order."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py check --source courses/spanish-grammar/training_pack/verb_forms/lemmas/robar.json",
+      "result": "pass",
+      "evidence": "Report resolves to awaiting_verification with 96 completed decisions and fresh fingerprints."
+    },
+    {
+      "command": "go test ./internal/grammartrainingpack ./internal/verbtraining",
+      "result": "pass",
+      "evidence": "Both focused Go packages passed."
+    },
+    {
+      "command": "python3 -m json.tool for source, embedded and report; parse six JSONL checkpoints; git diff --check in root and Spanish course",
+      "result": "pass",
+      "evidence": "All files parse, exactly six contiguous 16-card checkpoints exist, and both diffs have no whitespace errors."
+    },
+    {
+      "command": "python3 focused post-editor check for robar futuro simple/perfecto subjuntivo 3pl",
+      "result": "pass",
+      "evidence": "Exactly two Spanish prompts changed from piezas del archivo to documentos del archivo; RU, forms, metadata and options are unchanged; source and embedded are byte-identical and fingerprint refreshed."
+    },
+    {
+      "command": "independent full verification: robar 96/96 after post-editor fix",
+      "result": "pass",
+      "evidence": "A non-editor verifier reread every final card, checked Jehle forms, semantics, translations, options and rechecked corrected cards 78 and 96; all 96 verification values are ok."
+    },
+    {
+      "command": "final batch validation: check.py, validate_artifact, focused grammar-review, Go and review tests, diff and preservation checks",
+      "result": "pass",
+      "evidence": "384 cards passed exact Jehle/contracts/fingerprint checks and native validation; four focused sources are done; Go packages and 13 grammar-review tests passed; root/course diffs and 25529 preserved files passed; skill quick validation passed."
+    }
+  ],
+  "verification_note": "Независимо повторно прочитаны все 96 карточек с подстановкой ответа и baseline diff. Проверены формы Jehle, значения robar, ES/RU соответствие, same-scope варианты, редкие регистры и явные контрфактические переводы; замечания к двум архивным контекстам исправлены редактором и повторно проверены."
+}

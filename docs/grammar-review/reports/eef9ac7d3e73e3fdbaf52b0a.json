@@ -1,0 +1,637 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/tirar.json",
+  "source_sha256": "46636754775497fc836bdae9cb1d494fec98c6dfde0d5bb591c2280bab2b6a85",
+  "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197",
+  "editor": "Laplace editor 2026-09-06",
+  "verifier": "Aristotle verifier 2026-09-06",
+  "phase": "done",
+  "reviewed_at": "2026-09-06",
+  "verified_at": "2026-09-06",
+  "questions": [
+    {
+      "id": "es.presente.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:1:singular полностью переписана и вручную проверена: форма «tiro», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:2:singular полностью переписана и вручную проверена: форма «tiras», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:3:singular полностью переписана и вручную проверена: форма «tira», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:1:plural полностью переписана и вручную проверена: форма «tiramos», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:2:plural полностью переписана и вручную проверена: форма «tiráis», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:3:plural полностью переписана и вручную проверена: форма «tiran», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:1:singular полностью переписана и вручную проверена: форма «tiraba», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:2:singular полностью переписана и вручную проверена: форма «tirabas», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:3:singular полностью переписана и вручную проверена: форма «tiraba», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope. При финальном чтении уточнены естественный субъект/порядок слов или лицензирование subjuntivo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:1:plural полностью переписана и вручную проверена: форма «tirábamos», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:2:plural полностью переписана и вручную проверена: форма «tirabais», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:3:plural полностью переписана и вручную проверена: форма «tiraban», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:1:singular полностью переписана и вручную проверена: форма «tiré», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:2:singular полностью переписана и вручную проверена: форма «tiraste», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:3:singular полностью переписана и вручную проверена: форма «tiró», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:1:plural полностью переписана и вручную проверена: форма «tiramos», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:2:plural полностью переписана и вручную проверена: форма «tirasteis», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:3:plural полностью переписана и вручную проверена: форма «tiraron», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:1:singular полностью переписана и вручную проверена: форма «tiraré», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:2:singular полностью переписана и вручную проверена: форма «tirarás», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:3:singular полностью переписана и вручную проверена: форма «tirará», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:1:plural полностью переписана и вручную проверена: форма «tiraremos», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:2:plural полностью переписана и вручную проверена: форма «tiraréis», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:3:plural полностью переписана и вручную проверена: форма «tirarán», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:1:singular полностью переписана и вручную проверена: форма «tiraría», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:2:singular полностью переписана и вручную проверена: форма «tirarías», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope. По finding Aristotle добавлено явное условие о важности документов; ES/RU согласованы, форма/options/identity сохранены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:3:singular полностью переписана и вручную проверена: форма «tiraría», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:1:plural полностью переписана и вручную проверена: форма «tiraríamos», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:2:plural полностью переписана и вручную проверена: форма «tiraríais», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:3:plural полностью переписана и вручную проверена: форма «tirarían», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:1:singular полностью переписана и вручную проверена: форма «he tirado», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:2:singular полностью переписана и вручную проверена: форма «has tirado», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:3:singular полностью переписана и вручную проверена: форма «ha tirado», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:1:plural полностью переписана и вручную проверена: форма «hemos tirado», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:2:plural полностью переписана и вручную проверена: форма «habéis tirado», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:3:plural полностью переписана и вручную проверена: форма «han tirado», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:1:singular полностью переписана и вручную проверена: форма «había tirado», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:2:singular полностью переписана и вручную проверена: форма «habías tirado», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:3:singular полностью переписана и вручную проверена: форма «había tirado», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:1:plural полностью переписана и вручную проверена: форма «habíamos tirado», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:2:plural полностью переписана и вручную проверена: форма «habíais tirado», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:3:plural полностью переписана и вручную проверена: форма «habían tirado», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:1:singular полностью переписана и вручную проверена: форма «hube tirado», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:2:singular полностью переписана и вручную проверена: форма «hubiste tirado», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:3:singular полностью переписана и вручную проверена: форма «hubo tirado», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:1:plural полностью переписана и вручную проверена: форма «hubimos tirado», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:2:plural полностью переписана и вручную проверена: форма «hubisteis tirado», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:3:plural полностью переписана и вручную проверена: форма «hubieron tirado», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:1:singular полностью переписана и вручную проверена: форма «habré tirado», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:2:singular полностью переписана и вручную проверена: форма «habrás tirado», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:3:singular полностью переписана и вручную проверена: форма «habrá tirado», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:1:plural полностью переписана и вручную проверена: форма «habremos tirado», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:2:plural полностью переписана и вручную проверена: форма «habréis tirado», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:3:plural полностью переписана и вручную проверена: форма «habrán tirado», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:1:singular полностью переписана и вручную проверена: форма «habría tirado», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:2:singular полностью переписана и вручную проверена: форма «habrías tirado», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope. По координаторскому чтению наречие antes переставлено в однозначную позицию; форма, перевод, options и metadata сохранены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:3:singular полностью переписана и вручную проверена: форма «habría tirado», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:1:plural полностью переписана и вручную проверена: форма «habríamos tirado», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:2:plural полностью переписана и вручную проверена: форма «habríais tirado», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:3:plural полностью переписана и вручную проверена: форма «habrían tirado», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:1:singular полностью переписана и вручную проверена: форма «tire», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:2:singular полностью переписана и вручную проверена: форма «tires», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:3:singular полностью переписана и вручную проверена: форма «tire», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:1:plural полностью переписана и вручную проверена: форма «tiremos», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:2:plural полностью переписана и вручную проверена: форма «tiréis», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:3:plural полностью переписана и вручную проверена: форма «tiren», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:1:singular полностью переписана и вручную проверена: форма «tirara», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:2:singular полностью переписана и вручную проверена: форма «tiraras», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope. При финальном чтении уточнены естественный субъект/порядок слов или лицензирование subjuntivo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:3:singular полностью переписана и вручную проверена: форма «tirara», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:1:plural полностью переписана и вручную проверена: форма «tiráramos», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:2:plural полностью переписана и вручную проверена: форма «tirarais», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:3:plural полностью переписана и вручную проверена: форма «tiraran», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:1:singular полностью переписана и вручную проверена: форма «tirare», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:2:singular полностью переписана и вручную проверена: форма «tirares», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:3:singular полностью переписана и вручную проверена: форма «tirare», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:1:plural полностью переписана и вручную проверена: форма «tiráremos», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:2:plural полностью переписана и вручную проверена: форма «tirareis», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:3:plural полностью переписана и вручную проверена: форма «tiraren», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:1:singular полностью переписана и вручную проверена: форма «haya tirado», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:2:singular полностью переписана и вручную проверена: форма «hayas tirado», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:3:singular полностью переписана и вручную проверена: форма «haya tirado», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:1:plural полностью переписана и вручную проверена: форма «hayamos tirado», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:2:plural полностью переписана и вручную проверена: форма «hayáis tirado», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope. При финальном чтении уточнены естественный субъект/порядок слов или лицензирование subjuntivo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:3:plural полностью переписана и вручную проверена: форма «hayan tirado», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:1:singular полностью переписана и вручную проверена: форма «hubiera tirado», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:2:singular полностью переписана и вручную проверена: форма «hubieras tirado», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope. По координаторскому чтению наречие antes переставлено в однозначную позицию; форма, перевод, options и metadata сохранены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:3:singular полностью переписана и вручную проверена: форма «hubiera tirado», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:1:plural полностью переписана и вручную проверена: форма «hubiéramos tirado», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:2:plural полностью переписана и вручную проверена: форма «hubierais tirado», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:3:plural полностью переписана и вручную проверена: форма «hubieran tirado», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:1:singular полностью переписана и вручную проверена: форма «hubiere tirado», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:2:singular полностью переписана и вручную проверена: форма «hubieres tirado», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:3:singular полностью переписана и вручную проверена: форма «hubiere tirado», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:1:plural полностью переписана и вручную проверена: форма «hubiéremos tirado», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:2:plural полностью переписана и вручную проверена: форма «hubiereis tirado», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:3:plural полностью переписана и вручную проверена: форма «hubieren tirado», естественное значение tirar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "full manual 96-card semantic rewrite/read: tirar meanings and ES/RU alignment",
+      "result": "pass",
+      "evidence": "96/96 contexts rewritten with clear tirar algo, tirar de, tirar abajo and tirar al blanco uses; ambiguous baseline uses of push/send/finish were removed."
+    },
+    {
+      "command": "authoritative forms; metadata; one blank; four unique same-scope options; one answer; identity/order/top-level preservation",
+      "result": "pass",
+      "evidence": "All 96 cards match the batch Jehle-derived authoritative table and preserve the 16 scopes × 6 slots contract."
+    },
+    {
+      "command": "rare-register and counterfactual semantic checks",
+      "result": "pass",
+      "evidence": "All 18 rare preterite-anterior/future-subjunctive cards are explicitly literary/legal, and all six De haberlo sabido translations begin with explicit Russian Если бы."
+    },
+    {
+      "command": "validate_artifact(tirar); cmp source embedded; go test ./internal/grammartrainingpack; JSON/diff/status checks",
+      "result": "pass",
+      "evidence": "Native validate_artifact accepted all 96 cards; source and embedded are byte-identical; Go package test, focused status, JSON parsing and root/course diff checks pass."
+    },
+    {
+      "command": "coordinator refinement: adverb placement in two tirar cards; exact assertions; cmp/native/focused checks",
+      "result": "pass",
+      "evidence": "Moved antes after the emergency-lever phrase and after de la cuerda to remove attachment ambiguity; form, identity, options, metadata and RU unchanged in both cards."
+    },
+    {
+      "command": "independent full-read verification: tirar 96/96 with surface substitution",
+      "result": "pass",
+      "evidence": "Full-read finding in es.condicional_simple.indicativo:2:singular was corrected by the editor and accepted on independent recheck; final coverage is 96/96 ok. Jehle forms, metadata, blanks, options, temporal anchors, rare registers and six explicit counterfactual translations remain validated."
+    },
+    {
+      "command": "post-verifier correction: tirar condicional simple 2s exact ES/RU replacement; form/options/identity preservation; cmp/native/focused checks",
+      "result": "pass",
+      "evidence": "Added an explicit premise that the documents are important, making the conditional consequence motivated; target form, options, slot metadata and all other cards remain unchanged."
+    },
+    {
+      "command": "independent recheck after tirar editor fix: es.condicional_simple.indicativo:2:singular",
+      "result": "pass",
+      "evidence": "Exact ES/RU replacement accepted with surface tirarías and one correct same-scope option; current fingerprint 46636754775497fc836bdae9cb1d494fec98c6dfde0d5bb591c2280bab2b6a85, source=embedded, native structural validation 96/96 passed."
+    },
+    {
+      "command": "final batch barrier: check.py; native validate_artifact; focused Go tests; grammar_review_test.py; focused/full status; preservation; root/course diff checks; skill quick_validate",
+      "result": "pass",
+      "evidence": "PASS: 384 cards and 24 checkpoints; native 96/96 each; Go packages pass; 13 grammar-review tests pass; four focused sources done; preservation 25623/0/0/0; diff checks and skill validation pass."
+    }
+  ],
+  "verification_note": "Повторно проверена исправленная карточка es.condicional_simple.indicativo:2:singular: условие Si supieras... естественно лицензирует condicional tirarías, а полный русский перевод точно передаёт условие и действие. Все остальные 95 карточек сохраняют ранее вынесенный вердикт ok; fingerprint и byte-identical source/embedded подтверждены. Итог: 96/96 verification ok."
+}

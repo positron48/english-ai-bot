@@ -1,0 +1,81 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/chapters/057/es.04.b4_theory_description_setting_imperfecto.questions.json",
+  "source_sha256": "c639ad1ba6afb7ed02240702e65aa2af7d423877ba9b14a49c09006c8d4cec62",
+  "context_sha256": "10be1543b238927912dea9feee9f379375a30e18ae05fe7faddf087d54aadc18",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
+  "reviewed_at": "2026-09-04T20:44:25.042356+00:00",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
+  "questions": [
+    {
+      "id": "q1",
+      "decision": "fixed",
+      "note": "Испанский ответ приведён в соответствие с «людьми», а термин pretérito indefinido исправлен.",
+      "verification": "ok"
+    },
+    {
+      "id": "q2",
+      "decision": "fixed",
+      "note": "Заменено неестественное hacía silencio на естественное estaba tranquilo; фоновый ракурс указан явно.",
+      "verification": "ok"
+    },
+    {
+      "id": "q3",
+      "decision": "fixed",
+      "note": "Исправлено неестественное hacía oscuro на estaba oscuro и убран ошибочный термин «неопределённое время».",
+      "verification": "ok"
+    },
+    {
+      "id": "q4",
+      "decision": "fixed",
+      "note": "Заменено неестественное hacía ruido на había mucho ruido и уточнён фоновый ракурс.",
+      "verification": "ok"
+    },
+    {
+      "id": "q5",
+      "decision": "fixed",
+      "note": "Заменено неестественное hacía calma на estaba tranquilo и согласован русский перевод с fútbol.",
+      "verification": "ok"
+    },
+    {
+      "id": "q6",
+      "decision": "fixed",
+      "note": "Заменено неестественное hacía silencio, а escena исправлено на escenario.",
+      "verification": "ok"
+    },
+    {
+      "id": "q7",
+      "decision": "fixed",
+      "note": "Заменена тяжёлая перифраза estaban floreciendo на естественное florecían и уточнён фоновый ракурс.",
+      "verification": "ok"
+    },
+    {
+      "id": "q8",
+      "decision": "fixed",
+      "note": "Заменено неестественное hacía silencio на estaba en silencio и исправлена терминология времён.",
+      "verification": "ok"
+    },
+    {
+      "id": "q9",
+      "decision": "fixed",
+      "note": "Заменено неестественное hacía ruido на había mucho ruido и исправлено согласование в distractors.",
+      "verification": "ok"
+    },
+    {
+      "id": "q10",
+      "decision": "fixed",
+      "note": "Убран двусмысленный bounded-маркер todo el día; теперь фон и ключ однозначны.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    }
+  ],
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+}

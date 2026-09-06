@@ -1,0 +1,642 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/soler.json",
+  "source_sha256": "e6e12bc2b4c8e3e130e7f36a8de16add9818346c607da65cfac88ece9a6c1981",
+  "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197",
+  "editor": "Helmholtz editor 2026-09-06",
+  "verifier": "Aristotle verifier 2026-09-06",
+  "phase": "done",
+  "reviewed_at": "2026-09-06",
+  "verified_at": "2026-09-06",
+  "questions": [
+    {
+      "id": "es.presente.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:1:singular переписана: точная форма Jehle «suelo» употреблена только как soler + infinitivo; употребление и временной контекст естественны; полный RU и четыре уникальных same-scope варианта с одним ответом проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:2:singular переписана: точная форма Jehle «sueles» употреблена только как soler + infinitivo; употребление и временной контекст естественны; полный RU и четыре уникальных same-scope варианта с одним ответом проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:3:singular переписана: точная форма Jehle «suele» употреблена только как soler + infinitivo; употребление и временной контекст естественны; полный RU и четыре уникальных same-scope варианта с одним ответом проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:1:plural переписана: точная форма Jehle «solemos» употреблена только как soler + infinitivo; употребление и временной контекст естественны; полный RU и четыре уникальных same-scope варианта с одним ответом проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:2:plural переписана: точная форма Jehle «soléis» употреблена только как soler + infinitivo; употребление и временной контекст естественны; полный RU и четыре уникальных same-scope варианта с одним ответом проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:3:plural переписана: точная форма Jehle «suelen» употреблена только как soler + infinitivo; употребление и временной контекст естественны; полный RU и четыре уникальных same-scope варианта с одним ответом проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:1:singular переписана: точная форма Jehle «solía» употреблена только как soler + infinitivo; употребление и временной контекст естественны; полный RU и четыре уникальных same-scope варианта с одним ответом проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:2:singular переписана: точная форма Jehle «solías» употреблена только как soler + infinitivo; употребление и временной контекст естественны; полный RU и четыре уникальных same-scope варианта с одним ответом проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:3:singular переписана: точная форма Jehle «solía» употреблена только как soler + infinitivo; употребление и временной контекст естественны; полный RU и четыре уникальных same-scope варианта с одним ответом проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:1:plural переписана: точная форма Jehle «solíamos» употреблена только как soler + infinitivo; употребление и временной контекст естественны; полный RU и четыре уникальных same-scope варианта с одним ответом проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:2:plural переписана: точная форма Jehle «solíais» употреблена только как soler + infinitivo; употребление и временной контекст естественны; полный RU и четыре уникальных same-scope варианта с одним ответом проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:3:plural переписана: точная форма Jehle «solían» употреблена только как soler + infinitivo; употребление и временной контекст естественны; полный RU и четыре уникальных same-scope варианта с одним ответом проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:1:singular переписана: точная форма Jehle «solí» употреблена только как soler + infinitivo; редкая или маркированная форма явно помещена в литературный, исторический, юридический либо метаязыковой контекст; полный RU и четыре уникальных same-scope варианта с одним ответом проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:2:singular переписана: точная форма Jehle «soliste» употреблена только как soler + infinitivo; редкая или маркированная форма явно помещена в литературный, исторический, юридический либо метаязыковой контекст; полный RU и четыре уникальных same-scope варианта с одним ответом проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:3:singular переписана: точная форма Jehle «solió» употреблена только как soler + infinitivo; редкая или маркированная форма явно помещена в литературный, исторический, юридический либо метаязыковой контекст; полный RU и четыре уникальных same-scope варианта с одним ответом проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:1:plural переписана: точная форма Jehle «solimos» употреблена только как soler + infinitivo; редкая или маркированная форма явно помещена в литературный, исторический, юридический либо метаязыковой контекст; полный RU и четыре уникальных same-scope варианта с одним ответом проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:2:plural переписана: точная форма Jehle «solisteis» употреблена только как soler + infinitivo; редкая или маркированная форма явно помещена в литературный, исторический, юридический либо метаязыковой контекст; полный RU и четыре уникальных same-scope варианта с одним ответом проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:3:plural переписана: точная форма Jehle «solieron» употреблена только как soler + infinitivo; редкая или маркированная форма явно помещена в литературный, исторический, юридический либо метаязыковой контекст; полный RU и четыре уникальных same-scope варианта с одним ответом проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:1:singular переписана: точная форма Jehle «soleré» употреблена только как soler + infinitivo; редкая или маркированная форма явно помещена в литературный, исторический, юридический либо метаязыковой контекст; полный RU и четыре уникальных same-scope варианта с одним ответом проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:2:singular переписана: точная форма Jehle «solerás» употреблена только как soler + infinitivo; редкая или маркированная форма явно помещена в литературный, исторический, юридический либо метаязыковой контекст; полный RU и четыре уникальных same-scope варианта с одним ответом проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:3:singular переписана: точная форма Jehle «solerá» употреблена только как soler + infinitivo; редкая или маркированная форма явно помещена в литературный, исторический, юридический либо метаязыковой контекст; полный RU и четыре уникальных same-scope варианта с одним ответом проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:1:plural переписана: точная форма Jehle «soleremos» употреблена только как soler + infinitivo; редкая или маркированная форма явно помещена в литературный, исторический, юридический либо метаязыковой контекст; полный RU и четыре уникальных same-scope варианта с одним ответом проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:2:plural переписана: точная форма Jehle «soleréis» употреблена только как soler + infinitivo; редкая или маркированная форма явно помещена в литературный, исторический, юридический либо метаязыковой контекст; полный RU и четыре уникальных same-scope варианта с одним ответом проверены. Независимая проверка: ES «comer fuera» означает «есть вне дома» и не задаёт ужин; RU необоснованно сужает значение до «ужинать вне дома». Требуемая RU: «В метаязыковом примере с редким будущим временем говорится, что по пятницам вы обычно будете есть вне дома.» Исправлено исходным редактором: comer fuera теперь нейтрально передано как «есть вне дома».",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:3:plural переписана: точная форма Jehle «solerán» употреблена только как soler + infinitivo; редкая или маркированная форма явно помещена в литературный, исторический, юридический либо метаязыковой контекст; полный RU и четыре уникальных same-scope варианта с одним ответом проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:1:singular переписана: точная форма Jehle «solería» употреблена только как soler + infinitivo; редкая или маркированная форма явно помещена в литературный, исторический, юридический либо метаязыковой контекст; полный RU и четыре уникальных same-scope варианта с одним ответом проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:2:singular переписана: точная форма Jehle «solerías» употреблена только как soler + infinitivo; редкая или маркированная форма явно помещена в литературный, исторический, юридический либо метаязыковой контекст; полный RU и четыре уникальных same-scope варианта с одним ответом проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:3:singular переписана: точная форма Jehle «solería» употреблена только как soler + infinitivo; редкая или маркированная форма явно помещена в литературный, исторический, юридический либо метаязыковой контекст; полный RU и четыре уникальных same-scope варианта с одним ответом проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:1:plural переписана: точная форма Jehle «soleríamos» употреблена только как soler + infinitivo; редкая или маркированная форма явно помещена в литературный, исторический, юридический либо метаязыковой контекст; полный RU и четыре уникальных same-scope варианта с одним ответом проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:2:plural переписана: точная форма Jehle «soleríais» употреблена только как soler + infinitivo; редкая или маркированная форма явно помещена в литературный, исторический, юридический либо метаязыковой контекст; полный RU и четыре уникальных same-scope варианта с одним ответом проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:3:plural переписана: точная форма Jehle «solerían» употреблена только как soler + infinitivo; редкая или маркированная форма явно помещена в литературный, исторический, юридический либо метаязыковой контекст; полный RU и четыре уникальных same-scope варианта с одним ответом проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:1:singular переписана: точная форма Jehle «he solido» употреблена только как soler + infinitivo; употребление и временной контекст естественны; полный RU и четыре уникальных same-scope варианта с одним ответом проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:2:singular переписана: точная форма Jehle «has solido» употреблена только как soler + infinitivo; употребление и временной контекст естественны; полный RU и четыре уникальных same-scope варианта с одним ответом проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:3:singular переписана: точная форма Jehle «ha solido» употреблена только как soler + infinitivo; употребление и временной контекст естественны; полный RU и четыре уникальных same-scope варианта с одним ответом проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:1:plural переписана: точная форма Jehle «hemos solido» употреблена только как soler + infinitivo; употребление и временной контекст естественны; полный RU и четыре уникальных same-scope варианта с одним ответом проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:2:plural переписана: точная форма Jehle «habéis solido» употреблена только как soler + infinitivo; употребление и временной контекст естественны; полный RU и четыре уникальных same-scope варианта с одним ответом проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:3:plural переписана: точная форма Jehle «han solido» употреблена только как soler + infinitivo; употребление и временной контекст естественны; полный RU и четыре уникальных same-scope варианта с одним ответом проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:1:singular переписана: точная форма Jehle «había solido» употреблена только как soler + infinitivo; редкая или маркированная форма явно помещена в литературный, исторический, юридический либо метаязыковой контекст; полный RU и четыре уникальных same-scope варианта с одним ответом проверены; координаторский барьер добавил точную явную опору времени в ES и согласовал с ней русский перевод.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:2:singular переписана: точная форма Jehle «habías solido» употреблена только как soler + infinitivo; редкая или маркированная форма явно помещена в литературный, исторический, юридический либо метаязыковой контекст; полный RU и четыре уникальных same-scope варианта с одним ответом проверены; координаторский барьер добавил точную явную опору времени в ES и согласовал с ней русский перевод.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:3:singular переписана: точная форма Jehle «había solido» употреблена только как soler + infinitivo; редкая или маркированная форма явно помещена в литературный, исторический, юридический либо метаязыковой контекст; полный RU и четыре уникальных same-scope варианта с одним ответом проверены; координаторский барьер добавил точную явную опору времени в ES и согласовал с ней русский перевод.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:1:plural переписана: точная форма Jehle «habíamos solido» употреблена только как soler + infinitivo; редкая или маркированная форма явно помещена в литературный, исторический, юридический либо метаязыковой контекст; полный RU и четыре уникальных same-scope варианта с одним ответом проверены; координаторский барьер добавил точную явную опору времени в ES и согласовал с ней русский перевод.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:2:plural переписана: точная форма Jehle «habíais solido» употреблена только как soler + infinitivo; редкая или маркированная форма явно помещена в литературный, исторический, юридический либо метаязыковой контекст; полный RU и четыре уникальных same-scope варианта с одним ответом проверены; координаторский барьер добавил точную явную опору времени в ES и согласовал с ней русский перевод.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:3:plural переписана: точная форма Jehle «habían solido» употреблена только как soler + infinitivo; редкая или маркированная форма явно помещена в литературный, исторический, юридический либо метаязыковой контекст; полный RU и четыре уникальных same-scope варианта с одним ответом проверены; итоговый смысловой проход уточнил временной якорь, управление придаточным, точность RU либо естественность редкой конструкции.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:1:singular переписана: точная форма Jehle «hube solido» употреблена только как soler + infinitivo; редкая или маркированная форма явно помещена в литературный, исторический, юридический либо метаязыковой контекст; полный RU и четыре уникальных same-scope варианта с одним ответом проверены; итоговый смысловой проход уточнил временной якорь, управление придаточным, точность RU либо естественность редкой конструкции.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:2:singular переписана: точная форма Jehle «hubiste solido» употреблена только как soler + infinitivo; редкая или маркированная форма явно помещена в литературный, исторический, юридический либо метаязыковой контекст; полный RU и четыре уникальных same-scope варианта с одним ответом проверены; итоговый смысловой проход уточнил временной якорь, управление придаточным, точность RU либо естественность редкой конструкции.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:3:singular переписана: точная форма Jehle «hubo solido» употреблена только как soler + infinitivo; редкая или маркированная форма явно помещена в литературный, исторический, юридический либо метаязыковой контекст; полный RU и четыре уникальных same-scope варианта с одним ответом проверены; итоговый смысловой проход уточнил временной якорь, управление придаточным, точность RU либо естественность редкой конструкции.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:1:plural переписана: точная форма Jehle «hubimos solido» употреблена только как soler + infinitivo; редкая или маркированная форма явно помещена в литературный, исторический, юридический либо метаязыковой контекст; полный RU и четыре уникальных same-scope варианта с одним ответом проверены; итоговый смысловой проход уточнил временной якорь, управление придаточным, точность RU либо естественность редкой конструкции.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:2:plural переписана: точная форма Jehle «hubisteis solido» употреблена только как soler + infinitivo; редкая или маркированная форма явно помещена в литературный, исторический, юридический либо метаязыковой контекст; полный RU и четыре уникальных same-scope варианта с одним ответом проверены; итоговый смысловой проход уточнил временной якорь, управление придаточным, точность RU либо естественность редкой конструкции.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:3:plural переписана: точная форма Jehle «hubieron solido» употреблена только как soler + infinitivo; редкая или маркированная форма явно помещена в литературный, исторический, юридический либо метаязыковой контекст; полный RU и четыре уникальных same-scope варианта с одним ответом проверены; итоговый смысловой проход уточнил временной якорь, управление придаточным, точность RU либо естественность редкой конструкции.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:1:singular переписана: точная форма Jehle «habré solido» употреблена только как soler + infinitivo; редкая или маркированная форма явно помещена в литературный, исторический, юридический либо метаязыковой контекст; полный RU и четыре уникальных same-scope варианта с одним ответом проверены; координаторский барьер добавил точную явную опору времени в ES и согласовал с ней русский перевод.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:2:singular переписана: точная форма Jehle «habrás solido» употреблена только как soler + infinitivo; редкая или маркированная форма явно помещена в литературный, исторический, юридический либо метаязыковой контекст; полный RU и четыре уникальных same-scope варианта с одним ответом проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:3:singular переписана: точная форма Jehle «habrá solido» употреблена только как soler + infinitivo; редкая или маркированная форма явно помещена в литературный, исторический, юридический либо метаязыковой контекст; полный RU и четыре уникальных same-scope варианта с одним ответом проверены; итоговый смысловой проход уточнил временной якорь, управление придаточным, точность RU либо естественность редкой конструкции; координаторский барьер добавил точную явную опору времени в ES и согласовал с ней русский перевод.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:1:plural переписана: точная форма Jehle «habremos solido» употреблена только как soler + infinitivo; редкая или маркированная форма явно помещена в литературный, исторический, юридический либо метаязыковой контекст; полный RU и четыре уникальных same-scope варианта с одним ответом проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:2:plural переписана: точная форма Jehle «habréis solido» употреблена только как soler + infinitivo; редкая или маркированная форма явно помещена в литературный, исторический, юридический либо метаязыковой контекст; полный RU и четыре уникальных same-scope варианта с одним ответом проверены; координаторский барьер добавил точную явную опору времени в ES и согласовал с ней русский перевод.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:3:plural переписана: точная форма Jehle «habrán solido» употреблена только как soler + infinitivo; редкая или маркированная форма явно помещена в литературный, исторический, юридический либо метаязыковой контекст; полный RU и четыре уникальных same-scope варианта с одним ответом проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:1:singular переписана: точная форма Jehle «habría solido» употреблена только как soler + infinitivo; редкая или маркированная форма явно помещена в литературный, исторический, юридический либо метаязыковой контекст; полный RU и четыре уникальных same-scope варианта с одним ответом проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:2:singular переписана: точная форма Jehle «habrías solido» употреблена только как soler + infinitivo; редкая или маркированная форма явно помещена в литературный, исторический, юридический либо метаязыковой контекст; полный RU и четыре уникальных same-scope варианта с одним ответом проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:3:singular переписана: точная форма Jehle «habría solido» употреблена только как soler + infinitivo; редкая или маркированная форма явно помещена в литературный, исторический, юридический либо метаязыковой контекст; полный RU и четыре уникальных same-scope варианта с одним ответом проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:1:plural переписана: точная форма Jehle «habríamos solido» употреблена только как soler + infinitivo; редкая или маркированная форма явно помещена в литературный, исторический, юридический либо метаязыковой контекст; полный RU и четыре уникальных same-scope варианта с одним ответом проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:2:plural переписана: точная форма Jehle «habríais solido» употреблена только как soler + infinitivo; редкая или маркированная форма явно помещена в литературный, исторический, юридический либо метаязыковой контекст; полный RU и четыре уникальных same-scope варианта с одним ответом проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:3:plural переписана: точная форма Jehle «habrían solido» употреблена только как soler + infinitivo; редкая или маркированная форма явно помещена в литературный, исторический, юридический либо метаязыковой контекст; полный RU и четыре уникальных same-scope варианта с одним ответом проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:1:singular переписана: точная форма Jehle «suela» употреблена только как soler + infinitivo; употребление и временной контекст естественны; полный RU и четыре уникальных same-scope варианта с одним ответом проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:2:singular переписана: точная форма Jehle «suelas» употреблена только как soler + infinitivo; употребление и временной контекст естественны; полный RU и четыре уникальных same-scope варианта с одним ответом проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:3:singular переписана: точная форма Jehle «suela» употреблена только как soler + infinitivo; употребление и временной контекст естественны; полный RU и четыре уникальных same-scope варианта с одним ответом проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:1:plural переписана: точная форма Jehle «solamos» употреблена только как soler + infinitivo; употребление и временной контекст естественны; полный RU и четыре уникальных same-scope варианта с одним ответом проверены; итоговый смысловой проход уточнил временной якорь, управление придаточным, точность RU либо естественность редкой конструкции.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:2:plural переписана: точная форма Jehle «soláis» употреблена только как soler + infinitivo; употребление и временной контекст естественны; полный RU и четыре уникальных same-scope варианта с одним ответом проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:3:plural переписана: точная форма Jehle «suelan» употреблена только как soler + infinitivo; употребление и временной контекст естественны; полный RU и четыре уникальных same-scope варианта с одним ответом проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:1:singular переписана: точная форма Jehle «soliera» употреблена только как soler + infinitivo; редкая или маркированная форма явно помещена в литературный, исторический, юридический либо метаязыковой контекст; полный RU и четыре уникальных same-scope варианта с одним ответом проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:2:singular переписана: точная форма Jehle «solieras» употреблена только как soler + infinitivo; редкая или маркированная форма явно помещена в литературный, исторический, юридический либо метаязыковой контекст; полный RU и четыре уникальных same-scope варианта с одним ответом проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:3:singular переписана: точная форма Jehle «soliera» употреблена только как soler + infinitivo; редкая или маркированная форма явно помещена в литературный, исторический, юридический либо метаязыковой контекст; полный RU и четыре уникальных same-scope варианта с одним ответом проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:1:plural переписана: точная форма Jehle «soliéramos» употреблена только как soler + infinitivo; редкая или маркированная форма явно помещена в литературный, исторический, юридический либо метаязыковой контекст; полный RU и четыре уникальных same-scope варианта с одним ответом проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:2:plural переписана: точная форма Jehle «solierais» употреблена только как soler + infinitivo; редкая или маркированная форма явно помещена в литературный, исторический, юридический либо метаязыковой контекст; полный RU и четыре уникальных same-scope варианта с одним ответом проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:3:plural переписана: точная форма Jehle «solieran» употреблена только как soler + infinitivo; редкая или маркированная форма явно помещена в литературный, исторический, юридический либо метаязыковой контекст; полный RU и четыре уникальных same-scope варианта с одним ответом проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:1:singular переписана: точная форма Jehle «soliere» употреблена только как soler + infinitivo; редкая или маркированная форма явно помещена в литературный, исторический, юридический либо метаязыковой контекст; полный RU и четыре уникальных same-scope варианта с одним ответом проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:2:singular переписана: точная форма Jehle «solieres» употреблена только как soler + infinitivo; редкая или маркированная форма явно помещена в литературный, исторический, юридический либо метаязыковой контекст; полный RU и четыре уникальных same-scope варианта с одним ответом проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:3:singular переписана: точная форма Jehle «soliere» употреблена только как soler + infinitivo; редкая или маркированная форма явно помещена в литературный, исторический, юридический либо метаязыковой контекст; полный RU и четыре уникальных same-scope варианта с одним ответом проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:1:plural переписана: точная форма Jehle «soliéremos» употреблена только как soler + infinitivo; редкая или маркированная форма явно помещена в литературный, исторический, юридический либо метаязыковой контекст; полный RU и четыре уникальных same-scope варианта с одним ответом проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:2:plural переписана: точная форма Jehle «soliereis» употреблена только как soler + infinitivo; редкая или маркированная форма явно помещена в литературный, исторический, юридический либо метаязыковой контекст; полный RU и четыре уникальных same-scope варианта с одним ответом проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:3:plural переписана: точная форма Jehle «solieren» употреблена только как soler + infinitivo; редкая или маркированная форма явно помещена в литературный, исторический, юридический либо метаязыковой контекст; полный RU и четыре уникальных same-scope варианта с одним ответом проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:1:singular переписана: точная форма Jehle «haya solido» употреблена только как soler + infinitivo; редкая или маркированная форма явно помещена в литературный, исторический, юридический либо метаязыковой контекст; полный RU и четыре уникальных same-scope варианта с одним ответом проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:2:singular переписана: точная форма Jehle «hayas solido» употреблена только как soler + infinitivo; редкая или маркированная форма явно помещена в литературный, исторический, юридический либо метаязыковой контекст; полный RU и четыре уникальных same-scope варианта с одним ответом проверены; итоговый смысловой проход уточнил временной якорь, управление придаточным, точность RU либо естественность редкой конструкции.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:3:singular переписана: точная форма Jehle «haya solido» употреблена только как soler + infinitivo; редкая или маркированная форма явно помещена в литературный, исторический, юридический либо метаязыковой контекст; полный RU и четыре уникальных same-scope варианта с одним ответом проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:1:plural переписана: точная форма Jehle «hayamos solido» употреблена только как soler + infinitivo; редкая или маркированная форма явно помещена в литературный, исторический, юридический либо метаязыковой контекст; полный RU и четыре уникальных same-scope варианта с одним ответом проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:2:plural переписана: точная форма Jehle «hayáis solido» употреблена только как soler + infinitivo; редкая или маркированная форма явно помещена в литературный, исторический, юридический либо метаязыковой контекст; полный RU и четыре уникальных same-scope варианта с одним ответом проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:3:plural переписана: точная форма Jehle «hayan solido» употреблена только как soler + infinitivo; редкая или маркированная форма явно помещена в литературный, исторический, юридический либо метаязыковой контекст; полный RU и четыре уникальных same-scope варианта с одним ответом проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:1:singular переписана: точная форма Jehle «hubiera solido» употреблена только как soler + infinitivo; редкая или маркированная форма явно помещена в литературный, исторический, юридический либо метаязыковой контекст; полный RU и четыре уникальных same-scope варианта с одним ответом проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:2:singular переписана: точная форма Jehle «hubieras solido» употреблена только как soler + infinitivo; редкая или маркированная форма явно помещена в литературный, исторический, юридический либо метаязыковой контекст; полный RU и четыре уникальных same-scope варианта с одним ответом проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:3:singular переписана: точная форма Jehle «hubiera solido» употреблена только как soler + infinitivo; редкая или маркированная форма явно помещена в литературный, исторический, юридический либо метаязыковой контекст; полный RU и четыре уникальных same-scope варианта с одним ответом проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:1:plural переписана: точная форма Jehle «hubiéramos solido» употреблена только как soler + infinitivo; редкая или маркированная форма явно помещена в литературный, исторический, юридический либо метаязыковой контекст; полный RU и четыре уникальных same-scope варианта с одним ответом проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:2:plural переписана: точная форма Jehle «hubierais solido» употреблена только как soler + infinitivo; редкая или маркированная форма явно помещена в литературный, исторический, юридический либо метаязыковой контекст; полный RU и четыре уникальных same-scope варианта с одним ответом проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:3:plural переписана: точная форма Jehle «hubieran solido» употреблена только как soler + infinitivo; редкая или маркированная форма явно помещена в литературный, исторический, юридический либо метаязыковой контекст; полный RU и четыре уникальных same-scope варианта с одним ответом проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:1:singular переписана: точная форма Jehle «hubiere solido» употреблена только как soler + infinitivo; редкая или маркированная форма явно помещена в литературный, исторический, юридический либо метаязыковой контекст; полный RU и четыре уникальных same-scope варианта с одним ответом проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:2:singular переписана: точная форма Jehle «hubieres solido» употреблена только как soler + infinitivo; редкая или маркированная форма явно помещена в литературный, исторический, юридический либо метаязыковой контекст; полный RU и четыре уникальных same-scope варианта с одним ответом проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:3:singular переписана: точная форма Jehle «hubiere solido» употреблена только как soler + infinitivo; редкая или маркированная форма явно помещена в литературный, исторический, юридический либо метаязыковой контекст; полный RU и четыре уникальных same-scope варианта с одним ответом проверены; итоговый смысловой проход уточнил временной якорь, управление придаточным, точность RU либо естественность редкой конструкции.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:1:plural переписана: точная форма Jehle «hubiéremos solido» употреблена только как soler + infinitivo; редкая или маркированная форма явно помещена в литературный, исторический, юридический либо метаязыковой контекст; полный RU и четыре уникальных same-scope варианта с одним ответом проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:2:plural переписана: точная форма Jehle «hubiereis solido» употреблена только как soler + infinitivo; редкая или маркированная форма явно помещена в литературный, исторический, юридический либо метаязыковой контекст; полный RU и четыре уникальных same-scope варианта с одним ответом проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:3:plural переписана: точная форма Jehle «hubieren solido» употреблена только как soler + infinitivo; редкая или маркированная форма явно помещена в литературный, исторический, юридический либо метаязыковой контекст; полный RU и четыре уникальных same-scope варианта с одним ответом проверены; итоговый смысловой проход уточнил временной якорь, управление придаточным, точность RU либо естественность редкой конструкции.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 /tmp/validate_soler.py",
+      "result": "pass",
+      "evidence": "96/96 cards match all 16 local Jehle scopes; metadata/slots, exactly one blank, soler followed by an infinitive, four unique same-scope options with one answer, 96 unique signatures, source=embedded, preserved baseline top-level and identity/order, current fingerprints and six primary 16-card checkpoints passed."
+    },
+    {
+      "command": "semantic full read with answer substitution: soler 96/96",
+      "result": "pass",
+      "evidence": "All final Spanish sentences and full Russian translations were read after substitution. Present and imperfect uses are natural; unfamiliar or defective paradigms are explicitly framed as literary, historical, legal, formal or metalinguistic rather than ordinary speech; compound forms have temporal/result anchors and all De haberlo sabido translations state the counterfactual condition explicitly."
+    },
+    {
+      "command": "native validate_artifact(soler)",
+      "result": "pass",
+      "evidence": "The repository generator's artifact validator accepted all 16 scopes × 6 slots."
+    },
+    {
+      "command": "go test ./internal/grammartrainingpack ./internal/verbtraining",
+      "result": "pass",
+      "evidence": "Both focused grammar training and verb training packages passed on the final embedded data."
+    },
+    {
+      "command": "baseline defect recount; cmp source embedded; JSON/JSONL parse; grammar-review status; root and Spanish-course diff-check",
+      "result": "pass",
+      "evidence": "Recount reproduced 55 wrong surfaces, 60 duplicate-option cards, 70 answer-multiplicity cards, 235 off-scope entries across 96 cards, 134 invalid-union entries, 18 metadata cards and 0 blank defects. Final source and embedded are byte-identical; assigned artifacts parse; report is awaiting independent verification with current fingerprints; assigned diffs contain no whitespace errors."
+    },
+    {
+      "command": "coordinator refinement: eight soler temporal anchors; exact-diff, cmp, targeted invariants and native validate_artifact",
+      "result": "pass",
+      "evidence": "Five pluscuamperfecto indicativo cards now name the exact prior event in Spanish and Russian; three futuro perfecto indicativo cards replace para entonces with December, the end of winter or the end of the course. Forms, following infinitives, options, metadata, identity/order and rare-register framing remain unchanged; source=embedded and fingerprint refreshed."
+    },
+    {
+      "command": "independent full-read verification: soler 96/96; /tmp/verify_soler.py; cmp; grammar-review check; JSON/diff integrity",
+      "result": "known_baseline",
+      "evidence": "96/96 cards were independently read with answer substitution; source=embedded; baseline top-level and identity/order preserved; 96/96 surface forms match local Jehle; metadata, one blank, soler + infinitive, four unique same-scope options with one answer, temporal anchors, six De haberlo sabido and rare-register labels checked. 95 cards accepted; es.futuro_simple.indicativo:2:plural needs RU correction because comer fuera does not specifically mean dinner. This finding was subsequently corrected by the editor and accepted in the final independent recheck at fingerprint e6e12bc2b4c8e3e130e7f36a8de16add9818346c607da65cfac88ece9a6c1981."
+    },
+    {
+      "command": "post-verifier correction: soler es.futuro_simple.indicativo:2:plural; exact one-field diff, cmp, targeted invariants and native validate_artifact",
+      "result": "pass",
+      "evidence": "Only translation_ru_full changed from «ужинать вне дома» to the exact neutral «есть вне дома». The independent finding remains in the question note and verification check history; this row returned to pending while the other 95 accepted rows remain ok. ES, Jehle form, infinitive, options, metadata, identity/order and all other cards are unchanged; source=embedded and fingerprint refreshed."
+    },
+    {
+      "command": "final independent recheck: es.futuro_simple.indicativo:2:plural; fingerprint/cmp; /tmp/verify_soler.py; grammar-review status; JSON/diff integrity",
+      "result": "pass",
+      "evidence": "At source fingerprint e6e12bc2b4c8e3e130e7f36a8de16add9818346c607da65cfac88ece9a6c1981, the corrected RU exactly renders comer fuera as «есть вне дома». The answer soleréis, soler + infinitive construction, rare-future metalinguistic frame and four unique same-scope options are correct. Source=embedded; all 96 verifications are now ok."
+    },
+    {
+      "command": "final batch barrier: check.py; preservation-check.py; native validate_artifact; go test ./internal/verbtraining ./cmd/sync_verb_training_json; grammar_review_test.py; focused grammar-review check; git diff --check; skill quick_validate.py",
+      "result": "pass",
+      "evidence": "384 final cards and 24 primary checkpoints passed; source/embedded and fingerprints fresh; 25581 paths preserved; Go tests and 13 grammar-review tests passed; each source reports done; root and Spanish diffs clean; skill valid."
+    }
+  ],
+  "verification_note": "Независимая проверка завершена для 96/96 карточек. При повторной проверке es.futuro_simple.indicativo:2:plural подтверждено точное соответствие: comer fuera нейтрально передано как «есть вне дома» без необоснованного сужения до ужина. Форма soleréis, конструкция soler + infinitivo, метаязыковая маркировка редкого будущего времени и варианты корректны; остальные 95 ранее принятых карточек сохранены. Source и embedded идентичны, fingerprint актуален."
+}

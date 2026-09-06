@@ -1,0 +1,59 @@
+{
+  "lemmas": {
+    "tomar": {
+      "wrong_surface": 6,
+      "duplicate_option_cards": 17,
+      "answer_count_bad_cards": 21,
+      "offscope_entries": 158,
+      "offscope_cards": 68,
+      "invalid_union_entries": 27,
+      "invalid_union_cards": 27,
+      "metadata": 18,
+      "blank": 24
+    },
+    "trabajar": {
+      "wrong_surface": 12,
+      "duplicate_option_cards": 29,
+      "answer_count_bad_cards": 24,
+      "offscope_entries": 135,
+      "offscope_cards": 52,
+      "invalid_union_entries": 16,
+      "invalid_union_cards": 16,
+      "metadata": 0,
+      "blank": 0
+    },
+    "traducir": {
+      "wrong_surface": 18,
+      "duplicate_option_cards": 16,
+      "answer_count_bad_cards": 24,
+      "offscope_entries": 142,
+      "offscope_cards": 55,
+      "invalid_union_entries": 27,
+      "invalid_union_cards": 24,
+      "metadata": 18,
+      "blank": 0
+    },
+    "traer": {
+      "wrong_surface": 18,
+      "duplicate_option_cards": 36,
+      "answer_count_bad_cards": 42,
+      "offscope_entries": 146,
+      "offscope_cards": 56,
+      "invalid_union_entries": 84,
+      "invalid_union_cards": 42,
+      "metadata": 0,
+      "blank": 0
+    }
+  },
+  "totals": {
+    "wrong_surface": 54,
+    "duplicate_option_cards": 98,
+    "answer_count_bad_cards": 111,
+    "offscope_entries": 581,
+    "offscope_cards": 231,
+    "invalid_union_entries": 154,
+    "invalid_union_cards": 109,
+    "metadata": 36,
+    "blank": 24
+  }
+}

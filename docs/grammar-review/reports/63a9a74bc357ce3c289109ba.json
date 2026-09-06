@@ -4,28 +4,28 @@
   "source_sha256": "42297d840c15aa405dcaa692310f709e359d7836c4d62aa670c0fb6834dd9524",
   "context_sha256": "9fdba53951595674bc94b4350a94f40a8664f9efd8ad982e25918ddab4725fd2",
   "editor": "Codex editor 2026-09-04",
-  "verifier": "",
-  "phase": "awaiting_verification",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
   "reviewed_at": "2026-09-04T09:35:30.316331+00:00",
-  "verified_at": "",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
   "questions": [
     {
       "id": "q2",
       "decision": "fixed",
       "note": "Неизученная диакритическая tilde más заменена примером aguda café; объяснение согласовано.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q6",
       "decision": "ok",
       "note": "canción — единственная aguda на n в вариантах; ударение и tilde верны.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q10",
       "decision": "ok",
       "note": "papá — единственная aguda на гласную; причина tilde верна.",
-      "verification": "pending"
+      "verification": "ok"
     }
   ],
   "checks": [
@@ -43,7 +43,12 @@
       "command": "git diff --check && git -C courses/spanish-grammar diff --check && git -C courses/english-grammar diff --check",
       "result": "pass",
       "evidence": "All three commands exited 0."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
     }
   ],
-  "verification_note": ""
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
 }

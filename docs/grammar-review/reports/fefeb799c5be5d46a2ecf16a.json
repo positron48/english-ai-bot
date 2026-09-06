@@ -1,0 +1,647 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/salir.json",
+  "source_sha256": "58d6b49560be4579fa096d2421d0713def443dcf04b8e1ccf5828eaeca1f89f1",
+  "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197",
+  "editor": "Helmholtz editor 2026-09-06",
+  "verifier": "Codex coordinator verifier 2026-09-06",
+  "phase": "done",
+  "reviewed_at": "2026-09-06",
+  "verified_at": "2026-09-06",
+  "questions": [
+    {
+      "id": "es.presente.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.presente.indicativo:1:singular: форма Jehle «salgo», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.presente.indicativo:2:singular: форма Jehle «sales», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.presente.indicativo:3:singular: форма Jehle «sale», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.presente.indicativo:1:plural: форма Jehle «salimos», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.presente.indicativo:2:plural: форма Jehle «salís», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.presente.indicativo:3:plural: форма Jehle «salen», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_imperfecto.indicativo:1:singular: форма Jehle «salía», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_imperfecto.indicativo:2:singular: форма Jehle «salías», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_imperfecto.indicativo:3:singular: форма Jehle «salía», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_imperfecto.indicativo:1:plural: форма Jehle «salíamos», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_imperfecto.indicativo:2:plural: форма Jehle «salíais», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_imperfecto.indicativo:3:plural: форма Jehle «salían», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_indefinido.indicativo:1:singular: форма Jehle «salí», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_indefinido.indicativo:2:singular: форма Jehle «saliste», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом. При итоговом чтении дополнительно уточнены субъектность и естественность ES/RU формулировки.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_indefinido.indicativo:3:singular: форма Jehle «salió», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_indefinido.indicativo:1:plural: форма Jehle «salimos», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_indefinido.indicativo:2:plural: форма Jehle «salisteis», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_indefinido.indicativo:3:plural: форма Jehle «salieron», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.futuro_simple.indicativo:1:singular: форма Jehle «saldré», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.futuro_simple.indicativo:2:singular: форма Jehle «saldrás», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.futuro_simple.indicativo:3:singular: форма Jehle «saldrá», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.futuro_simple.indicativo:1:plural: форма Jehle «saldremos», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.futuro_simple.indicativo:2:plural: форма Jehle «saldréis», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.futuro_simple.indicativo:3:plural: форма Jehle «saldrán», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.condicional_simple.indicativo:1:singular: форма Jehle «saldría», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом. При итоговом чтении дополнительно уточнены субъектность и естественность ES/RU формулировки.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.condicional_simple.indicativo:2:singular: форма Jehle «saldrías», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.condicional_simple.indicativo:3:singular: форма Jehle «saldría», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.condicional_simple.indicativo:1:plural: форма Jehle «saldríamos», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.condicional_simple.indicativo:2:plural: форма Jehle «saldríais», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.condicional_simple.indicativo:3:plural: форма Jehle «saldrían», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_perfecto_compuesto.indicativo:1:singular: форма Jehle «he salido», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_perfecto_compuesto.indicativo:2:singular: форма Jehle «has salido», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_perfecto_compuesto.indicativo:3:singular: форма Jehle «ha salido», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_perfecto_compuesto.indicativo:1:plural: форма Jehle «hemos salido», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_perfecto_compuesto.indicativo:2:plural: форма Jehle «habéis salido», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_perfecto_compuesto.indicativo:3:plural: форма Jehle «han salido», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_pluscuamperfecto.indicativo:1:singular: форма Jehle «había salido», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_pluscuamperfecto.indicativo:2:singular: форма Jehle «habías salido», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_pluscuamperfecto.indicativo:3:singular: форма Jehle «había salido», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_pluscuamperfecto.indicativo:1:plural: форма Jehle «habíamos salido», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_pluscuamperfecto.indicativo:2:plural: форма Jehle «habíais salido», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_pluscuamperfecto.indicativo:3:plural: форма Jehle «habían salido», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_anterior.indicativo:1:singular: форма Jehle «hube salido», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_anterior.indicativo:2:singular: форма Jehle «hubiste salido», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_anterior.indicativo:3:singular: форма Jehle «hubo salido», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_anterior.indicativo:1:plural: форма Jehle «hubimos salido», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_anterior.indicativo:2:plural: форма Jehle «hubisteis salido», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_anterior.indicativo:3:plural: форма Jehle «hubieron salido», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.futuro_perfecto.indicativo:1:singular: форма Jehle «habré salido», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.futuro_perfecto.indicativo:2:singular: форма Jehle «habrás salido», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом. При итоговом чтении дополнительно уточнены субъектность и естественность ES/RU формулировки.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.futuro_perfecto.indicativo:3:singular: форма Jehle «habrá salido», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.futuro_perfecto.indicativo:1:plural: форма Jehle «habremos salido», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом. При итоговом чтении дополнительно уточнены субъектность и естественность ES/RU формулировки.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.futuro_perfecto.indicativo:2:plural: форма Jehle «habréis salido», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.futuro_perfecto.indicativo:3:plural: форма Jehle «habrán salido», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.condicional_perfecto.indicativo:1:singular: форма Jehle «habría salido», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.condicional_perfecto.indicativo:2:singular: форма Jehle «habrías salido», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.condicional_perfecto.indicativo:3:singular: форма Jehle «habría salido», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.condicional_perfecto.indicativo:1:plural: форма Jehle «habríamos salido», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом. При итоговом чтении дополнительно уточнены субъектность и естественность ES/RU формулировки.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.condicional_perfecto.indicativo:2:plural: форма Jehle «habríais salido», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.condicional_perfecto.indicativo:3:plural: форма Jehle «habrían salido», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.presente.subjuntivo:1:singular: форма Jehle «salga», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.presente.subjuntivo:2:singular: форма Jehle «salgas», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.presente.subjuntivo:3:singular: форма Jehle «salga», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.presente.subjuntivo:1:plural: форма Jehle «salgamos», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.presente.subjuntivo:2:plural: форма Jehle «salgáis», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.presente.subjuntivo:3:plural: форма Jehle «salgan», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_imperfecto.subjuntivo:1:singular: форма Jehle «saliera», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_imperfecto.subjuntivo:2:singular: форма Jehle «salieras», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом. При итоговом чтении дополнительно уточнены субъектность и естественность ES/RU формулировки.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_imperfecto.subjuntivo:3:singular: форма Jehle «saliera», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_imperfecto.subjuntivo:1:plural: форма Jehle «saliéramos», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом. При итоговом чтении дополнительно уточнены субъектность и естественность ES/RU формулировки.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_imperfecto.subjuntivo:2:plural: форма Jehle «salierais», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_imperfecto.subjuntivo:3:plural: форма Jehle «salieran», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.futuro_simple.subjuntivo:1:singular: форма Jehle «saliere», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.futuro_simple.subjuntivo:2:singular: форма Jehle «salieres», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.futuro_simple.subjuntivo:3:singular: форма Jehle «saliere», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.futuro_simple.subjuntivo:1:plural: форма Jehle «saliéremos», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.futuro_simple.subjuntivo:2:plural: форма Jehle «saliereis», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.futuro_simple.subjuntivo:3:plural: форма Jehle «salieren», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_perfecto.subjuntivo:1:singular: форма Jehle «haya salido», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_perfecto.subjuntivo:2:singular: форма Jehle «hayas salido», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом. При итоговом чтении дополнительно уточнены субъектность и естественность ES/RU формулировки.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_perfecto.subjuntivo:3:singular: форма Jehle «haya salido», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_perfecto.subjuntivo:1:plural: форма Jehle «hayamos salido», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом. При итоговом чтении дополнительно уточнены субъектность и естественность ES/RU формулировки.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_perfecto.subjuntivo:2:plural: форма Jehle «hayáis salido», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_perfecto.subjuntivo:3:plural: форма Jehle «hayan salido», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_pluscuamperfecto.subjuntivo:1:singular: форма Jehle «hubiera salido», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_pluscuamperfecto.subjuntivo:2:singular: форма Jehle «hubieras salido», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_pluscuamperfecto.subjuntivo:3:singular: форма Jehle «hubiera salido», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом. При итоговом чтении дополнительно уточнены субъектность и естественность ES/RU формулировки.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_pluscuamperfecto.subjuntivo:1:plural: форма Jehle «hubiéramos salido», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом. При итоговом чтении дополнительно уточнены субъектность и естественность ES/RU формулировки.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_pluscuamperfecto.subjuntivo:2:plural: форма Jehle «hubierais salido», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_pluscuamperfecto.subjuntivo:3:plural: форма Jehle «hubieran salido», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.futuro_perfecto.subjuntivo:1:singular: форма Jehle «hubiere salido», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.futuro_perfecto.subjuntivo:2:singular: форма Jehle «hubieres salido», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.futuro_perfecto.subjuntivo:3:singular: форма Jehle «hubiere salido», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.futuro_perfecto.subjuntivo:1:plural: форма Jehle «hubiéremos salido», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.futuro_perfecto.subjuntivo:2:plural: форма Jehle «hubiereis salido», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.futuro_perfecto.subjuntivo:3:plural: форма Jehle «hubieren salido», самостоятельный контекст для salir и полный русский перевод сверены; оставлены четыре уникальные формы того же scope с одним ответом.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 /tmp/validate_salir.py",
+      "result": "pass",
+      "evidence": "96/96 cards match all 16 Jehle scopes; metadata/slots, one blank, four unique same-scope options with one answer, 96 unique prompt+answer signatures, source=embedded, preserved baseline top-level and identity/order, fresh fingerprints, and six 16-card checkpoints passed."
+    },
+    {
+      "command": "semantic full read with answer substitution: salir 96/96",
+      "result": "pass",
+      "evidence": "All final ES sentences and RU translations were read after substitution. Natural uses of salir de, salir con, salir a la venta, salir bien/mal parado, salir caro and salir en medios are distinguished; compound-tense anchors are explicit; pretérito anterior and both future-subjunctive scopes have literary/legal framing; all six De haberlo sabido translations are explicit counterfactual conditions."
+    },
+    {
+      "command": "go test ./internal/grammartrainingpack",
+      "result": "pass",
+      "evidence": "Embedded grammar training pack tests passed."
+    },
+    {
+      "command": "cmp source embedded; python3 -m json.tool assigned JSON; python3 scripts/grammar-review.py check --source courses/spanish-grammar/training_pack/verb_forms/lemmas/salir.json; git diff --check -- assigned paths",
+      "result": "pass",
+      "evidence": "Source and embedded are byte-identical; JSON is valid; report source/context fingerprints are current and status is awaiting independent verification; whitespace checks passed."
+    },
+    {
+      "command": "independent semantic verification: salir 96/96",
+      "result": "pass",
+      "evidence": "A verifier different from the editor substituted every surface form and checked all 96 ES/RU pairs, scope-bound options, compound-tense anchors, salir usage distinctions, counterfactual translations, and rare-register framing; no unresolved defects found."
+    },
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-06-es-verbs-salir-seguir/check.py",
+      "result": "pass",
+      "evidence": "All 384 cards pass exact Jehle forms, preserved contracts and order, one blank, four unique same-scope options with one answer, current report fingerprints, distinct editors/verifiers, 384 verification ok, and 24 primary checkpoints."
+    },
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-06-es-verbs-salir-seguir/preservation-check.py",
+      "result": "pass",
+      "evidence": "Preservation snapshot confirms 25542 files outside the allowed paths unchanged, with 0 changed, 0 missing, and 0 unexpected new files."
+    },
+    {
+      "command": "validate_artifact() for salir, saltar, salvar, seguir",
+      "result": "pass",
+      "evidence": "The generator native strict validator accepted all four final 96-card artifacts."
+    },
+    {
+      "command": "go test ./internal/verbtraining ./cmd/sync_verb_training_json",
+      "result": "pass",
+      "evidence": "Verb training and JSON synchronization package tests passed."
+    },
+    {
+      "command": "python3 scripts/grammar_review_test.py; git diff --check; git -C courses/spanish-grammar diff --check",
+      "result": "pass",
+      "evidence": "All 13 grammar-review tests and both root/submodule whitespace checks passed."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py check --source <each assigned lemma>; quick_validate.py linglow-grammar-review",
+      "result": "pass",
+      "evidence": "All four sources report done with 96 questions each; the reusable review skill validates successfully."
+    }
+  ],
+  "verification_note": "Независимо перечитаны все 96 карточек с подстановкой формы в пропуск. Формы, варианты, значения salir, временные опоры, согласование и соответствие испанского текста русскому переводу подтверждены; редкие литературные и юридические регистры уместно обозначены."
+}

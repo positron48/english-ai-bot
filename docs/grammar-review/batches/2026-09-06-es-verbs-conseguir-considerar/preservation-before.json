@@ -1,0 +1,26 @@
+{
+  "existing_files": 24996,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/conseguir.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/conseguir.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/conservar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/conservar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/considerar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/considerar.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-conseguir-considerar",
+    "docs/grammar-review/reports/ea2ed7b5d13600031633240e.json",
+    "docs/grammar-review/reports/cac8acee8b2bfe8e2b3e40f3.json",
+    "docs/grammar-review/reports/99e7b2e2996c1284054117ff.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/conseguir.json": "d48112da4131b8afbe18f05f424a03320f198c9e8f5456fe14b60409983e8253",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/conseguir.json": "d48112da4131b8afbe18f05f424a03320f198c9e8f5456fe14b60409983e8253",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/conservar.json": "e594927a82acfe4254f3b7b15d7433ee67100aa6a84da3b5594504d6b1d9167c",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/conservar.json": "e594927a82acfe4254f3b7b15d7433ee67100aa6a84da3b5594504d6b1d9167c",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/considerar.json": "d89bbd261f4650e174d1e74164bbf24507753d32ee8aee232ee571f6028587ec",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/considerar.json": "d89bbd261f4650e174d1e74164bbf24507753d32ee8aee232ee571f6028587ec"
+  }
+}

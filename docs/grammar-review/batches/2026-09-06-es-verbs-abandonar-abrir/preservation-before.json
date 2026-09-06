@@ -1,0 +1,26 @@
+{
+  "existing_files": 4716,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/abandonar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/abordar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/abrir.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-abandonar-abrir",
+    "docs/grammar-review/reports/ca3615ffec3de616c6d263f7.json",
+    "docs/grammar-review/reports/d05efeee10bddf44584c3f13.json",
+    "docs/grammar-review/reports/f0566d23c167dd3b93172290.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/abandonar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/abordar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/abrir.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/abandonar.json": "8965a951095047d73270b130ecb8fad583e5667aa53fe32475f5b3158cb678e3",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/abandonar.json": "8965a951095047d73270b130ecb8fad583e5667aa53fe32475f5b3158cb678e3",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/abordar.json": "697ea4fad8481e543001d1e1c3bec8ccd6b19856556dd3b26cf9431f048654a8",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/abordar.json": "697ea4fad8481e543001d1e1c3bec8ccd6b19856556dd3b26cf9431f048654a8",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/abrir.json": "e3d12115a479627cccdceb75cfa62f14dcb6a0a3ea5088e53684535ca0dd4778",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/abrir.json": "e3d12115a479627cccdceb75cfa62f14dcb6a0a3ea5088e53684535ca0dd4778"
+  }
+}

@@ -1,0 +1,129 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/chapters/058/es.02.b2_theory_antes_past_used_to.questions.json",
+  "source_sha256": "1288f0b6d41ce9b8df4d7571170ac46cabc98eb4d87d049f7b3a6cbd5fe2c104",
+  "context_sha256": "004338671cd07031b53ba45cbba39db746ebeac7233df9328702b9bb7baddb50",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
+  "reviewed_at": "2026-09-04T20:44:25.044115+00:00",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
+  "questions": [
+    {
+      "id": "q1",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q2",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q3",
+      "decision": "fixed",
+      "note": "Исправлена конструкция jugar al fútbol и причина опущения yo.",
+      "verification": "ok"
+    },
+    {
+      "id": "q4",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q5",
+      "decision": "fixed",
+      "note": "Задание уточнено как открытый фон: viví также грамматично для ограниченного завершённого периода.",
+      "verification": "ok"
+    },
+    {
+      "id": "q6",
+      "decision": "fixed",
+      "note": "Причина опущения yo исправлена: antes задаёт время, но не заменяет подлежащее.",
+      "verification": "ok"
+    },
+    {
+      "id": "q7",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q8",
+      "decision": "fixed",
+      "note": "Убран тяжёлый повтор antes ... antes de.",
+      "verification": "ok"
+    },
+    {
+      "id": "q9",
+      "decision": "fixed",
+      "note": "Добавлен явный привычный контекст, чтобы indefinido не был альтернативно допустимым.",
+      "verification": "ok"
+    },
+    {
+      "id": "q10",
+      "decision": "fixed",
+      "note": "Добавлен явный привычный контекст, чтобы indefinido не был альтернативно допустимым.",
+      "verification": "ok"
+    },
+    {
+      "id": "q11",
+      "decision": "fixed",
+      "note": "Добавлен явный привычный контекст, чтобы indefinido не был альтернативно допустимым.",
+      "verification": "ok"
+    },
+    {
+      "id": "q12",
+      "decision": "fixed",
+      "note": "Добавлен явный привычный контекст, чтобы indefinido не был альтернативно допустимым.",
+      "verification": "ok"
+    },
+    {
+      "id": "q13",
+      "decision": "fixed",
+      "note": "Добавлен явный привычный контекст, чтобы indefinido не был альтернативно допустимым.",
+      "verification": "ok"
+    },
+    {
+      "id": "q14",
+      "decision": "fixed",
+      "note": "Добавлен явный привычный контекст, чтобы indefinido не был альтернативно допустимым.",
+      "verification": "ok"
+    },
+    {
+      "id": "q15",
+      "decision": "fixed",
+      "note": "Добавлен явный привычный контекст, чтобы indefinido не был альтернативно допустимым.",
+      "verification": "ok"
+    },
+    {
+      "id": "q16",
+      "decision": "fixed",
+      "note": "Добавлен явный привычный контекст, чтобы indefinido не был альтернативно допустимым.",
+      "verification": "ok"
+    },
+    {
+      "id": "q17",
+      "decision": "fixed",
+      "note": "Добавлен явный привычный контекст, чтобы indefinido не был альтернативно допустимым.",
+      "verification": "ok"
+    },
+    {
+      "id": "q18",
+      "decision": "fixed",
+      "note": "Добавлен явный привычный контекст, чтобы indefinido не был альтернативно допустимым.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    }
+  ],
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+}

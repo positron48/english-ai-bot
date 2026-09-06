@@ -1,0 +1,31 @@
+{
+  "existing_files": 25040,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/crecer.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/crecer.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/creer.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/creer.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/criticar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/criticar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/cruzar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/cruzar.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-crecer-cruzar",
+    "docs/grammar-review/reports/b3c13536e4bbd040f9828fb6.json",
+    "docs/grammar-review/reports/86ce56294aa3a9c966a35ab7.json",
+    "docs/grammar-review/reports/84b2a530f8c45340f6c3e36a.json",
+    "docs/grammar-review/reports/3248a811bf1bf64baf2d2aa5.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/crecer.json": "9895c8b4a317fa64f43ca3c1d77914c9a84fdfd78841ecbd466339eb171d3d7e",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/crecer.json": "9895c8b4a317fa64f43ca3c1d77914c9a84fdfd78841ecbd466339eb171d3d7e",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/creer.json": "5d053dcc9d6133213e345ae8db9fb443137836f04d26e42a82cd6fa4bc9dbbe1",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/creer.json": "5d053dcc9d6133213e345ae8db9fb443137836f04d26e42a82cd6fa4bc9dbbe1",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/criticar.json": "6b985e6a0a1b4bb62decd74f02032c7cc215dd3ed7a6371e46b9980a039a3d85",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/criticar.json": "6b985e6a0a1b4bb62decd74f02032c7cc215dd3ed7a6371e46b9980a039a3d85",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/cruzar.json": "a464437d5484100ed62d7fa2d3a21911599f68e80f254cffda0439d34d44ef26",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/cruzar.json": "a464437d5484100ed62d7fa2d3a21911599f68e80f254cffda0439d34d44ef26"
+  }
+}

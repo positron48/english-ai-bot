@@ -1,0 +1,31 @@
+{
+  "existing_files": 25461,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/recibir.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/recibir.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/recoger.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/recoger.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/recomendar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/recomendar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/reconocer.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/reconocer.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-recibir-reconocer",
+    "docs/grammar-review/reports/3e61b26f6552cec6b375d6ff.json",
+    "docs/grammar-review/reports/94f5b8420a855d0502df92e1.json",
+    "docs/grammar-review/reports/cd26ffd7059959af16890a05.json",
+    "docs/grammar-review/reports/7b94c1789b1c66e4f39a8458.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/recibir.json": "37f60b1752c36dadf73c072d0c2bcac53a9e83bad365eb97d3995d81424fcd82",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/recibir.json": "37f60b1752c36dadf73c072d0c2bcac53a9e83bad365eb97d3995d81424fcd82",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/recoger.json": "9bacdc327e48568602fba066225a2ecb9600ff74c2d82dd36c0c2a79322a8618",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/recoger.json": "9bacdc327e48568602fba066225a2ecb9600ff74c2d82dd36c0c2a79322a8618",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/recomendar.json": "32c08a59ab8682e6bc4646725b20f2cc572fc3444513a33137a0dffda7ba3060",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/recomendar.json": "32c08a59ab8682e6bc4646725b20f2cc572fc3444513a33137a0dffda7ba3060",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/reconocer.json": "40a090878ad56ae93b123c6ab4b475dd93175ac362f696f82b68c5819b1104cf",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/reconocer.json": "40a090878ad56ae93b123c6ab4b475dd93175ac362f696f82b68c5819b1104cf"
+  }
+}

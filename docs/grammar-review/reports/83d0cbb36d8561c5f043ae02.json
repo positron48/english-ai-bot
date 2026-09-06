@@ -1,0 +1,677 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/vender.json",
+  "source_sha256": "0a329dbc9d32ea42fb399fba4b618a089d294584ac72b333bb665ff01cb04b25",
+  "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197",
+  "editor": "edit_utilizar editor 2026-09-06",
+  "verifier": "edit_valer independent verifier 2026-09-06",
+  "phase": "done",
+  "reviewed_at": "2026-09-06",
+  "verified_at": "2026-09-06T15:11:38.395185Z",
+  "questions": [
+    {
+      "id": "es.presente.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:1:singular переписана и лично проверена: authoritative форма «vendo», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:2:singular переписана и лично проверена: authoritative форма «vendes», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:3:singular переписана и лично проверена: authoritative форма «vende», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:1:plural переписана и лично проверена: authoritative форма «vendemos», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:2:plural переписана и лично проверена: authoritative форма «vendéis», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:3:plural переписана и лично проверена: authoritative форма «venden», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:1:singular переписана и лично проверена: authoritative форма «vendía», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:2:singular переписана и лично проверена: authoritative форма «vendías», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:3:singular переписана и лично проверена: authoritative форма «vendía», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:1:plural переписана и лично проверена: authoritative форма «vendíamos», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:2:plural переписана и лично проверена: authoritative форма «vendíais», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:3:plural переписана и лично проверена: authoritative форма «vendían», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:1:singular переписана и лично проверена: authoritative форма «vendí», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:2:singular переписана и лично проверена: authoritative форма «vendiste», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:3:singular переписана и лично проверена: authoritative форма «vendió», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:1:plural переписана и лично проверена: authoritative форма «vendimos», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:2:plural переписана и лично проверена: authoritative форма «vendisteis», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:3:plural переписана и лично проверена: authoritative форма «vendieron», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:1:singular переписана и лично проверена: authoritative форма «venderé», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:2:singular переписана и лично проверена: authoritative форма «venderás», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:3:singular переписана и лично проверена: authoritative форма «venderá», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:1:plural переписана и лично проверена: authoritative форма «venderemos», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:2:plural переписана и лично проверена: authoritative форма «venderéis», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:3:plural переписана и лично проверена: authoritative форма «venderán», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:1:singular переписана и лично проверена: authoritative форма «vendería», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:2:singular переписана и лично проверена: authoritative форма «venderías», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:3:singular переписана и лично проверена: authoritative форма «vendería», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:1:plural переписана и лично проверена: authoritative форма «venderíamos», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:2:plural переписана и лично проверена: authoritative форма «venderíais», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:3:plural переписана и лично проверена: authoritative форма «venderían», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:1:singular переписана и лично проверена: authoritative форма «he vendido», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:2:singular переписана и лично проверена: authoritative форма «has vendido», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:3:singular переписана и лично проверена: authoritative форма «ha vendido», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:1:plural переписана и лично проверена: authoritative форма «hemos vendido», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:2:plural переписана и лично проверена: authoritative форма «habéis vendido», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:3:plural переписана и лично проверена: authoritative форма «han vendido», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:1:singular переписана и лично проверена: authoritative форма «había vendido», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:2:singular переписана и лично проверена: authoritative форма «habías vendido», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:3:singular переписана и лично проверена: authoritative форма «había vendido», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:1:plural переписана и лично проверена: authoritative форма «habíamos vendido», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:2:plural переписана и лично проверена: authoritative форма «habíais vendido», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:3:plural переписана и лично проверена: authoritative форма «habían vendido», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:1:singular переписана и лично проверена: authoritative форма «hube vendido», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:2:singular переписана и лично проверена: authoritative форма «hubiste vendido», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:3:singular переписана и лично проверена: authoritative форма «hubo vendido», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:1:plural переписана и лично проверена: authoritative форма «hubimos vendido», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:2:plural переписана и лично проверена: authoritative форма «hubisteis vendido», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:3:plural переписана и лично проверена: authoritative форма «hubieron vendido», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:1:singular переписана и лично проверена: authoritative форма «habré vendido», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:2:singular переписана и лично проверена: authoritative форма «habrás vendido», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:3:singular переписана и лично проверена: authoritative форма «habrá vendido», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:1:plural переписана и лично проверена: authoritative форма «habremos vendido», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:2:plural переписана и лично проверена: authoritative форма «habréis vendido», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:3:plural переписана и лично проверена: authoritative форма «habrán vendido», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:1:singular переписана и лично проверена: authoritative форма «habría vendido», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:2:singular переписана и лично проверена: authoritative форма «habrías vendido», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:3:singular переписана и лично проверена: authoritative форма «habría vendido», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:1:plural переписана и лично проверена: authoritative форма «habríamos vendido», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:2:plural переписана и лично проверена: authoritative форма «habríais vendido», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:3:plural переписана и лично проверена: authoritative форма «habrían vendido», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:1:singular переписана и лично проверена: authoritative форма «venda», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:2:singular переписана и лично проверена: authoritative форма «vendas», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:3:singular переписана и лично проверена: authoritative форма «venda», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:1:plural переписана и лично проверена: authoritative форма «vendamos», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:2:plural переписана и лично проверена: authoritative форма «vendáis», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:3:plural переписана и лично проверена: authoritative форма «vendan», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:1:singular переписана и лично проверена: authoritative форма «vendiera», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом. Independent verifier finding: Russian «Риелтор посоветовала, чтобы я продал...» is a syntactic calque; with the same addressee, посоветовала мне + infinitive is natural. Keep current ES. Exact replacement RU: «Риелтор посоветовала мне продать дом после оценки.»",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:2:singular переписана и лично проверена: authoritative форма «vendieras», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:3:singular переписана и лично проверена: authoritative форма «vendiera», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:1:plural переписана и лично проверена: authoritative форма «vendiéramos», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом. Independent verifier finding: Russian «Организатор предложила, чтобы мы продавали...» is a syntactic calque; предложила нам + infinitive is natural. Keep current ES. Exact replacement RU: «Организатор предложила нам продавать каталоги у входа.»",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:2:plural переписана и лично проверена: authoritative форма «vendierais», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом. Independent verifier finding: Russian «Управляющий попросил, чтобы вы сначала продали...» is a syntactic calque; попросил вас + infinitive is natural. Keep current ES. Exact replacement RU: «Управляющий попросил вас сначала продать старые товарные запасы.»",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:3:plural переписана и лично проверена: authoritative форма «vendieran», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:1:singular переписана и лично проверена: authoritative форма «vendiere», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:2:singular переписана и лично проверена: authoritative форма «vendieres», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:3:singular переписана и лично проверена: authoritative форма «vendiere», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:1:plural переписана и лично проверена: authoritative форма «vendiéremos», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:2:plural переписана и лично проверена: authoritative форма «vendiereis», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:3:plural переписана и лично проверена: authoritative форма «vendieren», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:1:singular переписана и лично проверена: authoritative форма «haya vendido», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:2:singular переписана и лично проверена: authoritative форма «hayas vendido», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:3:singular переписана и лично проверена: authoritative форма «haya vendido», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:1:plural переписана и лично проверена: authoritative форма «hayamos vendido», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:2:plural переписана и лично проверена: authoritative форма «hayáis vendido», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:3:plural переписана и лично проверена: authoritative форма «hayan vendido», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:1:singular переписана и лично проверена: authoritative форма «hubiera vendido», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:2:singular переписана и лично проверена: authoritative форма «hubieras vendido», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:3:singular переписана и лично проверена: authoritative форма «hubiera vendido», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:1:plural переписана и лично проверена: authoritative форма «hubiéramos vendido», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:2:plural переписана и лично проверена: authoritative форма «hubierais vendido», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:3:plural переписана и лично проверена: authoritative форма «hubieran vendido», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:1:singular переписана и лично проверена: authoritative форма «hubiere vendido», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:2:singular переписана и лично проверена: authoritative форма «hubieres vendido», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:3:singular переписана и лично проверена: authoritative форма «hubiere vendido», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:1:plural переписана и лично проверена: authoritative форма «hubiéremos vendido», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:2:plural переписана и лично проверена: authoritative форма «hubiereis vendido», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:3:plural переписана и лично проверена: authoritative форма «hubieren vendido», естественный контекст vender, точный полный RU, один пропуск и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "manual editorial read of all 96 vender cards in six 16-card chunks",
+      "result": "pass",
+      "evidence": "Every final Spanish sentence and Russian translation was read with the authoritative form substituted; sales of goods, tickets, assets, property and rights use natural distinct contexts."
+    },
+    {
+      "command": "editor self-review refinements: vender indices 8, 23, 25, 27, 40, 42, 45, 46, 51, 53, 63, 79, 80, 87, 88, 93",
+      "result": "pass",
+      "evidence": "Sixteen refinements correct RU collocations, clarify offers and collection references, remove literary subject repetition, name sold series and duplicates precisely, repair consultar valency, preserve completed counterfactual aspect and align legal closing semantics."
+    },
+    {
+      "command": "Jehle comparison for 16 scopes and six person-number slots",
+      "result": "pass",
+      "evidence": "All 96 surface forms match the pinned local authoritative forms dataset."
+    },
+    {
+      "command": "same-scope option and answer multiplicity validation",
+      "result": "pass",
+      "evidence": "Every card has four distinct options from its own scope and the authoritative answer occurs exactly once."
+    },
+    {
+      "command": "rare-register, future completion and counterfactual semantic review",
+      "result": "pass",
+      "evidence": "Pretérito anterior and both future subjunctives are explicitly literary or legal; future-perfect-subjunctive Russian states completed sales; all six De haberlo sabido translations begin with explicit Russian counterfactuals using знал, знала or знали."
+    },
+    {
+      "command": "baseline identity and source-embedded byte comparison",
+      "result": "pass",
+      "evidence": "Top-level fields and scope/person/number order match the immutable baseline; source and embedded copy are byte-identical."
+    },
+    {
+      "command": "native validate_artifact(vender, 96 final cards)",
+      "result": "pass",
+      "evidence": "The repository generator validator accepted all 96 final cards."
+    },
+    {
+      "command": "focused vender authoritative, identity, option, report and checkpoint validation",
+      "result": "pass",
+      "evidence": "All 96 forms match authoritative-forms.json; top-level metadata and scope/person/number order preserve the immutable baseline; source=embedded; one blank and four unique same-scope options with one answer; report fingerprint is current and six checkpoints cover [0,96]."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py status --source courses/spanish-grammar/training_pack/verb_forms/lemmas/vender.json",
+      "result": "pass",
+      "evidence": "Status is awaiting_verification for exactly 96 cards, as required before independent review."
+    },
+    {
+      "command": "git diff --check for assigned vender root and Spanish paths",
+      "result": "pass",
+      "evidence": "No whitespace errors in source, embedded, report or personal checkpoint log."
+    },
+    {
+      "command": "baseline-to-final vender defect statistics and fingerprint",
+      "result": "pass",
+      "evidence": "Baseline wrong/duplicate/answer/offscope/invalid/metadata/blank = 14/27/34/138/34/0/0; final values remain all zero after verifier fixes; current fingerprint 0a329dbc9d32ea42fb399fba4b618a089d294584ac72b333bb665ff01cb04b25."
+    },
+    {
+      "command": "independent semantic verification of all 96 vender cards at fingerprint 3db6283ea6b090bb386c765c5f02d343dbc90dbc4007406cbe694c5beb3d1be3",
+      "result": "pass",
+      "evidence": "Independent verifier read all 96 final ES/RU pairs with each answer substituted and checked vender meaning/aspect, person/number/tense, blank, same-scope distractors, literary/legal framing, explicit De haberlo sabido counterfactuals and completed future-perfect Russian conditions. Three unresolved Russian syntactic-calque findings remain at zero-based indexes 66, 69 and 70; all other cards remain pending until the corrected fingerprint is rechecked."
+    },
+    {
+      "command": "original editor corrections after independent vender verification: indices 66, 69 and 70",
+      "result": "pass",
+      "evidence": "Applied all three exact RU corrections, replacing subordinate-clause calques with natural recipient plus infinitive constructions. Spanish prompts, authoritative forms, options, metadata and identity/order remain unchanged; all 96 verifications reset to pending."
+    },
+    {
+      "command": "post-verification-fix native, contract, focused status and diff validation",
+      "result": "pass",
+      "evidence": "Native validate_artifact accepted 96/96; source=embedded; authoritative forms, identity/order, metadata, blank and options pass; report remains awaiting_verification with 96 pending; post_verification_fix checkpoint, focused status and diff checks pass at fingerprint 0a329dbc9d32ea42fb399fba4b618a089d294584ac72b333bb665ff01cb04b25."
+    },
+    {
+      "command": "same independent verifier recheck: vender indices 66, 69 and 70",
+      "result": "pass",
+      "evidence": "All three requested Russian replacements match exactly and use natural recipient plus infinitive constructions; the Spanish prompts, vender meanings, authoritative forms and person identities remain unchanged."
+    },
+    {
+      "command": "independent final source/report integrity check: vender 96/96 at fingerprint 0a329dbc9d32ea42fb399fba4b618a089d294584ac72b333bb665ff01cb04b25",
+      "result": "pass",
+      "evidence": "The independently reviewed set differs only by the three requested Russian fixes; source equals embedded; authoritative forms, scope/person/number, mood/tense, one blank, four unique same-scope options, answer once, literary/legal framing, counterfactuals and future-perfect completion pass. All 96 verification fields are ok."
+    },
+    {
+      "command": "coordinator final batch barrier: check.py, preservation-check.py, native validate_artifact, focused status, Go tests, grammar_review_test.py and scoped diff checks",
+      "result": "pass",
+      "evidence": "Final vender report is independently done at fingerprint 0a329dbc9d32ea42fb399fba4b618a089d294584ac72b333bb665ff01cb04b25; the 384-card batch passed authoritative forms/contracts, 24 checkpoints, source=embedded, preservation (25683 unchanged out-of-scope files), native validation, Go tests, 13 grammar-review tests and whitespace checks."
+    }
+  ],
+  "verification_note": "Независимый верификатор первоначально нашёл три русские синтаксические кальки в индексах 66, 69 и 70. Исходный редактор применил все три точные замены; тот же верификатор повторно проверил исправленные карточки и целостность полного набора нового fingerprint. Все 96 карточек приняты."
+}

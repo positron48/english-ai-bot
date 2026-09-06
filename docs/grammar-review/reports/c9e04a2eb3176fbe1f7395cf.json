@@ -1,0 +1,302 @@
+{
+  "version": 1,
+  "source": "courses/english-grammar/chapters/030.en.grammar.now_present_continuous_contrast.simple_vs_continuous_clear/03-questions.json",
+  "source_sha256": "f85d769339523b8b23acfd002bc3160dda834991a21c1a45aca28ca5124f67f5",
+  "context_sha256": "a8fc800f80442ac9b26c9a4cd877fe1b9006048a09b654923c9c89b5f7031375",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
+  "reviewed_at": "2026-09-04T15:46:22.422151+00:00",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
+  "questions": [
+    {
+      "id": "q1",
+      "decision": "fixed",
+      "note": "Снят ложный запрет допустимых времён, уточнено требуемое время/глагол или убрана проверка порядкового номера правила.",
+      "verification": "ok"
+    },
+    {
+      "id": "q2",
+      "decision": "fixed",
+      "note": "Снят ложный запрет допустимых времён, уточнено требуемое время/глагол или убрана проверка порядкового номера правила.",
+      "verification": "ok"
+    },
+    {
+      "id": "q3",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q4",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q7",
+      "decision": "fixed",
+      "note": "Снят ложный запрет допустимых времён, уточнено требуемое время/глагол или убрана проверка порядкового номера правила.",
+      "verification": "ok"
+    },
+    {
+      "id": "q8",
+      "decision": "fixed",
+      "note": "Снят ложный запрет допустимых времён, уточнено требуемое время/глагол или убрана проверка порядкового номера правила.",
+      "verification": "ok"
+    },
+    {
+      "id": "q9",
+      "decision": "fixed",
+      "note": "Снят ложный запрет допустимых времён, уточнено требуемое время/глагол или убрана проверка порядкового номера правила.",
+      "verification": "ok"
+    },
+    {
+      "id": "q10",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q12",
+      "decision": "fixed",
+      "note": "Снят ложный запрет допустимых времён, уточнено требуемое время/глагол или убрана проверка порядкового номера правила.",
+      "verification": "ok"
+    },
+    {
+      "id": "q13",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q14",
+      "decision": "fixed",
+      "note": "Снят ложный запрет допустимых времён, уточнено требуемое время/глагол или убрана проверка порядкового номера правила.",
+      "verification": "ok"
+    },
+    {
+      "id": "q15",
+      "decision": "fixed",
+      "note": "Снят ложный запрет допустимых времён, уточнено требуемое время/глагол или убрана проверка порядкового номера правила.",
+      "verification": "ok"
+    },
+    {
+      "id": "q16",
+      "decision": "fixed",
+      "note": "Снят ложный запрет допустимых времён, уточнено требуемое время/глагол или убрана проверка порядкового номера правила.",
+      "verification": "ok"
+    },
+    {
+      "id": "q17",
+      "decision": "fixed",
+      "note": "Снят ложный запрет допустимых времён, уточнено требуемое время/глагол или убрана проверка порядкового номера правила.",
+      "verification": "ok"
+    },
+    {
+      "id": "q18",
+      "decision": "fixed",
+      "note": "Снят ложный запрет допустимых времён, уточнено требуемое время/глагол или убрана проверка порядкового номера правила.",
+      "verification": "ok"
+    },
+    {
+      "id": "q19",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q20",
+      "decision": "fixed",
+      "note": "Снят ложный запрет допустимых времён, уточнено требуемое время/глагол или убрана проверка порядкового номера правила.",
+      "verification": "ok"
+    },
+    {
+      "id": "q21",
+      "decision": "fixed",
+      "note": "Снят ложный запрет допустимых времён, уточнено требуемое время/глагол или убрана проверка порядкового номера правила.",
+      "verification": "ok"
+    },
+    {
+      "id": "q23",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q24",
+      "decision": "fixed",
+      "note": "Снят ложный запрет допустимых времён, уточнено требуемое время/глагол или убрана проверка порядкового номера правила.",
+      "verification": "ok"
+    },
+    {
+      "id": "q25",
+      "decision": "fixed",
+      "note": "Устранены два правильных ответа, ложный абсолютный запрет Continuous/маркеров, ссылки на порядок теории или неоднозначная форма.",
+      "verification": "ok"
+    },
+    {
+      "id": "q26",
+      "decision": "fixed",
+      "note": "Устранены два правильных ответа, ложный абсолютный запрет Continuous/маркеров, ссылки на порядок теории или неоднозначная форма.",
+      "verification": "ok"
+    },
+    {
+      "id": "q27",
+      "decision": "fixed",
+      "note": "Устранены два правильных ответа, ложный абсолютный запрет Continuous/маркеров, ссылки на порядок теории или неоднозначная форма.",
+      "verification": "ok"
+    },
+    {
+      "id": "q28",
+      "decision": "fixed",
+      "note": "Устранены два правильных ответа, ложный абсолютный запрет Continuous/маркеров, ссылки на порядок теории или неоднозначная форма.",
+      "verification": "ok"
+    },
+    {
+      "id": "q31",
+      "decision": "fixed",
+      "note": "Устранены два правильных ответа, ложный абсолютный запрет Continuous/маркеров, ссылки на порядок теории или неоднозначная форма.",
+      "verification": "ok"
+    },
+    {
+      "id": "q32",
+      "decision": "fixed",
+      "note": "Устранены два правильных ответа, ложный абсолютный запрет Continuous/маркеров, ссылки на порядок теории или неоднозначная форма.",
+      "verification": "ok"
+    },
+    {
+      "id": "q33",
+      "decision": "fixed",
+      "note": "Устранены два правильных ответа, ложный абсолютный запрет Continuous/маркеров, ссылки на порядок теории или неоднозначная форма.",
+      "verification": "ok"
+    },
+    {
+      "id": "q34",
+      "decision": "fixed",
+      "note": "Устранены два правильных ответа, ложный абсолютный запрет Continuous/маркеров, ссылки на порядок теории или неоднозначная форма.",
+      "verification": "ok"
+    },
+    {
+      "id": "q36",
+      "decision": "fixed",
+      "note": "Устранены два правильных ответа, ложный абсолютный запрет Continuous/маркеров, ссылки на порядок теории или неоднозначная форма.",
+      "verification": "ok"
+    },
+    {
+      "id": "q37",
+      "decision": "fixed",
+      "note": "Устранены два правильных ответа, ложный абсолютный запрет Continuous/маркеров, ссылки на порядок теории или неоднозначная форма.",
+      "verification": "ok"
+    },
+    {
+      "id": "q39",
+      "decision": "fixed",
+      "note": "Устранены два правильных ответа, ложный абсолютный запрет Continuous/маркеров, ссылки на порядок теории или неоднозначная форма.",
+      "verification": "ok"
+    },
+    {
+      "id": "q40",
+      "decision": "fixed",
+      "note": "Устранены два правильных ответа, ложный абсолютный запрет Continuous/маркеров, ссылки на порядок теории или неоднозначная форма.",
+      "verification": "ok"
+    },
+    {
+      "id": "q43",
+      "decision": "fixed",
+      "note": "Устранены два правильных ответа, ложный абсолютный запрет Continuous/маркеров, ссылки на порядок теории или неоднозначная форма.",
+      "verification": "ok"
+    },
+    {
+      "id": "q44",
+      "decision": "fixed",
+      "note": "Устранены два правильных ответа, ложный абсолютный запрет Continuous/маркеров, ссылки на порядок теории или неоднозначная форма.",
+      "verification": "ok"
+    },
+    {
+      "id": "q53",
+      "decision": "fixed",
+      "note": "Устранены два правильных ответа, ложный абсолютный запрет Continuous/маркеров, ссылки на порядок теории или неоднозначная форма.",
+      "verification": "ok"
+    },
+    {
+      "id": "q54",
+      "decision": "fixed",
+      "note": "Устранены два правильных ответа, ложный абсолютный запрет Continuous/маркеров, ссылки на порядок теории или неоднозначная форма.",
+      "verification": "ok"
+    },
+    {
+      "id": "q56",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q57",
+      "decision": "fixed",
+      "note": "Устранены два правильных ответа, ложный абсолютный запрет Continuous/маркеров, ссылки на порядок теории или неоднозначная форма.",
+      "verification": "ok"
+    },
+    {
+      "id": "q58",
+      "decision": "fixed",
+      "note": "Устранены два правильных ответа, ложный абсолютный запрет Continuous/маркеров, ссылки на порядок теории или неоднозначная форма.",
+      "verification": "ok"
+    },
+    {
+      "id": "q59",
+      "decision": "fixed",
+      "note": "Устранены два правильных ответа, ложный абсолютный запрет Continuous/маркеров, ссылки на порядок теории или неоднозначная форма.",
+      "verification": "ok"
+    },
+    {
+      "id": "q60",
+      "decision": "fixed",
+      "note": "Оба времени грамматически возможны; условие явно просит Present Simple.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-04-en027-030/check.py",
+      "result": "pass",
+      "evidence": "All 422 IDs/contracts, decisions versus baseline, fingerprints, native training validation, signatures and source-final-embedded equality; validation.log."
+    },
+    {
+      "command": "go test ./internal/grammarbundle ./internal/repository -run 'TestValidateEmbeddedBundleID|TestGrammar.*Bundle|TestGrammar.*Reorder' -count=1",
+      "result": "pass",
+      "evidence": "Both packages passed on final integrated data; go-tests.log."
+    },
+    {
+      "command": "git diff --check; git -C courses/spanish-grammar diff --check; git -C courses/english-grammar diff --check",
+      "result": "pass",
+      "evidence": "Three separately executed commands exit 0; diff-check.log. All 764 earlier dirty files outside review docs preserved; preservation.log."
+    },
+    {
+      "command": "cd courses/english-grammar && bash scripts/assemble-chapter.sh 030.en.grammar.now_present_continuous_contrast.simple_vs_continuous_clear",
+      "result": "pass",
+      "evidence": "030-assemble.log: exit 0."
+    },
+    {
+      "command": "cd courses/english-grammar && bash scripts/validate-chapter.sh 030.en.grammar.now_present_continuous_contrast.simple_vs_continuous_clear",
+      "result": "pass",
+      "evidence": "030-chapter-after.log: exit 0."
+    },
+    {
+      "command": "cd courses/english-grammar && ajv validate --spec=draft2020 --validate-formats=false --all-errors -s 02-chapter-schema.json -d chapters/030.en.grammar.now_present_continuous_contrast.simple_vs_continuous_clear/05-final.json",
+      "result": "pass",
+      "evidence": "030-schema-after.log: exit 0."
+    },
+    {
+      "command": "cd courses/english-grammar && ajv validate -s 02-chapter-schema.json -d chapters/030.en.grammar.now_present_continuous_contrast.simple_vs_continuous_clear/05-final.json",
+      "result": "known_baseline",
+      "evidence": "030-assembler-ajv-before.log and 030-assembler-ajv-after.log are byte-identical, exit 1: no draft2020 meta-schema selected. Explicit draft2020 validation passes."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    }
+  ],
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+}

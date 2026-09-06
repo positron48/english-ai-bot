@@ -1,0 +1,31 @@
+{
+  "existing_files": 25368,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/partir.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/partir.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/pasar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/pasar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/pedir.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/pedir.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/pegar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/pegar.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-partir-pegar",
+    "docs/grammar-review/reports/7a8eb35a3408c2b488f4822f.json",
+    "docs/grammar-review/reports/ac9be09d3f339f437ab8d609.json",
+    "docs/grammar-review/reports/c3ebc0528b4352f6675b2451.json",
+    "docs/grammar-review/reports/5bb821f5dccbc04a98b4550c.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/partir.json": "e636301a674171c4f74139774af7db529ebcd1698d3f413f456d207b960a5f23",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/partir.json": "e636301a674171c4f74139774af7db529ebcd1698d3f413f456d207b960a5f23",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/pasar.json": "2d7a6a2030b1f0efc0f587c2b4f79a7aa5211c4e60c4e2d0172ec043c8cc4324",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/pasar.json": "2d7a6a2030b1f0efc0f587c2b4f79a7aa5211c4e60c4e2d0172ec043c8cc4324",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/pedir.json": "a9e287672f7af415d2095278d03a8fa955cd14334793781f168b28e253ddf30d",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/pedir.json": "a9e287672f7af415d2095278d03a8fa955cd14334793781f168b28e253ddf30d",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/pegar.json": "667e84fc617508cc15293df1e2f079635d0d09913ff29b5669fd4447b1355714",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/pegar.json": "667e84fc617508cc15293df1e2f079635d0d09913ff29b5669fd4447b1355714"
+  }
+}

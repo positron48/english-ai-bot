@@ -1,0 +1,308 @@
+{
+  "version": 1,
+  "source": "courses/english-grammar/chapters/015.en.grammar.talking_about_things_nouns.possessive_adjectives_my_your/03-questions.json",
+  "source_sha256": "e2edab780cef874fd002eff33164e58521edf2741bbf51a6001caf23a8d44356",
+  "context_sha256": "2355fefb939d6ab1ee6e66ee61e16b3b6229967d4ae6c256a81cb7e278d3e0d1",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
+  "reviewed_at": "2026-09-04T13:06:00.325858+00:00",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
+  "questions": [
+    {
+      "id": "q1",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q2",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q3",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q4",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q5",
+      "decision": "fixed",
+      "note": "Уточнены границы правила, собственность предмета или конкретное законченное предложение; пол подлежащего не гарантирует владельца.",
+      "verification": "ok"
+    },
+    {
+      "id": "q7",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q8",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q9",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q10",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q11",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q12",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q13",
+      "decision": "fixed",
+      "note": "Уточнены границы правила, собственность предмета или конкретное законченное предложение; пол подлежащего не гарантирует владельца.",
+      "verification": "ok"
+    },
+    {
+      "id": "q15",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q16",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q17",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q20",
+      "decision": "fixed",
+      "note": "Уточнены границы правила, собственность предмета или конкретное законченное предложение; пол подлежащего не гарантирует владельца.",
+      "verification": "ok"
+    },
+    {
+      "id": "q21",
+      "decision": "fixed",
+      "note": "Уточнены границы правила, собственность предмета или конкретное законченное предложение; пол подлежащего не гарантирует владельца.",
+      "verification": "ok"
+    },
+    {
+      "id": "q22",
+      "decision": "fixed",
+      "note": "Уточнены границы правила, собственность предмета или конкретное законченное предложение; пол подлежащего не гарантирует владельца.",
+      "verification": "ok"
+    },
+    {
+      "id": "q23",
+      "decision": "fixed",
+      "note": "Уточнены границы правила, собственность предмета или конкретное законченное предложение; пол подлежащего не гарантирует владельца.",
+      "verification": "ok"
+    },
+    {
+      "id": "q24",
+      "decision": "fixed",
+      "note": "Уточнены границы правила, собственность предмета или конкретное законченное предложение; пол подлежащего не гарантирует владельца.",
+      "verification": "ok"
+    },
+    {
+      "id": "q27",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q28",
+      "decision": "fixed",
+      "note": "Исправлены неверный ключ/подсказка, запрет Whose is this?, his/her для животных, альтернативный порядок или необходимость уточнить форму ответа.",
+      "verification": "ok"
+    },
+    {
+      "id": "q29",
+      "decision": "fixed",
+      "note": "Исправлены неверный ключ/подсказка, запрет Whose is this?, his/her для животных, альтернативный порядок или необходимость уточнить форму ответа.",
+      "verification": "ok"
+    },
+    {
+      "id": "q30",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q31",
+      "decision": "fixed",
+      "note": "Исправлены неверный ключ/подсказка, запрет Whose is this?, his/her для животных, альтернативный порядок или необходимость уточнить форму ответа.",
+      "verification": "ok"
+    },
+    {
+      "id": "q32",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q35",
+      "decision": "fixed",
+      "note": "Исправлены неверный ключ/подсказка, запрет Whose is this?, his/her для животных, альтернативный порядок или необходимость уточнить форму ответа.",
+      "verification": "ok"
+    },
+    {
+      "id": "q37",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q38",
+      "decision": "fixed",
+      "note": "Исправлены неверный ключ/подсказка, запрет Whose is this?, his/her для животных, альтернативный порядок или необходимость уточнить форму ответа.",
+      "verification": "ok"
+    },
+    {
+      "id": "q39",
+      "decision": "fixed",
+      "note": "Исправлены неверный ключ/подсказка, запрет Whose is this?, his/her для животных, альтернативный порядок или необходимость уточнить форму ответа.",
+      "verification": "ok"
+    },
+    {
+      "id": "q40",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q42",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q44",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q45",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q46",
+      "decision": "fixed",
+      "note": "Исправлены неверный ключ/подсказка, запрет Whose is this?, his/her для животных, альтернативный порядок или необходимость уточнить форму ответа.",
+      "verification": "ok"
+    },
+    {
+      "id": "q51",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q52",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q53",
+      "decision": "fixed",
+      "note": "Исправлены неверный ключ/подсказка, запрет Whose is this?, his/her для животных, альтернативный порядок или необходимость уточнить форму ответа.",
+      "verification": "ok"
+    },
+    {
+      "id": "q54",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q57",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q58",
+      "decision": "fixed",
+      "note": "Устранены ложный запрет his/her для животных или неверный ключ для допустимого Whose is this?.",
+      "verification": "ok"
+    },
+    {
+      "id": "q59",
+      "decision": "fixed",
+      "note": "Устранены ложный запрет his/her для животных или неверный ключ для допустимого Whose is this?.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-04-en015-018/check.py",
+      "result": "pass",
+      "evidence": "All 395 IDs/contracts, metadata, decisions versus baseline and current source/context fingerprints verified. Native training validation, signatures, no new course-wide duplicate signatures and exact source-final-embedded equality; validation.log."
+    },
+    {
+      "command": "go test ./internal/grammarbundle ./internal/repository -run 'TestValidateEmbeddedBundleID|TestGrammar.*Bundle|TestGrammar.*Reorder' -count=1",
+      "result": "pass",
+      "evidence": "Both packages pass: 5.027s and 14.339s; go-tests.log."
+    },
+    {
+      "command": "git diff --check; git -C courses/spanish-grammar diff --check; git -C courses/english-grammar diff --check",
+      "result": "pass",
+      "evidence": "Three separately executed commands exit 0; diff-check.log. All 424 pre-existing files outside review docs preserved byte-for-byte; preservation.log."
+    },
+    {
+      "command": "cd courses/english-grammar && bash scripts/assemble-chapter.sh 015.en.grammar.talking_about_things_nouns.possessive_adjectives_my_your",
+      "result": "pass",
+      "evidence": "42 questions assembled; 015-assemble.log. Embedded AJV limitation recorded separately."
+    },
+    {
+      "command": "cd courses/english-grammar && bash scripts/validate-chapter.sh 015.en.grammar.talking_about_things_nouns.possessive_adjectives_my_your",
+      "result": "pass",
+      "evidence": "Before and after pass: 015-chapter-before.log and 015-chapter-after.log."
+    },
+    {
+      "command": "ajv validate --spec=draft2020 --validate-formats=false --all-errors -s courses/english-grammar/02-chapter-schema.json -d courses/english-grammar/chapters/015.en.grammar.talking_about_things_nouns.possessive_adjectives_my_your/05-final.json",
+      "result": "pass",
+      "evidence": "Before and after pass: 015-schema-before.log and 015-schema-after.log."
+    },
+    {
+      "command": "cd courses/english-grammar && ajv validate -s 02-chapter-schema.json -d chapters/015.en.grammar.talking_about_things_nouns.possessive_adjectives_my_your/05-final.json",
+      "result": "known_baseline",
+      "evidence": "015-assembler-ajv-before.log and 015-assembler-ajv-after.log are byte-identical: exit 1, no schema with key or ref https://json-schema.org/draft/2020-12/schema. Explicit draft2020 passes before and after."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    }
+  ],
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+}

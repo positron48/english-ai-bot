@@ -1,0 +1,637 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/sonar.json",
+  "source_sha256": "376ec198364ab10417196f0331c65ede45741c65a40a95bc951b35de19547387",
+  "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197",
+  "editor": "Aristotle editor 2026-09-06",
+  "verifier": "Helmholtz verifier 2026-09-06",
+  "phase": "done",
+  "reviewed_at": "2026-09-06",
+  "verified_at": "2026-09-06",
+  "questions": [
+    {
+      "id": "es.presente.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.presente.indicativo:1:singular; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.presente.indicativo:2:singular; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.presente.indicativo:3:singular; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.presente.indicativo:1:plural; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.presente.indicativo:2:plural; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.presente.indicativo:3:plural; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_imperfecto.indicativo:1:singular; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_imperfecto.indicativo:2:singular; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_imperfecto.indicativo:3:singular; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_imperfecto.indicativo:1:plural; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_imperfecto.indicativo:2:plural; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_imperfecto.indicativo:3:plural; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_indefinido.indicativo:1:singular; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_indefinido.indicativo:2:singular; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_indefinido.indicativo:3:singular; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_indefinido.indicativo:1:plural; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_indefinido.indicativo:2:plural; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_indefinido.indicativo:3:plural; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_simple.indicativo:1:singular; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_simple.indicativo:2:singular; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_simple.indicativo:3:singular; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_simple.indicativo:1:plural; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_simple.indicativo:2:plural; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_simple.indicativo:3:plural; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.condicional_simple.indicativo:1:singular; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.condicional_simple.indicativo:2:singular; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.condicional_simple.indicativo:3:singular; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.condicional_simple.indicativo:1:plural; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.condicional_simple.indicativo:2:plural; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.condicional_simple.indicativo:3:plural; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope. После refinement уточнены число субъекта, временная опора или причинная логика громкости.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_perfecto_compuesto.indicativo:1:singular; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_perfecto_compuesto.indicativo:2:singular; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_perfecto_compuesto.indicativo:3:singular; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_perfecto_compuesto.indicativo:1:plural; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_perfecto_compuesto.indicativo:2:plural; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_perfecto_compuesto.indicativo:3:plural; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_pluscuamperfecto.indicativo:1:singular; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_pluscuamperfecto.indicativo:2:singular; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_pluscuamperfecto.indicativo:3:singular; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_pluscuamperfecto.indicativo:1:plural; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_pluscuamperfecto.indicativo:2:plural; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_pluscuamperfecto.indicativo:3:plural; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_anterior.indicativo:1:singular; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_anterior.indicativo:2:singular; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_anterior.indicativo:3:singular; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_anterior.indicativo:1:plural; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_anterior.indicativo:2:plural; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_anterior.indicativo:3:plural; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_perfecto.indicativo:1:singular; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_perfecto.indicativo:2:singular; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_perfecto.indicativo:3:singular; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_perfecto.indicativo:1:plural; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_perfecto.indicativo:2:plural; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope. После refinement уточнены число субъекта, временная опора или причинная логика громкости.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_perfecto.indicativo:3:plural; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope. После refinement уточнены число субъекта, временная опора или причинная логика громкости.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.condicional_perfecto.indicativo:1:singular; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.condicional_perfecto.indicativo:2:singular; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.condicional_perfecto.indicativo:3:singular; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.condicional_perfecto.indicativo:1:plural; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.condicional_perfecto.indicativo:2:plural; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.condicional_perfecto.indicativo:3:plural; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope. После refinement уточнены число субъекта, временная опора или причинная логика громкости. Независимый verifier: ES не самодостаточен: подлежащее habrían abierto отсутствует, тогда как RU вводит организаторов. Предлагаемый ES: «De haberlo sabido, los organizadores habrían abierto las ventanas y las alarmas _ más fuertes. (sonar)»; RU можно сохранить. Исправление исходного редактора после независимой проверки: Добавлен явный субъект los organizadores перед habrían abierto; ES теперь самодостаточен и согласован с RU.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.presente.subjuntivo:1:singular; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.presente.subjuntivo:2:singular; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.presente.subjuntivo:3:singular; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.presente.subjuntivo:1:plural; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.presente.subjuntivo:2:plural; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.presente.subjuntivo:3:plural; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope. После refinement уточнены число субъекта, временная опора или причинная логика громкости.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_imperfecto.subjuntivo:1:singular; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_imperfecto.subjuntivo:2:singular; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_imperfecto.subjuntivo:3:singular; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_imperfecto.subjuntivo:1:plural; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_imperfecto.subjuntivo:2:plural; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_imperfecto.subjuntivo:3:plural; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope. После refinement уточнены число субъекта, временная опора или причинная логика громкости.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_simple.subjuntivo:1:singular; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_simple.subjuntivo:2:singular; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_simple.subjuntivo:3:singular; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope. Независимый verifier: RU «сигнализация ... будет зарегистрирована» ошибочно описывает регистрацию устройства вместо фиксации срабатывания. Предлагаемый RU: «В старой юридической формулировке: срабатывание сигнализации после закрытия будет зафиксировано.» Исправление исходного редактора после независимой проверки: RU теперь передаёт фиксацию срабатывания сигнализации, а не регистрацию устройства.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_simple.subjuntivo:1:plural; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_simple.subjuntivo:2:plural; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope. Независимый verifier: ES inaudibles означает, что голоса не слышны, а RU «неразборчивыми» передаёт слышимую, но непонятную речь. Предлагаемый RU: «В старом юридическом тексте: если ваших голосов не будет слышно на записи, вы дадите показания повторно.» Исправление исходного редактора после независимой проверки: RU теперь точно передаёт inaudibles как отсутствие слышимости голосов.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_simple.subjuntivo:3:plural; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope. Независимый verifier: RU «сигналы ... будут расследованы» неестественен. Предлагаемый RU: «В старой юридической формулировке: сигналы, которые прозвучат в нерабочее время, станут предметом расследования.» Исправление исходного редактора после независимой проверки: RU исправлен на естественную конструкцию: сигналы станут предметом расследования.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_perfecto.subjuntivo:1:singular; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_perfecto.subjuntivo:2:singular; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_perfecto.subjuntivo:3:singular; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_perfecto.subjuntivo:1:plural; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_perfecto.subjuntivo:2:plural; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_perfecto.subjuntivo:3:plural; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_pluscuamperfecto.subjuntivo:1:singular; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_pluscuamperfecto.subjuntivo:2:singular; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_pluscuamperfecto.subjuntivo:3:singular; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_pluscuamperfecto.subjuntivo:1:plural; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_pluscuamperfecto.subjuntivo:2:plural; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_pluscuamperfecto.subjuntivo:3:plural; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_perfecto.subjuntivo:1:singular; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_perfecto.subjuntivo:2:singular; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_perfecto.subjuntivo:3:singular; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_perfecto.subjuntivo:1:plural; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_perfecto.subjuntivo:2:plural; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope. Независимый verifier: ES inaudibles означает полную неслышимость, а RU «были неразборчивы» меняет смысл. Предлагаемый RU: «В юридическом тексте: если окажется, что ваших голосов не было слышно на записи, вы повторите показания.» Исправление исходного редактора после независимой проверки: RU теперь точно передаёт inaudibles как отсутствие слышимости голосов и сохраняет завершённость проверки.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_perfecto.subjuntivo:3:plural; форма сверена с Jehle, значение sonar ограничено звучанием/сигналом/впечатлением на слух без смешения с soñar, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 /tmp/validate_sonar.py",
+      "result": "pass",
+      "evidence": "96/96 exact Jehle forms; metadata, identity/order/top-level, one blank and four unique same-scope options with one answer passed."
+    },
+    {
+      "command": "semantic full read with answer substitution: sonar 96/96",
+      "result": "pass",
+      "evidence": "All ES/RU contexts read manually; sounding, ringing, audible events and impressions distinguished; no dream/soñar semantics; rare registers and explicit counterfactual translations checked."
+    },
+    {
+      "command": "cmp source embedded; python3 scripts/grammar-review.py check --source courses/spanish-grammar/training_pack/verb_forms/lemmas/sonar.json",
+      "result": "pass",
+      "evidence": "Source and embedded byte-identical; fresh fingerprints; report awaits independent verification."
+    },
+    {
+      "command": "go test ./internal/grammartrainingpack; git diff --check -- assigned paths",
+      "result": "pass",
+      "evidence": "Focused Go tests and whitespace validation passed."
+    },
+    {
+      "command": "python3 /tmp/validate_sonar_refinement.py; targeted six-card assertions; cmp source embedded",
+      "result": "pass",
+      "evidence": "Exactly six semantic refinements applied: plural alarm translations, tour endpoint, completed one-hour ringing, and open-window loudness causality. Full 96-card Jehle/metadata/options/identity validation and source=embedded passed; source fingerprint refreshed, context fingerprint reconfirmed, verification pending."
+    },
+    {
+      "command": "independent full verification: sonar 96/96; /tmp/validate_sonar_refinement.py; cmp; native validate_artifact; baseline identity/fingerprint checks",
+      "result": "pass",
+      "evidence": "A verifier different from the editor read all 96 final cards with answers substituted. Jehle forms, metadata, one blank, four unique same-scope options with one answer, source=embedded, baseline identity/order/top-level and current hashes passed. 91 rows accepted; five exact ES/RU semantic defects were recorded as needs_fix without changing source."
+    },
+    {
+      "command": "post-verifier correction: five sonar findings; targeted exact assertions; cmp; Jehle/metadata/options/identity validation; native validate_artifact",
+      "result": "pass",
+      "evidence": "Added explicit subject los organizadores to conditional-perfect 3p; corrected four RU renderings for alarm activation, inaudible voices, investigable signals, and completed inaudibility. Forms/options/metadata and 91 accepted cards remained unchanged; five corrected cards returned to pending; source=embedded and fingerprint refreshed."
+    },
+    {
+      "command": "independent recheck: five corrected sonar findings; reconstruct prior five values and fingerprint; cmp; native validate_artifact; report integrity/status",
+      "result": "pass",
+      "evidence": "All five requested corrections are exact and semantically accepted. Reversing only those five values reconstructs prior verified fingerprint a3c29240b938219c51c63846afc36fd7907f13893dc5faf3218fae327bc7f961, proving the other 91 cards unchanged. Current source fingerprint 376ec198364ab10417196f0331c65ede45741c65a40a95bc951b35de19547387 is fresh; source=embedded, native validation and 96 verification ok passed."
+    },
+    {
+      "command": "final batch barrier: check.py; preservation-check.py; native validate_artifact; go test ./internal/verbtraining ./cmd/sync_verb_training_json; grammar_review_test.py; focused grammar-review check; git diff --check; skill quick_validate.py",
+      "result": "pass",
+      "evidence": "384 final cards and 24 primary checkpoints passed; source/embedded and fingerprints fresh; 25581 paths preserved; Go tests and 13 grammar-review tests passed; each source reports done; root and Spanish diffs clean; skill valid."
+    }
+  ],
+  "verification_note": "Независимый verifier повторно проверил пять исправленных карточек в полном ES/RU-контексте: субъект los organizadores теперь явный, срабатывание сигнализации передано как фиксация события, inaudibles дважды переведено как отсутствие слышимости, а сигналы естественно стали предметом расследования. Обратная подстановка пяти прежних значений восстановила fingerprint ранее проверенной версии, поэтому остальные 91 карточка подтверждённо не менялись. Все 96 verification приняты."
+}

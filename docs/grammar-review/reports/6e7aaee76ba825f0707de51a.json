@@ -1,0 +1,411 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/chapters/042.es.grammar.present_irregulars_reflexives_gustar.build_speak_i_usually_do_happening_now/03-questions.json",
+  "source_sha256": "f34c018e7ff8f43e6145d8a7e7615239860a80377581c06e34b12697d3de7864",
+  "context_sha256": "58b87110a45777e4dad9b7b9fa2216e0af4d983a16d21046beb2cc025345b11c",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
+  "reviewed_at": "2026-09-04T18:13:38.644348+00:00",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
+  "questions": [
+    {
+      "id": "q042_b1_01",
+      "decision": "ok",
+      "note": "Грамматика, ключ и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q042_b1_02",
+      "decision": "ok",
+      "note": "Грамматика, ключ и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q042_b1_03",
+      "decision": "ok",
+      "note": "Грамматика, ключ и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q042_b1_04",
+      "decision": "ok",
+      "note": "Грамматика, ключ и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q042_b1_05",
+      "decision": "ok",
+      "note": "Грамматика, ключ и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q042_b1_06",
+      "decision": "ok",
+      "note": "Грамматика, ключ и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q042_b1_07",
+      "decision": "ok",
+      "note": "Грамматика, ключ и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q042_b1_08",
+      "decision": "ok",
+      "note": "Грамматика, ключ и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q042_b1_09",
+      "decision": "fixed",
+      "note": "Уточнена формулировка и устранена неоднозначность.",
+      "verification": "ok"
+    },
+    {
+      "id": "q042_b1_10",
+      "decision": "ok",
+      "note": "Грамматика, ключ и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q042_b1_11",
+      "decision": "ok",
+      "note": "Грамматика, ключ и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q042_b1_12",
+      "decision": "ok",
+      "note": "Грамматика, ключ и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q042_b2_01",
+      "decision": "ok",
+      "note": "Грамматика, ключ и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q042_b2_02",
+      "decision": "ok",
+      "note": "Грамматика, ключ и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q042_b2_03",
+      "decision": "ok",
+      "note": "Грамматика, ключ и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q042_b2_04",
+      "decision": "ok",
+      "note": "Грамматика, ключ и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q042_b2_06",
+      "decision": "ok",
+      "note": "Грамматика, ключ и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q042_b2_07",
+      "decision": "ok",
+      "note": "Грамматика, ключ и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q042_b2_08",
+      "decision": "fixed",
+      "note": "Уточнена формулировка и устранена неоднозначность.",
+      "verification": "ok"
+    },
+    {
+      "id": "q042_b2_09",
+      "decision": "ok",
+      "note": "Грамматика, ключ и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q042_b2_10",
+      "decision": "ok",
+      "note": "Грамматика, ключ и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q042_b2_11",
+      "decision": "ok",
+      "note": "Грамматика, ключ и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q042_b2_12",
+      "decision": "ok",
+      "note": "Грамматика, ключ и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q042_b3_01",
+      "decision": "ok",
+      "note": "Грамматика, ключ и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q042_b3_02",
+      "decision": "ok",
+      "note": "Грамматика, ключ и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q042_b3_03",
+      "decision": "ok",
+      "note": "Грамматика, ключ и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q042_b3_04",
+      "decision": "ok",
+      "note": "Грамматика, ключ и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q042_b3_06",
+      "decision": "ok",
+      "note": "Грамматика, ключ и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q042_b3_07",
+      "decision": "ok",
+      "note": "Грамматика, ключ и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q042_b3_08",
+      "decision": "ok",
+      "note": "Грамматика, ключ и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q042_b3_09",
+      "decision": "ok",
+      "note": "Грамматика, ключ и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q042_b3_10",
+      "decision": "ok",
+      "note": "Грамматика, ключ и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q042_b3_11",
+      "decision": "ok",
+      "note": "Грамматика, ключ и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q042_b3_12",
+      "decision": "ok",
+      "note": "Грамматика, ключ и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q042_b4_01",
+      "decision": "ok",
+      "note": "Грамматика, ключ и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q042_b4_02",
+      "decision": "ok",
+      "note": "Грамматика, ключ и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q042_b4_03",
+      "decision": "ok",
+      "note": "Грамматика, ключ и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q042_b4_04",
+      "decision": "ok",
+      "note": "Грамматика, ключ и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q042_b4_06",
+      "decision": "ok",
+      "note": "Грамматика, ключ и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q042_b4_07",
+      "decision": "ok",
+      "note": "Грамматика, ключ и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q042_b4_08",
+      "decision": "ok",
+      "note": "Грамматика, ключ и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q042_b4_09",
+      "decision": "ok",
+      "note": "Грамматика, ключ и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q042_b4_10",
+      "decision": "ok",
+      "note": "Грамматика, ключ и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q042_b4_11",
+      "decision": "ok",
+      "note": "Грамматика, ключ и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q042_b5_01",
+      "decision": "ok",
+      "note": "Грамматика, ключ и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q042_b5_02",
+      "decision": "ok",
+      "note": "Грамматика, ключ и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q042_b5_03",
+      "decision": "ok",
+      "note": "Грамматика, ключ и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q042_b5_04",
+      "decision": "ok",
+      "note": "Грамматика, ключ и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q042_b5_06",
+      "decision": "ok",
+      "note": "Грамматика, ключ и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q042_b5_07",
+      "decision": "ok",
+      "note": "Грамматика, ключ и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q042_b5_08",
+      "decision": "ok",
+      "note": "Грамматика, ключ и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q042_b5_09",
+      "decision": "fixed",
+      "note": "Уточнена формулировка и устранена неоднозначность.",
+      "verification": "ok"
+    },
+    {
+      "id": "q042_b5_10",
+      "decision": "ok",
+      "note": "Грамматика, ключ и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q042_b5_11",
+      "decision": "ok",
+      "note": "Грамматика, ключ и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q042_b6_01",
+      "decision": "ok",
+      "note": "Грамматика, ключ и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q042_b6_02",
+      "decision": "ok",
+      "note": "Грамматика, ключ и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q042_b6_03",
+      "decision": "ok",
+      "note": "Грамматика, ключ и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q042_b6_04",
+      "decision": "ok",
+      "note": "Грамматика, ключ и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q042_b6_06",
+      "decision": "ok",
+      "note": "Грамматика, ключ и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q042_b6_07",
+      "decision": "ok",
+      "note": "Грамматика, ключ и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q042_b6_08",
+      "decision": "fixed",
+      "note": "Уточнена формулировка и устранена неоднозначность.",
+      "verification": "ok"
+    },
+    {
+      "id": "q042_b6_09",
+      "decision": "ok",
+      "note": "Грамматика, ключ и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q042_b6_10",
+      "decision": "ok",
+      "note": "Грамматика, ключ и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q042_b6_11",
+      "decision": "ok",
+      "note": "Грамматика, ключ и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q042_b6_12",
+      "decision": "ok",
+      "note": "Грамматика, ключ и объяснение корректны.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    }
+  ],
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+}

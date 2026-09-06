@@ -1,0 +1,31 @@
+{
+  "existing_files": 25056,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/decidir.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/decidir.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/decir.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/decir.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/declarar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/declarar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/dedicar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/dedicar.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-decidir-dedicar",
+    "docs/grammar-review/reports/43216ef751585ee876bdec1c.json",
+    "docs/grammar-review/reports/61c8265d6802fe3d71ef3004.json",
+    "docs/grammar-review/reports/6358070319f2c05589ac8ee6.json",
+    "docs/grammar-review/reports/df9ab47aaa5a9e4fc5a1ea20.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/decidir.json": "3bc9c916ebe622f9d87b8c0bf03f74b12599b6bee56221c76f0bc7916d0ad03a",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/decidir.json": "3bc9c916ebe622f9d87b8c0bf03f74b12599b6bee56221c76f0bc7916d0ad03a",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/decir.json": "7b433878d9a8bd94ab90150eb0c723c0a7a77e8c86c67fb58f25f09faa2d2fb7",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/decir.json": "7b433878d9a8bd94ab90150eb0c723c0a7a77e8c86c67fb58f25f09faa2d2fb7",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/declarar.json": "197807b99554d43619f7052462e7045e3fc61d550b4c38ce538fe63cc6b32a44",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/declarar.json": "197807b99554d43619f7052462e7045e3fc61d550b4c38ce538fe63cc6b32a44",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/dedicar.json": "dbfe195132d9ca75215cf281a836d22b1395efa2566fdf053b81a1f00018991d",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/dedicar.json": "dbfe195132d9ca75215cf281a836d22b1395efa2566fdf053b81a1f00018991d"
+  }
+}

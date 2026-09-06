@@ -1,0 +1,662 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/señalar.json",
+  "source_sha256": "b737655e2ffb09cbff1e488200dfd973f0a5a3e799d25d1e48b67e2368a0b11c",
+  "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197",
+  "editor": "Helmholtz editor 2026-09-06",
+  "verifier": "Codex coordinator verifier 2026-09-06",
+  "phase": "done",
+  "reviewed_at": "2026-09-06",
+  "verified_at": "2026-09-06T11:54:09+00:00",
+  "questions": [
+    {
+      "id": "es.presente.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.presente.indicativo:1:singular: форма Jehle «señalo», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.presente.indicativo:2:singular: форма Jehle «señalas», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.presente.indicativo:3:singular: форма Jehle «señala», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.presente.indicativo:1:plural: форма Jehle «señalamos», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.presente.indicativo:2:plural: форма Jehle «señaláis», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.presente.indicativo:3:plural: форма Jehle «señalan», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_imperfecto.indicativo:1:singular: форма Jehle «señalaba», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_imperfecto.indicativo:2:singular: форма Jehle «señalabas», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_imperfecto.indicativo:3:singular: форма Jehle «señalaba», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_imperfecto.indicativo:1:plural: форма Jehle «señalábamos», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_imperfecto.indicativo:2:plural: форма Jehle «señalabais», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_imperfecto.indicativo:3:plural: форма Jehle «señalaban», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_indefinido.indicativo:1:singular: форма Jehle «señalé», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_indefinido.indicativo:2:singular: форма Jehle «señalaste», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_indefinido.indicativo:3:singular: форма Jehle «señaló», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_indefinido.indicativo:1:plural: форма Jehle «señalamos», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_indefinido.indicativo:2:plural: форма Jehle «señalasteis», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_indefinido.indicativo:3:plural: форма Jehle «señalaron», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.futuro_simple.indicativo:1:singular: форма Jehle «señalaré», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.futuro_simple.indicativo:2:singular: форма Jehle «señalarás», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.futuro_simple.indicativo:3:singular: форма Jehle «señalará», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.futuro_simple.indicativo:1:plural: форма Jehle «señalaremos», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.futuro_simple.indicativo:2:plural: форма Jehle «señalaréis», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.futuro_simple.indicativo:3:plural: форма Jehle «señalarán», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.condicional_simple.indicativo:1:singular: форма Jehle «señalaría», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.condicional_simple.indicativo:2:singular: форма Jehle «señalarías», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ. При итоговом чтении дополнительно уточнены самостоятельность и точность ES/RU.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.condicional_simple.indicativo:3:singular: форма Jehle «señalaría», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.condicional_simple.indicativo:1:plural: форма Jehle «señalaríamos», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.condicional_simple.indicativo:2:plural: форма Jehle «señalaríais», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ. При итоговом чтении дополнительно уточнены самостоятельность и точность ES/RU.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.condicional_simple.indicativo:3:plural: форма Jehle «señalarían», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_perfecto_compuesto.indicativo:1:singular: форма Jehle «he señalado», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_perfecto_compuesto.indicativo:2:singular: форма Jehle «has señalado», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_perfecto_compuesto.indicativo:3:singular: форма Jehle «ha señalado», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_perfecto_compuesto.indicativo:1:plural: форма Jehle «hemos señalado», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_perfecto_compuesto.indicativo:2:plural: форма Jehle «habéis señalado», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_perfecto_compuesto.indicativo:3:plural: форма Jehle «han señalado», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_pluscuamperfecto.indicativo:1:singular: форма Jehle «había señalado», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ. Координаторское уточнение: русский перевод теперь точно передаёт la dirección correcta как «правильное направление», сохраняя завершённость había señalado.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_pluscuamperfecto.indicativo:2:singular: форма Jehle «habías señalado», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_pluscuamperfecto.indicativo:3:singular: форма Jehle «había señalado», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_pluscuamperfecto.indicativo:1:plural: форма Jehle «habíamos señalado», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_pluscuamperfecto.indicativo:2:plural: форма Jehle «habíais señalado», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_pluscuamperfecto.indicativo:3:plural: форма Jehle «habían señalado», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_anterior.indicativo:1:singular: форма Jehle «hube señalado», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_anterior.indicativo:2:singular: форма Jehle «hubiste señalado», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_anterior.indicativo:3:singular: форма Jehle «hubo señalado», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_anterior.indicativo:1:plural: форма Jehle «hubimos señalado», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_anterior.indicativo:2:plural: форма Jehle «hubisteis señalado», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_anterior.indicativo:3:plural: форма Jehle «hubieron señalado», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.futuro_perfecto.indicativo:1:singular: форма Jehle «habré señalado», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.futuro_perfecto.indicativo:2:singular: форма Jehle «habrás señalado», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.futuro_perfecto.indicativo:3:singular: форма Jehle «habrá señalado», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.futuro_perfecto.indicativo:1:plural: форма Jehle «habremos señalado», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.futuro_perfecto.indicativo:2:plural: форма Jehle «habréis señalado», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.futuro_perfecto.indicativo:3:plural: форма Jehle «habrán señalado», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.condicional_perfecto.indicativo:1:singular: форма Jehle «habría señalado», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.condicional_perfecto.indicativo:2:singular: форма Jehle «habrías señalado», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.condicional_perfecto.indicativo:3:singular: форма Jehle «habría señalado», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.condicional_perfecto.indicativo:1:plural: форма Jehle «habríamos señalado», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.condicional_perfecto.indicativo:2:plural: форма Jehle «habríais señalado», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.condicional_perfecto.indicativo:3:plural: форма Jehle «habrían señalado», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.presente.subjuntivo:1:singular: форма Jehle «señale», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.presente.subjuntivo:2:singular: форма Jehle «señales», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.presente.subjuntivo:3:singular: форма Jehle «señale», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.presente.subjuntivo:1:plural: форма Jehle «señalemos», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.presente.subjuntivo:2:plural: форма Jehle «señaléis», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.presente.subjuntivo:3:plural: форма Jehle «señalen», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_imperfecto.subjuntivo:1:singular: форма Jehle «señalara», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_imperfecto.subjuntivo:2:singular: форма Jehle «señalaras», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_imperfecto.subjuntivo:3:singular: форма Jehle «señalara», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ. При итоговом чтении дополнительно уточнены самостоятельность и точность ES/RU.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_imperfecto.subjuntivo:1:plural: форма Jehle «señaláramos», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_imperfecto.subjuntivo:2:plural: форма Jehle «señalarais», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_imperfecto.subjuntivo:3:plural: форма Jehle «señalaran», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ. При итоговом чтении дополнительно уточнены самостоятельность и точность ES/RU.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_perfecto.subjuntivo:1:singular: форма Jehle «haya señalado», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_perfecto.subjuntivo:2:singular: форма Jehle «hayas señalado», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_perfecto.subjuntivo:3:singular: форма Jehle «haya señalado», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_perfecto.subjuntivo:1:plural: форма Jehle «hayamos señalado», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_perfecto.subjuntivo:2:plural: форма Jehle «hayáis señalado», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_perfecto.subjuntivo:3:plural: форма Jehle «hayan señalado», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_pluscuamperfecto.subjuntivo:1:singular: форма Jehle «hubiera señalado», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_pluscuamperfecto.subjuntivo:2:singular: форма Jehle «hubieras señalado», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_pluscuamperfecto.subjuntivo:3:singular: форма Jehle «hubiera señalado», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_pluscuamperfecto.subjuntivo:1:plural: форма Jehle «hubiéramos señalado», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_pluscuamperfecto.subjuntivo:2:plural: форма Jehle «hubierais señalado», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.preterito_pluscuamperfecto.subjuntivo:3:plural: форма Jehle «hubieran señalado», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.futuro_perfecto.subjuntivo:1:singular: форма Jehle «hubiere señalado», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.futuro_perfecto.subjuntivo:2:singular: форма Jehle «hubieres señalado», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.futuro_perfecto.subjuntivo:3:singular: форма Jehle «hubiere señalado», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ. Координаторское уточнение: русский перевод явно передаёт завершённость hubiere señalado через уже назначенную судом дату в юридическом правиле.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.futuro_perfecto.subjuntivo:1:plural: форма Jehle «hubiéremos señalado», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.futuro_perfecto.subjuntivo:2:plural: форма Jehle «hubiereis señalado», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.futuro_perfecto.subjuntivo:3:plural: форма Jehle «hubieren señalado», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ. При итоговом чтении дополнительно уточнены самостоятельность и точность ES/RU.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.futuro_simple.subjuntivo:1:singular: форма Jehle «señalare», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.futuro_simple.subjuntivo:2:singular: форма Jehle «señalares», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Переписана карточка es.futuro_simple.subjuntivo:3:singular: форма Jehle «señalare», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.futuro_simple.subjuntivo:1:plural: форма Jehle «señaláremos», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.futuro_simple.subjuntivo:2:plural: форма Jehle «señalareis», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Переписана карточка es.futuro_simple.subjuntivo:3:plural: форма Jehle «señalaren», metadata восстановлены из scope; самостоятельный ES-контекст и полный RU-перевод различают значения señalar, а четыре уникальных варианта принадлежат одному scope и содержат один ответ.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 /tmp/validate_senalar.py",
+      "result": "pass",
+      "evidence": "96/96 cards match all 16 local Jehle scopes; metadata/slots, one blank, four unique same-scope options with one answer, 96 unique signatures, source=embedded, preserved baseline top-level and identity/order, current fingerprints, rare-register markers, six primary 16-card checkpoints and later refinement checkpoints passed."
+    },
+    {
+      "command": "semantic full read with answer substitution: señalar 96/96",
+      "result": "pass",
+      "evidence": "All final Spanish sentences and full Russian translations were read after substitution. The contexts distinguish pointing with a finger, indicating or marking, pointing out errors and differences, setting dates and times, indicating directions and places, and highlighting facts without substituting señalizar; rare literary/legal scopes and explicit De haberlo sabido counterfactuals were checked."
+    },
+    {
+      "command": "native validate_artifact(señalar)",
+      "result": "pass",
+      "evidence": "The repository generator's artifact validator accepted all 16 scopes × 6 slots."
+    },
+    {
+      "command": "go test ./internal/grammartrainingpack ./internal/verbtraining",
+      "result": "pass",
+      "evidence": "Both focused grammar training and verb training packages passed after the final semantic refinements."
+    },
+    {
+      "command": "cmp source embedded; python3 -m json.tool assigned JSON; python3 scripts/grammar-review.py status --source courses/spanish-grammar/training_pack/verb_forms/lemmas/señalar.json; git diff --check on assigned paths",
+      "result": "pass",
+      "evidence": "Source and embedded are byte-identical; source, embedded, report, six primary checkpoint records and the coordinator refinement record parse; the review command reports awaiting_verification for all 96 editorial decisions with current fingerprints; assigned diffs contain no whitespace errors."
+    },
+    {
+      "command": "targeted coordinator refinement recheck: señalar two Russian translations",
+      "result": "pass",
+      "evidence": "Only translation_ru_full changed for es.preterito_pluscuamperfecto.indicativo:1:singular and es.futuro_perfecto.subjuntivo:3:singular; dirección is now translated as direction, and hubiere señalado has an explicitly completed legal result. Forms, ES, options, metadata, identity and order are unchanged; source=embedded and fingerprint refreshed."
+    },
+    {
+      "command": "independent manual verification of 96 señalar cards",
+      "result": "pass",
+      "evidence": "Coordinator verifier read every current Spanish prompt, target form, Russian translation and option set; two editorial-barrier findings were corrected before sign-off."
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 /tmp/validate_senalar.py",
+      "result": "pass",
+      "evidence": "96 cards, 16 Jehle scopes, source=embedded, top-level and identity/order preserved, unique signatures, fresh fingerprint, errors=[] after refinement."
+    },
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-06-es-verbs-senalar-sobrevivir/check.py",
+      "result": "pass",
+      "evidence": "384 cards pass exact Jehle forms, source/embedded equality, preserved contracts, report fingerprints, unique same-scope options, one answer, 24 checkpoints and no duplicate prompt+answer signatures."
+    },
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-06-es-verbs-senalar-sobrevivir/preservation-check.py",
+      "result": "pass",
+      "evidence": "25568 files outside the allowed batch set preserved; changed=0, missing=0, unexpected_new=0."
+    },
+    {
+      "command": "go test ./internal/verbtraining ./cmd/sync_verb_training_json",
+      "result": "pass",
+      "evidence": "Both focused Go packages pass."
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 scripts/grammar_review_test.py",
+      "result": "pass",
+      "evidence": "13 tests pass."
+    },
+    {
+      "command": "git diff --check && git -C courses/spanish-grammar diff --check",
+      "result": "pass",
+      "evidence": "Root and Spanish submodule diffs have no whitespace errors."
+    },
+    {
+      "command": "quick_validate.py /Users/antonfilatov/.codex/skills/linglow-grammar-review",
+      "result": "pass",
+      "evidence": "Skill is valid."
+    }
+  ],
+  "verification_note": "Независимо перечитаны все 96 карточек после координаторских уточнений: формы и metadata совпадают с Jehle и scope, варианты однозначны, ES/RU естественны и полны, значения señalar разведены, а редкие литературные и юридические времена явно маркированы. Замечаний не осталось."
+}

@@ -1,0 +1,31 @@
+{
+  "existing_files": 25377,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/pensar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/pensar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/perder.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/perder.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/permanecer.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/permanecer.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/permitir.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/permitir.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-pensar-permitir",
+    "docs/grammar-review/reports/1d46f0f3f7d16755bb8e51f0.json",
+    "docs/grammar-review/reports/c88742d9f7edbb8c3f0b6db5.json",
+    "docs/grammar-review/reports/6e5a78afc1f8871b4fcec85e.json",
+    "docs/grammar-review/reports/1d948b958d230cc5f670ee26.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/pensar.json": "72402c5e9ba005b32cce38aa14c530a4c00bc73c5c705c341f9f680f58973fc7",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/pensar.json": "72402c5e9ba005b32cce38aa14c530a4c00bc73c5c705c341f9f680f58973fc7",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/perder.json": "a504403ef0e7387ca50cbbd8c3768bc2955e7d15cf510417f9c374a975a8bead",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/perder.json": "a504403ef0e7387ca50cbbd8c3768bc2955e7d15cf510417f9c374a975a8bead",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/permanecer.json": "854a35ca61a898d368c7b31fd3815090a9513ff7111ab57051e9548fbb423c4f",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/permanecer.json": "854a35ca61a898d368c7b31fd3815090a9513ff7111ab57051e9548fbb423c4f",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/permitir.json": "61f7330fbc279ad345b062da1c598eee3b6a6ba4b7346351c75db7fa31d6ac50",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/permitir.json": "61f7330fbc279ad345b062da1c598eee3b6a6ba4b7346351c75db7fa31d6ac50"
+  }
+}

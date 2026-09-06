@@ -1,0 +1,69 @@
+{
+  "existing_files": 4434,
+  "allowed_paths": [
+    "courses/spanish-grammar/chapters/121.es.grammar.subjunctive_noun_clauses.doubt_denial_possibility_certainty/03-questions.json",
+    "courses/spanish-grammar/chapters/121.es.grammar.subjunctive_noun_clauses.doubt_denial_possibility_certainty/05-final.json",
+    "courses/spanish-grammar/chapters/121.es.grammar.subjunctive_noun_clauses.doubt_denial_possibility_certainty/05-validation.json",
+    "courses/spanish-grammar/chapters/122.es.grammar.subjunctive_noun_clauses.impersonal_expressions_triggers_certainty/03-questions.json",
+    "courses/spanish-grammar/chapters/122.es.grammar.subjunctive_noun_clauses.impersonal_expressions_triggers_certainty/05-final.json",
+    "courses/spanish-grammar/chapters/122.es.grammar.subjunctive_noun_clauses.impersonal_expressions_triggers_certainty/05-validation.json",
+    "courses/spanish-grammar/chapters/123.es.grammar.subjunctive_noun_clauses.negative_commands_polite_commands_subjunctive/03-questions.json",
+    "courses/spanish-grammar/chapters/123.es.grammar.subjunctive_noun_clauses.negative_commands_polite_commands_subjunctive/05-final.json",
+    "courses/spanish-grammar/chapters/123.es.grammar.subjunctive_noun_clauses.negative_commands_polite_commands_subjunctive/05-validation.json",
+    "courses/spanish-grammar/chapters/124.es.grammar.subjunctive_noun_clauses.indicative_subjunctive_decision_rules_noun_clauses/03-questions.json",
+    "courses/spanish-grammar/chapters/124.es.grammar.subjunctive_noun_clauses.indicative_subjunctive_decision_rules_noun_clauses/05-final.json",
+    "courses/spanish-grammar/chapters/124.es.grammar.subjunctive_noun_clauses.indicative_subjunctive_decision_rules_noun_clauses/05-validation.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es121-124",
+    "docs/grammar-review/reports/6df4954e1ec0f573bb21f216.json",
+    "docs/grammar-review/reports/7b1fd8238063b4f9567ef526.json",
+    "docs/grammar-review/reports/9efc7506257fa3ff409e1520.json",
+    "docs/grammar-review/reports/c9ddfba1efeba66beac7690b.json",
+    "internal/grammarbundle/es/chapters/es.grammar.subjunctive_noun_clauses.doubt_denial_possibility_certainty.json",
+    "internal/grammarbundle/es/chapters/es.grammar.subjunctive_noun_clauses.impersonal_expressions_triggers_certainty.json",
+    "internal/grammarbundle/es/chapters/es.grammar.subjunctive_noun_clauses.indicative_subjunctive_decision_rules_noun_clauses.json",
+    "internal/grammarbundle/es/chapters/es.grammar.subjunctive_noun_clauses.negative_commands_polite_commands_subjunctive.json"
+  ],
+  "assigned_dirty_before": [
+    "courses/spanish-grammar/chapters/123.es.grammar.subjunctive_noun_clauses.negative_commands_polite_commands_subjunctive/03-questions.json",
+    "courses/spanish-grammar/chapters/123.es.grammar.subjunctive_noun_clauses.negative_commands_polite_commands_subjunctive/05-final.json",
+    "internal/grammarbundle/es/chapters/es.grammar.subjunctive_noun_clauses.negative_commands_polite_commands_subjunctive.json"
+  ],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/chapters/121.es.grammar.subjunctive_noun_clauses.doubt_denial_possibility_certainty/03-questions.json": "a42882ebac5cb525b75b03539722171f57d05d8f33e3cef0303317e678fb85ca",
+    "courses/spanish-grammar/chapters/121.es.grammar.subjunctive_noun_clauses.doubt_denial_possibility_certainty/05-final.json": "80fd45d19398796f316e143ae96be274a7447041027aaa3091ca9295da5c6048",
+    "courses/spanish-grammar/chapters/121.es.grammar.subjunctive_noun_clauses.doubt_denial_possibility_certainty/05-validation.json": "c82e84701818cd5f5f7558ae2ea2cafd979596e49028ac7eaa3fe8548aaf3ef1",
+    "internal/grammarbundle/es/chapters/es.grammar.subjunctive_noun_clauses.doubt_denial_possibility_certainty.json": "80fd45d19398796f316e143ae96be274a7447041027aaa3091ca9295da5c6048",
+    "courses/spanish-grammar/chapters/122.es.grammar.subjunctive_noun_clauses.impersonal_expressions_triggers_certainty/03-questions.json": "102fbfaf159ec27e91a09fdb73a5ff4429d93b383c3827ae8de525b9d8bd2d72",
+    "courses/spanish-grammar/chapters/122.es.grammar.subjunctive_noun_clauses.impersonal_expressions_triggers_certainty/05-final.json": "ef89005f021c36fd60b87b62454e94fcfc4d6f9d1a188a97116ae92f663976ac",
+    "courses/spanish-grammar/chapters/122.es.grammar.subjunctive_noun_clauses.impersonal_expressions_triggers_certainty/05-validation.json": "a7d022baa505567f3636676edd8e9705df06567641f03aae31fe5bb2e1cda72e",
+    "internal/grammarbundle/es/chapters/es.grammar.subjunctive_noun_clauses.impersonal_expressions_triggers_certainty.json": "ef89005f021c36fd60b87b62454e94fcfc4d6f9d1a188a97116ae92f663976ac",
+    "courses/spanish-grammar/chapters/123.es.grammar.subjunctive_noun_clauses.negative_commands_polite_commands_subjunctive/03-questions.json": "b8a522a6a4d1488a1ae72e80dda14ee77df91b9293c571c01b2e2f8e50691272",
+    "courses/spanish-grammar/chapters/123.es.grammar.subjunctive_noun_clauses.negative_commands_polite_commands_subjunctive/05-final.json": "95c3ee5282fcad599ebb875a661166c06c407ee20a1b3556befc5b63b74de514",
+    "courses/spanish-grammar/chapters/123.es.grammar.subjunctive_noun_clauses.negative_commands_polite_commands_subjunctive/05-validation.json": "130a2e3ac6b3be56dd4e52fee862b2424fd5d032d94f4bafc28a48a243c7a6f5",
+    "internal/grammarbundle/es/chapters/es.grammar.subjunctive_noun_clauses.negative_commands_polite_commands_subjunctive.json": "95c3ee5282fcad599ebb875a661166c06c407ee20a1b3556befc5b63b74de514",
+    "courses/spanish-grammar/chapters/124.es.grammar.subjunctive_noun_clauses.indicative_subjunctive_decision_rules_noun_clauses/03-questions.json": "744d3e19f6d37e86f6826afcf2b9e7fa987b1bdaaa31272a623ea45661c5aef3",
+    "courses/spanish-grammar/chapters/124.es.grammar.subjunctive_noun_clauses.indicative_subjunctive_decision_rules_noun_clauses/05-final.json": "b6293570fd19a3fb1ad232c4ebbf4fd50dda255c596870674f4e3b744530b27a",
+    "courses/spanish-grammar/chapters/124.es.grammar.subjunctive_noun_clauses.indicative_subjunctive_decision_rules_noun_clauses/05-validation.json": "06a5582f73516a202ed84132700651eeac462a0d050c1b3ac5e85fb3fdae9b26",
+    "internal/grammarbundle/es/chapters/es.grammar.subjunctive_noun_clauses.indicative_subjunctive_decision_rules_noun_clauses.json": "b6293570fd19a3fb1ad232c4ebbf4fd50dda255c596870674f4e3b744530b27a"
+  },
+  "baseline_exit_codes": {
+    "121-chapter-before.log": 0,
+    "121-schema-before.log": 0,
+    "121-assembler-ajv-before.log": 1,
+    "122-chapter-before.log": 0,
+    "122-schema-before.log": 0,
+    "122-assembler-ajv-before.log": 1,
+    "123-chapter-before.log": 0,
+    "123-schema-before.log": 1,
+    "123-assembler-ajv-before.log": 1,
+    "124-chapter-before.log": 0,
+    "124-schema-before.log": 0,
+    "124-assembler-ajv-before.log": 1
+  },
+  "preservation_snapshot_repaired": {
+    "reason": "setup listed spanish-grammar twice and assigned the first listing the english-grammar prefix",
+    "method": "recaptured unrelated paths after only allowed ES121-124 sources/finals/embedded/reports and batch artifacts had been written"
+  }
+}

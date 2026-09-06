@@ -1,0 +1,96 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/chapters/032/es.02.b2_theory_frequency_a_menudo.questions.json",
+  "source_sha256": "1966f013d321036b0cb105ae9df76b163e136857332331f2fa2901b77f3cca07",
+  "context_sha256": "e024bc7b7ae6c62b9bca18667232426838878293dba6913855f40f090586e97a",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
+  "reviewed_at": "2026-09-04T16:14:41.918085+00:00",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
+  "questions": [
+    {
+      "id": "q1",
+      "decision": "fixed",
+      "note": "Исправлены несколько верных ответов, запрет постпозиции a menudo, смысл mucho или повтор задания.",
+      "verification": "ok"
+    },
+    {
+      "id": "q2",
+      "decision": "fixed",
+      "note": "Исправлены несколько верных ответов, запрет постпозиции a menudo, смысл mucho или повтор задания.",
+      "verification": "ok"
+    },
+    {
+      "id": "q3",
+      "decision": "fixed",
+      "note": "Исправлены несколько верных ответов, запрет постпозиции a menudo, смысл mucho или повтор задания.",
+      "verification": "ok"
+    },
+    {
+      "id": "q4",
+      "decision": "fixed",
+      "note": "Исправлены несколько верных ответов, запрет постпозиции a menudo, смысл mucho или повтор задания.",
+      "verification": "ok"
+    },
+    {
+      "id": "q5",
+      "decision": "fixed",
+      "note": "Исправлены несколько верных ответов, запрет постпозиции a menudo, смысл mucho или повтор задания.",
+      "verification": "ok"
+    },
+    {
+      "id": "q6",
+      "decision": "fixed",
+      "note": "Исправлены несколько верных ответов, запрет постпозиции a menudo, смысл mucho или повтор задания.",
+      "verification": "ok"
+    },
+    {
+      "id": "q7",
+      "decision": "fixed",
+      "note": "Исправлены несколько верных ответов, запрет постпозиции a menudo, смысл mucho или повтор задания.",
+      "verification": "ok"
+    },
+    {
+      "id": "q8",
+      "decision": "ok",
+      "note": "Перевод siempre и варианты согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q9",
+      "decision": "fixed",
+      "note": "Исправлены несколько верных ответов, запрет постпозиции a menudo, смысл mucho или повтор задания.",
+      "verification": "ok"
+    },
+    {
+      "id": "q10",
+      "decision": "fixed",
+      "note": "Исправлены несколько верных ответов, запрет постпозиции a menudo, смысл mucho или повтор задания.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-04-es029-032/check.py",
+      "result": "pass",
+      "evidence": "All 488 IDs/contracts, decisions versus baseline, fingerprints, native training validation, signatures and source-final-embedded equality; validation.log. ES 029 main baseline is the saved pre-batch source."
+    },
+    {
+      "command": "go test ./internal/grammarbundle ./internal/repository -run 'TestValidateEmbeddedBundleID|TestGrammar.*Bundle|TestGrammar.*Reorder' -count=1",
+      "result": "pass",
+      "evidence": "Both packages passed on final integrated data; go-tests.log."
+    },
+    {
+      "command": "git diff --check; git -C courses/spanish-grammar diff --check; git -C courses/english-grammar diff --check",
+      "result": "pass",
+      "evidence": "Three separately executed commands exit 0; diff-check.log. All 818 earlier dirty files outside review docs and authorized in-scope sources preserved; preservation.log."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    }
+  ],
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+}

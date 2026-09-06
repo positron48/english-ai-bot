@@ -1,0 +1,291 @@
+{
+  "version": 1,
+  "source": "courses/english-grammar/chapters/005.en.grammar.first_sentences_be_as.statements_with_be_identity/03-questions.json",
+  "source_sha256": "49d39132bbcfa3ce87b9846c6f7e51195999cc77b1dcefaa42e6da51e3f7f177",
+  "context_sha256": "5827ca539d274bb403cae183bc537de8d8bf2df9b5f382af1591921411836012",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
+  "reviewed_at": "2026-09-04T10:29:55.310807+00:00",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
+  "questions": [
+    {
+      "id": "q1",
+      "decision": "ok",
+      "note": "Один вариант сообщает, кем является человек, другие — состояние и место.",
+      "verification": "ok"
+    },
+    {
+      "id": "q2",
+      "decision": "fixed",
+      "note": "Feedback больше не запрещает все артикли при множественном числе; ограничен a/an.",
+      "verification": "ok"
+    },
+    {
+      "id": "q3",
+      "decision": "fixed",
+      "note": "Явно задан неопределённый артикль, исключён альтернативный the.",
+      "verification": "ok"
+    },
+    {
+      "id": "q4",
+      "decision": "fixed",
+      "note": "Явно задан неопределённый артикль, исключён альтернативный the.",
+      "verification": "ok"
+    },
+    {
+      "id": "q8",
+      "decision": "fixed",
+      "note": "Различены гласный звук и буква.",
+      "verification": "ok"
+    },
+    {
+      "id": "q9",
+      "decision": "fixed",
+      "note": "Объяснение ограничено a/an, не запрещает the во множественном числе.",
+      "verification": "ok"
+    },
+    {
+      "id": "q10",
+      "decision": "fixed",
+      "note": "Убрано ложное универсальное требование a/an перед любым существительным после be.",
+      "verification": "ok"
+    },
+    {
+      "id": "q11",
+      "decision": "fixed",
+      "note": "Объяснение ограничено a/an вместо всех артиклей.",
+      "verification": "ok"
+    },
+    {
+      "id": "q12",
+      "decision": "fixed",
+      "note": "Явно задан неопределённый артикль, исключён альтернативный the.",
+      "verification": "ok"
+    },
+    {
+      "id": "q13",
+      "decision": "ok",
+      "note": "Tired характеризует состояние; другие варианты — профессия и место.",
+      "verification": "ok"
+    },
+    {
+      "id": "q14",
+      "decision": "fixed",
+      "note": "Вместо слишком широкого правила об описаниях — конкретная часть речи tired.",
+      "verification": "ok"
+    },
+    {
+      "id": "q20",
+      "decision": "fixed",
+      "note": "Правило об артиклях ограничено самостоятельным tired.",
+      "verification": "ok"
+    },
+    {
+      "id": "q21",
+      "decision": "fixed",
+      "note": "Убрано обобщение на все описательные конструкции; проверяется конкретное happy.",
+      "verification": "ok"
+    },
+    {
+      "id": "q22",
+      "decision": "fixed",
+      "note": "Feedback и объяснение не запрещают артикль перед прилагательным с существительным.",
+      "verification": "ok"
+    },
+    {
+      "id": "q24",
+      "decision": "ok",
+      "note": "At home — единственный вариант о местоположении.",
+      "verification": "ok"
+    },
+    {
+      "id": "q25",
+      "decision": "ok",
+      "note": "Базовые значения at/in/on соответствуют данным примерам.",
+      "verification": "ok"
+    },
+    {
+      "id": "q26",
+      "decision": "fixed",
+      "note": "Добавлен русский смысл «дома», исключающий другие предлоги.",
+      "verification": "ok"
+    },
+    {
+      "id": "q27",
+      "decision": "fixed",
+      "note": "Контекст внутри класса исключает at/near/outside и другие возможные предлоги.",
+      "verification": "ok"
+    },
+    {
+      "id": "q28",
+      "decision": "fixed",
+      "note": "Добавлен контекст поверхности, исключены under/near и другие положения.",
+      "verification": "ok"
+    },
+    {
+      "id": "q31",
+      "decision": "ok",
+      "note": "At home/at school — стандартные примеры at для места.",
+      "verification": "ok"
+    },
+    {
+      "id": "q32",
+      "decision": "fixed",
+      "note": "At the table тоже допустимо без контекста; задана поверхность и исправлен feedback.",
+      "verification": "ok"
+    },
+    {
+      "id": "q33",
+      "decision": "fixed",
+      "note": "Задан смысл «на работе», исключён off work.",
+      "verification": "ok"
+    },
+    {
+      "id": "q34",
+      "decision": "ok",
+      "note": "I am корректно сокращается до I’m.",
+      "verification": "ok"
+    },
+    {
+      "id": "q35",
+      "decision": "ok",
+      "note": "She is сокращается до she’s.",
+      "verification": "ok"
+    },
+    {
+      "id": "q39",
+      "decision": "fixed",
+      "note": "Субъективная естественность заменена фактом обычного употребления, полные формы не объявлены плохими.",
+      "verification": "ok"
+    },
+    {
+      "id": "q40",
+      "decision": "ok",
+      "note": "We’re students — единственный грамматически верный вариант.",
+      "verification": "ok"
+    },
+    {
+      "id": "q42",
+      "decision": "fixed",
+      "note": "Устранён запрет повторять be; вопрос проверяет значение and с параллельными союзами.",
+      "verification": "ok"
+    },
+    {
+      "id": "q43",
+      "decision": "fixed",
+      "note": "Русский смысл ограничивает союз: без него допустимы but/because и другие.",
+      "verification": "ok"
+    },
+    {
+      "id": "q45",
+      "decision": "fixed",
+      "note": "Повторение be привязано к конкретным полным частям; убрано требование для всех сочетаний.",
+      "verification": "ok"
+    },
+    {
+      "id": "q46",
+      "decision": "fixed",
+      "note": "Критерий — две полные части с and; не объявляет любую запятую ошибкой.",
+      "verification": "ok"
+    },
+    {
+      "id": "q47",
+      "decision": "fixed",
+      "note": "Русский смысл ограничивает ответ and.",
+      "verification": "ok"
+    },
+    {
+      "id": "q48",
+      "decision": "fixed",
+      "note": "Исправлено ложное требование отдельного be для любого перечисления; задана точная структура.",
+      "verification": "ok"
+    },
+    {
+      "id": "q49",
+      "decision": "fixed",
+      "note": "Оставлен один пропуск для одного вводимого ответа и задан смысл and.",
+      "verification": "ok"
+    },
+    {
+      "id": "q50",
+      "decision": "fixed",
+      "note": "Универсальный запрет запятой ограничен соединением самостоятельных частей в нейтральном письме.",
+      "verification": "ok"
+    },
+    {
+      "id": "q51",
+      "decision": "ok",
+      "note": "I’m a student сообщает, кем является говорящий.",
+      "verification": "ok"
+    },
+    {
+      "id": "q52",
+      "decision": "ok",
+      "note": "She’s tired сообщает о состоянии.",
+      "verification": "ok"
+    },
+    {
+      "id": "q53",
+      "decision": "ok",
+      "note": "I’m at home сообщает о местоположении.",
+      "verification": "ok"
+    },
+    {
+      "id": "q54",
+      "decision": "fixed",
+      "note": "Задан русский смысл «дома» для однозначного at.",
+      "verification": "ok"
+    },
+    {
+      "id": "q58",
+      "decision": "ok",
+      "note": "Выбор a/an верно зависит от звука.",
+      "verification": "ok"
+    },
+    {
+      "id": "q59",
+      "decision": "fixed",
+      "note": "Объяснение больше не запрещает the с множественным числом.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "cd courses/english-grammar && bash scripts/assemble-chapter.sh 005.en.grammar.first_sentences_be_as.statements_with_be_identity && bash scripts/validate-chapter.sh 005.en.grammar.first_sentences_be_as.statements_with_be_identity",
+      "result": "pass",
+      "evidence": "Chapter assembled and validator passes. See docs/grammar-review/batches/2026-09-04-en005-006/005-assemble-after.log and 005-chapter-after.log."
+    },
+    {
+      "command": "ajv validate --spec=draft2020 --validate-formats=false --all-errors -s courses/english-grammar/02-chapter-schema.json -d courses/english-grammar/chapters/005.en.grammar.first_sentences_be_as.statements_with_be_identity/05-final.json",
+      "result": "pass",
+      "evidence": "Baseline and final schemas pass; see docs/grammar-review/batches/2026-09-04-en005-006/005-schema-before.log and 005-schema-after.log."
+    },
+    {
+      "command": "ajv validate -s courses/english-grammar/02-chapter-schema.json -d courses/english-grammar/chapters/005.en.grammar.first_sentences_be_as.statements_with_be_identity/05-final.json",
+      "result": "known_baseline",
+      "evidence": "Stock assembler omits draft2020; same missing meta-schema error before and after. Explicit draft2020 passes. See docs/grammar-review/batches/2026-09-04-en005-006/005-assembler-ajv-before.log and 005-assembler-ajv-after.log."
+    },
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-04-en005-006/check.py",
+      "result": "pass",
+      "evidence": "All 196 contracts and metadata preserved, decisions match changes, fingerprints and signatures current, no new EN pack duplicates, source/final/embedded equal. See docs/grammar-review/batches/2026-09-04-en005-006/validation.log."
+    },
+    {
+      "command": "go test ./internal/grammarbundle ./internal/repository -run 'TestValidateEmbeddedBundleID|TestGrammar.*Bundle|TestGrammar.*Reorder' -count=1",
+      "result": "pass",
+      "evidence": "Both packages passed in 5.069s and 14.507s; see docs/grammar-review/batches/2026-09-04-en005-006/go-tests.log."
+    },
+    {
+      "command": "git diff --check && git -C courses/english-grammar diff --check && git -C courses/spanish-grammar diff --check",
+      "result": "pass",
+      "evidence": "All three commands exited 0."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    }
+  ],
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+}

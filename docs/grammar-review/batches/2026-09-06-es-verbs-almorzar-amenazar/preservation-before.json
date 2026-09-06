@@ -1,0 +1,26 @@
+{
+  "existing_files": 24842,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/almorzar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/almorzar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/alquilar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/alquilar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/amenazar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/amenazar.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-almorzar-amenazar",
+    "docs/grammar-review/reports/89392692d12dcc3bc9dbf0c5.json",
+    "docs/grammar-review/reports/6097fcbb0eedc24adc99e46f.json",
+    "docs/grammar-review/reports/1c0f9a97e4b6a9775de24b00.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/almorzar.json": "547fce566ac6c001881e31c402b5c89474daa3845429c47bef43cf932bc6ab7e",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/almorzar.json": "547fce566ac6c001881e31c402b5c89474daa3845429c47bef43cf932bc6ab7e",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/alquilar.json": "beff3c29386487d9edd5b0e44d7cbbf5e0d4eab4156c44379eaef9ca550327f7",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/alquilar.json": "beff3c29386487d9edd5b0e44d7cbbf5e0d4eab4156c44379eaef9ca550327f7",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/amenazar.json": "9d887919f9cd7e7d664ec04a408824310560352893d73af25a881fd811faec01",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/amenazar.json": "9d887919f9cd7e7d664ec04a408824310560352893d73af25a881fd811faec01"
+  }
+}

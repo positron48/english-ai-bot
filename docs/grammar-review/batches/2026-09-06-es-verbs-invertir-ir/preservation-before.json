@@ -1,0 +1,31 @@
+{
+  "existing_files": 25251,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/invertir.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/invertir.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/investigar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/investigar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/invitar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/invitar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/ir.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/ir.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-invertir-ir",
+    "docs/grammar-review/reports/a6d8b8947e5e1c68841f933a.json",
+    "docs/grammar-review/reports/854f4d6e60b1c2917ca81083.json",
+    "docs/grammar-review/reports/2647256e751ebe3968fdd07a.json",
+    "docs/grammar-review/reports/06a213ba4dc6f1147a70453f.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/invertir.json": "58db0fdb72b2fc4ebd1bb1f7e4f5776bf65a0f975038ded39161d5fc6e861838",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/invertir.json": "58db0fdb72b2fc4ebd1bb1f7e4f5776bf65a0f975038ded39161d5fc6e861838",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/investigar.json": "d0d708e8e36d5f3f09b8d167246b45a5a4ffa469a52373efe6c895ccadf23257",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/investigar.json": "d0d708e8e36d5f3f09b8d167246b45a5a4ffa469a52373efe6c895ccadf23257",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/invitar.json": "f4b94c10d0787292233d141d0605f6c1651c0006d156d11bb45a8d4497c1c63f",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/invitar.json": "f4b94c10d0787292233d141d0605f6c1651c0006d156d11bb45a8d4497c1c63f",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/ir.json": "5451b584b7b80abc875bc35f9701b64fed992ad4bd182728dda17b81479c5dee",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/ir.json": "5451b584b7b80abc875bc35f9701b64fed992ad4bd182728dda17b81479c5dee"
+  }
+}

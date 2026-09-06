@@ -1,0 +1,1391 @@
+{
+  "questions": [
+    {
+      "id": "q042_b1_01",
+      "type": "mcq_single",
+      "prompt": "Какая фраза естественно описывает обычный распорядок, а не действие прямо сейчас?",
+      "theory_block_id": "b1_theory_capstone_present_vs_progressive_in_one_turn",
+      "difficulty": 2,
+      "choices": [
+        {
+          "id": "a",
+          "text": "Ahora mismo estoy preparando la cena."
+        },
+        {
+          "id": "b",
+          "text": "Los martes trabajo desde casa."
+        },
+        {
+          "id": "c",
+          "text": "En este momento estoy llamando a Ana."
+        },
+        {
+          "id": "d",
+          "text": "Mira, estoy terminando el informe."
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "*Los martes* задаёт повторяющуюся рамку, поэтому подходит обычное настоящее *trabajo*. Для процесса в момент речи нужен *estar* + герундий.",
+      "tags": [
+        "presente",
+        "progresivo"
+      ]
+    },
+    {
+      "id": "q042_b1_02",
+      "type": "mcq_single",
+      "prompt": "Выберите лучший мини-ответ, где сначала есть привычка, а затем действие в момент речи.",
+      "theory_block_id": "b1_theory_capstone_present_vs_progressive_in_one_turn",
+      "difficulty": 2,
+      "choices": [
+        {
+          "id": "a",
+          "text": "Ahora estudio español por las tardes y normalmente estoy repasando."
+        },
+        {
+          "id": "b",
+          "text": "Estudio español por las tardes. En este momento estoy repasando los verbos."
+        },
+        {
+          "id": "c",
+          "text": "Estoy estudiando español por las tardes. Normalmente estoy repasando ahora."
+        },
+        {
+          "id": "d",
+          "text": "En este momento estudio español por las tardes y repaso los verbos siempre."
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Первая фраза даёт привычный фон в *presente*, а вторая с *en este momento* показывает текущий процесс через *estoy repasando*.",
+      "tags": [
+        "discourse"
+      ]
+    },
+    {
+      "id": "q042_b1_03",
+      "type": "mcq_single",
+      "prompt": "В какой реплике контраст привычки и текущего процесса выражен ясно?",
+      "theory_block_id": "b1_theory_capstone_present_vs_progressive_in_one_turn",
+      "difficulty": 3,
+      "choices": [
+        {
+          "id": "a",
+          "text": "Trabajo desde casa los martes. Ahora preparo la cena normalmente."
+        },
+        {
+          "id": "b",
+          "text": "Estoy trabajando desde casa los martes. Ahora preparo la cena."
+        },
+        {
+          "id": "c",
+          "text": "Trabajo desde casa los martes. Ahora estoy preparando la cena."
+        },
+        {
+          "id": "d",
+          "text": "Estoy trabajando desde casa los martes. Normalmente estoy preparando la cena."
+        }
+      ],
+      "correct_answer": "c",
+      "explanation": "*Trabajo* описывает повторяющуюся схему, а *ahora estoy preparando* выделяет процесс, который идёт в момент речи.",
+      "tags": [
+        "estar_gerundio"
+      ]
+    },
+    {
+      "id": "q042_b1_04",
+      "type": "mcq_single",
+      "prompt": "Какой вариант звучит перегруженно и хуже разделяет привычку и текущий момент?",
+      "theory_block_id": "b1_theory_capstone_present_vs_progressive_in_one_turn",
+      "difficulty": 2,
+      "choices": [
+        {
+          "id": "a",
+          "text": "Normalmente termino a las seis. Hoy estoy terminando más tarde."
+        },
+        {
+          "id": "b",
+          "text": "Por las tardes estudio español. Ahora estoy repasando verbos."
+        },
+        {
+          "id": "c",
+          "text": "Los martes trabajo desde casa. En este momento estoy preparando la cena."
+        },
+        {
+          "id": "d",
+          "text": "Normalmente estoy terminando a las seis y ahora termino más tarde todo junto."
+        }
+      ],
+      "correct_answer": "d",
+      "explanation": "Для ясного контраста лучше разделить привычный фон и текущий процесс, а не смешивать маркеры в одной неуклюжей фразе.",
+      "tags": [
+        "common_mistake"
+      ]
+    },
+    {
+      "id": "q042_b1_05",
+      "type": "true_false",
+      "prompt": "Верно ли: в русской реплике одна форма «я работаю» всегда однозначно подсказывает, нужен ли в испанском прогрессив?",
+      "theory_block_id": "b1_theory_capstone_present_vs_progressive_in_one_turn",
+      "difficulty": 2,
+      "correct_answer": "false",
+      "explanation": "В русском одна форма часто покрывает и привычку, и процесс; в испанском разделение часто нужно продумать отдельно.",
+      "tags": [
+        "l1"
+      ]
+    },
+    {
+      "id": "q042_b1_06",
+      "type": "true_false",
+      "prompt": "Верно ли: *presente* в этой главе — нормальная форма для распорядка, а прогрессив — для занятости в момент?",
+      "theory_block_id": "b1_theory_capstone_present_vs_progressive_in_one_turn",
+      "difficulty": 2,
+      "correct_answer": "true",
+      "explanation": "Это прямо закреплено в опорных тезисах блока про две рамки.",
+      "tags": [
+        "presente"
+      ]
+    },
+    {
+      "id": "q042_b1_07",
+      "type": "true_false",
+      "prompt": "Верно ли: если сомневаетесь, разумнее разбить мысль на два коротких предложения, чем ломать голову над одной монструозной конструкцией?",
+      "theory_block_id": "b1_theory_capstone_present_vs_progressive_in_one_turn",
+      "difficulty": 2,
+      "correct_answer": "true",
+      "explanation": "В ключевых пунктах советуют разбивать, когда рамки смешиваются.",
+      "tags": [
+        "strategy"
+      ]
+    },
+    {
+      "id": "q042_b1_08",
+      "type": "error_spotting",
+      "prompt": "Укажите безошибочный вариант для нейтральной привычки: «я заканчиваю в шесть».",
+      "theory_block_id": "b1_theory_capstone_present_vs_progressive_in_one_turn",
+      "difficulty": 3,
+      "choices": [
+        {
+          "id": "a",
+          "text": "Normalmente estoy terminando a las seis."
+        },
+        {
+          "id": "b",
+          "text": "Normalmente termino a las seis."
+        },
+        {
+          "id": "c",
+          "text": "Normalmente termino ahora mismo a las seis."
+        },
+        {
+          "id": "d",
+          "text": "Normalmente estoy terminando ahora a las seis."
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Для обобщённой привычки без акцента «прямо сейчас» естественнее *presente* *termino*.",
+      "tags": [
+        "error_spotting"
+      ]
+    },
+    {
+      "id": "q042_b1_09",
+      "type": "error_spotting",
+      "prompt": "Укажите лучший вариант для процесса в момент: «сейчас я заканчиваю отчёт».",
+      "theory_block_id": "b1_theory_capstone_present_vs_progressive_in_one_turn",
+      "difficulty": 3,
+      "choices": [
+        {
+          "id": "a",
+          "text": "Ahora termino informes los lunes."
+        },
+        {
+          "id": "b",
+          "text": "Normalmente termino un informe ahora."
+        },
+        {
+          "id": "c",
+          "text": "Ahora estoy terminando un informe."
+        },
+        {
+          "id": "d",
+          "text": "Los lunes estoy terminando un informe ahora."
+        }
+      ],
+      "correct_answer": "c",
+      "explanation": "Нужны *estar* + герундий и маркер *ahora* для текущего процесса.",
+      "tags": [
+        "estar_gerundio"
+      ]
+    },
+    {
+      "id": "q042_b1_10",
+      "type": "fill_blank",
+      "prompt": "Вставьте одну форму: *Los martes yo ___ desde casa.* (инфинитив: trabajar)",
+      "theory_block_id": "b1_theory_capstone_present_vs_progressive_in_one_turn",
+      "difficulty": 2,
+      "correct_answer": "trabajo",
+      "explanation": "Речь о повторяющейся схеме — настоящее простое от *trabajar*.",
+      "tags": [
+        "presente"
+      ]
+    },
+    {
+      "id": "q042_b1_11",
+      "type": "fill_blank",
+      "prompt": "Вставьте одну форму: *En este momento yo ___ repasando verbos.* (инфинитив: estar)",
+      "theory_block_id": "b1_theory_capstone_present_vs_progressive_in_one_turn",
+      "difficulty": 3,
+      "correct_answer": "estoy",
+      "explanation": "С *en este momento* уместна форма *estar* в настоящем для прогрессива.",
+      "tags": [
+        "estar"
+      ]
+    },
+    {
+      "id": "q042_b1_12",
+      "type": "fill_blank",
+      "prompt": "Вставьте нужную форму: «Normalmente estudio por las tardes y ahora ___ leyendo notas.» (estar; yo; presente)",
+      "theory_block_id": "b1_theory_capstone_present_vs_progressive_in_one_turn",
+      "difficulty": 3,
+      "correct_answer": "estoy",
+      "explanation": "Для действия, которое происходит сейчас, используем estar + gerundio. С подлежащим yo нужна форма estoy.",
+      "tags": [],
+      "translation_ru": "Обычно я занимаюсь по вечерам, а сейчас читаю заметки."
+    },
+    {
+      "id": "q042_b2_01",
+      "type": "mcq_single",
+      "prompt": "В какой реплике маркер времени сильнее всего поддерживает прогрессив?",
+      "theory_block_id": "b2_theory_decision_cues_markers_not_magic",
+      "difficulty": 2,
+      "choices": [
+        {
+          "id": "a",
+          "text": "Los lunes espero el autobús en esta parada."
+        },
+        {
+          "id": "b",
+          "text": "Por lo general espero el autobús en esta parada."
+        },
+        {
+          "id": "c",
+          "text": "Mientras hablamos, estoy esperando el autobús."
+        },
+        {
+          "id": "d",
+          "text": "Normalmente espero el autobús después de clase."
+        }
+      ],
+      "correct_answer": "c",
+      "explanation": "*Mientras hablamos* указывает на действие в момент разговора, поэтому естественен прогрессив *estoy esperando*.",
+      "tags": [
+        "markers"
+      ]
+    },
+    {
+      "id": "q042_b2_02",
+      "type": "mcq_single",
+      "prompt": "Какой вариант лучше передаёт идею «я всё время в процессе поиска времени», а не расписание?",
+      "theory_block_id": "b2_theory_decision_cues_markers_not_magic",
+      "difficulty": 3,
+      "choices": [
+        {
+          "id": "a",
+          "text": "Siempre busco tiempo los lunes."
+        },
+        {
+          "id": "b",
+          "text": "Siempre estoy buscando tiempo."
+        },
+        {
+          "id": "c",
+          "text": "Los lunes estoy buscando tiempo normalmente."
+        },
+        {
+          "id": "d",
+          "text": "Ahora busco tiempo todos los lunes."
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "*Siempre* не запрещает прогрессив: здесь *estoy buscando* описывает постоянный процесс как черту ситуации.",
+      "tags": [
+        "siempre"
+      ]
+    },
+    {
+      "id": "q042_b2_03",
+      "type": "mcq_single",
+      "prompt": "В какой реплике маркер сильнее поддерживает обычное настоящее?",
+      "theory_block_id": "b2_theory_decision_cues_markers_not_magic",
+      "difficulty": 2,
+      "choices": [
+        {
+          "id": "a",
+          "text": "Ahora mismo estoy esperando el autobús."
+        },
+        {
+          "id": "b",
+          "text": "En este momento estoy preparando café."
+        },
+        {
+          "id": "c",
+          "text": "Mientras hablamos, estoy buscando las llaves."
+        },
+        {
+          "id": "d",
+          "text": "Por lo general desayuno a las ocho."
+        }
+      ],
+      "correct_answer": "d",
+      "explanation": "*Por lo general* задаёт обобщённую привычку, поэтому подходит *presente*.",
+      "tags": [
+        "markers"
+      ]
+    },
+    {
+      "id": "q042_b2_04",
+      "type": "mcq_single",
+      "prompt": "Какой вариант лучше описывает план на сегодня без акцента на «прямо сейчас»?",
+      "theory_block_id": "b2_theory_decision_cues_markers_not_magic",
+      "difficulty": 3,
+      "choices": [
+        {
+          "id": "a",
+          "text": "Ahora mismo estoy saliendo de casa."
+        },
+        {
+          "id": "b",
+          "text": "Ahora estoy preparando la cena mientras hablamos."
+        },
+        {
+          "id": "c",
+          "text": "Hoy trabajo en casa y luego voy al gimnasio."
+        },
+        {
+          "id": "d",
+          "text": "En este momento estoy esperando a Marta."
+        }
+      ],
+      "correct_answer": "c",
+      "explanation": "*Hoy* может вводить план дня в целом; без смысла действия в эту секунду не нужно автоматически ставить прогрессив.",
+      "tags": [
+        "markers"
+      ]
+    },
+    {
+      "id": "q042_b2_06",
+      "type": "true_false",
+      "prompt": "Верно ли: *los lunes* в этом материале чаще тянет к привычному *presente*, чем к описанию процесса «прямо сейчас»?",
+      "theory_block_id": "b2_theory_decision_cues_markers_not_magic",
+      "difficulty": 2,
+      "correct_answer": "true",
+      "explanation": "Это входит в список сильных сигналов к *presente* для обобщённой схемы.",
+      "tags": []
+    },
+    {
+      "id": "q042_b2_07",
+      "type": "true_false",
+      "prompt": "Верно ли: *siempre estoy aprendiendo* не может быть естественной фразой ни при каких условиях?",
+      "theory_block_id": "b2_theory_decision_cues_markers_not_magic",
+      "difficulty": 2,
+      "correct_answer": "false",
+      "explanation": "В блоке приводят идею «постоянного процесса как черты», не календарной привычки.",
+      "tags": []
+    },
+    {
+      "id": "q042_b2_08",
+      "type": "error_spotting",
+      "prompt": "Найдите корректную реплику про ожидание транспорта «прямо сейчас».",
+      "theory_block_id": "b2_theory_decision_cues_markers_not_magic",
+      "difficulty": 3,
+      "choices": [
+        {
+          "id": "a",
+          "text": "Ahora mismo espero el autobús los lunes."
+        },
+        {
+          "id": "b",
+          "text": "Por lo general estoy esperando el autobús ahora mismo."
+        },
+        {
+          "id": "c",
+          "text": "Ahora mismo estoy esperando el autobús."
+        },
+        {
+          "id": "d",
+          "text": "Normalmente estoy esperando el autobús ahora."
+        }
+      ],
+      "correct_answer": "c",
+      "explanation": "С *ahora mismo* и занятостью в момент типичен прогрессив *estoy esperando*.",
+      "tags": []
+    },
+    {
+      "id": "q042_b2_09",
+      "type": "error_spotting",
+      "prompt": "Найдите корректную реплику про обычное ожидание на одной и той же остановке.",
+      "theory_block_id": "b2_theory_decision_cues_markers_not_magic",
+      "difficulty": 3,
+      "choices": [
+        {
+          "id": "a",
+          "text": "Ahora mismo espero el autobús en esta parada."
+        },
+        {
+          "id": "b",
+          "text": "Normalmente estoy esperando el autobús ahora."
+        },
+        {
+          "id": "c",
+          "text": "En este momento espero el autobús normalmente."
+        },
+        {
+          "id": "d",
+          "text": "Normalmente espero el autobús en esta parada."
+        }
+      ],
+      "correct_answer": "d",
+      "explanation": "*Normalmente* + обобщённая схема — *presente* *espero*.",
+      "tags": []
+    },
+    {
+      "id": "q042_b2_10",
+      "type": "fill_blank",
+      "prompt": "Вставьте одну форму: *En este momento nosotros ___ cocinando.* (инфинитив: estar)",
+      "theory_block_id": "b2_theory_decision_cues_markers_not_magic",
+      "difficulty": 2,
+      "correct_answer": "estamos",
+      "explanation": "Маркер момента + процесс — форма *estar* во множественном числе.",
+      "tags": []
+    },
+    {
+      "id": "q042_b2_11",
+      "type": "fill_blank",
+      "prompt": "Вставьте одну форму: *Por lo general ellas ___ en esta piscina los domingos.* (инфинитив: nadar)",
+      "theory_block_id": "b2_theory_decision_cues_markers_not_magic",
+      "difficulty": 2,
+      "correct_answer": "nadan",
+      "explanation": "Обобщение с *por lo general* — *presente* *nadan*.",
+      "tags": []
+    },
+    {
+      "id": "q042_b2_12",
+      "type": "fill_blank",
+      "prompt": "Вставьте нужную форму: «Los viernes ___ en la oficina.» (trabajar; yo; presente)",
+      "theory_block_id": "b2_theory_decision_cues_markers_not_magic",
+      "difficulty": 3,
+      "correct_answer": "trabajo",
+      "explanation": "Повторяющееся действие по пятницам выражается presente, а не конструкцией estar + gerundio.",
+      "tags": [],
+      "translation_ru": "По пятницам я работаю в офисе."
+    },
+    {
+      "id": "q042_b3_01",
+      "type": "mcq_single",
+      "prompt": "В какой утренней цепочке возвратное местоимение повторяется там, где нужно?",
+      "theory_block_id": "b3_theory_reflexive_snippets_morning_evening",
+      "difficulty": 2,
+      "choices": [
+        {
+          "id": "a",
+          "text": "Me levanto, me ducho y me visto."
+        },
+        {
+          "id": "b",
+          "text": "Me levanto, ducho y visto."
+        },
+        {
+          "id": "c",
+          "text": "Levanto, me ducho y visto."
+        },
+        {
+          "id": "d",
+          "text": "Me levanto, me desayuno y me leo."
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "В возвратных шагах *levantarse, ducharse, vestirse* местоимение нужно при каждом глаголе.",
+      "tags": [
+        "reflexive"
+      ]
+    },
+    {
+      "id": "q042_b3_02",
+      "type": "mcq_single",
+      "prompt": "Выберите реплику, где возвратный прогрессив описывает действие прямо сейчас.",
+      "theory_block_id": "b3_theory_reflexive_snippets_morning_evening",
+      "difficulty": 2,
+      "choices": [
+        {
+          "id": "a",
+          "text": "Por la mañana me ducho rápido."
+        },
+        {
+          "id": "b",
+          "text": "Los domingos me visto tarde."
+        },
+        {
+          "id": "c",
+          "text": "No puedo hablar: me estoy duchando."
+        },
+        {
+          "id": "d",
+          "text": "Normalmente me levanto a las siete."
+        }
+      ],
+      "correct_answer": "c",
+      "explanation": "*Me estoy duchando* показывает текущий этап; маркер ситуации *No puedo hablar* поддерживает смысл «сейчас занят».",
+      "tags": [
+        "reflexive",
+        "estar_gerundio"
+      ]
+    },
+    {
+      "id": "q042_b3_03",
+      "type": "mcq_single",
+      "prompt": "Как правильно различить «я моюсь» и «я мою посуду»?",
+      "theory_block_id": "b3_theory_reflexive_snippets_morning_evening",
+      "difficulty": 2,
+      "choices": [
+        {
+          "id": "a",
+          "text": "*Lavo los platos* для себя и *me lavo* для посуды."
+        },
+        {
+          "id": "b",
+          "text": "*Me lavo* для себя и *lavo los platos* для посуды."
+        },
+        {
+          "id": "c",
+          "text": "*Me lavo los platos* всегда для посуды."
+        },
+        {
+          "id": "d",
+          "text": "*Lavo* всегда означает только «я моюсь»."
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Возвратное *me* показывает действие на себя; с посудой нужен обычный объект *los platos*.",
+      "tags": [
+        "reflexive"
+      ]
+    },
+    {
+      "id": "q042_b3_04",
+      "type": "mcq_single",
+      "prompt": "Какая цепочка лучше подходит для A2: короткая, бытовая и без перегруза?",
+      "theory_block_id": "b3_theory_reflexive_snippets_morning_evening",
+      "difficulty": 2,
+      "choices": [
+        {
+          "id": "a",
+          "text": "Me levanto, me ducho, me visto y salgo."
+        },
+        {
+          "id": "b",
+          "text": "Me levanto, me ducho, me visto, desayuno, leo, limpio, llamo, escribo y salgo."
+        },
+        {
+          "id": "c",
+          "text": "Me levanto, ducho, visto y salgo."
+        },
+        {
+          "id": "d",
+          "text": "Me levanto, me ducho, me visto, me desayuno y me leo."
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Для уровня главы достаточно трёх–четырёх ясных шагов, которые не перегружают мини-рассказ.",
+      "tags": [
+        "routine"
+      ]
+    },
+    {
+      "id": "q042_b3_06",
+      "type": "true_false",
+      "prompt": "Верно ли: в *Me levanto, me ducho y desayuno* местоимение повторяется у возвратных шагов, а перед *desayuno* не нужно?",
+      "theory_block_id": "b3_theory_reflexive_snippets_morning_evening",
+      "difficulty": 2,
+      "correct_answer": "true",
+      "explanation": "*Levantarse* и *ducharse* требуют возвратного местоимения; *desayunar* в этой цепочке не возвратный глагол.",
+      "tags": [
+        "reflexive"
+      ]
+    },
+    {
+      "id": "q042_b3_07",
+      "type": "true_false",
+      "prompt": "Верно ли: фраза *No puedo hablar ahora: me estoy vistiendo para salir* относится только к планам на завтра, а не к текущему моменту?",
+      "theory_block_id": "b3_theory_reflexive_snippets_morning_evening",
+      "difficulty": 2,
+      "correct_answer": "false",
+      "explanation": "Неверно: *ahora* и *me estoy vistiendo* как раз про текущий процесс и занятость сейчас.",
+      "tags": []
+    },
+    {
+      "id": "q042_b3_08",
+      "type": "error_spotting",
+      "prompt": "Найдите корректную реплику: «сейчас не могу говорить — одеваюсь, чтобы выйти».",
+      "theory_block_id": "b3_theory_reflexive_snippets_morning_evening",
+      "difficulty": 3,
+      "choices": [
+        {
+          "id": "a",
+          "text": "No puedo hablar ahora: me estoy vestido para salir."
+        },
+        {
+          "id": "b",
+          "text": "No puedo hablar ahora: me visto para salir todos los días."
+        },
+        {
+          "id": "c",
+          "text": "No puedo hablar ahora: me estoy vistiendo para salir."
+        },
+        {
+          "id": "d",
+          "text": "No puedo hablar ahora: me vestir para salir."
+        }
+      ],
+      "correct_answer": "c",
+      "explanation": "Нужен прогрессив с возвратным: *me estoy vistiendo*.",
+      "tags": []
+    },
+    {
+      "id": "q042_b3_09",
+      "type": "error_spotting",
+      "prompt": "Найдите корректную реплику про поздний подъём по выходным (возвратный глагол).",
+      "theory_block_id": "b3_theory_reflexive_snippets_morning_evening",
+      "difficulty": 3,
+      "choices": [
+        {
+          "id": "a",
+          "text": "Los fines de semana levanto tarde."
+        },
+        {
+          "id": "b",
+          "text": "Los fines de semana me levanto tarde."
+        },
+        {
+          "id": "c",
+          "text": "Los fines de semana estoy levantando tarde."
+        },
+        {
+          "id": "d",
+          "text": "Los fines de semana levanto me tarde."
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Возвратная форма *me levanto* с правильным порядком клитики.",
+      "tags": []
+    },
+    {
+      "id": "q042_b3_10",
+      "type": "fill_blank",
+      "prompt": "Вставьте одну форму: *Me ___ rápido porque llego tarde.* (инфинитив: duchar)",
+      "theory_block_id": "b3_theory_reflexive_snippets_morning_evening",
+      "difficulty": 2,
+      "correct_answer": "ducho",
+      "explanation": "Возвратное *me* уже в реплике; нужна одна форма *ducharse* в 1 л. ед. настоящего.",
+      "tags": [
+        "reflexive"
+      ]
+    },
+    {
+      "id": "q042_b3_11",
+      "type": "fill_blank",
+      "prompt": "Вставьте одну форму: *Los domingos, después de desayunar, yo ___ un rato en el sofá.* (инфинитив: leer)",
+      "theory_block_id": "b3_theory_reflexive_snippets_morning_evening",
+      "difficulty": 2,
+      "correct_answer": "leo",
+      "explanation": "Короткий шаг рутины в *presente* после другого шага — в духе бытовой цепочки из блока.",
+      "tags": [
+        "routine"
+      ]
+    },
+    {
+      "id": "q042_b3_12",
+      "type": "reorder",
+      "prompt": "Соберите предложение с указанным значением. Начните с «Primero». Закончите словом «desayuno». «después» поставьте сразу после «y».",
+      "theory_block_id": "b3_theory_reflexive_snippets_morning_evening",
+      "difficulty": 3,
+      "correct_answer": "Primero me despierto y después desayuno.",
+      "explanation": "Короткая цепочка шагов в *presente* с возвратным на первом шаге.",
+      "tags": [
+        "reorder"
+      ],
+      "translation_ru": "Сначала я просыпаюсь, а затем завтракаю."
+    },
+    {
+      "id": "q042_b4_01",
+      "type": "mcq_single",
+      "prompt": "Как лучше сказать «мне нравится кофе» в модели *gustar*?",
+      "theory_block_id": "b4_theory_gustar_family_in_mini_dialogues",
+      "difficulty": 2,
+      "choices": [
+        {
+          "id": "a",
+          "text": "Yo gusto el café."
+        },
+        {
+          "id": "b",
+          "text": "Me gusta el café."
+        },
+        {
+          "id": "c",
+          "text": "Me gustan el café."
+        },
+        {
+          "id": "d",
+          "text": "El café me gusto."
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "В конструкции *gustar* человек выражается через *me/te/le*, а глагол согласуется с тем, что нравится: *el café*.",
+      "tags": [
+        "gustar"
+      ]
+    },
+    {
+      "id": "q042_b4_02",
+      "type": "mcq_single",
+      "prompt": "Какой вариант правильно согласует глагол с множественным ядром?",
+      "theory_block_id": "b4_theory_gustar_family_in_mini_dialogues",
+      "difficulty": 2,
+      "choices": [
+        {
+          "id": "a",
+          "text": "Me gusta tus amigos."
+        },
+        {
+          "id": "b",
+          "text": "Yo gusto tus amigos."
+        },
+        {
+          "id": "c",
+          "text": "Me gustan tus amigos."
+        },
+        {
+          "id": "d",
+          "text": "Tus amigos me gusto."
+        }
+      ],
+      "correct_answer": "c",
+      "explanation": "Ядро *tus amigos* во множественном числе, поэтому нужна форма *gustan*.",
+      "tags": [
+        "agreement"
+      ]
+    },
+    {
+      "id": "q042_b4_03",
+      "type": "mcq_single",
+      "prompt": "Какая форма лучше для «мне нравятся твои идеи» (ядро множественное)?",
+      "theory_block_id": "b4_theory_gustar_family_in_mini_dialogues",
+      "difficulty": 2,
+      "choices": [
+        {
+          "id": "a",
+          "text": "*Me gusta tus ideas.*"
+        },
+        {
+          "id": "b",
+          "text": "*Yo gusto tus ideas.*"
+        },
+        {
+          "id": "c",
+          "text": "*Tus ideas me gusto.*"
+        },
+        {
+          "id": "d",
+          "text": "*Me gustan tus ideas.*"
+        }
+      ],
+      "correct_answer": "d",
+      "explanation": "Множественное ядро *ideas* тянет *gustan*.",
+      "tags": [
+        "gustar"
+      ]
+    },
+    {
+      "id": "q042_b4_04",
+      "type": "mcq_single",
+      "prompt": "Какой мини-диалог звучит естественно: сначала рамка времени, потом реакция?",
+      "theory_block_id": "b4_theory_gustar_family_in_mini_dialogues",
+      "difficulty": 2,
+      "choices": [
+        {
+          "id": "a",
+          "text": "Me encanta. Normalmente tomo café, pero ahora pruebo este té."
+        },
+        {
+          "id": "b",
+          "text": "Normalmente tomo café, pero ahora estoy probando este té y me está gustando."
+        },
+        {
+          "id": "c",
+          "text": "Normalmente me está gustando y ahora tomo café por lo general."
+        },
+        {
+          "id": "d",
+          "text": "Hoy me gustan probar este té normalmente."
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Реакция типа *me está gustando* естественно добавляется после понятной рамки: обычная привычка и текущая проба.",
+      "tags": [
+        "dialogue"
+      ]
+    },
+    {
+      "id": "q042_b4_06",
+      "type": "true_false",
+      "prompt": "Верно ли: фраза *Hoy me duelen los ojos…* показывает согласование глагола с множественным ядром *los ojos*?",
+      "theory_block_id": "b4_theory_gustar_family_in_mini_dialogues",
+      "difficulty": 2,
+      "correct_answer": "true",
+      "explanation": "В примечании к примеру подчёркнуто множественное *me duelen* при *los ojos*.",
+      "tags": [
+        "doler"
+      ]
+    },
+    {
+      "id": "q042_b4_07",
+      "type": "true_false",
+      "prompt": "Верно ли: *Ahora me está gustando más esta música* по смыслу блока исключает идею процесса и относится только к завершённому факту?",
+      "theory_block_id": "b4_theory_gustar_family_in_mini_dialogues",
+      "difficulty": 2,
+      "correct_answer": "false",
+      "explanation": "Неверно: как раз подчёркнут процесс и меняющееся впечатление при *ahora*.",
+      "tags": []
+    },
+    {
+      "id": "q042_b4_08",
+      "type": "error_spotting",
+      "prompt": "Найдите корректную реплику про устойчивое предпочтение: гулять после ужина.",
+      "theory_block_id": "b4_theory_gustar_family_in_mini_dialogues",
+      "difficulty": 3,
+      "choices": [
+        {
+          "id": "a",
+          "text": "Normalmente me gustan caminar después de cenar."
+        },
+        {
+          "id": "b",
+          "text": "Normalmente me gusta caminar después de cenar."
+        },
+        {
+          "id": "c",
+          "text": "Normalmente yo gusto caminar después de cenar."
+        },
+        {
+          "id": "d",
+          "text": "Ahora me está gustando caminar normalmente después de cenar."
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Нужны *me gusta* + инфинитив; *Normalmente* задаёт привычку.",
+      "tags": []
+    },
+    {
+      "id": "q042_b4_09",
+      "type": "error_spotting",
+      "prompt": "Найдите корректную реплику про боль в глазах сегодня (согласование с множественным ядром).",
+      "theory_block_id": "b4_theory_gustar_family_in_mini_dialogues",
+      "difficulty": 3,
+      "choices": [
+        {
+          "id": "a",
+          "text": "Hoy me duele los ojos porque he dormido poco."
+        },
+        {
+          "id": "b",
+          "text": "Hoy me duelen los ojos porque he dormido poco."
+        },
+        {
+          "id": "c",
+          "text": "Hoy me duelen el ojo porque he dormido poco."
+        },
+        {
+          "id": "d",
+          "text": "Hoy yo duelo los ojos porque he dormido poco."
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "При *los ojos* нужно *me duelen*.",
+      "tags": []
+    },
+    {
+      "id": "q042_b4_10",
+      "type": "fill_blank",
+      "prompt": "Вставьте одну форму: *¿A ti ___ estas fotos nuevas?* (инфинитив: gustar; ядро во множественном числе)",
+      "theory_block_id": "b4_theory_gustar_family_in_mini_dialogues",
+      "difficulty": 2,
+      "correct_answer": "gustan",
+      "explanation": "Множественное ядро *fotos* требует *gustan*.",
+      "tags": [
+        "gustar"
+      ]
+    },
+    {
+      "id": "q042_b4_11",
+      "type": "fill_blank",
+      "prompt": "Вставьте нужную форму: «Me gusta leer, pero ahora ___ descansando.» (estar; yo; presente)",
+      "theory_block_id": "b4_theory_gustar_family_in_mini_dialogues",
+      "difficulty": 3,
+      "correct_answer": "estoy",
+      "explanation": "Общее предпочтение передаёт me gusta, а действие в данный момент — estar + gerundio: estoy descansando.",
+      "tags": [],
+      "translation_ru": "Мне нравится читать, но сейчас я отдыхаю."
+    },
+    {
+      "id": "q042_b5_01",
+      "type": "mcq_single",
+      "prompt": "Как сказать «Я сейчас иду в спортзал»?",
+      "theory_block_id": "b5_theory_high_freq_irregulars_as_slots",
+      "difficulty": 2,
+      "choices": [
+        {
+          "id": "a",
+          "text": "Hago al gimnasio ahora."
+        },
+        {
+          "id": "b",
+          "text": "Tengo al gimnasio ahora."
+        },
+        {
+          "id": "c",
+          "text": "Voy al gimnasio ahora."
+        },
+        {
+          "id": "d",
+          "text": "Digo al gimnasio ahora."
+        }
+      ],
+      "correct_answer": "c",
+      "explanation": "Voy — форма глагола ir для yo. Перед el gimnasio предлог a сливается с артиклем: a + el = al.",
+      "tags": [
+        "irregulars"
+      ]
+    },
+    {
+      "id": "q042_b5_02",
+      "type": "mcq_single",
+      "prompt": "Как правильно передать «мне холодно» без кальки с русского?",
+      "theory_block_id": "b5_theory_high_freq_irregulars_as_slots",
+      "difficulty": 3,
+      "choices": [
+        {
+          "id": "a",
+          "text": "Hago frío."
+        },
+        {
+          "id": "b",
+          "text": "Soy frío."
+        },
+        {
+          "id": "c",
+          "text": "Tengo frío."
+        },
+        {
+          "id": "d",
+          "text": "Digo frío."
+        }
+      ],
+      "correct_answer": "c",
+      "explanation": "Для личного состояния «мне холодно» используется *tengo frío*; *hago frío* не работает для говорящего.",
+      "tags": [
+        "hacer",
+        "tener"
+      ]
+    },
+    {
+      "id": "q042_b5_03",
+      "type": "mcq_single",
+      "prompt": "Какая реплика не перегружает одну фразу неправильными глаголами?",
+      "theory_block_id": "b5_theory_high_freq_irregulars_as_slots",
+      "difficulty": 2,
+      "choices": [
+        {
+          "id": "a",
+          "text": "Voy a casa y digo hola."
+        },
+        {
+          "id": "b",
+          "text": "Voy, tengo, hago, vengo y digo todo ahora."
+        },
+        {
+          "id": "c",
+          "text": "Tengo voy y hago digo en casa."
+        },
+        {
+          "id": "d",
+          "text": "Hago voy a casa con digo."
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Один-два частых неправильных глагола достаточно, если у них разные роли: путь и короткое сообщение.",
+      "tags": [
+        "strategy"
+      ]
+    },
+    {
+      "id": "q042_b5_04",
+      "type": "mcq_single",
+      "prompt": "Какой шаблон движения лучше закрепить для быстрой реплики?",
+      "theory_block_id": "b5_theory_high_freq_irregulars_as_slots",
+      "difficulty": 2,
+      "choices": [
+        {
+          "id": "a",
+          "text": "*soy a* + место"
+        },
+        {
+          "id": "b",
+          "text": "*voy a* + место или инфинитив"
+        },
+        {
+          "id": "c",
+          "text": "*tengo a* + место"
+        },
+        {
+          "id": "d",
+          "text": "*digo a* + место вместо движения"
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "*Voy a* + место или инфинитив даёт базовый каркас для движения или ближайшего намерения.",
+      "tags": [
+        "ir"
+      ]
+    },
+    {
+      "id": "q042_b5_06",
+      "type": "true_false",
+      "prompt": "Верно ли: в примере *Voy al gimnasio, pero ahora tengo prisa* второе сочетание отмечает обстоятельство «сейчас»?",
+      "theory_block_id": "b5_theory_high_freq_irregulars_as_slots",
+      "difficulty": 2,
+      "correct_answer": "true",
+      "explanation": "В примечании: *tengo prisa* — обстоятельство сейчас рядом с *ahora*.",
+      "tags": []
+    },
+    {
+      "id": "q042_b5_07",
+      "type": "true_false",
+      "prompt": "Верно ли: фраза *Normalmente hago la compra el sábado, pero hoy estoy haciendo la compra por internet* описывает только одну рамку времени без контраста?",
+      "theory_block_id": "b5_theory_high_freq_irregulars_as_slots",
+      "difficulty": 2,
+      "correct_answer": "false",
+      "explanation": "Неверно: в примере явно два ракурса — *normalmente* + *hoy estoy haciendo*.",
+      "tags": []
+    },
+    {
+      "id": "q042_b5_08",
+      "type": "error_spotting",
+      "prompt": "Найдите корректную реплику про маршрут в спортзал и спешку «сейчас».",
+      "theory_block_id": "b5_theory_high_freq_irregulars_as_slots",
+      "difficulty": 3,
+      "choices": [
+        {
+          "id": "a",
+          "text": "Voy al gimnasio, pero ahora tengo prisa."
+        },
+        {
+          "id": "b",
+          "text": "Hago al gimnasio, pero ahora tengo prisa."
+        },
+        {
+          "id": "c",
+          "text": "Voy al gimnasio, pero normalmente estoy teniendo prisa."
+        },
+        {
+          "id": "d",
+          "text": "Voy al gimnasio, pero ahora hago prisa."
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Нужны *voy* и устойчивое *tengo prisa*; прогрессив к *tener prisa* здесь неуместен.",
+      "tags": []
+    },
+    {
+      "id": "q042_b5_09",
+      "type": "error_spotting",
+      "prompt": "Найдите корректную реплику про ежедневный путь пешком и честное признание усталости сегодня.",
+      "theory_block_id": "b5_theory_high_freq_irregulars_as_slots",
+      "difficulty": 3,
+      "choices": [
+        {
+          "id": "a",
+          "text": "Todos los días voy andando, pero hoy digo la verdad: soy muy cansado."
+        },
+        {
+          "id": "b",
+          "text": "Todos los días vengo andando, pero hoy digo la verdad: estoy muy cansado."
+        },
+        {
+          "id": "c",
+          "text": "Todos los días hago andando, pero hoy digo la verdad: estoy muy cansado."
+        },
+        {
+          "id": "d",
+          "text": "Todos los días vengo andando, pero hoy tengo la verdad: estoy muy cansado."
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Сочетание *vengo andando* + *digo la verdad* + *estoy cansado* соответствует примеру блока.",
+      "tags": []
+    },
+    {
+      "id": "q042_b5_10",
+      "type": "fill_blank",
+      "prompt": "Вставьте одну форму: *Los sábados yo ___ la compra en el mercado.* (инфинитив: hacer)",
+      "theory_block_id": "b5_theory_high_freq_irregulars_as_slots",
+      "difficulty": 2,
+      "correct_answer": "hago",
+      "explanation": "Привычное действие — форма *hacer* в 1 л. ед. настоящего.",
+      "tags": [
+        "hacer"
+      ]
+    },
+    {
+      "id": "q042_b5_11",
+      "type": "fill_blank",
+      "prompt": "Вставьте нужную форму: «Después de clase ___ a casa.» (ir; yo; presente)",
+      "theory_block_id": "b5_theory_high_freq_irregulars_as_slots",
+      "difficulty": 3,
+      "correct_answer": "voy",
+      "explanation": "Глагол ir в форме yo имеет неправильную форму voy. Сочетание a casa указывает направление.",
+      "tags": [],
+      "translation_ru": "После занятий я иду домой."
+    },
+    {
+      "id": "q042_b6_01",
+      "type": "mcq_single",
+      "prompt": "Какой мини-сценарий следует порядку: привычка → сейчас → состояние → вывод?",
+      "theory_block_id": "b6_theory_mini_script_flow_checklist",
+      "difficulty": 2,
+      "choices": [
+        {
+          "id": "a",
+          "text": "Normalmente estudio por la mañana. Ahora estoy repasando verbos y me duelen los ojos. Así que descanso un rato."
+        },
+        {
+          "id": "b",
+          "text": "Ahora estoy repasando verbos. Normalmente estudio por la mañana y me duelen los ojos. Así que descanso un rato."
+        },
+        {
+          "id": "c",
+          "text": "Normalmente estudio por la mañana. Me duelen los ojos. Ahora estoy repasando verbos. Así que descanso un rato."
+        },
+        {
+          "id": "d",
+          "text": "Normalmente estoy estudiando por la mañana. Ahora repaso verbos normalmente y me duele los ojos."
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Сценарий сначала даёт привычную рамку, затем текущий процесс, личное состояние и короткий вывод.",
+      "tags": [
+        "script"
+      ]
+    },
+    {
+      "id": "q042_b6_02",
+      "type": "mcq_single",
+      "prompt": "Какой вариант лучше разделяет фон и момент, если нужны оба?",
+      "theory_block_id": "b6_theory_mini_script_flow_checklist",
+      "difficulty": 2,
+      "choices": [
+        {
+          "id": "a",
+          "text": "Los lunes trabajo desde casa. Ahora estoy terminando un informe."
+        },
+        {
+          "id": "b",
+          "text": "Los lunes estoy terminando ahora desde casa."
+        },
+        {
+          "id": "c",
+          "text": "Ahora trabajo los lunes en este momento."
+        },
+        {
+          "id": "d",
+          "text": "Normalmente ahora estoy trabajando los lunes."
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "Две короткие фразы ясно отделяют обычный фон от текущего процесса.",
+      "tags": [
+        "checklist"
+      ]
+    },
+    {
+      "id": "q042_b6_03",
+      "type": "mcq_single",
+      "prompt": "Какая концовка лучше связывает мини-сценарий одной итоговой мыслью?",
+      "theory_block_id": "b6_theory_mini_script_flow_checklist",
+      "difficulty": 2,
+      "choices": [
+        {
+          "id": "a",
+          "text": "Así que después me tomo un té."
+        },
+        {
+          "id": "b",
+          "text": "Y otra cosa: mi vecino tiene una reunión."
+        },
+        {
+          "id": "c",
+          "text": "Normalmente trabajo desde casa los lunes."
+        },
+        {
+          "id": "d",
+          "text": "Porque sí."
+        }
+      ],
+      "correct_answer": "a",
+      "explanation": "*Así que* вводит простой вывод из предыдущей ситуации и не открывает новую тему.",
+      "tags": [
+        "cohesion"
+      ]
+    },
+    {
+      "id": "q042_b6_04",
+      "type": "mcq_single",
+      "prompt": "Какой вариант перегружает реплику ради «всех тем сразу»?",
+      "theory_block_id": "b6_theory_mini_script_flow_checklist",
+      "difficulty": 2,
+      "choices": [
+        {
+          "id": "a",
+          "text": "Normalmente cocino yo, pero hoy estás cocinando tú y me encanta."
+        },
+        {
+          "id": "b",
+          "text": "Los lunes trabajo desde casa. Ahora estoy terminando un informe."
+        },
+        {
+          "id": "c",
+          "text": "Me levanto, me ducho y salgo."
+        },
+        {
+          "id": "d",
+          "text": "Normalmente voy, hago, tengo, vengo, digo, me levanto, me gusta y estoy cocinando todo en una frase."
+        }
+      ],
+      "correct_answer": "d",
+      "explanation": "Синтез не требует вставлять все конструкции сразу; лучше выбрать две–три функции и удержать ясный смысл.",
+      "tags": [
+        "synthesis"
+      ]
+    },
+    {
+      "id": "q042_b6_06",
+      "type": "true_false",
+      "prompt": "Верно ли: в чек-листе напоминают, что не всё «сейчас» естественно оформляется прогрессивом, в том числе вокруг статива «знать»?",
+      "theory_block_id": "b6_theory_mini_script_flow_checklist",
+      "difficulty": 2,
+      "correct_answer": "true",
+      "explanation": "В чек-листе есть отсылка к соседней главе: не всё «сейчас» — прогрессив.",
+      "tags": []
+    },
+    {
+      "id": "q042_b6_07",
+      "type": "true_false",
+      "prompt": "Верно ли: по смыслу блока один сильный маркер времени лучше, чем три слабых подряд?",
+      "theory_block_id": "b6_theory_mini_script_flow_checklist",
+      "difficulty": 2,
+      "correct_answer": "true",
+      "explanation": "Это прямой тезис в ключевых пунктах.",
+      "tags": []
+    },
+    {
+      "id": "q042_b6_08",
+      "type": "error_spotting",
+      "prompt": "Найдите корректную мини-цепочку: понедельник из дома → сейчас отчёт → боль в спине → потом чай.",
+      "theory_block_id": "b6_theory_mini_script_flow_checklist",
+      "difficulty": 3,
+      "choices": [
+        {
+          "id": "a",
+          "text": "Los lunes trabajo desde casa. Ahora termino un informe y me duele la espalda. Así que después me tomo un té."
+        },
+        {
+          "id": "b",
+          "text": "Los lunes trabajo desde casa. Ahora estoy terminando un informe y me duele la espalda. Así que después me tomo un té."
+        },
+        {
+          "id": "c",
+          "text": "Los lunes estoy trabajando desde casa siempre. Ahora termino un informe y me duelen la espalda."
+        },
+        {
+          "id": "d",
+          "text": "Ahora trabajo los lunes desde casa y normalmente estoy terminando un informe."
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Нужны процесс *estoy terminando*, *me duele* при *la espalda*, и связка *Así que*.",
+      "tags": []
+    },
+    {
+      "id": "q042_b6_09",
+      "type": "error_spotting",
+      "prompt": "Найдите корректную реплику про смену ролей на кухне и сильную симпатию к этому.",
+      "theory_block_id": "b6_theory_mini_script_flow_checklist",
+      "difficulty": 3,
+      "choices": [
+        {
+          "id": "a",
+          "text": "Normalmente cocino yo, pero hoy cocinas tú normalmente y me gusta."
+        },
+        {
+          "id": "b",
+          "text": "Normalmente cocino yo, pero hoy estás cocinando tú y me encanta."
+        },
+        {
+          "id": "c",
+          "text": "Normalmente estoy cocinando yo, pero hoy cocinas tú los lunes."
+        },
+        {
+          "id": "d",
+          "text": "Normalmente cocino yo, pero hoy estás cocinando tú y me encantan."
+        }
+      ],
+      "correct_answer": "b",
+      "explanation": "Нужны прогрессив *estás cocinando* и реакция *me encanta*.",
+      "tags": []
+    },
+    {
+      "id": "q042_b6_10",
+      "type": "fill_blank",
+      "prompt": "Вставьте одну форму: *Si me duele la espalda, después yo ___ un té.* (инфинитив: tomar)",
+      "theory_block_id": "b6_theory_mini_script_flow_checklist",
+      "difficulty": 2,
+      "correct_answer": "tomo",
+      "explanation": "Короткий план после связки — *presente* *tomo*.",
+      "tags": [
+        "script"
+      ]
+    },
+    {
+      "id": "q042_b6_11",
+      "type": "fill_blank",
+      "prompt": "Вставьте одну форму: *Normalmente trabajo hasta tarde; ahora ___ un descanso.* (инфинитив: tomar)",
+      "theory_block_id": "b6_theory_mini_script_flow_checklist",
+      "difficulty": 3,
+      "correct_answer": "tomo",
+      "explanation": "Здесь *ahora* вводит решение в текущей ситуации, но не процесс; достаточно обычного настоящего *tomo*.",
+      "tags": [
+        "discourse"
+      ]
+    },
+    {
+      "id": "q042_b6_12",
+      "type": "fill_blank",
+      "prompt": "Вставьте нужную форму: «Cierro el portátil y ___ a pasear.» (salir; yo; presente)",
+      "theory_block_id": "b6_theory_mini_script_flow_checklist",
+      "difficulty": 3,
+      "correct_answer": "salgo",
+      "explanation": "У глагола salir форма yo в presente — salgo. Действия перечислены в порядке их выполнения.",
+      "tags": [],
+      "translation_ru": "Я закрываю ноутбук и выхожу погулять."
+    }
+  ]
+}

@@ -1,0 +1,3726 @@
+[
+  {
+    "lemma": "abandonar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/abandonar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/abandonar.json",
+    "report": "docs/grammar-review/reports/f0566d23c167dd3b93172290.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "abordar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/abordar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/abordar.json",
+    "report": "docs/grammar-review/reports/ca3615ffec3de616c6d263f7.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "abrir",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/abrir.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/abrir.json",
+    "report": "docs/grammar-review/reports/d05efeee10bddf44584c3f13.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "acabar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/acabar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/acabar.json",
+    "report": "docs/grammar-review/reports/7f938579fdbb300050b29afc.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "aceptar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/aceptar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/aceptar.json",
+    "report": "docs/grammar-review/reports/1dc2c119af76486dcdb8988b.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "acercar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/acercar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/acercar.json",
+    "report": "docs/grammar-review/reports/94810e5c4ce81e3756613144.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "acompañar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/acompañar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/acompañar.json",
+    "report": "docs/grammar-review/reports/7f62e70e5743a19a220a744f.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "acordar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/acordar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/acordar.json",
+    "report": "docs/grammar-review/reports/b7b548ceac6a3b82717d54eb.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "actuar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/actuar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/actuar.json",
+    "report": "docs/grammar-review/reports/6748c8dfd1d0b8a74de00903.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "admitir",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/admitir.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/admitir.json",
+    "report": "docs/grammar-review/reports/e8c7c65b5c5e4acbcb5385db.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "advertir",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/advertir.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/advertir.json",
+    "report": "docs/grammar-review/reports/2f91f9a7058edd3d76945041.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "afectar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/afectar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/afectar.json",
+    "report": "docs/grammar-review/reports/4887f9691e031cf9727ad2f6.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "afirmar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/afirmar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/afirmar.json",
+    "report": "docs/grammar-review/reports/3d8a6b9dfa2717b8ffb11970.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "agradecer",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/agradecer.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/agradecer.json",
+    "report": "docs/grammar-review/reports/f14f851ec99e68ffe9e19f5c.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "alcanzar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/alcanzar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/alcanzar.json",
+    "report": "docs/grammar-review/reports/cac1f3b103c1cfe918926785.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "almorzar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/almorzar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/almorzar.json",
+    "report": "docs/grammar-review/reports/89392692d12dcc3bc9dbf0c5.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "alquilar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/alquilar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/alquilar.json",
+    "report": "docs/grammar-review/reports/6097fcbb0eedc24adc99e46f.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "amenazar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/amenazar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/amenazar.json",
+    "report": "docs/grammar-review/reports/1c0f9a97e4b6a9775de24b00.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "andar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/andar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/andar.json",
+    "report": "docs/grammar-review/reports/0da887f8d8e7a7ac87b0fa62.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "anunciar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/anunciar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/anunciar.json",
+    "report": "docs/grammar-review/reports/d15aa5af8e8c484f5a740a45.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "aparecer",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/aparecer.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/aparecer.json",
+    "report": "docs/grammar-review/reports/89de62208d14b43c5fe8d0ec.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "aplicar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/aplicar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/aplicar.json",
+    "report": "docs/grammar-review/reports/920aef2eb16b243a945f39e1.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "apostar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/apostar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/apostar.json",
+    "report": "docs/grammar-review/reports/783da360bf746916a9b697de.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "apoyar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/apoyar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/apoyar.json",
+    "report": "docs/grammar-review/reports/10d25122aafc2b328ebab030.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "apreciar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/apreciar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/apreciar.json",
+    "report": "docs/grammar-review/reports/e2f56c50386a818ecd6a999d.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "aprender",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/aprender.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/aprender.json",
+    "report": "docs/grammar-review/reports/428032e933a18e0b99444cbe.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "aprobar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/aprobar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/aprobar.json",
+    "report": "docs/grammar-review/reports/c43223a820f41e89682a07a0.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "asegurar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/asegurar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/asegurar.json",
+    "report": "docs/grammar-review/reports/df35b07b44056da534912144.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "asistir",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/asistir.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/asistir.json",
+    "report": "docs/grammar-review/reports/a82bcec52f4bdc019b6bb08a.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "asociar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/asociar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/asociar.json",
+    "report": "docs/grammar-review/reports/1fbbfc3e9fbb114a604eeb84.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "aspirar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/aspirar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/aspirar.json",
+    "report": "docs/grammar-review/reports/d0b063c897b851d61bc8b9c5.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "atacar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/atacar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/atacar.json",
+    "report": "docs/grammar-review/reports/db13008fc2536d620bd11d3b.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "atender",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/atender.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/atender.json",
+    "report": "docs/grammar-review/reports/142716ee16e421cfa9a35ce7.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "atraer",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/atraer.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/atraer.json",
+    "report": "docs/grammar-review/reports/25645fc79f9c101949a237bf.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "atravesar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/atravesar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/atravesar.json",
+    "report": "docs/grammar-review/reports/64326cc1c681bf3f080417f5.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "aumentar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/aumentar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/aumentar.json",
+    "report": "docs/grammar-review/reports/687580fed1a214162fbc07a7.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "avanzar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/avanzar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/avanzar.json",
+    "report": "docs/grammar-review/reports/c835ca756bf2d2bff2ebb893.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "avisar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/avisar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/avisar.json",
+    "report": "docs/grammar-review/reports/4f3e77b2356ab13db6f8c442.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "ayudar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/ayudar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/ayudar.json",
+    "report": "docs/grammar-review/reports/603c2782fa02949feca16cf2.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "añadir",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/añadir.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/añadir.json",
+    "report": "docs/grammar-review/reports/9460af416eb70be132b89622.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "bailar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/bailar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/bailar.json",
+    "report": "docs/grammar-review/reports/da24c666225e449d9f7a05d3.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "bajar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/bajar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/bajar.json",
+    "report": "docs/grammar-review/reports/1e03325a6ecdcfb02087d80a.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "beber",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/beber.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/beber.json",
+    "report": "docs/grammar-review/reports/f19ab5dd749b0893af46188b.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "bloquear",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/bloquear.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/bloquear.json",
+    "report": "docs/grammar-review/reports/084a50998e53adc5d29879e0.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "borrar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/borrar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/borrar.json",
+    "report": "docs/grammar-review/reports/b7d26e551808514cd92d295b.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "buscar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/buscar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/buscar.json",
+    "report": "docs/grammar-review/reports/4fb1ebf771f833526d8d08c3.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "calcular",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/calcular.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/calcular.json",
+    "report": "docs/grammar-review/reports/a886b4d40772eb2434bab0d4.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "cambiar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/cambiar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/cambiar.json",
+    "report": "docs/grammar-review/reports/4b44495701de15a66b0844d2.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "caminar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/caminar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/caminar.json",
+    "report": "docs/grammar-review/reports/7055b874c85831454af0dda3.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "cantar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/cantar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/cantar.json",
+    "report": "docs/grammar-review/reports/c40738a0989c6acd76d8b62b.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "caracterizar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/caracterizar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/caracterizar.json",
+    "report": "docs/grammar-review/reports/533bc40faa0dfdabed5fa62e.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "cargar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/cargar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/cargar.json",
+    "report": "docs/grammar-review/reports/3762b1b27eb5da5ed8c87291.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "casar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/casar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/casar.json",
+    "report": "docs/grammar-review/reports/1df8a1e0640da8b514f71936.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "causar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/causar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/causar.json",
+    "report": "docs/grammar-review/reports/d6679ce6243dfad6efdc83d1.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "celebrar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/celebrar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/celebrar.json",
+    "report": "docs/grammar-review/reports/0a86a8f6b43d62c316aed866.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "cenar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/cenar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/cenar.json",
+    "report": "docs/grammar-review/reports/49a6cb767a3bb00df12816b7.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "cerrar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/cerrar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/cerrar.json",
+    "report": "docs/grammar-review/reports/87d4225a1fcbd2eef445150b.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "clasificar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/clasificar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/clasificar.json",
+    "report": "docs/grammar-review/reports/6d7f1d6d4df26e0572441de7.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "cobrar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/cobrar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/cobrar.json",
+    "report": "docs/grammar-review/reports/6fa1841f2f42f8520b186233.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "cocinar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/cocinar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/cocinar.json",
+    "report": "docs/grammar-review/reports/116ab541cbe2e8fc62853bf5.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "coger",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/coger.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/coger.json",
+    "report": "docs/grammar-review/reports/273b11c4074cfe8d0c1283cb.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "colocar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/colocar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/colocar.json",
+    "report": "docs/grammar-review/reports/af205b59516116b045905608.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "combatir",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/combatir.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/combatir.json",
+    "report": "docs/grammar-review/reports/d27d03dbf3d8f3c569ca8b33.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "comentar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/comentar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/comentar.json",
+    "report": "docs/grammar-review/reports/12bbfb4d5b7fdd5987345b65.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "comenzar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/comenzar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/comenzar.json",
+    "report": "docs/grammar-review/reports/893ead31c180c0485ae721e1.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "comer",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/comer.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/comer.json",
+    "report": "docs/grammar-review/reports/a87b869a185e33f80765d861.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "compartir",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/compartir.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/compartir.json",
+    "report": "docs/grammar-review/reports/0ddd906b4c52b31c9183c078.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "competir",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/competir.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/competir.json",
+    "report": "docs/grammar-review/reports/f7f64b0f7f591ae063d15d25.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "componer",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/componer.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/componer.json",
+    "report": "docs/grammar-review/reports/2a4b576a58b03af93c3ee1a6.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "comprar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/comprar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/comprar.json",
+    "report": "docs/grammar-review/reports/41f241c9cd63fba5fee0090e.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "comprender",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/comprender.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/comprender.json",
+    "report": "docs/grammar-review/reports/cb76d9be503eb98462ee6465.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "comunicar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/comunicar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/comunicar.json",
+    "report": "docs/grammar-review/reports/952526d6c4f4fafb70a03acf.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "condenar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/condenar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/condenar.json",
+    "report": "docs/grammar-review/reports/659cbd73f03460269f3439bc.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "conducir",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/conducir.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/conducir.json",
+    "report": "docs/grammar-review/reports/4fe185014f17a906d9707035.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "confesar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/confesar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/confesar.json",
+    "report": "docs/grammar-review/reports/82ffeacfe2e5252439cb33e6.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "confiar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/confiar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/confiar.json",
+    "report": "docs/grammar-review/reports/248e33d374be8034d24f15b6.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "confirmar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/confirmar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/confirmar.json",
+    "report": "docs/grammar-review/reports/ca620e043bc708f1982f53bd.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "conocer",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/conocer.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/conocer.json",
+    "report": "docs/grammar-review/reports/1d7e01d6494857cdd78b50f0.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "conquistar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/conquistar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/conquistar.json",
+    "report": "docs/grammar-review/reports/db88329a376729cd974d159c.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "conseguir",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/conseguir.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/conseguir.json",
+    "report": "docs/grammar-review/reports/ea2ed7b5d13600031633240e.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "conservar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/conservar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/conservar.json",
+    "report": "docs/grammar-review/reports/cac8acee8b2bfe8e2b3e40f3.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "considerar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/considerar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/considerar.json",
+    "report": "docs/grammar-review/reports/99e7b2e2996c1284054117ff.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "constituir",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/constituir.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/constituir.json",
+    "report": "docs/grammar-review/reports/489aca569133b12b2ea15fec.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "construir",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/construir.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/construir.json",
+    "report": "docs/grammar-review/reports/f8098fd2f7030b791950abd1.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "consumir",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/consumir.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/consumir.json",
+    "report": "docs/grammar-review/reports/1747dda33873c417515a1b99.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "contar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/contar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/contar.json",
+    "report": "docs/grammar-review/reports/85f3e6254d95e8b07181a3d8.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "contener",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/contener.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/contener.json",
+    "report": "docs/grammar-review/reports/ef495dc8592adda1a64394f3.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "continuar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/continuar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/continuar.json",
+    "report": "docs/grammar-review/reports/fafd19e4863331ae497fbe27.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "contribuir",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/contribuir.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/contribuir.json",
+    "report": "docs/grammar-review/reports/efc818d4c5baefb59df62b85.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "controlar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/controlar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/controlar.json",
+    "report": "docs/grammar-review/reports/7dd592e616ef8bd48bb54a1a.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "convencer",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/convencer.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/convencer.json",
+    "report": "docs/grammar-review/reports/532f9e768920ba32d7678bae.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "convertir",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/convertir.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/convertir.json",
+    "report": "docs/grammar-review/reports/861406c16fb5f2a695bd8213.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "copiar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/copiar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/copiar.json",
+    "report": "docs/grammar-review/reports/a1493d03bd1b4cf1b43a68fb.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "correr",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/correr.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/correr.json",
+    "report": "docs/grammar-review/reports/0c1290a2e2b648dd7cf03c4d.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "corresponder",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/corresponder.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/corresponder.json",
+    "report": "docs/grammar-review/reports/fb900eee762e5dec12bd538d.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "cortar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/cortar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/cortar.json",
+    "report": "docs/grammar-review/reports/2725646fc1d638b6ce1aae58.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "crear",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/crear.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/crear.json",
+    "report": "docs/grammar-review/reports/b0a8ca2376d7fe581dffc634.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "crecer",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/crecer.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/crecer.json",
+    "report": "docs/grammar-review/reports/b3c13536e4bbd040f9828fb6.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "creer",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/creer.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/creer.json",
+    "report": "docs/grammar-review/reports/86ce56294aa3a9c966a35ab7.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "criticar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/criticar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/criticar.json",
+    "report": "docs/grammar-review/reports/84b2a530f8c45340f6c3e36a.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "cruzar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/cruzar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/cruzar.json",
+    "report": "docs/grammar-review/reports/3248a811bf1bf64baf2d2aa5.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "cubrir",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/cubrir.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/cubrir.json",
+    "report": "docs/grammar-review/reports/5a5fea40380e2574d884a7e6.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "cumplir",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/cumplir.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/cumplir.json",
+    "report": "docs/grammar-review/reports/dea0c29226023ad0cbaf2da3.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "dar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/dar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/dar.json",
+    "report": "docs/grammar-review/reports/de12fd77a9cd2c7f1ead6964.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "deber",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/deber.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/deber.json",
+    "report": "docs/grammar-review/reports/6dab1415257f80589212eb51.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "decidir",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/decidir.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/decidir.json",
+    "report": "docs/grammar-review/reports/43216ef751585ee876bdec1c.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "decir",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/decir.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/decir.json",
+    "report": "docs/grammar-review/reports/61c8265d6802fe3d71ef3004.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "declarar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/declarar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/declarar.json",
+    "report": "docs/grammar-review/reports/6358070319f2c05589ac8ee6.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "dedicar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/dedicar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/dedicar.json",
+    "report": "docs/grammar-review/reports/df9ab47aaa5a9e4fc5a1ea20.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "defender",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/defender.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/defender.json",
+    "report": "docs/grammar-review/reports/e7d917d423a3147a505f307b.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "dejar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/dejar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/dejar.json",
+    "report": "docs/grammar-review/reports/ddc6a09489ae66b958bb4d74.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "demostrar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/demostrar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/demostrar.json",
+    "report": "docs/grammar-review/reports/6dc7932db3a539de24ac6c8d.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "depender",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/depender.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/depender.json",
+    "report": "docs/grammar-review/reports/15484fa9e14718980993f379.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "desaparecer",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/desaparecer.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/desaparecer.json",
+    "report": "docs/grammar-review/reports/6b636eacb940224c154a8a59.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "desarrollar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/desarrollar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/desarrollar.json",
+    "report": "docs/grammar-review/reports/303f4e734355c6a67270880c.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "desayunar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/desayunar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/desayunar.json",
+    "report": "docs/grammar-review/reports/4bdf8c94c33ce5a585d8218d.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "descansar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/descansar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/descansar.json",
+    "report": "docs/grammar-review/reports/81a180600542310ed749446d.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "descender",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/descender.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/descender.json",
+    "report": "docs/grammar-review/reports/bc41fee980eb26c0b07d7074.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "describir",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/describir.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/describir.json",
+    "report": "docs/grammar-review/reports/bd0a63a1df0cefc05ae17244.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "descubrir",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/descubrir.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/descubrir.json",
+    "report": "docs/grammar-review/reports/7cb3494d2dead1b1f5220de6.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "desear",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/desear.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/desear.json",
+    "report": "docs/grammar-review/reports/70f58eda0f5185eaef427fc8.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "despedir",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/despedir.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/despedir.json",
+    "report": "docs/grammar-review/reports/36a51ecd752b47cce2e3a0e6.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "despertar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/despertar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/despertar.json",
+    "report": "docs/grammar-review/reports/4eb2c8d58cfec40134f8acd4.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "destacar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/destacar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/destacar.json",
+    "report": "docs/grammar-review/reports/c3587908d51c7da02760ff5e.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "destruir",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/destruir.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/destruir.json",
+    "report": "docs/grammar-review/reports/c18f0f9c88e79c0922f44c12.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "detener",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/detener.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/detener.json",
+    "report": "docs/grammar-review/reports/976f95e251fc494b92748031.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "devolver",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/devolver.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/devolver.json",
+    "report": "docs/grammar-review/reports/d874eaa075c57c3bf8450d37.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "devorar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/devorar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/devorar.json",
+    "report": "docs/grammar-review/reports/0e27d1657226bd0a0dec2f05.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "dirigir",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/dirigir.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/dirigir.json",
+    "report": "docs/grammar-review/reports/29aa2ad21696991373d7481e.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "diseñar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/diseñar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/diseñar.json",
+    "report": "docs/grammar-review/reports/b488908e4c8785bfd810a411.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "disfrutar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/disfrutar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/disfrutar.json",
+    "report": "docs/grammar-review/reports/314ee1d185fc82b56d91566a.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "disminuir",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/disminuir.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/disminuir.json",
+    "report": "docs/grammar-review/reports/4839c79308c0ffeff4db1eef.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "disponer",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/disponer.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/disponer.json",
+    "report": "docs/grammar-review/reports/5c8f67b7f408e3047a93c674.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "disputar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/disputar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/disputar.json",
+    "report": "docs/grammar-review/reports/b9afdc9f4925b5547538d5c3.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "distinguir",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/distinguir.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/distinguir.json",
+    "report": "docs/grammar-review/reports/aad8a769fa8c02df9d7c3a88.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "distribuir",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/distribuir.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/distribuir.json",
+    "report": "docs/grammar-review/reports/ff9c451c8a0151e37642380c.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "dormir",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/dormir.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/dormir.json",
+    "report": "docs/grammar-review/reports/52a7f711f873e199ad7036b8.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "dudar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/dudar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/dudar.json",
+    "report": "docs/grammar-review/reports/2332f95260107c327cd114f3.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "durar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/durar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/durar.json",
+    "report": "docs/grammar-review/reports/520a751b16133d1cbdf00999.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "echar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/echar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/echar.json",
+    "report": "docs/grammar-review/reports/2dcfce79624e4c677b0f2ddc.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "efectuar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/efectuar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/efectuar.json",
+    "report": "docs/grammar-review/reports/eb138478c3c1502a13167f4f.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "ejercer",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/ejercer.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/ejercer.json",
+    "report": "docs/grammar-review/reports/ce2d16335ee76178734b56bc.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "elegir",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/elegir.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/elegir.json",
+    "report": "docs/grammar-review/reports/4004f5e871e21d49d1eb8b20.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "eliminar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/eliminar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/eliminar.json",
+    "report": "docs/grammar-review/reports/a112983f6c94449a53d94adb.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "embargar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/embargar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/embargar.json",
+    "report": "docs/grammar-review/reports/a9e6610cff985520ee4c2ea0.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "empezar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/empezar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/empezar.json",
+    "report": "docs/grammar-review/reports/0886b1c6af38b942057d0fde.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "emplear",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/emplear.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/emplear.json",
+    "report": "docs/grammar-review/reports/eb59d609b78b239d70516bb1.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "encontrar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/encontrar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/encontrar.json",
+    "report": "docs/grammar-review/reports/7f77e133fafdba548ac8dc6e.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "enseñar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/enseñar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/enseñar.json",
+    "report": "docs/grammar-review/reports/d7be75b8f534b5cbfc96fdf6.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "entender",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/entender.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/entender.json",
+    "report": "docs/grammar-review/reports/b79c056ea9dcadf074ac9f3f.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "entrar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/entrar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/entrar.json",
+    "report": "docs/grammar-review/reports/2d0394a63e419a17e2a21f32.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "entregar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/entregar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/entregar.json",
+    "report": "docs/grammar-review/reports/8205b9e901f75d34e6c33e3b.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "enviar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/enviar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/enviar.json",
+    "report": "docs/grammar-review/reports/784f11f03685a10141ff35d7.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "escoger",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/escoger.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/escoger.json",
+    "report": "docs/grammar-review/reports/b7865e46bee1599bcfc8bdcc.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "escribir",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/escribir.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/escribir.json",
+    "report": "docs/grammar-review/reports/09c93358ea0aaedf3f334a04.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "escuchar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/escuchar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/escuchar.json",
+    "report": "docs/grammar-review/reports/4cff5f19bfb1240650f26170.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "esperar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/esperar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/esperar.json",
+    "report": "docs/grammar-review/reports/9d2998cba0dadf23298c8cf3.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "establecer",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/establecer.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/establecer.json",
+    "report": "docs/grammar-review/reports/fed7cbb8de1900d8abe6abcc.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "estar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/estar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/estar.json",
+    "report": "docs/grammar-review/reports/cd716e39c3a824f7d809e38c.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "estimar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/estimar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/estimar.json",
+    "report": "docs/grammar-review/reports/8acecb2e85d4067f3d1bfba0.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "estudiar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/estudiar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/estudiar.json",
+    "report": "docs/grammar-review/reports/0297fac9df13b3cc2e9e60aa.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "evitar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/evitar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/evitar.json",
+    "report": "docs/grammar-review/reports/3ff0d53a56cbfcfe33258dcd.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "exigir",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/exigir.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/exigir.json",
+    "report": "docs/grammar-review/reports/7702d4da16d3a6505528ae88.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "explicar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/explicar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/explicar.json",
+    "report": "docs/grammar-review/reports/dc5d2bd4cc35095117e6e664.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "explotar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/explotar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/explotar.json",
+    "report": "docs/grammar-review/reports/23dbec725c487b2800292ea9.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "exponer",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/exponer.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/exponer.json",
+    "report": "docs/grammar-review/reports/c5886835dfc59cb12db7ea6b.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "expresar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/expresar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/expresar.json",
+    "report": "docs/grammar-review/reports/6b1e3e4135a3936cec0a21dd.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "extender",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/extender.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/extender.json",
+    "report": "docs/grammar-review/reports/2233c8afc5d1e2732f78039d.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "fabricar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/fabricar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/fabricar.json",
+    "report": "docs/grammar-review/reports/603cd01503ee32168eb79fc1.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "faltar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/faltar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/faltar.json",
+    "report": "docs/grammar-review/reports/b71a3a905b2793944ddcbeef.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "fijar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/fijar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/fijar.json",
+    "report": "docs/grammar-review/reports/e23b6d9cef05f52bf33c383c.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "firmar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/firmar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/firmar.json",
+    "report": "docs/grammar-review/reports/442b5ee124f03668d68c9b51.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "formar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/formar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/formar.json",
+    "report": "docs/grammar-review/reports/244de9e3d39f3c79a57ac460.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "fumar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/fumar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/fumar.json",
+    "report": "docs/grammar-review/reports/77f6a257ddb3cd682070cb96.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "funcionar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/funcionar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/funcionar.json",
+    "report": "docs/grammar-review/reports/2bd03641b435937da08f284c.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "ganar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/ganar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/ganar.json",
+    "report": "docs/grammar-review/reports/25e1f7b49dfb52c3b7b6b5f4.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "gobernar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/gobernar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/gobernar.json",
+    "report": "docs/grammar-review/reports/4605f328a5e226a855b4dda9.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "guardar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/guardar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/guardar.json",
+    "report": "docs/grammar-review/reports/5ca1f677e6997f673ddb2743.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "guiar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/guiar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/guiar.json",
+    "report": "docs/grammar-review/reports/4c8b91add9b52f5b95d22674.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "gustar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/gustar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/gustar.json",
+    "report": "docs/grammar-review/reports/1bb2e920d17a34ecc25d4ac2.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "hablar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/hablar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/hablar.json",
+    "report": "docs/grammar-review/reports/658775d8514708b20cb700eb.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "hacer",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/hacer.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/hacer.json",
+    "report": "docs/grammar-review/reports/5561054833e0ead9c83d9023.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "hallar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/hallar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/hallar.json",
+    "report": "docs/grammar-review/reports/5f645fb0be0814de8e35682b.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "huir",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/huir.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/huir.json",
+    "report": "docs/grammar-review/reports/d4c24fd9d851f18452735371.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "importar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/importar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/importar.json",
+    "report": "docs/grammar-review/reports/9608904fb6f78e334a82611e.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "incluir",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/incluir.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/incluir.json",
+    "report": "docs/grammar-review/reports/bbc54f13efabcbc6eca177ad.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "indicar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/indicar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/indicar.json",
+    "report": "docs/grammar-review/reports/97c74c265908a36c32df3a93.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "informar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/informar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/informar.json",
+    "report": "docs/grammar-review/reports/e1548678294b9474ab2c31fb.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "iniciar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/iniciar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/iniciar.json",
+    "report": "docs/grammar-review/reports/6fccf37cf2fa360dcf6f03c4.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "insistir",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/insistir.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/insistir.json",
+    "report": "docs/grammar-review/reports/fa37b2c84fdb2b1a7f1b0236.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "instalar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/instalar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/instalar.json",
+    "report": "docs/grammar-review/reports/c2f990da08df190563c1603f.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "intentar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/intentar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/intentar.json",
+    "report": "docs/grammar-review/reports/b52c66e27fd1740b0cf82e50.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "interesar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/interesar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/interesar.json",
+    "report": "docs/grammar-review/reports/8458dbafad81b0bc848e87be.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "interpretar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/interpretar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/interpretar.json",
+    "report": "docs/grammar-review/reports/d02f2f42efdd615e9c65cfad.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "introducir",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/introducir.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/introducir.json",
+    "report": "docs/grammar-review/reports/3feba87ffb7733de5204dcd5.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "invertir",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/invertir.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/invertir.json",
+    "report": "docs/grammar-review/reports/a6d8b8947e5e1c68841f933a.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "investigar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/investigar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/investigar.json",
+    "report": "docs/grammar-review/reports/854f4d6e60b1c2917ca81083.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "invitar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/invitar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/invitar.json",
+    "report": "docs/grammar-review/reports/2647256e751ebe3968fdd07a.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "ir",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/ir.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/ir.json",
+    "report": "docs/grammar-review/reports/06a213ba4dc6f1147a70453f.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "jugar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/jugar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/jugar.json",
+    "report": "docs/grammar-review/reports/54b8357eca06c8b0a5fb97c5.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "juzgar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/juzgar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/juzgar.json",
+    "report": "docs/grammar-review/reports/3805804feb156e44cf1becd1.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "lamentar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/lamentar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/lamentar.json",
+    "report": "docs/grammar-review/reports/3ffb2cd17f38aadf71ef265c.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "lanzar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/lanzar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/lanzar.json",
+    "report": "docs/grammar-review/reports/4f0b2e4ad28159195c24448e.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "leer",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/leer.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/leer.json",
+    "report": "docs/grammar-review/reports/e80725023ff209a6efb60355.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "levantar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/levantar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/levantar.json",
+    "report": "docs/grammar-review/reports/f18f2bb22a58d46a28446295.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "limpiar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/limpiar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/limpiar.json",
+    "report": "docs/grammar-review/reports/a8cc2f75bdbf030033e3e2b4.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "llamar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/llamar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/llamar.json",
+    "report": "docs/grammar-review/reports/9a072b3d872083a13faa1bf5.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "llegar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/llegar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/llegar.json",
+    "report": "docs/grammar-review/reports/60b78f2332a49ac9d5d30b78.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "llevar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/llevar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/llevar.json",
+    "report": "docs/grammar-review/reports/bce9d50befec3e09ecf71b67.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "lograr",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/lograr.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/lograr.json",
+    "report": "docs/grammar-review/reports/c0ac3b6c037f69eefec79636.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "luchar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/luchar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/luchar.json",
+    "report": "docs/grammar-review/reports/f4f35b9830bb5a6c384beb2d.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "mandar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/mandar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/mandar.json",
+    "report": "docs/grammar-review/reports/20cb3b7b6ffbcd7817fafe19.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "manejar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/manejar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/manejar.json",
+    "report": "docs/grammar-review/reports/5e62f129bf55fc12befb2bcd.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "manifestar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/manifestar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/manifestar.json",
+    "report": "docs/grammar-review/reports/ef7d6d9462d822e73cba6436.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "mantener",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/mantener.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/mantener.json",
+    "report": "docs/grammar-review/reports/c33a9e86945249c11081de2e.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "marcar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/marcar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/marcar.json",
+    "report": "docs/grammar-review/reports/bdcee8ecc4dca61cb8fbf5b9.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "matar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/matar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/matar.json",
+    "report": "docs/grammar-review/reports/d73a0744fa24a6cb3dd6c6e3.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "mediar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/mediar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/mediar.json",
+    "report": "docs/grammar-review/reports/73319a559990382c9cef3401.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "medir",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/medir.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/medir.json",
+    "report": "docs/grammar-review/reports/b0ef66fe1248708fdcc8e2ae.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "mejorar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/mejorar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/mejorar.json",
+    "report": "docs/grammar-review/reports/c2c1303eed68608e8c540387.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "merecer",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/merecer.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/merecer.json",
+    "report": "docs/grammar-review/reports/34d836608019f0f965343e0f.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "meter",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/meter.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/meter.json",
+    "report": "docs/grammar-review/reports/c56ddae5e059bd8fc97c7008.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "mirar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/mirar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/mirar.json",
+    "report": "docs/grammar-review/reports/375b3bd01e3bb3ba2e3b33da.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "modificar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/modificar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/modificar.json",
+    "report": "docs/grammar-review/reports/afb268fd06587659ea334c3f.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "montar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/montar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/montar.json",
+    "report": "docs/grammar-review/reports/f887e3a21a0f80298d64d9fa.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "morir",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/morir.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/morir.json",
+    "report": "docs/grammar-review/reports/ef85afe8a75d7fcb6dc196e5.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "mostrar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/mostrar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/mostrar.json",
+    "report": "docs/grammar-review/reports/659524619570eb85e204b47a.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "mover",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/mover.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/mover.json",
+    "report": "docs/grammar-review/reports/74943a889399fd11a2f20ace.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "nacer",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/nacer.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/nacer.json",
+    "report": "docs/grammar-review/reports/fa9bfc0bf4b4e17c39e89ce6.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "nadar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/nadar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/nadar.json",
+    "report": "docs/grammar-review/reports/4c26575c8a35b130e870873e.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "necesitar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/necesitar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/necesitar.json",
+    "report": "docs/grammar-review/reports/c9132141d85a176833dedf77.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "negar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/negar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/negar.json",
+    "report": "docs/grammar-review/reports/eaa42d978c601b3df75b11de.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "negociar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/negociar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/negociar.json",
+    "report": "docs/grammar-review/reports/bc8ce09a03d58a66527aded2.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "nevar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/nevar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/nevar.json",
+    "report": "docs/grammar-review/reports/003e45098ca17e25816f75f4.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "obligar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/obligar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/obligar.json",
+    "report": "docs/grammar-review/reports/ca47b06cc31a9e3881d1d05a.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "obtener",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/obtener.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/obtener.json",
+    "report": "docs/grammar-review/reports/ea0d15dcccded339277779ff.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "ocupar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/ocupar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/ocupar.json",
+    "report": "docs/grammar-review/reports/73e441d2b83273b090957a74.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "ocurrir",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/ocurrir.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/ocurrir.json",
+    "report": "docs/grammar-review/reports/ab586755b9820787e6e419cb.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "ofrecer",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/ofrecer.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/ofrecer.json",
+    "report": "docs/grammar-review/reports/2d1e42d9ae78df1c6be7d665.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "olvidar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/olvidar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/olvidar.json",
+    "report": "docs/grammar-review/reports/12b15e63fae01cbcc497e47d.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "oponer",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/oponer.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/oponer.json",
+    "report": "docs/grammar-review/reports/ebe2f091a550ed08b07d1e42.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "organizar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/organizar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/organizar.json",
+    "report": "docs/grammar-review/reports/7e6d91543859517daa02dda7.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "pagar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/pagar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/pagar.json",
+    "report": "docs/grammar-review/reports/341b209c51a2dd735d805dba.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "parar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/parar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/parar.json",
+    "report": "docs/grammar-review/reports/4c38d6bf26ca1d6c500d25c6.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "parecer",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/parecer.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/parecer.json",
+    "report": "docs/grammar-review/reports/e43952104c2f2a9e0236fd2d.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "participar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/participar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/participar.json",
+    "report": "docs/grammar-review/reports/39ca6055468fcee4895fa22f.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "partir",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/partir.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/partir.json",
+    "report": "docs/grammar-review/reports/7a8eb35a3408c2b488f4822f.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "pasar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/pasar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/pasar.json",
+    "report": "docs/grammar-review/reports/ac9be09d3f339f437ab8d609.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "pedir",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/pedir.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/pedir.json",
+    "report": "docs/grammar-review/reports/c3ebc0528b4352f6675b2451.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "pegar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/pegar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/pegar.json",
+    "report": "docs/grammar-review/reports/5bb821f5dccbc04a98b4550c.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "pensar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/pensar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/pensar.json",
+    "report": "docs/grammar-review/reports/1d46f0f3f7d16755bb8e51f0.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "perder",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/perder.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/perder.json",
+    "report": "docs/grammar-review/reports/c88742d9f7edbb8c3f0b6db5.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "permanecer",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/permanecer.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/permanecer.json",
+    "report": "docs/grammar-review/reports/6e5a78afc1f8871b4fcec85e.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "permitir",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/permitir.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/permitir.json",
+    "report": "docs/grammar-review/reports/1d948b958d230cc5f670ee26.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "pertenecer",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/pertenecer.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/pertenecer.json",
+    "report": "docs/grammar-review/reports/60c15df71079182b3532d3d7.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "pesar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/pesar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/pesar.json",
+    "report": "docs/grammar-review/reports/e777638b9ace99fef45508e8.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "picar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/picar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/picar.json",
+    "report": "docs/grammar-review/reports/b700cd6cbb09860e1c690e93.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "poder",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/poder.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/poder.json",
+    "report": "docs/grammar-review/reports/4155389a6b00804828d8be35.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "poner",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/poner.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/poner.json",
+    "report": "docs/grammar-review/reports/2b9df5aa2ccd832aef799971.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "practicar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/practicar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/practicar.json",
+    "report": "docs/grammar-review/reports/313c3657478777d6ce879e64.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "preferir",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/preferir.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/preferir.json",
+    "report": "docs/grammar-review/reports/b3e57e3f8ca6cd8f2989494c.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "preguntar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/preguntar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/preguntar.json",
+    "report": "docs/grammar-review/reports/ffbb819362df1261cd79f111.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "preparar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/preparar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/preparar.json",
+    "report": "docs/grammar-review/reports/d80874c1308886099e001f2f.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "presentar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/presentar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/presentar.json",
+    "report": "docs/grammar-review/reports/4b4b404e376c113061371964.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "prever",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/prever.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/prever.json",
+    "report": "docs/grammar-review/reports/3935e14fcfe001b2e0f1f823.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  },
+  {
+    "lemma": "probar",
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/probar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/probar.json",
+    "report": "docs/grammar-review/reports/9f28df9e578d5ecda8d302ae.json",
+    "ids": [
+      "es.condicional_perfecto.indicativo:1:singular",
+      "es.condicional_perfecto.indicativo:2:singular",
+      "es.condicional_perfecto.indicativo:3:singular",
+      "es.condicional_perfecto.indicativo:1:plural",
+      "es.condicional_perfecto.indicativo:2:plural",
+      "es.condicional_perfecto.indicativo:3:plural"
+    ]
+  }
+]

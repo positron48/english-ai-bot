@@ -1,0 +1,31 @@
+{
+  "existing_files": 25269,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/leer.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/leer.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/levantar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/levantar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/limpiar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/limpiar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/llamar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/llamar.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-leer-llamar",
+    "docs/grammar-review/reports/e80725023ff209a6efb60355.json",
+    "docs/grammar-review/reports/f18f2bb22a58d46a28446295.json",
+    "docs/grammar-review/reports/a8cc2f75bdbf030033e3e2b4.json",
+    "docs/grammar-review/reports/9a072b3d872083a13faa1bf5.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/leer.json": "e404b62f2e29da563503a5948af954eb66511cd8e5ae79d64b8f250f33aca4a3",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/leer.json": "e404b62f2e29da563503a5948af954eb66511cd8e5ae79d64b8f250f33aca4a3",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/levantar.json": "1b7fde022b20649049036d1442dc7ae159fdcca8b59bff6442741daa2887f7eb",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/levantar.json": "1b7fde022b20649049036d1442dc7ae159fdcca8b59bff6442741daa2887f7eb",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/limpiar.json": "0b5b8d0cc382d61d7b458dc8b01f5a183cf29b4a5ab29b1f843faee0d16ffa29",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/limpiar.json": "0b5b8d0cc382d61d7b458dc8b01f5a183cf29b4a5ab29b1f843faee0d16ffa29",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/llamar.json": "f48e70d2c6061b4de77d30902774c03419ae4ae32605fc3702822fb6bb5ee429",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/llamar.json": "f48e70d2c6061b4de77d30902774c03419ae4ae32605fc3702822fb6bb5ee429"
+  }
+}

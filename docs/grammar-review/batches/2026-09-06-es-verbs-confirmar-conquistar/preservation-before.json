@@ -1,0 +1,26 @@
+{
+  "existing_files": 24989,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/confirmar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/confirmar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/conocer.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/conocer.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/conquistar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/conquistar.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-confirmar-conquistar",
+    "docs/grammar-review/reports/ca620e043bc708f1982f53bd.json",
+    "docs/grammar-review/reports/1d7e01d6494857cdd78b50f0.json",
+    "docs/grammar-review/reports/db88329a376729cd974d159c.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/confirmar.json": "4d5d41cded882a0b66a52756ac7b4a4fd3f74da411328c9f1688f8de6a54efea",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/confirmar.json": "4d5d41cded882a0b66a52756ac7b4a4fd3f74da411328c9f1688f8de6a54efea",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/conocer.json": "990ea769a3a9171aa675e4412a378ec52c3487a91e492d8bf588d2c3b5851462",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/conocer.json": "990ea769a3a9171aa675e4412a378ec52c3487a91e492d8bf588d2c3b5851462",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/conquistar.json": "d9c3f57a2d6535428153f180455779d81511eb3d221406df20f9d78653ce842c",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/conquistar.json": "d9c3f57a2d6535428153f180455779d81511eb3d221406df20f9d78653ce842c"
+  }
+}

@@ -1,0 +1,536 @@
+{
+  "_sources": {
+    "jehle_csv": "resources/verbs/jehle_verb_database.csv",
+    "sha256": "f77f01d536cd351584051d76902ff8051ab1b945a38e69c7ed02da78ab082ea8"
+  },
+  "_slots": [
+    "1:singular",
+    "2:singular",
+    "3:singular",
+    "1:plural",
+    "2:plural",
+    "3:plural"
+  ],
+  "forms": {
+    "tratar": {
+      "es.presente.indicativo": [
+        "trato",
+        "tratas",
+        "trata",
+        "tratamos",
+        "tratáis",
+        "tratan"
+      ],
+      "es.preterito_imperfecto.indicativo": [
+        "trataba",
+        "tratabas",
+        "trataba",
+        "tratábamos",
+        "tratabais",
+        "trataban"
+      ],
+      "es.preterito_indefinido.indicativo": [
+        "traté",
+        "trataste",
+        "trató",
+        "tratamos",
+        "tratasteis",
+        "trataron"
+      ],
+      "es.futuro_simple.indicativo": [
+        "trataré",
+        "tratarás",
+        "tratará",
+        "trataremos",
+        "trataréis",
+        "tratarán"
+      ],
+      "es.condicional_simple.indicativo": [
+        "trataría",
+        "tratarías",
+        "trataría",
+        "trataríamos",
+        "trataríais",
+        "tratarían"
+      ],
+      "es.preterito_perfecto_compuesto.indicativo": [
+        "he tratado",
+        "has tratado",
+        "ha tratado",
+        "hemos tratado",
+        "habéis tratado",
+        "han tratado"
+      ],
+      "es.preterito_pluscuamperfecto.indicativo": [
+        "había tratado",
+        "habías tratado",
+        "había tratado",
+        "habíamos tratado",
+        "habíais tratado",
+        "habían tratado"
+      ],
+      "es.preterito_anterior.indicativo": [
+        "hube tratado",
+        "hubiste tratado",
+        "hubo tratado",
+        "hubimos tratado",
+        "hubisteis tratado",
+        "hubieron tratado"
+      ],
+      "es.futuro_perfecto.indicativo": [
+        "habré tratado",
+        "habrás tratado",
+        "habrá tratado",
+        "habremos tratado",
+        "habréis tratado",
+        "habrán tratado"
+      ],
+      "es.condicional_perfecto.indicativo": [
+        "habría tratado",
+        "habrías tratado",
+        "habría tratado",
+        "habríamos tratado",
+        "habríais tratado",
+        "habrían tratado"
+      ],
+      "es.presente.subjuntivo": [
+        "trate",
+        "trates",
+        "trate",
+        "tratemos",
+        "tratéis",
+        "traten"
+      ],
+      "es.preterito_imperfecto.subjuntivo": [
+        "tratara",
+        "trataras",
+        "tratara",
+        "tratáramos",
+        "tratarais",
+        "trataran"
+      ],
+      "es.futuro_simple.subjuntivo": [
+        "tratare",
+        "tratares",
+        "tratare",
+        "tratáremos",
+        "tratareis",
+        "trataren"
+      ],
+      "es.preterito_perfecto.subjuntivo": [
+        "haya tratado",
+        "hayas tratado",
+        "haya tratado",
+        "hayamos tratado",
+        "hayáis tratado",
+        "hayan tratado"
+      ],
+      "es.preterito_pluscuamperfecto.subjuntivo": [
+        "hubiera tratado",
+        "hubieras tratado",
+        "hubiera tratado",
+        "hubiéramos tratado",
+        "hubierais tratado",
+        "hubieran tratado"
+      ],
+      "es.futuro_perfecto.subjuntivo": [
+        "hubiere tratado",
+        "hubieres tratado",
+        "hubiere tratado",
+        "hubiéremos tratado",
+        "hubiereis tratado",
+        "hubieren tratado"
+      ]
+    },
+    "ubicar": {
+      "es.presente.indicativo": [
+        "ubico",
+        "ubicas",
+        "ubica",
+        "ubicamos",
+        "ubicáis",
+        "ubican"
+      ],
+      "es.preterito_imperfecto.indicativo": [
+        "ubicaba",
+        "ubicabas",
+        "ubicaba",
+        "ubicábamos",
+        "ubicabais",
+        "ubicaban"
+      ],
+      "es.preterito_indefinido.indicativo": [
+        "ubiqué",
+        "ubicaste",
+        "ubicó",
+        "ubicamos",
+        "ubicasteis",
+        "ubicaron"
+      ],
+      "es.futuro_simple.indicativo": [
+        "ubicaré",
+        "ubicarás",
+        "ubicará",
+        "ubicaremos",
+        "ubicaréis",
+        "ubicarán"
+      ],
+      "es.condicional_simple.indicativo": [
+        "ubicaría",
+        "ubicarías",
+        "ubicaría",
+        "ubicaríamos",
+        "ubicaríais",
+        "ubicarían"
+      ],
+      "es.preterito_perfecto_compuesto.indicativo": [
+        "he ubicado",
+        "has ubicado",
+        "ha ubicado",
+        "hemos ubicado",
+        "habéis ubicado",
+        "han ubicado"
+      ],
+      "es.preterito_pluscuamperfecto.indicativo": [
+        "había ubicado",
+        "habías ubicado",
+        "había ubicado",
+        "habíamos ubicado",
+        "habíais ubicado",
+        "habían ubicado"
+      ],
+      "es.preterito_anterior.indicativo": [
+        "hube ubicado",
+        "hubiste ubicado",
+        "hubo ubicado",
+        "hubimos ubicado",
+        "hubisteis ubicado",
+        "hubieron ubicado"
+      ],
+      "es.futuro_perfecto.indicativo": [
+        "habré ubicado",
+        "habrás ubicado",
+        "habrá ubicado",
+        "habremos ubicado",
+        "habréis ubicado",
+        "habrán ubicado"
+      ],
+      "es.condicional_perfecto.indicativo": [
+        "habría ubicado",
+        "habrías ubicado",
+        "habría ubicado",
+        "habríamos ubicado",
+        "habríais ubicado",
+        "habrían ubicado"
+      ],
+      "es.presente.subjuntivo": [
+        "ubique",
+        "ubiques",
+        "ubique",
+        "ubiquemos",
+        "ubiquéis",
+        "ubiquen"
+      ],
+      "es.preterito_imperfecto.subjuntivo": [
+        "ubicara",
+        "ubicaras",
+        "ubicara",
+        "ubicáramos",
+        "ubicarais",
+        "ubicaran"
+      ],
+      "es.futuro_simple.subjuntivo": [
+        "ubicare",
+        "ubicares",
+        "ubicare",
+        "ubicáremos",
+        "ubicareis",
+        "ubicaren"
+      ],
+      "es.preterito_perfecto.subjuntivo": [
+        "haya ubicado",
+        "hayas ubicado",
+        "haya ubicado",
+        "hayamos ubicado",
+        "hayáis ubicado",
+        "hayan ubicado"
+      ],
+      "es.preterito_pluscuamperfecto.subjuntivo": [
+        "hubiera ubicado",
+        "hubieras ubicado",
+        "hubiera ubicado",
+        "hubiéramos ubicado",
+        "hubierais ubicado",
+        "hubieran ubicado"
+      ],
+      "es.futuro_perfecto.subjuntivo": [
+        "hubiere ubicado",
+        "hubieres ubicado",
+        "hubiere ubicado",
+        "hubiéremos ubicado",
+        "hubiereis ubicado",
+        "hubieren ubicado"
+      ]
+    },
+    "unir": {
+      "es.presente.indicativo": [
+        "uno",
+        "unes",
+        "une",
+        "unimos",
+        "unís",
+        "unen"
+      ],
+      "es.preterito_imperfecto.indicativo": [
+        "unía",
+        "unías",
+        "unía",
+        "uníamos",
+        "uníais",
+        "unían"
+      ],
+      "es.preterito_indefinido.indicativo": [
+        "uní",
+        "uniste",
+        "unió",
+        "unimos",
+        "unisteis",
+        "unieron"
+      ],
+      "es.futuro_simple.indicativo": [
+        "uniré",
+        "unirás",
+        "unirá",
+        "uniremos",
+        "uniréis",
+        "unirán"
+      ],
+      "es.condicional_simple.indicativo": [
+        "uniría",
+        "unirías",
+        "uniría",
+        "uniríamos",
+        "uniríais",
+        "unirían"
+      ],
+      "es.preterito_perfecto_compuesto.indicativo": [
+        "he unido",
+        "has unido",
+        "ha unido",
+        "hemos unido",
+        "habéis unido",
+        "han unido"
+      ],
+      "es.preterito_pluscuamperfecto.indicativo": [
+        "había unido",
+        "habías unido",
+        "había unido",
+        "habíamos unido",
+        "habíais unido",
+        "habían unido"
+      ],
+      "es.preterito_anterior.indicativo": [
+        "hube unido",
+        "hubiste unido",
+        "hubo unido",
+        "hubimos unido",
+        "hubisteis unido",
+        "hubieron unido"
+      ],
+      "es.futuro_perfecto.indicativo": [
+        "habré unido",
+        "habrás unido",
+        "habrá unido",
+        "habremos unido",
+        "habréis unido",
+        "habrán unido"
+      ],
+      "es.condicional_perfecto.indicativo": [
+        "habría unido",
+        "habrías unido",
+        "habría unido",
+        "habríamos unido",
+        "habríais unido",
+        "habrían unido"
+      ],
+      "es.presente.subjuntivo": [
+        "una",
+        "unas",
+        "una",
+        "unamos",
+        "unáis",
+        "unan"
+      ],
+      "es.preterito_imperfecto.subjuntivo": [
+        "uniera",
+        "unieras",
+        "uniera",
+        "uniéramos",
+        "unierais",
+        "unieran"
+      ],
+      "es.futuro_simple.subjuntivo": [
+        "uniere",
+        "unieres",
+        "uniere",
+        "uniéremos",
+        "uniereis",
+        "unieren"
+      ],
+      "es.preterito_perfecto.subjuntivo": [
+        "haya unido",
+        "hayas unido",
+        "haya unido",
+        "hayamos unido",
+        "hayáis unido",
+        "hayan unido"
+      ],
+      "es.preterito_pluscuamperfecto.subjuntivo": [
+        "hubiera unido",
+        "hubieras unido",
+        "hubiera unido",
+        "hubiéramos unido",
+        "hubierais unido",
+        "hubieran unido"
+      ],
+      "es.futuro_perfecto.subjuntivo": [
+        "hubiere unido",
+        "hubieres unido",
+        "hubiere unido",
+        "hubiéremos unido",
+        "hubiereis unido",
+        "hubieren unido"
+      ]
+    },
+    "usar": {
+      "es.presente.indicativo": [
+        "uso",
+        "usas",
+        "usa",
+        "usamos",
+        "usáis",
+        "usan"
+      ],
+      "es.preterito_imperfecto.indicativo": [
+        "usaba",
+        "usabas",
+        "usaba",
+        "usábamos",
+        "usabais",
+        "usaban"
+      ],
+      "es.preterito_indefinido.indicativo": [
+        "usé",
+        "usaste",
+        "usó",
+        "usamos",
+        "usasteis",
+        "usaron"
+      ],
+      "es.futuro_simple.indicativo": [
+        "usaré",
+        "usarás",
+        "usará",
+        "usaremos",
+        "usaréis",
+        "usarán"
+      ],
+      "es.condicional_simple.indicativo": [
+        "usaría",
+        "usarías",
+        "usaría",
+        "usaríamos",
+        "usaríais",
+        "usarían"
+      ],
+      "es.preterito_perfecto_compuesto.indicativo": [
+        "he usado",
+        "has usado",
+        "ha usado",
+        "hemos usado",
+        "habéis usado",
+        "han usado"
+      ],
+      "es.preterito_pluscuamperfecto.indicativo": [
+        "había usado",
+        "habías usado",
+        "había usado",
+        "habíamos usado",
+        "habíais usado",
+        "habían usado"
+      ],
+      "es.preterito_anterior.indicativo": [
+        "hube usado",
+        "hubiste usado",
+        "hubo usado",
+        "hubimos usado",
+        "hubisteis usado",
+        "hubieron usado"
+      ],
+      "es.futuro_perfecto.indicativo": [
+        "habré usado",
+        "habrás usado",
+        "habrá usado",
+        "habremos usado",
+        "habréis usado",
+        "habrán usado"
+      ],
+      "es.condicional_perfecto.indicativo": [
+        "habría usado",
+        "habrías usado",
+        "habría usado",
+        "habríamos usado",
+        "habríais usado",
+        "habrían usado"
+      ],
+      "es.presente.subjuntivo": [
+        "use",
+        "uses",
+        "use",
+        "usemos",
+        "uséis",
+        "usen"
+      ],
+      "es.preterito_imperfecto.subjuntivo": [
+        "usara",
+        "usaras",
+        "usara",
+        "usáramos",
+        "usarais",
+        "usaran"
+      ],
+      "es.futuro_simple.subjuntivo": [
+        "usare",
+        "usares",
+        "usare",
+        "usáremos",
+        "usareis",
+        "usaren"
+      ],
+      "es.preterito_perfecto.subjuntivo": [
+        "haya usado",
+        "hayas usado",
+        "haya usado",
+        "hayamos usado",
+        "hayáis usado",
+        "hayan usado"
+      ],
+      "es.preterito_pluscuamperfecto.subjuntivo": [
+        "hubiera usado",
+        "hubieras usado",
+        "hubiera usado",
+        "hubiéramos usado",
+        "hubierais usado",
+        "hubieran usado"
+      ],
+      "es.futuro_perfecto.subjuntivo": [
+        "hubiere usado",
+        "hubieres usado",
+        "hubiere usado",
+        "hubiéremos usado",
+        "hubiereis usado",
+        "hubieren usado"
+      ]
+    }
+  }
+}

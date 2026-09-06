@@ -1,0 +1,488 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/chapters/038.es.grammar.present_irregulars_reflexives_gustar.gustar_encantar_interesar_liking_indirect_pattern/03-questions.json",
+  "source_sha256": "05643bf8cf75b034f0cf3199aa3b32ae2291ab9aa17362b9362e53675083585a",
+  "context_sha256": "c3c6c66a117d6fd70d742236764a19db20e49b3ab873a707ce5de682a9596f94",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
+  "reviewed_at": "2026-09-04T17:29:24.488606+00:00",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
+  "questions": [
+    {
+      "id": "q038_b1_01",
+      "decision": "ok",
+      "note": "El pan — подлежащее.",
+      "verification": "ok"
+    },
+    {
+      "id": "q038_b1_02",
+      "decision": "ok",
+      "note": "Gustan согласуется с los libros.",
+      "verification": "ok"
+    },
+    {
+      "id": "q038_b1_03",
+      "decision": "fixed",
+      "note": "Естественный перевод вместо расплывчатого агента любви.",
+      "verification": "ok"
+    },
+    {
+      "id": "q038_b1_04",
+      "decision": "ok",
+      "note": "Esta idea — подлежащее, te — кому.",
+      "verification": "ok"
+    },
+    {
+      "id": "q038_b1_05",
+      "decision": "ok",
+      "note": "Не я нравлюсь дождю.",
+      "verification": "ok"
+    },
+    {
+      "id": "q038_b1_06",
+      "decision": "ok",
+      "note": "Yo как получатель даёт me.",
+      "verification": "ok"
+    },
+    {
+      "id": "q038_b1_07",
+      "decision": "fixed",
+      "note": "Убрана подсказка числа; указано время.",
+      "verification": "ok"
+    },
+    {
+      "id": "q038_b1_08",
+      "decision": "ok",
+      "note": "Me gusta el café con leche — единственный верный.",
+      "verification": "ok"
+    },
+    {
+      "id": "q038_b1_09",
+      "decision": "ok",
+      "note": "Порядок задан ограничениями.",
+      "verification": "ok"
+    },
+    {
+      "id": "q038_b1_10",
+      "decision": "ok",
+      "note": "Me gusta la música — точный перевод.",
+      "verification": "ok"
+    },
+    {
+      "id": "q038_b1_11",
+      "decision": "ok",
+      "note": "Gusta согласуется с el jazz.",
+      "verification": "ok"
+    },
+    {
+      "id": "q038_b1_12",
+      "decision": "ok",
+      "note": "Te отвечает кому.",
+      "verification": "ok"
+    },
+    {
+      "id": "q038_b2_01",
+      "decision": "ok",
+      "note": "Las manzanas требует gustan.",
+      "verification": "ok"
+    },
+    {
+      "id": "q038_b2_02",
+      "decision": "ok",
+      "note": "Este plan требует gusta при nos.",
+      "verification": "ok"
+    },
+    {
+      "id": "q038_b2_03",
+      "decision": "ok",
+      "note": "Los documentos требует gustan.",
+      "verification": "ok"
+    },
+    {
+      "id": "q038_b2_04",
+      "decision": "fixed",
+      "note": "Убрано неверное сведение двух занятий к одному событию.",
+      "verification": "ok"
+    },
+    {
+      "id": "q038_b2_05",
+      "decision": "ok",
+      "note": "Nos не определяет число gustar.",
+      "verification": "ok"
+    },
+    {
+      "id": "q038_b2_06",
+      "decision": "fixed",
+      "note": "Убрана подсказка числа, указано время.",
+      "verification": "ok"
+    },
+    {
+      "id": "q038_b2_07",
+      "decision": "fixed",
+      "note": "Убрана подсказка числа, указано время.",
+      "verification": "ok"
+    },
+    {
+      "id": "q038_b2_08",
+      "decision": "ok",
+      "note": "Estos planes требует gustan.",
+      "verification": "ok"
+    },
+    {
+      "id": "q038_b2_09",
+      "decision": "fixed",
+      "note": "Исправлена ошибочная ссылка на ellos/ellas вместо las ideas.",
+      "verification": "ok"
+    },
+    {
+      "id": "q038_b2_10",
+      "decision": "ok",
+      "note": "Ограничения задают порядок.",
+      "verification": "ok"
+    },
+    {
+      "id": "q038_b2_11",
+      "decision": "fixed",
+      "note": "Объяснено инфинитивное подлежащее без выдуманного единственного события.",
+      "verification": "ok"
+    },
+    {
+      "id": "q038_b2_12",
+      "decision": "ok",
+      "note": "Los gatos задаёт множественное число.",
+      "verification": "ok"
+    },
+    {
+      "id": "q038_b3_01",
+      "decision": "ok",
+      "note": "Vosotros адресат os.",
+      "verification": "ok"
+    },
+    {
+      "id": "q038_b3_02",
+      "decision": "fixed",
+      "note": "Убран повтор Le.",
+      "verification": "ok"
+    },
+    {
+      "id": "q038_b3_03",
+      "decision": "ok",
+      "note": "Él/ella/usted адресат le.",
+      "verification": "ok"
+    },
+    {
+      "id": "q038_b3_04",
+      "decision": "ok",
+      "note": "Les согласовано с mis amigos.",
+      "verification": "ok"
+    },
+    {
+      "id": "q038_b3_05",
+      "decision": "ok",
+      "note": "Para mí не заменяет me в модели.",
+      "verification": "ok"
+    },
+    {
+      "id": "q038_b3_06",
+      "decision": "ok",
+      "note": "Ellos/ellas адресат les.",
+      "verification": "ok"
+    },
+    {
+      "id": "q038_b3_07",
+      "decision": "ok",
+      "note": "Nosotros адресат nos.",
+      "verification": "ok"
+    },
+    {
+      "id": "q038_b3_08",
+      "decision": "ok",
+      "note": "Les gusta viajar соответствует всем ограничениям.",
+      "verification": "ok"
+    },
+    {
+      "id": "q038_b3_09",
+      "decision": "ok",
+      "note": "Nos перед gusta — верный порядок.",
+      "verification": "ok"
+    },
+    {
+      "id": "q038_b3_10",
+      "decision": "ok",
+      "note": "Le — косвенное дополнение.",
+      "verification": "ok"
+    },
+    {
+      "id": "q038_b3_11",
+      "decision": "ok",
+      "note": "Порядок задан началом и концом.",
+      "verification": "ok"
+    },
+    {
+      "id": "q038_b3_12",
+      "decision": "fixed",
+      "note": "Убран повтор él.",
+      "verification": "ok"
+    },
+    {
+      "id": "q038_b4_01",
+      "decision": "ok",
+      "note": "La lluvia требует encanta.",
+      "verification": "ok"
+    },
+    {
+      "id": "q038_b4_02",
+      "decision": "ok",
+      "note": "Tus fotos требует encantan.",
+      "verification": "ok"
+    },
+    {
+      "id": "q038_b4_03",
+      "decision": "fixed",
+      "note": "Убран повтор interesan и подсказка числа.",
+      "verification": "ok"
+    },
+    {
+      "id": "q038_b4_04",
+      "decision": "ok",
+      "note": "Las noticias требует interesan.",
+      "verification": "ok"
+    },
+    {
+      "id": "q038_b4_05",
+      "decision": "ok",
+      "note": "La lluvia остаётся подлежащим.",
+      "verification": "ok"
+    },
+    {
+      "id": "q038_b4_06",
+      "decision": "ok",
+      "note": "Encanta означает очень нравится.",
+      "verification": "ok"
+    },
+    {
+      "id": "q038_b4_07",
+      "decision": "fixed",
+      "note": "Убрана подсказка числа, добавлено время.",
+      "verification": "ok"
+    },
+    {
+      "id": "q038_b4_08",
+      "decision": "fixed",
+      "note": "Убрана подсказка числа, добавлено время.",
+      "verification": "ok"
+    },
+    {
+      "id": "q038_b4_09",
+      "decision": "fixed",
+      "note": "Признано допустимым interesarse en, задана нужная синтаксическая роль.",
+      "verification": "ok"
+    },
+    {
+      "id": "q038_b4_10",
+      "decision": "ok",
+      "note": "Encantan согласуется с estas fotos.",
+      "verification": "ok"
+    },
+    {
+      "id": "q038_b4_11",
+      "decision": "ok",
+      "note": "Позиции наречия и прилагательного заданы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q038_b4_12",
+      "decision": "ok",
+      "note": "Число la arquitectura moderna определяет interesa.",
+      "verification": "ok"
+    },
+    {
+      "id": "q038_b5_01",
+      "decision": "ok",
+      "note": "A mí требует me в полном предложении.",
+      "verification": "ok"
+    },
+    {
+      "id": "q038_b5_02",
+      "decision": "fixed",
+      "note": "Убран повтор les.",
+      "verification": "ok"
+    },
+    {
+      "id": "q038_b5_03",
+      "decision": "ok",
+      "note": "A vosotros соответствует os.",
+      "verification": "ok"
+    },
+    {
+      "id": "q038_b5_04",
+      "decision": "ok",
+      "note": "A mí не заменяет me.",
+      "verification": "ok"
+    },
+    {
+      "id": "q038_b5_05",
+      "decision": "ok",
+      "note": "Encantan согласовано с tardes.",
+      "verification": "ok"
+    },
+    {
+      "id": "q038_b5_06",
+      "decision": "ok",
+      "note": "A ellos требует les.",
+      "verification": "ok"
+    },
+    {
+      "id": "q038_b5_07",
+      "decision": "ok",
+      "note": "A ti требует te.",
+      "verification": "ok"
+    },
+    {
+      "id": "q038_b5_08",
+      "decision": "ok",
+      "note": "Верна пара nosotros nos и vosotros os.",
+      "verification": "ok"
+    },
+    {
+      "id": "q038_b5_09",
+      "decision": "ok",
+      "note": "Перед вынесенным косвенным дополнением нужно a.",
+      "verification": "ok"
+    },
+    {
+      "id": "q038_b5_10",
+      "decision": "fixed",
+      "note": "Контраст помещён в естественный диалог.",
+      "verification": "ok"
+    },
+    {
+      "id": "q038_b5_11",
+      "decision": "ok",
+      "note": "La montaña допустимо означает горы в общем.",
+      "verification": "ok"
+    },
+    {
+      "id": "q038_b5_12",
+      "decision": "ok",
+      "note": "A ellos les gustan согласовано с las ideas.",
+      "verification": "ok"
+    },
+    {
+      "id": "q038_b6_01",
+      "decision": "fixed",
+      "note": "Убрана подсказка неверного варианта.",
+      "verification": "ok"
+    },
+    {
+      "id": "q038_b6_02",
+      "decision": "fixed",
+      "note": "Убрана подсказка согласования из задания на перевод.",
+      "verification": "ok"
+    },
+    {
+      "id": "q038_b6_03",
+      "decision": "fixed",
+      "note": "Убрано ложное противопоставление русскому порядку.",
+      "verification": "ok"
+    },
+    {
+      "id": "q038_b6_04",
+      "decision": "ok",
+      "note": "Yo gusto los libros не передаёт базовое значение.",
+      "verification": "ok"
+    },
+    {
+      "id": "q038_b6_05",
+      "decision": "ok",
+      "note": "Gustan согласуется с las reuniones.",
+      "verification": "ok"
+    },
+    {
+      "id": "q038_b6_06",
+      "decision": "ok",
+      "note": "Los niños как получатели требуют les.",
+      "verification": "ok"
+    },
+    {
+      "id": "q038_b6_07",
+      "decision": "ok",
+      "note": "A los turistas требует les.",
+      "verification": "ok"
+    },
+    {
+      "id": "q038_b6_08",
+      "decision": "ok",
+      "note": "Верный порядок и оба согласования.",
+      "verification": "ok"
+    },
+    {
+      "id": "q038_b6_09",
+      "decision": "ok",
+      "note": "No me gustan согласовано с reuniones.",
+      "verification": "ok"
+    },
+    {
+      "id": "q038_b6_10",
+      "decision": "ok",
+      "note": "Условия задают порядок.",
+      "verification": "ok"
+    },
+    {
+      "id": "q038_b6_11",
+      "decision": "fixed",
+      "note": "Убрана служебная безопасная A2-модель; допустимые формы с людьми признаны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q038_b6_12",
+      "decision": "ok",
+      "note": "Me interesa la historia local соответствует переводу.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-04-es037-040/check.py",
+      "result": "pass",
+      "evidence": "All 572 IDs/contracts, decisions versus clean pre-batch HEAD, fingerprints, native training validation, signatures and source-final-embedded equality; validation.log."
+    },
+    {
+      "command": "go test ./internal/grammarbundle ./internal/repository -run 'TestValidateEmbeddedBundleID|TestGrammar.*Bundle|TestGrammar.*Reorder' -count=1",
+      "result": "pass",
+      "evidence": "Both packages passed on final integrated data; go-tests.log."
+    },
+    {
+      "command": "git diff --check; git -C courses/spanish-grammar diff --check; git -C courses/english-grammar diff --check",
+      "result": "pass",
+      "evidence": "Three separately executed commands exit 0; diff-check.log. All 1040 earlier dirty files outside review docs preserved; preservation.log."
+    },
+    {
+      "command": "cd courses/spanish-grammar && bash scripts/assemble-chapter.sh 038.es.grammar.present_irregulars_reflexives_gustar.gustar_encantar_interesar_liking_indirect_pattern",
+      "result": "pass",
+      "evidence": "038-assemble.log: exit 0."
+    },
+    {
+      "command": "cd courses/spanish-grammar && bash scripts/validate-chapter.sh 038.es.grammar.present_irregulars_reflexives_gustar.gustar_encantar_interesar_liking_indirect_pattern",
+      "result": "pass",
+      "evidence": "038-chapter-after.log: exit 0."
+    },
+    {
+      "command": "cd courses/spanish-grammar && ajv validate --spec=draft2020 --validate-formats=false --all-errors -s 02-chapter-schema.json -d chapters/038.es.grammar.present_irregulars_reflexives_gustar.gustar_encantar_interesar_liking_indirect_pattern/05-final.json",
+      "result": "pass",
+      "evidence": "038-schema-after.log: exit 0."
+    },
+    {
+      "command": "cd courses/spanish-grammar && ajv validate -s 02-chapter-schema.json -d chapters/038.es.grammar.present_irregulars_reflexives_gustar.gustar_encantar_interesar_liking_indirect_pattern/05-final.json",
+      "result": "known_baseline",
+      "evidence": "038-assembler-ajv-before.log and 038-assembler-ajv-after.log are byte-identical, exit 1: no draft2020 meta-schema selected. Explicit draft2020 validation passes."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    }
+  ],
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+}

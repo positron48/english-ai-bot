@@ -1,0 +1,476 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/chapters/039.es.grammar.present_irregulars_reflexives_gustar.doler_faltar_quedar_verbs_like_gustar/03-questions.json",
+  "source_sha256": "f19b545fac87ab886f259ae5ecf02570d315e41f13c535fc031f70152d03a291",
+  "context_sha256": "1df6f43f7ed3e67325f42546dbcc6ae9e477cd23b4ca3b12e50a69f15d0b99ed",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
+  "reviewed_at": "2026-09-04T17:36:38.272920+00:00",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
+  "questions": [
+    {
+      "id": "q039_b1_01",
+      "decision": "ok",
+      "note": "Tiempo — подлежащее.",
+      "verification": "ok"
+    },
+    {
+      "id": "q039_b1_02",
+      "decision": "ok",
+      "note": "Duele согласуется с el pie.",
+      "verification": "ok"
+    },
+    {
+      "id": "q039_b1_03",
+      "decision": "ok",
+      "note": "Poco pan — подлежащее, nos — кому.",
+      "verification": "ok"
+    },
+    {
+      "id": "q039_b1_04",
+      "decision": "ok",
+      "note": "Yo не определяет число doler с частью тела.",
+      "verification": "ok"
+    },
+    {
+      "id": "q039_b1_05",
+      "decision": "ok",
+      "note": "Él/ella/usted адресат le.",
+      "verification": "ok"
+    },
+    {
+      "id": "q039_b1_06",
+      "decision": "fixed",
+      "note": "Уточнено presente de indicativo; подсказка сохранена в обязательных конечных скобках.",
+      "verification": "ok"
+    },
+    {
+      "id": "q039_b1_07",
+      "decision": "ok",
+      "note": "Me falta sal — нужный смысл.",
+      "verification": "ok"
+    },
+    {
+      "id": "q039_b1_08",
+      "decision": "ok",
+      "note": "Порядок задаётся ограничениями.",
+      "verification": "ok"
+    },
+    {
+      "id": "q039_b1_09",
+      "decision": "ok",
+      "note": "Верно выделены tiempo и me.",
+      "verification": "ok"
+    },
+    {
+      "id": "q039_b1_10",
+      "decision": "fixed",
+      "note": "Самодостаточный пример вместо местоимений без контекста.",
+      "verification": "ok"
+    },
+    {
+      "id": "q039_b1_11",
+      "decision": "ok",
+      "note": "У каждой части своё подлежащее.",
+      "verification": "ok"
+    },
+    {
+      "id": "q039_b1_12",
+      "decision": "fixed",
+      "note": "Вместо ссылки на главу приведены нужные значения.",
+      "verification": "ok"
+    },
+    {
+      "id": "q039_b2_01",
+      "decision": "ok",
+      "note": "La rodilla требует duele.",
+      "verification": "ok"
+    },
+    {
+      "id": "q039_b2_02",
+      "decision": "ok",
+      "note": "Las piernas требует duelen.",
+      "verification": "ok"
+    },
+    {
+      "id": "q039_b2_03",
+      "decision": "ok",
+      "note": "Mucho не меняет согласования.",
+      "verification": "ok"
+    },
+    {
+      "id": "q039_b2_04",
+      "decision": "ok",
+      "note": "La pierna требует duele независимо от силы боли.",
+      "verification": "ok"
+    },
+    {
+      "id": "q039_b2_05",
+      "decision": "fixed",
+      "note": "Уточнено presente de indicativo; подсказка сохранена в обязательных конечных скобках.",
+      "verification": "ok"
+    },
+    {
+      "id": "q039_b2_06",
+      "decision": "fixed",
+      "note": "Уточнено presente de indicativo; подсказка сохранена в обязательных конечных скобках.",
+      "verification": "ok"
+    },
+    {
+      "id": "q039_b2_07",
+      "decision": "ok",
+      "note": "Le duele el hombro соответствует переводу.",
+      "verification": "ok"
+    },
+    {
+      "id": "q039_b2_08",
+      "decision": "ok",
+      "note": "Порядок задан ограничениями.",
+      "verification": "ok"
+    },
+    {
+      "id": "q039_b2_09",
+      "decision": "fixed",
+      "note": "Убрана подсказка в отвлекающем варианте; объяснён артикль части тела.",
+      "verification": "ok"
+    },
+    {
+      "id": "q039_b2_10",
+      "decision": "ok",
+      "note": "Las muelas — множественное подлежащее.",
+      "verification": "ok"
+    },
+    {
+      "id": "q039_b2_11",
+      "decision": "ok",
+      "note": "La espalda требует duele при vosotros.",
+      "verification": "ok"
+    },
+    {
+      "id": "q039_b2_12",
+      "decision": "fixed",
+      "note": "Согласование не привязано к обязательной позиции после глагола.",
+      "verification": "ok"
+    },
+    {
+      "id": "q039_b3_01",
+      "decision": "ok",
+      "note": "Paciencia требует falta.",
+      "verification": "ok"
+    },
+    {
+      "id": "q039_b3_02",
+      "decision": "ok",
+      "note": "Tres monedas требует faltan.",
+      "verification": "ok"
+    },
+    {
+      "id": "q039_b3_03",
+      "decision": "fixed",
+      "note": "Исправлен неестественный и неточный перевод инфинитивной конструкции.",
+      "verification": "ok"
+    },
+    {
+      "id": "q039_b3_04",
+      "decision": "ok",
+      "note": "Yo falto tiempo не выражает нехватку.",
+      "verification": "ok"
+    },
+    {
+      "id": "q039_b3_05",
+      "decision": "fixed",
+      "note": "Уточнено presente de indicativo; подсказка сохранена в обязательных конечных скобках.",
+      "verification": "ok"
+    },
+    {
+      "id": "q039_b3_06",
+      "decision": "fixed",
+      "note": "Уточнено presente de indicativo; подсказка сохранена в обязательных конечных скобках.",
+      "verification": "ok"
+    },
+    {
+      "id": "q039_b3_07",
+      "decision": "ok",
+      "note": "Les falta información — верно.",
+      "verification": "ok"
+    },
+    {
+      "id": "q039_b3_08",
+      "decision": "ok",
+      "note": "Порядок задан ограничениями.",
+      "verification": "ok"
+    },
+    {
+      "id": "q039_b3_09",
+      "decision": "ok",
+      "note": "Tiempo подлежащее, me адресат.",
+      "verification": "ok"
+    },
+    {
+      "id": "q039_b3_10",
+      "decision": "ok",
+      "note": "Tiempo требует falta при nos.",
+      "verification": "ok"
+    },
+    {
+      "id": "q039_b3_11",
+      "decision": "ok",
+      "note": "Dos pasos требует faltan.",
+      "verification": "ok"
+    },
+    {
+      "id": "q039_b3_12",
+      "decision": "ok",
+      "note": "Me falta tiempo обозначает нехватку.",
+      "verification": "ok"
+    },
+    {
+      "id": "q039_b4_01",
+      "decision": "ok",
+      "note": "Una hora требует queda.",
+      "verification": "ok"
+    },
+    {
+      "id": "q039_b4_02",
+      "decision": "ok",
+      "note": "Dos entradas требует quedan.",
+      "verification": "ok"
+    },
+    {
+      "id": "q039_b4_03",
+      "decision": "ok",
+      "note": "Poca luz — единственное число.",
+      "verification": "ok"
+    },
+    {
+      "id": "q039_b4_04",
+      "decision": "ok",
+      "note": "Tres días требует quedan.",
+      "verification": "ok"
+    },
+    {
+      "id": "q039_b4_05",
+      "decision": "fixed",
+      "note": "Уточнено presente de indicativo; подсказка сохранена в обязательных конечных скобках.",
+      "verification": "ok"
+    },
+    {
+      "id": "q039_b4_06",
+      "decision": "fixed",
+      "note": "Уточнено presente de indicativo; подсказка сохранена в обязательных конечных скобках.",
+      "verification": "ok"
+    },
+    {
+      "id": "q039_b4_07",
+      "decision": "ok",
+      "note": "Me quedan cinco euros соответствует смыслу.",
+      "verification": "ok"
+    },
+    {
+      "id": "q039_b4_08",
+      "decision": "ok",
+      "note": "Порядок задан началом и концом.",
+      "verification": "ok"
+    },
+    {
+      "id": "q039_b4_09",
+      "decision": "ok",
+      "note": "Tres horas me quedo — другой смысл, ключ однозначен.",
+      "verification": "ok"
+    },
+    {
+      "id": "q039_b4_10",
+      "decision": "ok",
+      "note": "Harina требует queda.",
+      "verification": "ok"
+    },
+    {
+      "id": "q039_b4_11",
+      "decision": "ok",
+      "note": "Poco tiempo — подлежащее.",
+      "verification": "ok"
+    },
+    {
+      "id": "q039_b4_12",
+      "decision": "ok",
+      "note": "Время, деньги, еда, шансы могут оставаться.",
+      "verification": "ok"
+    },
+    {
+      "id": "q039_b5_01",
+      "decision": "fixed",
+      "note": "Вам уточнено как одному usted.",
+      "verification": "ok"
+    },
+    {
+      "id": "q039_b5_02",
+      "decision": "ok",
+      "note": "A él/ella/usted уточняет le.",
+      "verification": "ok"
+    },
+    {
+      "id": "q039_b5_03",
+      "decision": "ok",
+      "note": "A mis hijos уточняет les.",
+      "verification": "ok"
+    },
+    {
+      "id": "q039_b5_04",
+      "decision": "fixed",
+      "note": "Условие сделано самодостаточным.",
+      "verification": "ok"
+    },
+    {
+      "id": "q039_b5_05",
+      "decision": "ok",
+      "note": "A vosotros требует os.",
+      "verification": "ok"
+    },
+    {
+      "id": "q039_b5_06",
+      "decision": "ok",
+      "note": "Им соответствует les.",
+      "verification": "ok"
+    },
+    {
+      "id": "q039_b5_07",
+      "decision": "fixed",
+      "note": "Исправлен русский перевод Хуану болит.",
+      "verification": "ok"
+    },
+    {
+      "id": "q039_b5_08",
+      "decision": "ok",
+      "note": "Порядок и перевод однозначны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q039_b5_09",
+      "decision": "fixed",
+      "note": "Конкретный пример объясняет обе роли.",
+      "verification": "ok"
+    },
+    {
+      "id": "q039_b5_10",
+      "decision": "ok",
+      "note": "Tú адресат te.",
+      "verification": "ok"
+    },
+    {
+      "id": "q039_b5_11",
+      "decision": "ok",
+      "note": "Nosotros nos — группа адресатов.",
+      "verification": "ok"
+    },
+    {
+      "id": "q039_b6_01",
+      "decision": "fixed",
+      "note": "Устранены три ошибочных ответа; сохранён ключ b.",
+      "verification": "ok"
+    },
+    {
+      "id": "q039_b6_02",
+      "decision": "ok",
+      "note": "Me faltamos не означает нам не хватает.",
+      "verification": "ok"
+    },
+    {
+      "id": "q039_b6_03",
+      "decision": "ok",
+      "note": "Quedo dos horas не выражает запас.",
+      "verification": "ok"
+    },
+    {
+      "id": "q039_b6_04",
+      "decision": "fixed",
+      "note": "Правило отвязано от положения подлежащего после глагола.",
+      "verification": "ok"
+    },
+    {
+      "id": "q039_b6_05",
+      "decision": "fixed",
+      "note": "Уточнено presente de indicativo; подсказка сохранена в обязательных конечных скобках.",
+      "verification": "ok"
+    },
+    {
+      "id": "q039_b6_06",
+      "decision": "fixed",
+      "note": "Уточнено presente de indicativo; подсказка сохранена в обязательных конечных скобках.",
+      "verification": "ok"
+    },
+    {
+      "id": "q039_b6_07",
+      "decision": "ok",
+      "note": "Me quedan dos horas — остаток.",
+      "verification": "ok"
+    },
+    {
+      "id": "q039_b6_08",
+      "decision": "ok",
+      "note": "Порядок задан, перевод инфинитива верный.",
+      "verification": "ok"
+    },
+    {
+      "id": "q039_b6_09",
+      "decision": "fixed",
+      "note": "Убрана несуществующая русская калька я не хватаю времени.",
+      "verification": "ok"
+    },
+    {
+      "id": "q039_b6_10",
+      "decision": "ok",
+      "note": "Исправление роли и формы верно.",
+      "verification": "ok"
+    },
+    {
+      "id": "q039_b6_11",
+      "decision": "ok",
+      "note": "Число la idea/los detalles определяет форму.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-04-es037-040/check.py",
+      "result": "pass",
+      "evidence": "All 572 IDs/contracts, decisions versus clean pre-batch HEAD, fingerprints, native training validation, signatures and source-final-embedded equality; validation.log."
+    },
+    {
+      "command": "go test ./internal/grammarbundle ./internal/repository -run 'TestValidateEmbeddedBundleID|TestGrammar.*Bundle|TestGrammar.*Reorder' -count=1",
+      "result": "pass",
+      "evidence": "Both packages passed on final integrated data; go-tests.log."
+    },
+    {
+      "command": "git diff --check; git -C courses/spanish-grammar diff --check; git -C courses/english-grammar diff --check",
+      "result": "pass",
+      "evidence": "Three separately executed commands exit 0; diff-check.log. All 1040 earlier dirty files outside review docs preserved; preservation.log."
+    },
+    {
+      "command": "cd courses/spanish-grammar && bash scripts/assemble-chapter.sh 039.es.grammar.present_irregulars_reflexives_gustar.doler_faltar_quedar_verbs_like_gustar",
+      "result": "pass",
+      "evidence": "039-assemble.log: exit 0."
+    },
+    {
+      "command": "cd courses/spanish-grammar && bash scripts/validate-chapter.sh 039.es.grammar.present_irregulars_reflexives_gustar.doler_faltar_quedar_verbs_like_gustar",
+      "result": "pass",
+      "evidence": "039-chapter-after.log: exit 0."
+    },
+    {
+      "command": "cd courses/spanish-grammar && ajv validate --spec=draft2020 --validate-formats=false --all-errors -s 02-chapter-schema.json -d chapters/039.es.grammar.present_irregulars_reflexives_gustar.doler_faltar_quedar_verbs_like_gustar/05-final.json",
+      "result": "pass",
+      "evidence": "039-schema-after.log: exit 0."
+    },
+    {
+      "command": "cd courses/spanish-grammar && ajv validate -s 02-chapter-schema.json -d chapters/039.es.grammar.present_irregulars_reflexives_gustar.doler_faltar_quedar_verbs_like_gustar/05-final.json",
+      "result": "known_baseline",
+      "evidence": "039-assembler-ajv-before.log and 039-assembler-ajv-after.log are byte-identical, exit 1: no draft2020 meta-schema selected. Explicit draft2020 validation passes."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    }
+  ],
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+}

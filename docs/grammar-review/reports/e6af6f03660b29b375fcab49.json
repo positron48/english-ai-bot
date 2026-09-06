@@ -1,0 +1,369 @@
+{
+  "version": 1,
+  "source": "courses/english-grammar/chapters/006.en.grammar.first_sentences_be_as.questions_with_be_are/03-questions.json",
+  "source_sha256": "0d8b7153063824ea73fd745ab38a420081af05017a605482cb1b11b5edd3730f",
+  "context_sha256": "71617306bce310954aad30e668174a9a4f572ac0b3ff4f79a02896a6f7e421b3",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
+  "reviewed_at": "2026-09-04T10:37:12.994123+00:00",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
+  "questions": [
+    {
+      "id": "q1",
+      "decision": "fixed",
+      "note": "Отличён обычный вопрос с инверсией от допустимого переспроса.",
+      "verification": "ok"
+    },
+    {
+      "id": "q2",
+      "decision": "fixed",
+      "note": "Задано настоящее время, исключено Were.",
+      "verification": "ok"
+    },
+    {
+      "id": "q3",
+      "decision": "fixed",
+      "note": "Переспрос не объявляется грамматической ошибкой; требуется инверсия.",
+      "verification": "ok"
+    },
+    {
+      "id": "q4",
+      "decision": "fixed",
+      "note": "Подлежащее должно сохраняться; замена you на he тоже исправляла грамматику исходно.",
+      "verification": "ok"
+    },
+    {
+      "id": "q5",
+      "decision": "ok",
+      "note": "Начало Are и перевод задают единственный порядок вопроса.",
+      "verification": "ok"
+    },
+    {
+      "id": "q6",
+      "decision": "fixed",
+      "note": "Верность проверяется для инверсии, а не для любого разговорного вопроса.",
+      "verification": "ok"
+    },
+    {
+      "id": "q7",
+      "decision": "fixed",
+      "note": "Задано настоящее время, исключено Was.",
+      "verification": "ok"
+    },
+    {
+      "id": "q8",
+      "decision": "fixed",
+      "note": "Задана инверсия и исправлен feedback о допустимом переспросе.",
+      "verification": "ok"
+    },
+    {
+      "id": "q9",
+      "decision": "fixed",
+      "note": "Сохранено I; замена на you больше не альтернативно верное исправление.",
+      "verification": "ok"
+    },
+    {
+      "id": "q10",
+      "decision": "ok",
+      "note": "Указанное начало Is и перевод задают порядок.",
+      "verification": "ok"
+    },
+    {
+      "id": "q11",
+      "decision": "fixed",
+      "note": "Различены инверсия и допустимый переспрос.",
+      "verification": "ok"
+    },
+    {
+      "id": "q12",
+      "decision": "fixed",
+      "note": "Задано настоящее время, исключено Was.",
+      "verification": "ok"
+    },
+    {
+      "id": "q13",
+      "decision": "ok",
+      "note": "What is your name — единственный обычный самостоятельный вопрос среди вариантов.",
+      "verification": "ok"
+    },
+    {
+      "id": "q14",
+      "decision": "fixed",
+      "note": "Задан смысл вопроса об имени, исключены другие возможные значения Wh-пропуска.",
+      "verification": "ok"
+    },
+    {
+      "id": "q15",
+      "decision": "ok",
+      "note": "Where are you — правильный прямой вопрос.",
+      "verification": "ok"
+    },
+    {
+      "id": "q16",
+      "decision": "ok",
+      "note": "Перестановка are you исправляет прямой вопрос о происхождении.",
+      "verification": "ok"
+    },
+    {
+      "id": "q17",
+      "decision": "ok",
+      "note": "Who is he соответствует переводу и указанному началу.",
+      "verification": "ok"
+    },
+    {
+      "id": "q19",
+      "decision": "fixed",
+      "note": "Задан русский смысл вопроса о происхождении.",
+      "verification": "ok"
+    },
+    {
+      "id": "q20",
+      "decision": "ok",
+      "note": "How are you — корректный прямой вопрос.",
+      "verification": "ok"
+    },
+    {
+      "id": "q21",
+      "decision": "ok",
+      "note": "Перестановка is your name исправляет прямой вопрос.",
+      "verification": "ok"
+    },
+    {
+      "id": "q22",
+      "decision": "ok",
+      "note": "Where is the bag соответствует переводу и указанному началу.",
+      "verification": "ok"
+    },
+    {
+      "id": "q25",
+      "decision": "fixed",
+      "note": "Исправлено ложное копирование формы be из вопроса: are → am при you → I.",
+      "verification": "ok"
+    },
+    {
+      "id": "q26",
+      "decision": "fixed",
+      "note": "Объяснено согласование с I вместо копирования are.",
+      "verification": "ok"
+    },
+    {
+      "id": "q27",
+      "decision": "fixed",
+      "note": "Объяснение согласует is с he, не задаёт ошибочного универсального копирования формы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q28",
+      "decision": "fixed",
+      "note": "Запрет сокращения ограничен концом утвердительного ответа; исправлено согласование «нужна форма».",
+      "verification": "ok"
+    },
+    {
+      "id": "q29",
+      "decision": "ok",
+      "note": "Отрицательный краткий ответ с I’m not и заданным No корректен.",
+      "verification": "ok"
+    },
+    {
+      "id": "q32",
+      "decision": "fixed",
+      "note": "Форма are объясняется подлежащим they, а не всеобщим копированием вопроса.",
+      "verification": "ok"
+    },
+    {
+      "id": "q33",
+      "decision": "ok",
+      "note": "He are исправляется на he is; остальные замены не устраняют ошибку.",
+      "verification": "ok"
+    },
+    {
+      "id": "q34",
+      "decision": "ok",
+      "note": "Yes, she is — корректный ответ и уникальный порядок.",
+      "verification": "ok"
+    },
+    {
+      "id": "q35",
+      "decision": "ok",
+      "note": "No, they aren’t — допустимый отрицательный краткий ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "q36",
+      "decision": "fixed",
+      "note": "Объяснение опирается на we, не на всеобщее копирование формы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q37",
+      "decision": "fixed",
+      "note": "Нейтральный вопрос отделён от переспроса и маркированного порядка.",
+      "verification": "ok"
+    },
+    {
+      "id": "q38",
+      "decision": "fixed",
+      "note": "Задано настоящее время, исключено Were.",
+      "verification": "ok"
+    },
+    {
+      "id": "q39",
+      "decision": "ok",
+      "note": "What is your surname — корректный прямой вопрос.",
+      "verification": "ok"
+    },
+    {
+      "id": "q40",
+      "decision": "ok",
+      "note": "Для самостоятельного Where-вопроса требуется is she.",
+      "verification": "ok"
+    },
+    {
+      "id": "q41",
+      "decision": "ok",
+      "note": "Is he at home соответствует переводу и заданному началу.",
+      "verification": "ok"
+    },
+    {
+      "id": "q42",
+      "decision": "ok",
+      "note": "В You are a student нейтральный порядок утверждения.",
+      "verification": "ok"
+    },
+    {
+      "id": "q43",
+      "decision": "fixed",
+      "note": "Задан смысл вопроса об имени для единственного Wh-ответа.",
+      "verification": "ok"
+    },
+    {
+      "id": "q44",
+      "decision": "fixed",
+      "note": "Уточнён нейтральный порядок, вынесенное at home не объявлено безусловно неграмматичным.",
+      "verification": "ok"
+    },
+    {
+      "id": "q45",
+      "decision": "fixed",
+      "note": "В объяснении и feedback инверсия идёт после целого What time, а не после What.",
+      "verification": "ok"
+    },
+    {
+      "id": "q46",
+      "decision": "ok",
+      "note": "Where are they from соответствует переводу и заданному началу.",
+      "verification": "ok"
+    },
+    {
+      "id": "q47",
+      "decision": "ok",
+      "note": "Are they students — корректный общий вопрос.",
+      "verification": "ok"
+    },
+    {
+      "id": "q49",
+      "decision": "ok",
+      "note": "What is your phone number — корректный самостоятельный вопрос.",
+      "verification": "ok"
+    },
+    {
+      "id": "q50",
+      "decision": "fixed",
+      "note": "Добавлен смысл «откуда», вместо неопределённого типичного вопроса.",
+      "verification": "ok"
+    },
+    {
+      "id": "q51",
+      "decision": "ok",
+      "note": "Where is the key — корректный вопрос о месте.",
+      "verification": "ok"
+    },
+    {
+      "id": "q52",
+      "decision": "ok",
+      "note": "Инверсия are they исправляет прямой How-вопрос.",
+      "verification": "ok"
+    },
+    {
+      "id": "q53",
+      "decision": "ok",
+      "note": "Where are you from однозначно собирается с данным началом.",
+      "verification": "ok"
+    },
+    {
+      "id": "q54",
+      "decision": "ok",
+      "note": "What is your name действительно спрашивает имя при знакомстве.",
+      "verification": "ok"
+    },
+    {
+      "id": "q55",
+      "decision": "ok",
+      "note": "Подсказка «кто это» однозначно требует Who.",
+      "verification": "ok"
+    },
+    {
+      "id": "q56",
+      "decision": "ok",
+      "note": "Who is he — корректный прямой вопрос о человеке.",
+      "verification": "ok"
+    },
+    {
+      "id": "q57",
+      "decision": "ok",
+      "note": "Инверсия is he исправляет прямой вопрос.",
+      "verification": "ok"
+    },
+    {
+      "id": "q58",
+      "decision": "ok",
+      "note": "Where are they соответствует переводу и началу.",
+      "verification": "ok"
+    },
+    {
+      "id": "q60",
+      "decision": "fixed",
+      "note": "Задан смысл местоположения; без контекста возможны другие Wh-слова.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "cd courses/english-grammar && bash scripts/assemble-chapter.sh 006.en.grammar.first_sentences_be_as.questions_with_be_are && bash scripts/validate-chapter.sh 006.en.grammar.first_sentences_be_as.questions_with_be_are",
+      "result": "pass",
+      "evidence": "Chapter assembled and validator passes. See docs/grammar-review/batches/2026-09-04-en005-006/006-assemble-after.log and 006-chapter-after.log."
+    },
+    {
+      "command": "ajv validate --spec=draft2020 --validate-formats=false --all-errors -s courses/english-grammar/02-chapter-schema.json -d courses/english-grammar/chapters/006.en.grammar.first_sentences_be_as.questions_with_be_are/05-final.json",
+      "result": "pass",
+      "evidence": "Baseline and final schemas pass; see docs/grammar-review/batches/2026-09-04-en005-006/006-schema-before.log and 006-schema-after.log."
+    },
+    {
+      "command": "ajv validate -s courses/english-grammar/02-chapter-schema.json -d courses/english-grammar/chapters/006.en.grammar.first_sentences_be_as.questions_with_be_are/05-final.json",
+      "result": "known_baseline",
+      "evidence": "Stock assembler omits draft2020; same missing meta-schema error before and after. Explicit draft2020 passes. See docs/grammar-review/batches/2026-09-04-en005-006/006-assembler-ajv-before.log and 006-assembler-ajv-after.log."
+    },
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-04-en005-006/check.py",
+      "result": "pass",
+      "evidence": "All 196 contracts and metadata preserved, decisions match changes, fingerprints and signatures current, no new EN pack duplicates, source/final/embedded equal. See docs/grammar-review/batches/2026-09-04-en005-006/validation.log."
+    },
+    {
+      "command": "go test ./internal/grammarbundle ./internal/repository -run 'TestValidateEmbeddedBundleID|TestGrammar.*Bundle|TestGrammar.*Reorder' -count=1",
+      "result": "pass",
+      "evidence": "Both packages passed in 5.069s and 14.507s; see docs/grammar-review/batches/2026-09-04-en005-006/go-tests.log."
+    },
+    {
+      "command": "git diff --check && git -C courses/english-grammar diff --check && git -C courses/spanish-grammar diff --check",
+      "result": "pass",
+      "evidence": "All three commands exited 0."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    }
+  ],
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+}

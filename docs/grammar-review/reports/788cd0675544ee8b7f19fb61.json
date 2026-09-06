@@ -4,106 +4,106 @@
   "source_sha256": "912b02886940b715663feea9861fd02eb35d4caa26af6f0bf80f4ff87ab64740",
   "context_sha256": "e51b0e0494fd7379a0459ae2d61b76621c8e0b85513b67c3fb4438ecadbc4cf3",
   "editor": "Codex editor 2026-09-04",
-  "verifier": "",
-  "phase": "awaiting_verification",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
   "reviewed_at": "2026-09-04T09:37:39.846997+00:00",
-  "verified_at": "",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
   "questions": [
     {
       "id": "q1",
       "decision": "fixed",
       "note": "Перестановка to-pa не проверяла границу; заменена ошибочным делением pat-o.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q2",
       "decision": "fixed",
       "note": "Исправлен бессмысленный дистрактор и распределён ключ, исходно все 16 — a.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q3",
       "decision": "fixed",
       "note": "Для A0 выбрано обычное mamá; варианты сохраняют буквы и знак, ключ распределён.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q4",
       "decision": "fixed",
       "note": "Устранена перестановка букв za-ta, распределён ключ.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q5",
       "decision": "fixed",
       "note": "Перестановка so-pi заменена неверной границей pis-o.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q6",
       "decision": "fixed",
       "note": "Устранена перестановка na-lu, распределён ключ.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q7",
       "decision": "fixed",
       "note": "Устранена перестановка no-vi, распределён ключ.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q8",
       "decision": "fixed",
       "note": "Устранена перестановка no-ma, распределён ключ.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q9",
       "decision": "fixed",
       "note": "Перестановка pel-pa заменена неверной границей pap-el.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q10",
       "decision": "fixed",
       "note": "Устранена перестановка be-nu, распределён ключ.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q11",
       "decision": "fixed",
       "note": "Верное ca-ma подтверждено; ключ перераспределён.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q12",
       "decision": "fixed",
       "note": "Верное pa-pa подтверждено; ключ перераспределён.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q13",
       "decision": "fixed",
       "note": "so-pa, три неверных разделения проверены. Только техническая правка: пересчитана исходно устаревшая signature штатной функцией; содержание сохранено.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q14",
       "decision": "fixed",
       "note": "Верное na-da подтверждено; ключ перераспределён.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q15",
       "decision": "fixed",
       "note": "Верное la-ta подтверждено; ключ перераспределён.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q16",
       "decision": "fixed",
       "note": "Верное ca-sa подтверждено; ключ перераспределён.",
-      "verification": "pending"
+      "verification": "ok"
     }
   ],
   "checks": [
@@ -121,7 +121,12 @@
       "command": "git diff --check && git -C courses/spanish-grammar diff --check && git -C courses/english-grammar diff --check",
       "result": "pass",
       "evidence": "All three commands exited 0."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
     }
   ],
-  "verification_note": ""
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
 }

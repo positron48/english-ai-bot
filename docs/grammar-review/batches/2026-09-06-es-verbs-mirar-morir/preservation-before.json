@@ -1,0 +1,31 @@
+{
+  "existing_files": 25314,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/mirar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/mirar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/modificar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/modificar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/montar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/montar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/morir.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/morir.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-mirar-morir",
+    "docs/grammar-review/reports/375b3bd01e3bb3ba2e3b33da.json",
+    "docs/grammar-review/reports/afb268fd06587659ea334c3f.json",
+    "docs/grammar-review/reports/f887e3a21a0f80298d64d9fa.json",
+    "docs/grammar-review/reports/ef85afe8a75d7fcb6dc196e5.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/mirar.json": "f846512a547a7157055a1e0c1e45de5ad82415c0ba3a0c615fb8b15990767090",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/mirar.json": "f846512a547a7157055a1e0c1e45de5ad82415c0ba3a0c615fb8b15990767090",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/modificar.json": "32c2529b3937f6b217909447e6660a9bc4aabc25d1f27904c6093646c614da45",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/modificar.json": "32c2529b3937f6b217909447e6660a9bc4aabc25d1f27904c6093646c614da45",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/montar.json": "d0f2f2322402d8fae87db4052a10e6f511dea75f7153ba2c3f3ad5b7d2a73cba",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/montar.json": "d0f2f2322402d8fae87db4052a10e6f511dea75f7153ba2c3f3ad5b7d2a73cba",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/morir.json": "27e2ce808e6954e5ec0899e7d864a031cb7eac1a15b1a7c8794a77ce9652d82a",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/morir.json": "27e2ce808e6954e5ec0899e7d864a031cb7eac1a15b1a7c8794a77ce9652d82a"
+  }
+}

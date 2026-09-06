@@ -1,0 +1,424 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/chapters/004.es.grammar.orientation_alphabet_sounds.core_pronunciation_map_b_v_c_z_g/03-questions.json",
+  "source_sha256": "ee6b4ae609c7accf3db5d994356dc3e1b15a18e5216f05e91d301bc15946cbbd",
+  "context_sha256": "53e1bd6de11c361c5902f84281402057dfb36a0286263edce4852f23cd201466",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
+  "reviewed_at": "2026-09-04T10:17:31.335802+00:00",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
+  "questions": [
+    {
+      "id": "q1",
+      "decision": "fixed",
+      "note": "Объяснение заменяет методическую рекомендацию фактом о b/v.",
+      "verification": "ok"
+    },
+    {
+      "id": "q2",
+      "decision": "fixed",
+      "note": "Прямо объяснены одинаковое произношение и разные значения пары.",
+      "verification": "ok"
+    },
+    {
+      "id": "q3",
+      "decision": "fixed",
+      "note": "Вместо повторной методической формулы и нелепых вариантов — конкретное чтение vino после паузы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q4",
+      "decision": "fixed",
+      "note": "Варианты теперь сравнивают произношение, а не ошибку с учебными привычками.",
+      "verification": "ok"
+    },
+    {
+      "id": "q5",
+      "decision": "fixed",
+      "note": "Убраны служебная формулировка и терминология выше A0; конкретная пара омонимичного произношения.",
+      "verification": "ok"
+    },
+    {
+      "id": "q6",
+      "decision": "fixed",
+      "note": "Объяснение утверждает языковую норму вместо совета начинающему.",
+      "verification": "ok"
+    },
+    {
+      "id": "q7",
+      "decision": "fixed",
+      "note": "Субъективный методический совет заменён проверяемым утверждением с одинаковой позицией.",
+      "verification": "ok"
+    },
+    {
+      "id": "q8",
+      "decision": "fixed",
+      "note": "Устранена русско-испанская фраза с угадыванием familia; проверяется чтение v после паузы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q9",
+      "decision": "ok",
+      "note": "Существующая правка корректна: baca/vaca имеют одинаковое произношение.",
+      "verification": "ok"
+    },
+    {
+      "id": "q10",
+      "decision": "ok",
+      "note": "C перед a обозначает [k], единственный верный вариант.",
+      "verification": "ok"
+    },
+    {
+      "id": "q11",
+      "decision": "fixed",
+      "note": "Разведены два смыслово одинаковых дистрактора j и g перед e/i.",
+      "verification": "ok"
+    },
+    {
+      "id": "q12",
+      "decision": "ok",
+      "note": "Qu в queso обозначает [k] перед e; u немая.",
+      "verification": "ok"
+    },
+    {
+      "id": "q13",
+      "decision": "fixed",
+      "note": "Указаны начальная согласная и единый региональный вариант; сравниваются конкретные звуки.",
+      "verification": "ok"
+    },
+    {
+      "id": "q14",
+      "decision": "fixed",
+      "note": "Все варианты относятся к произношению; допустимые региональные чтения сохранены.",
+      "verification": "ok"
+    },
+    {
+      "id": "q15",
+      "decision": "ok",
+      "note": "Qu перед e/i передаёт [k].",
+      "verification": "ok"
+    },
+    {
+      "id": "q16",
+      "decision": "ok",
+      "note": "Чтение cine с [k] ошибочно; региональные [s]/[θ] сохранены.",
+      "verification": "ok"
+    },
+    {
+      "id": "q17",
+      "decision": "fixed",
+      "note": "Убрана неясная конструкция «после q сохранить k»; конкретное написание queso с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "q18",
+      "decision": "ok",
+      "note": "Существующая правка верно учитывает [s]/[θ] и исключает [k].",
+      "verification": "ok"
+    },
+    {
+      "id": "q19",
+      "decision": "fixed",
+      "note": "Убрано противоречивое выражение «немой звук».",
+      "verification": "ok"
+    },
+    {
+      "id": "q20",
+      "decision": "ok",
+      "note": "G перед e читается как испанская j.",
+      "verification": "ok"
+    },
+    {
+      "id": "q21",
+      "decision": "fixed",
+      "note": "Дистракторы о превращении u в rr/y заменены вариантами чтения u; ответ конкретизирован для gui.",
+      "verification": "ok"
+    },
+    {
+      "id": "q22",
+      "decision": "fixed",
+      "note": "Исправлено согласование «нужна диэрезис»; варианты проверяют значение знака, а не произвольные эффекты.",
+      "verification": "ok"
+    },
+    {
+      "id": "q23",
+      "decision": "fixed",
+      "note": "Явно указана сравниваемая начальная согласная.",
+      "verification": "ok"
+    },
+    {
+      "id": "q24",
+      "decision": "fixed",
+      "note": "Методический совет заменён конкретным фонетическим сопоставлением.",
+      "verification": "ok"
+    },
+    {
+      "id": "q25",
+      "decision": "ok",
+      "note": "В guerra буква u не произносится.",
+      "verification": "ok"
+    },
+    {
+      "id": "q26",
+      "decision": "ok",
+      "note": "Диэрезис в güe/güi означает произносимую u; единственный ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "q27",
+      "decision": "ok",
+      "note": "Существующее исправление чтения guitarra верно.",
+      "verification": "ok"
+    },
+    {
+      "id": "q28",
+      "decision": "fixed",
+      "note": "Вместо субъективного учебного подхода — совпадение согласных в конкретных словах при yeísmo.",
+      "verification": "ok"
+    },
+    {
+      "id": "q29",
+      "decision": "fixed",
+      "note": "Убраны служебные «стартовые классы» и нелепые сравнения; оставлено конкретное чтение.",
+      "verification": "ok"
+    },
+    {
+      "id": "q30",
+      "decision": "fixed",
+      "note": "Повтор формулы заменён применением правила к буквосочетанию в calle.",
+      "verification": "ok"
+    },
+    {
+      "id": "q31",
+      "decision": "fixed",
+      "note": "Уточнена согласная y и дана точная формулировка термина с параллельными вариантами.",
+      "verification": "ok"
+    },
+    {
+      "id": "q32",
+      "decision": "fixed",
+      "note": "Учебные привычки заменены проверяемыми утверждениями с региональными условиями.",
+      "verification": "ok"
+    },
+    {
+      "id": "q33",
+      "decision": "fixed",
+      "note": "Уточнена согласная y вместо обобщения на гласную y; объяснение без методической оговорки.",
+      "verification": "ok"
+    },
+    {
+      "id": "q34",
+      "decision": "fixed",
+      "note": "Вместо обязанности новичка — вопрос о нормативности yeísmo.",
+      "verification": "ok"
+    },
+    {
+      "id": "q35",
+      "decision": "fixed",
+      "note": "Убрана проверка необъяснённых названий; проверяется само региональное чтение.",
+      "verification": "ok"
+    },
+    {
+      "id": "q36",
+      "decision": "ok",
+      "note": "Существующая правка допускает и yeísmo, и региональное различение ll/y.",
+      "verification": "ok"
+    },
+    {
+      "id": "q37",
+      "decision": "fixed",
+      "note": "Случайный дистрактор о замене rr заменён правдоподобной ошибкой об орфографическом варианте n.",
+      "verification": "ok"
+    },
+    {
+      "id": "q38",
+      "decision": "fixed",
+      "note": "Убраны формула ñ != n, служебное объяснение и неопределённый вопрос; конкретная правка слова niño.",
+      "verification": "ok"
+    },
+    {
+      "id": "q39",
+      "decision": "fixed",
+      "note": "Варианты о произношении вместо ударной согласной и превращения в ñ.",
+      "verification": "ok"
+    },
+    {
+      "id": "q40",
+      "decision": "fixed",
+      "note": "Удалена ссылка на блок; конкретный первый звук, параллельные ответы без подсказки длиной.",
+      "verification": "ok"
+    },
+    {
+      "id": "q41",
+      "decision": "fixed",
+      "note": "Дистракторы теперь о роли надстрочного знака вместо немой h и вопросительных предложений.",
+      "verification": "ok"
+    },
+    {
+      "id": "q42",
+      "decision": "ok",
+      "note": "H в hola немая; утверждение ложно.",
+      "verification": "ok"
+    },
+    {
+      "id": "q43",
+      "decision": "ok",
+      "note": "Ñ действительно отдельная буква алфавита.",
+      "verification": "ok"
+    },
+    {
+      "id": "q44",
+      "decision": "ok",
+      "note": "Среди вариантов только h обычно немая перед начальной гласной.",
+      "verification": "ok"
+    },
+    {
+      "id": "q45",
+      "decision": "fixed",
+      "note": "Сохранены смысл существующей правки и ключ; уточнены дистракторы, убрана невозможная ударная h.",
+      "verification": "ok"
+    },
+    {
+      "id": "q46",
+      "decision": "ok",
+      "note": "Одна r между гласными в pero одноударная.",
+      "verification": "ok"
+    },
+    {
+      "id": "q47",
+      "decision": "ok",
+      "note": "Rr в perro обозначает сильную вибрирующую согласную.",
+      "verification": "ok"
+    },
+    {
+      "id": "q48",
+      "decision": "fixed",
+      "note": "Разведены одинаковые дистракторы «немая» и «как h»; приведены конкретные сравнения r.",
+      "verification": "ok"
+    },
+    {
+      "id": "q49",
+      "decision": "ok",
+      "note": "Pero/perro — нужная минимальная пара r/rr.",
+      "verification": "ok"
+    },
+    {
+      "id": "q50",
+      "decision": "ok",
+      "note": "Контраст r/rr явно ограничен межгласной позицией.",
+      "verification": "ok"
+    },
+    {
+      "id": "q51",
+      "decision": "ok",
+      "note": "Различие pero/perro связано с r/rr.",
+      "verification": "ok"
+    },
+    {
+      "id": "q52",
+      "decision": "ok",
+      "note": "Начальная r в Roma сильная.",
+      "verification": "ok"
+    },
+    {
+      "id": "q53",
+      "decision": "fixed",
+      "note": "Убрана подсказка буквами rr в условии; варианты приведены к одной схеме.",
+      "verification": "ok"
+    },
+    {
+      "id": "q54",
+      "decision": "ok",
+      "note": "Существующая правка верно объясняет контраст и значения pero/perro.",
+      "verification": "ok"
+    },
+    {
+      "id": "q55",
+      "decision": "fixed",
+      "note": "Вместо субъективного алгоритма для любой согласной — выбор чтения конкретных c/g.",
+      "verification": "ok"
+    },
+    {
+      "id": "q56",
+      "decision": "ok",
+      "note": "Qu перед e/i — единственный нужный маркер [k].",
+      "verification": "ok"
+    },
+    {
+      "id": "q57",
+      "decision": "ok",
+      "note": "Диэрезис обозначает произносимую u в güe/güi.",
+      "verification": "ok"
+    },
+    {
+      "id": "q58",
+      "decision": "fixed",
+      "note": "Разведены одинаковые дистракторы j/ge; методическая формула заменена точным вопросом.",
+      "verification": "ok"
+    },
+    {
+      "id": "q59",
+      "decision": "fixed",
+      "note": "Учебные предпочтения с альтернативно допустимым порядком чтения заменены оценкой двух нормативных произношений.",
+      "verification": "ok"
+    },
+    {
+      "id": "q60",
+      "decision": "fixed",
+      "note": "Расплывчатая карта чтения заменена конкретным правилом c перед a в обоих вариантах.",
+      "verification": "ok"
+    },
+    {
+      "id": "q61",
+      "decision": "fixed",
+      "note": "Вместо субъективной трудности для новичка — ошибочный начальный [k].",
+      "verification": "ok"
+    },
+    {
+      "id": "q62",
+      "decision": "fixed",
+      "note": "Убраны подсказка s/θ в условии, служебный язык и разнородные учебные советы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q63",
+      "decision": "ok",
+      "note": "Существующая правка правильно допускает [s] и [θ].",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "cd courses/spanish-grammar && bash scripts/assemble-chapter.sh 004.es.grammar.orientation_alphabet_sounds.core_pronunciation_map_b_v_c_z_g && bash scripts/validate-chapter.sh 004.es.grammar.orientation_alphabet_sounds.core_pronunciation_map_b_v_c_z_g",
+      "result": "pass",
+      "evidence": "63 questions; seven theory blocks and inline quizzes; 49 chapter-test questions. See docs/grammar-review/batches/2026-09-04-es004/assemble-after.log and chapter-after.log."
+    },
+    {
+      "command": "ajv validate --spec=draft2020 --validate-formats=false --all-errors -s courses/spanish-grammar/02-chapter-schema.json -d courses/spanish-grammar/chapters/004.es.grammar.orientation_alphabet_sounds.core_pronunciation_map_b_v_c_z_g/05-final.json",
+      "result": "pass",
+      "evidence": "Baseline and final chapter schema pass. See docs/grammar-review/batches/2026-09-04-es004/schema-before.log and schema-after.log."
+    },
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-04-es004/check.py",
+      "result": "pass",
+      "evidence": "All 108 contracts, metadata, decisions, fingerprints, signatures, choices and bindings pass; no new ES pack duplicates; scoped embedded copies equal. See docs/grammar-review/batches/2026-09-04-es004/validation.log."
+    },
+    {
+      "command": "go test ./internal/grammarbundle ./internal/repository -run 'TestValidateEmbeddedBundleID|TestGrammar.*Bundle|TestGrammar.*Reorder' -count=1",
+      "result": "pass",
+      "evidence": "Both packages passed: 5.197s and 14.899s. See docs/grammar-review/batches/2026-09-04-es004/go-tests.log."
+    },
+    {
+      "command": "git diff --check && git -C courses/spanish-grammar diff --check && git -C courses/english-grammar diff --check",
+      "result": "pass",
+      "evidence": "All three commands exited 0."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    }
+  ],
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+}

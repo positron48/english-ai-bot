@@ -1,0 +1,31 @@
+{
+  "existing_files": 25386,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/pertenecer.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/pertenecer.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/pesar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/pesar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/picar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/picar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/poder.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/poder.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-pertenecer-poder",
+    "docs/grammar-review/reports/60c15df71079182b3532d3d7.json",
+    "docs/grammar-review/reports/e777638b9ace99fef45508e8.json",
+    "docs/grammar-review/reports/b700cd6cbb09860e1c690e93.json",
+    "docs/grammar-review/reports/4155389a6b00804828d8be35.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/pertenecer.json": "d478542bc9611e6001bd27f50be3957e0eb05ba21cbf6a5c183f8ef587fc1e87",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/pertenecer.json": "d478542bc9611e6001bd27f50be3957e0eb05ba21cbf6a5c183f8ef587fc1e87",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/pesar.json": "10284545fa943b03030a570a0f9d9c4611eab08aa2fb71090eef0caf165bb58a",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/pesar.json": "10284545fa943b03030a570a0f9d9c4611eab08aa2fb71090eef0caf165bb58a",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/picar.json": "8e57e545f8b5ed3073f5c16152dd134d184b8b35e64734eb3f60e274398280f8",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/picar.json": "8e57e545f8b5ed3073f5c16152dd134d184b8b35e64734eb3f60e274398280f8",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/poder.json": "8632b1352de68a180aa9378497ec2a32ec2f20ba9f4caf715ff9ff54e1b07e35",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/poder.json": "8632b1352de68a180aa9378497ec2a32ec2f20ba9f4caf715ff9ff54e1b07e35"
+  }
+}

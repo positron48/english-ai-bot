@@ -1,0 +1,34 @@
+{
+  "bailar": {
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/bailar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/bailar.json",
+    "report": "docs/grammar-review/reports/da24c666225e449d9f7a05d3.json",
+    "editor": "Codex editor 2026-09-06",
+    "source_sha256": "cf80f9e42b0c3945a3b873e780470b2cd34b8c4af59558fd517df41019f42b8a",
+    "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197"
+  },
+  "bajar": {
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/bajar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/bajar.json",
+    "report": "docs/grammar-review/reports/1e03325a6ecdcfb02087d80a.json",
+    "editor": "Codex editor 2026-09-06",
+    "source_sha256": "dc433b90462fcb7f1a73bfad26df6e258001206ae4d81bfb4e8385c24a0c9b3d",
+    "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197"
+  },
+  "beber": {
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/beber.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/beber.json",
+    "report": "docs/grammar-review/reports/f19ab5dd749b0893af46188b.json",
+    "editor": "Codex editor 2026-09-06",
+    "source_sha256": "154cbac495636d58a00cda8fc48e4b4ad1c5b960c0d9a2a20a328da549c5bc7d",
+    "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197"
+  },
+  "bloquear": {
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/bloquear.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/bloquear.json",
+    "report": "docs/grammar-review/reports/084a50998e53adc5d29879e0.json",
+    "editor": "Codex editor 2026-09-06",
+    "source_sha256": "edfa0ca361417f584500b7d43c5ddbce9412b551ec99df1ff655b23419d38fc2",
+    "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197"
+  }
+}

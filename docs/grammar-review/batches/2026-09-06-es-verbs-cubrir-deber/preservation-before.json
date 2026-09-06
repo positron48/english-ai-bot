@@ -1,0 +1,31 @@
+{
+  "existing_files": 25048,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/cubrir.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/cubrir.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/cumplir.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/cumplir.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/dar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/dar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/deber.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/deber.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-cubrir-deber",
+    "docs/grammar-review/reports/5a5fea40380e2574d884a7e6.json",
+    "docs/grammar-review/reports/dea0c29226023ad0cbaf2da3.json",
+    "docs/grammar-review/reports/de12fd77a9cd2c7f1ead6964.json",
+    "docs/grammar-review/reports/6dab1415257f80589212eb51.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/cubrir.json": "a8180002a1df7ed3c3952a81c6900946852801538d884d19f4d34d82db3894e0",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/cubrir.json": "a8180002a1df7ed3c3952a81c6900946852801538d884d19f4d34d82db3894e0",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/cumplir.json": "1c0fb7f46cb84bca660f80d748ffd6b0b4fafe98e818762bd2f7b768f51905b4",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/cumplir.json": "1c0fb7f46cb84bca660f80d748ffd6b0b4fafe98e818762bd2f7b768f51905b4",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/dar.json": "d05e221767deeacc8b0156f60e4abfc153bb45a5f64f5e18dc61ce9df95c2975",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/dar.json": "d05e221767deeacc8b0156f60e4abfc153bb45a5f64f5e18dc61ce9df95c2975",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/deber.json": "b5f0e83acff660e6851c38da0eb9e91be8857f9d3b427fb00406f5ff37fedad0",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/deber.json": "b5f0e83acff660e6851c38da0eb9e91be8857f9d3b427fb00406f5ff37fedad0"
+  }
+}

@@ -1,0 +1,41 @@
+{
+  "lemma": "acordar",
+  "verifier": "Codex coordinator independent verifier 2026-09-06",
+  "findings": [
+    {
+      "index": 78,
+      "question_es_with_blank": "A la coordinadora le preocupa que yo ya _ el calendario. (acordar)",
+      "translation_ru_full": "Координатора беспокоит, что я уже согласовал график."
+    },
+    {
+      "index": 90,
+      "question_es_with_blank": null,
+      "translation_ru_full": "В юридическом тексте: если окажется, что к этой дате я уже согласовал график, договорённость будет оформлена."
+    },
+    {
+      "index": 91,
+      "question_es_with_blank": null,
+      "translation_ru_full": "В юридическом тексте: если окажется, что к этой дате ты уже согласовал дату, договорённость будет оформлена."
+    },
+    {
+      "index": 92,
+      "question_es_with_blank": null,
+      "translation_ru_full": "В юридическом тексте: если окажется, что к этой дате он уже согласовал бюджет, договорённость будет оформлена."
+    },
+    {
+      "index": 93,
+      "question_es_with_blank": null,
+      "translation_ru_full": "В юридическом тексте: если окажется, что к этой дате мы уже согласовали план, договорённость будет оформлена."
+    },
+    {
+      "index": 94,
+      "question_es_with_blank": null,
+      "translation_ru_full": "В юридическом тексте: если окажется, что к этой дате вы уже согласовали условия, договорённость будет оформлена."
+    },
+    {
+      "index": 95,
+      "question_es_with_blank": null,
+      "translation_ru_full": "В юридическом тексте: если окажется, что к этой дате они уже согласовали сроки, договорённость будет оформлена."
+    }
+  ]
+}

@@ -1,0 +1,416 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/chapters/017.es.grammar.first_sentences_ser_pronouns.statements_yes_no_questions_negation_no/03-questions.json",
+  "source_sha256": "a5590bcc55462a76c71eed1b200de3ebc444ae9111238a482be1db13648e7d63",
+  "context_sha256": "494ab1956193a5158d8e3612d76a27d9674456993804397e6d12301a52b663e7",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
+  "reviewed_at": "2026-09-04T13:28:11.380798+00:00",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
+  "questions": [
+    {
+      "id": "q1",
+      "decision": "fixed",
+      "note": "Два правильных варианта с él и без него; явно требуется местоимение.",
+      "verification": "ok"
+    },
+    {
+      "id": "q2",
+      "decision": "fixed",
+      "note": "Вариант En Madrid vivimos nosotros тоже правилен; требуется отсутствие местоимения.",
+      "verification": "ok"
+    },
+    {
+      "id": "q3",
+      "decision": "fixed",
+      "note": "Инверсия не является ошибкой; указан требуемый порядок.",
+      "verification": "ok"
+    },
+    {
+      "id": "q4",
+      "decision": "fixed",
+      "note": "Убраны канцелярское условие и бессмысленный дистрактор.",
+      "verification": "ok"
+    },
+    {
+      "id": "q5",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q6",
+      "decision": "fixed",
+      "note": "Без значения подходят и другие предлоги, например cerca de; задано «в».",
+      "verification": "ok"
+    },
+    {
+      "id": "q7",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q8",
+      "decision": "fixed",
+      "note": "Убран вопрос о педагогической надёжности вместо языкового свойства.",
+      "verification": "ok"
+    },
+    {
+      "id": "q9",
+      "decision": "fixed",
+      "note": "Указан смысл проживания, который определяет выбор vivir.",
+      "verification": "ok"
+    },
+    {
+      "id": "q10",
+      "decision": "fixed",
+      "note": "Грамматическая инверсия больше не объявляется ошибкой.",
+      "verification": "ok"
+    },
+    {
+      "id": "q11",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q12",
+      "decision": "fixed",
+      "note": "Устранён второй правильный вопрос с de Chile в начале.",
+      "verification": "ok"
+    },
+    {
+      "id": "q13",
+      "decision": "fixed",
+      "note": "Оба вопроса правильны; явно требуется отсутствие местоимения.",
+      "verification": "ok"
+    },
+    {
+      "id": "q14",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q15",
+      "decision": "fixed",
+      "note": "Указаны инфинитив, время и лицо для однозначного ввода.",
+      "verification": "ok"
+    },
+    {
+      "id": "q16",
+      "decision": "fixed",
+      "note": "Вы могло означать ustedes; явно задано usted одному человеку.",
+      "verification": "ok"
+    },
+    {
+      "id": "q17",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q18",
+      "decision": "fixed",
+      "note": "Устранено условие, уже показывающее готовый вопрос без добавлений.",
+      "verification": "ok"
+    },
+    {
+      "id": "q19",
+      "decision": "fixed",
+      "note": "Сохранение слов исключает второй допустимый порядок; исправлено ложное объяснение о vive.",
+      "verification": "ok"
+    },
+    {
+      "id": "q20",
+      "decision": "fixed",
+      "note": "Правильный вопрос с tú больше не объявляется ошибочным.",
+      "verification": "ok"
+    },
+    {
+      "id": "q21",
+      "decision": "fixed",
+      "note": "Исключены спорная граница вопроса и утечка готового ответа.",
+      "verification": "ok"
+    },
+    {
+      "id": "q22",
+      "decision": "fixed",
+      "note": "Явное tú не названо лишним само по себе.",
+      "verification": "ok"
+    },
+    {
+      "id": "q23",
+      "decision": "fixed",
+      "note": "Оба положения ustedes правильны; указан требуемый порядок.",
+      "verification": "ok"
+    },
+    {
+      "id": "q24",
+      "decision": "fixed",
+      "note": "Уточнены границы вопроса вместо запрета имени перед вопросительной частью.",
+      "verification": "ok"
+    },
+    {
+      "id": "q25",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q26",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q27",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q28",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q29",
+      "decision": "fixed",
+      "note": "Частичный вопрос мог быть допустим; явно указаны границы всей фразы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q30",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q31",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q32",
+      "decision": "fixed",
+      "note": "Убрана неоднозначность отрицания en Lima с последующим противопоставлением.",
+      "verification": "ok"
+    },
+    {
+      "id": "q33",
+      "decision": "fixed",
+      "note": "Заменены дистракторы с контрастным отрицанием и искусственным повтором no.",
+      "verification": "ok"
+    },
+    {
+      "id": "q34",
+      "decision": "fixed",
+      "note": "Неполное противопоставление no hoy заменено ошибками в форме глагола.",
+      "verification": "ok"
+    },
+    {
+      "id": "q35",
+      "decision": "fixed",
+      "note": "Исключены другие отрицательные наречия, задано значение «не».",
+      "verification": "ok"
+    },
+    {
+      "id": "q36",
+      "decision": "fixed",
+      "note": "Исключены nunca/tampoco, задано значение «не».",
+      "verification": "ok"
+    },
+    {
+      "id": "q37",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q38",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q39",
+      "decision": "fixed",
+      "note": "Задано нейтральное отрицание; убран спорный вариант с выделением профессии.",
+      "verification": "ok"
+    },
+    {
+      "id": "q40",
+      "decision": "fixed",
+      "note": "Задано нейтральное отрицание; убрано возможное противопоставление no aquí.",
+      "verification": "ok"
+    },
+    {
+      "id": "q41",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q42",
+      "decision": "fixed",
+      "note": "Явно задан ответ о себе, от которого зависит лицо глагола.",
+      "verification": "ok"
+    },
+    {
+      "id": "q43",
+      "decision": "fixed",
+      "note": "Указан референт es и убраны неоднозначные варианты с контрастным отрицанием.",
+      "verification": "ok"
+    },
+    {
+      "id": "q44",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q45",
+      "decision": "fixed",
+      "note": "Форма es вопроса привязана к usted, а ответ к yo; задан инфинитив.",
+      "verification": "ok"
+    },
+    {
+      "id": "q46",
+      "decision": "fixed",
+      "note": "Вопрос задан группе на ustedes, ответ от nosotros; задан инфинитив.",
+      "verification": "ok"
+    },
+    {
+      "id": "q47",
+      "decision": "fixed",
+      "note": "Корявая формулировка заменена конкретным разбором двух no.",
+      "verification": "ok"
+    },
+    {
+      "id": "q48",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q49",
+      "decision": "fixed",
+      "note": "Грамматически правильный trabajas требует исправления только в ответе о себе.",
+      "verification": "ok"
+    },
+    {
+      "id": "q50",
+      "decision": "fixed",
+      "note": "Задан нейтральный смысл и устранены варианты с противопоставлением.",
+      "verification": "ok"
+    },
+    {
+      "id": "q51",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q52",
+      "decision": "fixed",
+      "note": "Дистрактор Trabajo no aquí возможен при противопоставлении; заменён.",
+      "verification": "ok"
+    },
+    {
+      "id": "q53",
+      "decision": "fixed",
+      "note": "Отрицательное предложение тоже может быть утверждением; явно задана утвердительная полярность.",
+      "verification": "ok"
+    },
+    {
+      "id": "q54",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q55",
+      "decision": "fixed",
+      "note": "Указаны инфинитив, время и лицо.",
+      "verification": "ok"
+    },
+    {
+      "id": "q56",
+      "decision": "fixed",
+      "note": "Без инфинитива и времени подходят другие формы; задан ser/yo.",
+      "verification": "ok"
+    },
+    {
+      "id": "q57",
+      "decision": "fixed",
+      "note": "Мета-вопрос о чек-листе заменён проверкой совместимости вопроса и отрицания.",
+      "verification": "ok"
+    },
+    {
+      "id": "q58",
+      "decision": "fixed",
+      "note": "Дополнительное слово могло быть допустимым; проверяется конкретная ложная аналогия со вспомогательным глаголом.",
+      "verification": "ok"
+    },
+    {
+      "id": "q59",
+      "decision": "fixed",
+      "note": "Оба порядка слов допустимы; требуется только пунктуационная правка.",
+      "verification": "ok"
+    },
+    {
+      "id": "q60",
+      "decision": "fixed",
+      "note": "Варианты с контрастным отрицанием заменены ошибками лица.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-04-es017-020/check.py",
+      "result": "pass",
+      "evidence": "All 561 IDs/contracts, question decisions versus baseline, fingerprints, native training validation, signatures and source-final-embedded equality; validation.log."
+    },
+    {
+      "command": "go test ./internal/grammarbundle ./internal/repository -run 'TestValidateEmbeddedBundleID|TestGrammar.*Bundle|TestGrammar.*Reorder' -count=1",
+      "result": "pass",
+      "evidence": "Both packages passed after integration of all four chapters; go-tests.log."
+    },
+    {
+      "command": "git diff --check; git -C courses/spanish-grammar diff --check; git -C courses/english-grammar diff --check",
+      "result": "pass",
+      "evidence": "Three separately executed commands exit 0; diff-check.log. All 484 earlier dirty files outside review docs preserved; preservation.log."
+    },
+    {
+      "command": "cd courses/spanish-grammar && bash scripts/assemble-chapter.sh 017.es.grammar.first_sentences_ser_pronouns.statements_yes_no_questions_negation_no",
+      "result": "pass",
+      "evidence": "017-assemble.log: exit 0."
+    },
+    {
+      "command": "cd courses/spanish-grammar && bash scripts/validate-chapter.sh 017.es.grammar.first_sentences_ser_pronouns.statements_yes_no_questions_negation_no",
+      "result": "pass",
+      "evidence": "017-chapter-after.log: exit 0."
+    },
+    {
+      "command": "cd courses/spanish-grammar && ajv validate --spec=draft2020 --validate-formats=false --all-errors -s 02-chapter-schema.json -d chapters/017.es.grammar.first_sentences_ser_pronouns.statements_yes_no_questions_negation_no/05-final.json",
+      "result": "known_baseline",
+      "evidence": "017-schema-before.log and 017-schema-after.log are byte-identical, exit 1. Russian theory-example tags violate the schema pattern; question edits do not change theory."
+    },
+    {
+      "command": "cd courses/spanish-grammar && ajv validate -s 02-chapter-schema.json -d chapters/017.es.grammar.first_sentences_ser_pronouns.statements_yes_no_questions_negation_no/05-final.json",
+      "result": "known_baseline",
+      "evidence": "017-assembler-ajv-before.log and 017-assembler-ajv-after.log are byte-identical, exit 1. No draft2020 meta-schema selected."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    }
+  ],
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+}

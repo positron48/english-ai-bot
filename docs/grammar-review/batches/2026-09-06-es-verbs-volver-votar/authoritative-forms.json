@@ -1,0 +1,276 @@
+{
+  "_sources": {
+    "jehle_csv": "resources/verbs/jehle_verb_database.csv",
+    "sha256": "f77f01d536cd351584051d76902ff8051ab1b945a38e69c7ed02da78ab082ea8"
+  },
+  "_slots": [
+    "1:singular",
+    "2:singular",
+    "3:singular",
+    "1:plural",
+    "2:plural",
+    "3:plural"
+  ],
+  "forms": {
+    "volver": {
+      "es.presente.indicativo": [
+        "vuelvo",
+        "vuelves",
+        "vuelve",
+        "volvemos",
+        "volvéis",
+        "vuelven"
+      ],
+      "es.preterito_imperfecto.indicativo": [
+        "volvía",
+        "volvías",
+        "volvía",
+        "volvíamos",
+        "volvíais",
+        "volvían"
+      ],
+      "es.preterito_indefinido.indicativo": [
+        "volví",
+        "volviste",
+        "volvió",
+        "volvimos",
+        "volvisteis",
+        "volvieron"
+      ],
+      "es.futuro_simple.indicativo": [
+        "volveré",
+        "volverás",
+        "volverá",
+        "volveremos",
+        "volveréis",
+        "volverán"
+      ],
+      "es.condicional_simple.indicativo": [
+        "volvería",
+        "volverías",
+        "volvería",
+        "volveríamos",
+        "volveríais",
+        "volverían"
+      ],
+      "es.preterito_perfecto_compuesto.indicativo": [
+        "he vuelto",
+        "has vuelto",
+        "ha vuelto",
+        "hemos vuelto",
+        "habéis vuelto",
+        "han vuelto"
+      ],
+      "es.preterito_pluscuamperfecto.indicativo": [
+        "había vuelto",
+        "habías vuelto",
+        "había vuelto",
+        "habíamos vuelto",
+        "habíais vuelto",
+        "habían vuelto"
+      ],
+      "es.preterito_anterior.indicativo": [
+        "hube vuelto",
+        "hubiste vuelto",
+        "hubo vuelto",
+        "hubimos vuelto",
+        "hubisteis vuelto",
+        "hubieron vuelto"
+      ],
+      "es.futuro_perfecto.indicativo": [
+        "habré vuelto",
+        "habrás vuelto",
+        "habrá vuelto",
+        "habremos vuelto",
+        "habréis vuelto",
+        "habrán vuelto"
+      ],
+      "es.condicional_perfecto.indicativo": [
+        "habría vuelto",
+        "habrías vuelto",
+        "habría vuelto",
+        "habríamos vuelto",
+        "habríais vuelto",
+        "habrían vuelto"
+      ],
+      "es.presente.subjuntivo": [
+        "vuelva",
+        "vuelvas",
+        "vuelva",
+        "volvamos",
+        "volváis",
+        "vuelvan"
+      ],
+      "es.preterito_imperfecto.subjuntivo": [
+        "volviera",
+        "volvieras",
+        "volviera",
+        "volviéramos",
+        "volvierais",
+        "volvieran"
+      ],
+      "es.futuro_simple.subjuntivo": [
+        "volviere",
+        "volvieres",
+        "volviere",
+        "volviéremos",
+        "volviereis",
+        "volvieren"
+      ],
+      "es.preterito_perfecto.subjuntivo": [
+        "haya vuelto",
+        "hayas vuelto",
+        "haya vuelto",
+        "hayamos vuelto",
+        "hayáis vuelto",
+        "hayan vuelto"
+      ],
+      "es.preterito_pluscuamperfecto.subjuntivo": [
+        "hubiera vuelto",
+        "hubieras vuelto",
+        "hubiera vuelto",
+        "hubiéramos vuelto",
+        "hubierais vuelto",
+        "hubieran vuelto"
+      ],
+      "es.futuro_perfecto.subjuntivo": [
+        "hubiere vuelto",
+        "hubieres vuelto",
+        "hubiere vuelto",
+        "hubiéremos vuelto",
+        "hubiereis vuelto",
+        "hubieren vuelto"
+      ]
+    },
+    "votar": {
+      "es.presente.indicativo": [
+        "voto",
+        "votas",
+        "vota",
+        "votamos",
+        "votáis",
+        "votan"
+      ],
+      "es.preterito_imperfecto.indicativo": [
+        "votaba",
+        "votabas",
+        "votaba",
+        "votábamos",
+        "votabais",
+        "votaban"
+      ],
+      "es.preterito_indefinido.indicativo": [
+        "voté",
+        "votaste",
+        "votó",
+        "votamos",
+        "votasteis",
+        "votaron"
+      ],
+      "es.futuro_simple.indicativo": [
+        "votaré",
+        "votarás",
+        "votará",
+        "votaremos",
+        "votaréis",
+        "votarán"
+      ],
+      "es.condicional_simple.indicativo": [
+        "votaría",
+        "votarías",
+        "votaría",
+        "votaríamos",
+        "votaríais",
+        "votarían"
+      ],
+      "es.preterito_perfecto_compuesto.indicativo": [
+        "he votado",
+        "has votado",
+        "ha votado",
+        "hemos votado",
+        "habéis votado",
+        "han votado"
+      ],
+      "es.preterito_pluscuamperfecto.indicativo": [
+        "había votado",
+        "habías votado",
+        "había votado",
+        "habíamos votado",
+        "habíais votado",
+        "habían votado"
+      ],
+      "es.preterito_anterior.indicativo": [
+        "hube votado",
+        "hubiste votado",
+        "hubo votado",
+        "hubimos votado",
+        "hubisteis votado",
+        "hubieron votado"
+      ],
+      "es.futuro_perfecto.indicativo": [
+        "habré votado",
+        "habrás votado",
+        "habrá votado",
+        "habremos votado",
+        "habréis votado",
+        "habrán votado"
+      ],
+      "es.condicional_perfecto.indicativo": [
+        "habría votado",
+        "habrías votado",
+        "habría votado",
+        "habríamos votado",
+        "habríais votado",
+        "habrían votado"
+      ],
+      "es.presente.subjuntivo": [
+        "vote",
+        "votes",
+        "vote",
+        "votemos",
+        "votéis",
+        "voten"
+      ],
+      "es.preterito_imperfecto.subjuntivo": [
+        "votara",
+        "votaras",
+        "votara",
+        "votáramos",
+        "votarais",
+        "votaran"
+      ],
+      "es.futuro_simple.subjuntivo": [
+        "votare",
+        "votares",
+        "votare",
+        "votáremos",
+        "votareis",
+        "votaren"
+      ],
+      "es.preterito_perfecto.subjuntivo": [
+        "haya votado",
+        "hayas votado",
+        "haya votado",
+        "hayamos votado",
+        "hayáis votado",
+        "hayan votado"
+      ],
+      "es.preterito_pluscuamperfecto.subjuntivo": [
+        "hubiera votado",
+        "hubieras votado",
+        "hubiera votado",
+        "hubiéramos votado",
+        "hubierais votado",
+        "hubieran votado"
+      ],
+      "es.futuro_perfecto.subjuntivo": [
+        "hubiere votado",
+        "hubieres votado",
+        "hubiere votado",
+        "hubiéremos votado",
+        "hubiereis votado",
+        "hubieren votado"
+      ]
+    }
+  }
+}

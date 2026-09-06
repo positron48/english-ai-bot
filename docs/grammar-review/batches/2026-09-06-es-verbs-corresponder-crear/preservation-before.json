@@ -1,0 +1,31 @@
+{
+  "existing_files": 25032,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/corresponder.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/corresponder.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/cortar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/cortar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/costar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/costar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/crear.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/crear.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-corresponder-crear",
+    "docs/grammar-review/reports/fb900eee762e5dec12bd538d.json",
+    "docs/grammar-review/reports/2725646fc1d638b6ce1aae58.json",
+    "docs/grammar-review/reports/b5843326b9a929ab785ed5ef.json",
+    "docs/grammar-review/reports/b0a8ca2376d7fe581dffc634.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/corresponder.json": "f8bb35f1e63d16421f1e947dbac0ad6cca7a49656acfbd55ab44fc4086935836",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/corresponder.json": "f8bb35f1e63d16421f1e947dbac0ad6cca7a49656acfbd55ab44fc4086935836",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/cortar.json": "dda9ee91087f7b5baba3d9ab2ed0b672eb424408fb1762a647ad94a92aa7e8a6",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/cortar.json": "dda9ee91087f7b5baba3d9ab2ed0b672eb424408fb1762a647ad94a92aa7e8a6",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/costar.json": "0f0bbe14329fd48d6a8301b22c1870b6b2341063f0ec4149b546415ad92e687b",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/costar.json": "0f0bbe14329fd48d6a8301b22c1870b6b2341063f0ec4149b546415ad92e687b",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/crear.json": "29d48ef0f2af99f961fee5c81a8b2fda3b6ca6f9458feb149093703cf0a870d4",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/crear.json": "29d48ef0f2af99f961fee5c81a8b2fda3b6ca6f9458feb149093703cf0a870d4"
+  }
+}

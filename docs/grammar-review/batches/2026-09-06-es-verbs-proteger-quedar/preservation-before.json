@@ -1,0 +1,31 @@
+{
+  "existing_files": 25435,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/proteger.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/proteger.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/provocar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/provocar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/publicar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/publicar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/quedar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/quedar.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-proteger-quedar",
+    "docs/grammar-review/reports/a6d2947eafa9719fa18d431b.json",
+    "docs/grammar-review/reports/0e0a73cfd2a3b2e1797e97b5.json",
+    "docs/grammar-review/reports/e6544b74b0ca554ea8a20ea6.json",
+    "docs/grammar-review/reports/1e7a0f69dc36629a08882389.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/proteger.json": "9a582861e1bf5c4e4e01f30cccfc8ffb4c56373d0824a8c50068183d673cef18",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/proteger.json": "9a582861e1bf5c4e4e01f30cccfc8ffb4c56373d0824a8c50068183d673cef18",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/provocar.json": "44e4f14855e166d3f6b4fd673e65b179dc8c3be523b28cd750c7cbf40b94da1d",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/provocar.json": "44e4f14855e166d3f6b4fd673e65b179dc8c3be523b28cd750c7cbf40b94da1d",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/publicar.json": "97b2daa120d384dc27146dbf3f45f597bd811f4882ea4480c96f6091268b4119",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/publicar.json": "97b2daa120d384dc27146dbf3f45f597bd811f4882ea4480c96f6091268b4119",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/quedar.json": "55ccc7421516185be189876ca31fa6bb50e3a5113fe17e12d19acbb384f65873",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/quedar.json": "55ccc7421516185be189876ca31fa6bb50e3a5113fe17e12d19acbb384f65873"
+  }
+}

@@ -1,0 +1,380 @@
+{
+  "version": 1,
+  "source": "courses/english-grammar/chapters/012.en.grammar.talking_about_things_nouns.singular_plural_s_basic/03-questions.json",
+  "source_sha256": "90954cf4b8e2baf100be716a75e61db94b92cee5a27f51bd2642af63818f2017",
+  "context_sha256": "2e4eec5b4b8b67b46d1de45b24b272ec1e5689bd612575eda3332825cff296aa",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
+  "reviewed_at": "2026-09-04T12:19:43.985911+00:00",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
+  "questions": [
+    {
+      "id": "q1",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q2",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q3",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q4",
+      "decision": "fixed",
+      "note": "Уточнены сохраняемое количество, лексема или допустимая форма; устранено ложное правило о нуле.",
+      "verification": "ok"
+    },
+    {
+      "id": "q5",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q7",
+      "decision": "fixed",
+      "note": "Уточнены сохраняемое количество, лексема или допустимая форма; устранено ложное правило о нуле.",
+      "verification": "ok"
+    },
+    {
+      "id": "q8",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q9",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q10",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q12",
+      "decision": "fixed",
+      "note": "Уточнены сохраняемое количество, лексема или допустимая форма; устранено ложное правило о нуле.",
+      "verification": "ok"
+    },
+    {
+      "id": "q13",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q14",
+      "decision": "fixed",
+      "note": "Уточнены сохраняемое количество, лексема или допустимая форма; устранено ложное правило о нуле.",
+      "verification": "ok"
+    },
+    {
+      "id": "q17",
+      "decision": "fixed",
+      "note": "Уточнены сохраняемое количество, лексема или допустимая форма; устранено ложное правило о нуле.",
+      "verification": "ok"
+    },
+    {
+      "id": "q18",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q19",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q22",
+      "decision": "fixed",
+      "note": "Уточнены сохраняемое количество, лексема или допустимая форма; устранено ложное правило о нуле.",
+      "verification": "ok"
+    },
+    {
+      "id": "q23",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q24",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q25",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q26",
+      "decision": "fixed",
+      "note": "Уточнены сохраняемое количество, лексема или допустимая форма; устранено ложное правило о нуле.",
+      "verification": "ok"
+    },
+    {
+      "id": "q27",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q29",
+      "decision": "fixed",
+      "note": "Уточнены сохраняемое количество и исходное существительное, чтобы исключить альтернативно правильную замену.",
+      "verification": "ok"
+    },
+    {
+      "id": "q30",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q32",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q34",
+      "decision": "fixed",
+      "note": "Уточнены сохраняемое количество и исходное существительное, чтобы исключить альтернативно правильную замену.",
+      "verification": "ok"
+    },
+    {
+      "id": "q35",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q36",
+      "decision": "fixed",
+      "note": "Уточнены сохраняемое количество и исходное существительное, чтобы исключить альтернативно правильную замену.",
+      "verification": "ok"
+    },
+    {
+      "id": "q37",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q38",
+      "decision": "fixed",
+      "note": "Уточнены сохраняемое количество и исходное существительное, чтобы исключить альтернативно правильную замену.",
+      "verification": "ok"
+    },
+    {
+      "id": "q39",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q41",
+      "decision": "fixed",
+      "note": "Уточнены сохраняемое количество и исходное существительное, чтобы исключить альтернативно правильную замену.",
+      "verification": "ok"
+    },
+    {
+      "id": "q42",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q44",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q46",
+      "decision": "fixed",
+      "note": "Уточнены сохраняемое количество и исходное существительное, чтобы исключить альтернативно правильную замену.",
+      "verification": "ok"
+    },
+    {
+      "id": "q47",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q48",
+      "decision": "fixed",
+      "note": "Уточнены сохраняемое количество и исходное существительное, чтобы исключить альтернативно правильную замену.",
+      "verification": "ok"
+    },
+    {
+      "id": "q49",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q50",
+      "decision": "fixed",
+      "note": "Уточнены сохраняемое количество и исходное существительное, чтобы исключить альтернативно правильную замену.",
+      "verification": "ok"
+    },
+    {
+      "id": "q51",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q53",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q54",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q55",
+      "decision": "fixed",
+      "note": "Исправлены неоднозначная лексема, неестественный пример и необоснованный запрет формы fishes.",
+      "verification": "ok"
+    },
+    {
+      "id": "q56",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q58",
+      "decision": "fixed",
+      "note": "Исправлены неоднозначная лексема, неестественный пример и необоснованный запрет формы fishes.",
+      "verification": "ok"
+    },
+    {
+      "id": "q59",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q60",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q61",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q62",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q63",
+      "decision": "fixed",
+      "note": "Исправлены неоднозначная лексема, неестественный пример и необоснованный запрет формы fishes.",
+      "verification": "ok"
+    },
+    {
+      "id": "q65",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q66",
+      "decision": "fixed",
+      "note": "Словарный вариант deers учтён; требуется неизменённая форма.",
+      "verification": "ok"
+    },
+    {
+      "id": "q67",
+      "decision": "fixed",
+      "note": "Словарный вариант deers учтён; требуется неизменённая форма.",
+      "verification": "ok"
+    },
+    {
+      "id": "q70",
+      "decision": "fixed",
+      "note": "Исправлены неоднозначная лексема, неестественный пример и необоснованный запрет формы fishes.",
+      "verification": "ok"
+    },
+    {
+      "id": "q72",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-04-en011-014/check.py",
+      "result": "pass",
+      "evidence": "All 390 IDs/contracts, metadata, decisions versus baseline and current source/context fingerprints verified. Native training validation, signatures, no new course-wide duplicate signatures and exact source-final-embedded equality; validation.log."
+    },
+    {
+      "command": "go test ./internal/grammarbundle ./internal/repository -run 'TestValidateEmbeddedBundleID|TestGrammar.*Bundle|TestGrammar.*Reorder' -count=1",
+      "result": "pass",
+      "evidence": "Both packages pass: 4.808s and 13.894s; go-tests.log."
+    },
+    {
+      "command": "git diff --check; git -C courses/spanish-grammar diff --check; git -C courses/english-grammar diff --check",
+      "result": "pass",
+      "evidence": "Three separately executed commands exit 0; diff-check.log. All 318 pre-existing files outside review docs preserved byte-for-byte; preservation.log."
+    },
+    {
+      "command": "cd courses/english-grammar && bash scripts/assemble-chapter.sh 012.en.grammar.talking_about_things_nouns.singular_plural_s_basic",
+      "result": "pass",
+      "evidence": "54 questions assembled; 012-assemble.log. Embedded AJV limitation recorded separately."
+    },
+    {
+      "command": "cd courses/english-grammar && bash scripts/validate-chapter.sh 012.en.grammar.talking_about_things_nouns.singular_plural_s_basic",
+      "result": "pass",
+      "evidence": "Before and after pass: 012-chapter-before.log and 012-chapter-after.log."
+    },
+    {
+      "command": "ajv validate --spec=draft2020 --validate-formats=false --all-errors -s courses/english-grammar/02-chapter-schema.json -d courses/english-grammar/chapters/012.en.grammar.talking_about_things_nouns.singular_plural_s_basic/05-final.json",
+      "result": "pass",
+      "evidence": "Before and after pass: 012-schema-before.log and 012-schema-after.log."
+    },
+    {
+      "command": "cd courses/english-grammar && ajv validate -s 02-chapter-schema.json -d chapters/012.en.grammar.talking_about_things_nouns.singular_plural_s_basic/05-final.json",
+      "result": "known_baseline",
+      "evidence": "012-assembler-ajv-before.log and 012-assembler-ajv-after.log are byte-identical: exit 1, no schema with key or ref https://json-schema.org/draft/2020-12/schema. Explicit draft2020 passes before and after."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    }
+  ],
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+}

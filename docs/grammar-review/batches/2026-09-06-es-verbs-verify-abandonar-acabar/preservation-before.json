@@ -1,0 +1,39 @@
+{
+  "existing_files": 25734,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/abandonar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/abandonar.json",
+    "docs/grammar-review/reports/f0566d23c167dd3b93172290.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/abordar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/abordar.json",
+    "docs/grammar-review/reports/ca3615ffec3de616c6d263f7.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/abrir.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/abrir.json",
+    "docs/grammar-review/reports/d05efeee10bddf44584c3f13.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/acabar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/acabar.json",
+    "docs/grammar-review/reports/7f938579fdbb300050b29afc.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-verify-abandonar-acabar"
+  ],
+  "assigned_dirty_before": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/abandonar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/abordar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/abrir.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/acabar.json",
+    "docs/grammar-review/reports/7f938579fdbb300050b29afc.json",
+    "docs/grammar-review/reports/ca3615ffec3de616c6d263f7.json",
+    "docs/grammar-review/reports/d05efeee10bddf44584c3f13.json",
+    "docs/grammar-review/reports/f0566d23c167dd3b93172290.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/abandonar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/abordar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/abrir.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/acabar.json"
+  ],
+  "preexisting_missing_tracked": [
+    "courses/english-grammar/llm-benchmark/__pycache__/benchmark.cpython-314.pyc",
+    "courses/english-grammar/training-pack-admin/__pycache__/server.cpython-314.pyc",
+    "tools-local/complaints-worker/__pycache__/worker.cpython-314.pyc"
+  ]
+}

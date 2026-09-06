@@ -1,0 +1,26 @@
+{
+  "existing_files": 24877,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/aspirar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/aspirar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/atacar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/atacar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/atender.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/atender.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-aspirar-atender",
+    "docs/grammar-review/reports/d0b063c897b851d61bc8b9c5.json",
+    "docs/grammar-review/reports/db13008fc2536d620bd11d3b.json",
+    "docs/grammar-review/reports/142716ee16e421cfa9a35ce7.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/aspirar.json": "233ba76fe40ee3759ec51f9437c35327644edcbd9315ff6732ef57cabb1b4a51",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/aspirar.json": "233ba76fe40ee3759ec51f9437c35327644edcbd9315ff6732ef57cabb1b4a51",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/atacar.json": "a1a302d21f655a109d80fbe274d59f2aa06b0578b591bf889f581c4ae7f471da",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/atacar.json": "a1a302d21f655a109d80fbe274d59f2aa06b0578b591bf889f581c4ae7f471da",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/atender.json": "f3f12a38f1b3e90c05c6fd74895d48b866bb86e826122b12f6b8073708deea5b",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/atender.json": "f3f12a38f1b3e90c05c6fd74895d48b866bb86e826122b12f6b8073708deea5b"
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "existing_files": 24835,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/afirmar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/afirmar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/agradecer.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/agradecer.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/alcanzar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/alcanzar.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-afirmar-alcanzar",
+    "docs/grammar-review/reports/3d8a6b9dfa2717b8ffb11970.json",
+    "docs/grammar-review/reports/f14f851ec99e68ffe9e19f5c.json",
+    "docs/grammar-review/reports/cac1f3b103c1cfe918926785.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/afirmar.json": "2e421b3992a6fe0b5f4b0a825480b68c3b67d3792af13c523c1e10f2e8363791",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/afirmar.json": "2e421b3992a6fe0b5f4b0a825480b68c3b67d3792af13c523c1e10f2e8363791",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/agradecer.json": "af32219fa3817a8c586c3a28d526bd746b77c9c343a0409720a6ccb4d167a81d",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/agradecer.json": "af32219fa3817a8c586c3a28d526bd746b77c9c343a0409720a6ccb4d167a81d",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/alcanzar.json": "2e67078bc22c31e1448cb9214778e41eeb65502e5bb4d5e218bc8c1305887722",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/alcanzar.json": "2e67078bc22c31e1448cb9214778e41eeb65502e5bb4d5e218bc8c1305887722"
+  }
+}

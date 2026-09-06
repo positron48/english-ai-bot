@@ -1,0 +1,34 @@
+{
+  "afirmar": {
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/afirmar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/afirmar.json",
+    "report": "docs/grammar-review/reports/3d8a6b9dfa2717b8ffb11970.json",
+    "editor": "Codex editor 2026-09-06",
+    "source_sha256": "b0c5e86273ac75aa802f69c47d170cf5cc7eea735bde8d07a7a9266a04c75031",
+    "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197"
+  },
+  "agradecer": {
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/agradecer.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/agradecer.json",
+    "report": "docs/grammar-review/reports/f14f851ec99e68ffe9e19f5c.json",
+    "editor": "Codex editor 2026-09-06",
+    "source_sha256": "b6b46221d66777b76fde373aa45780068bbd4a0d848224b24f3c13a681472c1e",
+    "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197"
+  },
+  "alcanzar": {
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/alcanzar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/alcanzar.json",
+    "report": "docs/grammar-review/reports/cac1f3b103c1cfe918926785.json",
+    "editor": "Codex editor 2026-09-06",
+    "source_sha256": "633a99dea410ed86720417a2a0c28db80f6e2c16448172aba0b18eb7aa11088d",
+    "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197"
+  },
+  "almorzar": {
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/almorzar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/almorzar.json",
+    "report": "docs/grammar-review/reports/89392692d12dcc3bc9dbf0c5.json",
+    "editor": "Codex editor 2026-09-06",
+    "source_sha256": "a429805b7315b188d5811e117779380613b4dd11998734bdd2aafb775480684d",
+    "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197"
+  }
+}

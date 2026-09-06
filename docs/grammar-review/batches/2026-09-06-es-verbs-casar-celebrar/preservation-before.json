@@ -1,0 +1,26 @@
+{
+  "existing_files": 24933,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/casar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/casar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/causar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/causar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/celebrar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/celebrar.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-casar-celebrar",
+    "docs/grammar-review/reports/1df8a1e0640da8b514f71936.json",
+    "docs/grammar-review/reports/d6679ce6243dfad6efdc83d1.json",
+    "docs/grammar-review/reports/0a86a8f6b43d62c316aed866.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/casar.json": "8664d1cd60f1a2e01e528769bff21854a6842f52365e2f45f38f5df929c96f0a",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/casar.json": "8664d1cd60f1a2e01e528769bff21854a6842f52365e2f45f38f5df929c96f0a",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/causar.json": "a0f1156391161e25bb38dfb7f3e8723dead1190771ae9a9a7edccf240393ce9f",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/causar.json": "a0f1156391161e25bb38dfb7f3e8723dead1190771ae9a9a7edccf240393ce9f",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/celebrar.json": "4b94f83058291e6443ab62d34e39a15afd487c706df0778f69520fba0b44c57f",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/celebrar.json": "4b94f83058291e6443ab62d34e39a15afd487c706df0778f69520fba0b44c57f"
+  }
+}

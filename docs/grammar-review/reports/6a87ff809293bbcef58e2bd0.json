@@ -1,0 +1,150 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/chapters/009/es.04.b4_theory_zero_article_basic_patterns.questions.json",
+  "source_sha256": "50a3a183ca665c1bf092f5e5497f0a22625950664637d7247af311a24a6f8f8d",
+  "context_sha256": "b1631b3dbb6eb17680f0534e2562aa613da945933d1a3910bbceec4e21d5fb09",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
+  "reviewed_at": "2026-09-04T11:54:23.019558+00:00",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
+  "questions": [
+    {
+      "id": "q1",
+      "decision": "fixed",
+      "note": "Уточнены артикль/род, исправлены неестественный перевод и ложные правила; Tengo triste заменено корректной моделью.",
+      "verification": "ok"
+    },
+    {
+      "id": "q2",
+      "decision": "fixed",
+      "note": "Уточнены артикль/род, исправлены неестественный перевод и ложные правила; Tengo triste заменено корректной моделью.",
+      "verification": "ok"
+    },
+    {
+      "id": "q3",
+      "decision": "fixed",
+      "note": "Уточнены артикль/род, исправлены неестественный перевод и ложные правила; Tengo triste заменено корректной моделью.",
+      "verification": "ok"
+    },
+    {
+      "id": "q4",
+      "decision": "fixed",
+      "note": "Уточнены артикль/род, исправлены неестественный перевод и ложные правила; Tengo triste заменено корректной моделью.",
+      "verification": "ok"
+    },
+    {
+      "id": "q5",
+      "decision": "fixed",
+      "note": "Уточнены артикль/род, исправлены неестественный перевод и ложные правила; Tengo triste заменено корректной моделью.",
+      "verification": "ok"
+    },
+    {
+      "id": "q6",
+      "decision": "fixed",
+      "note": "Уточнены артикль/род, исправлены неестественный перевод и ложные правила; Tengo triste заменено корректной моделью.",
+      "verification": "ok"
+    },
+    {
+      "id": "q7",
+      "decision": "fixed",
+      "note": "Уточнены артикль/род, исправлены неестественный перевод и ложные правила; Tengo triste заменено корректной моделью.",
+      "verification": "ok"
+    },
+    {
+      "id": "q8",
+      "decision": "fixed",
+      "note": "Уточнены артикль/род, исправлены неестественный перевод и ложные правила; Tengo triste заменено корректной моделью.",
+      "verification": "ok"
+    },
+    {
+      "id": "q9",
+      "decision": "fixed",
+      "note": "Уточнены артикль/род, исправлены неестественный перевод и ложные правила; Tengo triste заменено корректной моделью.",
+      "verification": "ok"
+    },
+    {
+      "id": "q10",
+      "decision": "fixed",
+      "note": "Уточнены артикль/род, исправлены неестественный перевод и ложные правила; Tengo triste заменено корректной моделью.",
+      "verification": "ok"
+    },
+    {
+      "id": "q11",
+      "decision": "fixed",
+      "note": "Уточнены артикль/род, исправлены неестественный перевод и ложные правила; Tengo triste заменено корректной моделью.",
+      "verification": "ok"
+    },
+    {
+      "id": "q12",
+      "decision": "fixed",
+      "note": "Уточнены артикль/род, исправлены неестественный перевод и ложные правила; Tengo triste заменено корректной моделью.",
+      "verification": "ok"
+    },
+    {
+      "id": "q13",
+      "decision": "fixed",
+      "note": "Уточнены артикль/род, исправлены неестественный перевод и ложные правила; Tengo triste заменено корректной моделью.",
+      "verification": "ok"
+    },
+    {
+      "id": "q14",
+      "decision": "fixed",
+      "note": "Уточнены артикль/род, исправлены неестественный перевод и ложные правила; Tengo triste заменено корректной моделью.",
+      "verification": "ok"
+    },
+    {
+      "id": "q15",
+      "decision": "fixed",
+      "note": "Уточнены артикль/род, исправлены неестественный перевод и ложные правила; Tengo triste заменено корректной моделью.",
+      "verification": "ok"
+    },
+    {
+      "id": "q16",
+      "decision": "fixed",
+      "note": "Уточнены артикль/род, исправлены неестественный перевод и ложные правила; Tengo triste заменено корректной моделью.",
+      "verification": "ok"
+    },
+    {
+      "id": "q17",
+      "decision": "fixed",
+      "note": "Уточнены артикль/род, исправлены неестественный перевод и ложные правила; Tengo triste заменено корректной моделью.",
+      "verification": "ok"
+    },
+    {
+      "id": "q18",
+      "decision": "fixed",
+      "note": "Уточнены артикль/род, исправлены неестественный перевод и ложные правила; Tengo triste заменено корректной моделью.",
+      "verification": "ok"
+    },
+    {
+      "id": "q19",
+      "decision": "fixed",
+      "note": "Уточнены артикль/род, исправлены неестественный перевод и ложные правила; Tengo triste заменено корректной моделью.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-04-es009-012/check.py",
+      "result": "pass",
+      "evidence": "All 555 IDs/contracts, metadata, per-question decisions and current source/context fingerprints checked. Native training validation, signatures, no new course-wide duplicate signatures, source-final-embedded equality. See validation.log."
+    },
+    {
+      "command": "go test ./internal/grammarbundle ./internal/repository -run 'TestValidateEmbeddedBundleID|TestGrammar.*Bundle|TestGrammar.*Reorder' -count=1",
+      "result": "pass",
+      "evidence": "Both packages pass: 5.187s and 14.704s; see go-tests.log."
+    },
+    {
+      "command": "git diff --check; git -C courses/spanish-grammar diff --check; git -C courses/english-grammar diff --check",
+      "result": "pass",
+      "evidence": "All three separate commands exit 0; see diff-check.log. 266 pre-existing files preserved byte-for-byte; see preservation.log."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    }
+  ],
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+}

@@ -4,88 +4,88 @@
   "source_sha256": "1ccc09b3fcd8dc9f98548fb3ac2e673a6c8be82dba403c97238c0c9226c7c08d",
   "context_sha256": "e51b0e0494fd7379a0459ae2d61b76621c8e0b85513b67c3fb4438ecadbc4cf3",
   "editor": "Codex editor 2026-09-04",
-  "verifier": "",
-  "phase": "awaiting_verification",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
   "reviewed_at": "2026-09-04T09:28:02.182605+00:00",
-  "verified_at": "",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
   "questions": [
     {
       "id": "q1",
       "decision": "fixed",
       "note": "Три ответа имели дифтонг (pueblo/sueño/bueno); оставлен один и исправлено ложное объяснение.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q2",
       "decision": "fixed",
       "note": "Исправлен русский термин дифтонг.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q3",
       "decision": "fixed",
       "note": "Дистрактор терял j; исправлены буквы и термин дифтонг.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q4",
       "decision": "fixed",
       "note": "agua/causa/sueño все с дифтонгом; заменены варианты и ложное объяснение об отсутствии соседних гласных.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q5",
       "decision": "fixed",
       "note": "Условие было неполным, ai ошибочно приводилось как пример без i/u; заменено точным определением.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q6",
       "decision": "ok",
       "note": "causa единственное слово с соседними гласными-дифтонгом.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q7",
       "decision": "fixed",
       "note": "calle/mesa оба без дифтонга, но не хиат; заменено однозначным противопоставлением teatro.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q8",
       "decision": "ok",
       "note": "au сильная+слабая; ie/ue обратный порядок.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q9",
       "decision": "ok",
       "note": "cau-sa: au в одном слоге.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q11",
       "decision": "ok",
       "note": "cie-lo: ie в одном слоге.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q13",
       "decision": "ok",
       "note": "bue-no: ue в одном слоге.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q15",
       "decision": "ok",
       "note": "sue-lo: ue в одном слоге.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q17",
       "decision": "ok",
       "note": "hue-so: ue в одном слоге, h сохраняется.",
-      "verification": "pending"
+      "verification": "ok"
     }
   ],
   "checks": [
@@ -103,7 +103,12 @@
       "command": "git diff --check && git -C courses/spanish-grammar diff --check && git -C courses/english-grammar diff --check",
       "result": "pass",
       "evidence": "All three commands exited 0."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
     }
   ],
-  "verification_note": ""
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
 }

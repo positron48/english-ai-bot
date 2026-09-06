@@ -1,0 +1,34 @@
+{
+  "actuar": {
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/actuar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/actuar.json",
+    "report": "docs/grammar-review/reports/6748c8dfd1d0b8a74de00903.json",
+    "editor": "Codex editor 2026-09-06",
+    "source_sha256": "3e01a15076a85fedb08675769edb2c626aaa7d08de1e92b2d77abe4f68c4d757",
+    "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197"
+  },
+  "admitir": {
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/admitir.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/admitir.json",
+    "report": "docs/grammar-review/reports/e8c7c65b5c5e4acbcb5385db.json",
+    "editor": "Codex editor 2026-09-06",
+    "source_sha256": "22f8e5ba109b2cf7da7d0df98db58517fae0007c6c4090dee30222a29f851208",
+    "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197"
+  },
+  "advertir": {
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/advertir.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/advertir.json",
+    "report": "docs/grammar-review/reports/2f91f9a7058edd3d76945041.json",
+    "editor": "Codex editor 2026-09-06",
+    "source_sha256": "f348716b6571da50158b00bfce1b03353b22ce1ca12fb684aecf8f47f297f7fe",
+    "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197"
+  },
+  "afectar": {
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/afectar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/afectar.json",
+    "report": "docs/grammar-review/reports/4887f9691e031cf9727ad2f6.json",
+    "editor": "Codex editor 2026-09-06",
+    "source_sha256": "35f2ed3f0bf462b1fa3f05a62e43e6a575473ef4a834d5b17ff3d6d12441a78c",
+    "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197"
+  }
+}

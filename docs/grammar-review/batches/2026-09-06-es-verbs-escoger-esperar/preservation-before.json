@@ -1,0 +1,31 @@
+{
+  "existing_files": 25152,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/escoger.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/escoger.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/escribir.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/escribir.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/escuchar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/escuchar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/esperar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/esperar.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-escoger-esperar",
+    "docs/grammar-review/reports/b7865e46bee1599bcfc8bdcc.json",
+    "docs/grammar-review/reports/09c93358ea0aaedf3f334a04.json",
+    "docs/grammar-review/reports/4cff5f19bfb1240650f26170.json",
+    "docs/grammar-review/reports/9d2998cba0dadf23298c8cf3.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/escoger.json": "f9834ed16fe3f6d7d1bd67d091a7655eb39b59a2ce670feb02d748074d22970e",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/escoger.json": "f9834ed16fe3f6d7d1bd67d091a7655eb39b59a2ce670feb02d748074d22970e",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/escribir.json": "7632fb09238b72a0cdf99223fb2fc1beeaafb536ad157db39c76a31c8c4f795a",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/escribir.json": "7632fb09238b72a0cdf99223fb2fc1beeaafb536ad157db39c76a31c8c4f795a",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/escuchar.json": "8255dd4202a52c7e05e506ea89e302b5805496b7c3ade24c3abf22b5682be12d",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/escuchar.json": "8255dd4202a52c7e05e506ea89e302b5805496b7c3ade24c3abf22b5682be12d",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/esperar.json": "7686a16bfc73dafec2eaba74430a11838ce25cd03b62ae6096852dbf1d30bfde",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/esperar.json": "7686a16bfc73dafec2eaba74430a11838ce25cd03b62ae6096852dbf1d30bfde"
+  }
+}

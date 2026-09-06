@@ -1,0 +1,642 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/tardar.json",
+  "source_sha256": "a7fbc1e439ef8bc83513eee9a8ce0bba7c34a03095d2221d7671759d2d98e493",
+  "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197",
+  "editor": "Laplace editor 2026-09-06",
+  "verifier": "Aristotle verifier 2026-09-06",
+  "phase": "done",
+  "reviewed_at": "2026-09-06",
+  "verified_at": "2026-09-06",
+  "questions": [
+    {
+      "id": "es.presente.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.presente.indicativo:1:singular; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.presente.indicativo:2:singular; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.presente.indicativo:3:singular; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.presente.indicativo:1:plural; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.presente.indicativo:2:plural; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.presente.indicativo:3:plural; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_imperfecto.indicativo:1:singular; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_imperfecto.indicativo:2:singular; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_imperfecto.indicativo:3:singular; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_imperfecto.indicativo:1:plural; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_imperfecto.indicativo:2:plural; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_imperfecto.indicativo:3:plural; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_indefinido.indicativo:1:singular; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_indefinido.indicativo:2:singular; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_indefinido.indicativo:3:singular; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_indefinido.indicativo:1:plural; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_indefinido.indicativo:2:plural; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_indefinido.indicativo:3:plural; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_simple.indicativo:1:singular; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_simple.indicativo:2:singular; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_simple.indicativo:3:singular; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_simple.indicativo:1:plural; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_simple.indicativo:2:plural; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_simple.indicativo:3:plural; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.condicional_simple.indicativo:1:singular; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.condicional_simple.indicativo:2:singular; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.condicional_simple.indicativo:3:singular; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.condicional_simple.indicativo:1:plural; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.condicional_simple.indicativo:2:plural; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.condicional_simple.indicativo:3:plural; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_perfecto_compuesto.indicativo:1:singular; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_perfecto_compuesto.indicativo:2:singular; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_perfecto_compuesto.indicativo:3:singular; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_perfecto_compuesto.indicativo:1:plural; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_perfecto_compuesto.indicativo:2:plural; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_perfecto_compuesto.indicativo:3:plural; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_pluscuamperfecto.indicativo:1:singular; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_pluscuamperfecto.indicativo:2:singular; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_pluscuamperfecto.indicativo:3:singular; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope. Русский перевод уточнён как завершённая месячная доставка, соответствующая había tardado ... en llegar.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_pluscuamperfecto.indicativo:1:plural; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope. Добавлена логичная прошедшая точка отсчёта для pluscuamperfecto.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_pluscuamperfecto.indicativo:2:plural; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope. Независимый verifier: RU «До смены метода вы тратили недели...» не передаёт завершённое предшествование había tardado на одном образце. Требуемая RU: «До смены метода вы уже потратили несколько недель на анализ одного образца.» Исправлено по независимой проверке: завершённость habíais tardado явно передана сочетанием «уже потратили».",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_pluscuamperfecto.indicativo:3:plural; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_anterior.indicativo:1:singular; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_anterior.indicativo:2:singular; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_anterior.indicativo:3:singular; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_anterior.indicativo:1:plural; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_anterior.indicativo:2:plural; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_anterior.indicativo:3:plural; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_perfecto.indicativo:1:singular; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_perfecto.indicativo:2:singular; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_perfecto.indicativo:3:singular; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_perfecto.indicativo:1:plural; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_perfecto.indicativo:2:plural; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_perfecto.indicativo:3:plural; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.condicional_perfecto.indicativo:1:singular; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope. Независимый verifier: ES resolverlo вводит второй несамодостаточный анафорический объект без референта. Требуемый ES: «De haberlo sabido, yo _ menos en resolver el problema porque habría pedido ayuda. (tardar)»; RU: «Если бы я знал об этом заранее, я потратил бы меньше времени на решение проблемы, потому что попросил бы помощи.» Исправлено по независимой проверке: несамодостаточное resolverlo заменено на явное resolver el problema; RU согласован.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.condicional_perfecto.indicativo:2:singular; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.condicional_perfecto.indicativo:3:singular; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope. la mensajera передана естественным согласованным русским существительным «посыльная».",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.condicional_perfecto.indicativo:1:plural; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope. Контрфактическая причинность сделана технически явной и самодостаточной.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.condicional_perfecto.indicativo:2:plural; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.condicional_perfecto.indicativo:3:plural; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.presente.subjuntivo:1:singular; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.presente.subjuntivo:2:singular; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.presente.subjuntivo:3:singular; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.presente.subjuntivo:1:plural; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope. Русский перевод перестроен в естественную конструкцию с точным пределом длительности.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.presente.subjuntivo:2:plural; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.presente.subjuntivo:3:plural; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope. Affirmative calculan заменено естественным триггером subjuntivo temen que.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_imperfecto.subjuntivo:1:singular; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_imperfecto.subjuntivo:2:singular; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_imperfecto.subjuntivo:3:singular; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_imperfecto.subjuntivo:1:plural; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_imperfecto.subjuntivo:2:plural; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope. toda la tarde переведено точно как «всю вторую половину дня», а не «весь день».",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_imperfecto.subjuntivo:3:plural; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_simple.subjuntivo:1:singular; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_simple.subjuntivo:2:singular; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_simple.subjuntivo:3:singular; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope. Coordinator refinement: добавлен явный объект cumplir la obligación и согласован полный русский перевод. Независимый verifier: ES «tardare más del plazo previsto» неестественно сравнивает продолжительность с предельным сроком; нужна продолжительность «más tiempo del previsto». Требуемый ES: «En lenguaje jurídico antiguo, quien _ más tiempo del previsto en cumplir la obligación será sancionado. (tardar)»; RU: «В старом юридическом тексте: тот, кому на исполнение обязательства потребуется больше предусмотренного времени, будет наказан.» Исправлено по независимой проверке: неестественное más del plazo sustituido на сравнение длительности más tiempo del previsto.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_simple.subjuntivo:1:plural; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_simple.subjuntivo:2:plural; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope. Испанское следствие согласовано с нейтральным значением длительности без подмены на опоздание.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_simple.subjuntivo:3:plural; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_perfecto.subjuntivo:1:singular; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_perfecto.subjuntivo:2:singular; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_perfecto.subjuntivo:3:singular; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_perfecto.subjuntivo:1:plural; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_perfecto.subjuntivo:2:plural; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_perfecto.subjuntivo:3:plural; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_pluscuamperfecto.subjuntivo:1:singular; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_pluscuamperfecto.subjuntivo:2:singular; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_pluscuamperfecto.subjuntivo:3:singular; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_pluscuamperfecto.subjuntivo:1:plural; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_pluscuamperfecto.subjuntivo:2:plural; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_pluscuamperfecto.subjuntivo:3:plural; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_perfecto.subjuntivo:1:singular; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_perfecto.subjuntivo:2:singular; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_perfecto.subjuntivo:3:singular; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope. Coordinator refinement: длительность и завершённость hubiere tardado привязаны к окончанию работ; RU согласован.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_perfecto.subjuntivo:1:plural; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_perfecto.subjuntivo:2:plural; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_perfecto.subjuntivo:3:plural; форма сверена с authoritative/Jehlе-парадигмой, значение длительности tardar en и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope. Coordinator refinement: действие уточнено как подача жалобы, следствие связано с объяснением задержки.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "authoritative-forms.json tardar cross-check with local Jehle",
+      "result": "pass",
+      "evidence": "All 16×6 surface forms match both the batch authoritative table and local Jehle data."
+    },
+    {
+      "command": "python3 /tmp/validate_tardar.py",
+      "result": "pass",
+      "evidence": "96/96 forms, metadata/slots, one blank and four unique same-scope options with one answer passed."
+    },
+    {
+      "command": "semantic full read with answer substitution: tardar 96/96",
+      "result": "pass",
+      "evidence": "Every context expresses duration through tardar en + infinitive or an explicit duration; no card mistranslates tardar as llegar tarde."
+    },
+    {
+      "command": "native validate_artifact(tardar); cmp; baseline identity/order/top-level; JSON; git diff --check; go test ./internal/grammartrainingpack",
+      "result": "pass",
+      "evidence": "Source=embedded; exact 16 scopes × 6 slots/order and top-level preserved; rare registers and six explicit De haberlo sabido translations checked."
+    },
+    {
+      "command": "manual post-draft semantic refinement: eight tardar cards",
+      "result": "pass",
+      "evidence": "Corrected subjunctive licensing, tarde translation, pluperfect anchors, counterfactual causality and duration phrasing in eight contexts; target forms/options/metadata unchanged."
+    },
+    {
+      "command": "coordinator refinement: three rare tardar cards; targeted assertions; cmp",
+      "result": "pass",
+      "evidence": "Clarified the fulfilled obligation, work-completion duration and appeal-filing delay in three rare legal contexts; surface forms/options/metadata unchanged."
+    },
+    {
+      "command": "independent full-read verification: tardar 96/96; /tmp/verify_tardar.py; authoritative forms; native/cmp/baseline/fingerprint/status/integrity",
+      "result": "known_baseline",
+      "evidence": "All 96 cards read with answers substituted. Every use denotes time taken/duration rather than lateness; authoritative forms, metadata, one blank, four unique same-scope options, rare-register labels, six explicit counterfactual translations, source=embedded and baseline identity/order/top-level passed. 93 accepted; three exact language findings recorded without source edits. All three findings were corrected and accepted in the final independent recheck at fingerprint a7fbc1e439ef8bc83513eee9a8ce0bba7c34a03095d2221d7671759d2d98e493."
+    },
+    {
+      "command": "post-verifier correction: three tardar cards; exact assertions; cmp; authoritative forms",
+      "result": "pass",
+      "evidence": "Applied all three Aristotle replacements exactly; forms/options/metadata unchanged. Three corrected rows are pending while the other 93 remain ok."
+    },
+    {
+      "command": "final independent recheck: three tardar findings; rendered-block comparison against prior 96-card snapshot; fingerprint/cmp/status/integrity",
+      "result": "pass",
+      "evidence": "Exactly the three requested card blocks changed and each exact ES/RU correction is accepted; the other 93 rendered cards are unchanged. Fingerprint a7fbc1e439ef8bc83513eee9a8ce0bba7c34a03095d2221d7671759d2d98e493 and source=embedded confirmed; all 96 verification rows are ok."
+    },
+    {
+      "command": "final batch barrier: check.py; preservation-check.py; native validate_artifact; go test ./internal/verbtraining ./cmd/sync_verb_training_json; grammar_review_test.py; focused grammar-review check; git diff --check; skill quick_validate.py",
+      "result": "pass",
+      "evidence": "384 final cards and 24 primary checkpoints passed against Jehle forms; source/embedded and fingerprints fresh; 25608 paths preserved; Go tests and 13 grammar-review tests passed; each source reports done; root and Spanish diffs clean; skill valid."
+    }
+  ],
+  "verification_note": "Независимая проверка завершена для 96/96 карточек. Повторно проверены три исправления: завершённое предшествование habíais tardado точно передано в RU, conditional perfecto получил явный el problema, а редкий futuro subjuntivo использует естественное más tiempo del previsto и точный RU. Все три приняты; сравнение с сохранённым снимком подтверждает неизменность остальных 93 карточек. Source=embedded, текущий fingerprint подтверждён."
+}

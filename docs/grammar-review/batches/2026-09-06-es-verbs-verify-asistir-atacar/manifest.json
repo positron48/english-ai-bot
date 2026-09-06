@@ -1,0 +1,34 @@
+{
+  "asistir": {
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/asistir.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/asistir.json",
+    "report": "docs/grammar-review/reports/a82bcec52f4bdc019b6bb08a.json",
+    "editor": "Codex editor 2026-09-06",
+    "source_sha256": "369020f83def5a2105e1cdb1c46352fd2e2c91e4576840ce21e7982aecf5ab1b",
+    "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197"
+  },
+  "asociar": {
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/asociar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/asociar.json",
+    "report": "docs/grammar-review/reports/1fbbfc3e9fbb114a604eeb84.json",
+    "editor": "Codex editor 2026-09-06",
+    "source_sha256": "039f8ec6d28fdc6f63bc4d8e3b4bdaf0ed1f62b812062f06e0a4bd8323a536a0",
+    "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197"
+  },
+  "aspirar": {
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/aspirar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/aspirar.json",
+    "report": "docs/grammar-review/reports/d0b063c897b851d61bc8b9c5.json",
+    "editor": "Codex editor 2026-09-06",
+    "source_sha256": "e25d95c16be8249586397e2f29dd747f61f225f5a7faa4df1d08ed393ef96c21",
+    "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197"
+  },
+  "atacar": {
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/atacar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/atacar.json",
+    "report": "docs/grammar-review/reports/db13008fc2536d620bd11d3b.json",
+    "editor": "Codex editor 2026-09-06",
+    "source_sha256": "e8bbb3a41c51187e1e95e387ae38fae68313991af7e80fbc89b9288d6e23c0df",
+    "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197"
+  }
+}

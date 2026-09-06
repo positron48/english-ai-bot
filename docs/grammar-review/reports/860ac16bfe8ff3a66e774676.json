@@ -1,0 +1,452 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/chapters/033.es.grammar.present_regular_actions.spelling_change_verbs_sacar_pagar_empezar_like_basics/03-questions.json",
+  "source_sha256": "d7feab7063027316e4ce706e20ba96cb1687376e9ed9901a4c1d856152fe0e9d",
+  "context_sha256": "6fc6b5a3c64a4d76edd25bd442afc05f6b3db58142de5dbcaf1173e653113131",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
+  "reviewed_at": "2026-09-04T16:42:44.644717+00:00",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
+  "questions": [
+    {
+      "id": "q033_b1_01",
+      "decision": "fixed",
+      "note": "Уточнены время и лицо, убраны служебные «опорная форма»/«латиницей без ударений»; q033_b2_05 исключает другую допустимую временную форму.",
+      "verification": "ok"
+    },
+    {
+      "id": "q033_b1_02",
+      "decision": "ok",
+      "note": "Орфографическое правило c/qu, g/gu или z/c, форма и ключ согласованы; перевод и порядок слов корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q033_b1_03",
+      "decision": "fixed",
+      "note": "Уточнены время и лицо, убраны служебные «опорная форма»/«латиницей без ударений»; q033_b2_05 исключает другую допустимую временную форму.",
+      "verification": "ok"
+    },
+    {
+      "id": "q033_b1_04",
+      "decision": "ok",
+      "note": "Орфографическое правило c/qu, g/gu или z/c, форма и ключ согласованы; перевод и порядок слов корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q033_b1_05",
+      "decision": "ok",
+      "note": "Орфографическое правило c/qu, g/gu или z/c, форма и ключ согласованы; перевод и порядок слов корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q033_b1_06",
+      "decision": "ok",
+      "note": "Орфографическое правило c/qu, g/gu или z/c, форма и ключ согласованы; перевод и порядок слов корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q033_b1_08",
+      "decision": "ok",
+      "note": "Орфографическое правило c/qu, g/gu или z/c, форма и ключ согласованы; перевод и порядок слов корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q033_b1_09",
+      "decision": "fixed",
+      "note": "Уточнены время и лицо, убраны служебные «опорная форма»/«латиницей без ударений»; q033_b2_05 исключает другую допустимую временную форму.",
+      "verification": "ok"
+    },
+    {
+      "id": "q033_b1_10",
+      "decision": "fixed",
+      "note": "Уточнены время и лицо, убраны служебные «опорная форма»/«латиницей без ударений»; q033_b2_05 исключает другую допустимую временную форму.",
+      "verification": "ok"
+    },
+    {
+      "id": "q033_b1_11",
+      "decision": "ok",
+      "note": "Орфографическое правило c/qu, g/gu или z/c, форма и ключ согласованы; перевод и порядок слов корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q033_b1_12",
+      "decision": "fixed",
+      "note": "Уточнены время и лицо, убраны служебные «опорная форма»/«латиницей без ударений»; q033_b2_05 исключает другую допустимую временную форму.",
+      "verification": "ok"
+    },
+    {
+      "id": "q033_b2_01",
+      "decision": "fixed",
+      "note": "Уточнены время и лицо, убраны служебные «опорная форма»/«латиницей без ударений»; q033_b2_05 исключает другую допустимую временную форму.",
+      "verification": "ok"
+    },
+    {
+      "id": "q033_b2_02",
+      "decision": "ok",
+      "note": "Орфографическое правило c/qu, g/gu или z/c, форма и ключ согласованы; перевод и порядок слов корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q033_b2_03",
+      "decision": "fixed",
+      "note": "Уточнены время и лицо, убраны служебные «опорная форма»/«латиницей без ударений»; q033_b2_05 исключает другую допустимую временную форму.",
+      "verification": "ok"
+    },
+    {
+      "id": "q033_b2_04",
+      "decision": "ok",
+      "note": "Орфографическое правило c/qu, g/gu или z/c, форма и ключ согласованы; перевод и порядок слов корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q033_b2_05",
+      "decision": "fixed",
+      "note": "Уточнены время и лицо, убраны служебные «опорная форма»/«латиницей без ударений»; q033_b2_05 исключает другую допустимую временную форму.",
+      "verification": "ok"
+    },
+    {
+      "id": "q033_b2_06",
+      "decision": "ok",
+      "note": "Орфографическое правило c/qu, g/gu или z/c, форма и ключ согласованы; перевод и порядок слов корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q033_b2_07",
+      "decision": "ok",
+      "note": "Орфографическое правило c/qu, g/gu или z/c, форма и ключ согласованы; перевод и порядок слов корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q033_b2_09",
+      "decision": "fixed",
+      "note": "Уточнены время и лицо, убраны служебные «опорная форма»/«латиницей без ударений»; q033_b2_05 исключает другую допустимую временную форму.",
+      "verification": "ok"
+    },
+    {
+      "id": "q033_b2_10",
+      "decision": "ok",
+      "note": "Орфографическое правило c/qu, g/gu или z/c, форма и ключ согласованы; перевод и порядок слов корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q033_b2_11",
+      "decision": "ok",
+      "note": "Написание форм и единственный ключ корректны; примеры и перевод согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q033_b2_12",
+      "decision": "ok",
+      "note": "Написание форм и единственный ключ корректны; примеры и перевод согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q033_b3_01",
+      "decision": "fixed",
+      "note": "Уточнены время/лицо и понятные инструкции; правила немой u и juego/jugué отделены от чередования гласных и объяснены точно.",
+      "verification": "ok"
+    },
+    {
+      "id": "q033_b3_02",
+      "decision": "ok",
+      "note": "Написание форм и единственный ключ корректны; примеры и перевод согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q033_b3_03",
+      "decision": "fixed",
+      "note": "Уточнены время/лицо и понятные инструкции; правила немой u и juego/jugué отделены от чередования гласных и объяснены точно.",
+      "verification": "ok"
+    },
+    {
+      "id": "q033_b3_04",
+      "decision": "ok",
+      "note": "Написание форм и единственный ключ корректны; примеры и перевод согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q033_b3_05",
+      "decision": "fixed",
+      "note": "Уточнены время/лицо и понятные инструкции; правила немой u и juego/jugué отделены от чередования гласных и объяснены точно.",
+      "verification": "ok"
+    },
+    {
+      "id": "q033_b3_06",
+      "decision": "fixed",
+      "note": "Уточнены время/лицо и понятные инструкции; правила немой u и juego/jugué отделены от чередования гласных и объяснены точно.",
+      "verification": "ok"
+    },
+    {
+      "id": "q033_b3_07",
+      "decision": "fixed",
+      "note": "Уточнены время/лицо и понятные инструкции; правила немой u и juego/jugué отделены от чередования гласных и объяснены точно.",
+      "verification": "ok"
+    },
+    {
+      "id": "q033_b3_09",
+      "decision": "fixed",
+      "note": "Уточнены время/лицо и понятные инструкции; правила немой u и juego/jugué отделены от чередования гласных и объяснены точно.",
+      "verification": "ok"
+    },
+    {
+      "id": "q033_b3_10",
+      "decision": "ok",
+      "note": "Написание форм и единственный ключ корректны; примеры и перевод согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q033_b3_11",
+      "decision": "fixed",
+      "note": "Уточнены время/лицо и понятные инструкции; правила немой u и juego/jugué отделены от чередования гласных и объяснены точно.",
+      "verification": "ok"
+    },
+    {
+      "id": "q033_b3_12",
+      "decision": "ok",
+      "note": "Написание форм и единственный ключ корректны; примеры и перевод согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q033_b4_01",
+      "decision": "fixed",
+      "note": "Уточнены время/лицо и понятные инструкции; правила немой u и juego/jugué отделены от чередования гласных и объяснены точно.",
+      "verification": "ok"
+    },
+    {
+      "id": "q033_b4_02",
+      "decision": "fixed",
+      "note": "Уточнены время/лицо и понятные инструкции; правила немой u и juego/jugué отделены от чередования гласных и объяснены точно.",
+      "verification": "ok"
+    },
+    {
+      "id": "q033_b4_03",
+      "decision": "fixed",
+      "note": "Уточнены время/лицо и понятные инструкции; правила немой u и juego/jugué отделены от чередования гласных и объяснены точно.",
+      "verification": "ok"
+    },
+    {
+      "id": "q033_b4_04",
+      "decision": "ok",
+      "note": "Написание форм и единственный ключ корректны; примеры и перевод согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q033_b4_05",
+      "decision": "fixed",
+      "note": "Уточнены время/лицо и понятные инструкции; правила немой u и juego/jugué отделены от чередования гласных и объяснены точно.",
+      "verification": "ok"
+    },
+    {
+      "id": "q033_b4_06",
+      "decision": "fixed",
+      "note": "Уточнены время/лицо и понятные инструкции; правила немой u и juego/jugué отделены от чередования гласных и объяснены точно.",
+      "verification": "ok"
+    },
+    {
+      "id": "q033_b4_07",
+      "decision": "ok",
+      "note": "Написание форм и единственный ключ корректны; примеры и перевод согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q033_b4_09",
+      "decision": "fixed",
+      "note": "Устранены неоднозначные варианты, неверное снятие ударения, неестественное sacar la ventana и недоказанные утверждения о русской привычке; q033_b6_02 теперь проверяет чтение ge с ключом false.",
+      "verification": "ok"
+    },
+    {
+      "id": "q033_b4_10",
+      "decision": "ok",
+      "note": "Контраст presente/pretérito, орфография, перевод и ключ корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q033_b4_11",
+      "decision": "ok",
+      "note": "Контраст presente/pretérito, орфография, перевод и ключ корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q033_b4_12",
+      "decision": "fixed",
+      "note": "Устранены неоднозначные варианты, неверное снятие ударения, неестественное sacar la ventana и недоказанные утверждения о русской привычке; q033_b6_02 теперь проверяет чтение ge с ключом false.",
+      "verification": "ok"
+    },
+    {
+      "id": "q033_b5_01",
+      "decision": "ok",
+      "note": "Контраст presente/pretérito, орфография, перевод и ключ корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q033_b5_02",
+      "decision": "ok",
+      "note": "Контраст presente/pretérito, орфография, перевод и ключ корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q033_b5_03",
+      "decision": "fixed",
+      "note": "Устранены неоднозначные варианты, неверное снятие ударения, неестественное sacar la ventana и недоказанные утверждения о русской привычке; q033_b6_02 теперь проверяет чтение ge с ключом false.",
+      "verification": "ok"
+    },
+    {
+      "id": "q033_b5_04",
+      "decision": "ok",
+      "note": "Контраст presente/pretérito, орфография, перевод и ключ корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q033_b5_05",
+      "decision": "fixed",
+      "note": "Устранены неоднозначные варианты, неверное снятие ударения, неестественное sacar la ventana и недоказанные утверждения о русской привычке; q033_b6_02 теперь проверяет чтение ge с ключом false.",
+      "verification": "ok"
+    },
+    {
+      "id": "q033_b5_06",
+      "decision": "fixed",
+      "note": "Устранены неоднозначные варианты, неверное снятие ударения, неестественное sacar la ventana и недоказанные утверждения о русской привычке; q033_b6_02 теперь проверяет чтение ge с ключом false.",
+      "verification": "ok"
+    },
+    {
+      "id": "q033_b5_07",
+      "decision": "ok",
+      "note": "Контраст presente/pretérito, орфография, перевод и ключ корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q033_b5_09",
+      "decision": "fixed",
+      "note": "Устранены неоднозначные варианты, неверное снятие ударения, неестественное sacar la ventana и недоказанные утверждения о русской привычке; q033_b6_02 теперь проверяет чтение ge с ключом false.",
+      "verification": "ok"
+    },
+    {
+      "id": "q033_b5_10",
+      "decision": "ok",
+      "note": "Контраст presente/pretérito, орфография, перевод и ключ корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q033_b5_11",
+      "decision": "ok",
+      "note": "Контраст presente/pretérito, орфография, перевод и ключ корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q033_b5_12",
+      "decision": "ok",
+      "note": "Контраст presente/pretérito, орфография, перевод и ключ корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q033_b6_01",
+      "decision": "fixed",
+      "note": "Устранены неоднозначные варианты, неверное снятие ударения, неестественное sacar la ventana и недоказанные утверждения о русской привычке; q033_b6_02 теперь проверяет чтение ge с ключом false.",
+      "verification": "ok"
+    },
+    {
+      "id": "q033_b6_02",
+      "decision": "fixed",
+      "note": "Устранены неоднозначные варианты, неверное снятие ударения, неестественное sacar la ventana и недоказанные утверждения о русской привычке; q033_b6_02 теперь проверяет чтение ge с ключом false.",
+      "verification": "ok"
+    },
+    {
+      "id": "q033_b6_03",
+      "decision": "fixed",
+      "note": "Устранены неоднозначные варианты, неверное снятие ударения, неестественное sacar la ventana и недоказанные утверждения о русской привычке; q033_b6_02 теперь проверяет чтение ge с ключом false.",
+      "verification": "ok"
+    },
+    {
+      "id": "q033_b6_04",
+      "decision": "ok",
+      "note": "Контраст presente/pretérito, орфография, перевод и ключ корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q033_b6_05",
+      "decision": "fixed",
+      "note": "Устранены неоднозначные варианты, неверное снятие ударения, неестественное sacar la ventana и недоказанные утверждения о русской привычке; q033_b6_02 теперь проверяет чтение ge с ключом false.",
+      "verification": "ok"
+    },
+    {
+      "id": "q033_b6_06",
+      "decision": "fixed",
+      "note": "Уточнено, что нужно найти ошибочное написание, а не другую правильную форму; исправлены инструкция и объяснение.",
+      "verification": "ok"
+    },
+    {
+      "id": "q033_b6_07",
+      "decision": "ok",
+      "note": "Правило и ключ однозначны; формы и перевод корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q033_b6_09",
+      "decision": "fixed",
+      "note": "Уточнено, что нужно найти ошибочное написание, а не другую правильную форму; исправлены инструкция и объяснение.",
+      "verification": "ok"
+    },
+    {
+      "id": "q033_b6_10",
+      "decision": "ok",
+      "note": "Правило и ключ однозначны; формы и перевод корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q033_b6_11",
+      "decision": "ok",
+      "note": "Правило и ключ однозначны; формы и перевод корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q033_b6_12",
+      "decision": "fixed",
+      "note": "Уточнено, что нужно найти ошибочное написание, а не другую правильную форму; исправлены инструкция и объяснение.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-04-es033-036/check.py",
+      "result": "pass",
+      "evidence": "All 549 IDs/contracts, decisions versus clean pre-batch HEAD, fingerprints, native training validation, signatures and source-final-embedded equality; validation.log."
+    },
+    {
+      "command": "go test ./internal/grammarbundle ./internal/repository -run 'TestValidateEmbeddedBundleID|TestGrammar.*Bundle|TestGrammar.*Reorder' -count=1",
+      "result": "pass",
+      "evidence": "Both packages passed on final integrated data; go-tests.log."
+    },
+    {
+      "command": "git diff --check; git -C courses/spanish-grammar diff --check; git -C courses/english-grammar diff --check",
+      "result": "pass",
+      "evidence": "Three separately executed commands exit 0; diff-check.log. All 928 earlier dirty files outside review docs preserved; preservation.log."
+    },
+    {
+      "command": "cd courses/spanish-grammar && bash scripts/assemble-chapter.sh 033.es.grammar.present_regular_actions.spelling_change_verbs_sacar_pagar_empezar_like_basics",
+      "result": "pass",
+      "evidence": "033-assemble.log: exit 0."
+    },
+    {
+      "command": "cd courses/spanish-grammar && bash scripts/validate-chapter.sh 033.es.grammar.present_regular_actions.spelling_change_verbs_sacar_pagar_empezar_like_basics",
+      "result": "pass",
+      "evidence": "033-chapter-after.log: exit 0."
+    },
+    {
+      "command": "cd courses/spanish-grammar && ajv validate --spec=draft2020 --validate-formats=false --all-errors -s 02-chapter-schema.json -d chapters/033.es.grammar.present_regular_actions.spelling_change_verbs_sacar_pagar_empezar_like_basics/05-final.json",
+      "result": "pass",
+      "evidence": "033-schema-after.log: exit 0."
+    },
+    {
+      "command": "cd courses/spanish-grammar && ajv validate -s 02-chapter-schema.json -d chapters/033.es.grammar.present_regular_actions.spelling_change_verbs_sacar_pagar_empezar_like_basics/05-final.json",
+      "result": "known_baseline",
+      "evidence": "033-assembler-ajv-before.log and 033-assembler-ajv-after.log are byte-identical, exit 1: no draft2020 meta-schema selected. Explicit draft2020 passes for 033–035; 036 has the separately recorded unchanged theory-tag baseline."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    }
+  ],
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+}

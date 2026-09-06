@@ -1,0 +1,31 @@
+{
+  "existing_files": 25474,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/recordar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/recordar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/recuperar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/recuperar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/reducir.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/reducir.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/referir.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/referir.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-recordar-referir",
+    "docs/grammar-review/reports/b7cca2e8368e8b2cb3e0b7ed.json",
+    "docs/grammar-review/reports/fa283e5f149335317d797a67.json",
+    "docs/grammar-review/reports/98a646a484c52b3a46488571.json",
+    "docs/grammar-review/reports/7e31848cd5d1a48aa674e426.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/recordar.json": "a7dafbe2498316373f2405cd9127f04b483c659f07246862303b30d9e47ea209",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/recordar.json": "a7dafbe2498316373f2405cd9127f04b483c659f07246862303b30d9e47ea209",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/recuperar.json": "0a8cfb65baebee65fcd6c72f05ef0c933f2401b8d328d120efd5f12f5de6a3c7",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/recuperar.json": "0a8cfb65baebee65fcd6c72f05ef0c933f2401b8d328d120efd5f12f5de6a3c7",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/reducir.json": "063145bfc81aeab8a45b99f774f5c1d976d56c4cc01ecb5a7c65859a3520af35",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/reducir.json": "063145bfc81aeab8a45b99f774f5c1d976d56c4cc01ecb5a7c65859a3520af35",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/referir.json": "ddd45bcd365f843191489149aa3a8cb64b6dbb41f677041317e1b729734ff4c9",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/referir.json": "ddd45bcd365f843191489149aa3a8cb64b6dbb41f677041317e1b729734ff4c9"
+  }
+}

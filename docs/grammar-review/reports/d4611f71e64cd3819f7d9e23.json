@@ -1,0 +1,320 @@
+{
+  "version": 1,
+  "source": "courses/english-grammar/chapters/033.en.grammar.now_present_continuous_contrast.build_speak_what_s/03-questions.json",
+  "source_sha256": "7f3d5636b0d1a7b968101f586a25f1595cc2242d983f177792903297f546d6a3",
+  "context_sha256": "4e8d1d384fa401a2f625f0b64f8d4e1356c732e033e3f63839d003839b0f1161",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
+  "reviewed_at": "2026-09-04T16:36:00.665376+00:00",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
+  "questions": [
+    {
+      "id": "q1",
+      "decision": "fixed",
+      "note": "Уточнены контекст, открытые ответы и ограничения маркеров; исправлены Неневерно и разбор read/What do you do.",
+      "verification": "ok"
+    },
+    {
+      "id": "q2",
+      "decision": "fixed",
+      "note": "Уточнены контекст, открытые ответы и ограничения маркеров; исправлены Неневерно и разбор read/What do you do.",
+      "verification": "ok"
+    },
+    {
+      "id": "q3",
+      "decision": "fixed",
+      "note": "Уточнены контекст, открытые ответы и ограничения маркеров; исправлены Неневерно и разбор read/What do you do.",
+      "verification": "ok"
+    },
+    {
+      "id": "q4",
+      "decision": "fixed",
+      "note": "Уточнены контекст, открытые ответы и ограничения маркеров; исправлены Неневерно и разбор read/What do you do.",
+      "verification": "ok"
+    },
+    {
+      "id": "q6",
+      "decision": "ok",
+      "note": "Конкретный вопрос/порядок и ответ согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q7",
+      "decision": "fixed",
+      "note": "Уточнены контекст, открытые ответы и ограничения маркеров; исправлены Неневерно и разбор read/What do you do.",
+      "verification": "ok"
+    },
+    {
+      "id": "q8",
+      "decision": "fixed",
+      "note": "Уточнены контекст, открытые ответы и ограничения маркеров; исправлены Неневерно и разбор read/What do you do.",
+      "verification": "ok"
+    },
+    {
+      "id": "q9",
+      "decision": "fixed",
+      "note": "Уточнены контекст, открытые ответы и ограничения маркеров; исправлены Неневерно и разбор read/What do you do.",
+      "verification": "ok"
+    },
+    {
+      "id": "q10",
+      "decision": "fixed",
+      "note": "Уточнены контекст, открытые ответы и ограничения маркеров; исправлены Неневерно и разбор read/What do you do.",
+      "verification": "ok"
+    },
+    {
+      "id": "q11",
+      "decision": "fixed",
+      "note": "Уточнены контекст, открытые ответы и ограничения маркеров; исправлены Неневерно и разбор read/What do you do.",
+      "verification": "ok"
+    },
+    {
+      "id": "q12",
+      "decision": "fixed",
+      "note": "Уточнены контекст, открытые ответы и ограничения маркеров; исправлены Неневерно и разбор read/What do you do.",
+      "verification": "ok"
+    },
+    {
+      "id": "q13",
+      "decision": "fixed",
+      "note": "Уточнены контекст, открытые ответы и ограничения маркеров; исправлены Неневерно и разбор read/What do you do.",
+      "verification": "ok"
+    },
+    {
+      "id": "q15",
+      "decision": "ok",
+      "note": "Конкретный вопрос/порядок и ответ согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q16",
+      "decision": "ok",
+      "note": "Конкретный вопрос/порядок и ответ согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q19",
+      "decision": "ok",
+      "note": "Конкретный вопрос/порядок и ответ согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q21",
+      "decision": "ok",
+      "note": "Конкретный вопрос/порядок и ответ согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q22",
+      "decision": "ok",
+      "note": "Конкретный вопрос/порядок и ответ согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q24",
+      "decision": "fixed",
+      "note": "Уточнены контекст, открытые ответы и ограничения маркеров; исправлены Неневерно и разбор read/What do you do.",
+      "verification": "ok"
+    },
+    {
+      "id": "q25",
+      "decision": "fixed",
+      "note": "Уточнены контекст, открытые ответы и ограничения маркеров; исправлены Неневерно и разбор read/What do you do.",
+      "verification": "ok"
+    },
+    {
+      "id": "q26",
+      "decision": "ok",
+      "note": "Конкретный вопрос/порядок и ответ согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q28",
+      "decision": "ok",
+      "note": "Вопрос, ответ и временная форма согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q29",
+      "decision": "ok",
+      "note": "Вопрос, ответ и временная форма согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q30",
+      "decision": "fixed",
+      "note": "Уточнены требуемые времена вместо абсолютного действия маркеров; исправлены Неневерно, контраст и запрет отдельных предложений.",
+      "verification": "ok"
+    },
+    {
+      "id": "q31",
+      "decision": "fixed",
+      "note": "Уточнены требуемые времена вместо абсолютного действия маркеров; исправлены Неневерно, контраст и запрет отдельных предложений.",
+      "verification": "ok"
+    },
+    {
+      "id": "q32",
+      "decision": "ok",
+      "note": "Вопрос, ответ и временная форма согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q33",
+      "decision": "fixed",
+      "note": "Уточнены требуемые времена вместо абсолютного действия маркеров; исправлены Неневерно, контраст и запрет отдельных предложений.",
+      "verification": "ok"
+    },
+    {
+      "id": "q34",
+      "decision": "ok",
+      "note": "Вопрос, ответ и временная форма согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q35",
+      "decision": "ok",
+      "note": "Вопрос, ответ и временная форма согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q37",
+      "decision": "fixed",
+      "note": "Уточнены требуемые времена вместо абсолютного действия маркеров; исправлены Неневерно, контраст и запрет отдельных предложений.",
+      "verification": "ok"
+    },
+    {
+      "id": "q38",
+      "decision": "fixed",
+      "note": "Уточнены требуемые времена вместо абсолютного действия маркеров; исправлены Неневерно, контраст и запрет отдельных предложений.",
+      "verification": "ok"
+    },
+    {
+      "id": "q39",
+      "decision": "fixed",
+      "note": "Указана последовательность времён, поскольку usually допускает Continuous; уточнена ситуация, чтобы инструкции разных заданий не дублировались.",
+      "verification": "ok"
+    },
+    {
+      "id": "q42",
+      "decision": "fixed",
+      "note": "Указана последовательность времён, поскольку usually допускает Continuous; уточнена ситуация, чтобы инструкции разных заданий не дублировались.",
+      "verification": "ok"
+    },
+    {
+      "id": "q43",
+      "decision": "ok",
+      "note": "Вопрос, ответ и временная форма согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q45",
+      "decision": "fixed",
+      "note": "Указана последовательность времён, поскольку usually допускает Continuous; уточнена ситуация, чтобы инструкции разных заданий не дублировались.",
+      "verification": "ok"
+    },
+    {
+      "id": "q47",
+      "decision": "fixed",
+      "note": "Уточнены требуемые времена вместо абсолютного действия маркеров; исправлены Неневерно, контраст и запрет отдельных предложений.",
+      "verification": "ok"
+    },
+    {
+      "id": "q49",
+      "decision": "fixed",
+      "note": "Указана последовательность времён, поскольку usually допускает Continuous; уточнена ситуация, чтобы инструкции разных заданий не дублировались.",
+      "verification": "ok"
+    },
+    {
+      "id": "q50",
+      "decision": "fixed",
+      "note": "Уточнены требуемые времена вместо абсолютного действия маркеров; исправлены Неневерно, контраст и запрет отдельных предложений.",
+      "verification": "ok"
+    },
+    {
+      "id": "q51",
+      "decision": "fixed",
+      "note": "Уточнены требуемые времена вместо абсолютного действия маркеров; исправлены Неневерно, контраст и запрет отдельных предложений.",
+      "verification": "ok"
+    },
+    {
+      "id": "q54",
+      "decision": "fixed",
+      "note": "Указана последовательность времён, поскольку usually допускает Continuous; уточнена ситуация, чтобы инструкции разных заданий не дублировались.",
+      "verification": "ok"
+    },
+    {
+      "id": "q55",
+      "decision": "fixed",
+      "note": "Уточнены требуемые времена вместо абсолютного действия маркеров; исправлены Неневерно, контраст и запрет отдельных предложений.",
+      "verification": "ok"
+    },
+    {
+      "id": "q57",
+      "decision": "fixed",
+      "note": "Уточнены контекст и формы вместо единственно правильного диалога; оба времени не обязательны в каждом разговоре.",
+      "verification": "ok"
+    },
+    {
+      "id": "q59",
+      "decision": "fixed",
+      "note": "Уточнены контекст и формы вместо единственно правильного диалога; оба времени не обязательны в каждом разговоре.",
+      "verification": "ok"
+    },
+    {
+      "id": "q61",
+      "decision": "fixed",
+      "note": "Уточнены контекст и формы вместо единственно правильного диалога; оба времени не обязательны в каждом разговоре.",
+      "verification": "ok"
+    },
+    {
+      "id": "q62",
+      "decision": "ok",
+      "note": "Утверждение о контекстном переключении времён соответствует теме.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-04-en031-034/check.py",
+      "result": "pass",
+      "evidence": "All 396 IDs/contracts, decisions versus clean pre-batch HEAD, fingerprints, native training validation, signatures and source-final-embedded equality; validation.log."
+    },
+    {
+      "command": "go test ./internal/grammarbundle ./internal/repository -run 'TestValidateEmbeddedBundleID|TestGrammar.*Bundle|TestGrammar.*Reorder' -count=1",
+      "result": "pass",
+      "evidence": "Both packages passed on final integrated data; go-tests.log."
+    },
+    {
+      "command": "git diff --check; git -C courses/spanish-grammar diff --check; git -C courses/english-grammar diff --check",
+      "result": "pass",
+      "evidence": "Three separately executed commands exit 0; diff-check.log. All 876 earlier dirty files outside review docs preserved; preservation.log."
+    },
+    {
+      "command": "cd courses/english-grammar && bash scripts/assemble-chapter.sh 033.en.grammar.now_present_continuous_contrast.build_speak_what_s",
+      "result": "pass",
+      "evidence": "033-assemble.log: exit 0."
+    },
+    {
+      "command": "cd courses/english-grammar && bash scripts/validate-chapter.sh 033.en.grammar.now_present_continuous_contrast.build_speak_what_s",
+      "result": "pass",
+      "evidence": "033-chapter-after.log: exit 0."
+    },
+    {
+      "command": "cd courses/english-grammar && ajv validate --spec=draft2020 --validate-formats=false --all-errors -s 02-chapter-schema.json -d chapters/033.en.grammar.now_present_continuous_contrast.build_speak_what_s/05-final.json",
+      "result": "pass",
+      "evidence": "033-schema-after.log: exit 0."
+    },
+    {
+      "command": "cd courses/english-grammar && ajv validate -s 02-chapter-schema.json -d chapters/033.en.grammar.now_present_continuous_contrast.build_speak_what_s/05-final.json",
+      "result": "known_baseline",
+      "evidence": "033-assembler-ajv-before.log and 033-assembler-ajv-after.log are byte-identical, exit 1: no draft2020 meta-schema selected. Explicit draft2020 validation passes."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    }
+  ],
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+}

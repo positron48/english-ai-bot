@@ -1,0 +1,36 @@
+{
+  "existing_files": 25708,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/viajar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/viajar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/visitar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/visitar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/vivir.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/vivir.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/volar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/volar.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-viajar-volar",
+    "docs/grammar-review/reports/4b60d7ff02e794ca67a33f53.json",
+    "docs/grammar-review/reports/0ba68c193683a8314d608b36.json",
+    "docs/grammar-review/reports/219220aa6ca099996f1be1c6.json",
+    "docs/grammar-review/reports/69b32301ca6b70c4b7025119.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/viajar.json": "15400ea8478b42c227ec21516a107e210f1f13a789107ef99e427e115fc7f42e",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/viajar.json": "15400ea8478b42c227ec21516a107e210f1f13a789107ef99e427e115fc7f42e",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/visitar.json": "26d108433d213c64385927276b2220ae177f290abac517ef841df1316d2ac81a",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/visitar.json": "26d108433d213c64385927276b2220ae177f290abac517ef841df1316d2ac81a",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/vivir.json": "1364603b35f7a5a2ec43985c726c272d06da2a5f052991ba619f39cf33060d36",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/vivir.json": "1364603b35f7a5a2ec43985c726c272d06da2a5f052991ba619f39cf33060d36",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/volar.json": "308a4b49a6a3090d340e462eeda512e50a86fa5022577ecaf64aacd6d3d509cc",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/volar.json": "308a4b49a6a3090d340e462eeda512e50a86fa5022577ecaf64aacd6d3d509cc"
+  },
+  "preexisting_missing_tracked": [
+    "courses/english-grammar/llm-benchmark/__pycache__/benchmark.cpython-314.pyc",
+    "courses/english-grammar/training-pack-admin/__pycache__/server.cpython-314.pyc",
+    "tools-local/complaints-worker/__pycache__/worker.cpython-314.pyc"
+  ]
+}

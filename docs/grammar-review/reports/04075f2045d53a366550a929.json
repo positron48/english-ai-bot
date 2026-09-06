@@ -1,0 +1,416 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/chapters/032.es.grammar.present_regular_actions.frequency_expressions_siempre_menudo_veces_nunca/03-questions.json",
+  "source_sha256": "40730f41d32940426deec85f7c3c029b05e90b7c68457a1664bed2955142027f",
+  "context_sha256": "b695d9fa7fc1160ac443ad92779c51cbd97bfea3d3b79b52f2fb9eaf02a549bc",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
+  "reviewed_at": "2026-09-04T16:13:55.278138+00:00",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
+  "questions": [
+    {
+      "id": "q032_b1_theory_frequency_siempre_01",
+      "decision": "fixed",
+      "note": "Уточнён критерий порядка слов/частоты; устранены альтернативно верные ответы, ссылка на блок либо отсутствующее me в me despierto.",
+      "verification": "ok"
+    },
+    {
+      "id": "q032_b1_theory_frequency_siempre_02",
+      "decision": "fixed",
+      "note": "Уточнён критерий порядка слов/частоты; устранены альтернативно верные ответы, ссылка на блок либо отсутствующее me в me despierto.",
+      "verification": "ok"
+    },
+    {
+      "id": "q032_b1_theory_frequency_siempre_03",
+      "decision": "fixed",
+      "note": "Уточнён критерий порядка слов/частоты; устранены альтернативно верные ответы, ссылка на блок либо отсутствующее me в me despierto.",
+      "verification": "ok"
+    },
+    {
+      "id": "q032_b1_theory_frequency_siempre_04",
+      "decision": "ok",
+      "note": "Задание, ответ и пояснение согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q032_b1_theory_frequency_siempre_05",
+      "decision": "fixed",
+      "note": "Уточнён критерий порядка слов/частоты; устранены альтернативно верные ответы, ссылка на блок либо отсутствующее me в me despierto.",
+      "verification": "ok"
+    },
+    {
+      "id": "q032_b1_theory_frequency_siempre_06",
+      "decision": "ok",
+      "note": "Задание, ответ и пояснение согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q032_b1_theory_frequency_siempre_07",
+      "decision": "ok",
+      "note": "Задание, ответ и пояснение согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q032_b1_theory_frequency_siempre_08",
+      "decision": "ok",
+      "note": "Задание, ответ и пояснение согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q032_b1_theory_frequency_siempre_10",
+      "decision": "fixed",
+      "note": "Уточнён критерий порядка слов/частоты; устранены альтернативно верные ответы, ссылка на блок либо отсутствующее me в me despierto.",
+      "verification": "ok"
+    },
+    {
+      "id": "q032_b1_theory_frequency_siempre_11",
+      "decision": "ok",
+      "note": "Задание, ответ и пояснение согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q032_b2_theory_frequency_a_menudo_01",
+      "decision": "fixed",
+      "note": "Уточнён критерий порядка слов/частоты; устранены альтернативно верные ответы, ссылка на блок либо отсутствующее me в me despierto.",
+      "verification": "ok"
+    },
+    {
+      "id": "q032_b2_theory_frequency_a_menudo_02",
+      "decision": "fixed",
+      "note": "Уточнён критерий порядка слов/частоты; устранены альтернативно верные ответы, ссылка на блок либо отсутствующее me в me despierto.",
+      "verification": "ok"
+    },
+    {
+      "id": "q032_b2_theory_frequency_a_menudo_03",
+      "decision": "fixed",
+      "note": "Уточнён критерий порядка слов/частоты; устранены альтернативно верные ответы, ссылка на блок либо отсутствующее me в me despierto.",
+      "verification": "ok"
+    },
+    {
+      "id": "q032_b2_theory_frequency_a_menudo_04",
+      "decision": "ok",
+      "note": "Задание, ответ и пояснение согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q032_b2_theory_frequency_a_menudo_05",
+      "decision": "fixed",
+      "note": "Уточнён критерий порядка слов/частоты; устранены альтернативно верные ответы, ссылка на блок либо отсутствующее me в me despierto.",
+      "verification": "ok"
+    },
+    {
+      "id": "q032_b2_theory_frequency_a_menudo_06",
+      "decision": "fixed",
+      "note": "Уточнён критерий порядка слов/частоты; устранены альтернативно верные ответы, ссылка на блок либо отсутствующее me в me despierto.",
+      "verification": "ok"
+    },
+    {
+      "id": "q032_b2_theory_frequency_a_menudo_07",
+      "decision": "fixed",
+      "note": "Уточнён критерий порядка слов/частоты; устранены альтернативно верные ответы, ссылка на блок либо отсутствующее me в me despierto.",
+      "verification": "ok"
+    },
+    {
+      "id": "q032_b2_theory_frequency_a_menudo_08",
+      "decision": "ok",
+      "note": "Задание, ответ и пояснение согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q032_b2_theory_frequency_a_menudo_10",
+      "decision": "fixed",
+      "note": "Уточнён критерий порядка слов/частоты; устранены альтернативно верные ответы, ссылка на блок либо отсутствующее me в me despierto.",
+      "verification": "ok"
+    },
+    {
+      "id": "q032_b2_theory_frequency_a_menudo_11",
+      "decision": "ok",
+      "note": "Задание, ответ и пояснение согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q032_b3_theory_frequency_a_veces_01",
+      "decision": "ok",
+      "note": "Вопрос, варианты и пояснение согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q032_b3_theory_frequency_a_veces_02",
+      "decision": "ok",
+      "note": "Вопрос, варианты и пояснение согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q032_b3_theory_frequency_a_veces_03",
+      "decision": "ok",
+      "note": "Вопрос, варианты и пояснение согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q032_b3_theory_frequency_a_veces_04",
+      "decision": "ok",
+      "note": "Вопрос, варианты и пояснение согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q032_b3_theory_frequency_a_veces_05",
+      "decision": "fixed",
+      "note": "Уточнён смысл и порядок, снята неоднозначность nunca/jamás, исправлено отрицательное согласование или ссылка на теорию.",
+      "verification": "ok"
+    },
+    {
+      "id": "q032_b3_theory_frequency_a_veces_06",
+      "decision": "fixed",
+      "note": "Уточнён смысл и порядок, снята неоднозначность nunca/jamás, исправлено отрицательное согласование или ссылка на теорию.",
+      "verification": "ok"
+    },
+    {
+      "id": "q032_b3_theory_frequency_a_veces_07",
+      "decision": "ok",
+      "note": "Вопрос, варианты и пояснение согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q032_b3_theory_frequency_a_veces_08",
+      "decision": "fixed",
+      "note": "Уточнён смысл и порядок, снята неоднозначность nunca/jamás, исправлено отрицательное согласование или ссылка на теорию.",
+      "verification": "ok"
+    },
+    {
+      "id": "q032_b3_theory_frequency_a_veces_10",
+      "decision": "fixed",
+      "note": "Уточнён смысл и порядок, снята неоднозначность nunca/jamás, исправлено отрицательное согласование или ссылка на теорию.",
+      "verification": "ok"
+    },
+    {
+      "id": "q032_b3_theory_frequency_a_veces_11",
+      "decision": "ok",
+      "note": "Вопрос, варианты и пояснение согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q032_b4_theory_frequency_nunca_01",
+      "decision": "fixed",
+      "note": "Уточнён смысл и порядок, снята неоднозначность nunca/jamás, исправлено отрицательное согласование или ссылка на теорию.",
+      "verification": "ok"
+    },
+    {
+      "id": "q032_b4_theory_frequency_nunca_02",
+      "decision": "fixed",
+      "note": "Уточнён смысл и порядок, снята неоднозначность nunca/jamás, исправлено отрицательное согласование или ссылка на теорию.",
+      "verification": "ok"
+    },
+    {
+      "id": "q032_b4_theory_frequency_nunca_03",
+      "decision": "fixed",
+      "note": "Уточнён смысл и порядок, снята неоднозначность nunca/jamás, исправлено отрицательное согласование или ссылка на теорию.",
+      "verification": "ok"
+    },
+    {
+      "id": "q032_b4_theory_frequency_nunca_04",
+      "decision": "ok",
+      "note": "Вопрос, варианты и пояснение согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q032_b4_theory_frequency_nunca_05",
+      "decision": "fixed",
+      "note": "Уточнён смысл и порядок, снята неоднозначность nunca/jamás, исправлено отрицательное согласование или ссылка на теорию.",
+      "verification": "ok"
+    },
+    {
+      "id": "q032_b4_theory_frequency_nunca_06",
+      "decision": "fixed",
+      "note": "Уточнён смысл и порядок, снята неоднозначность nunca/jamás, исправлено отрицательное согласование или ссылка на теорию.",
+      "verification": "ok"
+    },
+    {
+      "id": "q032_b4_theory_frequency_nunca_07",
+      "decision": "ok",
+      "note": "Вопрос, варианты и пояснение согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q032_b4_theory_frequency_nunca_08",
+      "decision": "fixed",
+      "note": "Уточнён смысл и порядок, снята неоднозначность nunca/jamás, исправлено отрицательное согласование или ссылка на теорию.",
+      "verification": "ok"
+    },
+    {
+      "id": "q032_b4_theory_frequency_nunca_10",
+      "decision": "fixed",
+      "note": "Уточнён смысл и порядок, снята неоднозначность nunca/jamás, исправлено отрицательное согласование или ссылка на теорию.",
+      "verification": "ok"
+    },
+    {
+      "id": "q032_b4_theory_frequency_nunca_11",
+      "decision": "ok",
+      "note": "Вопрос, варианты и пояснение согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q032_b5_theory_frequency_word_order_questions_01",
+      "decision": "fixed",
+      "note": "Конкретный критерий вместо предпочтения учебной модели; исправлены отрицание, перевод, альтернативные ответы или ссылки на блок.",
+      "verification": "ok"
+    },
+    {
+      "id": "q032_b5_theory_frequency_word_order_questions_02",
+      "decision": "ok",
+      "note": "Задание, ответ и объяснение согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q032_b5_theory_frequency_word_order_questions_03",
+      "decision": "fixed",
+      "note": "Конкретный критерий вместо предпочтения учебной модели; исправлены отрицание, перевод, альтернативные ответы или ссылки на блок.",
+      "verification": "ok"
+    },
+    {
+      "id": "q032_b5_theory_frequency_word_order_questions_04",
+      "decision": "ok",
+      "note": "Задание, ответ и объяснение согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q032_b5_theory_frequency_word_order_questions_05",
+      "decision": "fixed",
+      "note": "Конкретный критерий вместо предпочтения учебной модели; исправлены отрицание, перевод, альтернативные ответы или ссылки на блок.",
+      "verification": "ok"
+    },
+    {
+      "id": "q032_b5_theory_frequency_word_order_questions_06",
+      "decision": "fixed",
+      "note": "Конкретный критерий вместо предпочтения учебной модели; исправлены отрицание, перевод, альтернативные ответы или ссылки на блок.",
+      "verification": "ok"
+    },
+    {
+      "id": "q032_b5_theory_frequency_word_order_questions_07",
+      "decision": "fixed",
+      "note": "Конкретный критерий вместо предпочтения учебной модели; исправлены отрицание, перевод, альтернативные ответы или ссылки на блок.",
+      "verification": "ok"
+    },
+    {
+      "id": "q032_b5_theory_frequency_word_order_questions_08",
+      "decision": "fixed",
+      "note": "Конкретный критерий вместо предпочтения учебной модели; исправлены отрицание, перевод, альтернативные ответы или ссылки на блок.",
+      "verification": "ok"
+    },
+    {
+      "id": "q032_b5_theory_frequency_word_order_questions_10",
+      "decision": "fixed",
+      "note": "Конкретный критерий вместо предпочтения учебной модели; исправлены отрицание, перевод, альтернативные ответы или ссылки на блок.",
+      "verification": "ok"
+    },
+    {
+      "id": "q032_b5_theory_frequency_word_order_questions_11",
+      "decision": "fixed",
+      "note": "Конкретный критерий вместо предпочтения учебной модели; исправлены отрицание, перевод, альтернативные ответы или ссылки на блок.",
+      "verification": "ok"
+    },
+    {
+      "id": "q032_b6_theory_frequency_ru_traps_01",
+      "decision": "fixed",
+      "note": "Конкретный критерий вместо предпочтения учебной модели; исправлены отрицание, перевод, альтернативные ответы или ссылки на блок.",
+      "verification": "ok"
+    },
+    {
+      "id": "q032_b6_theory_frequency_ru_traps_02",
+      "decision": "ok",
+      "note": "Задание, ответ и объяснение согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q032_b6_theory_frequency_ru_traps_03",
+      "decision": "fixed",
+      "note": "Конкретный критерий вместо предпочтения учебной модели; исправлены отрицание, перевод, альтернативные ответы или ссылки на блок.",
+      "verification": "ok"
+    },
+    {
+      "id": "q032_b6_theory_frequency_ru_traps_04",
+      "decision": "ok",
+      "note": "Задание, ответ и объяснение согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q032_b6_theory_frequency_ru_traps_05",
+      "decision": "fixed",
+      "note": "Конкретный критерий вместо предпочтения учебной модели; исправлены отрицание, перевод, альтернативные ответы или ссылки на блок.",
+      "verification": "ok"
+    },
+    {
+      "id": "q032_b6_theory_frequency_ru_traps_06",
+      "decision": "ok",
+      "note": "Задание, ответ и объяснение согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q032_b6_theory_frequency_ru_traps_07",
+      "decision": "fixed",
+      "note": "Конкретный критерий вместо предпочтения учебной модели; исправлены отрицание, перевод, альтернативные ответы или ссылки на блок.",
+      "verification": "ok"
+    },
+    {
+      "id": "q032_b6_theory_frequency_ru_traps_08",
+      "decision": "ok",
+      "note": "Задание, ответ и объяснение согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q032_b6_theory_frequency_ru_traps_10",
+      "decision": "fixed",
+      "note": "Конкретный критерий вместо предпочтения учебной модели; исправлены отрицание, перевод, альтернативные ответы или ссылки на блок.",
+      "verification": "ok"
+    },
+    {
+      "id": "q032_b6_theory_frequency_ru_traps_11",
+      "decision": "fixed",
+      "note": "Конкретный критерий вместо предпочтения учебной модели; исправлены отрицание, перевод, альтернативные ответы или ссылки на блок.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-04-es029-032/check.py",
+      "result": "pass",
+      "evidence": "All 488 IDs/contracts, decisions versus baseline, fingerprints, native training validation, signatures and source-final-embedded equality; validation.log. ES 029 main baseline is the saved pre-batch source."
+    },
+    {
+      "command": "go test ./internal/grammarbundle ./internal/repository -run 'TestValidateEmbeddedBundleID|TestGrammar.*Bundle|TestGrammar.*Reorder' -count=1",
+      "result": "pass",
+      "evidence": "Both packages passed on final integrated data; go-tests.log."
+    },
+    {
+      "command": "git diff --check; git -C courses/spanish-grammar diff --check; git -C courses/english-grammar diff --check",
+      "result": "pass",
+      "evidence": "Three separately executed commands exit 0; diff-check.log. All 818 earlier dirty files outside review docs and authorized in-scope sources preserved; preservation.log."
+    },
+    {
+      "command": "cd courses/spanish-grammar && bash scripts/assemble-chapter.sh 032.es.grammar.present_regular_actions.frequency_expressions_siempre_menudo_veces_nunca",
+      "result": "pass",
+      "evidence": "032-assemble.log: exit 0."
+    },
+    {
+      "command": "cd courses/spanish-grammar && bash scripts/validate-chapter.sh 032.es.grammar.present_regular_actions.frequency_expressions_siempre_menudo_veces_nunca",
+      "result": "pass",
+      "evidence": "032-chapter-after.log: exit 0."
+    },
+    {
+      "command": "cd courses/spanish-grammar && ajv validate --spec=draft2020 --validate-formats=false --all-errors -s 02-chapter-schema.json -d chapters/032.es.grammar.present_regular_actions.frequency_expressions_siempre_menudo_veces_nunca/05-final.json",
+      "result": "pass",
+      "evidence": "032-schema-after.log: exit 0."
+    },
+    {
+      "command": "cd courses/spanish-grammar && ajv validate -s 02-chapter-schema.json -d chapters/032.es.grammar.present_regular_actions.frequency_expressions_siempre_menudo_veces_nunca/05-final.json",
+      "result": "known_baseline",
+      "evidence": "032-assembler-ajv-before.log and 032-assembler-ajv-after.log are byte-identical, exit 1: no draft2020 meta-schema selected. Explicit draft2020 validation passes."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    }
+  ],
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+}

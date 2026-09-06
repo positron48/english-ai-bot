@@ -1,0 +1,411 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/chapters/009.es.grammar.noun_gender_articles_agreement.definite_indefinite_articles_el_la_los_las_un/03-questions.json",
+  "source_sha256": "124e11a2f3ed29874c5e54e67badae4b34d2465e4d702ea71bf5f63eedd417a7",
+  "context_sha256": "df156b7d5b3542aaa9eecf48ac151a902a1075fb54ce91fbd6abe8df935e00db",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
+  "reviewed_at": "2026-09-04T11:53:01.843433+00:00",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
+  "questions": [
+    {
+      "id": "q1",
+      "decision": "fixed",
+      "note": "Уточнены контекст, тип артикля, границы правки или род группы для единственного ответа.",
+      "verification": "ok"
+    },
+    {
+      "id": "q2",
+      "decision": "fixed",
+      "note": "Уточнены контекст, тип артикля, границы правки или род группы для единственного ответа.",
+      "verification": "ok"
+    },
+    {
+      "id": "q3",
+      "decision": "fixed",
+      "note": "Уточнены контекст, тип артикля, границы правки или род группы для единственного ответа.",
+      "verification": "ok"
+    },
+    {
+      "id": "q4",
+      "decision": "fixed",
+      "note": "Уточнены контекст, тип артикля, границы правки или род группы для единственного ответа.",
+      "verification": "ok"
+    },
+    {
+      "id": "q5",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q6",
+      "decision": "fixed",
+      "note": "Уточнены контекст, тип артикля, границы правки или род группы для единственного ответа.",
+      "verification": "ok"
+    },
+    {
+      "id": "q7",
+      "decision": "fixed",
+      "note": "Уточнены контекст, тип артикля, границы правки или род группы для единственного ответа.",
+      "verification": "ok"
+    },
+    {
+      "id": "q8",
+      "decision": "fixed",
+      "note": "Уточнены контекст, тип артикля, границы правки или род группы для единственного ответа.",
+      "verification": "ok"
+    },
+    {
+      "id": "q9",
+      "decision": "fixed",
+      "note": "Уточнены контекст, тип артикля, границы правки или род группы для единственного ответа.",
+      "verification": "ok"
+    },
+    {
+      "id": "q10",
+      "decision": "fixed",
+      "note": "Уточнены контекст, тип артикля, границы правки или род группы для единственного ответа.",
+      "verification": "ok"
+    },
+    {
+      "id": "q11",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q12",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q13",
+      "decision": "fixed",
+      "note": "Уточнены контекст, тип артикля, границы правки или род группы для единственного ответа.",
+      "verification": "ok"
+    },
+    {
+      "id": "q14",
+      "decision": "fixed",
+      "note": "Уточнены контекст, тип артикля, границы правки или род группы для единственного ответа.",
+      "verification": "ok"
+    },
+    {
+      "id": "q15",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q16",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q17",
+      "decision": "fixed",
+      "note": "Уточнены контекст, тип артикля, границы правки или род группы для единственного ответа.",
+      "verification": "ok"
+    },
+    {
+      "id": "q18",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q19",
+      "decision": "fixed",
+      "note": "Уточнены контекст, тип артикля, границы правки или род группы для единственного ответа.",
+      "verification": "ok"
+    },
+    {
+      "id": "q20",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q21",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q22",
+      "decision": "fixed",
+      "note": "Уточнено требование артикля, устранена подсказка/неоднозначность или ложный запрет допустимой конструкции.",
+      "verification": "ok"
+    },
+    {
+      "id": "q23",
+      "decision": "fixed",
+      "note": "Уточнено требование артикля, устранена подсказка/неоднозначность или ложный запрет допустимой конструкции.",
+      "verification": "ok"
+    },
+    {
+      "id": "q24",
+      "decision": "fixed",
+      "note": "Уточнено требование артикля, устранена подсказка/неоднозначность или ложный запрет допустимой конструкции.",
+      "verification": "ok"
+    },
+    {
+      "id": "q25",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q26",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q27",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q28",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q29",
+      "decision": "fixed",
+      "note": "Уточнено требование артикля, устранена подсказка/неоднозначность или ложный запрет допустимой конструкции.",
+      "verification": "ok"
+    },
+    {
+      "id": "q30",
+      "decision": "fixed",
+      "note": "Уточнено требование артикля, устранена подсказка/неоднозначность или ложный запрет допустимой конструкции.",
+      "verification": "ok"
+    },
+    {
+      "id": "q31",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q32",
+      "decision": "fixed",
+      "note": "Уточнено требование артикля, устранена подсказка/неоднозначность или ложный запрет допустимой конструкции.",
+      "verification": "ok"
+    },
+    {
+      "id": "q33",
+      "decision": "fixed",
+      "note": "Уточнено требование артикля, устранена подсказка/неоднозначность или ложный запрет допустимой конструкции.",
+      "verification": "ok"
+    },
+    {
+      "id": "q34",
+      "decision": "fixed",
+      "note": "Уточнено требование артикля, устранена подсказка/неоднозначность или ложный запрет допустимой конструкции.",
+      "verification": "ok"
+    },
+    {
+      "id": "q35",
+      "decision": "fixed",
+      "note": "Уточнено требование артикля, устранена подсказка/неоднозначность или ложный запрет допустимой конструкции.",
+      "verification": "ok"
+    },
+    {
+      "id": "q36",
+      "decision": "fixed",
+      "note": "Уточнено требование артикля, устранена подсказка/неоднозначность или ложный запрет допустимой конструкции.",
+      "verification": "ok"
+    },
+    {
+      "id": "q37",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q38",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q39",
+      "decision": "fixed",
+      "note": "Уточнено требование артикля, устранена подсказка/неоднозначность или ложный запрет допустимой конструкции.",
+      "verification": "ok"
+    },
+    {
+      "id": "q40",
+      "decision": "fixed",
+      "note": "Уточнено требование артикля, устранена подсказка/неоднозначность или ложный запрет допустимой конструкции.",
+      "verification": "ok"
+    },
+    {
+      "id": "q41",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q42",
+      "decision": "fixed",
+      "note": "Уточнены смысл, ограничения правки, форма артикля или исключения из общего правила.",
+      "verification": "ok"
+    },
+    {
+      "id": "q43",
+      "decision": "fixed",
+      "note": "Уточнены смысл, ограничения правки, форма артикля или исключения из общего правила.",
+      "verification": "ok"
+    },
+    {
+      "id": "q44",
+      "decision": "fixed",
+      "note": "Уточнены смысл, ограничения правки, форма артикля или исключения из общего правила.",
+      "verification": "ok"
+    },
+    {
+      "id": "q45",
+      "decision": "fixed",
+      "note": "Уточнены смысл, ограничения правки, форма артикля или исключения из общего правила.",
+      "verification": "ok"
+    },
+    {
+      "id": "q46",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q47",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q48",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q49",
+      "decision": "fixed",
+      "note": "Уточнены смысл, ограничения правки, форма артикля или исключения из общего правила.",
+      "verification": "ok"
+    },
+    {
+      "id": "q50",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q51",
+      "decision": "fixed",
+      "note": "Уточнены смысл, ограничения правки, форма артикля или исключения из общего правила.",
+      "verification": "ok"
+    },
+    {
+      "id": "q52",
+      "decision": "fixed",
+      "note": "Уточнены смысл, ограничения правки, форма артикля или исключения из общего правила.",
+      "verification": "ok"
+    },
+    {
+      "id": "q53",
+      "decision": "fixed",
+      "note": "Уточнены смысл, ограничения правки, форма артикля или исключения из общего правила.",
+      "verification": "ok"
+    },
+    {
+      "id": "q54",
+      "decision": "fixed",
+      "note": "Уточнены смысл, ограничения правки, форма артикля или исключения из общего правила.",
+      "verification": "ok"
+    },
+    {
+      "id": "q55",
+      "decision": "fixed",
+      "note": "Уточнены смысл, ограничения правки, форма артикля или исключения из общего правила.",
+      "verification": "ok"
+    },
+    {
+      "id": "q56",
+      "decision": "fixed",
+      "note": "Уточнены смысл, ограничения правки, форма артикля или исключения из общего правила.",
+      "verification": "ok"
+    },
+    {
+      "id": "q57",
+      "decision": "fixed",
+      "note": "Уточнены смысл, ограничения правки, форма артикля или исключения из общего правила.",
+      "verification": "ok"
+    },
+    {
+      "id": "q58",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q59",
+      "decision": "fixed",
+      "note": "Уточнены смысл, ограничения правки, форма артикля или исключения из общего правила.",
+      "verification": "ok"
+    },
+    {
+      "id": "q60",
+      "decision": "fixed",
+      "note": "Уточнены смысл, ограничения правки, форма артикля или исключения из общего правила.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-04-es009-012/check.py",
+      "result": "pass",
+      "evidence": "All 555 IDs/contracts, metadata, per-question decisions and current source/context fingerprints checked. Native training validation, signatures, no new course-wide duplicate signatures, source-final-embedded equality. See validation.log."
+    },
+    {
+      "command": "go test ./internal/grammarbundle ./internal/repository -run 'TestValidateEmbeddedBundleID|TestGrammar.*Bundle|TestGrammar.*Reorder' -count=1",
+      "result": "pass",
+      "evidence": "Both packages pass: 5.187s and 14.704s; see go-tests.log."
+    },
+    {
+      "command": "git diff --check; git -C courses/spanish-grammar diff --check; git -C courses/english-grammar diff --check",
+      "result": "pass",
+      "evidence": "All three separate commands exit 0; see diff-check.log. 266 pre-existing files preserved byte-for-byte; see preservation.log."
+    },
+    {
+      "command": "cd courses/spanish-grammar && bash scripts/assemble-chapter.sh 009.es.grammar.noun_gender_articles_agreement.definite_indefinite_articles_el_la_los_las_un",
+      "result": "pass",
+      "evidence": "60 questions assembled; schema check also passes. See 009-assemble.log."
+    },
+    {
+      "command": "cd courses/spanish-grammar && bash scripts/validate-chapter.sh 009.es.grammar.noun_gender_articles_agreement.definite_indefinite_articles_el_la_los_las_un",
+      "result": "pass",
+      "evidence": "Before and after pass: 009-chapter-before.log and 009-chapter-after.log."
+    },
+    {
+      "command": "ajv validate --spec=draft2020 --validate-formats=false --all-errors -s courses/spanish-grammar/02-chapter-schema.json -d courses/spanish-grammar/chapters/009.es.grammar.noun_gender_articles_agreement.definite_indefinite_articles_el_la_los_las_un/05-final.json",
+      "result": "pass",
+      "evidence": "Before and after pass: 009-schema-before.log and 009-schema-after.log."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    }
+  ],
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+}

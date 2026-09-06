@@ -1,0 +1,632 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/prometer.json",
+  "source_sha256": "ae18fd6d7d1364709b40e9c57486d61cdc8d0b53d775d6dd325a1adc46c7a7f3",
+  "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197",
+  "editor": "Codex editor prometer 2026-09-06",
+  "verifier": "Codex verifier coordinator 2026-09-06",
+  "phase": "done",
+  "reviewed_at": "2026-09-06T07:43:49Z",
+  "verified_at": "2026-09-06",
+  "questions": [
+    {
+      "id": "es.presente.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Переписаны неестественный контекст и русский перевод; варианты заменены четырьмя уникальными формами.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Переписаны неестественный контекст и русский перевод; варианты заменены четырьмя уникальными формами.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Переписаны неестественный контекст и русский перевод; варианты заменены четырьмя уникальными формами.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Переписаны неестественный контекст и русский перевод; варианты заменены четырьмя уникальными формами.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Переписаны неестественный контекст и русский перевод; варианты заменены четырьмя уникальными формами.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Переписаны неестественный контекст и русский перевод; варианты заменены четырьмя уникальными формами.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Переписаны неестественный контекст и русский перевод; варианты заменены четырьмя уникальными формами.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Переписаны неестественный контекст и русский перевод; варианты заменены четырьмя уникальными формами.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Переписаны неестественный контекст и русский перевод; варианты заменены четырьмя уникальными формами.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Переписаны неестественный контекст и русский перевод; варианты заменены четырьмя уникальными формами.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Переписаны неестественный контекст и русский перевод; варианты заменены четырьмя уникальными формами.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Переписаны неестественный контекст и русский перевод; варианты заменены четырьмя уникальными формами.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Переписаны неестественный контекст и русский перевод; варианты заменены четырьмя уникальными формами.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Переписаны неестественный контекст и русский перевод; варианты заменены четырьмя уникальными формами.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Переписаны неестественный контекст и русский перевод; варианты заменены четырьмя уникальными формами.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Переписаны неестественный контекст и русский перевод; варианты заменены четырьмя уникальными формами.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Переписаны неестественный контекст и русский перевод; варианты заменены четырьмя уникальными формами.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Переписаны неестественный контекст и русский перевод; варианты заменены четырьмя уникальными формами.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Переписаны неестественный контекст и русский перевод; варианты заменены четырьмя уникальными формами.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Переписаны неестественный контекст и русский перевод; варианты заменены четырьмя уникальными формами.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Переписаны неестественный контекст и русский перевод; варианты заменены четырьмя уникальными формами.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Переписаны неестественный контекст и русский перевод; варианты заменены четырьмя уникальными формами.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Переписаны неестественный контекст и русский перевод; варианты заменены четырьмя уникальными формами.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Переписаны неестественный контекст и русский перевод; варианты заменены четырьмя уникальными формами.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Переписаны неестественный контекст и русский перевод; варианты заменены четырьмя уникальными формами.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Переписаны неестественный контекст и русский перевод; варианты заменены четырьмя уникальными формами.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Переписаны неестественный контекст и русский перевод; варианты заменены четырьмя уникальными формами.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Переписаны неестественный контекст и русский перевод; варианты заменены четырьмя уникальными формами.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Переписаны неестественный контекст и русский перевод; варианты заменены четырьмя уникальными формами.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Переписаны неестественный контекст и русский перевод; варианты заменены четырьмя уникальными формами.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Переписаны неестественный контекст и русский перевод; варианты заменены четырьмя уникальными формами.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Переписаны неестественный контекст и русский перевод; варианты заменены четырьмя уникальными формами.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Переписаны неестественный контекст и русский перевод; варианты заменены четырьмя уникальными формами.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Переписаны неестественный контекст и русский перевод; варианты заменены четырьмя уникальными формами.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Переписаны неестественный контекст и русский перевод; варианты заменены четырьмя уникальными формами.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Переписаны неестественный контекст и русский перевод; варианты заменены четырьмя уникальными формами.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Переписаны неестественный контекст и русский перевод; варианты заменены четырьмя уникальными формами.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Переписаны неестественный контекст и русский перевод; варианты заменены четырьмя уникальными формами.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Переписаны неестественный контекст и русский перевод; варианты заменены четырьмя уникальными формами.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Переписаны неестественный контекст и русский перевод; варианты заменены четырьмя уникальными формами.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Переписаны неестественный контекст и русский перевод; варианты заменены четырьмя уникальными формами.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Переписаны неестественный контекст и русский перевод; варианты заменены четырьмя уникальными формами.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Переписаны неестественный контекст и русский перевод; варианты заменены четырьмя уникальными формами.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Переписаны неестественный контекст и русский перевод; варианты заменены четырьмя уникальными формами.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Переписаны неестественный контекст и русский перевод; варианты заменены четырьмя уникальными формами.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Переписаны неестественный контекст и русский перевод; варианты заменены четырьмя уникальными формами.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Переписаны неестественный контекст и русский перевод; варианты заменены четырьмя уникальными формами.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Переписаны неестественный контекст и русский перевод; варианты заменены четырьмя уникальными формами.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Переписаны неестественный контекст и русский перевод; варианты заменены четырьмя уникальными формами.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Переписаны неестественный контекст и русский перевод; варианты заменены четырьмя уникальными формами.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Переписаны неестественный контекст и русский перевод; варианты заменены четырьмя уникальными формами.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Переписаны неестественный контекст и русский перевод; варианты заменены четырьмя уникальными формами.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Переписаны неестественный контекст и русский перевод; варианты заменены четырьмя уникальными формами.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Переписаны неестественный контекст и русский перевод; варианты заменены четырьмя уникальными формами.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Переписаны неестественный контекст и русский перевод; варианты заменены четырьмя уникальными формами.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Переписаны неестественный контекст и русский перевод; варианты заменены четырьмя уникальными формами.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Переписаны неестественный контекст и русский перевод; варианты заменены четырьмя уникальными формами.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Переписаны неестественный контекст и русский перевод; варианты заменены четырьмя уникальными формами.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Переписаны неестественный контекст и русский перевод; варианты заменены четырьмя уникальными формами.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Переписаны неестественный контекст и русский перевод; варианты заменены четырьмя уникальными формами.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Переписаны неестественный контекст и русский перевод; варианты заменены четырьмя уникальными формами.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Переписаны неестественный контекст и русский перевод; варианты заменены четырьмя уникальными формами.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Переписаны неестественный контекст и русский перевод; варианты заменены четырьмя уникальными формами.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Переписаны неестественный контекст и русский перевод; варианты заменены четырьмя уникальными формами.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Переписаны неестественный контекст и русский перевод; варианты заменены четырьмя уникальными формами.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Переписаны неестественный контекст и русский перевод; варианты заменены четырьмя уникальными формами.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Переписаны неестественный контекст и русский перевод; варианты заменены четырьмя уникальными формами.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Переписаны неестественный контекст и русский перевод; варианты заменены четырьмя уникальными формами.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Переписаны неестественный контекст и русский перевод; варианты заменены четырьмя уникальными формами.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Переписаны неестественный контекст и русский перевод; варианты заменены четырьмя уникальными формами.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Переписаны неестественный контекст и русский перевод; варианты заменены четырьмя уникальными формами.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Переписаны неестественный контекст и русский перевод; варианты заменены четырьмя уникальными формами.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлена форма, не соответствовавшая scope и парадигме Jehle; переписаны контекст, перевод и набор из четырёх уникальных вариантов.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлена форма, не соответствовавшая scope и парадигме Jehle; переписаны контекст, перевод и набор из четырёх уникальных вариантов.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлена форма, не соответствовавшая scope и парадигме Jehle; переписаны контекст, перевод и набор из четырёх уникальных вариантов.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлена форма, не соответствовавшая scope и парадигме Jehle; переписаны контекст, перевод и набор из четырёх уникальных вариантов.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлена форма, не соответствовавшая scope и парадигме Jehle; переписаны контекст, перевод и набор из четырёх уникальных вариантов.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлена форма, не соответствовавшая scope и парадигме Jehle; переписаны контекст, перевод и набор из четырёх уникальных вариантов.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлена форма, не соответствовавшая scope и парадигме Jehle; переписаны контекст, перевод и набор из четырёх уникальных вариантов.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлена форма, не соответствовавшая scope и парадигме Jehle; переписаны контекст, перевод и набор из четырёх уникальных вариантов.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлена форма, не соответствовавшая scope и парадигме Jehle; переписаны контекст, перевод и набор из четырёх уникальных вариантов.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлена форма, не соответствовавшая scope и парадигме Jehle; переписаны контекст, перевод и набор из четырёх уникальных вариантов.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлена форма, не соответствовавшая scope и парадигме Jehle; переписаны контекст, перевод и набор из четырёх уникальных вариантов.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлена форма, не соответствовавшая scope и парадигме Jehle; переписаны контекст, перевод и набор из четырёх уникальных вариантов.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "После координаторского замечания исправлена логика контрфактической связи в условии и следствии; форма, identity и варианты не менялись.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "После координаторского замечания исправлена логика контрфактической связи в условии и следствии; форма, identity и варианты не менялись.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Переписаны неестественный контекст и русский перевод; варианты заменены четырьмя уникальными формами.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "После координаторского замечания исправлена логика контрфактической связи в условии и следствии; форма, identity и варианты не менялись.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Переписаны неестественный контекст и русский перевод; варианты заменены четырьмя уникальными формами.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Переписаны неестественный контекст и русский перевод; варианты заменены четырьмя уникальными формами.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлена форма, не соответствовавшая scope и парадигме Jehle; переписаны контекст, перевод и набор из четырёх уникальных вариантов.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлена форма, не соответствовавшая scope и парадигме Jehle; переписаны контекст, перевод и набор из четырёх уникальных вариантов.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлена форма, не соответствовавшая scope и парадигме Jehle; переписаны контекст, перевод и набор из четырёх уникальных вариантов.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлена форма, не соответствовавшая scope и парадигме Jehle; переписаны контекст, перевод и набор из четырёх уникальных вариантов.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлена форма, не соответствовавшая scope и парадигме Jehle; переписаны контекст, перевод и набор из четырёх уникальных вариантов.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлена форма, не соответствовавшая scope и парадигме Jehle; переписаны контекст, перевод и набор из четырёх уникальных вариантов.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "independent full-card review for prometer",
+      "result": "pass",
+      "evidence": "All 96 final cards reviewed by Codex verifier coordinator 2026-09-06, independently from Codex editor prometer 2026-09-06; any findings were fixed and rechecked."
+    },
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-06-es-verbs-producir-proponer/check.py",
+      "result": "pass",
+      "evidence": "384/384 exact Jehle forms, stable identities and original order, canonical metadata, unique same-scope options, matching embedded files and fresh fingerprints; 24 editorial checkpoints."
+    },
+    {
+      "command": "validate_artifact() from courses/spanish-grammar/scripts/generate-verb-forms-training.py for all four lemmas",
+      "result": "pass",
+      "evidence": "Strict 16 scopes x 6 slots validation passed for producir, prohibir, prometer and proponer."
+    },
+    {
+      "command": "go test ./internal/verbtraining ./cmd/sync_verb_training_json",
+      "result": "pass",
+      "evidence": "Both focused Go packages passed."
+    },
+    {
+      "command": "python3 scripts/grammar_review_test.py",
+      "result": "pass",
+      "evidence": "13 tests passed."
+    },
+    {
+      "command": "git diff --check && git -C courses/spanish-grammar diff --check",
+      "result": "pass",
+      "evidence": "No whitespace errors in root or Spanish course diff."
+    },
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-06-es-verbs-producir-proponer/preservation-check.py",
+      "result": "pass",
+      "evidence": "25403 preserved; 0 changed; 0 missing; 0 unexpected new files."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py check --language es --bank verbs --source <lemma-source>",
+      "result": "pass",
+      "evidence": "The final independently verified report is done with current source and context fingerprints."
+    }
+  ],
+  "verification_note": "Независимо прочитаны все 96 карточек; три спорных контрфактических контекста исправлены редактором и повторно проверены. Формы, метаданные, переводы, варианты и порядок приняты."
+}

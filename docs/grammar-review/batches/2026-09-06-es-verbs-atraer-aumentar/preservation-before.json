@@ -1,0 +1,26 @@
+{
+  "existing_files": 24884,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/atraer.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/atraer.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/atravesar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/atravesar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/aumentar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/aumentar.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-atraer-aumentar",
+    "docs/grammar-review/reports/25645fc79f9c101949a237bf.json",
+    "docs/grammar-review/reports/64326cc1c681bf3f080417f5.json",
+    "docs/grammar-review/reports/687580fed1a214162fbc07a7.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/atraer.json": "bea48aacc22e87621da6edbe507b8a4d42f50ce8aed914a7ffe28184e81fd02a",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/atraer.json": "bea48aacc22e87621da6edbe507b8a4d42f50ce8aed914a7ffe28184e81fd02a",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/atravesar.json": "d15c96fd897c71b4c290e66e581e0a5d34765f4072908b2ac67144e63cce1c92",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/atravesar.json": "d15c96fd897c71b4c290e66e581e0a5d34765f4072908b2ac67144e63cce1c92",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/aumentar.json": "1fdd101542ef5090e589bde0a22ef081766a263aa4fdd3ed6b690595db4e3add",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/aumentar.json": "1fdd101542ef5090e589bde0a22ef081766a263aa4fdd3ed6b690595db4e3add"
+  }
+}

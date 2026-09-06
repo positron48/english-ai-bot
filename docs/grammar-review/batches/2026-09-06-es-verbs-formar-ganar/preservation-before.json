@@ -1,0 +1,31 @@
+{
+  "existing_files": 25197,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/formar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/formar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/fumar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/fumar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/funcionar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/funcionar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/ganar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/ganar.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-formar-ganar",
+    "docs/grammar-review/reports/244de9e3d39f3c79a57ac460.json",
+    "docs/grammar-review/reports/77f6a257ddb3cd682070cb96.json",
+    "docs/grammar-review/reports/2bd03641b435937da08f284c.json",
+    "docs/grammar-review/reports/25e1f7b49dfb52c3b7b6b5f4.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/formar.json": "84a3d76d9c6ed0f4738d81bf6fc604f84b980107ac62ca0f2377deabc7075880",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/formar.json": "84a3d76d9c6ed0f4738d81bf6fc604f84b980107ac62ca0f2377deabc7075880",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/fumar.json": "631e20878a75869722fca1d58ee82afe9dd3ded148fe7fee320ce5d6aa9040bf",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/fumar.json": "631e20878a75869722fca1d58ee82afe9dd3ded148fe7fee320ce5d6aa9040bf",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/funcionar.json": "482f231891edd4df67f8067cb4fba882ede1ca12ecfb5072c34445a5ac435002",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/funcionar.json": "482f231891edd4df67f8067cb4fba882ede1ca12ecfb5072c34445a5ac435002",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/ganar.json": "1c989f2d0b8b963d2b94f9bbc3a24ece8cd8853c2105e122028222891be9d986",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/ganar.json": "1c989f2d0b8b963d2b94f9bbc3a24ece8cd8853c2105e122028222891be9d986"
+  }
+}

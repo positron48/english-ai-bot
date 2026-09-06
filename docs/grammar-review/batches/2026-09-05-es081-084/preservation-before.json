@@ -1,0 +1,53 @@
+{
+  "existing_files": 3439,
+  "allowed_paths": [
+    "courses/spanish-grammar/chapters/081.es.grammar.prepositions_verb_patterns.personal_object_marking/03-questions.json",
+    "courses/spanish-grammar/chapters/081.es.grammar.prepositions_verb_patterns.personal_object_marking/05-final.json",
+    "courses/spanish-grammar/chapters/082.es.grammar.prepositions_verb_patterns.core_prepositions_de_en_con_sin_sobre/03-questions.json",
+    "courses/spanish-grammar/chapters/082.es.grammar.prepositions_verb_patterns.core_prepositions_de_en_con_sin_sobre/05-final.json",
+    "courses/spanish-grammar/chapters/083.es.grammar.prepositions_verb_patterns.por_para_central_contrast/03-questions.json",
+    "courses/spanish-grammar/chapters/083.es.grammar.prepositions_verb_patterns.por_para_central_contrast/05-final.json",
+    "courses/spanish-grammar/chapters/084.es.grammar.prepositions_verb_patterns.prepositions_time_movement_desde_hasta_hacia_por_para/03-questions.json",
+    "courses/spanish-grammar/chapters/084.es.grammar.prepositions_verb_patterns.prepositions_time_movement_desde_hasta_hacia_por_para/05-final.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-05-es081-084",
+    "docs/grammar-review/reports/012c93a3eb6891ce2f60dc9d.json",
+    "docs/grammar-review/reports/6e74ca0dc0097f9c20eeb702.json",
+    "docs/grammar-review/reports/a47abf0ea5c0aef229ce1002.json",
+    "docs/grammar-review/reports/f90bb4bc4b23f8354f0df854.json",
+    "internal/grammarbundle/es/chapters/es.grammar.prepositions_verb_patterns.core_prepositions_de_en_con_sin_sobre.json",
+    "internal/grammarbundle/es/chapters/es.grammar.prepositions_verb_patterns.personal_object_marking.json",
+    "internal/grammarbundle/es/chapters/es.grammar.prepositions_verb_patterns.por_para_central_contrast.json",
+    "internal/grammarbundle/es/chapters/es.grammar.prepositions_verb_patterns.prepositions_time_movement_desde_hasta_hacia_por_para.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/chapters/081.es.grammar.prepositions_verb_patterns.personal_object_marking/03-questions.json": "f7a22b33b81bafa30793673cc9c453ed04437cd6e241913338de270217532d51",
+    "courses/spanish-grammar/chapters/081.es.grammar.prepositions_verb_patterns.personal_object_marking/05-final.json": "841746861175564522a0e968f9d05207615796c2222ecbd1109661178c9b550e",
+    "internal/grammarbundle/es/chapters/es.grammar.prepositions_verb_patterns.personal_object_marking.json": "841746861175564522a0e968f9d05207615796c2222ecbd1109661178c9b550e",
+    "courses/spanish-grammar/chapters/082.es.grammar.prepositions_verb_patterns.core_prepositions_de_en_con_sin_sobre/03-questions.json": "d6983429dde8a2097311214c6be44874fc4b2ddd0fc7cb502ade93b7a6d96941",
+    "courses/spanish-grammar/chapters/082.es.grammar.prepositions_verb_patterns.core_prepositions_de_en_con_sin_sobre/05-final.json": "aa0252f43c573f95f93e8b3200c2e384746ec3ce3b6d23ef8bd1d440ca414c5a",
+    "internal/grammarbundle/es/chapters/es.grammar.prepositions_verb_patterns.core_prepositions_de_en_con_sin_sobre.json": "aa0252f43c573f95f93e8b3200c2e384746ec3ce3b6d23ef8bd1d440ca414c5a",
+    "courses/spanish-grammar/chapters/083.es.grammar.prepositions_verb_patterns.por_para_central_contrast/03-questions.json": "c824feb61b1d9689442cb67dd3bf3e7af87b383dc3d226bc24c67ee316748232",
+    "courses/spanish-grammar/chapters/083.es.grammar.prepositions_verb_patterns.por_para_central_contrast/05-final.json": "a6aac23d54315e2a1200c0e69662857d8ca61a695cad7d8838e4b4065ef3c6a0",
+    "internal/grammarbundle/es/chapters/es.grammar.prepositions_verb_patterns.por_para_central_contrast.json": "a6aac23d54315e2a1200c0e69662857d8ca61a695cad7d8838e4b4065ef3c6a0",
+    "courses/spanish-grammar/chapters/084.es.grammar.prepositions_verb_patterns.prepositions_time_movement_desde_hasta_hacia_por_para/03-questions.json": "d09adf7fcee8d0dd31cd6deb7db7c204a72799fa0cf752372ad35e055b4e48c6",
+    "courses/spanish-grammar/chapters/084.es.grammar.prepositions_verb_patterns.prepositions_time_movement_desde_hasta_hacia_por_para/05-final.json": "92c537b043b34a429b0847198b675a6125809346bd9159223491cfa093462833",
+    "internal/grammarbundle/es/chapters/es.grammar.prepositions_verb_patterns.prepositions_time_movement_desde_hasta_hacia_por_para.json": "92c537b043b34a429b0847198b675a6125809346bd9159223491cfa093462833"
+  },
+  "baseline_exit_codes": {
+    "081-chapter-before.log": 0,
+    "081-schema-before.log": 0,
+    "081-assembler-ajv-before.log": 1,
+    "082-chapter-before.log": 0,
+    "082-schema-before.log": 0,
+    "082-assembler-ajv-before.log": 1,
+    "083-chapter-before.log": 0,
+    "083-schema-before.log": 0,
+    "083-assembler-ajv-before.log": 1,
+    "084-chapter-before.log": 0,
+    "084-schema-before.log": 0,
+    "084-assembler-ajv-before.log": 1
+  }
+}

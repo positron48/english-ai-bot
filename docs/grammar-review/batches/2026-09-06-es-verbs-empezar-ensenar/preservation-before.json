@@ -1,0 +1,31 @@
+{
+  "existing_files": 25136,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/empezar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/empezar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/emplear.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/emplear.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/encontrar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/encontrar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/enseñar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/enseñar.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-empezar-ensenar",
+    "docs/grammar-review/reports/0886b1c6af38b942057d0fde.json",
+    "docs/grammar-review/reports/eb59d609b78b239d70516bb1.json",
+    "docs/grammar-review/reports/7f77e133fafdba548ac8dc6e.json",
+    "docs/grammar-review/reports/d7be75b8f534b5cbfc96fdf6.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/empezar.json": "9fa9066de01266b8e751856ff71e2c78b13c90b6041e8b74bce1cba053bee7fc",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/empezar.json": "9fa9066de01266b8e751856ff71e2c78b13c90b6041e8b74bce1cba053bee7fc",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/emplear.json": "c50f407b36fa90de18aaab6dbf325e70670a1edd0e72167693b572df99b01d8d",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/emplear.json": "c50f407b36fa90de18aaab6dbf325e70670a1edd0e72167693b572df99b01d8d",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/encontrar.json": "d54ed055e6ab325e119214b86909320614627c4e45e9862430f3f8260a402208",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/encontrar.json": "d54ed055e6ab325e119214b86909320614627c4e45e9862430f3f8260a402208",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/enseñar.json": "7957ced882e6c873b067933689eaa177be938db56bc94e153b359b1e1d6d00e1",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/enseñar.json": "7957ced882e6c873b067933689eaa177be938db56bc94e153b359b1e1d6d00e1"
+  }
+}

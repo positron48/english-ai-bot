@@ -1,0 +1,642 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/superar.json",
+  "source_sha256": "448893067be88362176eee4434f416e129073aa6c27efbbd9b121589dc38a4ee",
+  "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197",
+  "editor": "Laplace editor 2026-09-06",
+  "verifier": "Aristotle verifier 2026-09-06",
+  "phase": "done",
+  "reviewed_at": "2026-09-06",
+  "verified_at": "2026-09-06",
+  "questions": [
+    {
+      "id": "es.presente.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.presente.indicativo:1:singular; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.presente.indicativo:2:singular; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.presente.indicativo:3:singular; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.presente.indicativo:1:plural; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.presente.indicativo:2:plural; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.presente.indicativo:3:plural; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_imperfecto.indicativo:1:singular; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_imperfecto.indicativo:2:singular; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_imperfecto.indicativo:3:singular; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_imperfecto.indicativo:1:plural; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_imperfecto.indicativo:2:plural; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_imperfecto.indicativo:3:plural; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope. Субъект и русский перевод уточнены как согласованные множественные дневные максимумы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_indefinido.indicativo:1:singular; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_indefinido.indicativo:2:singular; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_indefinido.indicativo:3:singular; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_indefinido.indicativo:1:plural; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_indefinido.indicativo:2:plural; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope. Исправлено ошибочное ударение в вспомогательной форме batisteis; целевая форма не менялась.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_indefinido.indicativo:3:plural; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_simple.indicativo:1:singular; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_simple.indicativo:2:singular; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_simple.indicativo:3:singular; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_simple.indicativo:1:plural; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_simple.indicativo:2:plural; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_simple.indicativo:3:plural; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.condicional_simple.indicativo:1:singular; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.condicional_simple.indicativo:2:singular; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.condicional_simple.indicativo:3:singular; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope. По coordinator refinement субъект заменён на естественного исполнителя; ES/RU согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.condicional_simple.indicativo:1:plural; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope. Независимый verifier: RU «Мы превысили бы плановый показатель ещё с двумя клиентами» неестественен. Требуемая RU: «Если бы у нас было ещё два клиента, мы превысили бы плановый показатель.» Исправлено по независимой проверке: русский условный контекст естественно раскрывает con dos clientes más.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.condicional_simple.indicativo:2:plural; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.condicional_simple.indicativo:3:plural; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_perfecto_compuesto.indicativo:1:singular; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_perfecto_compuesto.indicativo:2:singular; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_perfecto_compuesto.indicativo:3:singular; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope. Русский объект точно согласован с la cantidad prevista. По coordinator refinement восстановлен точный естественный перевод cantidad prevista как «запланированный объём». Независимый verifier: RU сочетает «сумма» с неестественным объектом «объём». Требуемая RU: «Собранная сумма превысила запланированный показатель.» Исправлено по независимой проверке: устранено неестественное сочетание «сумма превысила объём».",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_perfecto_compuesto.indicativo:1:plural; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_perfecto_compuesto.indicativo:2:plural; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_perfecto_compuesto.indicativo:3:plural; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_pluscuamperfecto.indicativo:1:singular; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_pluscuamperfecto.indicativo:2:singular; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope. Русский совершенный вид теперь явно передаёт завершённость pluscuamperfecto.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_pluscuamperfecto.indicativo:3:singular; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_pluscuamperfecto.indicativo:1:plural; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_pluscuamperfecto.indicativo:2:plural; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_pluscuamperfecto.indicativo:3:plural; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_anterior.indicativo:1:singular; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_anterior.indicativo:2:singular; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_anterior.indicativo:3:singular; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_anterior.indicativo:1:plural; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_anterior.indicativo:2:plural; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_anterior.indicativo:3:plural; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_perfecto.indicativo:1:singular; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_perfecto.indicativo:2:singular; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_perfecto.indicativo:3:singular; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope. Уточнён физически корректный субъект el nivel del embalse и полный русский перевод.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_perfecto.indicativo:1:plural; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_perfecto.indicativo:2:plural; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_perfecto.indicativo:3:plural; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.condicional_perfecto.indicativo:1:singular; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.condicional_perfecto.indicativo:2:singular; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.condicional_perfecto.indicativo:3:singular; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.condicional_perfecto.indicativo:1:plural; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.condicional_perfecto.indicativo:2:plural; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.condicional_perfecto.indicativo:3:plural; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.presente.subjuntivo:1:singular; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.presente.subjuntivo:2:singular; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.presente.subjuntivo:3:singular; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.presente.subjuntivo:1:plural; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.presente.subjuntivo:2:plural; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.presente.subjuntivo:3:plural; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_imperfecto.subjuntivo:1:singular; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_imperfecto.subjuntivo:2:singular; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_imperfecto.subjuntivo:3:singular; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_imperfecto.subjuntivo:1:plural; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_imperfecto.subjuntivo:2:plural; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_imperfecto.subjuntivo:3:plural; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_simple.subjuntivo:1:singular; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_simple.subjuntivo:2:singular; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_simple.subjuntivo:3:singular; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_simple.subjuntivo:1:plural; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_simple.subjuntivo:2:plural; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_simple.subjuntivo:3:plural; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_perfecto.subjuntivo:1:singular; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_perfecto.subjuntivo:2:singular; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_perfecto.subjuntivo:3:singular; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_perfecto.subjuntivo:1:plural; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_perfecto.subjuntivo:2:plural; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope. Русский совершенный вид точно передаёт завершённое hayáis superado.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_perfecto.subjuntivo:3:plural; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope. Матричный субъект заменён на естественного участника юридического утверждения; target 3:plural сохранён.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_pluscuamperfecto.subjuntivo:1:singular; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_pluscuamperfecto.subjuntivo:2:singular; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_pluscuamperfecto.subjuntivo:3:singular; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_pluscuamperfecto.subjuntivo:1:plural; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_pluscuamperfecto.subjuntivo:2:plural; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_pluscuamperfecto.subjuntivo:3:plural; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope. Независимый verifier: В результате Si-клаузы отсутствует действующее лицо: habrían elegido/«выбрали бы» не самодостаточно. Требуемый ES: «Si las baterías _ la duración prevista, los evaluadores habrían elegido nuestro proyecto. (superar)»; RU: «Если бы аккумуляторы проработали дольше расчётного времени, эксперты выбрали бы наш проект.» Исправлено по независимой проверке: добавлен явный субъект los evaluadores/эксперты и естественно передана длительность работы аккумуляторов.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_perfecto.subjuntivo:1:singular; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_perfecto.subjuntivo:2:singular; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_perfecto.subjuntivo:3:singular; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope. Независимый verifier: RU «оштрафуют» необоснованно сужает широкое será sancionada до штрафа. Требуемая RU: «В старом юридическом тексте: если окажется, что компания превысила лимит выбросов, к ней применят санкции.» Исправлено по независимой проверке: широкое será sancionada передано без необоснованного сужения до штрафа.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_perfecto.subjuntivo:1:plural; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_perfecto.subjuntivo:2:plural; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_perfecto.subjuntivo:3:plural; форма сверена с локальной authoritative-таблицей RAE, значение superar/superarse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope. Независимый verifier: RU «эксплуатацию запретят» не передаёт quedar inmovilizados — принудительное обездвиживание транспортных средств. Требуемая RU: «В старом юридическом тексте: если окажется, что транспортные средства превысили максимальную массу, их принудительно остановят.» Исправлено по независимой проверке: quedar inmovilizados передано как принудительная остановка.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "authoritative forms gap check: Jehle 0 rows; local authoritative-forms.json superar; https://dle.rae.es/superar",
+      "result": "pass",
+      "evidence": "Jehle has no superar entry. All 16×6 forms were checked against the batch RAE-derived authoritative table; official source URL recorded."
+    },
+    {
+      "command": "python3 /tmp/validate_superar.py",
+      "result": "pass",
+      "evidence": "96/96 authoritative forms; metadata/slots, one blank and four unique same-scope options with one answer passed."
+    },
+    {
+      "command": "semantic full read with answer substitution: superar 96/96",
+      "result": "pass",
+      "evidence": "All contexts read manually; surpass, overcome, exceed a limit, leave behind and reflexive self-improvement meanings distinguished with exact ES/RU subjects and causality."
+    },
+    {
+      "command": "native validate_artifact(superar); cmp; baseline identity/order/top-level; JSON; git diff --check; go test ./internal/grammartrainingpack",
+      "result": "pass",
+      "evidence": "Source=embedded; exact 16 scopes × 6 slots/order and top-level preserved; rare registers and six explicit De haberlo sabido translations checked."
+    },
+    {
+      "command": "manual post-draft refinement: seven superar cards",
+      "result": "pass",
+      "evidence": "Corrected auxiliary spelling, subject/number precision, perfect completion and natural technical/legal referents in seven contexts; target forms/options/metadata unchanged."
+    },
+    {
+      "command": "coordinator refinement: two superar cards; targeted invariants; cmp",
+      "result": "pass",
+      "evidence": "Natural legal-team subject applied to conditional 3:singular and exact collected-amount translation restored for present perfect 3:singular; target forms/options/metadata unchanged."
+    },
+    {
+      "command": "independent full-read verification: superar 96/96; /tmp/verify_superar.py; authoritative forms; cmp/baseline/fingerprint/status/integrity; native validate_artifact",
+      "result": "known_baseline",
+      "evidence": "All 96 cards read with answers substituted. Authoritative forms, metadata, one blank, four unique same-scope options, rare-register labels, six explicit De haberlo sabido translations, source=embedded and baseline identity/order/top-level passed. 91 accepted; five exact semantic/naturalness findings recorded in their question notes without source edits. Native artifact validation also passed. All five findings were subsequently corrected by the editor and accepted in the final independent recheck at fingerprint 448893067be88362176eee4434f416e129073aa6c27efbbd9b121589dc38a4ee."
+    },
+    {
+      "command": "post-verifier correction: five superar cards; exact text assertions; cmp; authoritative forms",
+      "result": "pass",
+      "evidence": "Applied all five independent-verifier replacements exactly; forms/options/metadata unchanged. The five corrected rows returned to pending while the other 91 remain ok for Aristotle recheck."
+    },
+    {
+      "command": "final independent recheck: five superar findings; exact rendered-block comparison against prior 96-card verification snapshot; fingerprint/cmp/status/integrity",
+      "result": "pass",
+      "evidence": "Exactly the five requested card blocks changed since the prior verification; all five replacements match the requested ES/RU and preserve forms/options. The other 91 rendered cards are byte-identical to the saved previous full-read snapshot. Fingerprint 448893067be88362176eee4434f416e129073aa6c27efbbd9b121589dc38a4ee and source=embedded confirmed; 96 verification rows are ok."
+    },
+    {
+      "command": "final batch barrier: check.py; preservation-check.py; native validate_artifact; go test ./internal/verbtraining ./cmd/sync_verb_training_json; grammar_review_test.py; focused grammar-review check; git diff --check; skill quick_validate.py",
+      "result": "pass",
+      "evidence": "384 final cards and 24 primary checkpoints passed against authoritative RAE forms; source/embedded and fingerprints fresh; 25594 paths preserved; Go tests and 13 grammar-review tests passed; each source reports done; root and Spanish diffs clean; skill valid."
+    }
+  ],
+  "verification_note": "Независимая проверка завершена для 96/96 карточек. Повторно проверены пять исправленных ID: естественный RU для condicional simple 1p, точный «показатель» для perfecto compuesto 3s, явные los evaluadores/«эксперты» для pluscuamperfecto subjuntivo 3p, широкое «применят санкции» и точное «принудительно остановят» для двух futuro perfecto subjuntivo. Все исправления приняты; сохранённый снимок предыдущей проверки подтверждает неизменность остальных 91 карточки. Source=embedded, текущий fingerprint подтверждён."
+}

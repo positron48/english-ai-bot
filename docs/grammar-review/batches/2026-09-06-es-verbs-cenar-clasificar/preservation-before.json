@@ -1,0 +1,26 @@
+{
+  "existing_files": 24940,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/cenar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/cenar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/cerrar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/cerrar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/clasificar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/clasificar.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-cenar-clasificar",
+    "docs/grammar-review/reports/49a6cb767a3bb00df12816b7.json",
+    "docs/grammar-review/reports/87d4225a1fcbd2eef445150b.json",
+    "docs/grammar-review/reports/6d7f1d6d4df26e0572441de7.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/cenar.json": "d48f7c90afb524a7eef708558c5b87944c6ffae7be6e0577b3d6cdfbd303f0a1",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/cenar.json": "d48f7c90afb524a7eef708558c5b87944c6ffae7be6e0577b3d6cdfbd303f0a1",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/cerrar.json": "9ba9519b43e1c05d247222edd3df3cfbab8e9b3aae5d864bdf5ee9d7a7b129c7",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/cerrar.json": "9ba9519b43e1c05d247222edd3df3cfbab8e9b3aae5d864bdf5ee9d7a7b129c7",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/clasificar.json": "c60dbedc148b4409435672fb4f30ca478d818c86f695f8af428b4114220effbb",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/clasificar.json": "c60dbedc148b4409435672fb4f30ca478d818c86f695f8af428b4114220effbb"
+  }
+}

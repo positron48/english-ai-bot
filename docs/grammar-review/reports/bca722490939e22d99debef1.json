@@ -1,0 +1,386 @@
+{
+  "version": 1,
+  "source": "courses/english-grammar/chapters/021.en.grammar.first_actions_present_simple.present_simple_statements_i/03-questions.json",
+  "source_sha256": "0292c90650b7a18562bb4faa20c568cac6ac20e6701ab71d0aab43b25c74d623",
+  "context_sha256": "138d80952a418d7528cc7c5506d62847781c48d12ba9c8c70ad49eab8554bf7e",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
+  "reviewed_at": "2026-09-04T14:12:34.492969+00:00",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
+  "questions": [
+    {
+      "id": "q1",
+      "decision": "fixed",
+      "note": "Уточнено время и конкретный глагол; исправлены типы предложений, согласование, they и неоднозначные переводы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q2",
+      "decision": "fixed",
+      "note": "Уточнено время и конкретный глагол; исправлены типы предложений, согласование, they и неоднозначные переводы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q3",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q4",
+      "decision": "fixed",
+      "note": "Уточнено время и конкретный глагол; исправлены типы предложений, согласование, they и неоднозначные переводы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q5",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q7",
+      "decision": "fixed",
+      "note": "Уточнено время и конкретный глагол; исправлены типы предложений, согласование, they и неоднозначные переводы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q8",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q9",
+      "decision": "fixed",
+      "note": "Уточнено время и конкретный глагол; исправлены типы предложений, согласование, they и неоднозначные переводы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q10",
+      "decision": "fixed",
+      "note": "Уточнено время и конкретный глагол; исправлены типы предложений, согласование, they и неоднозначные переводы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q11",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q12",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q14",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q15",
+      "decision": "fixed",
+      "note": "Уточнено время и конкретный глагол; исправлены типы предложений, согласование, they и неоднозначные переводы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q16",
+      "decision": "fixed",
+      "note": "Уточнено время и конкретный глагол; исправлены типы предложений, согласование, they и неоднозначные переводы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q17",
+      "decision": "fixed",
+      "note": "Уточнено время и конкретный глагол; исправлены типы предложений, согласование, they и неоднозначные переводы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q18",
+      "decision": "fixed",
+      "note": "Уточнено время и конкретный глагол; исправлены типы предложений, согласование, they и неоднозначные переводы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q19",
+      "decision": "fixed",
+      "note": "Уточнено время и конкретный глагол; исправлены типы предложений, согласование, they и неоднозначные переводы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q21",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q23",
+      "decision": "fixed",
+      "note": "Уточнено время и конкретный глагол; исправлены типы предложений, согласование, they и неоднозначные переводы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q24",
+      "decision": "fixed",
+      "note": "Уточнено время и конкретный глагол; исправлены типы предложений, согласование, they и неоднозначные переводы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q26",
+      "decision": "fixed",
+      "note": "Уточнены время, форма и порядок; исправлены неполный Continuous, обязательность дополнения и несколько верных ответов.",
+      "verification": "ok"
+    },
+    {
+      "id": "q27",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q28",
+      "decision": "fixed",
+      "note": "Уточнены время, форма и порядок; исправлены неполный Continuous, обязательность дополнения и несколько верных ответов.",
+      "verification": "ok"
+    },
+    {
+      "id": "q29",
+      "decision": "fixed",
+      "note": "Уточнены время, форма и порядок; исправлены неполный Continuous, обязательность дополнения и несколько верных ответов.",
+      "verification": "ok"
+    },
+    {
+      "id": "q30",
+      "decision": "fixed",
+      "note": "Уточнены время, форма и порядок; исправлены неполный Continuous, обязательность дополнения и несколько верных ответов.",
+      "verification": "ok"
+    },
+    {
+      "id": "q31",
+      "decision": "fixed",
+      "note": "Уточнены время, форма и порядок; исправлены неполный Continuous, обязательность дополнения и несколько верных ответов.",
+      "verification": "ok"
+    },
+    {
+      "id": "q32",
+      "decision": "fixed",
+      "note": "Уточнены время, форма и порядок; исправлены неполный Continuous, обязательность дополнения и несколько верных ответов.",
+      "verification": "ok"
+    },
+    {
+      "id": "q34",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q36",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q38",
+      "decision": "fixed",
+      "note": "Уточнены время, форма и порядок; исправлены неполный Continuous, обязательность дополнения и несколько верных ответов.",
+      "verification": "ok"
+    },
+    {
+      "id": "q39",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q40",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q41",
+      "decision": "fixed",
+      "note": "Уточнены время, форма и порядок; исправлены неполный Continuous, обязательность дополнения и несколько верных ответов.",
+      "verification": "ok"
+    },
+    {
+      "id": "q42",
+      "decision": "fixed",
+      "note": "Уточнены время, форма и порядок; исправлены неполный Continuous, обязательность дополнения и несколько верных ответов.",
+      "verification": "ok"
+    },
+    {
+      "id": "q43",
+      "decision": "fixed",
+      "note": "Уточнены время, форма и порядок; исправлены неполный Continuous, обязательность дополнения и несколько верных ответов.",
+      "verification": "ok"
+    },
+    {
+      "id": "q46",
+      "decision": "fixed",
+      "note": "Уточнены время, форма и порядок; исправлены неполный Continuous, обязательность дополнения и несколько верных ответов.",
+      "verification": "ok"
+    },
+    {
+      "id": "q47",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q48",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q49",
+      "decision": "fixed",
+      "note": "Уточнены время, форма и порядок; исправлены неполный Continuous, обязательность дополнения и несколько верных ответов.",
+      "verification": "ok"
+    },
+    {
+      "id": "q50",
+      "decision": "fixed",
+      "note": "Уточнены время, форма и порядок; исправлены неполный Continuous, обязательность дополнения и несколько верных ответов.",
+      "verification": "ok"
+    },
+    {
+      "id": "q51",
+      "decision": "fixed",
+      "note": "Уточнены форма, время и варианты перевода; исправлены -ies, формы -ing и ложное исключение только have.",
+      "verification": "ok"
+    },
+    {
+      "id": "q52",
+      "decision": "fixed",
+      "note": "Уточнены форма, время и варианты перевода; исправлены -ies, формы -ing и ложное исключение только have.",
+      "verification": "ok"
+    },
+    {
+      "id": "q53",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q55",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q56",
+      "decision": "fixed",
+      "note": "Уточнены форма, время и варианты перевода; исправлены -ies, формы -ing и ложное исключение только have.",
+      "verification": "ok"
+    },
+    {
+      "id": "q58",
+      "decision": "fixed",
+      "note": "Уточнены форма, время и варианты перевода; исправлены -ies, формы -ing и ложное исключение только have.",
+      "verification": "ok"
+    },
+    {
+      "id": "q59",
+      "decision": "fixed",
+      "note": "Уточнены форма, время и варианты перевода; исправлены -ies, формы -ing и ложное исключение только have.",
+      "verification": "ok"
+    },
+    {
+      "id": "q60",
+      "decision": "fixed",
+      "note": "Уточнены форма, время и варианты перевода; исправлены -ies, формы -ing и ложное исключение только have.",
+      "verification": "ok"
+    },
+    {
+      "id": "q61",
+      "decision": "fixed",
+      "note": "Уточнены форма, время и варианты перевода; исправлены -ies, формы -ing и ложное исключение только have.",
+      "verification": "ok"
+    },
+    {
+      "id": "q62",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q63",
+      "decision": "fixed",
+      "note": "Уточнены форма, время и варианты перевода; исправлены -ies, формы -ing и ложное исключение только have.",
+      "verification": "ok"
+    },
+    {
+      "id": "q64",
+      "decision": "fixed",
+      "note": "Уточнены форма, время и варианты перевода; исправлены -ies, формы -ing и ложное исключение только have.",
+      "verification": "ok"
+    },
+    {
+      "id": "q66",
+      "decision": "fixed",
+      "note": "Уточнены форма, время и варианты перевода; исправлены -ies, формы -ing и ложное исключение только have.",
+      "verification": "ok"
+    },
+    {
+      "id": "q67",
+      "decision": "fixed",
+      "note": "Уточнены форма, время и варианты перевода; исправлены -ies, формы -ing и ложное исключение только have.",
+      "verification": "ok"
+    },
+    {
+      "id": "q68",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-04-en019-022/check.py",
+      "result": "pass",
+      "evidence": "All 447 IDs/contracts, question decisions versus baseline, fingerprints, native training validation, signatures and source-final-embedded equality; validation.log."
+    },
+    {
+      "command": "go test ./internal/grammarbundle ./internal/repository -run 'TestValidateEmbeddedBundleID|TestGrammar.*Bundle|TestGrammar.*Reorder' -count=1",
+      "result": "pass",
+      "evidence": "Both packages passed on the final integrated data; go-tests.log."
+    },
+    {
+      "command": "git diff --check; git -C courses/spanish-grammar diff --check; git -C courses/english-grammar diff --check",
+      "result": "pass",
+      "evidence": "Three separately executed commands exit 0; diff-check.log. All 544 earlier dirty files outside review docs preserved; preservation.log."
+    },
+    {
+      "command": "cd courses/english-grammar && bash scripts/assemble-chapter.sh 021.en.grammar.first_actions_present_simple.present_simple_statements_i",
+      "result": "pass",
+      "evidence": "021-assemble.log: exit 0."
+    },
+    {
+      "command": "cd courses/english-grammar && bash scripts/validate-chapter.sh 021.en.grammar.first_actions_present_simple.present_simple_statements_i",
+      "result": "pass",
+      "evidence": "021-chapter-after.log: exit 0."
+    },
+    {
+      "command": "cd courses/english-grammar && ajv validate --spec=draft2020 --validate-formats=false --all-errors -s 02-chapter-schema.json -d chapters/021.en.grammar.first_actions_present_simple.present_simple_statements_i/05-final.json",
+      "result": "pass",
+      "evidence": "021-schema-after.log: exit 0."
+    },
+    {
+      "command": "cd courses/english-grammar && ajv validate -s 02-chapter-schema.json -d chapters/021.en.grammar.first_actions_present_simple.present_simple_statements_i/05-final.json",
+      "result": "known_baseline",
+      "evidence": "021-assembler-ajv-before.log and 021-assembler-ajv-after.log are byte-identical, exit 1: no draft2020 meta-schema selected. Explicit draft2020 validation passes."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    }
+  ],
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+}

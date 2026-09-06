@@ -1,0 +1,81 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/chapters/041/es.03.b3_theory_estar_gerundio_ongoing_temporary_process.questions.json",
+  "source_sha256": "d8ab06d56bf1d7f8a6e9d6dd311d2a0398aecdd2d9caa4a996b1e3b7f914174f",
+  "context_sha256": "8bc4e8c5a6924ed23abcc7bebb8c364d46aefe08f35617eea12cbc088461a038",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
+  "reviewed_at": "2026-09-04T18:09:34.433544+00:00",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
+  "questions": [
+    {
+      "id": "q1",
+      "decision": "fixed",
+      "note": "Уточнена форма вместо исключительного смысла; устранены два равнозначных перевода mientras и ложные утверждения о profession/temp/current.",
+      "verification": "ok"
+    },
+    {
+      "id": "q2",
+      "decision": "fixed",
+      "note": "Уточнена форма вместо исключительного смысла; устранены два равнозначных перевода mientras и ложные утверждения о profession/temp/current.",
+      "verification": "ok"
+    },
+    {
+      "id": "q3",
+      "decision": "fixed",
+      "note": "Уточнена форма вместо исключительного смысла; устранены два равнозначных перевода mientras и ложные утверждения о profession/temp/current.",
+      "verification": "ok"
+    },
+    {
+      "id": "q4",
+      "decision": "fixed",
+      "note": "Уточнена форма вместо исключительного смысла; устранены два равнозначных перевода mientras и ложные утверждения о profession/temp/current.",
+      "verification": "ok"
+    },
+    {
+      "id": "q5",
+      "decision": "fixed",
+      "note": "Уточнена форма вместо исключительного смысла; устранены два равнозначных перевода mientras и ложные утверждения о profession/temp/current.",
+      "verification": "ok"
+    },
+    {
+      "id": "q6",
+      "decision": "fixed",
+      "note": "Уточнена форма вместо исключительного смысла; устранены два равнозначных перевода mientras и ложные утверждения о profession/temp/current.",
+      "verification": "ok"
+    },
+    {
+      "id": "q7",
+      "decision": "fixed",
+      "note": "Уточнена форма вместо исключительного смысла; устранены два равнозначных перевода mientras и ложные утверждения о profession/temp/current.",
+      "verification": "ok"
+    },
+    {
+      "id": "q8",
+      "decision": "fixed",
+      "note": "Уточнена форма вместо исключительного смысла; устранены два равнозначных перевода mientras и ложные утверждения о profession/temp/current.",
+      "verification": "ok"
+    },
+    {
+      "id": "q9",
+      "decision": "fixed",
+      "note": "Уточнена форма вместо исключительного смысла; устранены два равнозначных перевода mientras и ложные утверждения о profession/temp/current.",
+      "verification": "ok"
+    },
+    {
+      "id": "q10",
+      "decision": "fixed",
+      "note": "Уточнена форма вместо исключительного смысла; устранены два равнозначных перевода mientras и ложные утверждения о profession/temp/current.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    }
+  ],
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+}

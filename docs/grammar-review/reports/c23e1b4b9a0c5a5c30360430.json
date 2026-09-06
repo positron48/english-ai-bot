@@ -1,0 +1,326 @@
+{
+  "version": 1,
+  "source": "courses/english-grammar/chapters/038.en.grammar.past_1_past_simple.negatives_didn_t_v1/03-questions.json",
+  "source_sha256": "696a2731cdf22cdb90b7759f0877b2ed1dd38380c619c09bb695c8aba0d812f8",
+  "context_sha256": "0668aee669641473d6ed096193ec6a404e53f66d36134d411a1974e7c712b302",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
+  "reviewed_at": "2026-09-04T17:15:49.604151+00:00",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
+  "questions": [
+    {
+      "id": "q1",
+      "decision": "fixed",
+      "note": "Исправлены feedback и формула отрицания, уточнены смысл/время, допустимое really и сокращение без запрета полной формы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q2",
+      "decision": "fixed",
+      "note": "Исправлены feedback и формула отрицания, уточнены смысл/время, допустимое really и сокращение без запрета полной формы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q3",
+      "decision": "fixed",
+      "note": "Исправлены feedback и формула отрицания, уточнены смысл/время, допустимое really и сокращение без запрета полной формы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q5",
+      "decision": "fixed",
+      "note": "Исправлены feedback и формула отрицания, уточнены смысл/время, допустимое really и сокращение без запрета полной формы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q6",
+      "decision": "fixed",
+      "note": "Исправлены feedback и формула отрицания, уточнены смысл/время, допустимое really и сокращение без запрета полной формы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q7",
+      "decision": "fixed",
+      "note": "Исправлены feedback и формула отрицания, уточнены смысл/время, допустимое really и сокращение без запрета полной формы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q8",
+      "decision": "fixed",
+      "note": "Исправлены feedback и формула отрицания, уточнены смысл/время, допустимое really и сокращение без запрета полной формы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q10",
+      "decision": "fixed",
+      "note": "Исправлены feedback и формула отрицания, уточнены смысл/время, допустимое really и сокращение без запрета полной формы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q12",
+      "decision": "ok",
+      "note": "Базовая форма после didn’t, значение и ключ согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q13",
+      "decision": "fixed",
+      "note": "Исправлены feedback и формула отрицания, уточнены смысл/время, допустимое really и сокращение без запрета полной формы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q14",
+      "decision": "ok",
+      "note": "Базовая форма после didn’t, значение и ключ согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q16",
+      "decision": "ok",
+      "note": "Базовая форма после didn’t, значение и ключ согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q17",
+      "decision": "fixed",
+      "note": "Исправлены feedback и формула отрицания, уточнены смысл/время, допустимое really и сокращение без запрета полной формы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q18",
+      "decision": "fixed",
+      "note": "Исправлены feedback и формула отрицания, уточнены смысл/время, допустимое really и сокращение без запрета полной формы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q19",
+      "decision": "fixed",
+      "note": "Исправлены feedback и формула отрицания, уточнены смысл/время, допустимое really и сокращение без запрета полной формы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q22",
+      "decision": "ok",
+      "note": "Базовая форма после didn’t, значение и ключ согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q23",
+      "decision": "ok",
+      "note": "Базовая форма после didn’t, значение и ключ согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q24",
+      "decision": "ok",
+      "note": "Базовая форма после didn’t, значение и ключ согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q25",
+      "decision": "ok",
+      "note": "Базовая форма после didn’t, значение и ключ согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q26",
+      "decision": "fixed",
+      "note": "Исправлены feedback и формула отрицания, уточнены смысл/время, допустимое really и сокращение без запрета полной формы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q27",
+      "decision": "fixed",
+      "note": "Уточнены смысл и порядок наречий без запрета альтернатив, сокращение be и формы ответов; убраны буквенные ссылки.",
+      "verification": "ok"
+    },
+    {
+      "id": "q29",
+      "decision": "fixed",
+      "note": "Уточнены смысл и порядок наречий без запрета альтернатив, сокращение be и формы ответов; убраны буквенные ссылки.",
+      "verification": "ok"
+    },
+    {
+      "id": "q30",
+      "decision": "ok",
+      "note": "Отрицательная форма, смысл и ключ корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q31",
+      "decision": "ok",
+      "note": "Отрицательная форма, смысл и ключ корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q32",
+      "decision": "fixed",
+      "note": "Уточнены смысл и порядок наречий без запрета альтернатив, сокращение be и формы ответов; убраны буквенные ссылки.",
+      "verification": "ok"
+    },
+    {
+      "id": "q33",
+      "decision": "fixed",
+      "note": "Уточнены смысл и порядок наречий без запрета альтернатив, сокращение be и формы ответов; убраны буквенные ссылки.",
+      "verification": "ok"
+    },
+    {
+      "id": "q35",
+      "decision": "fixed",
+      "note": "Уточнены смысл и порядок наречий без запрета альтернатив, сокращение be и формы ответов; убраны буквенные ссылки.",
+      "verification": "ok"
+    },
+    {
+      "id": "q36",
+      "decision": "fixed",
+      "note": "Уточнены смысл и порядок наречий без запрета альтернатив, сокращение be и формы ответов; убраны буквенные ссылки.",
+      "verification": "ok"
+    },
+    {
+      "id": "q37",
+      "decision": "fixed",
+      "note": "Уточнены смысл и порядок наречий без запрета альтернатив, сокращение be и формы ответов; убраны буквенные ссылки.",
+      "verification": "ok"
+    },
+    {
+      "id": "q39",
+      "decision": "ok",
+      "note": "Отрицательная форма, смысл и ключ корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q40",
+      "decision": "fixed",
+      "note": "Уточнены смысл и порядок наречий без запрета альтернатив, сокращение be и формы ответов; убраны буквенные ссылки.",
+      "verification": "ok"
+    },
+    {
+      "id": "q42",
+      "decision": "fixed",
+      "note": "Уточнены смысл и порядок наречий без запрета альтернатив, сокращение be и формы ответов; убраны буквенные ссылки.",
+      "verification": "ok"
+    },
+    {
+      "id": "q43",
+      "decision": "fixed",
+      "note": "Уточнены смысл и порядок наречий без запрета альтернатив, сокращение be и формы ответов; убраны буквенные ссылки.",
+      "verification": "ok"
+    },
+    {
+      "id": "q44",
+      "decision": "ok",
+      "note": "Отрицательная форма, смысл и ключ корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q45",
+      "decision": "fixed",
+      "note": "Уточнены смысл и порядок наречий без запрета альтернатив, сокращение be и формы ответов; убраны буквенные ссылки.",
+      "verification": "ok"
+    },
+    {
+      "id": "q47",
+      "decision": "fixed",
+      "note": "Уточнены смысл и порядок наречий без запрета альтернатив, сокращение be и формы ответов; убраны буквенные ссылки.",
+      "verification": "ok"
+    },
+    {
+      "id": "q48",
+      "decision": "fixed",
+      "note": "Уточнены смысл и порядок наречий без запрета альтернатив, сокращение be и формы ответов; убраны буквенные ссылки.",
+      "verification": "ok"
+    },
+    {
+      "id": "q49",
+      "decision": "ok",
+      "note": "Отрицательная форма, смысл и ключ корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q51",
+      "decision": "ok",
+      "note": "Отрицательная форма, смысл и ключ корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q52",
+      "decision": "fixed",
+      "note": "Уточнены смысл и порядок наречий без запрета альтернатив, сокращение be и формы ответов; убраны буквенные ссылки.",
+      "verification": "ok"
+    },
+    {
+      "id": "q53",
+      "decision": "ok",
+      "note": "Отрицание с be, согласование и ключ корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q54",
+      "decision": "fixed",
+      "note": "Уточнены время и сокращённая форма be; убрана ссылка на букву ответа и неточное противопоставление have.",
+      "verification": "ok"
+    },
+    {
+      "id": "q56",
+      "decision": "ok",
+      "note": "Отрицание с be, согласование и ключ корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q58",
+      "decision": "fixed",
+      "note": "Уточнены время и сокращённая форма be; убрана ссылка на букву ответа и неточное противопоставление have.",
+      "verification": "ok"
+    },
+    {
+      "id": "q59",
+      "decision": "fixed",
+      "note": "Уточнены время и сокращённая форма be; убрана ссылка на букву ответа и неточное противопоставление have.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-04-en035-038/check.py",
+      "result": "pass",
+      "evidence": "All 420 IDs/contracts, decisions versus clean pre-batch HEAD, fingerprints, native training validation, signatures and source-final-embedded equality; validation.log."
+    },
+    {
+      "command": "go test ./internal/grammarbundle ./internal/repository -run 'TestValidateEmbeddedBundleID|TestGrammar.*Bundle|TestGrammar.*Reorder' -count=1",
+      "result": "pass",
+      "evidence": "Both packages passed on final integrated data; go-tests.log."
+    },
+    {
+      "command": "git diff --check; git -C courses/spanish-grammar diff --check; git -C courses/english-grammar diff --check",
+      "result": "pass",
+      "evidence": "Three separately executed commands exit 0; diff-check.log. All 986 earlier dirty files outside review docs preserved; preservation.log."
+    },
+    {
+      "command": "cd courses/english-grammar && bash scripts/assemble-chapter.sh 038.en.grammar.past_1_past_simple.negatives_didn_t_v1",
+      "result": "pass",
+      "evidence": "038-assemble.log: exit 0."
+    },
+    {
+      "command": "cd courses/english-grammar && bash scripts/validate-chapter.sh 038.en.grammar.past_1_past_simple.negatives_didn_t_v1",
+      "result": "pass",
+      "evidence": "038-chapter-after.log: exit 0."
+    },
+    {
+      "command": "cd courses/english-grammar && ajv validate --spec=draft2020 --validate-formats=false --all-errors -s 02-chapter-schema.json -d chapters/038.en.grammar.past_1_past_simple.negatives_didn_t_v1/05-final.json",
+      "result": "pass",
+      "evidence": "038-schema-after.log: exit 0."
+    },
+    {
+      "command": "cd courses/english-grammar && ajv validate -s 02-chapter-schema.json -d chapters/038.en.grammar.past_1_past_simple.negatives_didn_t_v1/05-final.json",
+      "result": "known_baseline",
+      "evidence": "038-assembler-ajv-before.log and 038-assembler-ajv-after.log are byte-identical, exit 1: no draft2020 meta-schema selected. Explicit draft2020 validation passes."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    }
+  ],
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+}

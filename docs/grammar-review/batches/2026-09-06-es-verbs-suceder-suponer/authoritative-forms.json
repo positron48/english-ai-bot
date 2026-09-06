@@ -1,0 +1,538 @@
+{
+  "_sources": {
+    "suceder": "https://dle.rae.es/suceder",
+    "sufrir": "https://dle.rae.es/sufrir",
+    "superar": "https://dle.rae.es/superar",
+    "suponer": "https://dle.rae.es/suponer"
+  },
+  "_slots": [
+    "1:singular",
+    "2:singular",
+    "3:singular",
+    "1:plural",
+    "2:plural",
+    "3:plural"
+  ],
+  "forms": {
+    "suceder": {
+      "es.presente.indicativo": [
+        "sucedo",
+        "sucedes",
+        "sucede",
+        "sucedemos",
+        "sucedéis",
+        "suceden"
+      ],
+      "es.preterito_imperfecto.indicativo": [
+        "sucedía",
+        "sucedías",
+        "sucedía",
+        "sucedíamos",
+        "sucedíais",
+        "sucedían"
+      ],
+      "es.preterito_indefinido.indicativo": [
+        "sucedí",
+        "sucediste",
+        "sucedió",
+        "sucedimos",
+        "sucedisteis",
+        "sucedieron"
+      ],
+      "es.futuro_simple.indicativo": [
+        "sucederé",
+        "sucederás",
+        "sucederá",
+        "sucederemos",
+        "sucederéis",
+        "sucederán"
+      ],
+      "es.condicional_simple.indicativo": [
+        "sucedería",
+        "sucederías",
+        "sucedería",
+        "sucederíamos",
+        "sucederíais",
+        "sucederían"
+      ],
+      "es.preterito_perfecto_compuesto.indicativo": [
+        "he sucedido",
+        "has sucedido",
+        "ha sucedido",
+        "hemos sucedido",
+        "habéis sucedido",
+        "han sucedido"
+      ],
+      "es.preterito_pluscuamperfecto.indicativo": [
+        "había sucedido",
+        "habías sucedido",
+        "había sucedido",
+        "habíamos sucedido",
+        "habíais sucedido",
+        "habían sucedido"
+      ],
+      "es.preterito_anterior.indicativo": [
+        "hube sucedido",
+        "hubiste sucedido",
+        "hubo sucedido",
+        "hubimos sucedido",
+        "hubisteis sucedido",
+        "hubieron sucedido"
+      ],
+      "es.futuro_perfecto.indicativo": [
+        "habré sucedido",
+        "habrás sucedido",
+        "habrá sucedido",
+        "habremos sucedido",
+        "habréis sucedido",
+        "habrán sucedido"
+      ],
+      "es.condicional_perfecto.indicativo": [
+        "habría sucedido",
+        "habrías sucedido",
+        "habría sucedido",
+        "habríamos sucedido",
+        "habríais sucedido",
+        "habrían sucedido"
+      ],
+      "es.presente.subjuntivo": [
+        "suceda",
+        "sucedas",
+        "suceda",
+        "sucedamos",
+        "sucedáis",
+        "sucedan"
+      ],
+      "es.preterito_imperfecto.subjuntivo": [
+        "sucediera",
+        "sucedieras",
+        "sucediera",
+        "sucediéramos",
+        "sucedierais",
+        "sucedieran"
+      ],
+      "es.futuro_simple.subjuntivo": [
+        "sucediere",
+        "sucedieres",
+        "sucediere",
+        "sucediéremos",
+        "sucediereis",
+        "sucedieren"
+      ],
+      "es.preterito_perfecto.subjuntivo": [
+        "haya sucedido",
+        "hayas sucedido",
+        "haya sucedido",
+        "hayamos sucedido",
+        "hayáis sucedido",
+        "hayan sucedido"
+      ],
+      "es.preterito_pluscuamperfecto.subjuntivo": [
+        "hubiera sucedido",
+        "hubieras sucedido",
+        "hubiera sucedido",
+        "hubiéramos sucedido",
+        "hubierais sucedido",
+        "hubieran sucedido"
+      ],
+      "es.futuro_perfecto.subjuntivo": [
+        "hubiere sucedido",
+        "hubieres sucedido",
+        "hubiere sucedido",
+        "hubiéremos sucedido",
+        "hubiereis sucedido",
+        "hubieren sucedido"
+      ]
+    },
+    "sufrir": {
+      "es.presente.indicativo": [
+        "sufro",
+        "sufres",
+        "sufre",
+        "sufrimos",
+        "sufrís",
+        "sufren"
+      ],
+      "es.preterito_imperfecto.indicativo": [
+        "sufría",
+        "sufrías",
+        "sufría",
+        "sufríamos",
+        "sufríais",
+        "sufrían"
+      ],
+      "es.preterito_indefinido.indicativo": [
+        "sufrí",
+        "sufriste",
+        "sufrió",
+        "sufrimos",
+        "sufristeis",
+        "sufrieron"
+      ],
+      "es.futuro_simple.indicativo": [
+        "sufriré",
+        "sufrirás",
+        "sufrirá",
+        "sufriremos",
+        "sufriréis",
+        "sufrirán"
+      ],
+      "es.condicional_simple.indicativo": [
+        "sufriría",
+        "sufrirías",
+        "sufriría",
+        "sufriríamos",
+        "sufriríais",
+        "sufrirían"
+      ],
+      "es.preterito_perfecto_compuesto.indicativo": [
+        "he sufrido",
+        "has sufrido",
+        "ha sufrido",
+        "hemos sufrido",
+        "habéis sufrido",
+        "han sufrido"
+      ],
+      "es.preterito_pluscuamperfecto.indicativo": [
+        "había sufrido",
+        "habías sufrido",
+        "había sufrido",
+        "habíamos sufrido",
+        "habíais sufrido",
+        "habían sufrido"
+      ],
+      "es.preterito_anterior.indicativo": [
+        "hube sufrido",
+        "hubiste sufrido",
+        "hubo sufrido",
+        "hubimos sufrido",
+        "hubisteis sufrido",
+        "hubieron sufrido"
+      ],
+      "es.futuro_perfecto.indicativo": [
+        "habré sufrido",
+        "habrás sufrido",
+        "habrá sufrido",
+        "habremos sufrido",
+        "habréis sufrido",
+        "habrán sufrido"
+      ],
+      "es.condicional_perfecto.indicativo": [
+        "habría sufrido",
+        "habrías sufrido",
+        "habría sufrido",
+        "habríamos sufrido",
+        "habríais sufrido",
+        "habrían sufrido"
+      ],
+      "es.presente.subjuntivo": [
+        "sufra",
+        "sufras",
+        "sufra",
+        "suframos",
+        "sufráis",
+        "sufran"
+      ],
+      "es.preterito_imperfecto.subjuntivo": [
+        "sufriera",
+        "sufrieras",
+        "sufriera",
+        "sufriéramos",
+        "sufrierais",
+        "sufrieran"
+      ],
+      "es.futuro_simple.subjuntivo": [
+        "sufriere",
+        "sufrieres",
+        "sufriere",
+        "sufriéremos",
+        "sufriereis",
+        "sufrieren"
+      ],
+      "es.preterito_perfecto.subjuntivo": [
+        "haya sufrido",
+        "hayas sufrido",
+        "haya sufrido",
+        "hayamos sufrido",
+        "hayáis sufrido",
+        "hayan sufrido"
+      ],
+      "es.preterito_pluscuamperfecto.subjuntivo": [
+        "hubiera sufrido",
+        "hubieras sufrido",
+        "hubiera sufrido",
+        "hubiéramos sufrido",
+        "hubierais sufrido",
+        "hubieran sufrido"
+      ],
+      "es.futuro_perfecto.subjuntivo": [
+        "hubiere sufrido",
+        "hubieres sufrido",
+        "hubiere sufrido",
+        "hubiéremos sufrido",
+        "hubiereis sufrido",
+        "hubieren sufrido"
+      ]
+    },
+    "superar": {
+      "es.presente.indicativo": [
+        "supero",
+        "superas",
+        "supera",
+        "superamos",
+        "superáis",
+        "superan"
+      ],
+      "es.preterito_imperfecto.indicativo": [
+        "superaba",
+        "superabas",
+        "superaba",
+        "superábamos",
+        "superabais",
+        "superaban"
+      ],
+      "es.preterito_indefinido.indicativo": [
+        "superé",
+        "superaste",
+        "superó",
+        "superamos",
+        "superasteis",
+        "superaron"
+      ],
+      "es.futuro_simple.indicativo": [
+        "superaré",
+        "superarás",
+        "superará",
+        "superaremos",
+        "superaréis",
+        "superarán"
+      ],
+      "es.condicional_simple.indicativo": [
+        "superaría",
+        "superarías",
+        "superaría",
+        "superaríamos",
+        "superaríais",
+        "superarían"
+      ],
+      "es.preterito_perfecto_compuesto.indicativo": [
+        "he superado",
+        "has superado",
+        "ha superado",
+        "hemos superado",
+        "habéis superado",
+        "han superado"
+      ],
+      "es.preterito_pluscuamperfecto.indicativo": [
+        "había superado",
+        "habías superado",
+        "había superado",
+        "habíamos superado",
+        "habíais superado",
+        "habían superado"
+      ],
+      "es.preterito_anterior.indicativo": [
+        "hube superado",
+        "hubiste superado",
+        "hubo superado",
+        "hubimos superado",
+        "hubisteis superado",
+        "hubieron superado"
+      ],
+      "es.futuro_perfecto.indicativo": [
+        "habré superado",
+        "habrás superado",
+        "habrá superado",
+        "habremos superado",
+        "habréis superado",
+        "habrán superado"
+      ],
+      "es.condicional_perfecto.indicativo": [
+        "habría superado",
+        "habrías superado",
+        "habría superado",
+        "habríamos superado",
+        "habríais superado",
+        "habrían superado"
+      ],
+      "es.presente.subjuntivo": [
+        "supere",
+        "superes",
+        "supere",
+        "superemos",
+        "superéis",
+        "superen"
+      ],
+      "es.preterito_imperfecto.subjuntivo": [
+        "superara",
+        "superaras",
+        "superara",
+        "superáramos",
+        "superarais",
+        "superaran"
+      ],
+      "es.futuro_simple.subjuntivo": [
+        "superare",
+        "superares",
+        "superare",
+        "superáremos",
+        "superareis",
+        "superaren"
+      ],
+      "es.preterito_perfecto.subjuntivo": [
+        "haya superado",
+        "hayas superado",
+        "haya superado",
+        "hayamos superado",
+        "hayáis superado",
+        "hayan superado"
+      ],
+      "es.preterito_pluscuamperfecto.subjuntivo": [
+        "hubiera superado",
+        "hubieras superado",
+        "hubiera superado",
+        "hubiéramos superado",
+        "hubierais superado",
+        "hubieran superado"
+      ],
+      "es.futuro_perfecto.subjuntivo": [
+        "hubiere superado",
+        "hubieres superado",
+        "hubiere superado",
+        "hubiéremos superado",
+        "hubiereis superado",
+        "hubieren superado"
+      ]
+    },
+    "suponer": {
+      "es.presente.indicativo": [
+        "supongo",
+        "supones",
+        "supone",
+        "suponemos",
+        "suponéis",
+        "suponen"
+      ],
+      "es.preterito_imperfecto.indicativo": [
+        "suponía",
+        "suponías",
+        "suponía",
+        "suponíamos",
+        "suponíais",
+        "suponían"
+      ],
+      "es.preterito_indefinido.indicativo": [
+        "supuse",
+        "supusiste",
+        "supuso",
+        "supusimos",
+        "supusisteis",
+        "supusieron"
+      ],
+      "es.futuro_simple.indicativo": [
+        "supondré",
+        "supondrás",
+        "supondrá",
+        "supondremos",
+        "supondréis",
+        "supondrán"
+      ],
+      "es.condicional_simple.indicativo": [
+        "supondría",
+        "supondrías",
+        "supondría",
+        "supondríamos",
+        "supondríais",
+        "supondrían"
+      ],
+      "es.preterito_perfecto_compuesto.indicativo": [
+        "he supuesto",
+        "has supuesto",
+        "ha supuesto",
+        "hemos supuesto",
+        "habéis supuesto",
+        "han supuesto"
+      ],
+      "es.preterito_pluscuamperfecto.indicativo": [
+        "había supuesto",
+        "habías supuesto",
+        "había supuesto",
+        "habíamos supuesto",
+        "habíais supuesto",
+        "habían supuesto"
+      ],
+      "es.preterito_anterior.indicativo": [
+        "hube supuesto",
+        "hubiste supuesto",
+        "hubo supuesto",
+        "hubimos supuesto",
+        "hubisteis supuesto",
+        "hubieron supuesto"
+      ],
+      "es.futuro_perfecto.indicativo": [
+        "habré supuesto",
+        "habrás supuesto",
+        "habrá supuesto",
+        "habremos supuesto",
+        "habréis supuesto",
+        "habrán supuesto"
+      ],
+      "es.condicional_perfecto.indicativo": [
+        "habría supuesto",
+        "habrías supuesto",
+        "habría supuesto",
+        "habríamos supuesto",
+        "habríais supuesto",
+        "habrían supuesto"
+      ],
+      "es.presente.subjuntivo": [
+        "suponga",
+        "supongas",
+        "suponga",
+        "supongamos",
+        "supongáis",
+        "supongan"
+      ],
+      "es.preterito_imperfecto.subjuntivo": [
+        "supusiera",
+        "supusieras",
+        "supusiera",
+        "supusiéramos",
+        "supusierais",
+        "supusieran"
+      ],
+      "es.futuro_simple.subjuntivo": [
+        "supusiere",
+        "supusieres",
+        "supusiere",
+        "supusiéremos",
+        "supusiereis",
+        "supusieren"
+      ],
+      "es.preterito_perfecto.subjuntivo": [
+        "haya supuesto",
+        "hayas supuesto",
+        "haya supuesto",
+        "hayamos supuesto",
+        "hayáis supuesto",
+        "hayan supuesto"
+      ],
+      "es.preterito_pluscuamperfecto.subjuntivo": [
+        "hubiera supuesto",
+        "hubieras supuesto",
+        "hubiera supuesto",
+        "hubiéramos supuesto",
+        "hubierais supuesto",
+        "hubieran supuesto"
+      ],
+      "es.futuro_perfecto.subjuntivo": [
+        "hubiere supuesto",
+        "hubieres supuesto",
+        "hubiere supuesto",
+        "hubiéremos supuesto",
+        "hubiereis supuesto",
+        "hubieren supuesto"
+      ]
+    }
+  }
+}

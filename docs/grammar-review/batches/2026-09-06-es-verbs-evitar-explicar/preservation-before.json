@@ -1,0 +1,31 @@
+{
+  "existing_files": 25170,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/evitar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/evitar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/exigir.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/exigir.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/existir.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/existir.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/explicar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/explicar.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-evitar-explicar",
+    "docs/grammar-review/reports/3ff0d53a56cbfcfe33258dcd.json",
+    "docs/grammar-review/reports/7702d4da16d3a6505528ae88.json",
+    "docs/grammar-review/reports/eeda9eb2e86ae464c9282b47.json",
+    "docs/grammar-review/reports/dc5d2bd4cc35095117e6e664.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/evitar.json": "58f56e70572787472b2f9d9ae3533e99e3f0fceb0f043f47ff3e3775b9e9983a",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/evitar.json": "58f56e70572787472b2f9d9ae3533e99e3f0fceb0f043f47ff3e3775b9e9983a",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/exigir.json": "bc1af2787b3f98b3be7200bb7af018209de6a79310f798f6d6844bfd7e23e17c",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/exigir.json": "bc1af2787b3f98b3be7200bb7af018209de6a79310f798f6d6844bfd7e23e17c",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/existir.json": "0688b7b46c9d2a12ed0a1aecee66e87fdae34df3b7f671710248267b6fd21eb3",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/existir.json": "0688b7b46c9d2a12ed0a1aecee66e87fdae34df3b7f671710248267b6fd21eb3",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/explicar.json": "acdb63c866484102bf8612f8ebafb3782d2cb25c9fcdbc51377ce3b210ece690",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/explicar.json": "acdb63c866484102bf8612f8ebafb3782d2cb25c9fcdbc51377ce3b210ece690"
+  }
+}

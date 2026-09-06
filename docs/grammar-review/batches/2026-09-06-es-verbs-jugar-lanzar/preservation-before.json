@@ -1,0 +1,31 @@
+{
+  "existing_files": 25260,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/jugar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/jugar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/juzgar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/juzgar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/lamentar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/lamentar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/lanzar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/lanzar.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-jugar-lanzar",
+    "docs/grammar-review/reports/54b8357eca06c8b0a5fb97c5.json",
+    "docs/grammar-review/reports/3805804feb156e44cf1becd1.json",
+    "docs/grammar-review/reports/3ffb2cd17f38aadf71ef265c.json",
+    "docs/grammar-review/reports/4f0b2e4ad28159195c24448e.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/jugar.json": "20368007c8097f3be83613d7d31893c09356999691ea4aa5251faa50741bcb5c",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/jugar.json": "20368007c8097f3be83613d7d31893c09356999691ea4aa5251faa50741bcb5c",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/juzgar.json": "d973912286a2c3cbf9340e850678bd3b234a234db9c349b9c578e07f60c861e3",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/juzgar.json": "d973912286a2c3cbf9340e850678bd3b234a234db9c349b9c578e07f60c861e3",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/lamentar.json": "b47cc5254d722e74c38cbd153392b79e0c488e5486b7ebb7ecc3207125bd2267",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/lamentar.json": "b47cc5254d722e74c38cbd153392b79e0c488e5486b7ebb7ecc3207125bd2267",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/lanzar.json": "a8d0e599022ed968457f9175fb4c55d0c6c9c29e8fa9fc2d6d58163c11db5c96",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/lanzar.json": "a8d0e599022ed968457f9175fb4c55d0c6c9c29e8fa9fc2d6d58163c11db5c96"
+  }
+}

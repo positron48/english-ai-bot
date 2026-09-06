@@ -1,0 +1,31 @@
+{
+  "existing_files": 25359,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/pagar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/pagar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/parar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/parar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/parecer.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/parecer.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/participar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/participar.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-pagar-participar",
+    "docs/grammar-review/reports/341b209c51a2dd735d805dba.json",
+    "docs/grammar-review/reports/4c38d6bf26ca1d6c500d25c6.json",
+    "docs/grammar-review/reports/e43952104c2f2a9e0236fd2d.json",
+    "docs/grammar-review/reports/39ca6055468fcee4895fa22f.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/pagar.json": "3bf4f1d3bcf874d43d7eed999499c24025ed550faa1c4c765b8baadeaf488ac0",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/pagar.json": "3bf4f1d3bcf874d43d7eed999499c24025ed550faa1c4c765b8baadeaf488ac0",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/parar.json": "69dd1068f664ca0be47b3f88bb9aaa9282832b2b9eacea597f3bb7612ffe0790",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/parar.json": "69dd1068f664ca0be47b3f88bb9aaa9282832b2b9eacea597f3bb7612ffe0790",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/parecer.json": "3828cd5567044c3783e899ce0f6facc963655e21761c589783bb4cdbfbca0e5b",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/parecer.json": "3828cd5567044c3783e899ce0f6facc963655e21761c589783bb4cdbfbca0e5b",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/participar.json": "27d56a4478bee5e73e389a5e08ef7c02e1c04b038144ecabe879555f139a78d0",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/participar.json": "27d56a4478bee5e73e389a5e08ef7c02e1c04b038144ecabe879555f139a78d0"
+  }
+}

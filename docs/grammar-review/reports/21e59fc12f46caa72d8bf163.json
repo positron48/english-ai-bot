@@ -1,0 +1,416 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/chapters/015.es.grammar.first_sentences_ser_pronouns.forms_address_tu_usted_ustedes_vosotros_register/03-questions.json",
+  "source_sha256": "68b2dd2021c36311d2f6a7f224eef951817741f7918f1f3c793d84a42c383c8b",
+  "context_sha256": "ed4412f0d6af995f2ef854edaeeef45df4abdd15503672c48b7ce44a817d9a8d",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
+  "reviewed_at": "2026-09-04T13:01:25.401986+00:00",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
+  "questions": [
+    {
+      "id": "q1",
+      "decision": "fixed",
+      "note": "Уточнены регион, состав группы и адресат; señora не объявлено безусловным требованием usted, сохранены допустимые варианты обращения.",
+      "verification": "ok"
+    },
+    {
+      "id": "q2",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q3",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q4",
+      "decision": "fixed",
+      "note": "Уточнены регион, состав группы и адресат; señora не объявлено безусловным требованием usted, сохранены допустимые варианты обращения.",
+      "verification": "ok"
+    },
+    {
+      "id": "q5",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q6",
+      "decision": "fixed",
+      "note": "Уточнены регион, состав группы и адресат; señora не объявлено безусловным требованием usted, сохранены допустимые варианты обращения.",
+      "verification": "ok"
+    },
+    {
+      "id": "q7",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q8",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q9",
+      "decision": "fixed",
+      "note": "Уточнены регион, состав группы и адресат; señora не объявлено безусловным требованием usted, сохранены допустимые варианты обращения.",
+      "verification": "ok"
+    },
+    {
+      "id": "q10",
+      "decision": "fixed",
+      "note": "Уточнены регион, состав группы и адресат; señora не объявлено безусловным требованием usted, сохранены допустимые варианты обращения.",
+      "verification": "ok"
+    },
+    {
+      "id": "q11",
+      "decision": "fixed",
+      "note": "Уточнены регион, состав группы и адресат; señora не объявлено безусловным требованием usted, сохранены допустимые варианты обращения.",
+      "verification": "ok"
+    },
+    {
+      "id": "q12",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q13",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q14",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q15",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q16",
+      "decision": "fixed",
+      "note": "Уточнены регион, состав группы и адресат; señora не объявлено безусловным требованием usted, сохранены допустимые варианты обращения.",
+      "verification": "ok"
+    },
+    {
+      "id": "q17",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q18",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q19",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q20",
+      "decision": "fixed",
+      "note": "Уточнены регион, состав группы и адресат; señora не объявлено безусловным требованием usted, сохранены допустимые варианты обращения.",
+      "verification": "ok"
+    },
+    {
+      "id": "q21",
+      "decision": "fixed",
+      "note": "Уточнены регион, адресат и утвердительная форма настоящего времени; учтены vosotros/vosotras и императив tú trabaja.",
+      "verification": "ok"
+    },
+    {
+      "id": "q22",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q23",
+      "decision": "fixed",
+      "note": "Уточнены регион, адресат и утвердительная форма настоящего времени; учтены vosotros/vosotras и императив tú trabaja.",
+      "verification": "ok"
+    },
+    {
+      "id": "q24",
+      "decision": "fixed",
+      "note": "Уточнены регион, адресат и утвердительная форма настоящего времени; учтены vosotros/vosotras и императив tú trabaja.",
+      "verification": "ok"
+    },
+    {
+      "id": "q25",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q26",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q27",
+      "decision": "fixed",
+      "note": "Уточнены регион, адресат и утвердительная форма настоящего времени; учтены vosotros/vosotras и императив tú trabaja.",
+      "verification": "ok"
+    },
+    {
+      "id": "q28",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q29",
+      "decision": "fixed",
+      "note": "Уточнены регион, адресат и утвердительная форма настоящего времени; учтены vosotros/vosotras и императив tú trabaja.",
+      "verification": "ok"
+    },
+    {
+      "id": "q30",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q31",
+      "decision": "fixed",
+      "note": "Уточнены регион, адресат и утвердительная форма настоящего времени; учтены vosotros/vosotras и императив tú trabaja.",
+      "verification": "ok"
+    },
+    {
+      "id": "q32",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q33",
+      "decision": "fixed",
+      "note": "Уточнены регион, адресат и утвердительная форма настоящего времени; учтены vosotros/vosotras и императив tú trabaja.",
+      "verification": "ok"
+    },
+    {
+      "id": "q34",
+      "decision": "fixed",
+      "note": "Уточнены регион, адресат и утвердительная форма настоящего времени; учтены vosotros/vosotras и императив tú trabaja.",
+      "verification": "ok"
+    },
+    {
+      "id": "q35",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q36",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q37",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q38",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q39",
+      "decision": "fixed",
+      "note": "Уточнены регион, адресат и утвердительная форма настоящего времени; учтены vosotros/vosotras и императив tú trabaja.",
+      "verification": "ok"
+    },
+    {
+      "id": "q40",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q41",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q42",
+      "decision": "fixed",
+      "note": "Уточнены адресат/регистр/регион, исправлено неверное толкование Dime tú, допустимые варианты не названы ошибочными, вместо алгоритма проверяется согласование.",
+      "verification": "ok"
+    },
+    {
+      "id": "q43",
+      "decision": "fixed",
+      "note": "Уточнены адресат/регистр/регион, исправлено неверное толкование Dime tú, допустимые варианты не названы ошибочными, вместо алгоритма проверяется согласование.",
+      "verification": "ok"
+    },
+    {
+      "id": "q44",
+      "decision": "fixed",
+      "note": "Уточнены обращение к группе в Мексике и формат fill_blank с подсказкой в конце.",
+      "verification": "ok"
+    },
+    {
+      "id": "q45",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q46",
+      "decision": "fixed",
+      "note": "Уточнены адресат/регистр/регион, исправлено неверное толкование Dime tú, допустимые варианты не названы ошибочными, вместо алгоритма проверяется согласование.",
+      "verification": "ok"
+    },
+    {
+      "id": "q47",
+      "decision": "fixed",
+      "note": "Уточнены адресат/регистр/регион, исправлено неверное толкование Dime tú, допустимые варианты не названы ошибочными, вместо алгоритма проверяется согласование.",
+      "verification": "ok"
+    },
+    {
+      "id": "q48",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q49",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q50",
+      "decision": "fixed",
+      "note": "Уточнены адресат/регистр/регион, исправлено неверное толкование Dime tú, допустимые варианты не названы ошибочными, вместо алгоритма проверяется согласование.",
+      "verification": "ok"
+    },
+    {
+      "id": "q51",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q52",
+      "decision": "fixed",
+      "note": "Уточнены адресат/регистр/регион, исправлено неверное толкование Dime tú, допустимые варианты не названы ошибочными, вместо алгоритма проверяется согласование.",
+      "verification": "ok"
+    },
+    {
+      "id": "q53",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q54",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q55",
+      "decision": "fixed",
+      "note": "Уточнены адресат/регистр/регион, исправлено неверное толкование Dime tú, допустимые варианты не названы ошибочными, вместо алгоритма проверяется согласование.",
+      "verification": "ok"
+    },
+    {
+      "id": "q56",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q57",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q58",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q59",
+      "decision": "fixed",
+      "note": "Явно задано формальное обращение к группе; Señores само по себе не исключает vosotros. Восстановлен формат fill_blank.",
+      "verification": "ok"
+    },
+    {
+      "id": "q60",
+      "decision": "fixed",
+      "note": "Уточнены адресат/регистр/регион, исправлено неверное толкование Dime tú, допустимые варианты не названы ошибочными, вместо алгоритма проверяется согласование.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-04-es013-016/check.py",
+      "result": "pass",
+      "evidence": "All 539 IDs/contracts, metadata, decisions versus baseline and current source/context fingerprints verified. Native training validation, signatures, no new course-wide duplicate signatures and exact source-final-embedded equality; validation.log."
+    },
+    {
+      "command": "go test ./internal/grammarbundle ./internal/repository -run 'TestValidateEmbeddedBundleID|TestGrammar.*Bundle|TestGrammar.*Reorder' -count=1",
+      "result": "pass",
+      "evidence": "Both packages pass after complete final integration; go-tests.log."
+    },
+    {
+      "command": "git diff --check; git -C courses/spanish-grammar diff --check; git -C courses/english-grammar diff --check",
+      "result": "pass",
+      "evidence": "Three separately executed commands exit 0; diff-check.log. All 368 pre-existing files outside review docs preserved byte-for-byte; preservation.log."
+    },
+    {
+      "command": "cd courses/spanish-grammar && bash scripts/assemble-chapter.sh 015.es.grammar.first_sentences_ser_pronouns.forms_address_tu_usted_ustedes_vosotros_register",
+      "result": "pass",
+      "evidence": "60 questions assembled; 015-assemble.log."
+    },
+    {
+      "command": "cd courses/spanish-grammar && bash scripts/validate-chapter.sh 015.es.grammar.first_sentences_ser_pronouns.forms_address_tu_usted_ustedes_vosotros_register",
+      "result": "pass",
+      "evidence": "Before and final after pass: 015-chapter-before.log and 015-chapter-after.log."
+    },
+    {
+      "command": "cd courses/spanish-grammar && ajv validate --spec=draft2020 --validate-formats=false --all-errors -s 02-chapter-schema.json -d chapters/015.es.grammar.first_sentences_ser_pronouns.forms_address_tu_usted_ustedes_vosotros_register/05-final.json",
+      "result": "pass",
+      "evidence": "Before and after pass: 015-schema-before.log and 015-schema-after.log."
+    },
+    {
+      "command": "cd courses/spanish-grammar && ajv validate -s 02-chapter-schema.json -d chapters/015.es.grammar.first_sentences_ser_pronouns.forms_address_tu_usted_ustedes_vosotros_register/05-final.json",
+      "result": "known_baseline",
+      "evidence": "015-assembler-ajv-before.log and 015-assembler-ajv-after.log are byte-identical: exit 1, no schema with key or ref https://json-schema.org/draft/2020-12/schema. Explicit draft2020 passes before and after."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    }
+  ],
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+}

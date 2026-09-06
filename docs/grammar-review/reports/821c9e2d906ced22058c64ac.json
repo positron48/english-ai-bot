@@ -1,0 +1,428 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/chapters/029.es.grammar.present_regular_actions.present_statements_regular_verbs/03-questions.json",
+  "source_sha256": "709abbffcd394e75adaf591139be1e05053a959417b19e8e246c39c1f222b5bb",
+  "context_sha256": "b04b6b3b62f13ecfe8dcd4d31e95d86c11720993f0924c0c99162d23e25fcccd",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
+  "reviewed_at": "2026-09-04T15:55:28.592120+00:00",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
+  "questions": [
+    {
+      "id": "q029_b1_01",
+      "decision": "fixed",
+      "note": "Уточнена инструкция или границы правила о сказуемом, дополнении и употреблении ustedes.",
+      "verification": "ok"
+    },
+    {
+      "id": "q029_b1_02",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q029_b1_03",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q029_b1_04",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q029_b1_05",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q029_b1_06",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q029_b1_07",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q029_b1_08",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q029_b1_09",
+      "decision": "fixed",
+      "note": "Уточнена инструкция или границы правила о сказуемом, дополнении и употреблении ustedes.",
+      "verification": "ok"
+    },
+    {
+      "id": "q029_b1_10",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q029_b1_11",
+      "decision": "fixed",
+      "note": "Уточнена инструкция или границы правила о сказуемом, дополнении и употреблении ustedes.",
+      "verification": "ok"
+    },
+    {
+      "id": "q029_b2_01",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q029_b2_02",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q029_b2_03",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q029_b2_04",
+      "decision": "fixed",
+      "note": "Уточнена инструкция или границы правила о сказуемом, дополнении и употреблении ustedes.",
+      "verification": "ok"
+    },
+    {
+      "id": "q029_b2_05",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q029_b2_06",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q029_b2_07",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q029_b2_08",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q029_b2_09",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q029_b2_10",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q029_b3_01",
+      "decision": "fixed",
+      "note": "Исправлены ложный запрет нулевого подлежащего, -amos вместо -emos, неоднозначный род «мы», условия/feedback или разбор герундия.",
+      "verification": "ok"
+    },
+    {
+      "id": "q029_b3_02",
+      "decision": "fixed",
+      "note": "Исправлены ложный запрет нулевого подлежащего, -amos вместо -emos, неоднозначный род «мы», условия/feedback или разбор герундия.",
+      "verification": "ok"
+    },
+    {
+      "id": "q029_b3_03",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q029_b3_04",
+      "decision": "fixed",
+      "note": "Исправлены ложный запрет нулевого подлежащего, -amos вместо -emos, неоднозначный род «мы», условия/feedback или разбор герундия.",
+      "verification": "ok"
+    },
+    {
+      "id": "q029_b3_05",
+      "decision": "fixed",
+      "note": "Исправлены ложный запрет нулевого подлежащего, -amos вместо -emos, неоднозначный род «мы», условия/feedback или разбор герундия.",
+      "verification": "ok"
+    },
+    {
+      "id": "q029_b3_06",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q029_b3_07",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q029_b3_08",
+      "decision": "fixed",
+      "note": "Исправлены ложный запрет нулевого подлежащего, -amos вместо -emos, неоднозначный род «мы», условия/feedback или разбор герундия.",
+      "verification": "ok"
+    },
+    {
+      "id": "q029_b3_09",
+      "decision": "fixed",
+      "note": "Исправлены ложный запрет нулевого подлежащего, -amos вместо -emos, неоднозначный род «мы», условия/feedback или разбор герундия.",
+      "verification": "ok"
+    },
+    {
+      "id": "q029_b3_10",
+      "decision": "fixed",
+      "note": "Исправлены ложный запрет нулевого подлежащего, -amos вместо -emos, неоднозначный род «мы», условия/feedback или разбор герундия.",
+      "verification": "ok"
+    },
+    {
+      "id": "q029_b3_11",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q029_b4_01",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q029_b4_02",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q029_b4_03",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q029_b4_04",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q029_b4_05",
+      "decision": "fixed",
+      "note": "Исправлены ложный запрет нулевого подлежащего, -amos вместо -emos, неоднозначный род «мы», условия/feedback или разбор герундия.",
+      "verification": "ok"
+    },
+    {
+      "id": "q029_b4_06",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q029_b4_07",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q029_b4_08",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q029_b4_10",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q029_b4_11",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q029_b5_01",
+      "decision": "fixed",
+      "note": "Вместо субъективного запрета допустимого порядка заданы проверяемые позиции; уточнено время или значение предлога.",
+      "verification": "ok"
+    },
+    {
+      "id": "q029_b5_02",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q029_b5_03",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q029_b5_04",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q029_b5_05",
+      "decision": "fixed",
+      "note": "Вместо субъективного запрета допустимого порядка заданы проверяемые позиции; уточнено время или значение предлога.",
+      "verification": "ok"
+    },
+    {
+      "id": "q029_b5_06",
+      "decision": "fixed",
+      "note": "Вместо субъективного запрета допустимого порядка заданы проверяемые позиции; уточнено время или значение предлога.",
+      "verification": "ok"
+    },
+    {
+      "id": "q029_b5_07",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q029_b5_08",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q029_b5_09",
+      "decision": "fixed",
+      "note": "Вместо субъективного запрета допустимого порядка заданы проверяемые позиции; уточнено время или значение предлога.",
+      "verification": "ok"
+    },
+    {
+      "id": "q029_b5_10",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q029_b6_01",
+      "decision": "fixed",
+      "note": "Вместо субъективного запрета допустимого порядка заданы проверяемые позиции; уточнено время или значение предлога.",
+      "verification": "ok"
+    },
+    {
+      "id": "q029_b6_02",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q029_b6_03",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q029_b6_04",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q029_b6_05",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q029_b6_06",
+      "decision": "fixed",
+      "note": "Вместо субъективного запрета допустимого порядка заданы проверяемые позиции; уточнено время или значение предлога.",
+      "verification": "ok"
+    },
+    {
+      "id": "q029_b6_07",
+      "decision": "fixed",
+      "note": "Вместо субъективного запрета допустимого порядка заданы проверяемые позиции; уточнено время или значение предлога.",
+      "verification": "ok"
+    },
+    {
+      "id": "q029_b6_08",
+      "decision": "fixed",
+      "note": "Вместо субъективного запрета допустимого порядка заданы проверяемые позиции; уточнено время или значение предлога.",
+      "verification": "ok"
+    },
+    {
+      "id": "q029_b6_10",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q029_b6_11",
+      "decision": "fixed",
+      "note": "Убрана ошибочная формулировка о повторе nosotros вместо однократного явного местоимения.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-04-es029-032/check.py",
+      "result": "pass",
+      "evidence": "All 488 IDs/contracts, decisions versus baseline, fingerprints, native training validation, signatures and source-final-embedded equality; validation.log. ES 029 main baseline is the saved pre-batch source."
+    },
+    {
+      "command": "go test ./internal/grammarbundle ./internal/repository -run 'TestValidateEmbeddedBundleID|TestGrammar.*Bundle|TestGrammar.*Reorder' -count=1",
+      "result": "pass",
+      "evidence": "Both packages passed on final integrated data; go-tests.log."
+    },
+    {
+      "command": "git diff --check; git -C courses/spanish-grammar diff --check; git -C courses/english-grammar diff --check",
+      "result": "pass",
+      "evidence": "Three separately executed commands exit 0; diff-check.log. All 818 earlier dirty files outside review docs and authorized in-scope sources preserved; preservation.log."
+    },
+    {
+      "command": "cd courses/spanish-grammar && bash scripts/assemble-chapter.sh 029.es.grammar.present_regular_actions.present_statements_regular_verbs",
+      "result": "pass",
+      "evidence": "029-assemble.log: exit 0."
+    },
+    {
+      "command": "cd courses/spanish-grammar && bash scripts/validate-chapter.sh 029.es.grammar.present_regular_actions.present_statements_regular_verbs",
+      "result": "pass",
+      "evidence": "029-chapter-after.log: exit 0."
+    },
+    {
+      "command": "cd courses/spanish-grammar && ajv validate --spec=draft2020 --validate-formats=false --all-errors -s 02-chapter-schema.json -d chapters/029.es.grammar.present_regular_actions.present_statements_regular_verbs/05-final.json",
+      "result": "pass",
+      "evidence": "029-schema-after.log: exit 0."
+    },
+    {
+      "command": "cd courses/spanish-grammar && ajv validate -s 02-chapter-schema.json -d chapters/029.es.grammar.present_regular_actions.present_statements_regular_verbs/05-final.json",
+      "result": "known_baseline",
+      "evidence": "029-assembler-ajv-before.log and 029-assembler-ajv-after.log are byte-identical, exit 1: no draft2020 meta-schema selected. Explicit draft2020 validation passes."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    }
+  ],
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+}

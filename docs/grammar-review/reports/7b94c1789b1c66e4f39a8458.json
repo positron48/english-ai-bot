@@ -1,0 +1,642 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/reconocer.json",
+  "source_sha256": "87bb6ededc0b41e2effa16ca0ee81c280f00e5a926357a64255606c194cd21c5",
+  "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197",
+  "editor": "Codex coordinator editor 2026-09-06",
+  "verifier": "Laplace verifier 2026-09-06",
+  "phase": "done",
+  "reviewed_at": "2026-09-06",
+  "verified_at": "2026-09-06",
+  "questions": [
+    {
+      "id": "es.presente.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «reconozco» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.presente.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «reconoces» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.presente.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «reconoce» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.presente.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «reconocemos» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.presente.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «reconocéis» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.presente.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «reconocen» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.presente.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «reconocía» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_imperfecto.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «reconocías» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_imperfecto.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «reconocía» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_imperfecto.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «reconocíamos» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_imperfecto.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «reconocíais» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_imperfecto.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «reconocían» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_imperfecto.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «reconocí» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_indefinido.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «reconociste» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_indefinido.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «reconoció» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_indefinido.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «reconocimos» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_indefinido.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «reconocisteis» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_indefinido.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «reconocieron» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_indefinido.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «reconoceré» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.futuro_simple.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «reconocerás» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.futuro_simple.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «reconocerá» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.futuro_simple.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «reconoceremos» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.futuro_simple.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «reconoceréis» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.futuro_simple.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «reconocerán» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.futuro_simple.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «reconocería» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.condicional_simple.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «reconocerías» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.condicional_simple.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «reconocería» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.condicional_simple.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «reconoceríamos» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.condicional_simple.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «reconoceríais» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.condicional_simple.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «reconocerían» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.condicional_simple.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «he reconocido» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_perfecto_compuesto.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «has reconocido» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_perfecto_compuesto.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «ha reconocido» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_perfecto_compuesto.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hemos reconocido» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_perfecto_compuesto.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habéis reconocido» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_perfecto_compuesto.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «han reconocido» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_perfecto_compuesto.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «había reconocido» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_pluscuamperfecto.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habías reconocido» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_pluscuamperfecto.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «había reconocido» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_pluscuamperfecto.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habíamos reconocido» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_pluscuamperfecto.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habíais reconocido» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_pluscuamperfecto.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habían reconocido» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_pluscuamperfecto.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hube reconocido» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_anterior.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubiste reconocido» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_anterior.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubo reconocido» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_anterior.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubimos reconocido» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_anterior.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubisteis reconocido» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_anterior.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubieron reconocido» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_anterior.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habré reconocido» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.futuro_perfecto.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habrás reconocido» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.futuro_perfecto.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habrá reconocido» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.futuro_perfecto.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habremos reconocido» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.futuro_perfecto.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habréis reconocido» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.futuro_perfecto.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habrán reconocido» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.futuro_perfecto.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habría reconocido» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.condicional_perfecto.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habrías reconocido» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.condicional_perfecto.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habría reconocido» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.condicional_perfecto.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habríamos reconocido» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.condicional_perfecto.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habríais reconocido» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.condicional_perfecto.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habrían reconocido» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.condicional_perfecto.indicativo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «reconozca» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.presente.subjuntivo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «reconozcas» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.presente.subjuntivo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «reconozca» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.presente.subjuntivo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «reconozcamos» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.presente.subjuntivo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «reconozcáis» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.presente.subjuntivo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «reconozcan» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.presente.subjuntivo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «reconociera» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_imperfecto.subjuntivo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «reconocieras» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_imperfecto.subjuntivo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «reconociera» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_imperfecto.subjuntivo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «reconociéramos» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_imperfecto.subjuntivo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «reconocierais» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_imperfecto.subjuntivo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «reconocieran» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_imperfecto.subjuntivo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «reconociere» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.futuro_simple.subjuntivo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «reconocieres» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.futuro_simple.subjuntivo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «reconociere» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.futuro_simple.subjuntivo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «reconociéremos» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.futuro_simple.subjuntivo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «reconociereis» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.futuro_simple.subjuntivo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «reconocieren» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.futuro_simple.subjuntivo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «haya reconocido» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_perfecto.subjuntivo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hayas reconocido» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_perfecto.subjuntivo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «haya reconocido» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_perfecto.subjuntivo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hayamos reconocido» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_perfecto.subjuntivo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hayáis reconocido» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_perfecto.subjuntivo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hayan reconocido» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_perfecto.subjuntivo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubiera reconocido» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_pluscuamperfecto.subjuntivo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubieras reconocido» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_pluscuamperfecto.subjuntivo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubiera reconocido» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_pluscuamperfecto.subjuntivo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubiéramos reconocido» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_pluscuamperfecto.subjuntivo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubierais reconocido» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_pluscuamperfecto.subjuntivo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubieran reconocido» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.preterito_pluscuamperfecto.subjuntivo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubiere reconocido» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.futuro_perfecto.subjuntivo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubieres reconocido» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.futuro_perfecto.subjuntivo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubiere reconocido» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.futuro_perfecto.subjuntivo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubiéremos reconocido» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.futuro_perfecto.subjuntivo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubiereis reconocido» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.futuro_perfecto.subjuntivo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubieren reconocido» сверена по Jehle; испанский контекст, русский перевод и четыре уникальных варианта согласованы со scope es.futuro_perfecto.subjuntivo.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 /tmp/edit_reconocer.py",
+      "result": "pass",
+      "evidence": "96 карточек полностью вычитаны и переписаны; исправлено 12 форм Jehle, 57 карточек с повторяющимися options и 48 карточек без ровно одного ответа."
+    },
+    {
+      "command": "python3 - (focused reconocer structural audit)",
+      "result": "pass",
+      "evidence": "Source и embedded совпадают; top-level, identity и порядок сохранены; формы Jehle и четыре уникальных same-scope options проверены для 96 карточек."
+    },
+    {
+      "command": "python3 - (coordinator post-edit naturalness pass)",
+      "result": "pass",
+      "evidence": "После сквозного чтения уточнены три перевода опознания, временная рамка futuro perfecto и естественная конструкция pone en duda que."
+    },
+    {
+      "command": "python3 /tmp/validate_reconocer_independent.py; independent semantic read of all 96 cards",
+      "result": "pass",
+      "evidence": "96/96 Jehle forms, metadata slots and unique same-scope option sets passed; all ES/RU meanings, counterfactuals and rare-tense register were independently read; baseline identity/order/top-level, byte-identical source/embedded and fresh fingerprints confirmed."
+    },
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-06-es-verbs-recibir-reconocer/check.py",
+      "result": "pass",
+      "evidence": "384 cards passed exact Jehle forms, source/embedded equality, preserved contracts, report fingerprints, unique same-scope options, independent sign-off and 24 checkpoints."
+    },
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-06-es-verbs-recibir-reconocer/preservation-check.py",
+      "result": "pass",
+      "evidence": "25451 paths outside the allowed batch set remained unchanged; no missing or unexpected new paths."
+    },
+    {
+      "command": "validate_artifact() from courses/spanish-grammar/scripts/generate-verb-forms-training.py",
+      "result": "pass",
+      "evidence": "Native strict artifact validation passed for recibir, recoger, recomendar and reconocer."
+    },
+    {
+      "command": "go test ./internal/verbtraining ./cmd/sync_verb_training_json",
+      "result": "pass",
+      "evidence": "Focused runtime and embedded synchronization tests passed."
+    },
+    {
+      "command": "python3 scripts/grammar_review_test.py",
+      "result": "pass",
+      "evidence": "All 13 grammar-review workflow tests passed."
+    },
+    {
+      "command": "git diff --check && git -C courses/spanish-grammar diff --check",
+      "result": "pass",
+      "evidence": "No whitespace errors in root or Spanish submodule diffs."
+    }
+  ],
+  "verification_note": "Независимо перечитаны все 96 финальных карточек с подстановкой формы. Испанские контексты естественно различают значения reconocer: признать ошибку, заслуги, серьёзность или юридическую силу; узнать голос; опознать человека. Русские переводы точно передают значение и время. Формы совпадают с Jehle, metadata и identity/order сохранены, в каждой карточке четыре уникальных варианта одного scope с единственным ответом. Pretérito anterior уместно помечен как книжный, futuro simple и futuro perfecto de subjuntivo — как юридический; контрфактические условия переведены явно. Source и embedded совпадают побайтно, fingerprints актуальны."
+}

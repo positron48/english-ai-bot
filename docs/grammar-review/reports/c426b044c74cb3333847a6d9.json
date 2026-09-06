@@ -1,0 +1,677 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/registrar.json",
+  "source_sha256": "da27585bf6470a493f8db012a8e7125c30cf999c9f1575f92f42f84a3f0bed26",
+  "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197",
+  "editor": "Aristotle editor 2026-09-06",
+  "verifier": "Helmholtz verifier 2026-09-06",
+  "phase": "done",
+  "reviewed_at": "2026-09-06",
+  "verified_at": "2026-09-06",
+  "questions": [
+    {
+      "id": "es.presente.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены: ES-контекст, RU-перевод. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены: ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены: ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены: ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены: ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены: ES-контекст, RU-перевод. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены: ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены: ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены: ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены: ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены: ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены: ES-контекст, RU-перевод. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены: ES-контекст, RU-перевод. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены: ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены: ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены: ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены: ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены: ES-контекст, RU-перевод. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены: ES-контекст, RU-перевод. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены: ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены: ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены: ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены: ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены: ES-контекст, RU-перевод. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены: ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены: ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены: ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены: ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены: ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены: ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены: ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены: ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены: ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены: ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены: ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены: ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены: ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены: ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены: ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены: ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены: ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены: ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены: surface_form, ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены: ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены: ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены: ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены: ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены: ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены: ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены: ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены: ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены: ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены: ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены: ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены: ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены: ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены: ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope. При финальной вычитке дополнительно уточнены объект или явная маркировка юридического регистра.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены: ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены: ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены: ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены: ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены: ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены: surface_form, ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены: ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены: surface_form, ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены: ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены: ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены: ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены: ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope. При финальной вычитке дополнительно уточнены объект или явная маркировка юридического регистра.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены: ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены: ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены: ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены: surface_form, ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены: surface_form, ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены: surface_form, ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope. При финальной вычитке дополнительно уточнены объект или явная маркировка юридического регистра.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены: surface_form, ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены: surface_form, ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены: surface_form, ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope. При финальной вычитке дополнительно уточнены объект или явная маркировка юридического регистра.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены: surface_form, ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены: surface_form, ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены: surface_form, ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены: surface_form, ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены: surface_form, ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены: surface_form, ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены: ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены: ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены: ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены: ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены: ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены: ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены: surface_form, ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены: surface_form, ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены: surface_form, ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены: surface_form, ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены: surface_form, ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены: surface_form, ES-контекст, RU-перевод, options. Форма сверена с парадигмой RAE; самостоятельный испанский контекст и полный русский перевод согласованы по значению, времени и лицу; четыре уникальных варианта принадлежат одному scope. При финальной вычитке дополнительно уточнены объект или явная маркировка юридического регистра.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 - (csv.DictReader exact infinitive == 'registrar' lookup in resources/verbs/jehle_verb_database.csv)",
+      "result": "pass",
+      "evidence": "The local Jehle CSV contains 18 exact registrar rows: all 16 scopes used by the artifact plus affirmative and negative imperative."
+    },
+    {
+      "command": "RAE DLE conjugation table for registrar: https://dle.rae.es/registrar",
+      "result": "pass",
+      "evidence": "Official RAE table confirms all 16 scope paradigms, including registre/registréis, registrare/registráremos and hubiere/hubiéremos registrado."
+    },
+    {
+      "command": "Semantic review of all 96 registrar cards in six 16-card chunks",
+      "result": "pass",
+      "evidence": "Every Spanish sentence and complete Russian translation was read with the answer substituted; registrar senses and tense relationships are explicit and natural."
+    },
+    {
+      "command": "Same-scope option and metadata validation",
+      "result": "pass",
+      "evidence": "96/96 cards have canonical scope/mood/tense/person/number, four distinct forms from the exact scope and the answer exactly once."
+    },
+    {
+      "command": "Counterfactual and rare-tense semantic review",
+      "result": "pass",
+      "evidence": "De haberlo sabido has explicit Russian Если бы я знал wording; pretérito anterior is marked literary and both future subjunctive scopes use legal contexts."
+    },
+    {
+      "command": "Baseline identity/order/top-level preservation and source/embedded comparison",
+      "result": "pass",
+      "evidence": "All immutable fields and order are preserved; source and embedded are byte-identical; exactly six main checkpoints cover 16 cards each."
+    },
+    {
+      "command": "python3 - (focused registrar checker against local Jehle, with RAE cross-check)",
+      "result": "pass",
+      "evidence": "96/96 surface forms exactly match the corresponding local Jehle mood/tense/person/number cells; every card has four distinct options drawn from that same Jehle row with the answer exactly once. RAE independently confirms the paradigm."
+    },
+    {
+      "command": "validate_artifact() from courses/spanish-grammar/scripts/generate-verb-forms-training.py for registrar",
+      "result": "pass",
+      "evidence": "Repository-native validation passed for all 16 scopes x six person/number slots."
+    },
+    {
+      "command": "go test ./internal/verbtraining ./cmd/sync_verb_training_json",
+      "result": "pass",
+      "evidence": "Both focused Go packages passed."
+    },
+    {
+      "command": "json.tool on source/embedded/report; exact-path git diff --check",
+      "result": "pass",
+      "evidence": "All assigned JSON files parse and no whitespace errors were found in the four allowed registrar paths."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py check --source courses/spanish-grammar/training_pack/verb_forms/lemmas/registrar.json",
+      "result": "known_baseline",
+      "evidence": "Exit 1 only because the completed editorial pass is awaiting independent verification; report coverage and current fingerprints are valid."
+    },
+    {
+      "command": "python3 - (independent registrar verifier against local Jehle and full rendered ES/RU reading)",
+      "result": "pass",
+      "evidence": "96/96 forms match the 16 used Jehle scopes; metadata/options/identity/source=embedded/fingerprints pass. All rendered contexts preserve the intended senses registrar=register/record/search and rare legal/literary usage; 96/96 semantic verification ok."
+    },
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-06-es-verbs-regalar-renovar/check.py",
+      "result": "pass",
+      "evidence": "384 cards passed exact Jehle forms, source/embedded parity, preserved contracts, report fingerprints, independent verification and 24-checkpoint coverage."
+    },
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-06-es-verbs-regalar-renovar/preservation-check.py",
+      "result": "pass",
+      "evidence": "25477 files outside the allowed batch set remained unchanged; no missing or unexpected new paths."
+    },
+    {
+      "command": "validate_artifact() for regalar, registrar, regresar and renovar",
+      "result": "pass",
+      "evidence": "The generator native artifact validator accepted all four 96-card sources."
+    },
+    {
+      "command": "python3 scripts/grammar_review_test.py",
+      "result": "pass",
+      "evidence": "All 13 grammar review workflow tests passed."
+    },
+    {
+      "command": "git diff --check && git -C courses/spanish-grammar diff --check",
+      "result": "pass",
+      "evidence": "Root and Spanish submodule diffs contain no whitespace errors."
+    }
+  ],
+  "verification_note": "Независимо прочитаны все 96 карточек после подстановки формы. Формы Jehle, metadata, person/number, значения registrar, русские переводы, редкие регистры, контрфактические условия и четыре уникальных same-scope варианта корректны; все карточки приняты."
+}

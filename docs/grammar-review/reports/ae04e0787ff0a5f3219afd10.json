@@ -1,0 +1,411 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/chapters/005.es.grammar.orientation_alphabet_sounds.intonation_inverted_question_exclamation_marks/03-questions.json",
+  "source_sha256": "8846b019261b2eae1599c57b43b35808e902910b72d936bdac8f19399b066e16",
+  "context_sha256": "d84dbf90e7bff8bb91e89e92d03ea958a1f3fbd7f19d4028e0c06f4f469b9cc8",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
+  "reviewed_at": "2026-09-04T11:03:53.087592+00:00",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
+  "questions": [
+    {
+      "id": "q1",
+      "decision": "fixed",
+      "note": "Дистракторы сопоставляют функции знаков, а не произвольные грамматические эффекты.",
+      "verification": "ok"
+    },
+    {
+      "id": "q2",
+      "decision": "ok",
+      "note": "Прямой вопрос требует ¿Cómo estás? с тильдой.",
+      "verification": "ok"
+    },
+    {
+      "id": "q3",
+      "decision": "ok",
+      "note": "Только ¿Tienes tiempo? оформляет обычный общий вопрос.",
+      "verification": "ok"
+    },
+    {
+      "id": "q4",
+      "decision": "ok",
+      "note": "¿ — открывающий вопросительный знак.",
+      "verification": "ok"
+    },
+    {
+      "id": "q5",
+      "decision": "ok",
+      "note": "¿Dónde está Ana? — единственный вопрос среди реплик.",
+      "verification": "ok"
+    },
+    {
+      "id": "q6",
+      "decision": "ok",
+      "note": "Обычный прямой вопрос оформляется парой знаков.",
+      "verification": "ok"
+    },
+    {
+      "id": "q7",
+      "decision": "ok",
+      "note": "Одного конечного ? недостаточно для нормативного прямого вопроса.",
+      "verification": "ok"
+    },
+    {
+      "id": "q8",
+      "decision": "fixed",
+      "note": "Задан обычный вопрос без совмещённой восклицательной окраски.",
+      "verification": "ok"
+    },
+    {
+      "id": "q9",
+      "decision": "fixed",
+      "note": "Русская инструкция и конкретный пропуск вместо служебного испанского термина.",
+      "verification": "ok"
+    },
+    {
+      "id": "q10",
+      "decision": "fixed",
+      "note": "Убрана подсказка Правильно из варианта; изменён пример, чтобы не дублировать правильный ответ q2.",
+      "verification": "ok"
+    },
+    {
+      "id": "q11",
+      "decision": "ok",
+      "note": "¡Hola! соответствует заданному восклицанию.",
+      "verification": "ok"
+    },
+    {
+      "id": "q12",
+      "decision": "ok",
+      "note": "¡Gracias! соответствует эмоциональному «Спасибо!».",
+      "verification": "ok"
+    },
+    {
+      "id": "q13",
+      "decision": "ok",
+      "note": "¡ — открывающий восклицательный знак.",
+      "verification": "ok"
+    },
+    {
+      "id": "q14",
+      "decision": "fixed",
+      "note": "Различена графическая запись и восклицательный смысл Qué bien без знаков.",
+      "verification": "ok"
+    },
+    {
+      "id": "q15",
+      "decision": "ok",
+      "note": "Открывающий знак предупреждает о нужной интонации.",
+      "verification": "ok"
+    },
+    {
+      "id": "q16",
+      "decision": "ok",
+      "note": "Обычная восклицательная запись использует пару ¡ !.",
+      "verification": "ok"
+    },
+    {
+      "id": "q17",
+      "decision": "ok",
+      "note": "Hola! без открывающего знака не нормативная полная запись.",
+      "verification": "ok"
+    },
+    {
+      "id": "q18",
+      "decision": "fixed",
+      "note": "Задано восклицание без вопросительной окраски, исключена смешанная пара знаков.",
+      "verification": "ok"
+    },
+    {
+      "id": "q19",
+      "decision": "fixed",
+      "note": "Русская инструкция и конкретный пропуск вместо служебного термина.",
+      "verification": "ok"
+    },
+    {
+      "id": "q20",
+      "decision": "fixed",
+      "note": "Явно требуется сохранить восклицание без вопросительной окраски.",
+      "verification": "ok"
+    },
+    {
+      "id": "q21",
+      "decision": "fixed",
+      "note": "Нелепые изменения числа/исчезновения слова заменены параллельным сравнением типов реплик.",
+      "verification": "ok"
+    },
+    {
+      "id": "q22",
+      "decision": "ok",
+      "note": "¿Es tarde? — общий вопрос.",
+      "verification": "ok"
+    },
+    {
+      "id": "q23",
+      "decision": "ok",
+      "note": "В первой паре совпадают слова утверждения и общего вопроса.",
+      "verification": "ok"
+    },
+    {
+      "id": "q24",
+      "decision": "fixed",
+      "note": "Убрана зависимость от знания английского; проверяется конкретное преобразование.",
+      "verification": "ok"
+    },
+    {
+      "id": "q25",
+      "decision": "ok",
+      "note": "¿Es tarde? требует вопросительной интонации.",
+      "verification": "ok"
+    },
+    {
+      "id": "q26",
+      "decision": "ok",
+      "note": "Вопрос да/нет может сохранять слова утверждения.",
+      "verification": "ok"
+    },
+    {
+      "id": "q27",
+      "decision": "fixed",
+      "note": "Убрано обобщение об английских вопросах, не относящееся к испанскому заданию.",
+      "verification": "ok"
+    },
+    {
+      "id": "q28",
+      "decision": "fixed",
+      "note": "Русская фраза дополняется русским ответом; не требуется угадать испанский термин.",
+      "verification": "ok"
+    },
+    {
+      "id": "q29",
+      "decision": "fixed",
+      "note": "Неопределённый испанский термин заменён конкретным открывающим знаком.",
+      "verification": "ok"
+    },
+    {
+      "id": "q30",
+      "decision": "fixed",
+      "note": "Убрана подсказка Правильно; уточнён обычный вопрос и изменён пример, чтобы не дублировать q3.",
+      "verification": "ok"
+    },
+    {
+      "id": "q31",
+      "decision": "ok",
+      "note": "¿Dónde vives? корректно оформляет данный прямой вопрос.",
+      "verification": "ok"
+    },
+    {
+      "id": "q32",
+      "decision": "fixed",
+      "note": "Исходный ключ cómo означал «как», а спросили «где»; исправлен на dónde.",
+      "verification": "ok"
+    },
+    {
+      "id": "q33",
+      "decision": "ok",
+      "note": "Qué в данном прямом вопросе имеет тильду и пару знаков.",
+      "verification": "ok"
+    },
+    {
+      "id": "q34",
+      "decision": "ok",
+      "note": "¿Cómo te llamas? оформлено корректно.",
+      "verification": "ok"
+    },
+    {
+      "id": "q35",
+      "decision": "ok",
+      "note": "Вопросительное слово не заменяет знаки обычного прямого вопроса.",
+      "verification": "ok"
+    },
+    {
+      "id": "q36",
+      "decision": "ok",
+      "note": "В обычном вопросе Dónde vives? не хватает открывающего знака.",
+      "verification": "ok"
+    },
+    {
+      "id": "q37",
+      "decision": "fixed",
+      "note": "Вопросительная функция указана явно: тильда не факультативная.",
+      "verification": "ok"
+    },
+    {
+      "id": "q38",
+      "decision": "fixed",
+      "note": "Исправлен неверный ключ dónde на cómo для «как?».",
+      "verification": "ok"
+    },
+    {
+      "id": "q39",
+      "decision": "ok",
+      "note": "Qué — вопросительное «что/какой» с тильдой.",
+      "verification": "ok"
+    },
+    {
+      "id": "q40",
+      "decision": "fixed",
+      "note": "Убрана подсказка Правильно; изменён пример, чтобы не дублировать ответ q31; ошибка содержит пропуск акцента.",
+      "verification": "ok"
+    },
+    {
+      "id": "q41",
+      "decision": "ok",
+      "note": "¡Qué bien! соответствует заданному восклицанию.",
+      "verification": "ok"
+    },
+    {
+      "id": "q42",
+      "decision": "fixed",
+      "note": "Спрашивается текущее оформление, а не возможность превратить любое приветствие в восклицание.",
+      "verification": "ok"
+    },
+    {
+      "id": "q43",
+      "decision": "ok",
+      "note": "¡Qué pena! соответствует заданной реакции.",
+      "verification": "ok"
+    },
+    {
+      "id": "q44",
+      "decision": "ok",
+      "note": "Вторая реплика явно оформлена как восклицание.",
+      "verification": "ok"
+    },
+    {
+      "id": "q45",
+      "decision": "ok",
+      "note": "¡Qué bien! — единственная явно эмоциональная реакция.",
+      "verification": "ok"
+    },
+    {
+      "id": "q46",
+      "decision": "ok",
+      "note": "Указана обычная возможность восклицательного оформления, не обязательность для любого приветствия.",
+      "verification": "ok"
+    },
+    {
+      "id": "q47",
+      "decision": "ok",
+      "note": "Короткие формулы могут оформляться как восклицания.",
+      "verification": "ok"
+    },
+    {
+      "id": "q48",
+      "decision": "ok",
+      "note": "Для заданного восклицательного Qué bien подходит ¡ !.",
+      "verification": "ok"
+    },
+    {
+      "id": "q49",
+      "decision": "ok",
+      "note": "Утреннее приветствие — Buenos días.",
+      "verification": "ok"
+    },
+    {
+      "id": "q50",
+      "decision": "fixed",
+      "note": "Явно сохранено восклицательное значение вместо возможной смены типа реплики.",
+      "verification": "ok"
+    },
+    {
+      "id": "q51",
+      "decision": "fixed",
+      "note": "Нелепый дистрактор про забытые знаки заменён условием остановки чтения.",
+      "verification": "ok"
+    },
+    {
+      "id": "q52",
+      "decision": "ok",
+      "note": "Знаки меняют интонацию при одинаковой лексике.",
+      "verification": "ok"
+    },
+    {
+      "id": "q53",
+      "decision": "ok",
+      "note": "¡Qué bien! — восклицание, ¿Qué quieres? — специальный вопрос.",
+      "verification": "ok"
+    },
+    {
+      "id": "q54",
+      "decision": "fixed",
+      "note": "Убрано беспредметное «здесь», задана конкретная реплика.",
+      "verification": "ok"
+    },
+    {
+      "id": "q55",
+      "decision": "ok",
+      "note": "¿Qué quieres? оформлен как вопрос.",
+      "verification": "ok"
+    },
+    {
+      "id": "q56",
+      "decision": "fixed",
+      "note": "Вместо субъективной возможности дочитать сначала — проверяемая функция открывающего знака.",
+      "verification": "ok"
+    },
+    {
+      "id": "q57",
+      "decision": "ok",
+      "note": "Открывающий знак заранее подсказывает интонацию.",
+      "verification": "ok"
+    },
+    {
+      "id": "q58",
+      "decision": "fixed",
+      "note": "Убран неопределённый испанский термин; конкретный пример и русский ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "q59",
+      "decision": "fixed",
+      "note": "Убрано угадывание exclamativa; конкретный пример и русский ответ.",
+      "verification": "ok"
+    },
+    {
+      "id": "q60",
+      "decision": "ok",
+      "note": "Раннее распознавание открывающих знаков помогает выбрать интонацию.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-04-es005-008/check.py",
+      "result": "pass",
+      "evidence": "518 IDs/contracts preserved; source/context hashes current; signatures valid; no new course-wide duplicates; source/final/embedded equal. See batch validation.log."
+    },
+    {
+      "command": "go test ./internal/grammarbundle ./internal/repository -run 'TestValidateEmbeddedBundleID|TestGrammar.*Bundle|TestGrammar.*Reorder' -count=1",
+      "result": "pass",
+      "evidence": "grammarbundle 4.945s; repository 14.356s; see batch go-tests.log."
+    },
+    {
+      "command": "bash scripts/assemble-chapter.sh 005.es.grammar.orientation_alphabet_sounds.intonation_inverted_question_exclamation_marks",
+      "result": "pass",
+      "evidence": "60 questions, 6 theory blocks and inline quizzes, 48 test-pool IDs; see 005-assemble-after.log."
+    },
+    {
+      "command": "bash scripts/validate-chapter.sh 005.es.grammar.orientation_alphabet_sounds.intonation_inverted_question_exclamation_marks",
+      "result": "pass",
+      "evidence": "Passed before and after editing; see 005-chapter-before/after.log."
+    },
+    {
+      "command": "ajv validate --spec=draft2020 --validate-formats=false --all-errors -s 02-chapter-schema.json -d chapters/005.es.grammar.orientation_alphabet_sounds.intonation_inverted_question_exclamation_marks/05-final.json",
+      "result": "pass",
+      "evidence": "Passed before and after editing; see chapter schema logs in batch directory."
+    },
+    {
+      "command": "git diff --check; git -C courses/spanish-grammar diff --check; git -C courses/english-grammar diff --check",
+      "result": "pass",
+      "evidence": "Each command exited 0; see batch diff-check.log."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    }
+  ],
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+}

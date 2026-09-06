@@ -1,0 +1,31 @@
+{
+  "existing_files": 25080,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/descender.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/descender.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/describir.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/describir.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/descubrir.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/descubrir.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/desear.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/desear.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-descender-desear",
+    "docs/grammar-review/reports/bc41fee980eb26c0b07d7074.json",
+    "docs/grammar-review/reports/bd0a63a1df0cefc05ae17244.json",
+    "docs/grammar-review/reports/7cb3494d2dead1b1f5220de6.json",
+    "docs/grammar-review/reports/70f58eda0f5185eaef427fc8.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/descender.json": "4033021920fb7257afbe943e388fd192d65900877eef7bf2d70e79a99512b668",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/descender.json": "4033021920fb7257afbe943e388fd192d65900877eef7bf2d70e79a99512b668",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/describir.json": "e308b9993417c588e7c4b71dad47757b51932f4e2ae82471fb5221a77c318ae8",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/describir.json": "e308b9993417c588e7c4b71dad47757b51932f4e2ae82471fb5221a77c318ae8",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/descubrir.json": "17fa8f0575c53b21fe3d540cb345005074994be2058f3bff38db960c14eb764e",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/descubrir.json": "17fa8f0575c53b21fe3d540cb345005074994be2058f3bff38db960c14eb764e",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/desear.json": "515bdc04b4b8c02b02456e759ec7f2ad34af35f46eaecb0a101cda1514ab8d72",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/desear.json": "515bdc04b4b8c02b02456e759ec7f2ad34af35f46eaecb0a101cda1514ab8d72"
+  }
+}

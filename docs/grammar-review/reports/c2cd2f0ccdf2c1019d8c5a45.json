@@ -1,0 +1,632 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/tener.json",
+  "source_sha256": "3733a1d4107b71c526707788bb30b068cd3b49eec08ae6d3b285f0492258ddbd",
+  "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197",
+  "editor": "Helmholtz editor 2026-09-06",
+  "verifier": "Codex coordinator verifier 2026-09-06",
+  "phase": "done",
+  "reviewed_at": "2026-09-06",
+  "verified_at": "2026-09-06",
+  "questions": [
+    {
+      "id": "es.presente.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:1:singular переписана и вручную проверена: authoritative форма «tengo», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:2:singular переписана и вручную проверена: authoritative форма «tienes», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:3:singular переписана и вручную проверена: authoritative форма «tiene», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:1:plural переписана и вручную проверена: authoritative форма «tenemos», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:2:plural переписана и вручную проверена: authoritative форма «tenéis», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:3:plural переписана и вручную проверена: authoritative форма «tienen», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:1:singular переписана и вручную проверена: authoritative форма «tenía», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:2:singular переписана и вручную проверена: authoritative форма «tenías», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:3:singular переписана и вручную проверена: authoritative форма «tenía», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:1:plural переписана и вручную проверена: authoritative форма «teníamos», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:2:plural переписана и вручную проверена: authoritative форма «teníais», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:3:plural переписана и вручную проверена: authoritative форма «tenían», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:1:singular переписана и вручную проверена: authoritative форма «tuve», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:2:singular переписана и вручную проверена: authoritative форма «tuviste», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:3:singular переписана и вручную проверена: authoritative форма «tuvo», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:1:plural переписана и вручную проверена: authoritative форма «tuvimos», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:2:plural переписана и вручную проверена: authoritative форма «tuvisteis», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:3:plural переписана и вручную проверена: authoritative форма «tuvieron», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:1:singular переписана и вручную проверена: authoritative форма «tendré», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:2:singular переписана и вручную проверена: authoritative форма «tendrás», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:3:singular переписана и вручную проверена: authoritative форма «tendrá», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:1:plural переписана и вручную проверена: authoritative форма «tendremos», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:2:plural переписана и вручную проверена: authoritative форма «tendréis», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:3:plural переписана и вручную проверена: authoritative форма «tendrán», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом. После полного чтения временная, причинная или лексическая связь дополнительно уточнена.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:1:singular переписана и вручную проверена: authoritative форма «tendría», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:2:singular переписана и вручную проверена: authoritative форма «tendrías», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:3:singular переписана и вручную проверена: authoritative форма «tendría», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:1:plural переписана и вручную проверена: authoritative форма «tendríamos», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:2:plural переписана и вручную проверена: authoritative форма «tendríais», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:3:plural переписана и вручную проверена: authoritative форма «tendrían», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:1:singular переписана и вручную проверена: authoritative форма «he tenido», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:2:singular переписана и вручную проверена: authoritative форма «has tenido», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:3:singular переписана и вручную проверена: authoritative форма «ha tenido», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:1:plural переписана и вручную проверена: authoritative форма «hemos tenido», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:2:plural переписана и вручную проверена: authoritative форма «habéis tenido», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:3:plural переписана и вручную проверена: authoritative форма «han tenido», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:1:singular переписана и вручную проверена: authoritative форма «había tenido», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:2:singular переписана и вручную проверена: authoritative форма «habías tenido», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:3:singular переписана и вручную проверена: authoritative форма «había tenido», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:1:plural переписана и вручную проверена: authoritative форма «habíamos tenido», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом. Coordinator refinement: RU уточнён для буквального вида состояния, владения или рекомендации в заданном времени.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:2:plural переписана и вручную проверена: authoritative форма «habíais tenido», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:3:plural переписана и вручную проверена: authoritative форма «habían tenido», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:1:singular переписана и вручную проверена: authoritative форма «hube tenido», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:2:singular переписана и вручную проверена: authoritative форма «hubiste tenido», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:3:singular переписана и вручную проверена: authoritative форма «hubo tenido», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:1:plural переписана и вручную проверена: authoritative форма «hubimos tenido», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку. Финальная редакторская вычитка уточнила завершённость действия и естественность внешнего триггера subjuntivo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:2:plural переписана и вручную проверена: authoritative форма «hubisteis tenido», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:3:plural переписана и вручную проверена: authoritative форма «hubieron tenido», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку. После полного чтения временная, причинная или лексическая связь дополнительно уточнена.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:1:singular переписана и вручную проверена: authoritative форма «habré tenido», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:2:singular переписана и вручную проверена: authoritative форма «habrás tenido», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:3:singular переписана и вручную проверена: authoritative форма «habrá tenido», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:1:plural переписана и вручную проверена: authoritative форма «habremos tenido», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:2:plural переписана и вручную проверена: authoritative форма «habréis tenido», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:3:plural переписана и вручную проверена: authoritative форма «habrán tenido», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:1:singular переписана и вручную проверена: authoritative форма «habría tenido», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом. После полного чтения временная, причинная или лексическая связь дополнительно уточнена.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:2:singular переписана и вручную проверена: authoritative форма «habrías tenido», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:3:singular переписана и вручную проверена: authoritative форма «habría tenido», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом. После полного чтения временная, причинная или лексическая связь дополнительно уточнена.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:1:plural переписана и вручную проверена: authoritative форма «habríamos tenido», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:2:plural переписана и вручную проверена: authoritative форма «habríais tenido», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:3:plural переписана и вручную проверена: authoritative форма «habrían tenido», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:1:singular переписана и вручную проверена: authoritative форма «tenga», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:2:singular переписана и вручную проверена: authoritative форма «tengas», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:3:singular переписана и вручную проверена: authoritative форма «tenga», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:1:plural переписана и вручную проверена: authoritative форма «tengamos», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:2:plural переписана и вручную проверена: authoritative форма «tengáis», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:3:plural переписана и вручную проверена: authoritative форма «tengan», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:1:singular переписана и вручную проверена: authoritative форма «tuviera», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:2:singular переписана и вручную проверена: authoritative форма «tuvieras», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:3:singular переписана и вручную проверена: authoritative форма «tuviera», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом. Coordinator refinement: RU уточнён для буквального вида состояния, владения или рекомендации в заданном времени.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:1:plural переписана и вручную проверена: authoritative форма «tuviéramos», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:2:plural переписана и вручную проверена: authoritative форма «tuvierais», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:3:plural переписана и вручную проверена: authoritative форма «tuvieran», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:1:singular переписана и вручную проверена: authoritative форма «tuviere», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:2:singular переписана и вручную проверена: authoritative форма «tuvieres», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:3:singular переписана и вручную проверена: authoritative форма «tuviere», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:1:plural переписана и вручную проверена: authoritative форма «tuviéremos», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:2:plural переписана и вручную проверена: authoritative форма «tuviereis», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:3:plural переписана и вручную проверена: authoritative форма «tuvieren», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:1:singular переписана и вручную проверена: authoritative форма «haya tenido», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом. Финальная редакторская вычитка уточнила завершённость действия и естественность внешнего триггера subjuntivo.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:2:singular переписана и вручную проверена: authoritative форма «hayas tenido», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:3:singular переписана и вручную проверена: authoritative форма «haya tenido», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом. Coordinator refinement: RU уточнён для буквального вида состояния, владения или рекомендации в заданном времени.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:1:plural переписана и вручную проверена: authoritative форма «hayamos tenido», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом. После полного чтения временная, причинная или лексическая связь дополнительно уточнена.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:2:plural переписана и вручную проверена: authoritative форма «hayáis tenido», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:3:plural переписана и вручную проверена: authoritative форма «hayan tenido», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом. Coordinator refinement: RU уточнён для буквального вида состояния, владения или рекомендации в заданном времени.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:1:singular переписана и вручную проверена: authoritative форма «hubiera tenido», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:2:singular переписана и вручную проверена: authoritative форма «hubieras tenido», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:3:singular переписана и вручную проверена: authoritative форма «hubiera tenido», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:1:plural переписана и вручную проверена: authoritative форма «hubiéramos tenido», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:2:plural переписана и вручную проверена: authoritative форма «hubierais tenido», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:3:plural переписана и вручную проверена: authoritative форма «hubieran tenido», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:1:singular переписана и вручную проверена: authoritative форма «hubiere tenido», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:2:singular переписана и вручную проверена: authoritative форма «hubieres tenido», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:3:singular переписана и вручную проверена: authoritative форма «hubiere tenido», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку. После полного чтения временная, причинная или лексическая связь дополнительно уточнена.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:1:plural переписана и вручную проверена: authoritative форма «hubiéremos tenido», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:2:plural переписана и вручную проверена: authoritative форма «hubiereis tenido», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку. Coordinator refinement: RU уточнён для буквального вида состояния, владения или рекомендации в заданном времени.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:3:plural переписана и вручную проверена: authoritative форма «hubieren tenido», естественное значение tener, полный RU, точные metadata и четыре уникальных same-scope варианта с одним ответом; редкое время явно помещено в литературную/юридическую рамку.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "authoritative-forms.json tener vs final 16 scopes x 6 slots",
+      "result": "pass",
+      "evidence": "96/96 surface forms and all option sets match the batch authoritative Jehle table."
+    },
+    {
+      "command": "manual semantic full read with answer substitution: tener 96/96",
+      "result": "pass",
+      "evidence": "Every ES/RU pair was read after substitution and refined where needed; contexts cover possession, age, tener que, states and experiences with complete translations and coherent temporal anchors."
+    },
+    {
+      "command": "targeted identity/order/top-level, metadata, blanks, options, counterfactual and rare-register validation",
+      "result": "pass",
+      "evidence": "Exact baseline identity/order/top-level preserved; every card has one blank, exact scope metadata, four unique same-scope forms and one answer; pretérito anterior and future subjunctives are explicitly literary/legal; all six De haberlo sabido translations start with explicit Russian conditions."
+    },
+    {
+      "command": "baseline defect recount against authoritative forms",
+      "result": "pass",
+      "evidence": "wrong surface 12; duplicate-option cards 17; answer-count cards 28; off-scope 87 entries in 27 cards; invalid-union 11 entries in 10 cards; metadata 0; blanks 0."
+    },
+    {
+      "command": "native validate_artifact; go test ./internal/grammartrainingpack ./internal/verbtraining; grammar-review.py status --source .../tener.json; cmp; JSON; diff --check",
+      "result": "pass",
+      "evidence": "Native validator accepted 96 cards; both focused Go packages passed; status reports 96 awaiting_verification; source and embedded are byte-identical; JSON and assigned diffs pass; editor refinement checkpoint records eight post-chunk improvements."
+    },
+    {
+      "command": "coordinator refinement: exact RU assertions at zero-based indexes 39, 68, 80, 83 and 94",
+      "result": "pass",
+      "evidence": "All five listed RU translations were applied exactly; ES, surface forms, options, metadata, identity/order and the other 91 cards are unchanged."
+    },
+    {
+      "command": "independent verifier full 96-card substitution read: tener",
+      "result": "pass",
+      "evidence": "All 96 prompts and full Russian translations were read after coordinator refinements; 96 verification fields set to ok. Exact Jehle forms, one blank, four unique same-scope options, answer once, rare-register framing and six explicit counterfactual translations pass."
+    },
+    {
+      "command": "final batch barrier: check.py; native validate_artifact; focused Go tests; grammar_review_test.py; focused/full status; preservation; root/course diff checks; skill quick_validate",
+      "result": "pass",
+      "evidence": "PASS: 384 cards and 24 checkpoints; native 96/96 each; Go packages pass; 13 grammar-review tests pass; four focused sources done; preservation 25623/0/0/0; diff checks and skill validation pass."
+    }
+  ],
+  "verification_note": "Independent coordinator reread all 96 current cards with the authoritative form inserted. Possession, age, tener que, states, compound-time anchors, Spanish-Russian alignment, rare literary/legal framing and all answer-option contracts are correct."
+}

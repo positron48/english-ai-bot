@@ -1,0 +1,627 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/sorprender.json",
+  "source_sha256": "1cd32c1cb49844d263d74736fbbb5c98ce526997d9f6d711f837aac950ed2a47",
+  "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197",
+  "editor": "Laplace editor 2026-09-06",
+  "verifier": "Codex coordinator verifier 2026-09-06",
+  "phase": "done",
+  "reviewed_at": "2026-09-06",
+  "verified_at": "2026-09-06",
+  "questions": [
+    {
+      "id": "es.presente.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.presente.indicativo:1:singular; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.presente.indicativo:2:singular; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.presente.indicativo:3:singular; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.presente.indicativo:1:plural; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.presente.indicativo:2:plural; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.presente.indicativo:3:plural; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_imperfecto.indicativo:1:singular; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_imperfecto.indicativo:2:singular; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_imperfecto.indicativo:3:singular; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_imperfecto.indicativo:1:plural; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_imperfecto.indicativo:2:plural; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_imperfecto.indicativo:3:plural; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_indefinido.indicativo:1:singular; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_indefinido.indicativo:2:singular; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_indefinido.indicativo:3:singular; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_indefinido.indicativo:1:plural; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_indefinido.indicativo:2:plural; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_indefinido.indicativo:3:plural; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_simple.indicativo:1:singular; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_simple.indicativo:2:singular; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_simple.indicativo:3:singular; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_simple.indicativo:1:plural; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_simple.indicativo:2:plural; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_simple.indicativo:3:plural; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.condicional_simple.indicativo:1:singular; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.condicional_simple.indicativo:2:singular; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.condicional_simple.indicativo:3:singular; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.condicional_simple.indicativo:1:plural; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.condicional_simple.indicativo:2:plural; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.condicional_simple.indicativo:3:plural; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope. Согласован субъект множественного числа с формой 3:plural; естественное значение «застать за действием» сохранено.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_perfecto_compuesto.indicativo:1:singular; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope. Устранён неоднозначный референт местоимения; контекст «застать за действием» сделан самостоятельным.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_perfecto_compuesto.indicativo:2:singular; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_perfecto_compuesto.indicativo:3:singular; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_perfecto_compuesto.indicativo:1:plural; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_perfecto_compuesto.indicativo:2:plural; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_perfecto_compuesto.indicativo:3:plural; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_pluscuamperfecto.indicativo:1:singular; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_pluscuamperfecto.indicativo:2:singular; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope. Добавлена явная прошедшая точка отсчёта для pluscuamperfecto.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_pluscuamperfecto.indicativo:3:singular; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_pluscuamperfecto.indicativo:1:plural; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope. Добавлена явная прошедшая точка отсчёта; рефлексивный клитик оставлен вне blank.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_pluscuamperfecto.indicativo:2:plural; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope. Добавлен самостоятельный временной якорь для pluscuamperfecto.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_pluscuamperfecto.indicativo:3:plural; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope. Добавлен самостоятельный прошедший временной якорь для pluscuamperfecto.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_anterior.indicativo:1:singular; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_anterior.indicativo:2:singular; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_anterior.indicativo:3:singular; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_anterior.indicativo:1:plural; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_anterior.indicativo:2:plural; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_anterior.indicativo:3:plural; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_perfecto.indicativo:1:singular; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_perfecto.indicativo:2:singular; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_perfecto.indicativo:3:singular; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_perfecto.indicativo:1:plural; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_perfecto.indicativo:2:plural; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_perfecto.indicativo:3:plural; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.condicional_perfecto.indicativo:1:singular; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.condicional_perfecto.indicativo:2:singular; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.condicional_perfecto.indicativo:3:singular; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.condicional_perfecto.indicativo:1:plural; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.condicional_perfecto.indicativo:2:plural; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.condicional_perfecto.indicativo:3:plural; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope. Испанский объект уточнён в соответствии с полным русским переводом; явная контрфактическая причинность сохранена.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.presente.subjuntivo:1:singular; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.presente.subjuntivo:2:singular; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope. Русский перевод точно передаёт рефлексивное sorprenderse; клитик te остаётся вне blank.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.presente.subjuntivo:3:singular; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.presente.subjuntivo:1:plural; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.presente.subjuntivo:2:plural; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.presente.subjuntivo:3:plural; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_imperfecto.subjuntivo:1:singular; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_imperfecto.subjuntivo:2:singular; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_imperfecto.subjuntivo:3:singular; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_imperfecto.subjuntivo:1:plural; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_imperfecto.subjuntivo:2:plural; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_imperfecto.subjuntivo:3:plural; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_simple.subjuntivo:1:singular; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_simple.subjuntivo:2:singular; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_simple.subjuntivo:3:singular; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_simple.subjuntivo:1:plural; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_simple.subjuntivo:2:plural; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_simple.subjuntivo:3:plural; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_perfecto.subjuntivo:1:singular; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_perfecto.subjuntivo:2:singular; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_perfecto.subjuntivo:3:singular; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_perfecto.subjuntivo:1:plural; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_perfecto.subjuntivo:2:plural; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_perfecto.subjuntivo:3:plural; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope. Носитель отрицания заменён на естественного юридического субъекта; форма целевого 3:plural не менялась.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_pluscuamperfecto.subjuntivo:1:singular; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_pluscuamperfecto.subjuntivo:2:singular; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_pluscuamperfecto.subjuntivo:3:singular; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_pluscuamperfecto.subjuntivo:1:plural; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_pluscuamperfecto.subjuntivo:2:plural; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.preterito_pluscuamperfecto.subjuntivo:3:plural; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_perfecto.subjuntivo:1:singular; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_perfecto.subjuntivo:2:singular; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_perfecto.subjuntivo:3:singular; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_perfecto.subjuntivo:1:plural; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_perfecto.subjuntivo:2:plural; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Полностью переписаны ES/RU для es.futuro_perfecto.subjuntivo:3:plural; форма сверена с Jehle, значение sorprender/sorprenderse и субъектность уточнены, варианты приведены к четырём уникальным формам того же scope.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 /tmp/validate_sorprender.py",
+      "result": "pass",
+      "evidence": "96/96 exact Jehle forms; scope/mood/tense/person/number, one blank and four unique same-scope options with one answer checked."
+    },
+    {
+      "command": "semantic full read with answer substitution: sorprender 96/96",
+      "result": "pass",
+      "evidence": "All 96 ES/RU contexts read manually; surprise, catch in the act, take by surprise and explicit reflexive sorprenderse uses distinguished with clitics outside blanks."
+    },
+    {
+      "command": "native validate_artifact(sorprender); cmp source embedded",
+      "result": "pass",
+      "evidence": "Native verb-card validation passed and source is byte-identical to embedded."
+    },
+    {
+      "command": "baseline identity/order/top-level; JSON; git diff --check -- assigned paths; go test ./internal/grammartrainingpack",
+      "result": "pass",
+      "evidence": "Top-level fields and exact 16 scopes × 6 slots/order preserved; six literary/legal rare-scope groups and explicit De haberlo sabido translations checked."
+    },
+    {
+      "command": "manual post-draft semantic refinement: nine cards",
+      "result": "pass",
+      "evidence": "Corrected one 3:plural subject agreement, clarified four temporal/reference contexts, aligned one counterfactual object, one reflexive translation and one legal reporting subject; target forms/options/metadata unchanged."
+    },
+    {
+      "command": "independent full-card verification: sorprender 96/96; final source/report integrity",
+      "result": "pass",
+      "evidence": "A verifier other than the editor reread every final ES/RU card and confirmed 96 verification=ok with no unresolved findings."
+    },
+    {
+      "command": "final batch barrier: check.py; preservation-check.py; native validate_artifact; go test ./internal/verbtraining ./cmd/sync_verb_training_json; grammar_review_test.py; focused grammar-review check; git diff --check; skill quick_validate.py",
+      "result": "pass",
+      "evidence": "384 final cards and 24 primary checkpoints passed; source/embedded and fingerprints fresh; 25581 paths preserved; Go tests and 13 grammar-review tests passed; each source reports done; root and Spanish diffs clean; skill valid."
+    }
+  ],
+  "verification_note": "Независимо от редактора повторно прочитаны все 96 карточек в финальном source: формы, значения sorprender/sorprenderse, лица и числа, временные опоры, варианты, редкие формы и русские переводы подтверждены."
+}

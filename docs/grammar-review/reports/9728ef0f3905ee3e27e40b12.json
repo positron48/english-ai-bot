@@ -1,0 +1,632 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/producir.json",
+  "source_sha256": "b9fe6920e581e5813e66dcf1e57106ada75a24aa4340be05e8b55b13a804ab93",
+  "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197",
+  "editor": "Codex editor producir 2026-09-06",
+  "verifier": "Codex verifier producir 2026-09-06",
+  "phase": "done",
+  "reviewed_at": "2026-09-06",
+  "verified_at": "2026-09-06",
+  "questions": [
+    {
+      "id": "es.presente.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «produzco» для 1-го лица (ед.) числа сверена по Jehle; контекст presente indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «produces» для 2-го лица (ед.) числа сверена по Jehle; контекст presente indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «produce» для 3-го лица (ед.) числа сверена по Jehle; контекст presente indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «producimos» для 1-го лица (мн.) числа сверена по Jehle; контекст presente indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «producís» для 2-го лица (мн.) числа сверена по Jehle; контекст presente indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «producen» для 3-го лица (мн.) числа сверена по Jehle; контекст presente indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «producía» для 1-го лица (ед.) числа сверена по Jehle; контекст preterito_imperfecto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «producías» для 2-го лица (ед.) числа сверена по Jehle; контекст preterito_imperfecto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «producía» для 3-го лица (ед.) числа сверена по Jehle; контекст preterito_imperfecto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «producíamos» для 1-го лица (мн.) числа сверена по Jehle; контекст preterito_imperfecto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «producíais» для 2-го лица (мн.) числа сверена по Jehle; контекст preterito_imperfecto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «producían» для 3-го лица (мн.) числа сверена по Jehle; контекст preterito_imperfecto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «produje» для 1-го лица (ед.) числа сверена по Jehle; контекст preterito_indefinido indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «produjiste» для 2-го лица (ед.) числа сверена по Jehle; контекст preterito_indefinido indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «produjo» для 3-го лица (ед.) числа сверена по Jehle; контекст preterito_indefinido indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «produjimos» для 1-го лица (мн.) числа сверена по Jehle; контекст preterito_indefinido indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «produjisteis» для 2-го лица (мн.) числа сверена по Jehle; контекст preterito_indefinido indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «produjeron» для 3-го лица (мн.) числа сверена по Jehle; контекст preterito_indefinido indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «produciré» для 1-го лица (ед.) числа сверена по Jehle; контекст futuro_simple indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «producirás» для 2-го лица (ед.) числа сверена по Jehle; контекст futuro_simple indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «producirá» для 3-го лица (ед.) числа сверена по Jehle; контекст futuro_simple indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «produciremos» для 1-го лица (мн.) числа сверена по Jehle; контекст futuro_simple indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «produciréis» для 2-го лица (мн.) числа сверена по Jehle; контекст futuro_simple indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «producirán» для 3-го лица (мн.) числа сверена по Jehle; контекст futuro_simple indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «produciría» для 1-го лица (ед.) числа сверена по Jehle; контекст condicional_simple indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «producirías» для 2-го лица (ед.) числа сверена по Jehle; контекст condicional_simple indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «produciría» для 3-го лица (ед.) числа сверена по Jehle; контекст condicional_simple indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «produciríamos» для 1-го лица (мн.) числа сверена по Jehle; контекст condicional_simple indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «produciríais» для 2-го лица (мн.) числа сверена по Jehle; контекст condicional_simple indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «producirían» для 3-го лица (мн.) числа сверена по Jehle; контекст condicional_simple indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «he producido» для 1-го лица (ед.) числа сверена по Jehle; контекст preterito_perfecto_compuesto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «has producido» для 2-го лица (ед.) числа сверена по Jehle; контекст preterito_perfecto_compuesto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «ha producido» для 3-го лица (ед.) числа сверена по Jehle; контекст preterito_perfecto_compuesto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hemos producido» для 1-го лица (мн.) числа сверена по Jehle; контекст preterito_perfecto_compuesto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habéis producido» для 2-го лица (мн.) числа сверена по Jehle; контекст preterito_perfecto_compuesto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «han producido» для 3-го лица (мн.) числа сверена по Jehle; контекст preterito_perfecto_compuesto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «había producido» для 1-го лица (ед.) числа сверена по Jehle; контекст preterito_pluscuamperfecto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habías producido» для 2-го лица (ед.) числа сверена по Jehle; контекст preterito_pluscuamperfecto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «había producido» для 3-го лица (ед.) числа сверена по Jehle; контекст preterito_pluscuamperfecto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habíamos producido» для 1-го лица (мн.) числа сверена по Jehle; контекст preterito_pluscuamperfecto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habíais producido» для 2-го лица (мн.) числа сверена по Jehle; контекст preterito_pluscuamperfecto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habían producido» для 3-го лица (мн.) числа сверена по Jehle; контекст preterito_pluscuamperfecto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hube producido» для 1-го лица (ед.) числа сверена по Jehle; контекст preterito_anterior indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubiste producido» для 2-го лица (ед.) числа сверена по Jehle; контекст preterito_anterior indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubo producido» для 3-го лица (ед.) числа сверена по Jehle; контекст preterito_anterior indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubimos producido» для 1-го лица (мн.) числа сверена по Jehle; контекст preterito_anterior indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubisteis producido» для 2-го лица (мн.) числа сверена по Jehle; контекст preterito_anterior indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubieron producido» для 3-го лица (мн.) числа сверена по Jehle; контекст preterito_anterior indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habré producido» для 1-го лица (ед.) числа сверена по Jehle; контекст futuro_perfecto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habrás producido» для 2-го лица (ед.) числа сверена по Jehle; контекст futuro_perfecto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habrá producido» для 3-го лица (ед.) числа сверена по Jehle; контекст futuro_perfecto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habremos producido» для 1-го лица (мн.) числа сверена по Jehle; контекст futuro_perfecto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habréis producido» для 2-го лица (мн.) числа сверена по Jehle; контекст futuro_perfecto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habrán producido» для 3-го лица (мн.) числа сверена по Jehle; контекст futuro_perfecto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habría producido» для 1-го лица (ед.) числа сверена по Jehle; контекст condicional_perfecto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habrías producido» для 2-го лица (ед.) числа сверена по Jehle; контекст condicional_perfecto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habría producido» для 3-го лица (ед.) числа сверена по Jehle; контекст condicional_perfecto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habríamos producido» для 1-го лица (мн.) числа сверена по Jehle; контекст condicional_perfecto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habríais producido» для 2-го лица (мн.) числа сверена по Jehle; контекст condicional_perfecto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «habrían producido» для 3-го лица (мн.) числа сверена по Jehle; контекст condicional_perfecto indicativo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «produzca» для 1-го лица (ед.) числа сверена по Jehle; контекст presente subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «produzcas» для 2-го лица (ед.) числа сверена по Jehle; контекст presente subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «produzca» для 3-го лица (ед.) числа сверена по Jehle; контекст presente subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «produzcamos» для 1-го лица (мн.) числа сверена по Jehle; контекст presente subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «produzcáis» для 2-го лица (мн.) числа сверена по Jehle; контекст presente subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «produzcan» для 3-го лица (мн.) числа сверена по Jehle; контекст presente subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «produjera» для 1-го лица (ед.) числа сверена по Jehle; контекст preterito_imperfecto subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «produjeras» для 2-го лица (ед.) числа сверена по Jehle; контекст preterito_imperfecto subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «produjera» для 3-го лица (ед.) числа сверена по Jehle; контекст preterito_imperfecto subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «produjéramos» для 1-го лица (мн.) числа сверена по Jehle; контекст preterito_imperfecto subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «produjerais» для 2-го лица (мн.) числа сверена по Jehle; контекст preterito_imperfecto subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «produjeran» для 3-го лица (мн.) числа сверена по Jehle; контекст preterito_imperfecto subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «haya producido» для 1-го лица (ед.) числа сверена по Jehle; контекст preterito_perfecto subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hayas producido» для 2-го лица (ед.) числа сверена по Jehle; контекст preterito_perfecto subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «haya producido» для 3-го лица (ед.) числа сверена по Jehle; контекст preterito_perfecto subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hayamos producido» для 1-го лица (мн.) числа сверена по Jehle; контекст preterito_perfecto subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hayáis producido» для 2-го лица (мн.) числа сверена по Jehle; контекст preterito_perfecto subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hayan producido» для 3-го лица (мн.) числа сверена по Jehle; контекст preterito_perfecto subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubiera producido» для 1-го лица (ед.) числа сверена по Jehle; контекст preterito_pluscuamperfecto subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubieras producido» для 2-го лица (ед.) числа сверена по Jehle; контекст preterito_pluscuamperfecto subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubiera producido» для 3-го лица (ед.) числа сверена по Jehle; контекст preterito_pluscuamperfecto subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubiéramos producido» для 1-го лица (мн.) числа сверена по Jehle; контекст preterito_pluscuamperfecto subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubierais producido» для 2-го лица (мн.) числа сверена по Jehle; контекст preterito_pluscuamperfecto subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubieran producido» для 3-го лица (мн.) числа сверена по Jehle; контекст preterito_pluscuamperfecto subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubiere producido» для 1-го лица (ед.) числа сверена по Jehle; контекст futuro_perfecto subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubieres producido» для 2-го лица (ед.) числа сверена по Jehle; контекст futuro_perfecto subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubiere producido» для 3-го лица (ед.) числа сверена по Jehle; контекст futuro_perfecto subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubiéremos producido» для 1-го лица (мн.) числа сверена по Jehle; контекст futuro_perfecto subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubiereis producido» для 2-го лица (мн.) числа сверена по Jehle; контекст futuro_perfecto subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «hubieren producido» для 3-го лица (мн.) числа сверена по Jehle; контекст futuro_perfecto subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «produjere» для 1-го лица (ед.) числа сверена по Jehle; контекст futuro_simple subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «produjeres» для 2-го лица (ед.) числа сверена по Jehle; контекст futuro_simple subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «produjere» для 3-го лица (ед.) числа сверена по Jehle; контекст futuro_simple subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «produjéremos» для 1-го лица (мн.) числа сверена по Jehle; контекст futuro_simple subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «produjereis» для 2-го лица (мн.) числа сверена по Jehle; контекст futuro_simple subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка переписана: форма «produjeren» для 3-го лица (мн.) числа сверена по Jehle; контекст futuro_simple subjuntivo, русский перевод и четыре уникальных варианта согласованы.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "independent full-card review for producir",
+      "result": "pass",
+      "evidence": "All 96 final cards reviewed by Codex verifier producir 2026-09-06, independently from Codex editor producir 2026-09-06; any findings were fixed and rechecked."
+    },
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-06-es-verbs-producir-proponer/check.py",
+      "result": "pass",
+      "evidence": "384/384 exact Jehle forms, stable identities and original order, canonical metadata, unique same-scope options, matching embedded files and fresh fingerprints; 24 editorial checkpoints."
+    },
+    {
+      "command": "validate_artifact() from courses/spanish-grammar/scripts/generate-verb-forms-training.py for all four lemmas",
+      "result": "pass",
+      "evidence": "Strict 16 scopes x 6 slots validation passed for producir, prohibir, prometer and proponer."
+    },
+    {
+      "command": "go test ./internal/verbtraining ./cmd/sync_verb_training_json",
+      "result": "pass",
+      "evidence": "Both focused Go packages passed."
+    },
+    {
+      "command": "python3 scripts/grammar_review_test.py",
+      "result": "pass",
+      "evidence": "13 tests passed."
+    },
+    {
+      "command": "git diff --check && git -C courses/spanish-grammar diff --check",
+      "result": "pass",
+      "evidence": "No whitespace errors in root or Spanish course diff."
+    },
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-06-es-verbs-producir-proponer/preservation-check.py",
+      "result": "pass",
+      "evidence": "25403 preserved; 0 changed; 0 missing; 0 unexpected new files."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py check --language es --bank verbs --source <lemma-source>",
+      "result": "pass",
+      "evidence": "The final independently verified report is done with current source and context fingerprints."
+    }
+  ],
+  "verification_note": "Независимо проверены все 96 карточек: формы совпадают с Jehle, identity/order и метаданные сохранены, испанские подстановки и русские переводы передают нужные времена, варианты уникальны и взяты из той же парадигмы; source и embedded совпадают побайтно."
+}

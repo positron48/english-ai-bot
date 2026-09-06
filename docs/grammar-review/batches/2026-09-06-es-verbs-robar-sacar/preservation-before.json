@@ -1,0 +1,31 @@
+{
+  "existing_files": 25539,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/robar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/robar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/romper.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/romper.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/saber.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/saber.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/sacar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/sacar.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-robar-sacar",
+    "docs/grammar-review/reports/1dc60b5c2a312ed214069f6f.json",
+    "docs/grammar-review/reports/2e25197d11e6d8cc66d7a6d9.json",
+    "docs/grammar-review/reports/f65846161e662c9fb30e4708.json",
+    "docs/grammar-review/reports/bc74ad5ad7731201a9980119.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/robar.json": "9ad8003348be90fcbecb2ca4a5bc9a88013c199d8baac0b3c9b43854e1ad3a21",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/robar.json": "9ad8003348be90fcbecb2ca4a5bc9a88013c199d8baac0b3c9b43854e1ad3a21",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/romper.json": "f4f0c568edd06e042b286e8a6e37a0df1a3de59d23ce8c18ff3936f47c3271b3",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/romper.json": "f4f0c568edd06e042b286e8a6e37a0df1a3de59d23ce8c18ff3936f47c3271b3",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/saber.json": "4a769bb7d6732b9320036df7e33b6d28673af745763e26c3b4a857bb2b87fdee",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/saber.json": "4a769bb7d6732b9320036df7e33b6d28673af745763e26c3b4a857bb2b87fdee",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/sacar.json": "1f5f9a60727040d87d8527546401ae05c6bd73290cb41981c3939e79aee8865b",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/sacar.json": "1f5f9a60727040d87d8527546401ae05c6bd73290cb41981c3939e79aee8865b"
+  }
+}

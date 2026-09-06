@@ -1,0 +1,36 @@
+{
+  "existing_files": 25604,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/suceder.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/suceder.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/sufrir.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/sufrir.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/superar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/superar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/suponer.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/suponer.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-suceder-suponer",
+    "docs/grammar-review/reports/09c75bd66b82c950d3902d1b.json",
+    "docs/grammar-review/reports/aa9a82ac3d6a62dd54ba3880.json",
+    "docs/grammar-review/reports/3d3ccbe3f2284c4f0c2c3afd.json",
+    "docs/grammar-review/reports/8724239c01a3d1a7a71500fc.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/suceder.json": "63e2ec4551961b8a44fb2284e3def308a1c4ea7995fcd2fe16124672cba3e0de",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/suceder.json": "63e2ec4551961b8a44fb2284e3def308a1c4ea7995fcd2fe16124672cba3e0de",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/sufrir.json": "a9cf1f61be35019903d01dc3dea5471660bfd8b1147c1bd9705e15c66e5084fa",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/sufrir.json": "a9cf1f61be35019903d01dc3dea5471660bfd8b1147c1bd9705e15c66e5084fa",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/superar.json": "31274c8a07e9ad626651c378da992de938cdbac6911378c8b1c0e0d95181f4ca",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/superar.json": "31274c8a07e9ad626651c378da992de938cdbac6911378c8b1c0e0d95181f4ca",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/suponer.json": "c24e9416212aed05a6f325c5428e01c57abe24b9deb30e95ef117346affeae49",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/suponer.json": "c24e9416212aed05a6f325c5428e01c57abe24b9deb30e95ef117346affeae49"
+  },
+  "preexisting_missing_tracked": [
+    "courses/english-grammar/llm-benchmark/__pycache__/benchmark.cpython-314.pyc",
+    "courses/english-grammar/training-pack-admin/__pycache__/server.cpython-314.pyc",
+    "tools-local/complaints-worker/__pycache__/worker.cpython-314.pyc"
+  ]
+}

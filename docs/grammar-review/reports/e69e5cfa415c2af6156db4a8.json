@@ -1,0 +1,632 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/tocar.json",
+  "source_sha256": "1cec18cbb66e39f5255bdec8c3d3679ad5fb1bc1616b186cf4cb00c6f7c40f25",
+  "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197",
+  "editor": "Codex coordinator editor 2026-09-06",
+  "verifier": "Laplace verifier 2026-09-06",
+  "phase": "done",
+  "reviewed_at": "2026-09-06",
+  "verified_at": "2026-09-06",
+  "questions": [
+    {
+      "id": "es.presente.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:1:singular полностью переписана: форма Jehle «toco», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:2:singular полностью переписана: форма Jehle «tocas», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:3:singular полностью переписана: форма Jehle «toca», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:1:plural полностью переписана: форма Jehle «tocamos», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:2:plural полностью переписана: форма Jehle «tocáis», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:3:plural полностью переписана: форма Jehle «tocan», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:1:singular полностью переписана: форма Jehle «tocaba», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:2:singular полностью переписана: форма Jehle «tocabas», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:3:singular полностью переписана: форма Jehle «tocaba», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:1:plural полностью переписана: форма Jehle «tocábamos», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:2:plural полностью переписана: форма Jehle «tocabais», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:3:plural полностью переписана: форма Jehle «tocaban», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:1:singular полностью переписана: форма Jehle «toqué», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:2:singular полностью переписана: форма Jehle «tocaste», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:3:singular полностью переписана: форма Jehle «tocó», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:1:plural полностью переписана: форма Jehle «tocamos», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:2:plural полностью переписана: форма Jehle «tocasteis», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:3:plural полностью переписана: форма Jehle «tocaron», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:1:singular полностью переписана: форма Jehle «tocaré», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:2:singular полностью переписана: форма Jehle «tocarás», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:3:singular полностью переписана: форма Jehle «tocará», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:1:plural полностью переписана: форма Jehle «tocaremos», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:2:plural полностью переписана: форма Jehle «tocaréis», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:3:plural полностью переписана: форма Jehle «tocarán», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:1:singular полностью переписана: форма Jehle «tocaría», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:2:singular полностью переписана: форма Jehle «tocarías», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:3:singular полностью переписана: форма Jehle «tocaría», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:1:plural полностью переписана: форма Jehle «tocaríamos», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:2:plural полностью переписана: форма Jehle «tocaríais», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:3:plural полностью переписана: форма Jehle «tocarían», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:1:singular полностью переписана: форма Jehle «he tocado», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:2:singular полностью переписана: форма Jehle «has tocado», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:3:singular полностью переписана: форма Jehle «ha tocado», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:1:plural полностью переписана: форма Jehle «hemos tocado», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:2:plural полностью переписана: форма Jehle «habéis tocado», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:3:plural полностью переписана: форма Jehle «han tocado», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:1:singular полностью переписана: форма Jehle «había tocado», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:2:singular полностью переписана: форма Jehle «habías tocado», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:3:singular полностью переписана: форма Jehle «había tocado», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:1:plural полностью переписана: форма Jehle «habíamos tocado», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены. Координатор уточнил вид русского глагола или контекст, чтобы значение и временная опора были однозначны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:2:plural полностью переписана: форма Jehle «habíais tocado», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:3:plural полностью переписана: форма Jehle «habían tocado», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:1:singular полностью переписана: форма Jehle «hube tocado», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:2:singular полностью переписана: форма Jehle «hubiste tocado», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:3:singular полностью переписана: форма Jehle «hubo tocado», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:1:plural полностью переписана: форма Jehle «hubimos tocado», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:2:plural полностью переписана: форма Jehle «hubisteis tocado», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:3:plural полностью переписана: форма Jehle «hubieron tocado», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:1:singular полностью переписана: форма Jehle «habré tocado», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:2:singular полностью переписана: форма Jehle «habrás tocado», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены. Координатор уточнил вид русского глагола или контекст, чтобы значение и временная опора были однозначны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:3:singular полностью переписана: форма Jehle «habrá tocado», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:1:plural полностью переписана: форма Jehle «habremos tocado», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:2:plural полностью переписана: форма Jehle «habréis tocado», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:3:plural полностью переписана: форма Jehle «habrán tocado», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:1:singular полностью переписана: форма Jehle «habría tocado», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:2:singular полностью переписана: форма Jehle «habrías tocado», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:3:singular полностью переписана: форма Jehle «habría tocado», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:1:plural полностью переписана: форма Jehle «habríamos tocado», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены. После замечания независимого проверяющего объект уточнён до «el tema del presupuesto», чтобы tocar однозначно означало затронуть тему, а не изменить бюджет.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:2:plural полностью переписана: форма Jehle «habríais tocado», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:3:plural полностью переписана: форма Jehle «habrían tocado», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены. Координатор уточнил вид русского глагола или контекст, чтобы значение и временная опора были однозначны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:1:singular полностью переписана: форма Jehle «toque», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:2:singular полностью переписана: форма Jehle «toques», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:3:singular полностью переписана: форма Jehle «toque», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:1:plural полностью переписана: форма Jehle «toquemos», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены. Координатор уточнил вид русского глагола или контекст, чтобы значение и временная опора были однозначны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:2:plural полностью переписана: форма Jehle «toquéis», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:3:plural полностью переписана: форма Jehle «toquen», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:1:singular полностью переписана: форма Jehle «tocara», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:2:singular полностью переписана: форма Jehle «tocaras», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:3:singular полностью переписана: форма Jehle «tocara», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:1:plural полностью переписана: форма Jehle «tocáramos», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:2:plural полностью переписана: форма Jehle «tocarais», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:3:plural полностью переписана: форма Jehle «tocaran», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:1:singular полностью переписана: форма Jehle «tocare», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:2:singular полностью переписана: форма Jehle «tocares», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:3:singular полностью переписана: форма Jehle «tocare», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:1:plural полностью переписана: форма Jehle «tocáremos», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:2:plural полностью переписана: форма Jehle «tocareis», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:3:plural полностью переписана: форма Jehle «tocaren», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:1:singular полностью переписана: форма Jehle «haya tocado», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены. Координатор уточнил вид русского глагола или контекст, чтобы значение и временная опора были однозначны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:2:singular полностью переписана: форма Jehle «hayas tocado», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:3:singular полностью переписана: форма Jehle «haya tocado», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:1:plural полностью переписана: форма Jehle «hayamos tocado», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:2:plural полностью переписана: форма Jehle «hayáis tocado», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:3:plural полностью переписана: форма Jehle «hayan tocado», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:1:singular полностью переписана: форма Jehle «hubiera tocado», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:2:singular полностью переписана: форма Jehle «hubieras tocado», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:3:singular полностью переписана: форма Jehle «hubiera tocado», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:1:plural полностью переписана: форма Jehle «hubiéramos tocado», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:2:plural полностью переписана: форма Jehle «hubierais tocado», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены. Координатор уточнил вид русского глагола или контекст, чтобы значение и временная опора были однозначны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:3:plural полностью переписана: форма Jehle «hubieran tocado», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:1:singular полностью переписана: форма Jehle «hubiere tocado», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:2:singular полностью переписана: форма Jehle «hubieres tocado», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:3:singular полностью переписана: форма Jehle «hubiere tocado», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:1:plural полностью переписана: форма Jehle «hubiéremos tocado», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:2:plural полностью переписана: форма Jehle «hubiereis tocado», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены. Координатор уточнил вид русского глагола или контекст, чтобы значение и временная опора были однозначны.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:3:plural полностью переписана: форма Jehle «hubieren tocado», значение tocar, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "full 96-card semantic editorial read: tocar meanings, ES/RU alignment and rare-register framing",
+      "result": "pass",
+      "evidence": "All 96 contexts rewritten and read; touching, playing music, knocking/ringing, addressing a topic and reaching a place are used with clear objects and translations."
+    },
+    {
+      "command": "Jehle forms; metadata; one blank; four unique same-scope options; one answer; identity/order/top-level preservation",
+      "result": "pass",
+      "evidence": "96 exact forms; all options, blanks and preserved contracts pass."
+    },
+    {
+      "command": "six De haberlo sabido counterfactual translations",
+      "result": "pass",
+      "evidence": "All six Russian translations begin with explicit Если бы and preserve hypothetical meaning."
+    },
+    {
+      "command": "coordinator refinement after full 96-card read",
+      "result": "pass",
+      "evidence": "Adjusted seven contexts/translations for completed aspect, tocar semantics, natural Russian and unambiguous literary/legal framing."
+    },
+    {
+      "command": "independent full read 96/96 with substituted forms; /tmp/verify_tocar.py; authoritative Jehle forms; cmp; baseline identity/order/top-level; validate_artifact(tocar); go test ./internal/grammartrainingpack",
+      "result": "known_baseline",
+      "evidence": "95/96 semantic cards accepted. All 96 structural/form/option/blank checks, 18 rare-register contexts, six explicit counterfactual translations, source=embedded, canonical fingerprint and native/Go validation pass. One precise ambiguity remains at es.condicional_perfecto.indicativo:1:plural. Finding corrected and accepted in final recheck at fingerprint 1cec18cbb66e39f5255bdec8c3d3679ad5fb1bc1616b186cf4cb00c6f7c40f25."
+    },
+    {
+      "command": "original editor correction after independent tocar verification",
+      "result": "pass",
+      "evidence": "Clarified tocar el tema del presupuesto in conditional perfect 1p; source and embedded synchronized; form, identity and options preserved."
+    },
+    {
+      "command": "final independent recheck: tocar es.condicional_perfecto.indicativo:1:plural; exact ES/RU assertion; fingerprint/cmp; validate_artifact; Go test",
+      "result": "pass",
+      "evidence": "Corrected card accepted with unambiguous el tema del presupuesto wording; surface form, options and RU preserved. Source=embedded, fingerprint 1cec18cbb66e39f5255bdec8c3d3679ad5fb1bc1616b186cf4cb00c6f7c40f25, native validation and Go test pass; all 96 verification rows are ok."
+    },
+    {
+      "command": "final batch barrier: check.py; native validate_artifact; focused Go tests; grammar_review_test.py; focused/full status; preservation; root/course diff checks; skill quick_validate",
+      "result": "pass",
+      "evidence": "PASS: 384 cards and 24 checkpoints; native 96/96 each; Go packages pass; 13 grammar-review tests pass; four focused sources done; preservation 25623/0/0/0; diff checks and skill validation pass."
+    }
+  ],
+  "verification_note": "Независимая проверка завершена: 96/96 карточек приняты. Повторно проверена исправленная es.condicional_perfecto.indicativo:1:plural: выражение «tocar antes el tema del presupuesto» теперь однозначно соответствует русскому «раньше затронули вопрос бюджета» и сохраняет явный контрфактический смысл. Source и embedded совпадают, fingerprint актуален, форма и варианты сохранены."
+}

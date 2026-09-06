@@ -1,0 +1,46 @@
+{
+  "viajar": {
+    "wrong_surface_cards": 15,
+    "duplicate_option_cards": 21,
+    "answer_count_bad_cards": 29,
+    "offscope_option_entries": 160,
+    "offscope_option_cards": 61,
+    "invalid_union_entries": 56,
+    "invalid_union_cards": 20,
+    "metadata_cards": 0,
+    "blank_cards": 0
+  },
+  "visitar": {
+    "wrong_surface_cards": 14,
+    "duplicate_option_cards": 53,
+    "answer_count_bad_cards": 52,
+    "offscope_option_entries": 90,
+    "offscope_option_cards": 40,
+    "invalid_union_entries": 34,
+    "invalid_union_cards": 28,
+    "metadata_cards": 0,
+    "blank_cards": 0
+  },
+  "vivir": {
+    "wrong_surface_cards": 12,
+    "duplicate_option_cards": 7,
+    "answer_count_bad_cards": 19,
+    "offscope_option_entries": 149,
+    "offscope_option_cards": 71,
+    "invalid_union_entries": 24,
+    "invalid_union_cards": 24,
+    "metadata_cards": 6,
+    "blank_cards": 12
+  },
+  "volar": {
+    "wrong_surface_cards": 34,
+    "duplicate_option_cards": 47,
+    "answer_count_bad_cards": 65,
+    "offscope_option_entries": 190,
+    "offscope_option_cards": 72,
+    "invalid_union_entries": 86,
+    "invalid_union_cards": 43,
+    "metadata_cards": 0,
+    "blank_cards": 0
+  }
+}

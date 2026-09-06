@@ -1,0 +1,31 @@
+{
+  "existing_files": 25224,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/huir.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/huir.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/importar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/importar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/incluir.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/incluir.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/indicar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/indicar.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-huir-indicar",
+    "docs/grammar-review/reports/d4c24fd9d851f18452735371.json",
+    "docs/grammar-review/reports/9608904fb6f78e334a82611e.json",
+    "docs/grammar-review/reports/bbc54f13efabcbc6eca177ad.json",
+    "docs/grammar-review/reports/97c74c265908a36c32df3a93.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/huir.json": "3c457f947359d5396faa56ce954f990329426aaa8e1fe381baaeaa2c83fdb0f1",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/huir.json": "3c457f947359d5396faa56ce954f990329426aaa8e1fe381baaeaa2c83fdb0f1",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/importar.json": "58d83fd7665ca18c73f8b69fc442bda6b959e5d54852b498652f1c4de42c12f8",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/importar.json": "58d83fd7665ca18c73f8b69fc442bda6b959e5d54852b498652f1c4de42c12f8",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/incluir.json": "89acc2f94b629104baf8d530975cefef2d15dc7972f474763577ce23eabdd0c4",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/incluir.json": "89acc2f94b629104baf8d530975cefef2d15dc7972f474763577ce23eabdd0c4",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/indicar.json": "ac682f79df24d281decd1b833ca7f52558b7d1b630cab4f1807b3c8d72e738fd",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/indicar.json": "ac682f79df24d281decd1b833ca7f52558b7d1b630cab4f1807b3c8d72e738fd"
+  }
+}

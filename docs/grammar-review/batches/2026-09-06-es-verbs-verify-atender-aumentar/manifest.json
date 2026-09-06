@@ -1,0 +1,34 @@
+{
+  "atender": {
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/atender.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/atender.json",
+    "report": "docs/grammar-review/reports/142716ee16e421cfa9a35ce7.json",
+    "editor": "Codex editor 2026-09-06",
+    "source_sha256": "35ee990e400cefe2d35c7f64523b68f85bdd29750344cbd9926cb3cffeaef3ad",
+    "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197"
+  },
+  "atraer": {
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/atraer.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/atraer.json",
+    "report": "docs/grammar-review/reports/25645fc79f9c101949a237bf.json",
+    "editor": "Codex editor 2026-09-06",
+    "source_sha256": "0db882a80a758c03a969c771863bbecd1022781926815b46826f86cc8803ed93",
+    "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197"
+  },
+  "atravesar": {
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/atravesar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/atravesar.json",
+    "report": "docs/grammar-review/reports/64326cc1c681bf3f080417f5.json",
+    "editor": "Codex editor 2026-09-06",
+    "source_sha256": "175b91d2ffe22d43b65419b17e085f13cf9d037edd283cb33a65b02bb7ce61ba",
+    "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197"
+  },
+  "aumentar": {
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/aumentar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/aumentar.json",
+    "report": "docs/grammar-review/reports/687580fed1a214162fbc07a7.json",
+    "editor": "Codex editor 2026-09-06",
+    "source_sha256": "04541a092081e3a782ac32eaef7b5c4fdc35f9e6333588a647aa5b026a34d42e",
+    "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197"
+  }
+}

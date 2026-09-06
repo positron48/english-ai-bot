@@ -4,106 +4,106 @@
   "source_sha256": "48e4702f58326b4726becd00133ba3ed770851d0d17cfe60feea47fdf614f346",
   "context_sha256": "9fdba53951595674bc94b4350a94f40a8664f9efd8ad982e25918ddab4725fd2",
   "editor": "Codex editor 2026-09-04",
-  "verifier": "",
-  "phase": "awaiting_verification",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
   "reviewed_at": "2026-09-04T09:37:39.850848+00:00",
-  "verified_at": "",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
   "questions": [
     {
       "id": "q1",
       "decision": "fixed",
       "note": "Один подходящий пример papel; ударение и окончание l верны. Только техническая правка: пересчитана исходно устаревшая signature штатной функцией; содержание сохранено.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q2",
       "decision": "fixed",
       "note": "Снято ложное утверждение о наличии ударения у любого слова; выбран конкретный casa.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q3",
       "decision": "fixed",
       "note": "Повтор papel заменён определением ударного слога по заданному произношению.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q4",
       "decision": "fixed",
       "note": "Ложное «ударение не соответствует правилам» заменено различием письма и произношения.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q5",
       "decision": "fixed",
       "note": "Убрана кириллическая С в испанском термине; определение уточнено.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q6",
       "decision": "fixed",
       "note": "Повтор papel заменён сравнением двух знакомых примеров с одинаковой позицией ударения.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q7",
       "decision": "fixed",
       "note": "manzana — единственный вариант без tilde; ударение man-ZA-na верно. Только техническая правка: пересчитана исходно устаревшая signature штатной функцией; содержание сохранено.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q8",
       "decision": "fixed",
       "note": "Исправлен ложный ключ о нарушении правил ударения; тильда показывает нормативное ударение.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q9",
       "decision": "fixed",
       "note": "Удалён второй допустимый ответ sílaba acentuada и ложное утверждение о его недопустимости.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q10",
       "decision": "fixed",
       "note": "Исправлено общее правило «первый» на «предпоследний»; проверены остальные варианты.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q11",
       "decision": "fixed",
       "note": "Уточнена формулировка правильного варианта: ударение café нормативно, а не нарушает правило.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q13",
       "decision": "fixed",
       "note": "Убраны два подходящих утверждения и обобщение о каждом слове; сравниваются mesa/café.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q14",
       "decision": "fixed",
       "note": "Повтор papel заменён нахождением слога lé в четырёхсложном слове.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q15",
       "decision": "fixed",
       "note": "Устранена ложная трактовка tilde как нарушения правил; знак явно определён как ´.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q17",
       "decision": "fixed",
       "note": "Исправлено ложное ударение lápiz и правило первого слога; повтор mesa заменён сравнением.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q18",
       "decision": "fixed",
       "note": "Повтор papel заменён чтением ударного слога manzana; убрана смешанная транскрипция.",
-      "verification": "pending"
+      "verification": "ok"
     }
   ],
   "checks": [
@@ -121,7 +121,12 @@
       "command": "git diff --check && git -C courses/spanish-grammar diff --check && git -C courses/english-grammar diff --check",
       "result": "pass",
       "evidence": "All three commands exited 0."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
     }
   ],
-  "verification_note": ""
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
 }

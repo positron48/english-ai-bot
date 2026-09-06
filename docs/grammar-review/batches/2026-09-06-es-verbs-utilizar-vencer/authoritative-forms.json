@@ -1,0 +1,536 @@
+{
+  "_sources": {
+    "jehle_csv": "resources/verbs/jehle_verb_database.csv",
+    "sha256": "f77f01d536cd351584051d76902ff8051ab1b945a38e69c7ed02da78ab082ea8"
+  },
+  "_slots": [
+    "1:singular",
+    "2:singular",
+    "3:singular",
+    "1:plural",
+    "2:plural",
+    "3:plural"
+  ],
+  "forms": {
+    "utilizar": {
+      "es.presente.indicativo": [
+        "utilizo",
+        "utilizas",
+        "utiliza",
+        "utilizamos",
+        "utilizáis",
+        "utilizan"
+      ],
+      "es.preterito_imperfecto.indicativo": [
+        "utilizaba",
+        "utilizabas",
+        "utilizaba",
+        "utilizábamos",
+        "utilizabais",
+        "utilizaban"
+      ],
+      "es.preterito_indefinido.indicativo": [
+        "utilicé",
+        "utilizaste",
+        "utilizó",
+        "utilizamos",
+        "utilizasteis",
+        "utilizaron"
+      ],
+      "es.futuro_simple.indicativo": [
+        "utilizaré",
+        "utilizarás",
+        "utilizará",
+        "utilizaremos",
+        "utilizaréis",
+        "utilizarán"
+      ],
+      "es.condicional_simple.indicativo": [
+        "utilizaría",
+        "utilizarías",
+        "utilizaría",
+        "utilizaríamos",
+        "utilizaríais",
+        "utilizarían"
+      ],
+      "es.preterito_perfecto_compuesto.indicativo": [
+        "he utilizado",
+        "has utilizado",
+        "ha utilizado",
+        "hemos utilizado",
+        "habéis utilizado",
+        "han utilizado"
+      ],
+      "es.preterito_pluscuamperfecto.indicativo": [
+        "había utilizado",
+        "habías utilizado",
+        "había utilizado",
+        "habíamos utilizado",
+        "habíais utilizado",
+        "habían utilizado"
+      ],
+      "es.preterito_anterior.indicativo": [
+        "hube utilizado",
+        "hubiste utilizado",
+        "hubo utilizado",
+        "hubimos utilizado",
+        "hubisteis utilizado",
+        "hubieron utilizado"
+      ],
+      "es.futuro_perfecto.indicativo": [
+        "habré utilizado",
+        "habrás utilizado",
+        "habrá utilizado",
+        "habremos utilizado",
+        "habréis utilizado",
+        "habrán utilizado"
+      ],
+      "es.condicional_perfecto.indicativo": [
+        "habría utilizado",
+        "habrías utilizado",
+        "habría utilizado",
+        "habríamos utilizado",
+        "habríais utilizado",
+        "habrían utilizado"
+      ],
+      "es.presente.subjuntivo": [
+        "utilice",
+        "utilices",
+        "utilice",
+        "utilicemos",
+        "utilicéis",
+        "utilicen"
+      ],
+      "es.preterito_imperfecto.subjuntivo": [
+        "utilizara",
+        "utilizaras",
+        "utilizara",
+        "utilizáramos",
+        "utilizarais",
+        "utilizaran"
+      ],
+      "es.futuro_simple.subjuntivo": [
+        "utilizare",
+        "utilizares",
+        "utilizare",
+        "utilizáremos",
+        "utilizareis",
+        "utilizaren"
+      ],
+      "es.preterito_perfecto.subjuntivo": [
+        "haya utilizado",
+        "hayas utilizado",
+        "haya utilizado",
+        "hayamos utilizado",
+        "hayáis utilizado",
+        "hayan utilizado"
+      ],
+      "es.preterito_pluscuamperfecto.subjuntivo": [
+        "hubiera utilizado",
+        "hubieras utilizado",
+        "hubiera utilizado",
+        "hubiéramos utilizado",
+        "hubierais utilizado",
+        "hubieran utilizado"
+      ],
+      "es.futuro_perfecto.subjuntivo": [
+        "hubiere utilizado",
+        "hubieres utilizado",
+        "hubiere utilizado",
+        "hubiéremos utilizado",
+        "hubiereis utilizado",
+        "hubieren utilizado"
+      ]
+    },
+    "vaciar": {
+      "es.presente.indicativo": [
+        "vacío",
+        "vacías",
+        "vacía",
+        "vaciamos",
+        "vaciáis",
+        "vacían"
+      ],
+      "es.preterito_imperfecto.indicativo": [
+        "vaciaba",
+        "vaciabas",
+        "vaciaba",
+        "vaciábamos",
+        "vaciabais",
+        "vaciaban"
+      ],
+      "es.preterito_indefinido.indicativo": [
+        "vacié",
+        "vaciaste",
+        "vació",
+        "vaciamos",
+        "vaciasteis",
+        "vaciaron"
+      ],
+      "es.futuro_simple.indicativo": [
+        "vaciaré",
+        "vaciarás",
+        "vaciará",
+        "vaciaremos",
+        "vaciaréis",
+        "vaciarán"
+      ],
+      "es.condicional_simple.indicativo": [
+        "vaciaría",
+        "vaciarías",
+        "vaciaría",
+        "vaciaríamos",
+        "vaciaríais",
+        "vaciarían"
+      ],
+      "es.preterito_perfecto_compuesto.indicativo": [
+        "he vaciado",
+        "has vaciado",
+        "ha vaciado",
+        "hemos vaciado",
+        "habéis vaciado",
+        "han vaciado"
+      ],
+      "es.preterito_pluscuamperfecto.indicativo": [
+        "había vaciado",
+        "habías vaciado",
+        "había vaciado",
+        "habíamos vaciado",
+        "habíais vaciado",
+        "habían vaciado"
+      ],
+      "es.preterito_anterior.indicativo": [
+        "hube vaciado",
+        "hubiste vaciado",
+        "hubo vaciado",
+        "hubimos vaciado",
+        "hubisteis vaciado",
+        "hubieron vaciado"
+      ],
+      "es.futuro_perfecto.indicativo": [
+        "habré vaciado",
+        "habrás vaciado",
+        "habrá vaciado",
+        "habremos vaciado",
+        "habréis vaciado",
+        "habrán vaciado"
+      ],
+      "es.condicional_perfecto.indicativo": [
+        "habría vaciado",
+        "habrías vaciado",
+        "habría vaciado",
+        "habríamos vaciado",
+        "habríais vaciado",
+        "habrían vaciado"
+      ],
+      "es.presente.subjuntivo": [
+        "vacíe",
+        "vacíes",
+        "vacíe",
+        "vaciemos",
+        "vaciéis",
+        "vacíen"
+      ],
+      "es.preterito_imperfecto.subjuntivo": [
+        "vaciara",
+        "vaciaras",
+        "vaciara",
+        "vaciáramos",
+        "vaciarais",
+        "vaciaran"
+      ],
+      "es.futuro_simple.subjuntivo": [
+        "vaciare",
+        "vaciares",
+        "vaciare",
+        "vaciáremos",
+        "vaciareis",
+        "vaciaren"
+      ],
+      "es.preterito_perfecto.subjuntivo": [
+        "haya vaciado",
+        "hayas vaciado",
+        "haya vaciado",
+        "hayamos vaciado",
+        "hayáis vaciado",
+        "hayan vaciado"
+      ],
+      "es.preterito_pluscuamperfecto.subjuntivo": [
+        "hubiera vaciado",
+        "hubieras vaciado",
+        "hubiera vaciado",
+        "hubiéramos vaciado",
+        "hubierais vaciado",
+        "hubieran vaciado"
+      ],
+      "es.futuro_perfecto.subjuntivo": [
+        "hubiere vaciado",
+        "hubieres vaciado",
+        "hubiere vaciado",
+        "hubiéremos vaciado",
+        "hubiereis vaciado",
+        "hubieren vaciado"
+      ]
+    },
+    "valer": {
+      "es.presente.indicativo": [
+        "valgo",
+        "vales",
+        "vale",
+        "valemos",
+        "valéis",
+        "valen"
+      ],
+      "es.preterito_imperfecto.indicativo": [
+        "valía",
+        "valías",
+        "valía",
+        "valíamos",
+        "valíais",
+        "valían"
+      ],
+      "es.preterito_indefinido.indicativo": [
+        "valí",
+        "valiste",
+        "valió",
+        "valimos",
+        "valisteis",
+        "valieron"
+      ],
+      "es.futuro_simple.indicativo": [
+        "valdré",
+        "valdrás",
+        "valdrá",
+        "valdremos",
+        "valdréis",
+        "valdrán"
+      ],
+      "es.condicional_simple.indicativo": [
+        "valdría",
+        "valdrías",
+        "valdría",
+        "valdríamos",
+        "valdríais",
+        "valdrían"
+      ],
+      "es.preterito_perfecto_compuesto.indicativo": [
+        "he valido",
+        "has valido",
+        "ha valido",
+        "hemos valido",
+        "habéis valido",
+        "han valido"
+      ],
+      "es.preterito_pluscuamperfecto.indicativo": [
+        "había valido",
+        "habías valido",
+        "había valido",
+        "habíamos valido",
+        "habíais valido",
+        "habían valido"
+      ],
+      "es.preterito_anterior.indicativo": [
+        "hube valido",
+        "hubiste valido",
+        "hubo valido",
+        "hubimos valido",
+        "hubisteis valido",
+        "hubieron valido"
+      ],
+      "es.futuro_perfecto.indicativo": [
+        "habré valido",
+        "habrás valido",
+        "habrá valido",
+        "habremos valido",
+        "habréis valido",
+        "habrán valido"
+      ],
+      "es.condicional_perfecto.indicativo": [
+        "habría valido",
+        "habrías valido",
+        "habría valido",
+        "habríamos valido",
+        "habríais valido",
+        "habrían valido"
+      ],
+      "es.presente.subjuntivo": [
+        "valga",
+        "valgas",
+        "valga",
+        "valgamos",
+        "valgáis",
+        "valgan"
+      ],
+      "es.preterito_imperfecto.subjuntivo": [
+        "valiera",
+        "valieras",
+        "valiera",
+        "valiéramos",
+        "valierais",
+        "valieran"
+      ],
+      "es.futuro_simple.subjuntivo": [
+        "valiere",
+        "valieres",
+        "valiere",
+        "valiéremos",
+        "valiereis",
+        "valieren"
+      ],
+      "es.preterito_perfecto.subjuntivo": [
+        "haya valido",
+        "hayas valido",
+        "haya valido",
+        "hayamos valido",
+        "hayáis valido",
+        "hayan valido"
+      ],
+      "es.preterito_pluscuamperfecto.subjuntivo": [
+        "hubiera valido",
+        "hubieras valido",
+        "hubiera valido",
+        "hubiéramos valido",
+        "hubierais valido",
+        "hubieran valido"
+      ],
+      "es.futuro_perfecto.subjuntivo": [
+        "hubiere valido",
+        "hubieres valido",
+        "hubiere valido",
+        "hubiéremos valido",
+        "hubiereis valido",
+        "hubieren valido"
+      ]
+    },
+    "vencer": {
+      "es.presente.indicativo": [
+        "venzo",
+        "vences",
+        "vence",
+        "vencemos",
+        "vencéis",
+        "vencen"
+      ],
+      "es.preterito_imperfecto.indicativo": [
+        "vencía",
+        "vencías",
+        "vencía",
+        "vencíamos",
+        "vencíais",
+        "vencían"
+      ],
+      "es.preterito_indefinido.indicativo": [
+        "vencí",
+        "venciste",
+        "venció",
+        "vencimos",
+        "vencisteis",
+        "vencieron"
+      ],
+      "es.futuro_simple.indicativo": [
+        "venceré",
+        "vencerás",
+        "vencerá",
+        "venceremos",
+        "venceréis",
+        "vencerán"
+      ],
+      "es.condicional_simple.indicativo": [
+        "vencería",
+        "vencerías",
+        "vencería",
+        "venceríamos",
+        "venceríais",
+        "vencerían"
+      ],
+      "es.preterito_perfecto_compuesto.indicativo": [
+        "he vencido",
+        "has vencido",
+        "ha vencido",
+        "hemos vencido",
+        "habéis vencido",
+        "han vencido"
+      ],
+      "es.preterito_pluscuamperfecto.indicativo": [
+        "había vencido",
+        "habías vencido",
+        "había vencido",
+        "habíamos vencido",
+        "habíais vencido",
+        "habían vencido"
+      ],
+      "es.preterito_anterior.indicativo": [
+        "hube vencido",
+        "hubiste vencido",
+        "hubo vencido",
+        "hubimos vencido",
+        "hubisteis vencido",
+        "hubieron vencido"
+      ],
+      "es.futuro_perfecto.indicativo": [
+        "habré vencido",
+        "habrás vencido",
+        "habrá vencido",
+        "habremos vencido",
+        "habréis vencido",
+        "habrán vencido"
+      ],
+      "es.condicional_perfecto.indicativo": [
+        "habría vencido",
+        "habrías vencido",
+        "habría vencido",
+        "habríamos vencido",
+        "habríais vencido",
+        "habrían vencido"
+      ],
+      "es.presente.subjuntivo": [
+        "venza",
+        "venzas",
+        "venza",
+        "venzamos",
+        "venzáis",
+        "venzan"
+      ],
+      "es.preterito_imperfecto.subjuntivo": [
+        "venciera",
+        "vencieras",
+        "venciera",
+        "venciéramos",
+        "vencierais",
+        "vencieran"
+      ],
+      "es.futuro_simple.subjuntivo": [
+        "venciere",
+        "vencieres",
+        "venciere",
+        "venciéremos",
+        "venciereis",
+        "vencieren"
+      ],
+      "es.preterito_perfecto.subjuntivo": [
+        "haya vencido",
+        "hayas vencido",
+        "haya vencido",
+        "hayamos vencido",
+        "hayáis vencido",
+        "hayan vencido"
+      ],
+      "es.preterito_pluscuamperfecto.subjuntivo": [
+        "hubiera vencido",
+        "hubieras vencido",
+        "hubiera vencido",
+        "hubiéramos vencido",
+        "hubierais vencido",
+        "hubieran vencido"
+      ],
+      "es.futuro_perfecto.subjuntivo": [
+        "hubiere vencido",
+        "hubieres vencido",
+        "hubiere vencido",
+        "hubiéremos vencido",
+        "hubiereis vencido",
+        "hubieren vencido"
+      ]
+    }
+  }
+}

@@ -1,0 +1,642 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/trabajar.json",
+  "source_sha256": "b6819fedb3bcf3417a0bc8ebe146a8fa2cfe28a8efdbbee2acdd180caaf1b19c",
+  "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197",
+  "editor": "Aristotle editor 2026-09-06",
+  "verifier": "Helmholtz verifier 2026-09-06",
+  "phase": "done",
+  "reviewed_at": "2026-09-06",
+  "verified_at": "2026-09-06",
+  "questions": [
+    {
+      "id": "es.presente.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:1:singular полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:2:singular полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:3:singular полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:1:plural полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:2:plural полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:3:plural полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:1:singular полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:2:singular полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:3:singular полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:1:plural полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:2:plural полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:3:plural полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:1:singular полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:2:singular полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:3:singular полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:1:plural полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:2:plural полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:3:plural полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены. Финальная авторская вычитка дополнительно уточнила управление и полное ES/RU соответствие.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:1:singular полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:2:singular полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:3:singular полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:1:plural полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:2:plural полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:3:plural полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:1:singular полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены. Координаторская вычитка уточнила самодостаточность условия и точное ES/RU соответствие; form/identity/options сохранены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:2:singular полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:3:singular полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:1:plural полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:2:plural полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:3:plural полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:1:singular полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены. Финальная авторская вычитка дополнительно уточнила управление и полное ES/RU соответствие.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:2:singular полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:3:singular полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:1:plural полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены. Финальная авторская вычитка дополнительно уточнила управление и полное ES/RU соответствие.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:2:plural полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:3:plural полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:1:singular полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:2:singular полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:3:singular полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:1:plural полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:2:plural полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:3:plural полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:1:singular полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:2:singular полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены. Финальная авторская вычитка дополнительно уточнила управление и полное ES/RU соответствие.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:3:singular полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:1:plural полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:2:plural полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:3:plural полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены. Регистр претérito anterior дополнительно обозначен как старинная хроника.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:1:singular полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:2:singular полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:3:singular полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:1:plural полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:2:plural полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:3:plural полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:1:singular полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:2:singular полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:3:singular полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:1:plural полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:2:plural полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:3:plural полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:1:singular полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:2:singular полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:3:singular полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:1:plural полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:2:plural полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены. Финальная авторская вычитка дополнительно уточнила управление и полное ES/RU соответствие. Координаторская вычитка уточнила самодостаточность условия и точное ES/RU соответствие; form/identity/options сохранены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:3:plural полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены. Финальная авторская вычитка дополнительно уточнила управление и полное ES/RU соответствие.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:1:singular полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:2:singular полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:3:singular полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:1:plural полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:2:plural полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:3:plural полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:1:singular полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:2:singular полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:3:singular полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:1:plural полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:2:plural полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:3:plural полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены. Финальная авторская вычитка дополнительно уточнила управление и полное ES/RU соответствие.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:1:singular полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:2:singular полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:3:singular полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:1:plural полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:2:plural полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:3:plural полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:1:singular полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:2:singular полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:3:singular полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены. Финальная авторская вычитка дополнительно уточнила управление и полное ES/RU соответствие.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:1:plural полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:2:plural полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:3:plural полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены. Финальная авторская вычитка дополнительно уточнила управление и полное ES/RU соответствие. Координаторская вычитка уточнила самодостаточность условия и точное ES/RU соответствие; form/identity/options сохранены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:1:singular полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:2:singular полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:3:singular полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:1:plural полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:2:plural полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:3:plural полностью переписана и вручную проверена: exact Jehle-форма, значение trabajar и управление, временная опора, metadata, ES/RU и четыре уникальных same-scope варианта с одним ответом подтверждены.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "authoritative-forms.json trabajar vs final 16 scopes x 6 slots",
+      "result": "pass",
+      "evidence": "96/96 surface forms and all option sets match the batch Jehle-derived authoritative table."
+    },
+    {
+      "command": "semantic full read with answer substitution: trabajar 96/96",
+      "result": "pass",
+      "evidence": "Every ES/RU pair was read after substitution; trabajar, trabajar en/para/con and licensed transitive uses were distinguished without funcionar; aspect and temporal anchors checked."
+    },
+    {
+      "command": "rare-register and counterfactual checks",
+      "result": "pass",
+      "evidence": "All 18 preterite-anterior/future-subjunctive contexts are explicitly literary/legal, and all six De haberlo sabido translations explicitly begin with Если бы and knew/known wording."
+    },
+    {
+      "command": "targeted structural validator and native validate_artifact",
+      "result": "pass",
+      "evidence": "Top-level and exact identity/order preserved; 96/96 metadata, one blank plus lemma suffix, four unique same-scope options and one answer passed."
+    },
+    {
+      "command": "baseline defect recount against authoritative forms",
+      "result": "pass",
+      "evidence": "{\"answer_count_cards\": 24, \"blank_cards\": 0, \"duplicate_cards\": 29, \"invalid_union_entries\": 16, \"metadata_cards\": 0, \"offscope_cards\": 52, \"offscope_entries\": 135, \"wrong_surface\": 12}"
+    },
+    {
+      "command": "editor semantic refinement after six primary chunks",
+      "result": "pass",
+      "evidence": "Ten contexts refined for natural trabajar valency, bounded compound-time readings, explicit rare register and exact Russian meaning; forms/options/identity unchanged."
+    },
+    {
+      "command": "cmp source embedded; six checkpoints; status/JSON/diff/Go checks",
+      "result": "pass",
+      "evidence": "Source and embedded are byte-identical; six primary 16-card checkpoints plus editor and coordinator refinement events parse; fresh fingerprint b6819fedb3bcf3417a0bc8ebe146a8fa2cfe28a8efdbbee2acdd180caaf1b19c."
+    },
+    {
+      "command": "coordinator refinement: trabajar indices 24, 64, 89",
+      "result": "pass",
+      "evidence": "Exact requested ES/RU refinements applied; surface forms, options, metadata and identity/order unchanged; source and embedded synchronized."
+    },
+    {
+      "command": "independent verifier full read and substitution: trabajar 96/96",
+      "result": "pass",
+      "evidence": "Helmholtz independently read all 96 final ES/RU pairs with the answer substituted. Authoritative forms, scope/person/number metadata, one blank, four unique same-scope options with one answer, trabajar valency, temporal anchors, 18 rare-register cards and six explicit Russian counterfactuals passed; source=embedded and baseline identity were confirmed at fingerprint b6819fedb3bcf3417a0bc8ebe146a8fa2cfe28a8efdbbee2acdd180caaf1b19c."
+    },
+    {
+      "command": "final batch barrier: check.py; native validate_artifact; focused Go tests; grammar_review_test.py; focused/full status; preservation; root/course diff checks; skill quick_validate",
+      "result": "pass",
+      "evidence": "PASS: 384 cards and 24 checkpoints; native 96/96 each; Go packages pass; 13 grammar-review tests pass; four focused sources done; preservation 25638/0/0/0; diff checks and skill validation pass."
+    }
+  ],
+  "verification_note": "Независимо прочитаны все 96 карточек с подстановкой surface_form. Подтверждены формы Jehle, metadata, временные опоры, естественные конструкции trabajar en/para/con и переходные употребления, полный смысл ES↔RU, варианты, 18 редких литературных/юридических контекстов и 6 явных контрфактических переводов; дефектов после редакторского барьера не найдено."
+}

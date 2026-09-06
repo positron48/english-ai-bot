@@ -1,0 +1,327 @@
+{
+  "version": 1,
+  "source": "courses/english-grammar/chapters/008.en.grammar.first_sentences_be_as.an_as_one_of/03-questions.json",
+  "source_sha256": "7c3dd69b58ee37a85a64ce27b20434648f53c7452782f14ec0e718b0e4300d9f",
+  "context_sha256": "c426de710776d2d99c5bae0b2a956c7da837bbc2a0fd219eddd3ccae776de13f",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
+  "reviewed_at": "2026-09-04T11:39:47.615656+00:00",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
+  "questions": [
+    {
+      "id": "q1",
+      "decision": "fixed",
+      "note": "Уточнён смысл неопределённого артикля, контекст или единственность ответа.",
+      "verification": "ok"
+    },
+    {
+      "id": "q2",
+      "decision": "fixed",
+      "note": "Уточнён смысл неопределённого артикля, контекст или единственность ответа.",
+      "verification": "ok"
+    },
+    {
+      "id": "q3",
+      "decision": "fixed",
+      "note": "Уточнён смысл неопределённого артикля, контекст или единственность ответа.",
+      "verification": "ok"
+    },
+    {
+      "id": "q4",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q5",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q7",
+      "decision": "fixed",
+      "note": "Уточнён смысл неопределённого артикля, контекст или единственность ответа.",
+      "verification": "ok"
+    },
+    {
+      "id": "q8",
+      "decision": "fixed",
+      "note": "Уточнён смысл неопределённого артикля, контекст или единственность ответа.",
+      "verification": "ok"
+    },
+    {
+      "id": "q9",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q10",
+      "decision": "fixed",
+      "note": "Уточнён смысл неопределённого артикля, контекст или единственность ответа.",
+      "verification": "ok"
+    },
+    {
+      "id": "q11",
+      "decision": "fixed",
+      "note": "Уточнён смысл неопределённого артикля, контекст или единственность ответа.",
+      "verification": "ok"
+    },
+    {
+      "id": "q12",
+      "decision": "fixed",
+      "note": "Уточнён смысл неопределённого артикля, контекст или единственность ответа.",
+      "verification": "ok"
+    },
+    {
+      "id": "q13",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q14",
+      "decision": "fixed",
+      "note": "Уточнён смысл неопределённого артикля, контекст или единственность ответа.",
+      "verification": "ok"
+    },
+    {
+      "id": "q15",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q16",
+      "decision": "fixed",
+      "note": "Уточнён смысл неопределённого артикля, контекст или единственность ответа.",
+      "verification": "ok"
+    },
+    {
+      "id": "q18",
+      "decision": "fixed",
+      "note": "Уточнён смысл неопределённого артикля, контекст или единственность ответа.",
+      "verification": "ok"
+    },
+    {
+      "id": "q20",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q22",
+      "decision": "fixed",
+      "note": "Уточнён смысл неопределённого артикля, контекст или единственность ответа.",
+      "verification": "ok"
+    },
+    {
+      "id": "q24",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q26",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q28",
+      "decision": "fixed",
+      "note": "Уточнено требование к артиклю или исключены ложные запреты допустимых форм.",
+      "verification": "ok"
+    },
+    {
+      "id": "q29",
+      "decision": "fixed",
+      "note": "Уточнено требование к артиклю или исключены ложные запреты допустимых форм.",
+      "verification": "ok"
+    },
+    {
+      "id": "q30",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q31",
+      "decision": "fixed",
+      "note": "Уточнено требование к артиклю или исключены ложные запреты допустимых форм.",
+      "verification": "ok"
+    },
+    {
+      "id": "q32",
+      "decision": "fixed",
+      "note": "Уточнено требование к артиклю или исключены ложные запреты допустимых форм.",
+      "verification": "ok"
+    },
+    {
+      "id": "q33",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q34",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q35",
+      "decision": "fixed",
+      "note": "Уточнено требование к артиклю или исключены ложные запреты допустимых форм.",
+      "verification": "ok"
+    },
+    {
+      "id": "q36",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q38",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q39",
+      "decision": "fixed",
+      "note": "Уточнено требование к артиклю или исключены ложные запреты допустимых форм.",
+      "verification": "ok"
+    },
+    {
+      "id": "q40",
+      "decision": "fixed",
+      "note": "Уточнено требование к артиклю или исключены ложные запреты допустимых форм.",
+      "verification": "ok"
+    },
+    {
+      "id": "q41",
+      "decision": "fixed",
+      "note": "Уточнено требование к артиклю или исключены ложные запреты допустимых форм.",
+      "verification": "ok"
+    },
+    {
+      "id": "q42",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q44",
+      "decision": "fixed",
+      "note": "Уточнено требование к артиклю или исключены ложные запреты допустимых форм.",
+      "verification": "ok"
+    },
+    {
+      "id": "q45",
+      "decision": "fixed",
+      "note": "Уточнено требование к артиклю или исключены ложные запреты допустимых форм.",
+      "verification": "ok"
+    },
+    {
+      "id": "q47",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q48",
+      "decision": "fixed",
+      "note": "Уточнено требование к артиклю или исключены ложные запреты допустимых форм.",
+      "verification": "ok"
+    },
+    {
+      "id": "q50",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q51",
+      "decision": "fixed",
+      "note": "Уточнено требование к артиклю или исключены ложные запреты допустимых форм.",
+      "verification": "ok"
+    },
+    {
+      "id": "q52",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q53",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q54",
+      "decision": "fixed",
+      "note": "В открытом ответе указан неопределённый артикль.",
+      "verification": "ok"
+    },
+    {
+      "id": "q56",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    },
+    {
+      "id": "q57",
+      "decision": "fixed",
+      "note": "В открытом ответе указан неопределённый артикль.",
+      "verification": "ok"
+    },
+    {
+      "id": "q58",
+      "decision": "ok",
+      "note": "",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-04-en007-010/check.py",
+      "result": "pass",
+      "evidence": "validation.log: 378 contracts preserved; decisions match changes; source/context hashes current; native training validation, signatures and course-wide duplicate check pass; embedded bytes match."
+    },
+    {
+      "command": "cd courses/english-grammar && bash scripts/assemble-chapter.sh 008.en.grammar.first_sentences_be_as.an_as_one_of && bash scripts/validate-chapter.sh 008.en.grammar.first_sentences_be_as.an_as_one_of",
+      "result": "pass",
+      "evidence": "008-assembly.log and 008-chapter-after.log: exit=0; chapter validator also passed before edits."
+    },
+    {
+      "command": "cd courses/english-grammar && ajv validate --spec=draft2020 --validate-formats=false --all-errors -s 02-chapter-schema.json -d chapters/008.en.grammar.first_sentences_be_as.an_as_one_of/05-final.json",
+      "result": "pass",
+      "evidence": "008-schema-before.log and 008-schema-after.log: valid, exit=0."
+    },
+    {
+      "command": "cd courses/english-grammar && ajv validate -s 02-chapter-schema.json -d chapters/008.en.grammar.first_sentences_be_as.an_as_one_of/05-final.json",
+      "result": "known_baseline",
+      "evidence": "008-assembler-ajv-before.log and 008-assembler-ajv-after.log: identical missing draft/2020-12/schema error. Assembler uses this invocation without --spec=draft2020; explicit draft2020 validation passes."
+    },
+    {
+      "command": "go test ./internal/grammarbundle ./internal/repository -run 'TestValidateEmbeddedBundleID|TestGrammar.*Bundle|TestGrammar.*Reorder' -count=1",
+      "result": "pass",
+      "evidence": "go-tests.log: both packages pass (4.823s and 14.045s)."
+    },
+    {
+      "command": "git diff --check; git -C courses/english-grammar diff --check; git -C courses/spanish-grammar diff --check",
+      "result": "pass",
+      "evidence": "All three commands exit=0. preservation.log: 214 pre-existing changed files retain their SHA-256."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    }
+  ],
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+}

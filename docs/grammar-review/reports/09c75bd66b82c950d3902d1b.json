@@ -1,0 +1,632 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/suceder.json",
+  "source_sha256": "c01a78d3dc469aee92ba5a6b5cea668c93617e325694c5d8f64bf7d1f90a92bc",
+  "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197",
+  "editor": "Helmholtz editor 2026-09-06",
+  "verifier": "Codex coordinator verifier 2026-09-06",
+  "phase": "done",
+  "reviewed_at": "2026-09-06",
+  "verified_at": "2026-09-06",
+  "questions": [
+    {
+      "id": "es.presente.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:1:singular переписана: authoritative/RAE форма «sucedo», личное значение смены/наследования должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:2:singular переписана: authoritative/RAE форма «sucedes», личное значение смены/наследования должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:3:singular переписана: authoritative/RAE форма «sucede», значение события, следования или смены должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:1:plural переписана: authoritative/RAE форма «sucedemos», личное значение смены/наследования должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:2:plural переписана: authoritative/RAE форма «sucedéis», личное значение смены/наследования должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:3:plural переписана: authoritative/RAE форма «suceden», значение события, следования или смены должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:1:singular переписана: authoritative/RAE форма «sucedía», личное значение смены/наследования должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:2:singular переписана: authoritative/RAE форма «sucedías», личное значение смены/наследования должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:3:singular переписана: authoritative/RAE форма «sucedía», значение события, следования или смены должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:1:plural переписана: authoritative/RAE форма «sucedíamos», личное значение смены/наследования должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:2:plural переписана: authoritative/RAE форма «sucedíais», личное значение смены/наследования должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:3:plural переписана: authoritative/RAE форма «sucedían», значение события, следования или смены должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:1:singular переписана: authoritative/RAE форма «sucedí», личное значение смены/наследования должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:2:singular переписана: authoritative/RAE форма «sucediste», личное значение смены/наследования должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:3:singular переписана: authoritative/RAE форма «sucedió», значение события, следования или смены должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:1:plural переписана: authoritative/RAE форма «sucedimos», личное значение смены/наследования должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:2:plural переписана: authoritative/RAE форма «sucedisteis», личное значение смены/наследования должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:3:plural переписана: authoritative/RAE форма «sucedieron», значение события, следования или смены должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:1:singular переписана: authoritative/RAE форма «sucederé», личное значение смены/наследования должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:2:singular переписана: authoritative/RAE форма «sucederás», личное значение смены/наследования должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:3:singular переписана: authoritative/RAE форма «sucederá», значение события, следования или смены должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:1:plural переписана: authoritative/RAE форма «sucederemos», личное значение смены/наследования должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:2:plural переписана: authoritative/RAE форма «sucederéis», личное значение смены/наследования должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:3:plural переписана: authoritative/RAE форма «sucederán», значение события, следования или смены должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:1:singular переписана: authoritative/RAE форма «sucedería», личное значение смены/наследования должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:2:singular переписана: authoritative/RAE форма «sucederías», личное значение смены/наследования должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:3:singular переписана: authoritative/RAE форма «sucedería», значение события, следования или смены должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:1:plural переписана: authoritative/RAE форма «sucederíamos», личное значение смены/наследования должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:2:plural переписана: authoritative/RAE форма «sucederíais», личное значение смены/наследования должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:3:plural переписана: authoritative/RAE форма «sucederían», значение события, следования или смены должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:1:singular переписана: authoritative/RAE форма «he sucedido», личное значение смены/наследования должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:2:singular переписана: authoritative/RAE форма «has sucedido», личное значение смены/наследования должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:3:singular переписана: authoritative/RAE форма «ha sucedido», значение события, следования или смены должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:1:plural переписана: authoritative/RAE форма «hemos sucedido», личное значение смены/наследования должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:2:plural переписана: authoritative/RAE форма «habéis sucedido», личное значение смены/наследования должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:3:plural переписана: authoritative/RAE форма «han sucedido», значение события, следования или смены должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:1:singular переписана: authoritative/RAE форма «había sucedido», личное значение смены/наследования должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:2:singular переписана: authoritative/RAE форма «habías sucedido», личное значение смены/наследования должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:3:singular переписана: authoritative/RAE форма «había sucedido», значение события, следования или смены должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:1:plural переписана: authoritative/RAE форма «habíamos sucedido», личное значение смены/наследования должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:2:plural переписана: authoritative/RAE форма «habíais sucedido», личное значение смены/наследования должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:3:plural переписана: authoritative/RAE форма «habían sucedido», значение события, следования или смены должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:1:singular переписана: authoritative/RAE форма «hube sucedido», личное значение смены/наследования должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом; редкий scope явно маркирован литературным/юридическим контекстом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:2:singular переписана: authoritative/RAE форма «hubiste sucedido», личное значение смены/наследования должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом; редкий scope явно маркирован литературным/юридическим контекстом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:3:singular переписана: authoritative/RAE форма «hubo sucedido», значение события, следования или смены должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом; редкий scope явно маркирован литературным/юридическим контекстом. RU уточнён: la calma передано как «затишье».",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:1:plural переписана: authoritative/RAE форма «hubimos sucedido», личное значение смены/наследования должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом; редкий scope явно маркирован литературным/юридическим контекстом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:2:plural переписана: authoritative/RAE форма «hubisteis sucedido», личное значение смены/наследования должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом; редкий scope явно маркирован литературным/юридическим контекстом. RU уточнён естественным «поступил королевский приказ».",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:3:plural переписана: authoritative/RAE форма «hubieron sucedido», значение события, следования или смены должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом; редкий scope явно маркирован литературным/юридическим контекстом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:1:singular переписана: authoritative/RAE форма «habré sucedido», личное значение смены/наследования должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом. Будущая граница уточнена как «ко дню церемонии».",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:2:singular переписана: authoritative/RAE форма «habrás sucedido», личное значение смены/наследования должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:3:singular переписана: authoritative/RAE форма «habrá sucedido», значение события, следования или смены должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:1:plural переписана: authoritative/RAE форма «habremos sucedido», личное значение смены/наследования должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:2:plural переписана: authoritative/RAE форма «habréis sucedido», личное значение смены/наследования должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:3:plural переписана: authoritative/RAE форма «habrán sucedido», значение события, следования или смены должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:1:singular переписана: authoritative/RAE форма «habría sucedido», личное значение смены/наследования должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:2:singular переписана: authoritative/RAE форма «habrías sucedido», личное значение смены/наследования должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:3:singular переписана: authoritative/RAE форма «habría sucedido», значение события, следования или смены должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:1:plural переписана: authoritative/RAE форма «habríamos sucedido», личное значение смены/наследования должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:2:plural переписана: authoritative/RAE форма «habríais sucedido», личное значение смены/наследования должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:3:plural переписана: authoritative/RAE форма «habrían sucedido», значение события, следования или смены должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:1:singular переписана: authoritative/RAE форма «suceda», личное значение смены/наследования должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:2:singular переписана: authoritative/RAE форма «sucedas», личное значение смены/наследования должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:3:singular переписана: authoritative/RAE форма «suceda», значение события, следования или смены должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:1:plural переписана: authoritative/RAE форма «sucedamos», личное значение смены/наследования должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:2:plural переписана: authoritative/RAE форма «sucedáis», личное значение смены/наследования должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:3:plural переписана: authoritative/RAE форма «sucedan», значение события, следования или смены должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:1:singular переписана: authoritative/RAE форма «sucediera», личное значение смены/наследования должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:2:singular переписана: authoritative/RAE форма «sucedieras», личное значение смены/наследования должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:3:singular переписана: authoritative/RAE форма «sucediera», значение события, следования или смены должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:1:plural переписана: authoritative/RAE форма «sucediéramos», личное значение смены/наследования должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:2:plural переписана: authoritative/RAE форма «sucedierais», личное значение смены/наследования должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:3:plural переписана: authoritative/RAE форма «sucedieran», значение события, следования или смены должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:1:singular переписана: authoritative/RAE форма «sucediere», личное значение смены/наследования должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом; редкий scope явно маркирован литературным/юридическим контекстом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:2:singular переписана: authoritative/RAE форма «sucedieres», личное значение смены/наследования должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом; редкий scope явно маркирован литературным/юридическим контекстом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:3:singular переписана: authoritative/RAE форма «sucediere», значение события, следования или смены должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом; редкий scope явно маркирован литературным/юридическим контекстом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:1:plural переписана: authoritative/RAE форма «sucediéremos», личное значение смены/наследования должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом; редкий scope явно маркирован литературным/юридическим контекстом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:2:plural переписана: authoritative/RAE форма «sucediereis», личное значение смены/наследования должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом; редкий scope явно маркирован литературным/юридическим контекстом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:3:plural переписана: authoritative/RAE форма «sucedieren», значение события, следования или смены должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом; редкий scope явно маркирован литературным/юридическим контекстом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:1:singular переписана: authoritative/RAE форма «haya sucedido», личное значение смены/наследования должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:2:singular переписана: authoritative/RAE форма «hayas sucedido», личное значение смены/наследования должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:3:singular переписана: authoritative/RAE форма «haya sucedido», значение события, следования или смены должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:1:plural переписана: authoritative/RAE форма «hayamos sucedido», личное значение смены/наследования должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:2:plural переписана: authoritative/RAE форма «hayáis sucedido», личное значение смены/наследования должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:3:plural переписана: authoritative/RAE форма «hayan sucedido», значение события, следования или смены должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:1:singular переписана: authoritative/RAE форма «hubiera sucedido», личное значение смены/наследования должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:2:singular переписана: authoritative/RAE форма «hubieras sucedido», личное значение смены/наследования должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:3:singular переписана: authoritative/RAE форма «hubiera sucedido», значение события, следования или смены должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:1:plural переписана: authoritative/RAE форма «hubiéramos sucedido», личное значение смены/наследования должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:2:plural переписана: authoritative/RAE форма «hubierais sucedido», личное значение смены/наследования должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:3:plural переписана: authoritative/RAE форма «hubieran sucedido», значение события, следования или смены должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:1:singular переписана: authoritative/RAE форма «hubiere sucedido», личное значение смены/наследования должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом; редкий scope явно маркирован литературным/юридическим контекстом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:2:singular переписана: authoritative/RAE форма «hubieres sucedido», личное значение смены/наследования должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом; редкий scope явно маркирован литературным/юридическим контекстом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:3:singular переписана: authoritative/RAE форма «hubiere sucedido», значение события, следования или смены должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом; редкий scope явно маркирован литературным/юридическим контекстом. Coordinator refinement: RU передаёт выявленный к будущему моменту завершённый факт.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:1:plural переписана: authoritative/RAE форма «hubiéremos sucedido», личное значение смены/наследования должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом; редкий scope явно маркирован литературным/юридическим контекстом. Coordinator refinement: asumir sus obligaciones точно передано как «возьмём на себя их обязанности».",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:2:plural переписана: authoritative/RAE форма «hubiereis sucedido», личное значение смены/наследования должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом; редкий scope явно маркирован литературным/юридическим контекстом.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:3:plural переписана: authoritative/RAE форма «hubieren sucedido», значение события, следования или смены должности, самостоятельный ES и полный RU, четыре уникальных same-scope варианта с одним ответом; редкий scope явно маркирован литературным/юридическим контекстом.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 /tmp/validate_suceder.py",
+      "result": "pass",
+      "evidence": "96/96 cards match the batch authoritative RAE forms; mood/tense/person/number, one blank, four unique same-scope options, one answer, source=embedded, report and six checkpoint ranges validated."
+    },
+    {
+      "command": "manual semantic substitution review of all 96 cards against RAE DLE suceder",
+      "result": "pass",
+      "evidence": "All 96 answers were substituted and read in ES/RU by the editor, then independently read by a second agent; event uses are third-person, personal forms mean succeeding/following someone in a role, rare scopes are explicitly literary/legal, and all six De haberlo sabido translations use explicit Russian counterfactual conditions."
+    },
+    {
+      "command": "baseline identity/top-level and source/embedded byte comparison",
+      "result": "pass",
+      "evidence": "Top-level fields plus exact scope/person/number order match the immutable baseline; source and embedded bytes are identical."
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 python3 -c runpy/validate_artifact; go test ./internal/grammartrainingpack ./internal/verbtraining",
+      "result": "pass",
+      "evidence": "Native validate_artifact accepted all 96 cards; both focused Go packages passed."
+    },
+    {
+      "command": "python3 -m json.tool on source/embedded/report; cmp -s source embedded; git diff --check on assigned paths",
+      "result": "pass",
+      "evidence": "All JSON parsed, source and embedded are byte-identical, and assigned diffs have no whitespace errors."
+    },
+    {
+      "command": "coordinator refinement: targeted semantic recheck of es.futuro_perfecto.subjuntivo:3:singular and 1:plural",
+      "result": "pass",
+      "evidence": "Обе RU-формулировки точно передают завершённость futuro perfecto de subjuntivo и смысл ES; surface forms, options, metadata и ES не изменены."
+    },
+    {
+      "command": "independent verification: full 96-card suceder semantic reread; authoritative RAE forms; source/embedded fingerprint and structural invariants",
+      "result": "pass",
+      "evidence": "All 96 ES/RU contexts accepted after the two coordinator refinements; exact scope forms, metadata, one blank, same-scope options, six explicit counterfactual translations, rare-register framing and source=embedded passed."
+    },
+    {
+      "command": "final batch barrier: check.py; preservation-check.py; native validate_artifact; go test ./internal/verbtraining ./cmd/sync_verb_training_json; grammar_review_test.py; focused grammar-review check; git diff --check; skill quick_validate.py",
+      "result": "pass",
+      "evidence": "384 final cards and 24 primary checkpoints passed against authoritative RAE forms; source/embedded and fingerprints fresh; 25594 paths preserved; Go tests and 13 grammar-review tests passed; each source reports done; root and Spanish diffs clean; skill valid."
+    }
+  ],
+  "verification_note": "Независимо перечитаны все 96 карточек после редакторского барьера. Формы совпадают с зафиксированной таблицей RAE; значения происходить, следовать и сменять кого-либо разведены по естественным контекстам. Два уточнения будущего совершённого сослагательного приняты. Source и embedded идентичны, fingerprint актуален."
+}

@@ -1,0 +1,652 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/votar.json",
+  "source_sha256": "8d1b04c41903a70f8f1e04974b998b2947c29c5311affdbabd4441a2a16fcf1d",
+  "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197",
+  "editor": "edit_vaciar votar editor 2026-09-06",
+  "verifier": "Codex coordinator independent verifier 2026-09-06",
+  "phase": "done",
+  "reviewed_at": "2026-09-06T15:39:34Z",
+  "verified_at": "2026-09-06T15:49:14Z",
+  "questions": [
+    {
+      "id": "es.presente.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Форма сверена по Jehle; естественный контекст votar и точный русский перевод вычитаны вручную; варианты заменены четырьмя уникальными формами того же scope.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "manual editorial review of all 96 final votar cards with the authoritative form substituted",
+      "result": "pass",
+      "evidence": "All 96 ES/RU pairs were read in identity order. Contexts distinguish habitual, completed, future and counterfactual voting; subjects make person and number explicit, and the Russian translations preserve object, stance, time and result."
+    },
+    {
+      "command": "authoritative votar forms and identity/options/source-embedded contract check",
+      "result": "pass",
+      "evidence": "96/96 surface forms match authoritative Jehle data across 16 scopes and six slots; mood/tense metadata is exact; top-level data and scope/person/number order match the immutable baseline; every prompt has one blank and lemma suffix; every option set has four unique forms from the same scope with the answer once; source and embedded are byte-identical."
+    },
+    {
+      "command": "editorial rare-register, counterfactual and future-perfect-subjunctive barrier for votar",
+      "result": "pass",
+      "evidence": "All six pretérito anterior cards explicitly identify chronicle, literary, parliamentary or legal narration; all twelve future subjunctive cards explicitly identify legal or old legal language; all six De haberlo sabido translations begin with explicit Если бы ... знал/знали wording; all six future-perfect-subjunctive Russian translations use если окажется, что plus a completed vote."
+    },
+    {
+      "command": "baseline defect recount for votar",
+      "result": "pass",
+      "evidence": "Immutable baseline contained wrong surface forms in 30 cards, duplicate options in 30, answer-count errors in 34, 141 off-scope option entries across 42 cards, and 85 invalid-union entries across 25 cards; metadata and blank errors were 0. Final focused contract has zero defects in all categories."
+    },
+    {
+      "command": "validate_artifact('votar', cards) from courses/spanish-grammar/scripts/generate-verb-forms-training.py",
+      "result": "pass",
+      "evidence": "Repository-native strict validator accepted all 96 cards across the expected 16 scopes and six person/number slots."
+    },
+    {
+      "command": "go test ./internal/grammartrainingpack ./internal/verbtraining ./cmd/sync_verb_training_json",
+      "result": "pass",
+      "evidence": "All three focused Go packages passed against the final embedded votar artifact."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py status --language es --bank verbs --source courses/spanish-grammar/training_pack/verb_forms/lemmas/votar.json; exact-path git diff --check",
+      "result": "known_baseline",
+      "evidence": "Focused status reports exactly 96 questions awaiting independent verification with current source/context fingerprints. Root report/checkpoint and Spanish course source diff checks pass; verification remains intentionally pending."
+    },
+    {
+      "command": "coordinator semantic refinement of votar indexes 40, 43, 45, 54, 55 and 86",
+      "result": "pass",
+      "evidence": "Applied the six exact ES/RU refinements after the coordinator read all 96 cards; authoritative forms, options, metadata, identity and order are unchanged; independent verification remains pending."
+    },
+    {
+      "command": "independent manual verification of all 96 final votar cards with substituted forms, RU translations and options",
+      "result": "known_baseline",
+      "evidence": "93 cards passed; indexes 24, 40 and 78 require the exact standalone-context replacements in the verifier handoff before phase can become done."
+    },
+    {
+      "command": "post-verification fixes for votar indexes 24, 40 and 78",
+      "result": "pass",
+      "evidence": "Applied the verifier-requested exact ES/RU replacements. Authoritative forms, options, metadata, identity and order remain unchanged; q24, q40 and q78 stay needs_fix until the same independent verifier rechecks them."
+    },
+    {
+      "command": "same-verifier recheck of votar indexes 24, 40 and 78 after original-editor fixes",
+      "result": "pass",
+      "evidence": "All three exact replacements are present in the byte-identical source and embedded files; every question verification field is now ok."
+    },
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-06-es-verbs-volver-votar/check.py; preservation-check.py; focused grammar-review checks",
+      "result": "pass",
+      "evidence": "Coordinator final barrier passed 192 cards, 12 normalized checkpoints, current source fingerprints, independent editor/verifier identities, source=embedded equality, exact Jehle forms, cross-unit uniqueness and preservation of 25717 files."
+    }
+  ],
+  "verification_note": "Independent full read passed after the original editor applied the three requested standalone-context fixes. All 96 cards now preserve meaning, tense, person and number with natural self-contained ES/RU contexts and valid options."
+}

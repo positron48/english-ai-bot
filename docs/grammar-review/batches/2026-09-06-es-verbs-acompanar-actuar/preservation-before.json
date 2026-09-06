@@ -1,0 +1,26 @@
+{
+  "existing_files": 24821,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/acompañar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/acompañar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/acordar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/acordar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/actuar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/actuar.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-acompanar-actuar",
+    "docs/grammar-review/reports/7f62e70e5743a19a220a744f.json",
+    "docs/grammar-review/reports/b7b548ceac6a3b82717d54eb.json",
+    "docs/grammar-review/reports/6748c8dfd1d0b8a74de00903.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/acompañar.json": "ab634edd19768f9e7a30fb4e7eb3a54a2e07c4a6a7520cc850ace2e9d8270abc",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/acompañar.json": "ab634edd19768f9e7a30fb4e7eb3a54a2e07c4a6a7520cc850ace2e9d8270abc",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/acordar.json": "a1f2b2725803fd6837762a45fbbcf9fa4355a82ab113a6ea5c487a554ec7f8a3",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/acordar.json": "a1f2b2725803fd6837762a45fbbcf9fa4355a82ab113a6ea5c487a554ec7f8a3",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/actuar.json": "2753c59c7367a684b563881f6b0d5aeb9f40da554b4fdc6c3709b95798e4345e",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/actuar.json": "2753c59c7367a684b563881f6b0d5aeb9f40da554b4fdc6c3709b95798e4345e"
+  }
+}

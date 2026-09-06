@@ -1,0 +1,31 @@
+{
+  "existing_files": 25305,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/medir.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/medir.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/mejorar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/mejorar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/merecer.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/merecer.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/meter.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/meter.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-medir-meter",
+    "docs/grammar-review/reports/b0ef66fe1248708fdcc8e2ae.json",
+    "docs/grammar-review/reports/c2c1303eed68608e8c540387.json",
+    "docs/grammar-review/reports/34d836608019f0f965343e0f.json",
+    "docs/grammar-review/reports/c56ddae5e059bd8fc97c7008.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/medir.json": "d71a6e657425e0d7fe2c8fb1d6c79373a2b7b70876e4fc83b365e719edeaa847",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/medir.json": "d71a6e657425e0d7fe2c8fb1d6c79373a2b7b70876e4fc83b365e719edeaa847",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/mejorar.json": "08d4ebb09173666d5693ceaf847f95ea439f457f9b1649172496412a36724f08",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/mejorar.json": "08d4ebb09173666d5693ceaf847f95ea439f457f9b1649172496412a36724f08",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/merecer.json": "2b4904b52c97662c16bd0875c19dc847bb85feec962ff53191ddc17e1c294f66",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/merecer.json": "2b4904b52c97662c16bd0875c19dc847bb85feec962ff53191ddc17e1c294f66",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/meter.json": "c40ec6b423ccafb268d7fb481d6b4cbd8131cb9fca6e5b707bc192753031d5ce",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/meter.json": "c40ec6b423ccafb268d7fb481d6b4cbd8131cb9fca6e5b707bc192753031d5ce"
+  }
+}

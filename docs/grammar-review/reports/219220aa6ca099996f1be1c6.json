@@ -1,0 +1,652 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/vivir.json",
+  "source_sha256": "ab450da0fcf5c628d0a6e3e25a25a4758ee7f742dd93e6f18a5313546f53ae14",
+  "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197",
+  "editor": "edit_valer vivir editor 2026-09-06",
+  "verifier": "edit_vaciar independent verifier 2026-09-06",
+  "phase": "done",
+  "reviewed_at": "2026-09-06",
+  "verified_at": "2026-09-06T15:32:35Z",
+  "questions": [
+    {
+      "id": "es.presente.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «vivo», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «vives», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «vive», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «vivimos», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «vivís», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «viven», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «vivía», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «vivías», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «vivía», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «vivíamos», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «vivíais», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «vivían», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «viví», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «viviste», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «vivió», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «vivimos», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «vivisteis», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «vivieron», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «viviré», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «vivirás», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «vivirá», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «viviremos», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «viviréis», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «vivirán», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «viviría», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «vivirías», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «viviría», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «viviríamos», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «viviríais», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «vivirían», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «he vivido», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «has vivido», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «ha vivido», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «hemos vivido», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once. Manually refined for ongoing aspect, idiomatic literary/legal syntax, and an unambiguous contractual object.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «habéis vivido», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «han vivido», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «había vivido», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «habías vivido», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «había vivido», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «habíamos vivido», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «habíais vivido», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «habían vivido», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «hube vivido», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once. Manually refined for ongoing aspect, idiomatic literary/legal syntax, and an unambiguous contractual object.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «hubiste vivido», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once. Manually refined for ongoing aspect, idiomatic literary/legal syntax, and an unambiguous contractual object.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «hubo vivido», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «hubimos vivido», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once. Manually refined for ongoing aspect, idiomatic literary/legal syntax, and an unambiguous contractual object.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «hubisteis vivido», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «hubieron vivido», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «habré vivido», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «habrás vivido», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «habrá vivido», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once. Coordinator refinement applied to improve temporal completion, subject attribution, or idiomatic Russian aspect.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «habremos vivido», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «habréis vivido», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «habrán vivido», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «habría vivido», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «habrías vivido», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «habría vivido», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «habríamos vivido», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «habríais vivido», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «habrían vivido», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once. Coordinator refinement applied to improve temporal completion, subject attribution, or idiomatic Russian aspect.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «viva», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «vivas», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «viva», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «vivamos», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «viváis», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «vivan», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «viviera», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «vivieras», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «viviera», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «viviéramos», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «vivierais», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «vivieran», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «viviere», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «vivieres», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «viviere», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «viviéremos», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «viviereis», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once. Manually refined for ongoing aspect, idiomatic literary/legal syntax, and an unambiguous contractual object.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «vivieren», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «haya vivido», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once. Coordinator refinement applied to improve temporal completion, subject attribution, or idiomatic Russian aspect.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «hayas vivido», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «haya vivido», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «hayamos vivido», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «hayáis vivido», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «hayan vivido», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «hubiera vivido», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «hubieras vivido», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «hubiera vivido», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «hubiéramos vivido», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «hubierais vivido», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «hubieran vivido», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «hubiere vivido», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «hubieres vivido», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once. Coordinator refinement applied to improve temporal completion, subject attribution, or idiomatic Russian aspect.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «hubiere vivido», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «hubiéremos vivido», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once. Coordinator refinement applied to improve temporal completion, subject attribution, or idiomatic Russian aspect.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «hubiereis vivido», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once. Manually refined for ongoing aspect, idiomatic literary/legal syntax, and an unambiguous contractual object. Coordinator refinement applied to improve temporal completion, subject attribution, or idiomatic Russian aspect. Post-verification fix replaces the durational paraphrase with the exact completed vivir meaning; awaiting the same verifier recheck.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «hubieren vivido», natural person-specific vivir meaning, precise Russian aspect, repaired metadata/blank where needed, and four unique same-scope options with the answer once. Manually refined for ongoing aspect, idiomatic literary/legal syntax, and an unambiguous contractual object.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "manual editorial read with answer substitution: vivir 96/96",
+      "result": "pass",
+      "evidence": "Every final Spanish sentence and Russian translation was read in order with the answer substituted; residence, living conditions, life experience and lived events use natural meanings of vivir, with unambiguous person and matching Russian aspect."
+    },
+    {
+      "command": "editor semantic refinements: vivir indexes 33, 42, 43, 45, 76, 94 and 95",
+      "result": "pass",
+      "evidence": "Seven final refinements clarify an ongoing residence, remove heavy literary subject pronouns, make the archaic legal second-person plural explicit and disambiguate the completed legal conditions without changing card identity."
+    },
+    {
+      "command": "authoritative-forms.json vivir vs edited 16 scopes x 6 slots",
+      "result": "pass",
+      "evidence": "All 96 surface forms and every option value match the batch Jehle-derived authoritative table."
+    },
+    {
+      "command": "editor identity, metadata, blank, options and source-embedded contract checks",
+      "result": "pass",
+      "evidence": "Top-level fields and exact scope/person/number order match the immutable baseline; all six metadata defects and twelve blank defects are repaired; every card has one blank, four unique same-scope options and the answer exactly once; source and embedded are byte-identical."
+    },
+    {
+      "command": "editor rare-register, counterfactual and future-perfect aspect review",
+      "result": "pass",
+      "evidence": "All six preterite-anterior cards explicitly use literary narration; both future-subjunctive sets explicitly use archaic/legal language; all six De haberlo sabido translations begin with explicit Если бы ... знал/знала/знали wording; all six future-perfect-subjunctive translations state completed conditions through если окажется, что."
+    },
+    {
+      "command": "baseline defect recount against authoritative forms",
+      "result": "pass",
+      "evidence": "Baseline wrong surface 12; duplicate-option cards 7; answer-count cards 19; off-scope 149 entries in 71 cards; invalid-union 24 entries in 24 cards; metadata 6; blank 12. Final contract counts are all zero."
+    },
+    {
+      "command": "native validate_artifact; focused grammar-review status; JSON/JSONL and scoped diff checks",
+      "result": "pass",
+      "evidence": "Native validate_artifact accepted all 96 cards; focused status reports the expected 96 awaiting_verification; source/report JSON and six contiguous checkpoint rows parse; scoped diff checks pass at fingerprint ab450da0fcf5c628d0a6e3e25a25a4758ee7f742dd93e6f18a5313546f53ae14."
+    },
+    {
+      "command": "coordinator semantic refinement: vivir indexes 50, 59, 78, 91, 93 and 94",
+      "result": "pass",
+      "evidence": "Applied the six requested ES/RU replacements exactly; future completion, explicit counterfactual attribution, first-person experiencer and legal completed-duration readings are now precise. Forms, options, metadata and identity/order remain unchanged."
+    },
+    {
+      "command": "post-verification fix: vivir index 94",
+      "result": "pass",
+      "evidence": "Replaced only the Russian translation with the requested completed vivir wording «вы прожили указанный период»; Spanish, authoritative form, options, metadata and identity remain unchanged. Index 94 stays needs_fix for the same independent verifier recheck; the other 95 stay pending."
+    },
+    {
+      "command": "independent semantic verification of all 96 final vivir cards",
+      "result": "pass",
+      "evidence": "A verifier who did not edit vivir read every substituted ES/RU pair for naturalness, exact vivir meaning and aspect, person/number/tense, options, and rare literary/legal rules. One precise RU finding was returned at zero-based index 94; the other 95 cards passed."
+    },
+    {
+      "command": "independent recheck of vivir index 94 and refreshed source contract",
+      "result": "pass",
+      "evidence": "Index 94 now explicitly says «вы прожили указанный период», preserving residence and completed future-perfect-subjunctive meaning. Source and embedded are byte-identical; authoritative forms, options and identity/order pass at fingerprint ab450da0fcf5c628d0a6e3e25a25a4758ee7f742dd93e6f18a5313546f53ae14."
+    },
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-06-es-verbs-viajar-volar/check.py; preservation-check.py; focused grammar-review checks",
+      "result": "pass",
+      "evidence": "Coordinator final barrier passed 384 cards, 24 normalized checkpoints, current source fingerprints, independent editor/verifier identities, source=embedded equality, exact Jehle forms, cross-unit uniqueness and preservation of 25698 files."
+    }
+  ],
+  "verification_note": "Independent verifier who did not edit vivir read all 96 final cards. One finding at zero-based index 94 was returned because «провели указанный период» lost the exact residence meaning of vivir. The original editor changed it to «если окажется, что вы прожили указанный период за пределами муниципалитета». The same verifier rechecked the corrected ES/RU pair, form/options, source-embedded equality, refreshed fingerprint and full contract; the finding is resolved and no other findings remain."
+}

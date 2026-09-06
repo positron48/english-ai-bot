@@ -1,0 +1,26 @@
+{
+  "existing_files": 24849,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/andar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/andar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/anunciar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/anunciar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/aparecer.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/aparecer.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-andar-aparecer",
+    "docs/grammar-review/reports/0da887f8d8e7a7ac87b0fa62.json",
+    "docs/grammar-review/reports/d15aa5af8e8c484f5a740a45.json",
+    "docs/grammar-review/reports/89de62208d14b43c5fe8d0ec.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/andar.json": "281fc4329f05bbd754bd3bae300049e913d4817ab579026ae0afb9c0dade514d",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/andar.json": "281fc4329f05bbd754bd3bae300049e913d4817ab579026ae0afb9c0dade514d",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/anunciar.json": "7948b7fef0de2f9ceaa527b7c41504fc9db1d0e5f1f4f169f498b8763ea18a09",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/anunciar.json": "7948b7fef0de2f9ceaa527b7c41504fc9db1d0e5f1f4f169f498b8763ea18a09",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/aparecer.json": "e3c63f4e0f138bbae790a0e68741a3e2f34abf56241f2dfb61b22b3aa80a8bfc",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/aparecer.json": "e3c63f4e0f138bbae790a0e68741a3e2f34abf56241f2dfb61b22b3aa80a8bfc"
+  }
+}

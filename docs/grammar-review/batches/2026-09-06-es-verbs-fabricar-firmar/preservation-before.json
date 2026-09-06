@@ -1,0 +1,31 @@
+{
+  "existing_files": 25188,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/fabricar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/fabricar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/faltar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/faltar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/fijar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/fijar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/firmar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/firmar.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-fabricar-firmar",
+    "docs/grammar-review/reports/603cd01503ee32168eb79fc1.json",
+    "docs/grammar-review/reports/b71a3a905b2793944ddcbeef.json",
+    "docs/grammar-review/reports/e23b6d9cef05f52bf33c383c.json",
+    "docs/grammar-review/reports/442b5ee124f03668d68c9b51.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/fabricar.json": "3b7cff4b2c8d7ac53c41973ebfdbc61a91bfa1ecc059d8903510268d16060ab4",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/fabricar.json": "3b7cff4b2c8d7ac53c41973ebfdbc61a91bfa1ecc059d8903510268d16060ab4",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/faltar.json": "8cc131080948b206061ec70634615db5c2b2cdf15f3133ed3aa3b9ec087b3e77",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/faltar.json": "8cc131080948b206061ec70634615db5c2b2cdf15f3133ed3aa3b9ec087b3e77",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/fijar.json": "fe3a51c8a96ef3196bb4b5734664dc2fe9f0e27ef274428367b9f129c3b3bce2",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/fijar.json": "fe3a51c8a96ef3196bb4b5734664dc2fe9f0e27ef274428367b9f129c3b3bce2",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/firmar.json": "f367c39518faaf5e1e79675253d729f7528b9485bfedcb238102d0c2633c8285",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/firmar.json": "f367c39518faaf5e1e79675253d729f7528b9485bfedcb238102d0c2633c8285"
+  }
+}

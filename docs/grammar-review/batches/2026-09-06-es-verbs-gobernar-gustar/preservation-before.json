@@ -1,0 +1,31 @@
+{
+  "existing_files": 25206,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/gobernar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/gobernar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/guardar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/guardar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/guiar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/guiar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/gustar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/gustar.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-gobernar-gustar",
+    "docs/grammar-review/reports/4605f328a5e226a855b4dda9.json",
+    "docs/grammar-review/reports/5ca1f677e6997f673ddb2743.json",
+    "docs/grammar-review/reports/4c8b91add9b52f5b95d22674.json",
+    "docs/grammar-review/reports/1bb2e920d17a34ecc25d4ac2.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/gobernar.json": "8049095fb2b56691fc3548fe14fdc6a0ec7d94ecca7be89fe1c0fc89b9de115b",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/gobernar.json": "8049095fb2b56691fc3548fe14fdc6a0ec7d94ecca7be89fe1c0fc89b9de115b",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/guardar.json": "b2ce044a65fab4f1196ab8178c3cff620511008bfe8de040e630a4653327a16c",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/guardar.json": "b2ce044a65fab4f1196ab8178c3cff620511008bfe8de040e630a4653327a16c",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/guiar.json": "50f743361eb2de1b3b4a9be15e3e0c5f7333796d9f5af689e428601882880f38",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/guiar.json": "50f743361eb2de1b3b4a9be15e3e0c5f7333796d9f5af689e428601882880f38",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/gustar.json": "fe7181622442b0384af7a652bea5a214c45bec677cf336903c27878d07d67b0e",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/gustar.json": "fe7181622442b0384af7a652bea5a214c45bec677cf336903c27878d07d67b0e"
+  }
+}

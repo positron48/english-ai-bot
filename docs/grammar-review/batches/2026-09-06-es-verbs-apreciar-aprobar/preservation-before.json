@@ -1,0 +1,26 @@
+{
+  "existing_files": 24863,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/apreciar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/apreciar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/aprender.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/aprender.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/aprobar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/aprobar.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-apreciar-aprobar",
+    "docs/grammar-review/reports/e2f56c50386a818ecd6a999d.json",
+    "docs/grammar-review/reports/428032e933a18e0b99444cbe.json",
+    "docs/grammar-review/reports/c43223a820f41e89682a07a0.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/apreciar.json": "a55bf226266b9895fa5fe93486fbcbcc85b73a126bc8916dae6e09653cb97567",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/apreciar.json": "a55bf226266b9895fa5fe93486fbcbcc85b73a126bc8916dae6e09653cb97567",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/aprender.json": "fdcb7754efd20a7cfd85202177e6eaeda7deb1b1beb106595ad51516b4d6ed36",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/aprender.json": "fdcb7754efd20a7cfd85202177e6eaeda7deb1b1beb106595ad51516b4d6ed36",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/aprobar.json": "d8c7804519af2e0df8927b87dd4243b2ceba95214b0ef896b33cdf09fb2111ad",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/aprobar.json": "d8c7804519af2e0df8927b87dd4243b2ceba95214b0ef896b33cdf09fb2111ad"
+  }
+}

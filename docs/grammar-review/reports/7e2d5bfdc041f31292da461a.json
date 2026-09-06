@@ -1,0 +1,96 @@
+{
+  "version": 1,
+  "source": "courses/english-grammar/training_pack/chapters/007/en.05.b5_theory_common_patterns_negatives.questions.json",
+  "source_sha256": "39b9ac0caccff0c364d91b9f34bb856763645256262eade7d66dfa630eb28367",
+  "context_sha256": "b20ed0eeaed87e2e77441c04b305882234ac9bbc3540357c1d956e40dbee2e2d",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
+  "reviewed_at": "2026-09-04T11:38:00.956035+00:00",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
+  "questions": [
+    {
+      "id": "q1",
+      "decision": "fixed",
+      "note": "Устранена неоднозначность ответа или уточнено объяснение отрицания.",
+      "verification": "ok"
+    },
+    {
+      "id": "q2",
+      "decision": "fixed",
+      "note": "Устранена неоднозначность ответа или уточнено объяснение отрицания.",
+      "verification": "ok"
+    },
+    {
+      "id": "q3",
+      "decision": "fixed",
+      "note": "Устранена неоднозначность ответа или уточнено объяснение отрицания.",
+      "verification": "ok"
+    },
+    {
+      "id": "q4",
+      "decision": "fixed",
+      "note": "Устранена неоднозначность ответа или уточнено объяснение отрицания.",
+      "verification": "ok"
+    },
+    {
+      "id": "q5",
+      "decision": "fixed",
+      "note": "Устранена неоднозначность ответа или уточнено объяснение отрицания.",
+      "verification": "ok"
+    },
+    {
+      "id": "q6",
+      "decision": "fixed",
+      "note": "Устранена неоднозначность ответа или уточнено объяснение отрицания.",
+      "verification": "ok"
+    },
+    {
+      "id": "q7",
+      "decision": "fixed",
+      "note": "Устранена неоднозначность ответа или уточнено объяснение отрицания.",
+      "verification": "ok"
+    },
+    {
+      "id": "q8",
+      "decision": "fixed",
+      "note": "Устранена неоднозначность ответа или уточнено объяснение отрицания.",
+      "verification": "ok"
+    },
+    {
+      "id": "q9",
+      "decision": "fixed",
+      "note": "Устранена неоднозначность ответа или уточнено объяснение отрицания.",
+      "verification": "ok"
+    },
+    {
+      "id": "q10",
+      "decision": "fixed",
+      "note": "Устранена неоднозначность ответа или уточнено объяснение отрицания.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-04-en007-010/check.py",
+      "result": "pass",
+      "evidence": "validation.log: 378 contracts preserved; decisions match changes; source/context hashes current; native training validation, signatures and course-wide duplicate check pass; embedded bytes match."
+    },
+    {
+      "command": "go test ./internal/grammarbundle ./internal/repository -run 'TestValidateEmbeddedBundleID|TestGrammar.*Bundle|TestGrammar.*Reorder' -count=1",
+      "result": "pass",
+      "evidence": "go-tests.log: both packages pass (4.823s and 14.045s)."
+    },
+    {
+      "command": "git diff --check; git -C courses/english-grammar diff --check; git -C courses/spanish-grammar diff --check",
+      "result": "pass",
+      "evidence": "All three commands exit=0. preservation.log: 214 pre-existing changed files retain their SHA-256."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    }
+  ],
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+}

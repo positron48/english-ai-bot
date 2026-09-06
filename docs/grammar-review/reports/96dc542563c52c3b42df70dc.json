@@ -4,370 +4,370 @@
   "source_sha256": "f9a059a311cbdbcc74e0a9339181ff16a1b034e7685fa7e1290acc8f5f906bbb",
   "context_sha256": "06d4da3e6c93ae9785d44718bb37204095574d2fe83cbe09ce8d9156ceacceb1",
   "editor": "Codex editor 2026-09-04",
-  "verifier": "",
-  "phase": "awaiting_verification",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
   "reviewed_at": "2026-09-04T09:38:41.687518+00:00",
-  "verified_at": "",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
   "questions": [
     {
       "id": "q1",
       "decision": "ok",
       "note": "Определение sílaba tónica, единственный ключ и отличие от tilde верны.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q2",
       "decision": "fixed",
       "note": "Общее утверждение с исключениями для безударных служебных слов ограничено конкретным casa.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q3",
       "decision": "fixed",
       "note": "Убрано неверное обобщение «у каждого слова»; ударение luna верно.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q4",
       "decision": "ok",
       "note": "Требование восстановить пропущенную tilde явно; café дано в теории, остальные слова написаны верно.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q5",
       "decision": "ok",
       "note": "Проверяется функция tilde на конкретном café; один ключ.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q6",
       "decision": "ok",
       "note": "Отрицание связи «нет tilde — нет ударения» верно; casa служит контрпримером.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q7",
       "decision": "fixed",
       "note": "Исправлена путаница номера гласной и номера слога: возможны дифтонги.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q8",
       "decision": "fixed",
       "note": "Убрано неверное «esdrújula-подобный»; корректное написание термина без забегания в правило.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q9",
       "decision": "ok",
       "note": "Формат ответа me/sa ограничен; ударение ME-sa верно.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q10",
       "decision": "fixed",
       "note": "Устранено обобщение про каждый испанский токен; применено различие ударения и tilde к hotel.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q11",
       "decision": "ok",
       "note": "CA-sa по правилу гласной; один верный вариант.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q12",
       "decision": "ok",
       "note": "HA-blan по окончанию n; варианты и объяснение согласованы.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q13",
       "decision": "ok",
       "note": "CLA-ses по окончанию s; дистракторы исключаются.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q14",
       "decision": "fixed",
       "note": "Указаны многосложность и n/s после гласной, чтобы исключить sol/robots из обобщения.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q15",
       "decision": "ok",
       "note": "Только mesa имеет предпоследнее ударение; остальные три слова agudas.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q16",
       "decision": "ok",
       "note": "ha-BLAN неверно, объяснение даёт HA-blan.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q17",
       "decision": "ok",
       "note": "CA-sa верно, причина соответствует блоку.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q18",
       "decision": "ok",
       "note": "Однозначный ввод ca; CA-sas верно.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q19",
       "decision": "fixed",
       "note": "Повтор hablan заменён переносом правила на трёхсложное zapatos.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q20",
       "decision": "ok",
       "note": "Ошибка me-SA исправляется чтением ME-sa; изменение написания не требуется.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q21",
       "decision": "ok",
       "note": "ho-TEL по окончанию l; ключ и объяснение верны.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q22",
       "decision": "ok",
       "note": "co-MER по окончанию r; нет второго ответа.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q23",
       "decision": "ok",
       "note": "ciu-DAD: верный ударный слог независимо от вариации iu.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q24",
       "decision": "ok",
       "note": "Базовое правило другой согласной сформулировано как обычное; ключ согласован.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q25",
       "decision": "fixed",
       "note": "Термин aguda раскрыт в условии; только hotel имеет конечное ударение.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q26",
       "decision": "ok",
       "note": "Утверждение соответствует базовым примерам hotel/comer/ciudad.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q27",
       "decision": "ok",
       "note": "CO-mer ошибочно; объяснение восстанавливает co-MER.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q28",
       "decision": "fixed",
       "note": "Формат ввода ограничен aguda/llana; варианты в конечных скобках по контракту валидатора.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q29",
       "decision": "fixed",
       "note": "Повтор ciudad заменён применением к трёхсложному aprender.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q30",
       "decision": "ok",
       "note": "HO-tel исправляется чтением ho-TEL, не переписыванием слова.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q31",
       "decision": "ok",
       "note": "Классификация café по явно заданному ударению однозначна.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q32",
       "decision": "fixed",
       "note": "Объяснение сужено до конкретных окончаний вариантов без обобщения на стечения согласных.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q33",
       "decision": "fixed",
       "note": "Объяснены конкретные окончания, сохранён único ключ fácil.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q34",
       "decision": "fixed",
       "note": "Убрана визуальная подсказка единственным словом без знака; ударение всех вариантов задано.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q35",
       "decision": "fixed",
       "note": "Объяснение точно привязано к café без избыточного общего правила.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q36",
       "decision": "ok",
       "note": "relój неверно по окончанию j; false согласован.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q37",
       "decision": "ok",
       "note": "Llana на l требует tilde; пример fácil корректен.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q38",
       "decision": "ok",
       "note": "Однозначный ввод aguda, ударение menú задано.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q39",
       "decision": "ok",
       "note": "Однозначный ввод llana для FÁ-cil.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q40",
       "decision": "fixed",
       "note": "Повтор relój заменён исправлением fácil с заданным ударением и одним ответом.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q41",
       "decision": "ok",
       "note": "Ударение задано, классификация esdrújula однозначна.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q42",
       "decision": "fixed",
       "note": "Добавлен счёт слогов и отличие всех дистракторов вместо ссылки на классический пример.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q43",
       "decision": "ok",
       "note": "Пропуск tilde явно указан; teléfono есть в теории, ключ верен.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q44",
       "decision": "ok",
       "note": "sá-ba-do — три слога с первым ударным; объяснение правила верно.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q45",
       "decision": "ok",
       "note": "Обязательная tilde для esdrújulas верна, варианты взаимоисключающие.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q46",
       "decision": "ok",
       "note": "telefono не является нормальным написанием teléfono; false верно.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q47",
       "decision": "fixed",
       "note": "Повтор общей формулы заменён применением к teléfono при конце на гласную.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q48",
       "decision": "ok",
       "note": "Только música нормативно и имеет нужное ударение; тип не изменён.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q49",
       "decision": "ok",
       "note": "Отсчёт no/fo/lé даёт третий от конца; единственный ответ.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q50",
       "decision": "ok",
       "note": "Исправление sabado на sábado согласовано с теорией.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q51",
       "decision": "fixed",
       "note": "Вопрос о субъективно удобном первом шаге заменён применением приоритета tilde к fácil.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q52",
       "decision": "fixed",
       "note": "Заучивание порядка шагов заменено определением ударного слога ventana; варианты различаются независимо от регистра.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q53",
       "decision": "fixed",
       "note": "Указана многосложность: правило не относится к односложным словам.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q54",
       "decision": "fixed",
       "note": "Указаны многосложность и точная конечная l.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q55",
       "decision": "ok",
       "note": "Задание явно восстанавливает опущенную tilde; música и остальные варианты проверены.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q56",
       "decision": "fixed",
       "note": "Общий совет заменён конкретной проверкой приоритета tilde в lápiz.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q57",
       "decision": "ok",
       "note": "Без tilde базовое правило не даёт ca-FÉ; объяснение разграничивает ошибку записи.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q58",
       "decision": "fixed",
       "note": "Повтор определения tilde заменён применением к médico.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q59",
       "decision": "fixed",
       "note": "Повтор hotel заменён переносом на papel.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q60",
       "decision": "fixed",
       "note": "Общий совет заменён конкретным исправлением чтения médico по tilde.",
-      "verification": "pending"
+      "verification": "ok"
     }
   ],
   "checks": [
@@ -390,7 +390,12 @@
       "command": "git diff --check && git -C courses/spanish-grammar diff --check && git -C courses/english-grammar diff --check",
       "result": "pass",
       "evidence": "All three commands exited 0."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
     }
   ],
-  "verification_note": ""
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
 }

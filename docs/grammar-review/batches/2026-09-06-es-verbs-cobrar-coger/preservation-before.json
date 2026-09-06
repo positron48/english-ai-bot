@@ -1,0 +1,26 @@
+{
+  "existing_files": 24947,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/cobrar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/cobrar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/cocinar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/cocinar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/coger.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/coger.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-cobrar-coger",
+    "docs/grammar-review/reports/6fa1841f2f42f8520b186233.json",
+    "docs/grammar-review/reports/116ab541cbe2e8fc62853bf5.json",
+    "docs/grammar-review/reports/273b11c4074cfe8d0c1283cb.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/cobrar.json": "376e210b723ccbd00675ac41a3c33e53aee63dacc7a7f7e67383f63cebbed824",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/cobrar.json": "376e210b723ccbd00675ac41a3c33e53aee63dacc7a7f7e67383f63cebbed824",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/cocinar.json": "6f9e84735c7553df3f0bda979954026cc8d42cfdab8232d0efd9a17c92836f9a",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/cocinar.json": "6f9e84735c7553df3f0bda979954026cc8d42cfdab8232d0efd9a17c92836f9a",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/coger.json": "cfcff60f151fbd84016a7ce908821f884df4aec552bfa9b90a450f5d64f57713",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/coger.json": "cfcff60f151fbd84016a7ce908821f884df4aec552bfa9b90a450f5d64f57713"
+  }
+}

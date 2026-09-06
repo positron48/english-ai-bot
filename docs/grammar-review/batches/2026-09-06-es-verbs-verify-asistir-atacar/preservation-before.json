@@ -1,0 +1,39 @@
+{
+  "existing_files": 25805,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/asistir.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/asistir.json",
+    "docs/grammar-review/reports/a82bcec52f4bdc019b6bb08a.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/asociar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/asociar.json",
+    "docs/grammar-review/reports/1fbbfc3e9fbb114a604eeb84.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/aspirar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/aspirar.json",
+    "docs/grammar-review/reports/d0b063c897b851d61bc8b9c5.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/atacar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/atacar.json",
+    "docs/grammar-review/reports/db13008fc2536d620bd11d3b.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-verify-asistir-atacar"
+  ],
+  "assigned_dirty_before": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/asistir.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/asociar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/aspirar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/atacar.json",
+    "docs/grammar-review/reports/1fbbfc3e9fbb114a604eeb84.json",
+    "docs/grammar-review/reports/a82bcec52f4bdc019b6bb08a.json",
+    "docs/grammar-review/reports/d0b063c897b851d61bc8b9c5.json",
+    "docs/grammar-review/reports/db13008fc2536d620bd11d3b.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/asistir.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/asociar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/aspirar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/atacar.json"
+  ],
+  "preexisting_missing_tracked": [
+    "courses/english-grammar/llm-benchmark/__pycache__/benchmark.cpython-314.pyc",
+    "courses/english-grammar/training-pack-admin/__pycache__/server.cpython-314.pyc",
+    "tools-local/complaints-worker/__pycache__/worker.cpython-314.pyc"
+  ]
+}

@@ -1,0 +1,452 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/chapters/035.es.grammar.present_irregulars_reflexives_gustar.stem_changing_verbs_e_ie_o_ue_e/03-questions.json",
+  "source_sha256": "619d81406c12b5448af447c44401abfd3e46228262c3c49b71a7c13144fc061e",
+  "context_sha256": "9783a0e7197c9fc90f74a9ea0f7e7f46b49221c818b2086f8ab86ef1cab5ed34",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
+  "reviewed_at": "2026-09-04T16:52:34.422101+00:00",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
+  "questions": [
+    {
+      "id": "q035_b1_01",
+      "decision": "fixed",
+      "note": "Уточнено настоящее изъявительное время и конкретная модель, убраны отсылки к тексту блока; разделены изменение основы и обычное личное окончание.",
+      "verification": "ok"
+    },
+    {
+      "id": "q035_b1_02",
+      "decision": "fixed",
+      "note": "Уточнено настоящее изъявительное время и конкретная модель, убраны отсылки к тексту блока; разделены изменение основы и обычное личное окончание.",
+      "verification": "ok"
+    },
+    {
+      "id": "q035_b1_03",
+      "decision": "fixed",
+      "note": "Уточнено настоящее изъявительное время и конкретная модель, убраны отсылки к тексту блока; разделены изменение основы и обычное личное окончание.",
+      "verification": "ok"
+    },
+    {
+      "id": "q035_b1_04",
+      "decision": "fixed",
+      "note": "Уточнено настоящее изъявительное время и конкретная модель, убраны отсылки к тексту блока; разделены изменение основы и обычное личное окончание.",
+      "verification": "ok"
+    },
+    {
+      "id": "q035_b1_05",
+      "decision": "fixed",
+      "note": "Уточнено настоящее изъявительное время и конкретная модель, убраны отсылки к тексту блока; разделены изменение основы и обычное личное окончание.",
+      "verification": "ok"
+    },
+    {
+      "id": "q035_b1_06",
+      "decision": "fixed",
+      "note": "Уточнено настоящее изъявительное время и конкретная модель, убраны отсылки к тексту блока; разделены изменение основы и обычное личное окончание.",
+      "verification": "ok"
+    },
+    {
+      "id": "q035_b1_07",
+      "decision": "fixed",
+      "note": "Уточнено настоящее изъявительное время и конкретная модель, убраны отсылки к тексту блока; разделены изменение основы и обычное личное окончание.",
+      "verification": "ok"
+    },
+    {
+      "id": "q035_b1_08",
+      "decision": "ok",
+      "note": "Чередование e/ie, o/ue, лицо, ключ и примеры согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q035_b1_09",
+      "decision": "fixed",
+      "note": "Уточнено настоящее изъявительное время и конкретная модель, убраны отсылки к тексту блока; разделены изменение основы и обычное личное окончание.",
+      "verification": "ok"
+    },
+    {
+      "id": "q035_b1_10",
+      "decision": "ok",
+      "note": "Чередование e/ie, o/ue, лицо, ключ и примеры согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q035_b1_11",
+      "decision": "ok",
+      "note": "Чередование e/ie, o/ue, лицо, ключ и примеры согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q035_b2_01",
+      "decision": "fixed",
+      "note": "Уточнено настоящее изъявительное время и конкретная модель, убраны отсылки к тексту блока; разделены изменение основы и обычное личное окончание.",
+      "verification": "ok"
+    },
+    {
+      "id": "q035_b2_02",
+      "decision": "fixed",
+      "note": "Уточнено настоящее изъявительное время и конкретная модель, убраны отсылки к тексту блока; разделены изменение основы и обычное личное окончание.",
+      "verification": "ok"
+    },
+    {
+      "id": "q035_b2_03",
+      "decision": "fixed",
+      "note": "Уточнено настоящее изъявительное время и конкретная модель, убраны отсылки к тексту блока; разделены изменение основы и обычное личное окончание.",
+      "verification": "ok"
+    },
+    {
+      "id": "q035_b2_04",
+      "decision": "fixed",
+      "note": "Уточнено настоящее изъявительное время и конкретная модель, убраны отсылки к тексту блока; разделены изменение основы и обычное личное окончание.",
+      "verification": "ok"
+    },
+    {
+      "id": "q035_b2_05",
+      "decision": "ok",
+      "note": "Чередование e/ie, o/ue, лицо, ключ и примеры согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q035_b2_06",
+      "decision": "fixed",
+      "note": "Уточнено настоящее изъявительное время и конкретная модель, убраны отсылки к тексту блока; разделены изменение основы и обычное личное окончание.",
+      "verification": "ok"
+    },
+    {
+      "id": "q035_b2_07",
+      "decision": "ok",
+      "note": "Чередование e/ie, o/ue, лицо, ключ и примеры согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q035_b2_08",
+      "decision": "fixed",
+      "note": "Уточнено настоящее изъявительное время и конкретная модель, убраны отсылки к тексту блока; разделены изменение основы и обычное личное окончание.",
+      "verification": "ok"
+    },
+    {
+      "id": "q035_b2_09",
+      "decision": "ok",
+      "note": "Чередование e/ie, o/ue, лицо, ключ и примеры согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q035_b2_10",
+      "decision": "ok",
+      "note": "Лицо, чередование основы, ключ и перевод согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q035_b2_11",
+      "decision": "fixed",
+      "note": "Задано настоящее изъявительное время; исправлены смешанная инструкция, немотивированное противопоставление и отсылки к блоку.",
+      "verification": "ok"
+    },
+    {
+      "id": "q035_b3_01",
+      "decision": "fixed",
+      "note": "Задано настоящее изъявительное время; исправлены смешанная инструкция, немотивированное противопоставление и отсылки к блоку.",
+      "verification": "ok"
+    },
+    {
+      "id": "q035_b3_02",
+      "decision": "fixed",
+      "note": "Задано настоящее изъявительное время; исправлены смешанная инструкция, немотивированное противопоставление и отсылки к блоку.",
+      "verification": "ok"
+    },
+    {
+      "id": "q035_b3_03",
+      "decision": "fixed",
+      "note": "Задано настоящее изъявительное время; исправлены смешанная инструкция, немотивированное противопоставление и отсылки к блоку.",
+      "verification": "ok"
+    },
+    {
+      "id": "q035_b3_04",
+      "decision": "fixed",
+      "note": "Задано настоящее изъявительное время; исправлены смешанная инструкция, немотивированное противопоставление и отсылки к блоку.",
+      "verification": "ok"
+    },
+    {
+      "id": "q035_b3_05",
+      "decision": "fixed",
+      "note": "Задано настоящее изъявительное время; исправлены смешанная инструкция, немотивированное противопоставление и отсылки к блоку.",
+      "verification": "ok"
+    },
+    {
+      "id": "q035_b3_06",
+      "decision": "ok",
+      "note": "Лицо, чередование основы, ключ и перевод согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q035_b3_07",
+      "decision": "ok",
+      "note": "Лицо, чередование основы, ключ и перевод согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q035_b3_08",
+      "decision": "ok",
+      "note": "Лицо, чередование основы, ключ и перевод согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q035_b3_09",
+      "decision": "ok",
+      "note": "Лицо, чередование основы, ключ и перевод согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q035_b3_10",
+      "decision": "ok",
+      "note": "Лицо, чередование основы, ключ и перевод согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q035_b3_11",
+      "decision": "ok",
+      "note": "Лицо, чередование основы, ключ и перевод согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q035_b4_01",
+      "decision": "fixed",
+      "note": "Задано настоящее изъявительное время; исправлены смешанная инструкция, немотивированное противопоставление и отсылки к блоку.",
+      "verification": "ok"
+    },
+    {
+      "id": "q035_b4_02",
+      "decision": "fixed",
+      "note": "Задано настоящее изъявительное время; исправлены смешанная инструкция, немотивированное противопоставление и отсылки к блоку.",
+      "verification": "ok"
+    },
+    {
+      "id": "q035_b4_03",
+      "decision": "fixed",
+      "note": "Задано настоящее изъявительное время; исправлены смешанная инструкция, немотивированное противопоставление и отсылки к блоку.",
+      "verification": "ok"
+    },
+    {
+      "id": "q035_b4_04",
+      "decision": "fixed",
+      "note": "Задано настоящее изъявительное время; исправлены смешанная инструкция, немотивированное противопоставление и отсылки к блоку.",
+      "verification": "ok"
+    },
+    {
+      "id": "q035_b4_05",
+      "decision": "ok",
+      "note": "Лицо, чередование основы, ключ и перевод согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q035_b4_06",
+      "decision": "fixed",
+      "note": "Задано настоящее изъявительное время; исправлены смешанная инструкция, немотивированное противопоставление и отсылки к блоку.",
+      "verification": "ok"
+    },
+    {
+      "id": "q035_b4_07",
+      "decision": "fixed",
+      "note": "Задано настоящее изъявительное время; исправлены смешанная инструкция, немотивированное противопоставление и отсылки к блоку.",
+      "verification": "ok"
+    },
+    {
+      "id": "q035_b4_08",
+      "decision": "ok",
+      "note": "Чередование e/i и согласование форм корректны; ключ однозначен.",
+      "verification": "ok"
+    },
+    {
+      "id": "q035_b4_09",
+      "decision": "ok",
+      "note": "Чередование e/i и согласование форм корректны; ключ однозначен.",
+      "verification": "ok"
+    },
+    {
+      "id": "q035_b4_10",
+      "decision": "ok",
+      "note": "Чередование e/i и согласование форм корректны; ключ однозначен.",
+      "verification": "ok"
+    },
+    {
+      "id": "q035_b4_11",
+      "decision": "ok",
+      "note": "Чередование e/i и согласование форм корректны; ключ однозначен.",
+      "verification": "ok"
+    },
+    {
+      "id": "q035_b5_01",
+      "decision": "fixed",
+      "note": "Уточнены время, порядок лиц и конкретный контекст; вместо ссылок на памятку даны самостоятельные объяснения.",
+      "verification": "ok"
+    },
+    {
+      "id": "q035_b5_02",
+      "decision": "fixed",
+      "note": "Уточнены время, порядок лиц и конкретный контекст; вместо ссылок на памятку даны самостоятельные объяснения.",
+      "verification": "ok"
+    },
+    {
+      "id": "q035_b5_03",
+      "decision": "fixed",
+      "note": "Уточнены время, порядок лиц и конкретный контекст; вместо ссылок на памятку даны самостоятельные объяснения.",
+      "verification": "ok"
+    },
+    {
+      "id": "q035_b5_04",
+      "decision": "fixed",
+      "note": "Уточнены время, порядок лиц и конкретный контекст; вместо ссылок на памятку даны самостоятельные объяснения.",
+      "verification": "ok"
+    },
+    {
+      "id": "q035_b5_05",
+      "decision": "ok",
+      "note": "Чередование e/i и согласование форм корректны; ключ однозначен.",
+      "verification": "ok"
+    },
+    {
+      "id": "q035_b5_06",
+      "decision": "fixed",
+      "note": "Уточнены время, порядок лиц и конкретный контекст; вместо ссылок на памятку даны самостоятельные объяснения.",
+      "verification": "ok"
+    },
+    {
+      "id": "q035_b5_07",
+      "decision": "fixed",
+      "note": "Уточнены время, порядок лиц и конкретный контекст; вместо ссылок на памятку даны самостоятельные объяснения.",
+      "verification": "ok"
+    },
+    {
+      "id": "q035_b5_08",
+      "decision": "fixed",
+      "note": "Уточнены время, порядок лиц и конкретный контекст; вместо ссылок на памятку даны самостоятельные объяснения.",
+      "verification": "ok"
+    },
+    {
+      "id": "q035_b5_09",
+      "decision": "fixed",
+      "note": "Уточнены время, порядок лиц и конкретный контекст; вместо ссылок на памятку даны самостоятельные объяснения.",
+      "verification": "ok"
+    },
+    {
+      "id": "q035_b5_10",
+      "decision": "fixed",
+      "note": "Уточнены время, порядок лиц и конкретный контекст; вместо ссылок на памятку даны самостоятельные объяснения.",
+      "verification": "ok"
+    },
+    {
+      "id": "q035_b5_11",
+      "decision": "fixed",
+      "note": "Уточнены время, порядок лиц и конкретный контекст; вместо ссылок на памятку даны самостоятельные объяснения.",
+      "verification": "ok"
+    },
+    {
+      "id": "q035_b6_01",
+      "decision": "fixed",
+      "note": "Уточнены время, порядок лиц и конкретный контекст; вместо ссылок на памятку даны самостоятельные объяснения.",
+      "verification": "ok"
+    },
+    {
+      "id": "q035_b6_02",
+      "decision": "fixed",
+      "note": "Уточнены время, порядок лиц и конкретный контекст; вместо ссылок на памятку даны самостоятельные объяснения.",
+      "verification": "ok"
+    },
+    {
+      "id": "q035_b6_03",
+      "decision": "fixed",
+      "note": "Уточнены время, порядок лиц и конкретный контекст; вместо ссылок на памятку даны самостоятельные объяснения.",
+      "verification": "ok"
+    },
+    {
+      "id": "q035_b6_04",
+      "decision": "fixed",
+      "note": "Уточнены время, порядок лиц и конкретный контекст; вместо ссылок на памятку даны самостоятельные объяснения.",
+      "verification": "ok"
+    },
+    {
+      "id": "q035_b6_05",
+      "decision": "fixed",
+      "note": "Уточнены время, порядок лиц и конкретный контекст; вместо ссылок на памятку даны самостоятельные объяснения.",
+      "verification": "ok"
+    },
+    {
+      "id": "q035_b6_06",
+      "decision": "fixed",
+      "note": "Объяснение заменено конкретным правилом и формами, убраны ссылки на памятку.",
+      "verification": "ok"
+    },
+    {
+      "id": "q035_b6_07",
+      "decision": "fixed",
+      "note": "Объяснение заменено конкретным правилом и формами, убраны ссылки на памятку.",
+      "verification": "ok"
+    },
+    {
+      "id": "q035_b6_08",
+      "decision": "fixed",
+      "note": "Объяснение заменено конкретным правилом и формами, убраны ссылки на памятку.",
+      "verification": "ok"
+    },
+    {
+      "id": "q035_b6_09",
+      "decision": "fixed",
+      "note": "Объяснение заменено конкретным правилом и формами, убраны ссылки на памятку.",
+      "verification": "ok"
+    },
+    {
+      "id": "q035_b6_10",
+      "decision": "fixed",
+      "note": "Объяснение заменено конкретным правилом и формами, убраны ссылки на памятку.",
+      "verification": "ok"
+    },
+    {
+      "id": "q035_b6_11",
+      "decision": "ok",
+      "note": "Форма empiezo, время, перевод и ударение корректны.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-04-es033-036/check.py",
+      "result": "pass",
+      "evidence": "All 549 IDs/contracts, decisions versus clean pre-batch HEAD, fingerprints, native training validation, signatures and source-final-embedded equality; validation.log."
+    },
+    {
+      "command": "go test ./internal/grammarbundle ./internal/repository -run 'TestValidateEmbeddedBundleID|TestGrammar.*Bundle|TestGrammar.*Reorder' -count=1",
+      "result": "pass",
+      "evidence": "Both packages passed on final integrated data; go-tests.log."
+    },
+    {
+      "command": "git diff --check; git -C courses/spanish-grammar diff --check; git -C courses/english-grammar diff --check",
+      "result": "pass",
+      "evidence": "Three separately executed commands exit 0; diff-check.log. All 928 earlier dirty files outside review docs preserved; preservation.log."
+    },
+    {
+      "command": "cd courses/spanish-grammar && bash scripts/assemble-chapter.sh 035.es.grammar.present_irregulars_reflexives_gustar.stem_changing_verbs_e_ie_o_ue_e",
+      "result": "pass",
+      "evidence": "035-assemble.log: exit 0."
+    },
+    {
+      "command": "cd courses/spanish-grammar && bash scripts/validate-chapter.sh 035.es.grammar.present_irregulars_reflexives_gustar.stem_changing_verbs_e_ie_o_ue_e",
+      "result": "pass",
+      "evidence": "035-chapter-after.log: exit 0."
+    },
+    {
+      "command": "cd courses/spanish-grammar && ajv validate --spec=draft2020 --validate-formats=false --all-errors -s 02-chapter-schema.json -d chapters/035.es.grammar.present_irregulars_reflexives_gustar.stem_changing_verbs_e_ie_o_ue_e/05-final.json",
+      "result": "pass",
+      "evidence": "035-schema-after.log: exit 0."
+    },
+    {
+      "command": "cd courses/spanish-grammar && ajv validate -s 02-chapter-schema.json -d chapters/035.es.grammar.present_irregulars_reflexives_gustar.stem_changing_verbs_e_ie_o_ue_e/05-final.json",
+      "result": "known_baseline",
+      "evidence": "035-assembler-ajv-before.log and 035-assembler-ajv-after.log are byte-identical, exit 1: no draft2020 meta-schema selected. Explicit draft2020 passes for 033–035; 036 has the separately recorded unchanged theory-tag baseline."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    }
+  ],
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+}

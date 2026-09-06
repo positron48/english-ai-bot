@@ -1,0 +1,31 @@
+{
+  "existing_files": 25024,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/convencer.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/convencer.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/convertir.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/convertir.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/copiar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/copiar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/correr.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/correr.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-convencer-correr",
+    "docs/grammar-review/reports/532f9e768920ba32d7678bae.json",
+    "docs/grammar-review/reports/861406c16fb5f2a695bd8213.json",
+    "docs/grammar-review/reports/a1493d03bd1b4cf1b43a68fb.json",
+    "docs/grammar-review/reports/0c1290a2e2b648dd7cf03c4d.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/convencer.json": "1a916797ede1bfd2a143efe6c0efda1d175785e644e81d526d957282b1ce93b5",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/convencer.json": "1a916797ede1bfd2a143efe6c0efda1d175785e644e81d526d957282b1ce93b5",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/convertir.json": "68787076b1cbf13ad7ab6c09695f27f8bc3c5d3d52f92c6585fbb768a96cd536",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/convertir.json": "68787076b1cbf13ad7ab6c09695f27f8bc3c5d3d52f92c6585fbb768a96cd536",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/copiar.json": "c9201e01f0347ad4039b7e0a3eb00c6bc1556e430586cc6844eea083bd53c298",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/copiar.json": "c9201e01f0347ad4039b7e0a3eb00c6bc1556e430586cc6844eea083bd53c298",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/correr.json": "41f78fe739f5679bd2b579f95698f08a044638dbbbd7f9854c2be7b2c7b23aaa",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/correr.json": "41f78fe739f5679bd2b579f95698f08a044638dbbbd7f9854c2be7b2c7b23aaa"
+  }
+}

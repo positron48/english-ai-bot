@@ -1,0 +1,26 @@
+{
+  "existing_files": 24926,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/cantar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/cantar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/caracterizar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/caracterizar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/cargar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/cargar.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-cantar-cargar",
+    "docs/grammar-review/reports/c40738a0989c6acd76d8b62b.json",
+    "docs/grammar-review/reports/533bc40faa0dfdabed5fa62e.json",
+    "docs/grammar-review/reports/3762b1b27eb5da5ed8c87291.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/cantar.json": "c5220b60a7df61d542b2bc9bbf3765e7ac22c0e84489d6270f8ab71cbc6ca9e0",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/cantar.json": "c5220b60a7df61d542b2bc9bbf3765e7ac22c0e84489d6270f8ab71cbc6ca9e0",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/caracterizar.json": "23e6e445862683df35e985198cad514b49415eb39009bed7e9a61a28f31c5f1a",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/caracterizar.json": "23e6e445862683df35e985198cad514b49415eb39009bed7e9a61a28f31c5f1a",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/cargar.json": "9e830abba76bf1050ffae58fc3f7ceb444efff357999f41e4476a642ea01381c",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/cargar.json": "9e830abba76bf1050ffae58fc3f7ceb444efff357999f41e4476a642ea01381c"
+  }
+}

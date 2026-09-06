@@ -1,0 +1,75 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/chapters/058/es.04.b4_theory_de_nino_childhood.questions.json",
+  "source_sha256": "3be32490d3ab167e21f9a63fd0d6b14d8b604a9581f3b8ad2e8f6dc56d9eb146",
+  "context_sha256": "004338671cd07031b53ba45cbba39db746ebeac7233df9328702b9bb7baddb50",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
+  "reviewed_at": "2026-09-04T20:44:25.044722+00:00",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
+  "questions": [
+    {
+      "id": "q1",
+      "decision": "fixed",
+      "note": "Устранён второй правильный ответ de pequeña: вопрос явно просит конструкцию niño/niña.",
+      "verification": "ok"
+    },
+    {
+      "id": "q2",
+      "decision": "fixed",
+      "note": "Устранён второй правильный ответ de pequeño: вопрос явно просит конструкцию niño/niña.",
+      "verification": "ok"
+    },
+    {
+      "id": "q3",
+      "decision": "fixed",
+      "note": "Исправлена смешанная терминология past simple.",
+      "verification": "ok"
+    },
+    {
+      "id": "q4",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q5",
+      "decision": "ok",
+      "note": "Грамматика, ключ, варианты и объяснение корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q6",
+      "decision": "fixed",
+      "note": "Устранён альтернативно правильный de niño: вопрос явно просит конструкцию pequeño/pequeña.",
+      "verification": "ok"
+    },
+    {
+      "id": "q7",
+      "decision": "fixed",
+      "note": "Устранён альтернативно правильный de niña и заменено тяжёлое amaba dibujar на me gustaba dibujar.",
+      "verification": "ok"
+    },
+    {
+      "id": "q8",
+      "decision": "fixed",
+      "note": "Объяснение исправлено: de niño и de pequeño одинаково обозначают детство, различие не в «конкретности пола».",
+      "verification": "ok"
+    },
+    {
+      "id": "q9",
+      "decision": "fixed",
+      "note": "Устранён альтернативно правильный de niña; вопрос явно просит pequeño/pequeña, а miedo a las alturas сделано идиоматичным.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    }
+  ],
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+}

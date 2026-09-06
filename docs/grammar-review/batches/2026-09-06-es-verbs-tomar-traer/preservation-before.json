@@ -1,0 +1,36 @@
+{
+  "existing_files": 25648,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/tomar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/tomar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/trabajar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/trabajar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/traducir.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/traducir.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/traer.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/traer.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-tomar-traer",
+    "docs/grammar-review/reports/c54a1ff1e967a0157ebf0985.json",
+    "docs/grammar-review/reports/1583497b3732da11f8d7ac63.json",
+    "docs/grammar-review/reports/ab5cc0c48e2fda9a01a5924b.json",
+    "docs/grammar-review/reports/9bc7be7a5dc2cbfe3d238c07.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/tomar.json": "ca0edec15ba2551c8f3d72b31718065fa06b21df721225215f0f3b5a56fa3bdc",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/tomar.json": "ca0edec15ba2551c8f3d72b31718065fa06b21df721225215f0f3b5a56fa3bdc",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/trabajar.json": "2935ac79a552d327fe75819d760c2b5e51546918e1db4bea7116afe1a5874dd3",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/trabajar.json": "2935ac79a552d327fe75819d760c2b5e51546918e1db4bea7116afe1a5874dd3",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/traducir.json": "508c167c903c1b3df3bb5595b53a6e175d352c73e115522efb31cecfc8c20f40",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/traducir.json": "508c167c903c1b3df3bb5595b53a6e175d352c73e115522efb31cecfc8c20f40",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/traer.json": "46b91f07954d96dcd4bcb00c024df6ddbfb28c8d29a8b296ab84f3452938f375",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/traer.json": "46b91f07954d96dcd4bcb00c024df6ddbfb28c8d29a8b296ab84f3452938f375"
+  },
+  "preexisting_missing_tracked": [
+    "courses/english-grammar/llm-benchmark/__pycache__/benchmark.cpython-314.pyc",
+    "courses/english-grammar/training-pack-admin/__pycache__/server.cpython-314.pyc",
+    "tools-local/complaints-worker/__pycache__/worker.cpython-314.pyc"
+  ]
+}

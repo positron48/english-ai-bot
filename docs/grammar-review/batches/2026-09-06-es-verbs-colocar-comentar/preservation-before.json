@@ -1,0 +1,26 @@
+{
+  "existing_files": 24954,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/colocar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/colocar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/combatir.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/combatir.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/comentar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/comentar.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-colocar-comentar",
+    "docs/grammar-review/reports/af205b59516116b045905608.json",
+    "docs/grammar-review/reports/d27d03dbf3d8f3c569ca8b33.json",
+    "docs/grammar-review/reports/12bbfb4d5b7fdd5987345b65.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/colocar.json": "19d188288b31c10fb717d56f90653cf7ef3e6b92271d23def828adeada5ac0c1",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/colocar.json": "19d188288b31c10fb717d56f90653cf7ef3e6b92271d23def828adeada5ac0c1",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/combatir.json": "5c7f3ecad8e4d69964d2836c14fa6844e8a66f451e7c0d1f737739c361929d67",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/combatir.json": "5c7f3ecad8e4d69964d2836c14fa6844e8a66f451e7c0d1f737739c361929d67",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/comentar.json": "86303768b950325a045e66253c2a0936c9041a2e194648fa6edabe59b7d94453",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/comentar.json": "86303768b950325a045e66253c2a0936c9041a2e194648fa6edabe59b7d94453"
+  }
+}

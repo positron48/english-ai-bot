@@ -1,0 +1,31 @@
+{
+  "existing_files": 25215,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/haber.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/haber.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/hablar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/hablar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/hacer.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/hacer.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/hallar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/hallar.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-haber-hallar",
+    "docs/grammar-review/reports/3721968607b68ac7481c2d4a.json",
+    "docs/grammar-review/reports/658775d8514708b20cb700eb.json",
+    "docs/grammar-review/reports/5561054833e0ead9c83d9023.json",
+    "docs/grammar-review/reports/5f645fb0be0814de8e35682b.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/haber.json": "30d2d22d1dd272b4b0fec730ba48982582ffc078ab3ffd43487ff8cf4604c780",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/haber.json": "30d2d22d1dd272b4b0fec730ba48982582ffc078ab3ffd43487ff8cf4604c780",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/hablar.json": "d83fb60dc8db3a4e8cf6fdaca8bde05d44abad3fe2352208fd98246df647b1f9",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/hablar.json": "d83fb60dc8db3a4e8cf6fdaca8bde05d44abad3fe2352208fd98246df647b1f9",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/hacer.json": "ce7cf1bd0291398cfea123e98ef26765a4b0b63a1f3962362b1f2a2838381a59",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/hacer.json": "ce7cf1bd0291398cfea123e98ef26765a4b0b63a1f3962362b1f2a2838381a59",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/hallar.json": "2ed7304b4632835e131ebb7c291bde36d33aa51cf59355e1c34b874f8a2d48ef",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/hallar.json": "2ed7304b4632835e131ebb7c291bde36d33aa51cf59355e1c34b874f8a2d48ef"
+  }
+}

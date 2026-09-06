@@ -1,0 +1,536 @@
+{
+  "_sources": {
+    "jehle_csv": "resources/verbs/jehle_verb_database.csv",
+    "sha256": "f77f01d536cd351584051d76902ff8051ab1b945a38e69c7ed02da78ab082ea8"
+  },
+  "_slots": [
+    "1:singular",
+    "2:singular",
+    "3:singular",
+    "1:plural",
+    "2:plural",
+    "3:plural"
+  ],
+  "forms": {
+    "tomar": {
+      "es.presente.indicativo": [
+        "tomo",
+        "tomas",
+        "toma",
+        "tomamos",
+        "tomáis",
+        "toman"
+      ],
+      "es.preterito_imperfecto.indicativo": [
+        "tomaba",
+        "tomabas",
+        "tomaba",
+        "tomábamos",
+        "tomabais",
+        "tomaban"
+      ],
+      "es.preterito_indefinido.indicativo": [
+        "tomé",
+        "tomaste",
+        "tomó",
+        "tomamos",
+        "tomasteis",
+        "tomaron"
+      ],
+      "es.futuro_simple.indicativo": [
+        "tomaré",
+        "tomarás",
+        "tomará",
+        "tomaremos",
+        "tomaréis",
+        "tomarán"
+      ],
+      "es.condicional_simple.indicativo": [
+        "tomaría",
+        "tomarías",
+        "tomaría",
+        "tomaríamos",
+        "tomaríais",
+        "tomarían"
+      ],
+      "es.preterito_perfecto_compuesto.indicativo": [
+        "he tomado",
+        "has tomado",
+        "ha tomado",
+        "hemos tomado",
+        "habéis tomado",
+        "han tomado"
+      ],
+      "es.preterito_pluscuamperfecto.indicativo": [
+        "había tomado",
+        "habías tomado",
+        "había tomado",
+        "habíamos tomado",
+        "habíais tomado",
+        "habían tomado"
+      ],
+      "es.preterito_anterior.indicativo": [
+        "hube tomado",
+        "hubiste tomado",
+        "hubo tomado",
+        "hubimos tomado",
+        "hubisteis tomado",
+        "hubieron tomado"
+      ],
+      "es.futuro_perfecto.indicativo": [
+        "habré tomado",
+        "habrás tomado",
+        "habrá tomado",
+        "habremos tomado",
+        "habréis tomado",
+        "habrán tomado"
+      ],
+      "es.condicional_perfecto.indicativo": [
+        "habría tomado",
+        "habrías tomado",
+        "habría tomado",
+        "habríamos tomado",
+        "habríais tomado",
+        "habrían tomado"
+      ],
+      "es.presente.subjuntivo": [
+        "tome",
+        "tomes",
+        "tome",
+        "tomemos",
+        "toméis",
+        "tomen"
+      ],
+      "es.preterito_imperfecto.subjuntivo": [
+        "tomara",
+        "tomaras",
+        "tomara",
+        "tomáramos",
+        "tomarais",
+        "tomaran"
+      ],
+      "es.futuro_simple.subjuntivo": [
+        "tomare",
+        "tomares",
+        "tomare",
+        "tomáremos",
+        "tomareis",
+        "tomaren"
+      ],
+      "es.preterito_perfecto.subjuntivo": [
+        "haya tomado",
+        "hayas tomado",
+        "haya tomado",
+        "hayamos tomado",
+        "hayáis tomado",
+        "hayan tomado"
+      ],
+      "es.preterito_pluscuamperfecto.subjuntivo": [
+        "hubiera tomado",
+        "hubieras tomado",
+        "hubiera tomado",
+        "hubiéramos tomado",
+        "hubierais tomado",
+        "hubieran tomado"
+      ],
+      "es.futuro_perfecto.subjuntivo": [
+        "hubiere tomado",
+        "hubieres tomado",
+        "hubiere tomado",
+        "hubiéremos tomado",
+        "hubiereis tomado",
+        "hubieren tomado"
+      ]
+    },
+    "trabajar": {
+      "es.presente.indicativo": [
+        "trabajo",
+        "trabajas",
+        "trabaja",
+        "trabajamos",
+        "trabajáis",
+        "trabajan"
+      ],
+      "es.preterito_imperfecto.indicativo": [
+        "trabajaba",
+        "trabajabas",
+        "trabajaba",
+        "trabajábamos",
+        "trabajabais",
+        "trabajaban"
+      ],
+      "es.preterito_indefinido.indicativo": [
+        "trabajé",
+        "trabajaste",
+        "trabajó",
+        "trabajamos",
+        "trabajasteis",
+        "trabajaron"
+      ],
+      "es.futuro_simple.indicativo": [
+        "trabajaré",
+        "trabajarás",
+        "trabajará",
+        "trabajaremos",
+        "trabajaréis",
+        "trabajarán"
+      ],
+      "es.condicional_simple.indicativo": [
+        "trabajaría",
+        "trabajarías",
+        "trabajaría",
+        "trabajaríamos",
+        "trabajaríais",
+        "trabajarían"
+      ],
+      "es.preterito_perfecto_compuesto.indicativo": [
+        "he trabajado",
+        "has trabajado",
+        "ha trabajado",
+        "hemos trabajado",
+        "habéis trabajado",
+        "han trabajado"
+      ],
+      "es.preterito_pluscuamperfecto.indicativo": [
+        "había trabajado",
+        "habías trabajado",
+        "había trabajado",
+        "habíamos trabajado",
+        "habíais trabajado",
+        "habían trabajado"
+      ],
+      "es.preterito_anterior.indicativo": [
+        "hube trabajado",
+        "hubiste trabajado",
+        "hubo trabajado",
+        "hubimos trabajado",
+        "hubisteis trabajado",
+        "hubieron trabajado"
+      ],
+      "es.futuro_perfecto.indicativo": [
+        "habré trabajado",
+        "habrás trabajado",
+        "habrá trabajado",
+        "habremos trabajado",
+        "habréis trabajado",
+        "habrán trabajado"
+      ],
+      "es.condicional_perfecto.indicativo": [
+        "habría trabajado",
+        "habrías trabajado",
+        "habría trabajado",
+        "habríamos trabajado",
+        "habríais trabajado",
+        "habrían trabajado"
+      ],
+      "es.presente.subjuntivo": [
+        "trabaje",
+        "trabajes",
+        "trabaje",
+        "trabajemos",
+        "trabajéis",
+        "trabajen"
+      ],
+      "es.preterito_imperfecto.subjuntivo": [
+        "trabajara",
+        "trabajaras",
+        "trabajara",
+        "trabajáramos",
+        "trabajarais",
+        "trabajaran"
+      ],
+      "es.futuro_simple.subjuntivo": [
+        "trabajare",
+        "trabajares",
+        "trabajare",
+        "trabajáremos",
+        "trabajareis",
+        "trabajaren"
+      ],
+      "es.preterito_perfecto.subjuntivo": [
+        "haya trabajado",
+        "hayas trabajado",
+        "haya trabajado",
+        "hayamos trabajado",
+        "hayáis trabajado",
+        "hayan trabajado"
+      ],
+      "es.preterito_pluscuamperfecto.subjuntivo": [
+        "hubiera trabajado",
+        "hubieras trabajado",
+        "hubiera trabajado",
+        "hubiéramos trabajado",
+        "hubierais trabajado",
+        "hubieran trabajado"
+      ],
+      "es.futuro_perfecto.subjuntivo": [
+        "hubiere trabajado",
+        "hubieres trabajado",
+        "hubiere trabajado",
+        "hubiéremos trabajado",
+        "hubiereis trabajado",
+        "hubieren trabajado"
+      ]
+    },
+    "traducir": {
+      "es.presente.indicativo": [
+        "traduzco",
+        "traduces",
+        "traduce",
+        "traducimos",
+        "traducís",
+        "traducen"
+      ],
+      "es.preterito_imperfecto.indicativo": [
+        "traducía",
+        "traducías",
+        "traducía",
+        "traducíamos",
+        "traducíais",
+        "traducían"
+      ],
+      "es.preterito_indefinido.indicativo": [
+        "traduje",
+        "tradujiste",
+        "tradujo",
+        "tradujimos",
+        "tradujisteis",
+        "tradujeron"
+      ],
+      "es.futuro_simple.indicativo": [
+        "traduciré",
+        "traducirás",
+        "traducirá",
+        "traduciremos",
+        "traduciréis",
+        "traducirán"
+      ],
+      "es.condicional_simple.indicativo": [
+        "traduciría",
+        "traducirías",
+        "traduciría",
+        "traduciríamos",
+        "traduciríais",
+        "traducirían"
+      ],
+      "es.preterito_perfecto_compuesto.indicativo": [
+        "he traducido",
+        "has traducido",
+        "ha traducido",
+        "hemos traducido",
+        "habéis traducido",
+        "han traducido"
+      ],
+      "es.preterito_pluscuamperfecto.indicativo": [
+        "había traducido",
+        "habías traducido",
+        "había traducido",
+        "habíamos traducido",
+        "habíais traducido",
+        "habían traducido"
+      ],
+      "es.preterito_anterior.indicativo": [
+        "hube traducido",
+        "hubiste traducido",
+        "hubo traducido",
+        "hubimos traducido",
+        "hubisteis traducido",
+        "hubieron traducido"
+      ],
+      "es.futuro_perfecto.indicativo": [
+        "habré traducido",
+        "habrás traducido",
+        "habrá traducido",
+        "habremos traducido",
+        "habréis traducido",
+        "habrán traducido"
+      ],
+      "es.condicional_perfecto.indicativo": [
+        "habría traducido",
+        "habrías traducido",
+        "habría traducido",
+        "habríamos traducido",
+        "habríais traducido",
+        "habrían traducido"
+      ],
+      "es.presente.subjuntivo": [
+        "traduzca",
+        "traduzcas",
+        "traduzca",
+        "traduzcamos",
+        "traduzcáis",
+        "traduzcan"
+      ],
+      "es.preterito_imperfecto.subjuntivo": [
+        "tradujera",
+        "tradujeras",
+        "tradujera",
+        "tradujéramos",
+        "tradujerais",
+        "tradujeran"
+      ],
+      "es.futuro_simple.subjuntivo": [
+        "tradujere",
+        "tradujeres",
+        "tradujere",
+        "tradujéremos",
+        "tradujereis",
+        "tradujeren"
+      ],
+      "es.preterito_perfecto.subjuntivo": [
+        "haya traducido",
+        "hayas traducido",
+        "haya traducido",
+        "hayamos traducido",
+        "hayáis traducido",
+        "hayan traducido"
+      ],
+      "es.preterito_pluscuamperfecto.subjuntivo": [
+        "hubiera traducido",
+        "hubieras traducido",
+        "hubiera traducido",
+        "hubiéramos traducido",
+        "hubierais traducido",
+        "hubieran traducido"
+      ],
+      "es.futuro_perfecto.subjuntivo": [
+        "hubiere traducido",
+        "hubieres traducido",
+        "hubiere traducido",
+        "hubiéremos traducido",
+        "hubiereis traducido",
+        "hubieren traducido"
+      ]
+    },
+    "traer": {
+      "es.presente.indicativo": [
+        "traigo",
+        "traes",
+        "trae",
+        "traemos",
+        "traéis",
+        "traen"
+      ],
+      "es.preterito_imperfecto.indicativo": [
+        "traía",
+        "traías",
+        "traía",
+        "traíamos",
+        "traíais",
+        "traían"
+      ],
+      "es.preterito_indefinido.indicativo": [
+        "traje",
+        "trajiste",
+        "trajo",
+        "trajimos",
+        "trajisteis",
+        "trajeron"
+      ],
+      "es.futuro_simple.indicativo": [
+        "traeré",
+        "traerás",
+        "traerá",
+        "traeremos",
+        "traeréis",
+        "traerán"
+      ],
+      "es.condicional_simple.indicativo": [
+        "traería",
+        "traerías",
+        "traería",
+        "traeríamos",
+        "traeríais",
+        "traerían"
+      ],
+      "es.preterito_perfecto_compuesto.indicativo": [
+        "he traído",
+        "has traído",
+        "ha traído",
+        "hemos traído",
+        "habéis traído",
+        "han traído"
+      ],
+      "es.preterito_pluscuamperfecto.indicativo": [
+        "había traído",
+        "habías traído",
+        "había traído",
+        "habíamos traído",
+        "habíais traído",
+        "habían traído"
+      ],
+      "es.preterito_anterior.indicativo": [
+        "hube traído",
+        "hubiste traído",
+        "hubo traído",
+        "hubimos traído",
+        "hubisteis traído",
+        "hubieron traído"
+      ],
+      "es.futuro_perfecto.indicativo": [
+        "habré traído",
+        "habrás traído",
+        "habrá traído",
+        "habremos traído",
+        "habréis traído",
+        "habrán traído"
+      ],
+      "es.condicional_perfecto.indicativo": [
+        "habría traído",
+        "habrías traído",
+        "habría traído",
+        "habríamos traído",
+        "habríais traído",
+        "habrían traído"
+      ],
+      "es.presente.subjuntivo": [
+        "traiga",
+        "traigas",
+        "traiga",
+        "traigamos",
+        "traigáis",
+        "traigan"
+      ],
+      "es.preterito_imperfecto.subjuntivo": [
+        "trajera",
+        "trajeras",
+        "trajera",
+        "trajéramos",
+        "trajerais",
+        "trajeran"
+      ],
+      "es.futuro_simple.subjuntivo": [
+        "trajere",
+        "trajeres",
+        "trajere",
+        "trajéremos",
+        "trajereis",
+        "trajeren"
+      ],
+      "es.preterito_perfecto.subjuntivo": [
+        "haya traído",
+        "hayas traído",
+        "haya traído",
+        "hayamos traído",
+        "hayáis traído",
+        "hayan traído"
+      ],
+      "es.preterito_pluscuamperfecto.subjuntivo": [
+        "hubiera traído",
+        "hubieras traído",
+        "hubiera traído",
+        "hubiéramos traído",
+        "hubierais traído",
+        "hubieran traído"
+      ],
+      "es.futuro_perfecto.subjuntivo": [
+        "hubiere traído",
+        "hubieres traído",
+        "hubiere traído",
+        "hubiéremos traído",
+        "hubiereis traído",
+        "hubieren traído"
+      ]
+    }
+  }
+}

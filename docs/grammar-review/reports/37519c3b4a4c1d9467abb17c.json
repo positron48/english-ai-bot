@@ -1,0 +1,642 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/ver.json",
+  "source_sha256": "e13f82b2662c3626deaa942cfccf6b8d7053f887abf6e459d6f9e5d6e013d9c4",
+  "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197",
+  "editor": "edit_valer ver editor 2026-09-06",
+  "verifier": "edit_vaciar independent verifier 2026-09-06",
+  "phase": "done",
+  "reviewed_at": "2026-09-06",
+  "verified_at": "2026-09-06T15:08:03Z",
+  "questions": [
+    {
+      "id": "es.presente.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «veo», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «ves», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «ve», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «vemos», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «veis», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «ven», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «veía», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «veías», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «veía», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «veíamos», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «veíais», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «veían», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «vi», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «viste», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «vio», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «vimos», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once. Manually refined for idiomatic syntax, exact ver semantics, and Russian tense/aspect.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «visteis», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «vieron», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «veré», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once. Manually refined for idiomatic syntax, exact ver semantics, and Russian tense/aspect.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «verás», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «verá», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «veremos», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «veréis», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «verán», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «vería», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «verías», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «vería», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «veríamos», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «veríais», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «verían», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once. Manually refined for idiomatic syntax, exact ver semantics, and Russian tense/aspect.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «he visto», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «has visto», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «ha visto», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «hemos visto», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «habéis visto», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once. Coordinator refinement applied for exact Russian tense/deixis and natural archaic legal syntax.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «han visto», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «había visto», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «habías visto», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «había visto», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «habíamos visto», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «habíais visto», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «habían visto», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «hube visto», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once. Manually refined for idiomatic syntax, exact ver semantics, and Russian tense/aspect.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «hubiste visto», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once. Manually refined for idiomatic syntax, exact ver semantics, and Russian tense/aspect.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «hubo visto», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «hubimos visto», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once. Manually refined for idiomatic syntax, exact ver semantics, and Russian tense/aspect.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «hubisteis visto», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once. Manually refined for idiomatic syntax, exact ver semantics, and Russian tense/aspect.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «hubieron visto», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «habré visto», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «habrás visto», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «habrá visto», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «habremos visto», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «habréis visto», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once. Manually refined for idiomatic syntax, exact ver semantics, and Russian tense/aspect.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «habrán visto», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «habría visto», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «habrías visto», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «habría visto», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «habríamos visto», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «habríais visto», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «habrían visto», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «vea», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «veas», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «vea», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once. Coordinator refinement applied for exact Russian tense/deixis and natural archaic legal syntax.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «veamos», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «veáis», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «vean», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «viera», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «vieras», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once. Manually refined for idiomatic syntax, exact ver semantics, and Russian tense/aspect.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «viera», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «viéramos», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «vierais», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «vieran», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «viere», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «vieres», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «viere», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «viéremos», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «viereis», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once. Coordinator refinement applied for exact Russian tense/deixis and natural archaic legal syntax.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «vieren», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «haya visto», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «hayas visto», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «haya visto», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «hayamos visto», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «hayáis visto», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «hayan visto», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «hubiera visto», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «hubieras visto», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «hubiera visto», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «hubiéramos visto», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «hubierais visto», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «hubieran visto», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «hubiere visto», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «hubieres visto», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «hubiere visto», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «hubiéremos visto», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «hubiereis visto», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once. Manually refined for idiomatic syntax, exact ver semantics, and Russian tense/aspect.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Rewritten and manually reviewed: authoritative form «hubieren visto», unambiguous person-specific ver context, precise Russian aspect, one blank and four unique same-scope options with the answer once.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "manual editorial read with answer substitution: ver 96/96",
+      "result": "pass",
+      "evidence": "Every final Spanish sentence and Russian translation was read in order with the answer substituted; seeing, watching, noticing, examining, visiting, meeting and considering meanings of ver are natural and the Russian aspect matches each tense."
+    },
+    {
+      "command": "editor semantic refinements: ver indexes 15, 18, 29, 42, 43, 45, 46, 52, 67 and 94",
+      "result": "pass",
+      "evidence": "Ten final refinements remove heavy literary pronouns, correct exhibition and risk phrasing, clarify a causal reading, strengthen future-perfect completion and make the legal second-person plural card idiomatic without changing identity."
+    },
+    {
+      "command": "authoritative-forms.json ver vs edited 16 scopes x 6 slots",
+      "result": "pass",
+      "evidence": "All 96 surface forms and all option values match the batch Jehle-derived authoritative table."
+    },
+    {
+      "command": "editor rare-register, counterfactual and future-perfect aspect review",
+      "result": "pass",
+      "evidence": "All six preterite-anterior cards explicitly use literary narration; both future-subjunctive sets explicitly use archaic/legal language; all six De haberlo sabido translations begin with explicit Если бы ... знал/знала/знали wording; all six future-perfect-subjunctive translations state completed conditions through если окажется, что."
+    },
+    {
+      "command": "editor identity, metadata, blank, options and source-embedded contract checks",
+      "result": "pass",
+      "evidence": "Top-level fields and exact scope/person/number order match the immutable baseline; mood/tense are exact; every card has one blank, four unique same-scope options and the answer exactly once; source and embedded are byte-identical."
+    },
+    {
+      "command": "baseline defect recount against authoritative forms",
+      "result": "pass",
+      "evidence": "wrong surface 19; duplicate-option cards 20; answer-count cards 35; off-scope 82 entries in 25 cards; invalid-union 1 entry in 1 card; metadata 0; blank 0."
+    },
+    {
+      "command": "native validate_artifact; focused grammar-review status; JSON/JSONL and scoped diff checks",
+      "result": "pass",
+      "evidence": "Native validate_artifact accepted all 96 cards; focused status reports the expected 96 awaiting_verification; source/report JSON and six contiguous checkpoint rows parse; scoped diff checks pass at fingerprint dd174d0ed1a7a00501359f7b597406d4d02043ed89edd8574699e79b8c2bd5ab."
+    },
+    {
+      "command": "coordinator semantic refinement: ver indexes 34, 62 and 76",
+      "result": "pass",
+      "evidence": "Applied the three requested refinements exactly: neutral completed Russian for seeing the director, prospective Russian for the witness, and a natural explicit vosotros legal clause with delivery wording; forms, options, metadata and identity/order unchanged."
+    },
+    {
+      "command": "independent semantic verification of all 96 final ver cards and source/baseline contract",
+      "result": "pass",
+      "evidence": "All 96 substituted ES/RU pairs were read by a verifier who did not edit ver; forms and meanings are exact, rare registers and completion are explicit, and no editorial findings remain. Fingerprint e13f82b2662c3626deaa942cfccf6b8d7053f887abf6e459d6f9e5d6e013d9c4, context fingerprint, immutable identity/order, native validator and source-embedded equality all pass."
+    },
+    {
+      "command": "coordinator final batch barrier: check.py, preservation-check.py, native validate_artifact, focused status, Go tests, grammar_review_test.py and scoped diff checks",
+      "result": "pass",
+      "evidence": "Final ver report is independently done at fingerprint e13f82b2662c3626deaa942cfccf6b8d7053f887abf6e459d6f9e5d6e013d9c4; the 384-card batch passed authoritative forms/contracts, 24 checkpoints, source=embedded, preservation (25683 unchanged out-of-scope files), native validation, Go tests, 13 grammar-review tests and whitespace checks."
+    }
+  ],
+  "verification_note": "Independent verifier who did not edit ver read all 96 final cards with the answer substituted and checked natural Spanish, exact Russian meaning and aspect, person/number/tense, unambiguous blanks, same-scope options, literary/legal rare-tense framing, explicit counterfactuals and completed future-perfect-subjunctive meaning. Source/context fingerprints, immutable-baseline identity and source-embedded equality were also checked. No findings remain."
+}

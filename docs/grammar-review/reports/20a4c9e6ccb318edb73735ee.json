@@ -1,0 +1,637 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/unir.json",
+  "source_sha256": "cee35a298c879786d3951eac7a83b9d122dc65e2fcbcbff82a72fce252c0bee7",
+  "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197",
+  "editor": "edit_unir editor 2026-09-06",
+  "verifier": "edit_ubicar verifier 2026-09-06",
+  "phase": "done",
+  "reviewed_at": "2026-09-06",
+  "verified_at": "2026-09-06",
+  "questions": [
+    {
+      "id": "es.presente.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:1:singular переписана и вручную проверена: форма «uno» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:2:singular переписана и вручную проверена: форма «unes» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:3:singular переписана и вручную проверена: форма «une» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:1:plural переписана и вручную проверена: форма «unimos» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:2:plural переписана и вручную проверена: форма «unís» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:3:plural переписана и вручную проверена: форма «unen» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:1:singular переписана и вручную проверена: форма «unía» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope. Координаторское уточнение после полного чтения принято: ES/RU сделаны точнее без изменения формы, вариантов и identity.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:2:singular переписана и вручную проверена: форма «unías» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:3:singular переписана и вручную проверена: форма «unía» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:1:plural переписана и вручную проверена: форма «uníamos» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:2:plural переписана и вручную проверена: форма «uníais» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:3:plural переписана и вручную проверена: форма «unían» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:1:singular переписана и вручную проверена: форма «uní» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:2:singular переписана и вручную проверена: форма «uniste» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:3:singular переписана и вручную проверена: форма «unió» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:1:plural переписана и вручную проверена: форма «unimos» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:2:plural переписана и вручную проверена: форма «unisteis» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:3:plural переписана и вручную проверена: форма «unieron» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:1:singular переписана и вручную проверена: форма «uniré» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:2:singular переписана и вручную проверена: форма «unirás» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:3:singular переписана и вручную проверена: форма «unirá» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:1:plural переписана и вручную проверена: форма «uniremos» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:2:plural переписана и вручную проверена: форма «uniréis» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:3:plural переписана и вручную проверена: форма «unirán» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:1:singular переписана и вручную проверена: форма «uniría» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:2:singular переписана и вручную проверена: форма «unirías» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:3:singular переписана и вручную проверена: форма «uniría» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:1:plural переписана и вручную проверена: форма «uniríamos» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:2:plural переписана и вручную проверена: форма «uniríais» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:3:plural переписана и вручную проверена: форма «unirían» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:1:singular переписана и вручную проверена: форма «he unido» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:2:singular переписана и вручную проверена: форма «has unido» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:3:singular переписана и вручную проверена: форма «ha unido» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:1:plural переписана и вручную проверена: форма «hemos unido» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:2:plural переписана и вручную проверена: форма «habéis unido» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:3:plural переписана и вручную проверена: форма «han unido» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:1:singular переписана и вручную проверена: форма «había unido» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:2:singular переписана и вручную проверена: форма «habías unido» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:3:singular переписана и вручную проверена: форма «había unido» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:1:plural переписана и вручную проверена: форма «habíamos unido» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:2:plural переписана и вручную проверена: форма «habíais unido» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:3:plural переписана и вручную проверена: форма «habían unido» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:1:singular переписана и вручную проверена: форма «hube unido» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope. Редкая форма явно помещена в литературную или юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:2:singular переписана и вручную проверена: форма «hubiste unido» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope. Редкая форма явно помещена в литературную или юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:3:singular переписана и вручную проверена: форма «hubo unido» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope. Редкая форма явно помещена в литературную или юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:1:plural переписана и вручную проверена: форма «hubimos unido» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope. Редкая форма явно помещена в литературную или юридическую рамку. Координаторское уточнение после полного чтения принято: ES/RU сделаны точнее без изменения формы, вариантов и identity.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:2:plural переписана и вручную проверена: форма «hubisteis unido» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope. Редкая форма явно помещена в литературную или юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:3:plural переписана и вручную проверена: форма «hubieron unido» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope. Редкая форма явно помещена в литературную или юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:1:singular переписана и вручную проверена: форма «habré unido» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:2:singular переписана и вручную проверена: форма «habrás unido» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:3:singular переписана и вручную проверена: форма «habrá unido» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:1:plural переписана и вручную проверена: форма «habremos unido» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:2:plural переписана и вручную проверена: форма «habréis unido» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:3:plural переписана и вручную проверена: форма «habrán unido» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:1:singular переписана и вручную проверена: форма «habría unido» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:2:singular переписана и вручную проверена: форма «habrías unido» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:3:singular переписана и вручную проверена: форма «habría unido» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:1:plural переписана и вручную проверена: форма «habríamos unido» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:2:plural переписана и вручную проверена: форма «habríais unido» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope. Независимое замечание edit_ubicar исправлено точно: русский перевод уточняет способ соединения деталей; карточка направлена на повторную проверку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:3:plural переписана и вручную проверена: форма «habrían unido» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:1:singular переписана и вручную проверена: форма «una» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:2:singular переписана и вручную проверена: форма «unas» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:3:singular переписана и вручную проверена: форма «una» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope. Координаторское уточнение после полного чтения принято: ES/RU сделаны точнее без изменения формы, вариантов и identity.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:1:plural переписана и вручную проверена: форма «unamos» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope. Координаторское уточнение после полного чтения принято: ES/RU сделаны точнее без изменения формы, вариантов и identity.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:2:plural переписана и вручную проверена: форма «unáis» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:3:plural переписана и вручную проверена: форма «unan» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:1:singular переписана и вручную проверена: форма «uniera» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope. Координаторское уточнение после полного чтения принято: ES/RU сделаны точнее без изменения формы, вариантов и identity.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:2:singular переписана и вручную проверена: форма «unieras» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:3:singular переписана и вручную проверена: форма «uniera» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:1:plural переписана и вручную проверена: форма «uniéramos» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:2:plural переписана и вручную проверена: форма «unierais» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:3:plural переписана и вручную проверена: форма «unieran» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:1:singular переписана и вручную проверена: форма «haya unido» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:2:singular переписана и вручную проверена: форма «hayas unido» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:3:singular переписана и вручную проверена: форма «haya unido» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:1:plural переписана и вручную проверена: форма «hayamos unido» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:2:plural переписана и вручную проверена: форма «hayáis unido» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:3:plural переписана и вручную проверена: форма «hayan unido» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope. Координаторское уточнение после полного чтения принято: ES/RU сделаны точнее без изменения формы, вариантов и identity.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:1:singular переписана и вручную проверена: форма «uniere» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope. Редкая форма явно помещена в литературную или юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:2:singular переписана и вручную проверена: форма «unieres» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope. Редкая форма явно помещена в литературную или юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:3:singular переписана и вручную проверена: форма «uniere» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope. Редкая форма явно помещена в литературную или юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:1:plural переписана и вручную проверена: форма «uniéremos» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope. Редкая форма явно помещена в литературную или юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:2:plural переписана и вручную проверена: форма «uniereis» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope. Редкая форма явно помещена в литературную или юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:3:plural переписана и вручную проверена: форма «unieren» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope. Редкая форма явно помещена в литературную или юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:1:singular переписана и вручную проверена: форма «hubiera unido» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:2:singular переписана и вручную проверена: форма «hubieras unido» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:3:singular переписана и вручную проверена: форма «hubiera unido» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:1:plural переписана и вручную проверена: форма «hubiéramos unido» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:2:plural переписана и вручную проверена: форма «hubierais unido» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope. Координаторское уточнение после полного чтения принято: ES/RU сделаны точнее без изменения формы, вариантов и identity.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:3:plural переписана и вручную проверена: форма «hubieran unido» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:1:singular переписана и вручную проверена: форма «hubiere unido» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope. Редкая форма явно помещена в литературную или юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:2:singular переписана и вручную проверена: форма «hubieres unido» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope. Редкая форма явно помещена в литературную или юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:3:singular переписана и вручную проверена: форма «hubiere unido» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope. Редкая форма явно помещена в литературную или юридическую рамку. Координаторское уточнение после полного чтения принято: ES/RU сделаны точнее без изменения формы, вариантов и identity.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:1:plural переписана и вручную проверена: форма «hubiéremos unido» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope. Редкая форма явно помещена в литературную или юридическую рамку. Координаторское уточнение после полного чтения принято: ES/RU сделаны точнее без изменения формы, вариантов и identity.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:2:plural переписана и вручную проверена: форма «hubiereis unido» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope. Редкая форма явно помещена в литературную или юридическую рамку.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:3:plural переписана и вручную проверена: форма «hubieren unido» сверена по авторитетной таблице, контекст unir/unirse и русский перевод согласованы, варианты уникальны и взяты из того же scope. Редкая форма явно помещена в литературную или юридическую рамку.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 - <<'PY' (load generate-verb-forms-training.py; validate_artifact('unir', cards))",
+      "result": "pass",
+      "evidence": "Strict generator validation passed for all 96 unir cards."
+    },
+    {
+      "command": "python3 - <<'PY' (focused unir authoritative-form and preservation contract check)",
+      "result": "pass",
+      "evidence": "96/96 exact authoritative forms; top-level and scope/person/number order preserved; one blank; four unique same-scope options; answer once; Cyrillic RU; explicit rare-tense frames; six 16-card checkpoints."
+    },
+    {
+      "command": "cmp -s courses/spanish-grammar/training_pack/verb_forms/lemmas/unir.json internal/grammartrainingpack/es/verb_forms/lemmas/unir.json",
+      "result": "pass",
+      "evidence": "Source and embedded files are byte-identical."
+    },
+    {
+      "command": "git diff --check -- assigned unir paths",
+      "result": "pass",
+      "evidence": "Root and Spanish-submodule diff checks passed for the four assigned paths."
+    },
+    {
+      "command": "coordinator full semantic read of unir 96/96; apply nine requested refinements",
+      "result": "pass",
+      "evidence": "Nine exact coordinator refinements applied at indices 6, 45, 62, 63, 66, 77, 88, 92 and 93; authoritative forms, options and identity remained unchanged."
+    },
+    {
+      "command": "independent verifier full read and substitution: unir 96/96",
+      "result": "pass",
+      "evidence": "Independently read all 96 final ES/RU pairs with surface_form substituted. Authoritative Jehle forms, scope/person/number, mood/tense, one blank, four unique same-scope options with one answer, unir/unirse valency and clitics, temporal anchors, 18 rare-register cards, six explicit Russian counterfactuals, baseline identity/top-level, fingerprints, native validator and source=embedded passed. One Russian wording issue remains at index 58."
+    },
+    {
+      "command": "apply independent verifier edit_ubicar finding at unir index 58",
+      "result": "pass",
+      "evidence": "Exact requested RU replacement applied at es.condicional_perfecto.indicativo:2:plural; all verification verdicts reset to pending for independent recheck; source and embedded synchronized."
+    },
+    {
+      "command": "same independent verifier recheck after unir index 58 fix",
+      "result": "pass",
+      "evidence": "Confirmed the exact Russian replacement с помощью другого механизма at index 58 and unchanged ES, habríais unido, same-scope options, metadata, baseline identity/top-level; source and embedded match at fingerprint cee35a298c879786d3951eac7a83b9d122dc65e2fcbcbff82a72fce252c0bee7 and native validation passes all 96 cards."
+    },
+    {
+      "command": "final batch barrier: check.py; native validate_artifact; focused Go tests; grammar_review_test.py; focused/full status; preservation; root/course diff checks; skill quick_validate",
+      "result": "pass",
+      "evidence": "PASS: 384 cards and 24 checkpoints; native 96/96 each; Go packages pass; 13 grammar-review tests pass; four focused sources done; preservation 25653/0/0/0; diff checks and skill validation pass."
+    }
+  ],
+  "verification_note": "Независимо прочитаны все 96 карточек с подстановкой surface_form. После исправления index 58 тот же проверяющий повторно подтвердил точный русский инструментальный оборот, неизменные ES/form/options/metadata и общий контракт. Все 96 карточек приняты; формы Jehle, unir/unirse, временные опоры, редкие рамки, контрфактивы, fingerprints и source=embedded подтверждены."
+}

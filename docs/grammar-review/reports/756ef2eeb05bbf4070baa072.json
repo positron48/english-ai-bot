@@ -4,130 +4,130 @@
   "source_sha256": "d1415aa9bfcbe130a8bd9835ede597e1e9206b6dcbe5415b2926c4d0b49c2bf8",
   "context_sha256": "e51b0e0494fd7379a0459ae2d61b76621c8e0b85513b67c3fb4438ecadbc4cf3",
   "editor": "Codex editor 2026-09-04",
-  "verifier": "",
-  "phase": "awaiting_verification",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
   "reviewed_at": "2026-09-04T09:37:39.838740+00:00",
-  "verified_at": "",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
   "questions": [
     {
       "id": "q1",
       "decision": "fixed",
       "note": "Слабые i/u, остальные пары содержат сильные. Только техническая правка: пересчитана исходно устаревшая signature штатной функцией; содержание сохранено.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q2",
       "decision": "fixed",
       "note": "Полный набор сильных a/e/o. Только техническая правка: пересчитана исходно устаревшая signature штатной функцией; содержание сохранено.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q3",
       "decision": "fixed",
       "note": "Повтор q1 и ссылка на букву ответа заменены классификацией пары.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q4",
       "decision": "fixed",
       "note": "Убрана ссылка на букву ответа, уточнён полностью слабый набор.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q5",
       "decision": "fixed",
       "note": "Повтор q2 заменён классификацией гласных слова mesa.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q6",
       "decision": "fixed",
       "note": "Повтор q2 заменён различением сильной/слабой в паре.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q7",
       "decision": "fixed",
       "note": "Исправлены Luis и ошибочное перечисление e/o среди слабых.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q8",
       "decision": "fixed",
       "note": "i единственная слабая. Только техническая правка: пересчитана исходно устаревшая signature штатной функцией; содержание сохранено.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q9",
       "decision": "fixed",
       "note": "Исправлена опечатка диафтонгов, объяснение привязано к гласным cielo.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q10",
       "decision": "fixed",
       "note": "Дословный по сути повтор q8 заменён другой слабой гласной.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q11",
       "decision": "fixed",
       "note": "Очередной повтор набора сильных заменён поиском лишней гласной.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q12",
       "decision": "fixed",
       "note": "Повтор набора слабых заменён классификацией u+a.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q13",
       "decision": "fixed",
       "note": "Повтор сильных и ссылки на буквы заменены заданием на слово.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q14",
       "decision": "fixed",
       "note": "Неверно утверждалось, что o/u только сильные; исправлены инструкция и объяснение.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q15",
       "decision": "fixed",
       "note": "Три сильные гласные. Только техническая правка: пересчитана исходно устаревшая signature штатной функцией; содержание сохранено.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q16",
       "decision": "fixed",
       "note": "Повтор слабых заменён поиском смешанной пары.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q17",
       "decision": "fixed",
       "note": "Повтор полного набора слабых заменён дополнением пары.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q18",
       "decision": "fixed",
       "note": "Повтор сильных и ссылки на буквы заменены поиском слова со смешанной парой.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q19",
       "decision": "fixed",
       "note": "Повтор полного набора слабых заменён применением к имени Luis.",
-      "verification": "pending"
+      "verification": "ok"
     },
     {
       "id": "q20",
       "decision": "fixed",
       "note": "Две слабые гласные. Только техническая правка: пересчитана исходно устаревшая signature штатной функцией; содержание сохранено.",
-      "verification": "pending"
+      "verification": "ok"
     }
   ],
   "checks": [
@@ -145,7 +145,12 @@
       "command": "git diff --check && git -C courses/spanish-grammar diff --check && git -C courses/english-grammar diff --check",
       "result": "pass",
       "evidence": "All three commands exited 0."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
     }
   ],
-  "verification_note": ""
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
 }

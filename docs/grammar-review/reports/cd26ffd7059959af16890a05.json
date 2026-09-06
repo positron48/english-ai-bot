@@ -1,0 +1,657 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/recomendar.json",
+  "source_sha256": "c1cf098bec6978af8029fa578d85aec1f878aab85c7b569f252af5a4855ed28e",
+  "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197",
+  "editor": "Laplace editor 2026-09-06",
+  "verifier": "Aristotle verifier 2026-09-06",
+  "phase": "done",
+  "reviewed_at": "2026-09-06",
+  "verified_at": "2026-09-06",
+  "questions": [
+    {
+      "id": "es.presente.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены: форма, испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены: форма, испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены: форма, испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены: форма, испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены: форма, испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены: форма, испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены: форма, испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены: форма, испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены: форма, испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены: форма, испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены: форма, испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены: форма, испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены: форма, испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены: форма, испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены: форма, испанский контекст, русский перевод, варианты ответа. Контекст и перевод согласованы по смыслу и времени; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "Semantic review of all 96 recomendar cards in six 16-card chunks",
+      "result": "pass",
+      "evidence": "Every Spanish sentence and Russian translation was read with the answer substituted and revised for natural recomendar constructions and exact tense meaning."
+    },
+    {
+      "command": "Jehle form comparison across 16 scopes and six slots",
+      "result": "pass",
+      "evidence": "96/96 surface forms match local Jehle, including stem changes, pretérito anterior and both futuro de subjuntivo scopes."
+    },
+    {
+      "command": "Same-scope option validation",
+      "result": "pass",
+      "evidence": "Every card has four distinct forms from its own scope and exactly one answer."
+    },
+    {
+      "command": "Counterfactual and rare-tense semantic review",
+      "result": "pass",
+      "evidence": "De haberlo sabido is translated explicitly with «Если бы ... знал»; rare tenses use literary immediate-sequence or formal legal contexts."
+    },
+    {
+      "command": "Baseline identity/order/top-level preservation and source/embedded comparison",
+      "result": "pass",
+      "evidence": "All immutable fields are preserved and source/embedded are byte-identical."
+    },
+    {
+      "command": "validate_artifact; json.tool on source/embedded/report; exact-path git diff --check; grammar-review inventory",
+      "result": "pass",
+      "evidence": "Repository-native card validation, JSON parsing, whitespace validation and live inventory all pass; final status remains awaiting independent verification."
+    },
+    {
+      "command": "Independent full-card verification of recomendar against immutable batch baseline, local Jehle CSV, source/embedded and grammar-review fingerprints",
+      "result": "pass",
+      "evidence": "96/96 cards read with answers inserted; ES/RU naturalness and tense, exact person/number forms and metadata, four unique same-scope options, stable identity/order/top-level fields, byte-identical source/embedded and current fingerprints all passed."
+    },
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-06-es-verbs-recibir-reconocer/check.py",
+      "result": "pass",
+      "evidence": "384 cards passed exact Jehle forms, source/embedded equality, preserved contracts, report fingerprints, unique same-scope options, independent sign-off and 24 checkpoints."
+    },
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-06-es-verbs-recibir-reconocer/preservation-check.py",
+      "result": "pass",
+      "evidence": "25451 paths outside the allowed batch set remained unchanged; no missing or unexpected new paths."
+    },
+    {
+      "command": "validate_artifact() from courses/spanish-grammar/scripts/generate-verb-forms-training.py",
+      "result": "pass",
+      "evidence": "Native strict artifact validation passed for recibir, recoger, recomendar and reconocer."
+    },
+    {
+      "command": "go test ./internal/verbtraining ./cmd/sync_verb_training_json",
+      "result": "pass",
+      "evidence": "Focused runtime and embedded synchronization tests passed."
+    },
+    {
+      "command": "python3 scripts/grammar_review_test.py",
+      "result": "pass",
+      "evidence": "All 13 grammar-review workflow tests passed."
+    },
+    {
+      "command": "git diff --check && git -C courses/spanish-grammar diff --check",
+      "result": "pass",
+      "evidence": "No whitespace errors in root or Spanish submodule diffs."
+    }
+  ],
+  "verification_note": "Независимо прочитаны все 96 карточек с подстановкой формы: испанские контексты и русские переводы согласованы по смыслу и времени; Jehle forms, metadata, четыре уникальных same-scope options, identity/order/top-level, source/embedded и fingerprints подтверждены."
+}

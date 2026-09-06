@@ -1,0 +1,536 @@
+{
+  "_sources": {
+    "jehle_csv": "resources/verbs/jehle_verb_database.csv",
+    "sha256": "f77f01d536cd351584051d76902ff8051ab1b945a38e69c7ed02da78ab082ea8"
+  },
+  "_slots": [
+    "1:singular",
+    "2:singular",
+    "3:singular",
+    "1:plural",
+    "2:plural",
+    "3:plural"
+  ],
+  "forms": {
+    "surgir": {
+      "es.presente.indicativo": [
+        "surjo",
+        "surges",
+        "surge",
+        "surgimos",
+        "surgís",
+        "surgen"
+      ],
+      "es.preterito_imperfecto.indicativo": [
+        "surgía",
+        "surgías",
+        "surgía",
+        "surgíamos",
+        "surgíais",
+        "surgían"
+      ],
+      "es.preterito_indefinido.indicativo": [
+        "surgí",
+        "surgiste",
+        "surgió",
+        "surgimos",
+        "surgisteis",
+        "surgieron"
+      ],
+      "es.futuro_simple.indicativo": [
+        "surgiré",
+        "surgirás",
+        "surgirá",
+        "surgiremos",
+        "surgiréis",
+        "surgirán"
+      ],
+      "es.condicional_simple.indicativo": [
+        "surgiría",
+        "surgirías",
+        "surgiría",
+        "surgiríamos",
+        "surgiríais",
+        "surgirían"
+      ],
+      "es.preterito_perfecto_compuesto.indicativo": [
+        "he surgido",
+        "has surgido",
+        "ha surgido",
+        "hemos surgido",
+        "habéis surgido",
+        "han surgido"
+      ],
+      "es.preterito_pluscuamperfecto.indicativo": [
+        "había surgido",
+        "habías surgido",
+        "había surgido",
+        "habíamos surgido",
+        "habíais surgido",
+        "habían surgido"
+      ],
+      "es.preterito_anterior.indicativo": [
+        "hube surgido",
+        "hubiste surgido",
+        "hubo surgido",
+        "hubimos surgido",
+        "hubisteis surgido",
+        "hubieron surgido"
+      ],
+      "es.futuro_perfecto.indicativo": [
+        "habré surgido",
+        "habrás surgido",
+        "habrá surgido",
+        "habremos surgido",
+        "habréis surgido",
+        "habrán surgido"
+      ],
+      "es.condicional_perfecto.indicativo": [
+        "habría surgido",
+        "habrías surgido",
+        "habría surgido",
+        "habríamos surgido",
+        "habríais surgido",
+        "habrían surgido"
+      ],
+      "es.presente.subjuntivo": [
+        "surja",
+        "surjas",
+        "surja",
+        "surjamos",
+        "surjáis",
+        "surjan"
+      ],
+      "es.preterito_imperfecto.subjuntivo": [
+        "surgiera",
+        "surgieras",
+        "surgiera",
+        "surgiéramos",
+        "surgierais",
+        "surgieran"
+      ],
+      "es.futuro_simple.subjuntivo": [
+        "surgiere",
+        "surgieres",
+        "surgiere",
+        "surgiéremos",
+        "surgiereis",
+        "surgieren"
+      ],
+      "es.preterito_perfecto.subjuntivo": [
+        "haya surgido",
+        "hayas surgido",
+        "haya surgido",
+        "hayamos surgido",
+        "hayáis surgido",
+        "hayan surgido"
+      ],
+      "es.preterito_pluscuamperfecto.subjuntivo": [
+        "hubiera surgido",
+        "hubieras surgido",
+        "hubiera surgido",
+        "hubiéramos surgido",
+        "hubierais surgido",
+        "hubieran surgido"
+      ],
+      "es.futuro_perfecto.subjuntivo": [
+        "hubiere surgido",
+        "hubieres surgido",
+        "hubiere surgido",
+        "hubiéremos surgido",
+        "hubiereis surgido",
+        "hubieren surgido"
+      ]
+    },
+    "sustituir": {
+      "es.presente.indicativo": [
+        "sustituyo",
+        "sustituyes",
+        "sustituye",
+        "sustituimos",
+        "sustituís",
+        "sustituyen"
+      ],
+      "es.preterito_imperfecto.indicativo": [
+        "sustituía",
+        "sustituías",
+        "sustituía",
+        "sustituíamos",
+        "sustituíais",
+        "sustituían"
+      ],
+      "es.preterito_indefinido.indicativo": [
+        "sustituí",
+        "sustituiste",
+        "sustituyó",
+        "sustituimos",
+        "sustituisteis",
+        "sustituyeron"
+      ],
+      "es.futuro_simple.indicativo": [
+        "sustituiré",
+        "sustituirás",
+        "sustituirá",
+        "sustituiremos",
+        "sustituiréis",
+        "sustituirán"
+      ],
+      "es.condicional_simple.indicativo": [
+        "sustituiría",
+        "sustituirías",
+        "sustituiría",
+        "sustituiríamos",
+        "sustituiríais",
+        "sustituirían"
+      ],
+      "es.preterito_perfecto_compuesto.indicativo": [
+        "he sustituido",
+        "has sustituido",
+        "ha sustituido",
+        "hemos sustituido",
+        "habéis sustituido",
+        "han sustituido"
+      ],
+      "es.preterito_pluscuamperfecto.indicativo": [
+        "había sustituido",
+        "habías sustituido",
+        "había sustituido",
+        "habíamos sustituido",
+        "habíais sustituido",
+        "habían sustituido"
+      ],
+      "es.preterito_anterior.indicativo": [
+        "hube sustituido",
+        "hubiste sustituido",
+        "hubo sustituido",
+        "hubimos sustituido",
+        "hubisteis sustituido",
+        "hubieron sustituido"
+      ],
+      "es.futuro_perfecto.indicativo": [
+        "habré sustituido",
+        "habrás sustituido",
+        "habrá sustituido",
+        "habremos sustituido",
+        "habréis sustituido",
+        "habrán sustituido"
+      ],
+      "es.condicional_perfecto.indicativo": [
+        "habría sustituido",
+        "habrías sustituido",
+        "habría sustituido",
+        "habríamos sustituido",
+        "habríais sustituido",
+        "habrían sustituido"
+      ],
+      "es.presente.subjuntivo": [
+        "sustituya",
+        "sustituyas",
+        "sustituya",
+        "sustituyamos",
+        "sustituyáis",
+        "sustituyan"
+      ],
+      "es.preterito_imperfecto.subjuntivo": [
+        "sustituyera",
+        "sustituyeras",
+        "sustituyera",
+        "sustituyéramos",
+        "sustituyerais",
+        "sustituyeran"
+      ],
+      "es.futuro_simple.subjuntivo": [
+        "sustituyere",
+        "sustituyeres",
+        "sustituyere",
+        "sustituyéremos",
+        "sustituyereis",
+        "sustituyeren"
+      ],
+      "es.preterito_perfecto.subjuntivo": [
+        "haya sustituido",
+        "hayas sustituido",
+        "haya sustituido",
+        "hayamos sustituido",
+        "hayáis sustituido",
+        "hayan sustituido"
+      ],
+      "es.preterito_pluscuamperfecto.subjuntivo": [
+        "hubiera sustituido",
+        "hubieras sustituido",
+        "hubiera sustituido",
+        "hubiéramos sustituido",
+        "hubierais sustituido",
+        "hubieran sustituido"
+      ],
+      "es.futuro_perfecto.subjuntivo": [
+        "hubiere sustituido",
+        "hubieres sustituido",
+        "hubiere sustituido",
+        "hubiéremos sustituido",
+        "hubiereis sustituido",
+        "hubieren sustituido"
+      ]
+    },
+    "tardar": {
+      "es.presente.indicativo": [
+        "tardo",
+        "tardas",
+        "tarda",
+        "tardamos",
+        "tardáis",
+        "tardan"
+      ],
+      "es.preterito_imperfecto.indicativo": [
+        "tardaba",
+        "tardabas",
+        "tardaba",
+        "tardábamos",
+        "tardabais",
+        "tardaban"
+      ],
+      "es.preterito_indefinido.indicativo": [
+        "tardé",
+        "tardaste",
+        "tardó",
+        "tardamos",
+        "tardasteis",
+        "tardaron"
+      ],
+      "es.futuro_simple.indicativo": [
+        "tardaré",
+        "tardarás",
+        "tardará",
+        "tardaremos",
+        "tardaréis",
+        "tardarán"
+      ],
+      "es.condicional_simple.indicativo": [
+        "tardaría",
+        "tardarías",
+        "tardaría",
+        "tardaríamos",
+        "tardaríais",
+        "tardarían"
+      ],
+      "es.preterito_perfecto_compuesto.indicativo": [
+        "he tardado",
+        "has tardado",
+        "ha tardado",
+        "hemos tardado",
+        "habéis tardado",
+        "han tardado"
+      ],
+      "es.preterito_pluscuamperfecto.indicativo": [
+        "había tardado",
+        "habías tardado",
+        "había tardado",
+        "habíamos tardado",
+        "habíais tardado",
+        "habían tardado"
+      ],
+      "es.preterito_anterior.indicativo": [
+        "hube tardado",
+        "hubiste tardado",
+        "hubo tardado",
+        "hubimos tardado",
+        "hubisteis tardado",
+        "hubieron tardado"
+      ],
+      "es.futuro_perfecto.indicativo": [
+        "habré tardado",
+        "habrás tardado",
+        "habrá tardado",
+        "habremos tardado",
+        "habréis tardado",
+        "habrán tardado"
+      ],
+      "es.condicional_perfecto.indicativo": [
+        "habría tardado",
+        "habrías tardado",
+        "habría tardado",
+        "habríamos tardado",
+        "habríais tardado",
+        "habrían tardado"
+      ],
+      "es.presente.subjuntivo": [
+        "tarde",
+        "tardes",
+        "tarde",
+        "tardemos",
+        "tardéis",
+        "tarden"
+      ],
+      "es.preterito_imperfecto.subjuntivo": [
+        "tardara",
+        "tardaras",
+        "tardara",
+        "tardáramos",
+        "tardarais",
+        "tardaran"
+      ],
+      "es.futuro_simple.subjuntivo": [
+        "tardare",
+        "tardares",
+        "tardare",
+        "tardáremos",
+        "tardareis",
+        "tardaren"
+      ],
+      "es.preterito_perfecto.subjuntivo": [
+        "haya tardado",
+        "hayas tardado",
+        "haya tardado",
+        "hayamos tardado",
+        "hayáis tardado",
+        "hayan tardado"
+      ],
+      "es.preterito_pluscuamperfecto.subjuntivo": [
+        "hubiera tardado",
+        "hubieras tardado",
+        "hubiera tardado",
+        "hubiéramos tardado",
+        "hubierais tardado",
+        "hubieran tardado"
+      ],
+      "es.futuro_perfecto.subjuntivo": [
+        "hubiere tardado",
+        "hubieres tardado",
+        "hubiere tardado",
+        "hubiéremos tardado",
+        "hubiereis tardado",
+        "hubieren tardado"
+      ]
+    },
+    "temer": {
+      "es.presente.indicativo": [
+        "temo",
+        "temes",
+        "teme",
+        "tememos",
+        "teméis",
+        "temen"
+      ],
+      "es.preterito_imperfecto.indicativo": [
+        "temía",
+        "temías",
+        "temía",
+        "temíamos",
+        "temíais",
+        "temían"
+      ],
+      "es.preterito_indefinido.indicativo": [
+        "temí",
+        "temiste",
+        "temió",
+        "temimos",
+        "temisteis",
+        "temieron"
+      ],
+      "es.futuro_simple.indicativo": [
+        "temeré",
+        "temerás",
+        "temerá",
+        "temeremos",
+        "temeréis",
+        "temerán"
+      ],
+      "es.condicional_simple.indicativo": [
+        "temería",
+        "temerías",
+        "temería",
+        "temeríamos",
+        "temeríais",
+        "temerían"
+      ],
+      "es.preterito_perfecto_compuesto.indicativo": [
+        "he temido",
+        "has temido",
+        "ha temido",
+        "hemos temido",
+        "habéis temido",
+        "han temido"
+      ],
+      "es.preterito_pluscuamperfecto.indicativo": [
+        "había temido",
+        "habías temido",
+        "había temido",
+        "habíamos temido",
+        "habíais temido",
+        "habían temido"
+      ],
+      "es.preterito_anterior.indicativo": [
+        "hube temido",
+        "hubiste temido",
+        "hubo temido",
+        "hubimos temido",
+        "hubisteis temido",
+        "hubieron temido"
+      ],
+      "es.futuro_perfecto.indicativo": [
+        "habré temido",
+        "habrás temido",
+        "habrá temido",
+        "habremos temido",
+        "habréis temido",
+        "habrán temido"
+      ],
+      "es.condicional_perfecto.indicativo": [
+        "habría temido",
+        "habrías temido",
+        "habría temido",
+        "habríamos temido",
+        "habríais temido",
+        "habrían temido"
+      ],
+      "es.presente.subjuntivo": [
+        "tema",
+        "temas",
+        "tema",
+        "temamos",
+        "temáis",
+        "teman"
+      ],
+      "es.preterito_imperfecto.subjuntivo": [
+        "temiera",
+        "temieras",
+        "temiera",
+        "temiéramos",
+        "temierais",
+        "temieran"
+      ],
+      "es.futuro_simple.subjuntivo": [
+        "temiere",
+        "temieres",
+        "temiere",
+        "temiéremos",
+        "temiereis",
+        "temieren"
+      ],
+      "es.preterito_perfecto.subjuntivo": [
+        "haya temido",
+        "hayas temido",
+        "haya temido",
+        "hayamos temido",
+        "hayáis temido",
+        "hayan temido"
+      ],
+      "es.preterito_pluscuamperfecto.subjuntivo": [
+        "hubiera temido",
+        "hubieras temido",
+        "hubiera temido",
+        "hubiéramos temido",
+        "hubierais temido",
+        "hubieran temido"
+      ],
+      "es.futuro_perfecto.subjuntivo": [
+        "hubiere temido",
+        "hubieres temido",
+        "hubiere temido",
+        "hubiéremos temido",
+        "hubiereis temido",
+        "hubieren temido"
+      ]
+    }
+  }
+}

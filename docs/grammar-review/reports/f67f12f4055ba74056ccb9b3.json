@@ -1,0 +1,488 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/chapters/036.es.grammar.present_irregulars_reflexives_gustar.high_frequency_irregulars_ir_hacer_tener_venir_decir/03-questions.json",
+  "source_sha256": "356bc786dac9514053d44416309990acdeb2cc72dd47bf5f1e60e56b18d745df",
+  "context_sha256": "da445b5ab80a8772f2ef9aee079a37e991c1c130d601f53f3a7be37f60e106fa",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
+  "reviewed_at": "2026-09-04T17:00:03.014708+00:00",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
+  "questions": [
+    {
+      "id": "q036_b1_01",
+      "decision": "fixed",
+      "note": "Уточнены настоящее изъявительное время и предмет вопроса; устранено ложное противопоставление особой формы и чередования, убраны ссылки на главу и неясные метафоры.",
+      "verification": "ok"
+    },
+    {
+      "id": "q036_b1_02",
+      "decision": "fixed",
+      "note": "Уточнены настоящее изъявительное время и предмет вопроса; устранено ложное противопоставление особой формы и чередования, убраны ссылки на главу и неясные метафоры.",
+      "verification": "ok"
+    },
+    {
+      "id": "q036_b1_03",
+      "decision": "fixed",
+      "note": "Уточнены настоящее изъявительное время и предмет вопроса; устранено ложное противопоставление особой формы и чередования, убраны ссылки на главу и неясные метафоры.",
+      "verification": "ok"
+    },
+    {
+      "id": "q036_b1_04",
+      "decision": "fixed",
+      "note": "Уточнены настоящее изъявительное время и предмет вопроса; устранено ложное противопоставление особой формы и чередования, убраны ссылки на главу и неясные метафоры.",
+      "verification": "ok"
+    },
+    {
+      "id": "q036_b1_05",
+      "decision": "fixed",
+      "note": "Уточнены настоящее изъявительное время и предмет вопроса; устранено ложное противопоставление особой формы и чередования, убраны ссылки на главу и неясные метафоры.",
+      "verification": "ok"
+    },
+    {
+      "id": "q036_b1_06",
+      "decision": "fixed",
+      "note": "Уточнены настоящее изъявительное время и предмет вопроса; устранено ложное противопоставление особой формы и чередования, убраны ссылки на главу и неясные метафоры.",
+      "verification": "ok"
+    },
+    {
+      "id": "q036_b1_07",
+      "decision": "ok",
+      "note": "Особая форма и согласование глагола с подлежащим корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q036_b1_08",
+      "decision": "ok",
+      "note": "Особая форма и согласование глагола с подлежащим корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q036_b1_09",
+      "decision": "fixed",
+      "note": "Уточнены настоящее изъявительное время и предмет вопроса; устранено ложное противопоставление особой формы и чередования, убраны ссылки на главу и неясные метафоры.",
+      "verification": "ok"
+    },
+    {
+      "id": "q036_b1_10",
+      "decision": "fixed",
+      "note": "Уточнены настоящее изъявительное время и предмет вопроса; устранено ложное противопоставление особой формы и чередования, убраны ссылки на главу и неясные метафоры.",
+      "verification": "ok"
+    },
+    {
+      "id": "q036_b1_11",
+      "decision": "fixed",
+      "note": "Уточнены настоящее изъявительное время и предмет вопроса; устранено ложное противопоставление особой формы и чередования, убраны ссылки на главу и неясные метафоры.",
+      "verification": "ok"
+    },
+    {
+      "id": "q036_b1_12",
+      "decision": "ok",
+      "note": "Особая форма и согласование глагола с подлежащим корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q036_b2_01",
+      "decision": "fixed",
+      "note": "Уточнены настоящее изъявительное время и предмет вопроса; устранено ложное противопоставление особой формы и чередования, убраны ссылки на главу и неясные метафоры.",
+      "verification": "ok"
+    },
+    {
+      "id": "q036_b2_02",
+      "decision": "fixed",
+      "note": "Уточнены настоящее изъявительное время и предмет вопроса; устранено ложное противопоставление особой формы и чередования, убраны ссылки на главу и неясные метафоры.",
+      "verification": "ok"
+    },
+    {
+      "id": "q036_b2_03",
+      "decision": "ok",
+      "note": "Особая форма и согласование глагола с подлежащим корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q036_b2_04",
+      "decision": "ok",
+      "note": "Особая форма и согласование глагола с подлежащим корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q036_b2_05",
+      "decision": "ok",
+      "note": "Особая форма и согласование глагола с подлежащим корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q036_b2_06",
+      "decision": "ok",
+      "note": "Особая форма и согласование глагола с подлежащим корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q036_b2_07",
+      "decision": "ok",
+      "note": "Особая форма и согласование глагола с подлежащим корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q036_b2_08",
+      "decision": "ok",
+      "note": "Особая форма и согласование глагола с подлежащим корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q036_b2_09",
+      "decision": "ok",
+      "note": "Формы ir/tener/hacer и согласование с подлежащим корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q036_b2_10",
+      "decision": "fixed",
+      "note": "Восстановлен отсутствовавший пропуск, уточнены время и единственный ключ; исправлены объяснения согласования и немотивированное противопоставление голода воде.",
+      "verification": "ok"
+    },
+    {
+      "id": "q036_b2_11",
+      "decision": "fixed",
+      "note": "Восстановлен отсутствовавший пропуск, уточнены время и единственный ключ; исправлены объяснения согласования и немотивированное противопоставление голода воде.",
+      "verification": "ok"
+    },
+    {
+      "id": "q036_b2_12",
+      "decision": "ok",
+      "note": "Формы ir/tener/hacer и согласование с подлежащим корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q036_b3_01",
+      "decision": "fixed",
+      "note": "Восстановлен отсутствовавший пропуск, уточнены время и единственный ключ; исправлены объяснения согласования и немотивированное противопоставление голода воде.",
+      "verification": "ok"
+    },
+    {
+      "id": "q036_b3_02",
+      "decision": "fixed",
+      "note": "Восстановлен отсутствовавший пропуск, уточнены время и единственный ключ; исправлены объяснения согласования и немотивированное противопоставление голода воде.",
+      "verification": "ok"
+    },
+    {
+      "id": "q036_b3_03",
+      "decision": "fixed",
+      "note": "Восстановлен отсутствовавший пропуск, уточнены время и единственный ключ; исправлены объяснения согласования и немотивированное противопоставление голода воде.",
+      "verification": "ok"
+    },
+    {
+      "id": "q036_b3_04",
+      "decision": "ok",
+      "note": "Формы ir/tener/hacer и согласование с подлежащим корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q036_b3_05",
+      "decision": "fixed",
+      "note": "Восстановлен отсутствовавший пропуск, уточнены время и единственный ключ; исправлены объяснения согласования и немотивированное противопоставление голода воде.",
+      "verification": "ok"
+    },
+    {
+      "id": "q036_b3_06",
+      "decision": "ok",
+      "note": "Формы ir/tener/hacer и согласование с подлежащим корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q036_b3_07",
+      "decision": "fixed",
+      "note": "Восстановлен отсутствовавший пропуск, уточнены время и единственный ключ; исправлены объяснения согласования и немотивированное противопоставление голода воде.",
+      "verification": "ok"
+    },
+    {
+      "id": "q036_b3_08",
+      "decision": "fixed",
+      "note": "Восстановлен отсутствовавший пропуск, уточнены время и единственный ключ; исправлены объяснения согласования и немотивированное противопоставление голода воде.",
+      "verification": "ok"
+    },
+    {
+      "id": "q036_b3_09",
+      "decision": "fixed",
+      "note": "Восстановлен отсутствовавший пропуск, уточнены время и единственный ключ; исправлены объяснения согласования и немотивированное противопоставление голода воде.",
+      "verification": "ok"
+    },
+    {
+      "id": "q036_b3_10",
+      "decision": "ok",
+      "note": "Формы ir/tener/hacer и согласование с подлежащим корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q036_b3_11",
+      "decision": "ok",
+      "note": "Формы ir/tener/hacer и согласование с подлежащим корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q036_b3_12",
+      "decision": "fixed",
+      "note": "Восстановлен отсутствовавший пропуск, уточнены время и единственный ключ; исправлены объяснения согласования и немотивированное противопоставление голода воде.",
+      "verification": "ok"
+    },
+    {
+      "id": "q036_b4_01",
+      "decision": "fixed",
+      "note": "Восстановлен отсутствовавший пропуск, уточнены время и единственный ключ; исправлены объяснения согласования и немотивированное противопоставление голода воде.",
+      "verification": "ok"
+    },
+    {
+      "id": "q036_b4_02",
+      "decision": "fixed",
+      "note": "Восстановлен отсутствовавший пропуск, уточнены время и единственный ключ; исправлены объяснения согласования и немотивированное противопоставление голода воде.",
+      "verification": "ok"
+    },
+    {
+      "id": "q036_b4_03",
+      "decision": "fixed",
+      "note": "Восстановлен отсутствовавший пропуск, уточнены время и единственный ключ; исправлены объяснения согласования и немотивированное противопоставление голода воде.",
+      "verification": "ok"
+    },
+    {
+      "id": "q036_b4_04",
+      "decision": "ok",
+      "note": "Формы ir/tener/hacer и согласование с подлежащим корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q036_b4_05",
+      "decision": "ok",
+      "note": "Формы hacer/venir, лицо и ключ корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q036_b4_06",
+      "decision": "fixed",
+      "note": "Уточнены время и основа, восстановлен пропуск, устранены три подходящих неверных формы; исправлена терминология ударения и дан ясный контекст venir.",
+      "verification": "ok"
+    },
+    {
+      "id": "q036_b4_07",
+      "decision": "ok",
+      "note": "Формы hacer/venir, лицо и ключ корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q036_b4_08",
+      "decision": "ok",
+      "note": "Формы hacer/venir, лицо и ключ корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q036_b4_09",
+      "decision": "fixed",
+      "note": "Уточнены время и основа, восстановлен пропуск, устранены три подходящих неверных формы; исправлена терминология ударения и дан ясный контекст venir.",
+      "verification": "ok"
+    },
+    {
+      "id": "q036_b4_10",
+      "decision": "fixed",
+      "note": "Уточнены время и основа, восстановлен пропуск, устранены три подходящих неверных формы; исправлена терминология ударения и дан ясный контекст venir.",
+      "verification": "ok"
+    },
+    {
+      "id": "q036_b4_11",
+      "decision": "fixed",
+      "note": "Уточнены время и основа, восстановлен пропуск, устранены три подходящих неверных формы; исправлена терминология ударения и дан ясный контекст venir.",
+      "verification": "ok"
+    },
+    {
+      "id": "q036_b4_12",
+      "decision": "ok",
+      "note": "Формы hacer/venir, лицо и ключ корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q036_b5_01",
+      "decision": "fixed",
+      "note": "Уточнены время и основа, восстановлен пропуск, устранены три подходящих неверных формы; исправлена терминология ударения и дан ясный контекст venir.",
+      "verification": "ok"
+    },
+    {
+      "id": "q036_b5_02",
+      "decision": "fixed",
+      "note": "Уточнены время и основа, восстановлен пропуск, устранены три подходящих неверных формы; исправлена терминология ударения и дан ясный контекст venir.",
+      "verification": "ok"
+    },
+    {
+      "id": "q036_b5_03",
+      "decision": "fixed",
+      "note": "Уточнены время и основа, восстановлен пропуск, устранены три подходящих неверных формы; исправлена терминология ударения и дан ясный контекст venir.",
+      "verification": "ok"
+    },
+    {
+      "id": "q036_b5_04",
+      "decision": "ok",
+      "note": "Формы hacer/venir, лицо и ключ корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q036_b5_05",
+      "decision": "fixed",
+      "note": "Уточнены время и основа, восстановлен пропуск, устранены три подходящих неверных формы; исправлена терминология ударения и дан ясный контекст venir.",
+      "verification": "ok"
+    },
+    {
+      "id": "q036_b5_06",
+      "decision": "ok",
+      "note": "Формы hacer/venir, лицо и ключ корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q036_b5_07",
+      "decision": "fixed",
+      "note": "Уточнены время и основа, восстановлен пропуск, устранены три подходящих неверных формы; исправлена терминология ударения и дан ясный контекст venir.",
+      "verification": "ok"
+    },
+    {
+      "id": "q036_b5_08",
+      "decision": "ok",
+      "note": "Формы hacer/venir, лицо и ключ корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q036_b5_09",
+      "decision": "fixed",
+      "note": "Уточнены время и основа, восстановлен пропуск, устранены три подходящих неверных формы; исправлена терминология ударения и дан ясный контекст venir.",
+      "verification": "ok"
+    },
+    {
+      "id": "q036_b5_10",
+      "decision": "ok",
+      "note": "Формы hacer/venir, лицо и ключ корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q036_b5_11",
+      "decision": "fixed",
+      "note": "Уточнены время и основа, восстановлен пропуск, устранены три подходящих неверных формы; исправлена терминология ударения и дан ясный контекст venir.",
+      "verification": "ok"
+    },
+    {
+      "id": "q036_b5_12",
+      "decision": "ok",
+      "note": "Формы hacer/venir, лицо и ключ корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q036_b6_01",
+      "decision": "fixed",
+      "note": "Уточнено время открытого ответа; в вопросе на формы исправлен бессмысленный пример decir las sillas.",
+      "verification": "ok"
+    },
+    {
+      "id": "q036_b6_02",
+      "decision": "fixed",
+      "note": "Уточнено время открытого ответа; в вопросе на формы исправлен бессмысленный пример decir las sillas.",
+      "verification": "ok"
+    },
+    {
+      "id": "q036_b6_03",
+      "decision": "fixed",
+      "note": "Уточнено время открытого ответа; в вопросе на формы исправлен бессмысленный пример decir las sillas.",
+      "verification": "ok"
+    },
+    {
+      "id": "q036_b6_04",
+      "decision": "fixed",
+      "note": "Уточнено время открытого ответа; в вопросе на формы исправлен бессмысленный пример decir las sillas.",
+      "verification": "ok"
+    },
+    {
+      "id": "q036_b6_05",
+      "decision": "fixed",
+      "note": "Уточнено время открытого ответа; в вопросе на формы исправлен бессмысленный пример decir las sillas.",
+      "verification": "ok"
+    },
+    {
+      "id": "q036_b6_06",
+      "decision": "ok",
+      "note": "Формы decir/poner, перевод и единственный ответ корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q036_b6_07",
+      "decision": "ok",
+      "note": "Формы decir/poner, перевод и единственный ответ корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q036_b6_08",
+      "decision": "ok",
+      "note": "Формы decir/poner, перевод и единственный ответ корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q036_b6_09",
+      "decision": "ok",
+      "note": "Формы decir/poner, перевод и единственный ответ корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q036_b6_10",
+      "decision": "fixed",
+      "note": "Уточнено время открытого ответа; в вопросе на формы исправлен бессмысленный пример decir las sillas.",
+      "verification": "ok"
+    },
+    {
+      "id": "q036_b6_11",
+      "decision": "ok",
+      "note": "Формы decir/poner, перевод и единственный ответ корректны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q036_b6_12",
+      "decision": "ok",
+      "note": "Формы decir/poner, перевод и единственный ответ корректны.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-04-es033-036/check.py",
+      "result": "pass",
+      "evidence": "All 549 IDs/contracts, decisions versus clean pre-batch HEAD, fingerprints, native training validation, signatures and source-final-embedded equality; validation.log."
+    },
+    {
+      "command": "go test ./internal/grammarbundle ./internal/repository -run 'TestValidateEmbeddedBundleID|TestGrammar.*Bundle|TestGrammar.*Reorder' -count=1",
+      "result": "pass",
+      "evidence": "Both packages passed on final integrated data; go-tests.log."
+    },
+    {
+      "command": "git diff --check; git -C courses/spanish-grammar diff --check; git -C courses/english-grammar diff --check",
+      "result": "pass",
+      "evidence": "Three separately executed commands exit 0; diff-check.log. All 928 earlier dirty files outside review docs preserved; preservation.log."
+    },
+    {
+      "command": "cd courses/spanish-grammar && bash scripts/assemble-chapter.sh 036.es.grammar.present_irregulars_reflexives_gustar.high_frequency_irregulars_ir_hacer_tener_venir_decir",
+      "result": "pass",
+      "evidence": "036-assemble.log: exit 0."
+    },
+    {
+      "command": "cd courses/spanish-grammar && bash scripts/validate-chapter.sh 036.es.grammar.present_irregulars_reflexives_gustar.high_frequency_irregulars_ir_hacer_tener_venir_decir",
+      "result": "pass",
+      "evidence": "036-chapter-after.log: exit 0."
+    },
+    {
+      "command": "cd courses/spanish-grammar && ajv validate --spec=draft2020 --validate-formats=false --all-errors -s 02-chapter-schema.json -d chapters/036.es.grammar.present_irregulars_reflexives_gustar.high_frequency_irregulars_ir_hacer_tener_venir_decir/05-final.json",
+      "result": "known_baseline",
+      "evidence": "Three unchanged theory-example tag errors (tú, tú, él_ella); 036-schema-before.log and 036-schema-after.log are byte-identical, exit 1."
+    },
+    {
+      "command": "cd courses/spanish-grammar && ajv validate -s 02-chapter-schema.json -d chapters/036.es.grammar.present_irregulars_reflexives_gustar.high_frequency_irregulars_ir_hacer_tener_venir_decir/05-final.json",
+      "result": "known_baseline",
+      "evidence": "036-assembler-ajv-before.log and 036-assembler-ajv-after.log are byte-identical, exit 1: no draft2020 meta-schema selected. Explicit draft2020 passes for 033–035; 036 has the separately recorded unchanged theory-tag baseline."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    }
+  ],
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+}

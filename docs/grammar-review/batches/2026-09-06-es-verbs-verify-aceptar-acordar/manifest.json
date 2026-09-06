@@ -1,0 +1,34 @@
+{
+  "aceptar": {
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/aceptar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/aceptar.json",
+    "report": "docs/grammar-review/reports/1dc2c119af76486dcdb8988b.json",
+    "editor": "Codex editor 2026-09-06",
+    "source_sha256": "bc0e31be227241c7e5c25c6078c18549232937164342bfa385db15df3c3149ec",
+    "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197"
+  },
+  "acercar": {
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/acercar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/acercar.json",
+    "report": "docs/grammar-review/reports/94810e5c4ce81e3756613144.json",
+    "editor": "Codex editor 2026-09-06",
+    "source_sha256": "66e493951e2d644743b88d39117311a70ab5e0b9653dc53a4de999a1c3700d66",
+    "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197"
+  },
+  "acompañar": {
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/acompañar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/acompañar.json",
+    "report": "docs/grammar-review/reports/7f62e70e5743a19a220a744f.json",
+    "editor": "Codex editor 2026-09-06",
+    "source_sha256": "d00d428e551c65dbd282c99b428a721d10b871a929f1937031c99d9e63b196ee",
+    "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197"
+  },
+  "acordar": {
+    "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/acordar.json",
+    "embedded": "internal/grammartrainingpack/es/verb_forms/lemmas/acordar.json",
+    "report": "docs/grammar-review/reports/b7b548ceac6a3b82717d54eb.json",
+    "editor": "Codex editor 2026-09-06",
+    "source_sha256": "70511ef970160c1912911ba1d29e1f115e82026bd7fbefa5477a3e77b51566db",
+    "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197"
+  }
+}

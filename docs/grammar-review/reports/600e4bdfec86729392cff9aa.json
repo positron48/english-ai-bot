@@ -1,0 +1,657 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/regresar.json",
+  "source_sha256": "cbdd09f7ccf9a5740fdbe65dd993a18d2a9b851a2eb7f843b566349e04a450d5",
+  "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197",
+  "editor": "Laplace editor 2026-09-06",
+  "verifier": "Aristotle verifier 2026-09-06",
+  "phase": "done",
+  "reviewed_at": "2026-09-06",
+  "verified_at": "2026-09-06",
+  "questions": [
+    {
+      "id": "es.presente.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены: варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены: испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены: форма, испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены: форма, испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены: форма, испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены: форма, испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены: форма, испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены: форма, испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Исправлены: форма, испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Исправлены: форма, испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Исправлены: форма, испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Исправлены: форма, испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Исправлены: форма, испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Исправлены: форма, испанский контекст, русский перевод, варианты ответа. Контекст использует естественное непереходное regresar с направлением a/de; форма и четыре уникальных варианта относятся к одному scope.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "Semantic review of all 96 regresar cards in six 16-card chunks",
+      "result": "pass",
+      "evidence": "Every ES sentence and RU translation was read with the form substituted; regresar uses natural intransitive motion with a/de."
+    },
+    {
+      "command": "Jehle form comparison across 16 scopes and six slots",
+      "result": "pass",
+      "evidence": "96/96 surface forms match local Jehle, including pretérito anterior and both future subjunctive scopes."
+    },
+    {
+      "command": "Same-scope option validation",
+      "result": "pass",
+      "evidence": "Every card has four distinct forms from its own scope and exactly one answer."
+    },
+    {
+      "command": "Counterfactual and rare-tense semantic review",
+      "result": "pass",
+      "evidence": "De haberlo sabido is explicitly counterfactual in Russian; rare forms use literary immediate-sequence or legal contexts."
+    },
+    {
+      "command": "Baseline identity/order/top-level preservation and source/embedded comparison",
+      "result": "pass",
+      "evidence": "All immutable fields are preserved and source/embedded are byte-identical."
+    },
+    {
+      "command": "go test ./internal/grammartrainingpack; validate_artifact; json.tool; exact-path git diff --check; grammar-review inventory",
+      "result": "pass",
+      "evidence": "Focused Go test and repository-native card validation pass; assigned JSON parses, diffs have no whitespace errors, and inventory is ready for independent verification."
+    },
+    {
+      "command": "Independent full-card verification of regresar against local Jehle, immutable baseline, source/embedded and fingerprints",
+      "result": "pass",
+      "evidence": "96/96 cards read with forms substituted; exact Jehle form, canonical metadata/person/number, intransitive regresar a/de valency, complete RU meaning, rare-register marking and four unique same-scope options all pass. Source equals embedded; identity/order/top-level and source/context fingerprints are unchanged."
+    },
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-06-es-verbs-regalar-renovar/check.py",
+      "result": "pass",
+      "evidence": "384 cards passed exact Jehle forms, source/embedded parity, preserved contracts, report fingerprints, independent verification and 24-checkpoint coverage."
+    },
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-06-es-verbs-regalar-renovar/preservation-check.py",
+      "result": "pass",
+      "evidence": "25477 files outside the allowed batch set remained unchanged; no missing or unexpected new paths."
+    },
+    {
+      "command": "validate_artifact() for regalar, registrar, regresar and renovar",
+      "result": "pass",
+      "evidence": "The generator native artifact validator accepted all four 96-card sources."
+    },
+    {
+      "command": "go test ./internal/verbtraining ./cmd/sync_verb_training_json",
+      "result": "pass",
+      "evidence": "Focused verb training and sync tests passed."
+    },
+    {
+      "command": "python3 scripts/grammar_review_test.py",
+      "result": "pass",
+      "evidence": "All 13 grammar review workflow tests passed."
+    },
+    {
+      "command": "git diff --check && git -C courses/spanish-grammar diff --check",
+      "result": "pass",
+      "evidence": "Root and Spanish submodule diffs contain no whitespace errors."
+    }
+  ],
+  "verification_note": "Независимо прочитаны все 96 карточек regresar с подстановкой форм. Все формы совпадают с локальной Jehle; scope, mood, tense, person/number и четыре уникальных same-scope варианта корректны. Испанские контексты самостоятельно и естественно используют непереходное regresar с нужными a/de или без дополнения; русские переводы точно сохраняют направление, время, лицо и условность. De haberlo sabido переведено явным контрфактическим условием, pretérito anterior маркирован книжным стилем, оба будущих subjuntivo — юридическим регистром. Source и embedded идентичны, baseline identity/order/top-level и актуальные fingerprints подтверждены."
+}

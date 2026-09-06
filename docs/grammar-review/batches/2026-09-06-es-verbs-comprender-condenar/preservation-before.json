@@ -1,0 +1,26 @@
+{
+  "existing_files": 24975,
+  "allowed_paths": [
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/comprender.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/comprender.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/comunicar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/comunicar.json",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/condenar.json",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/condenar.json",
+    "docs/grammar-review/ACTIVE.md",
+    "docs/grammar-review/README.md",
+    "docs/grammar-review/batches/2026-09-06-es-verbs-comprender-condenar",
+    "docs/grammar-review/reports/cb76d9be503eb98462ee6465.json",
+    "docs/grammar-review/reports/952526d6c4f4fafb70a03acf.json",
+    "docs/grammar-review/reports/659cbd73f03460269f3439bc.json"
+  ],
+  "assigned_dirty_before": [],
+  "target_baseline_sha256": {
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/comprender.json": "2ae5aa9ef2ba13ba07652cf1235f6d041423f8fec16ea02527f949fde1d39f5a",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/comprender.json": "2ae5aa9ef2ba13ba07652cf1235f6d041423f8fec16ea02527f949fde1d39f5a",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/comunicar.json": "af029f783dacf049934032924489e38159e23d95bd1dc23511adf8d2fc3823c2",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/comunicar.json": "af029f783dacf049934032924489e38159e23d95bd1dc23511adf8d2fc3823c2",
+    "courses/spanish-grammar/training_pack/verb_forms/lemmas/condenar.json": "4271f322bac923903b833ab08e1cf909c70522ce50dc3d32bcf7943baf8cf8a6",
+    "internal/grammartrainingpack/es/verb_forms/lemmas/condenar.json": "4271f322bac923903b833ab08e1cf909c70522ce50dc3d32bcf7943baf8cf8a6"
+  }
+}

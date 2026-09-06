@@ -1,0 +1,632 @@
+{
+  "version": 1,
+  "source": "courses/spanish-grammar/training_pack/verb_forms/lemmas/temer.json",
+  "source_sha256": "527cf1b9e58b6bc5a7a1a7124a4fdf760b5155c5d5f1ecf5c894bdeea6cf8e31",
+  "context_sha256": "dd93508ba58f31d3844af54e8ad187e3e5c8b2417adddfee291e9d840c859197",
+  "editor": "Codex coordinator editor 2026-09-06",
+  "verifier": "Laplace verifier 2026-09-06",
+  "phase": "done",
+  "reviewed_at": "2026-09-06",
+  "verified_at": "2026-09-06",
+  "questions": [
+    {
+      "id": "es.presente.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:1:singular полностью переписана: форма Jehle «temo», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:2:singular полностью переписана: форма Jehle «temes», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:3:singular полностью переписана: форма Jehle «teme», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:1:plural полностью переписана: форма Jehle «tememos», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:2:plural полностью переписана: форма Jehle «teméis», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.indicativo:3:plural полностью переписана: форма Jehle «temen», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:1:singular полностью переписана: форма Jehle «temía», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:2:singular полностью переписана: форма Jehle «temías», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:3:singular полностью переписана: форма Jehle «temía», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:1:plural полностью переписана: форма Jehle «temíamos», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:2:plural полностью переписана: форма Jehle «temíais», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.indicativo:3:plural полностью переписана: форма Jehle «temían», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:1:singular полностью переписана: форма Jehle «temí», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:2:singular полностью переписана: форма Jehle «temiste», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:3:singular полностью переписана: форма Jehle «temió», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены. Координаторский смысловой проход уточнил точность перевода или естественность юридического контекста.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:1:plural полностью переписана: форма Jehle «temimos», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:2:plural полностью переписана: форма Jehle «temisteis», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_indefinido.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_indefinido.indicativo:3:plural полностью переписана: форма Jehle «temieron», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:1:singular полностью переписана: форма Jehle «temeré», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:2:singular полностью переписана: форма Jehle «temerás», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:3:singular полностью переписана: форма Jehle «temerá», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:1:plural полностью переписана: форма Jehle «temeremos», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:2:plural полностью переписана: форма Jehle «temeréis», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.indicativo:3:plural полностью переписана: форма Jehle «temerán», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:1:singular полностью переписана: форма Jehle «temería», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:2:singular полностью переписана: форма Jehle «temerías», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:3:singular полностью переписана: форма Jehle «temería», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:1:plural полностью переписана: форма Jehle «temeríamos», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:2:plural полностью переписана: форма Jehle «temeríais», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_simple.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_simple.indicativo:3:plural полностью переписана: форма Jehle «temerían», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:1:singular полностью переписана: форма Jehle «he temido», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:2:singular полностью переписана: форма Jehle «has temido», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:3:singular полностью переписана: форма Jehle «ha temido», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:1:plural полностью переписана: форма Jehle «hemos temido», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:2:plural полностью переписана: форма Jehle «habéis temido», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto_compuesto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto_compuesto.indicativo:3:plural полностью переписана: форма Jehle «han temido», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:1:singular полностью переписана: форма Jehle «había temido», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:2:singular полностью переписана: форма Jehle «habías temido», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:3:singular полностью переписана: форма Jehle «había temido», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:1:plural полностью переписана: форма Jehle «habíamos temido», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:2:plural полностью переписана: форма Jehle «habíais temido», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.indicativo:3:plural полностью переписана: форма Jehle «habían temido», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:1:singular полностью переписана: форма Jehle «hube temido», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:2:singular полностью переписана: форма Jehle «hubiste temido», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:3:singular полностью переписана: форма Jehle «hubo temido», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:1:plural полностью переписана: форма Jehle «hubimos temido», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены. Координаторский смысловой проход уточнил точность перевода или естественность юридического контекста.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:2:plural полностью переписана: форма Jehle «hubisteis temido», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_anterior.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_anterior.indicativo:3:plural полностью переписана: форма Jehle «hubieron temido», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:1:singular полностью переписана: форма Jehle «habré temido», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены. Исправлена точная временная опора по замечанию независимой проверки.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:2:singular полностью переписана: форма Jehle «habrás temido», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:3:singular полностью переписана: форма Jehle «habrá temido», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:1:plural полностью переписана: форма Jehle «habremos temido», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены. Исправлена точная временная опора по замечанию независимой проверки.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:2:plural полностью переписана: форма Jehle «habréis temido», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.indicativo:3:plural полностью переписана: форма Jehle «habrán temido», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:1:singular полностью переписана: форма Jehle «habría temido», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:2:singular полностью переписана: форма Jehle «habrías temido», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:3:singular полностью переписана: форма Jehle «habría temido», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:1:plural полностью переписана: форма Jehle «habríamos temido», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:2:plural полностью переписана: форма Jehle «habríais temido», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.condicional_perfecto.indicativo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.condicional_perfecto.indicativo:3:plural полностью переписана: форма Jehle «habrían temido», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:1:singular полностью переписана: форма Jehle «tema», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:2:singular полностью переписана: форма Jehle «temas», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:3:singular полностью переписана: форма Jehle «tema», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:1:plural полностью переписана: форма Jehle «temamos», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:1:singular полностью переписана: форма Jehle «teman», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:2:singular полностью переписана: форма Jehle «temáis», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:3:singular полностью переписана: форма Jehle «temiera», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:1:plural полностью переписана: форма Jehle «temieras», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:2:plural полностью переписана: форма Jehle «temiera», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_imperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_imperfecto.subjuntivo:3:plural полностью переписана: форма Jehle «temiéramos», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:3:plural полностью переписана: форма Jehle «temierais», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.presente.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.presente.subjuntivo:2:plural полностью переписана: форма Jehle «temieran», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:1:singular полностью переписана: форма Jehle «temiere», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:2:singular полностью переписана: форма Jehle «temieres», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:3:singular полностью переписана: форма Jehle «temiere», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:1:plural полностью переписана: форма Jehle «temiéremos», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:2:plural полностью переписана: форма Jehle «temiereis», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены. Координаторский смысловой проход уточнил точность перевода или естественность юридического контекста.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_simple.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_simple.subjuntivo:3:plural полностью переписана: форма Jehle «temieren», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:1:singular полностью переписана: форма Jehle «haya temido», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:2:singular полностью переписана: форма Jehle «hayas temido», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:3:singular полностью переписана: форма Jehle «haya temido», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:1:plural полностью переписана: форма Jehle «hayamos temido», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:2:plural полностью переписана: форма Jehle «hayáis temido», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_perfecto.subjuntivo:3:plural полностью переписана: форма Jehle «hayan temido», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:1:singular полностью переписана: форма Jehle «hubiera temido», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:2:singular полностью переписана: форма Jehle «hubieras temido», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:3:singular полностью переписана: форма Jehle «hubiera temido», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:1:plural полностью переписана: форма Jehle «hubiéramos temido», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:2:plural полностью переписана: форма Jehle «hubierais temido», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.preterito_pluscuamperfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.preterito_pluscuamperfecto.subjuntivo:3:plural полностью переписана: форма Jehle «hubieran temido», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:1:singular полностью переписана: форма Jehle «hubiere temido», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:2:singular полностью переписана: форма Jehle «hubieres temido», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:singular",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:3:singular полностью переписана: форма Jehle «hubiere temido», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:1:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:1:plural полностью переписана: форма Jehle «hubiéremos temido», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:2:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:2:plural полностью переписана: форма Jehle «hubiereis temido», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены. Координаторский смысловой проход уточнил точность перевода или естественность юридического контекста.",
+      "verification": "ok"
+    },
+    {
+      "id": "es.futuro_perfecto.subjuntivo:3:plural",
+      "decision": "fixed",
+      "note": "Карточка es.futuro_perfecto.subjuntivo:3:plural полностью переписана: форма Jehle «hubieren temido», значение temer, управление, временная опора, полный русский перевод и четыре уникальных варианта своего scope проверены.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "full 96-card semantic editorial read: temer usage, ES/RU alignment and rare-register framing",
+      "result": "pass",
+      "evidence": "All 96 contexts rewritten and read; temer uses direct objects, temer que, temer por and infinitives naturally; rare preterite anterior and future subjunctives are explicitly literary/legal."
+    },
+    {
+      "command": "Jehle forms; metadata; one blank; four unique same-scope options; one answer; identity/order/top-level preservation",
+      "result": "pass",
+      "evidence": "96 exact forms; 12 baseline metadata defects corrected; all options, blanks and preserved contracts pass."
+    },
+    {
+      "command": "six De haberlo sabido counterfactual translations",
+      "result": "pass",
+      "evidence": "All six Russian translations begin with explicit Если бы and preserve the hypothetical meaning."
+    },
+    {
+      "command": "coordinator semantic refinement: four temer cards",
+      "result": "pass",
+      "evidence": "Restored exact fear meaning in two Russian translations and replaced unnatural custody wording with concern for child safety in two legal contexts; forms/options/metadata/identity unchanged."
+    },
+    {
+      "command": "independent full read plus /tmp/verify_temer.py; cmp source embedded; validate_artifact(temer); go test ./internal/grammartrainingpack",
+      "result": "known_baseline",
+      "evidence": "96/96 forms, metadata, identity/order/top-level, blanks/options, rare-register marking and six explicit counterfactual translations pass; source=embedded and native/Go checks pass. Semantic review accepts 94 and flags futuro perfecto IDs 1:singular and 1:plural for temporal-anchor corrections. Both findings were corrected and accepted in the final recheck at fingerprint 527cf1b9e58b6bc5a7a1a7124a4fdf760b5155c5d5f1ecf5c894bdeea6cf8e31."
+    },
+    {
+      "command": "post-verifier correction: two temer future-perfect temporal anchors; exact assertions; fingerprint/cmp and structural invariants",
+      "result": "pass",
+      "evidence": "Added self-contained laboratory-response and process-completion anchors; only requested ES/RU fields changed, two rows returned to pending, other 94 remain ok; forms/options/metadata/identity unchanged and source=embedded."
+    },
+    {
+      "command": "temer targeted recheck of two corrected futuro perfecto cards; canonical fingerprint; cmp source embedded; validate_artifact(temer); go test ./internal/grammartrainingpack",
+      "result": "pass",
+      "evidence": "Both requested replacements match exactly and are semantically accepted; the other 94 report rows remained accepted. Fingerprint 527cf1b9e58b6bc5a7a1a7124a4fdf760b5155c5d5f1ecf5c894bdeea6cf8e31, source=embedded, native validator and Go tests pass."
+    },
+    {
+      "command": "final batch barrier: check.py; preservation-check.py; native validate_artifact; go test ./internal/verbtraining ./cmd/sync_verb_training_json; grammar_review_test.py; focused grammar-review check; git diff --check; skill quick_validate.py",
+      "result": "pass",
+      "evidence": "384 final cards and 24 primary checkpoints passed against Jehle forms; source/embedded and fingerprints fresh; 25608 paths preserved; Go tests and 13 grammar-review tests passed; each source reports done; root and Spanish diffs clean; skill valid."
+    }
+  ],
+  "verification_note": "Независимая проверка завершена: 96/96 карточек приняты. Повторно проверены исправленные es.futuro_perfecto.indicativo:1:singular и es.futuro_perfecto.indicativo:1:plural: опоры на получение лабораторного ответа и завершение процесса теперь самодостаточны, согласованы с futuro perfecto и точными русскими переводами. Остальные 94 ранее принятые карточки сохранили статус ok; source и embedded совпадают, fingerprint актуален."
+}

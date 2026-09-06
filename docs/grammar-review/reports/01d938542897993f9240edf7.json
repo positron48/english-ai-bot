@@ -1,0 +1,303 @@
+{
+  "version": 1,
+  "source": "courses/english-grammar/chapters/003.en.grammar.orientation_how_to_read.sentence_modes_statement_question/03-questions.json",
+  "source_sha256": "add374f9e218ebce7807c47007081ec19de06d8e93ea6ef1fe1be0acca7cd440",
+  "context_sha256": "7e7ee389411f6b80fba8fabe2bdf1b97644f6f089ece46accc9362cb816a0538",
+  "editor": "Codex editor 2026-09-04",
+  "verifier": "Anton Filatov (user)",
+  "phase": "done",
+  "reviewed_at": "2026-09-04T09:59:22.215610+00:00",
+  "verified_at": "2026-09-06T17:58:18.569986Z",
+  "questions": [
+    {
+      "id": "q1",
+      "decision": "ok",
+      "note": "Одно утвердительное предложение среди вопроса и отрицания; feedback соответствует.",
+      "verification": "ok"
+    },
+    {
+      "id": "q2",
+      "decision": "ok",
+      "note": "Do I speak English — единственный вопрос; тип и ключ верны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q3",
+      "decision": "ok",
+      "note": "Don’t — сокращение do not; одно отрицание.",
+      "verification": "ok"
+    },
+    {
+      "id": "q4",
+      "decision": "fixed",
+      "note": "Уточнено, что совпадает тема, а не сообщаемый факт; дано конкретное преобразование.",
+      "verification": "ok"
+    },
+    {
+      "id": "q7",
+      "decision": "ok",
+      "note": "Контекст и начальное I задают нейтральный SVO, перевод точен.",
+      "verification": "ok"
+    },
+    {
+      "id": "q8",
+      "decision": "ok",
+      "note": "Контекст вопроса и начальное Do дают однозначный порядок.",
+      "verification": "ok"
+    },
+    {
+      "id": "q9",
+      "decision": "ok",
+      "note": "Контекст отрицания и начальное I дают однозначный порядок.",
+      "verification": "ok"
+    },
+    {
+      "id": "q10",
+      "decision": "fixed",
+      "note": "Исправлена ложная идея одинакового смысла утверждения и отрицания.",
+      "verification": "ok"
+    },
+    {
+      "id": "q13",
+      "decision": "ok",
+      "note": "She is a teacher — утвердительное предложение, остальные вопрос/отрицание.",
+      "verification": "ok"
+    },
+    {
+      "id": "q14",
+      "decision": "ok",
+      "note": "They like coffee — положительное сообщение; все варианты различимы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q17",
+      "decision": "fixed",
+      "note": "Убрана подсказка, раскрывавшая весь ответ из трёх слов; нейтральный порядок единственный.",
+      "verification": "ok"
+    },
+    {
+      "id": "q18",
+      "decision": "fixed",
+      "note": "A doctor исправлено с дополнения на именную часть сказуемого.",
+      "verification": "ok"
+    },
+    {
+      "id": "q19",
+      "decision": "fixed",
+      "note": "Устранено ложное «всегда точка»; конкретный пример проверяет смысл, а не только пунктуацию.",
+      "verification": "ok"
+    },
+    {
+      "id": "q20",
+      "decision": "fixed",
+      "note": "Устранено абсолютное запрещение инверсии; рассматривается конкретное нейтральное предложение.",
+      "verification": "ok"
+    },
+    {
+      "id": "q23",
+      "decision": "ok",
+      "note": "They like tea — однозначный порядок с заданным переводом.",
+      "verification": "ok"
+    },
+    {
+      "id": "q24",
+      "decision": "fixed",
+      "note": "Частично верные варианты заменены взаимоисключающими коммуникативными значениями.",
+      "verification": "ok"
+    },
+    {
+      "id": "q25",
+      "decision": "ok",
+      "note": "Is she a teacher — вопрос с be; ключ и feedback верны.",
+      "verification": "ok"
+    },
+    {
+      "id": "q26",
+      "decision": "fixed",
+      "note": "Ограничен нейтральный общий вопрос с auxiliary, допустимый разговорный переспрос не объявляется неграмматичным.",
+      "verification": "ok"
+    },
+    {
+      "id": "q30",
+      "decision": "fixed",
+      "note": "Убрана ошибочная классификация a doctor как дополнения.",
+      "verification": "ok"
+    },
+    {
+      "id": "q31",
+      "decision": "ok",
+      "note": "Do they like tea — порядок и русский смысл согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q32",
+      "decision": "fixed",
+      "note": "Общее правило инверсии ограничено конкретным общим вопросом с do.",
+      "verification": "ok"
+    },
+    {
+      "id": "q33",
+      "decision": "fixed",
+      "note": "Снято обобщение о любых вопросах/точке только в утверждениях; задан прямой вопрос.",
+      "verification": "ok"
+    },
+    {
+      "id": "q35",
+      "decision": "fixed",
+      "note": "Убрана ненужная подсказка work here; сохраняется однозначный нейтральный порядок.",
+      "verification": "ok"
+    },
+    {
+      "id": "q36",
+      "decision": "fixed",
+      "note": "Правило ограничено общими вопросами с do/does, а не любыми вопросами.",
+      "verification": "ok"
+    },
+    {
+      "id": "q37",
+      "decision": "ok",
+      "note": "Isn’t — is not, верное отрицательное предложение.",
+      "verification": "ok"
+    },
+    {
+      "id": "q38",
+      "decision": "ok",
+      "note": "Don’t like — единственный нейтральный нормативный вариант отрицания.",
+      "verification": "ok"
+    },
+    {
+      "id": "q42",
+      "decision": "fixed",
+      "note": "Исправлено a doctor как именная часть сказуемого вместо дополнения.",
+      "verification": "ok"
+    },
+    {
+      "id": "q43",
+      "decision": "ok",
+      "note": "They don’t like tea: русский контекст, порядок и форма согласованы.",
+      "verification": "ok"
+    },
+    {
+      "id": "q44",
+      "decision": "fixed",
+      "note": "Проверяется положение not в конкретном примере без абсолютного правила.",
+      "verification": "ok"
+    },
+    {
+      "id": "q45",
+      "decision": "ok",
+      "note": "Don’t допустимое сокращение do not; false верно.",
+      "verification": "ok"
+    },
+    {
+      "id": "q47",
+      "decision": "fixed",
+      "note": "Убрана избыточная подсказка work here, русский контекст задаёт смысл.",
+      "verification": "ok"
+    },
+    {
+      "id": "q48",
+      "decision": "fixed",
+      "note": "Уточнено отрицательное утверждение с do/does, чтобы не смешивать с be или отрицательными вопросами.",
+      "verification": "ok"
+    },
+    {
+      "id": "q49",
+      "decision": "fixed",
+      "note": "Допустимый разговорный переспрос отделён от требуемого общего вопроса; feedback согласован.",
+      "verification": "ok"
+    },
+    {
+      "id": "q50",
+      "decision": "ok",
+      "note": "He doesn’t speak English — корректное отрицание, один ключ.",
+      "verification": "ok"
+    },
+    {
+      "id": "q51",
+      "decision": "fixed",
+      "note": "Заданы Present Simple и базовый do: исключены did/can и неверный смысловой перевод «делать».",
+      "verification": "ok"
+    },
+    {
+      "id": "q53",
+      "decision": "ok",
+      "note": "Контекст и начальное Does задают однозначный вопрос.",
+      "verification": "ok"
+    },
+    {
+      "id": "q54",
+      "decision": "ok",
+      "note": "Контекст и начальное He задают однозначное отрицание.",
+      "verification": "ok"
+    },
+    {
+      "id": "q55",
+      "decision": "fixed",
+      "note": "Повтор общей метафоры заменён конкретным преобразованием speaks → Does ... speak.",
+      "verification": "ok"
+    },
+    {
+      "id": "q56",
+      "decision": "fixed",
+      "note": "Убрана ложная оценка разных предложений и одинаковой информации; сравнивается реальный смысл.",
+      "verification": "ok"
+    },
+    {
+      "id": "q57",
+      "decision": "fixed",
+      "note": "Заданы Present Simple и другая форма вспомогательного does: исключены did/can и раскрытие ответа.",
+      "verification": "ok"
+    },
+    {
+      "id": "q59",
+      "decision": "fixed",
+      "note": "Убрана ненужная подсказка work here; порядок определяется нейтральным вопросом.",
+      "verification": "ok"
+    },
+    {
+      "id": "q60",
+      "decision": "fixed",
+      "note": "Убрана ненужная подсказка work here; смысл и начальное You сохраняют однозначность.",
+      "verification": "ok"
+    }
+  ],
+  "checks": [
+    {
+      "command": "cd courses/english-grammar && bash scripts/assemble-chapter.sh 003.en.grammar.orientation_how_to_read.sentence_modes_statement_question && bash scripts/validate-chapter.sh 003.en.grammar.orientation_how_to_read.sentence_modes_statement_question",
+      "result": "pass",
+      "evidence": "Chapter assembled; final chapter validator passes, 42 questions. Logs in docs/grammar-review/batches/2026-09-04-en002-004/003-assemble-after.log and 003-chapter-after.log."
+    },
+    {
+      "command": "python3 docs/grammar-review/batches/2026-09-04-en002-004/check.py",
+      "result": "pass",
+      "evidence": "All 282 IDs/contracts and metadata preserved; source/context fingerprints current; signatures valid; no new EN training duplicates; source/final/embedded equal. See validation.log."
+    },
+    {
+      "command": "go test ./internal/grammarbundle ./internal/repository -run 'TestValidateEmbeddedBundleID|TestGrammar.*Bundle|TestGrammar.*Reorder' -count=1",
+      "result": "pass",
+      "evidence": "Both packages passed: grammarbundle 4.709s, repository 13.893s."
+    },
+    {
+      "command": "git diff --check && git -C courses/spanish-grammar diff --check && git -C courses/english-grammar diff --check",
+      "result": "pass",
+      "evidence": "All three commands exited 0."
+    },
+    {
+      "command": "ajv validate --spec=draft2020 --validate-formats=false --all-errors -s courses/english-grammar/02-chapter-schema.json -d courses/english-grammar/chapters/003.en.grammar.orientation_how_to_read.sentence_modes_statement_question/05-final.json",
+      "result": "pass",
+      "evidence": "Before and after both exit 0; see 003-schema-before.log and 003-schema-after.log."
+    },
+    {
+      "command": "ajv validate -s courses/english-grammar/02-chapter-schema.json -d courses/english-grammar/chapters/003.en.grammar.orientation_how_to_read.sentence_modes_statement_question/05-final.json",
+      "result": "known_baseline",
+      "evidence": "Assembler calls AJV without draft2020; schema meta-ref unavailable. Same error demonstrated on baseline and current chapter 002 in assembler-ajv-before/after.log; explicit draft2020 validation passes for this chapter."
+    },
+    {
+      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "result": "pass",
+      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    }
+  ],
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+}
