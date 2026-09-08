@@ -40,7 +40,7 @@ AND EXISTS (
 // verbTrainingPromptHasExampleTranslationSQL keeps only cards with a non-empty example_translation in prompt_json
 // (skips legacy/partial rows before full lemma pack import).
 func verbTrainingPromptHasExampleTranslationSQL(vtcAlias string) string {
-	return ` AND NULLIF(TRIM(COALESCE(` + vtcAlias + `.prompt_json::jsonb->>'example_translation','')), '') IS NOT NULL`
+	return ` AND (` + vtcAlias + `.prompt_json::jsonb->>'content_version' = '2' OR NULLIF(TRIM(COALESCE(` + vtcAlias + `.prompt_json::jsonb->>'example_translation','')), '') IS NOT NULL)`
 }
 
 func (r *VerbFormsRepository) UpsertVerbLemma(lemma, language, source, sourceVersion, checksum, metadataJSON string) (int64, error) {
@@ -327,7 +327,12 @@ func (r *VerbFormsRepository) GetUserVerbForms(userID, wordCardID int64) ([]Verb
 	return out, nil
 }
 
+func verbCoreSQL() string {
+	return "'" + strings.Join(verbtraining.CoreLemmas, "','") + "'"
+}
+
 func (r *VerbFormsRepository) GetLinkedVerbFormsForUser(userID int64, scopes []string) ([]LinkedVerbFormRow, error) {
+	scopes = verbtraining.ExpandScopes(scopes)
 	if len(scopes) == 0 {
 		return nil, nil
 	}
@@ -343,12 +348,12 @@ func (r *VerbFormsRepository) GetLinkedVerbFormsForUser(userID int64, scopes []s
 	      JOIN word_verb_lemmas l ON l.word_card_id = w.id
 	      JOIN verb_forms_dict d ON d.verb_lemma_id = l.verb_lemma_id
 	      WHERE ('es.' || d.tense || '.' || d.mood) IN (` + scopeList + `)
-	        AND w.id IN (
+	        AND (LOWER(w.word) IN (` + verbCoreSQL() + `) OR w.id IN (
 	          SELECT tc.word_card_id FROM user_cards uc JOIN training_cards tc ON tc.id=uc.training_card_id WHERE uc.user_id=?
 	          UNION
 	          SELECT word_card_id FROM user_word_knowledge WHERE user_id=? AND status='known'
 	        )
-	      ORDER BY w.id, d.mood, d.tense, d.person, d.number`
+	      ) ORDER BY w.id, d.mood, d.tense, d.person, d.number`
 	rows, err := r.db.Query(q, args...)
 	if err != nil {
 		return nil, fmt.Errorf("get linked verb forms for user: %w", err)
@@ -384,6 +389,7 @@ func (r *VerbFormsRepository) GetVerbFormExamples(verbFormDictID int64, limit in
 }
 
 type VerbQueueCard struct {
+	InputMode       string `json:"input_mode,omitempty"`
 	UserVerbCardID  int64
 	WordCardID      int64
 	CardType        string
@@ -403,7 +409,8 @@ func (r *VerbFormsRepository) GetOrCreateUserVerbCard(userID, verbTrainingCardID
 	}
 	q := `INSERT INTO user_verb_cards (
 		user_id, verb_training_card_id, state, ef, reps, interval_days, learning_step, lapse_count, next_due_at, created_at, updated_at
-	) VALUES (?, ?, 'new', 2.5, 0, 0, 0, 0, NULL, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)`
+	) VALUES (?, ?, 'new', 2.5, 0, 0, 0, 0, NULL, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
+ ON CONFLICT(user_id,verb_training_card_id) DO UPDATE SET user_id=excluded.user_id`
 	newID, err := database.InsertAndReturnID(r.db, q, userID, verbTrainingCardID)
 	if err != nil {
 		return 0, fmt.Errorf("create user verb card: %w", err)
@@ -433,6 +440,7 @@ func (r *VerbFormsRepository) UpsertVerbTrainingCard(card *models.VerbTrainingCa
 }
 
 func (r *VerbFormsRepository) EnsureUserCardsForUserWords(userID int64, scopes []string) error {
+	scopes = verbtraining.ExpandScopes(scopes)
 	if len(scopes) == 0 {
 		return nil
 	}
@@ -450,11 +458,11 @@ func (r *VerbFormsRepository) EnsureUserCardsForUserWords(userID int64, scopes [
 	      JOIN verb_forms_dict d ON d.id = c.verb_form_dict_id
 	      WHERE c.card_type = ?
 	        AND (('es.' || d.tense || '.' || d.mood) IN (` + scopeList + `))
-	        AND c.word_card_id IN (
+	        AND (c.word_card_id IN (SELECT id FROM word_cards WHERE LOWER(word) IN (` + verbCoreSQL() + `)) OR c.word_card_id IN (
 	          SELECT tc.word_card_id FROM user_cards uc JOIN training_cards tc ON tc.id=uc.training_card_id WHERE uc.user_id=?
 	          UNION
 	          SELECT word_card_id FROM user_word_knowledge WHERE user_id=? AND status='known'
-	        )` + verbTrainingEligibleByWordCardSQL("c") + verbTrainingPromptHasExampleTranslationSQL("c")
+	        ))` + verbTrainingEligibleByWordCardSQL("c") + verbTrainingPromptHasExampleTranslationSQL("c")
 	rows, err := r.db.Query(q, args...)
 	if err != nil {
 		return fmt.Errorf("load candidate verb training cards: %w", err)
@@ -514,7 +522,7 @@ func roundRobinVerbNewCards(pooled []verbNewQueueRow, maxPick int) []VerbQueueCa
 	return out
 }
 
-func (r *VerbFormsRepository) GetVerbQueue(userID int64, now time.Time, maxCards, maxNew int) ([]VerbQueueCard, error) {
+func (r *VerbFormsRepository) GetVerbQueue(userID int64, now time.Time, maxCards, maxNew int, allowedScopes ...string) ([]VerbQueueCard, error) {
 	if maxCards < 0 {
 		maxCards = 0
 	}
@@ -525,12 +533,13 @@ func (r *VerbFormsRepository) GetVerbQueue(userID int64, now time.Time, maxCards
 	if dueLimit < maxCards {
 		dueLimit = maxCards
 	}
+	scopeFilter := verbAllowedScopeSQL(allowedScopes)
 	q := `SELECT uvc.id, vtc.word_card_id, vtc.card_type, vtc.prompt_json, vtc.answer_json, COALESCE(vtc.distractors_json,'')
 	      FROM user_verb_cards uvc
 	      JOIN verb_training_cards vtc ON vtc.id = uvc.verb_training_card_id
 	      INNER JOIN verb_forms_dict d ON d.id = vtc.verb_form_dict_id
 	      WHERE uvc.user_id = ? AND vtc.card_type = ?
-	        AND (uvc.next_due_at IS NULL OR uvc.next_due_at <= ?)` + verbTrainingEligibleByWordCardSQL("vtc") + verbTrainingPromptHasExampleTranslationSQL("vtc") + `
+	        AND uvc.state != 'new' AND (uvc.next_due_at IS NULL OR uvc.next_due_at <= ?)` + scopeFilter + verbTrainingEligibleByWordCardSQL("vtc") + verbTrainingPromptHasExampleTranslationSQL("vtc") + `
 	      ORDER BY CASE WHEN uvc.state='learning' THEN 0 ELSE 1 END, uvc.next_due_at NULLS FIRST
 	      LIMIT ?`
 	rows, err := r.db.Query(q, userID, models.VerbCardTypeCloze, now, dueLimit)
@@ -560,7 +569,7 @@ func (r *VerbFormsRepository) GetVerbQueue(userID int64, now time.Time, maxCards
 		      FROM user_verb_cards uvc
 		      JOIN verb_training_cards vtc ON vtc.id = uvc.verb_training_card_id
 		      INNER JOIN verb_forms_dict d ON d.id = vtc.verb_form_dict_id
-		      WHERE uvc.user_id = ? AND uvc.state='new' AND vtc.card_type = ?` + verbTrainingEligibleByWordCardSQL("vtc") + verbTrainingPromptHasExampleTranslationSQL("vtc") + `
+		      WHERE uvc.user_id = ? AND uvc.state='new' AND vtc.card_type = ?` + scopeFilter + verbTrainingEligibleByWordCardSQL("vtc") + verbTrainingPromptHasExampleTranslationSQL("vtc") + `
 		      ORDER BY random()
 		      LIMIT ?`
 		rowsNew, err := r.db.Query(nq, userID, models.VerbCardTypeCloze, poolCap)
@@ -591,11 +600,11 @@ func (r *VerbFormsRepository) GetVerbQueue(userID int64, now time.Time, maxCards
 }
 
 // CountUserVerbClozeCards returns how many verb-form cloze cards exist for the user (full pool, not session queue).
-func (r *VerbFormsRepository) CountUserVerbClozeCards(userID int64) (int64, error) {
+func (r *VerbFormsRepository) CountUserVerbClozeCards(userID int64, allowedScopes ...string) (int64, error) {
 	q := `SELECT COUNT(*) FROM user_verb_cards uvc
 		INNER JOIN verb_training_cards vtc ON vtc.id = uvc.verb_training_card_id
 		INNER JOIN verb_forms_dict d ON d.id = vtc.verb_form_dict_id
-		WHERE uvc.user_id = ? AND vtc.card_type = ?` + verbTrainingEligibleByWordCardSQL("vtc") + verbTrainingPromptHasExampleTranslationSQL("vtc")
+		WHERE uvc.user_id = ? AND vtc.card_type = ?` + verbAllowedScopeSQL(allowedScopes) + verbTrainingEligibleByWordCardSQL("vtc") + verbTrainingPromptHasExampleTranslationSQL("vtc")
 	var n int64
 	if err := r.db.QueryRow(q, userID, models.VerbCardTypeCloze).Scan(&n); err != nil {
 		return 0, fmt.Errorf("count user verb cloze cards: %w", err)
@@ -1041,4 +1050,20 @@ func ResetVerbExampleCatalogCacheForTests() {
 	verbExampleCatalogHave = false
 	verbExampleCatalogTpl = nil
 	verbExampleCatalogAt = time.Time{}
+}
+
+func verbAllowedScopeSQL(allowedScopes []string) string {
+	scopeFilter := ""
+	if len(allowedScopes) > 0 {
+		values := verbtraining.ExpandScopes(allowedScopes)
+		quoted := make([]string, 0, len(values))
+		for _, value := range values {
+			quoted = append(quoted, "'"+strings.ReplaceAll(value, "'", "''")+"'")
+		}
+		if len(quoted) == 0 {
+			return " AND FALSE"
+		}
+		scopeFilter = " AND ('es.' || d.tense || '.' || d.mood) IN (" + strings.Join(quoted, ",") + ")"
+	}
+	return scopeFilter
 }

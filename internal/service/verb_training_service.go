@@ -12,6 +12,7 @@ import (
 	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
 	"tgbot-skeleton/internal/spanishverbs"
+	"tgbot-skeleton/internal/verbtraining"
 
 	"go.uber.org/zap"
 )
@@ -101,21 +102,9 @@ func (s *VerbTrainingService) EnsureVerbFormUserCards(userID int64, scopes []str
 }
 
 func (s *VerbTrainingService) StartSession(userID int64, scopes []string) (*VerbTrainingSession, error) {
-	if !s.Enabled() {
-		return nil, fmt.Errorf("verb forms training is disabled")
-	}
-	if err := s.EnsureVerbFormUserCards(userID, scopes); err != nil {
-		return nil, err
-	}
-	queue, err := s.repo.GetVerbQueue(userID, time.Now(), s.cfg.VerbFormsMaxCards, s.cfg.VerbFormsMaxNew)
+	queue, err := s.PracticeQueue(userID, scopes)
 	if err != nil {
 		return nil, err
-	}
-	shuffleSeed := time.Now().UnixNano() ^ userID ^ int64(len(queue)<<20)
-	ShuffleVerbQueue(queue, shuffleSeed)
-	queue = SpreadAdjacentDuplicateVerbPromptKeys(queue)
-	if len(queue) == 0 {
-		return nil, fmt.Errorf("no cards available for training")
 	}
 	sessionJSON, _ := json.Marshal(map[string]interface{}{
 		"scopes": scopes,
@@ -153,11 +142,23 @@ func (s *VerbTrainingService) ensureTrainingCardsForUser(userID int64, scopes []
 	if err != nil {
 		return err
 	}
+	paradigms := map[string][]string{}
+	for _, row := range rows {
+		key := row.Lemma + "|" + row.Mood + "|" + verbtraining.CanonicalTense(row.Tense)
+		paradigms[key] = append(paradigms[key], row.SurfaceForm)
+	}
 	for _, row := range rows {
 		card, err := buildRuntimeVerbTrainingCard(row, metadata[strings.ToLower(strings.TrimSpace(row.Lemma))])
 		if err != nil {
 			return err
 		}
+		var prompt map[string]interface{}
+		_ = json.Unmarshal([]byte(card.PromptJSON), &prompt)
+		options := enrichVerbCard(row, prompt, paradigms[row.Lemma+"|"+row.Mood+"|"+verbtraining.CanonicalTense(row.Tense)])
+		raw, _ := json.Marshal(prompt)
+		card.PromptJSON = string(raw)
+		raw, _ = json.Marshal(options)
+		card.DistractorsJSON = string(raw)
 		if _, err := s.repo.UpsertVerbTrainingCard(card); err != nil {
 			return err
 		}
@@ -263,6 +264,18 @@ func (s *VerbTrainingService) Grade(userID, sessionID, userVerbCardID int64, isC
 	if card == nil {
 		return fmt.Errorf("user verb card not found")
 	}
+	nextDueAt, quality := AdvanceVerbSRS(card, isCorrect, false)
+	if err := s.repo.UpdateVerbUserCardSRS(card, nextDueAt, quality); err != nil {
+		return err
+	}
+	return s.repo.CreateVerbReviewEvent(sessionID, userID, userVerbCardID, isCorrect, quality)
+}
+
+// AdvanceVerbSRS does not reward a correct answer obtained with help.
+func AdvanceVerbSRS(card *repository.VerbUserCardSRS, isCorrect, assisted bool) (time.Time, int) {
+	if assisted && isCorrect {
+		return time.Now().Add(10 * time.Minute), 3
+	}
 	quality := 2
 	if isCorrect {
 		quality = 5
@@ -299,8 +312,25 @@ func (s *VerbTrainingService) Grade(userID, sessionID, userVerbCardID int64, isC
 	if card.State == "learning" {
 		nextDueAt = time.Now().Add(10 * time.Minute)
 	}
-	if err := s.repo.UpdateVerbUserCardSRS(card, nextDueAt, quality); err != nil {
-		return err
+	return nextDueAt, quality
+}
+
+func (s *VerbTrainingService) PracticeQueue(userID int64, scopes []string) ([]repository.VerbQueueCard, error) {
+	if !s.Enabled() {
+		return nil, fmt.Errorf("verb forms training is disabled")
 	}
-	return s.repo.CreateVerbReviewEvent(sessionID, userID, userVerbCardID, isCorrect, quality)
+	if err := s.EnsureVerbFormUserCards(userID, scopes); err != nil {
+		return nil, err
+	}
+	queue, err := s.repo.GetPracticeQueue(userID, scopes, min(s.cfg.VerbFormsMaxCards, 10), s.cfg.VerbFormsMaxNew)
+	if err != nil {
+		return nil, err
+	}
+	shuffleSeed := time.Now().UnixNano() ^ userID ^ int64(len(queue)<<20)
+	ShuffleVerbQueue(queue, shuffleSeed)
+	queue = SpreadAdjacentDuplicateVerbPromptKeys(queue)
+	if len(queue) == 0 {
+		return nil, fmt.Errorf("no cards available for training")
+	}
+	return queue, nil
 }

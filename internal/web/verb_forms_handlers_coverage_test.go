@@ -342,8 +342,20 @@ func TestVerbFormsHandlersCoverage(t *testing.T) {
 				hasPreterito = true
 			}
 		}
+		if hasPreterito {
+			t.Fatalf("placement access must not unlock unstudied tense: %v", gateScopes)
+		}
+		if _, err := db.Exec(`INSERT INTO grammar_progress(user_id,chapter_id,best_score,passed_at) VALUES($1,$2,80,CURRENT_TIMESTAMP)`, userID, chapterID); err != nil {
+			t.Fatal(err)
+		}
+		hasPreterito = false
+		for _, scope := range router.getUserVerbScopes(context.Background(), userID) {
+			if scope == "es.pretérito.indicativo" {
+				hasPreterito = true
+			}
+		}
 		if !hasPreterito {
-			t.Fatalf("expected chapter unlock scope, got %v", gateScopes)
+			t.Fatal("passed chapter did not unlock canonical preterite")
 		}
 
 		gateRouter := NewRouter(zap.NewNop(), &config.Config{
@@ -539,8 +551,8 @@ func TestVerbFormsHandlersCoverage(t *testing.T) {
 		reqNoCards = verbFormsUserContext(reqNoCards, emptyUID)
 		rrNoCards := httptest.NewRecorder()
 		emptyUserRouter.handleVerbTrainingStart(rrNoCards, reqNoCards)
-		if rrNoCards.Code != http.StatusBadRequest {
-			t.Fatalf("no cards status=%d body=%s", rrNoCards.Code, rrNoCards.Body.String())
+		if rrNoCards.Code != http.StatusOK {
+			t.Fatalf("core cards status=%d body=%s", rrNoCards.Code, rrNoCards.Body.String())
 		}
 
 		startReq := httptest.NewRequest(http.MethodPost, "/api/verb-training/start", nil)
@@ -712,8 +724,8 @@ func TestVerbFormsHandlersCoverage(t *testing.T) {
 		}
 		var choiceCard map[string]interface{}
 		_ = json.Unmarshal(choiceRR.Body.Bytes(), &choiceCard)
-		if choiceCard["input_mode"] != "choice" {
-			t.Fatalf("expected choice mode, got %v", choiceCard["input_mode"])
+		if choiceCard["input_mode"] != "typed" {
+			t.Fatalf("single attested form must use typed mode, got %v", choiceCard["input_mode"])
 		}
 
 		recallRouter, _, recallUID := setupVerbFormsCoverageRouter(t, db, config.TrainingConfig{
@@ -1019,8 +1031,8 @@ func TestVerbFormsHandlersCoverage(t *testing.T) {
 		}
 		var emptyBody map[string]interface{}
 		_ = json.Unmarshal(rrEmpty.Body.Bytes(), &emptyBody)
-		if emptyBody["pool_ready"] != false {
-			t.Fatalf("expected pool_ready false: %v", emptyBody)
+		if emptyBody["pool_ready"] != true {
+			t.Fatalf("expected core pool_ready true: %v", emptyBody)
 		}
 
 		disabledUpcoming := NewRouter(zap.NewNop(), &config.Config{

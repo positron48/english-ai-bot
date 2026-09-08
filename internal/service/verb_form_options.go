@@ -5,6 +5,8 @@ import (
 	"math/rand"
 	"regexp"
 	"strings"
+	"unicode"
+	"unicode/utf8"
 )
 
 // VerbChoiceOptionCount is the number of alternatives shown in verb-form multiple choice (one correct + distractors).
@@ -191,11 +193,29 @@ func MaskClozeVerbSurfaceInQuestion(question, surface string) string {
 	if q == "" || s == "" {
 		return question
 	}
-	re, err := regexp.Compile(`(?i)\b` + regexp.QuoteMeta(s) + `\b`)
+	re, err := regexp.Compile(`(?i)` + regexp.QuoteMeta(s))
 	if err != nil {
 		return question
 	}
-	return re.ReplaceAllString(q, ClozeBlankPlaceholder)
+	var out strings.Builder
+	last := 0
+	for _, match := range re.FindAllStringIndex(q, -1) {
+		before, after := rune(' '), rune(' ')
+		if match[0] > 0 {
+			before, _ = utf8.DecodeLastRuneInString(q[:match[0]])
+		}
+		if match[1] < len(q) {
+			after, _ = utf8.DecodeRuneInString(q[match[1]:])
+		}
+		if unicode.IsLetter(before) || unicode.IsMark(before) || unicode.IsLetter(after) || unicode.IsMark(after) {
+			continue
+		}
+		out.WriteString(q[last:match[0]])
+		out.WriteString(ClozeBlankPlaceholder)
+		last = match[1]
+	}
+	out.WriteString(q[last:])
+	return out.String()
 }
 
 // ParseStringJSONArray parses JSON array of strings; returns nil on empty/invalid.
@@ -208,5 +228,29 @@ func ParseStringJSONArray(raw string) []string {
 	if err := json.Unmarshal([]byte(raw), &out); err != nil {
 		return nil
 	}
+	return out
+}
+
+// RealVerbFormOptions selects distinct, attested forms from the same paradigm.
+// Syncretic forms collapse to a single option; never pad with invented strings.
+func RealVerbFormOptions(correct string, forms []string, seed int64) []string {
+	correct = strings.TrimSpace(correct)
+	seen := map[string]bool{strings.ToLower(correct): true}
+	wrong := []string{}
+	for _, form := range forms {
+		form = strings.TrimSpace(form)
+		key := strings.ToLower(form)
+		if form != "" && !seen[key] {
+			seen[key] = true
+			wrong = append(wrong, form)
+		}
+	}
+	rng := rand.New(rand.NewSource(seed))
+	rng.Shuffle(len(wrong), func(i, j int) { wrong[i], wrong[j] = wrong[j], wrong[i] })
+	if len(wrong) > 3 {
+		wrong = wrong[:3]
+	}
+	out := append([]string{correct}, wrong...)
+	rng.Shuffle(len(out), func(i, j int) { out[i], out[j] = out[j], out[i] })
 	return out
 }

@@ -1,220 +1,57 @@
-# Verb Forms LLM Training: Runbook
+# Тренировка спряжений: данные и выпуск
 
-Этот документ описывает:
+## Источники и обновление
 
-- как обновляются данные тренировки форм глаголов в проде автоматически;
-- как запускать и проверять процесс локально;
-- какие smoke-проверки сделать после релиза.
+| Данные | Источник и поведение |
+|---|---|
+| Формы | `verb_forms_dict`, импорт Jehle и JSON курса; старые названия времён нормализуются при отборе |
+| Примеры и перевод | `courses/spanish-grammar/training_pack/verb_forms/lemmas/*.json`, embedded-копия `internal/grammartrainingpack/es/verb_forms/lemmas` |
+| Открытие времени | `unlock-gates.json` + `grammar_progress.passed_at`; presente всегда доступно. Placement/доступ к главе и ручные настройки не открывают неизученные времена |
+| Глаголы | 24 базовых глагола без личного словаря плюс глаголы пользователя; порядок по частотному CSV, баланс регулярных форм и исключений |
+| Правила | `internal/spanishverbs/form_rule.go`; успешное применение регулярного правила на трёх разных глаголах уменьшает новые однотипные задания |
+| Сессии/результаты | Существующие `verb_training_sessions.session_json` и `verb_review_events.metrics_json`, версия 2 |
 
-## Что является источником данных
+`sync_verb_training_json` импортирует артефакты при rollout через initContainer. При подготовке тренировки сервис обновляет нужные карточки до `content_version: 2`: выбирает совпадающий пример из embedded-банка, формирует реальные варианты того же времени и добавляет правило. Если примера нет, используется короткое задание без выдуманного перевода. Сохраняются ID карточек, связи с пользователями и SRS.
 
-- Источник правды: `courses/spanish-grammar/training_pack/verb_forms/`
-  - `index.json`
-  - `unlock-gates.json`
-  - `lemmas/*.json`
-- Рантайм API не читает эти JSON напрямую.
-- На релизе JSON синхронизируются в БД через `sync_verb_training_json`:
-  - upsert существующих/новых;
-  - удаление записей, которых нет в JSON (delete-missing).
+Проверенный импортированный пример больше не заменяется универсальной фразой. Импорт и подготовка v2 используют один банк из образа. Полная перегенерация не требуется. Адресные исправления в курсе сопровождаются обновлением embedded-копии.
 
-## Прод: как это запускается автоматически
+## API v2
 
-## 1) Генерация артефактов в CI
+Все пути имеют префикс `/api/verb-training/v2/` и требуют авторизации.
 
-В CI должен быть job, который запускает генерацию:
+| Метод и путь | Запрос/поведение |
+|---|---|
+| `GET current` | Последняя сессия с текущим заданием, разбором или итогом; `idle: true`, если сессии нет |
+| `POST start` | `{}`; возобновляет активную сессию или создаёт до 10 заданий с учётом лимита новых форм |
+| `POST help` | `{session_id, card_id}`; отмечает помощь и возвращает правило. Клиент открывает справочник только после этого |
+| `POST answer` | `{session_id, card_id, answer}` либо `{session_id, card_id, skip: true}`; сохраняет ответ и разбор без перехода |
+| `POST advance` | `{session_id, card_id}`; перейти после прочтения разбора. Повтор запроса не продвигает очередь дважды |
+| `POST repeat` | `{session_id}` завершённой сессии; повтор уникальных ошибок и «Не знаю», без изменения SRS |
 
-- `make -C courses/spanish-grammar verb-training-pack-fill`
+До ответа `prompt` содержит только вопрос, лемму, значение, время, наклонение и лицо. Правило возвращается после помощи; правильная форма, заполненное предложение и перевод — после ответа. В выборе правильная форма присутствует среди вариантов без маркировки.
 
-Скрипт генерации: `courses/spanish-grammar/scripts/generate-verb-forms-training.py`.
+Состояние сохраняется в БД: перезагрузка страницы/сервера не теряет разбор. Оценка, событие и состояние сессии записываются одной транзакцией. Повтор ответа возвращает имеющийся результат. Ответ с помощью не повышает освоение; ошибка возвращает форму на изучение. Немедленный повтор ошибок сохраняет отдельный результат, не изменяя исходную точность и SRS.
 
-Требуемые env для генерации:
+Старые endpoints оставлены для уже открытых старых клиентов. Новый интерфейс использует только v2 для жизненного цикла сессии. Общий справочник: `/api/verb-training/forms-by-lemma?lemma=...`. Общий `/upcoming` учитывает новые правила отбора и открытые времена.
 
-- `VERB_TRAINING_INTERNAL_API`
-- `WEBAPP_INTERNAL_SERVICE_TOKEN` (или fallback `COMPLAINTS_SERVICE_TOKEN`)
-- `AI_URL`
-- `AI_MODEL`
-- `AI_API_KEY`
-
-## 2) Сборка образа
-
-`Dockerfile` уже включает:
-
-- бинарник `/app/sync_verb_training_json`;
-- артефакты `courses/spanish-grammar/training_pack/verb_forms` внутрь образа.
-
-## 3) Автосинк БД в k3s при rollout
-
-В `devops-time-host/apps/spanish/base/deployment.yaml` добавлен initContainer:
-
-- `sync-verb-training-json`
-- запускает:
-  - `/app/sync_verb_training_json --course-root /app/courses/spanish-grammar`
-
-Это означает:
-
-- при каждом новом rollout синк выполняется автоматически;
-- основной контейнер стартует после успешного sync;
-- ручные команды на проде не нужны.
-
-## 4) Что проверить после выката
-
-На кластере:
-
-- pod стартует без ошибок initContainer;
-- `/health` отвечает `200`;
-- `GET /api/verb-training/upcoming` для тестового пользователя возвращает данные;
-- в карточке тренировки есть `(i)` и открывается таблица спряжений.
-
-Полезные команды:
+## Локальные проверки
 
 ```bash
-kubectl get pods -n spanish -l app=spanish
-kubectl logs -n spanish deploy/spanish -c sync-verb-training-json --tail=200
-kubectl logs -n spanish deploy/spanish -c spanish --tail=200
+python3 tools/verb-training/audit_content.py --output /tmp/verb-content-audit.json
+go test ./internal/spanishverbs ./internal/verbtraining ./internal/service ./internal/repository ./internal/web
+npm --prefix webapp test -- src/components/verbFormsTrainingPanel.test.ts
+npm --prefix webapp run build
 ```
 
-## Локальный запуск
+[Контентный аудит](VERB_TRAINING_CONTENT_AUDIT_RU.md) фиксирует покрытие и границы проверки. UI проверяется на 360/390/430 px, в светлой/тёмной теме, при выборе, вводе, подсказке, ошибке и завершении. Не использовать production-данные для локального предпросмотра.
 
-## 1) Подготовка env
+## Выпуск в Linglow
 
-Убедиться, что есть:
+1. Проверить изменение `unlock-gates.json` в подмодуле курса и его embedded-копии. При выпуске сначала коммит/пуш курса, затем обновление указателя основного репозитория.
+2. Собрать образ обычным способом. Новая миграция `000078_verb_practice_indexes.sql` добавляет индексы; новые поля/массовый сброс прогресса не нужны.
+3. Дождаться успешных миграций и штатного `sync_verb_training_json` в initContainer Linglow. Runtime v2 обновит карточки при первом обращении; отдельного обязательного backfill нет.
+4. Проверить новый аккаунт без словаря: доступны базовые глаголы в presente. Проверить аккаунт с пройденной главой indefinido: доступны настоящее и прошедшее, но не ещё не изученные времена.
+5. Проверить неправильный ответ → перезагрузка → сохранённый разбор → «Дальше», помощь, ввод с ударением и итог → повтор ошибок. Новые карточки/примеры не должны сбрасывать прежний прогресс.
+6. При откате старое приложение читает прежние таблицы. Индексы и события v2 можно оставить; не удалять прогресс.
 
-- корневые `.env` и `.env.es` (или эквивалентные переменные в shell);
-- при необходимости `courses/spanish-grammar/.env.local`.
-
-Ключевое:
-
-- `AI_URL`, `AI_MODEL`, `AI_API_KEY`
-- `VERB_TRAINING_INTERNAL_API` (обычно `http://127.0.0.1:8184`)
-- `WEBAPP_INTERNAL_SERVICE_TOKEN` (или `COMPLAINTS_SERVICE_TOKEN`)
-
-## 2) Генерация JSON
-
-```bash
-make -C courses/spanish-grammar verb-training-pack-fill
-```
-
-## 3) Синк JSON в БД
-
-```bash
-make verb-training-sync-db
-```
-
-Или напрямую:
-
-```bash
-go run ./cmd/sync_verb_training_json --course-root courses/spanish-grammar
-```
-
-Dry-run:
-
-```bash
-go run ./cmd/sync_verb_training_json --course-root courses/spanish-grammar --dry-run
-```
-
-## 4) Обновление embedded артефактов
-
-```bash
-make grammar-bundle
-```
-
-## 5) Полная проверка
-
-```bash
-make check
-```
-
-## Локальное тестирование UI/API
-
-## 1) Включение фичи
-
-Нужны Spanish-конфиги, в том числе:
-
-- `LEARNING_TARGET_LANG=es`
-- `GRAMMAR_BUNDLE_ID=es`
-- `SPANISH_VERB_FORMS_ENABLED=true`
-
-## 2) Smoke API
-
-- Internal pending:
-
-```bash
-curl -H "X-Service-Token: $WEBAPP_INTERNAL_SERVICE_TOKEN" \
-  "$VERB_TRAINING_INTERNAL_API/api/internal/verb-training/pending?limit=20&cursor=0"
-```
-
-- Обычные endpoints:
-  - `POST /api/verb-training/start`
-  - `GET /api/verb-training/current`
-  - `POST /api/verb-training/answer`
-  - `GET /api/verb-training/upcoming`
-
-## 3) Smoke UI
-
-Открыть страницу тренировки форм:
-
-- должна приходить карточка с cloze-предложением и RU переводом;
-- в choice-режиме варианты берутся из БД (без runtime эвристик);
-- `(i)` в правом нижнем углу открывает popup с полной таблицей спряжений (`/api/vocab/{word_card_id}/verb-forms`).
-
-## Админка Verb Forms (визуальная проверка)
-
-Для ручной проверки сгенерированных `verb_forms`-артефактов есть lightweight админка курса.
-
-Запуск:
-
-```bash
-make -C courses/spanish-grammar training-pack-admin
-```
-
-или алиас:
-
-```bash
-make -C courses/spanish-grammar verb-forms-admin
-```
-
-URL:
-
-- `http://127.0.0.1:8010/`
-
-В админке доступны 2 режима:
-
-- `Training Pack` — существующий просмотр вопросов по theory blocks;
-- `Verb Forms` — просмотр глагольных артефактов.
-
-Что есть в режиме `Verb Forms`:
-
-- слева:
-  - поиск по lemma,
-  - список глаголов из `training_pack/verb_forms/index.json`;
-- справа:
-  - мета выбранной lemma (`word_card_id`, `cards_count`, `scopes_count`, `generated_at`),
-  - список scopes (времена/наклонения),
-  - таблица по выбранному scope:
-    - `person`, `number`,
-    - `surface_form`,
-    - `question_es_with_blank`,
-    - `translation_ru_full`,
-    - `options`.
-
-Backend endpoints админки для verb forms:
-
-- `GET /api/verb-forms/lemmas?q=...`
-- `GET /api/verb-forms/lemma?lemma=...`
-
-Эти endpoints читают данные из:
-
-- `courses/spanish-grammar/training_pack/verb_forms/index.json`
-- `courses/spanish-grammar/training_pack/verb_forms/lemmas/*.json`
-
-## Частые проблемы и диагностика
-
-- `401` на `/api/internal/verb-training/pending`:
-  - неверный `X-Service-Token`.
-- генератор пропускает леммы:
-  - проверяйте ответ pending API и логи `generate-verb-forms-training.py`.
-- sync падает на валидации:
-  - в конкретном `lemmas/<lemma>.json` нет полного покрытия `16 scopes x 6 slots`.
-- в UI нет карточек:
-  - проверьте unlock-gates, доступ к главам и что `SPANISH_VERB_FORMS_ENABLED=true`.
-
+Production-команды выполняет оператор на сервере. Не запускать локальный `kubectl`. Общий операторский runbook: `devops-time-host/apps/linglow/RELEASE_K3S.md` (§2.7 для импорта форм).

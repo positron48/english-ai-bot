@@ -9,7 +9,6 @@ import (
 	"strconv"
 	"strings"
 	"sync"
-	"time"
 
 	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/grammartrainingpack"
@@ -137,39 +136,25 @@ func (r *Router) getUserVerbScopes(ctx context.Context, userID int64) []string {
 	if fsys, err := grammartrainingpack.PackFS(lc.GrammarBundleID); err == nil {
 		if gates, err := verbtraining.LoadUnlockGates(fsys); err == nil && gates != nil {
 			allowed := map[string]bool{}
-			if r.grammarService != nil && userID > 0 {
+			if r.grammarService != nil && r.grammarService.AttemptRepo != nil && userID > 0 {
 				for chapterID := range gates.Chapters {
-					canAccess, err := r.grammarService.CanAccessChapter(context.Background(), userID, chapterID)
+					progress, err := r.grammarService.AttemptRepo.GetChapterProgress(userID, chapterID)
 					if err != nil {
 						continue
 					}
-					if canAccess {
+					if progress != nil && progress.Passed {
 						allowed[chapterID] = true
 					}
 				}
 			}
 			scopes := gates.EnabledScopes(allowed)
 			if len(scopes) > 0 {
-				return scopes
+				return verbtraining.ExpandScopes(scopes)
 			}
 		}
 	}
-	if r.userRepo == nil {
-		return models.DefaultSpanishVerbScopes()
-	}
-	userRepo, ok := r.userRepo.(*repository.UserRepository)
-	if !ok {
-		return models.DefaultSpanishVerbScopes()
-	}
-	user, err := userRepo.GetUserByID(userID)
-	if err != nil || user == nil || user.SettingsJSON == "" {
-		return models.DefaultSpanishVerbScopes()
-	}
-	var settings models.UserSettings
-	if err := json.Unmarshal([]byte(user.SettingsJSON), &settings); err != nil {
-		return models.DefaultSpanishVerbScopes()
-	}
-	return service.ResolveVerbScopes(&settings, lc)
+	// Missing curriculum data must never unlock unstudied tenses from legacy settings.
+	return models.DefaultSpanishVerbScopes()
 }
 
 func (r *Router) newVerbTrainingServiceForUser(ctx context.Context, userID int64) *service.VerbTrainingService {
@@ -600,18 +585,18 @@ func (r *Router) handleVerbTrainingUpcoming(w http.ResponseWriter, req *http.Req
 		// sync/import succeeded.
 		r.ensureVerbFormUserCardsForUser(req.Context(), userID)
 		repo := repository.NewVerbFormsRepository(r.db, r.logger)
-		queue, err := repo.GetVerbQueue(userID, time.Now(), r.config.Training.VerbFormsMaxCards, r.config.Training.VerbFormsMaxNew)
+		queue, err := repo.GetPracticeQueue(userID, r.getUserVerbScopes(req.Context(), userID), 10, r.config.Training.VerbFormsMaxNew)
 		if err != nil {
 			return nil, err
 		}
-		totalCards, err := repo.CountUserVerbClozeCards(userID)
+		totalCards, err := repo.CountUserVerbClozeCards(userID, r.getUserVerbScopes(req.Context(), userID)...)
 		if err != nil {
 			return nil, err
 		}
 		return json.Marshal(map[string]interface{}{
 			"due":             len(queue),
 			"total_cards":     totalCards,
-			"max_per_session": r.config.Training.VerbFormsMaxCards,
+			"max_per_session": 10,
 			"enabled":         true,
 			"pool_ready":      totalCards > 0,
 		})

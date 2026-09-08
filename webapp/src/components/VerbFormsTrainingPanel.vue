@@ -1,1251 +1,230 @@
 <template>
-  <div
-    id="verb-forms-training"
-    class="verb-forms-root"
-    :class="{ 'verb-forms-root--embedded': embedded }"
-  >
-    <div v-if="autoStarting || verbPoolUnset" class="card verb-forms-loading">
-      <p class="verb-forms-loading-text">{{ t('common.loading') }}</p>
-    </div>
-
-    <section v-else-if="showNoCardsInPool" class="card verb-forms-pre">
-      <p class="verb-forms-pre__intro">{{ t('verbTraining.noCardsPool') }}</p>
-    </section>
-
-    <section v-else-if="showIdleChrome" class="card verb-forms-pre">
-      <component v-if="!hidePageTitle" :is="headingTag" class="verb-forms-pre__title">
-        {{ t('verbTraining.title') }}
-      </component>
-      <p class="verb-forms-pre__intro">{{ t('verbTraining.intro') }}</p>
-      <p v-if="totalVerbCardsPool !== null" class="verb-forms-pre__pool">
-        {{ t('verbTraining.totalCardsAvailable', { count: totalVerbCardsPool }) }}
-      </p>
-      <button type="button" class="btn btn-primary" @click="start">{{ t('verbTraining.start') }}</button>
-      <p v-if="error" class="verb-forms-pre__error">{{ error }}</p>
-    </section>
-
-    <div v-else-if="active" class="card verb-forms-training-card">
-      <TrainingSessionCompletion
-        v-if="finished"
-        :total-cards="trainingStats.totalCards"
-        :correct-cards="trainingStats.correctCards"
-        :stats-loaded="true"
-        :available-for-training="availableForTraining"
-        :estimated-time-for-remaining="estimatedTimeForRemaining"
-        :show-continue-button="true"
-        :sounds-enabled="true"
-        @continue="start"
-      />
-
-      <template v-else-if="card">
-        <div v-if="card.total_cards" class="training-progress">
-          <p>{{ t('verbTraining.cardProgress', { current: card.card_index, total: card.total_cards }) }}</p>
-        </div>
-
-        <div class="question verb-forms-question">
-          <div>{{ card.prompt?.question }}</div>
-          <p v-if="card.prompt?.example_translation" class="verb-forms-ru-line">{{ card.prompt.example_translation }}</p>
-          <div class="verb-forms-info-row">
-            <button
-              type="button"
-              class="verb-forms-info-btn"
-              :disabled="!canOpenVerbInfo"
-              :aria-label="t('verbTraining.formsInfoAria')"
-              @click="openWordInfo"
-            >
-              <span class="verb-forms-info-icon-wrap" aria-hidden="true">
-                <Icon name="info" class="verb-forms-info-icon" />
-              </span>
-            </button>
-          </div>
-        </div>
-
-        <div v-if="inputMode === 'choice' && card.options?.length" class="options">
-          <button
-            v-for="(option, index) in card.options"
-            :key="`${index}-${option}`"
-            type="button"
-            :class="[
-              'btn',
-              'option-btn',
-              {
-                'option-correct': verbFeedback && option === verbFeedback.correct_answer,
-                'option-incorrect': verbFeedback && !verbFeedback.is_correct && option === verbFeedback.chosen_option,
-                'option-disabled': !!verbFeedback || answeringLocal,
-              },
-            ]"
-            @click="!verbFeedback && !answeringLocal && submitAnswer(option)"
-          >
-            <span class="option-number">{{ index + 1 }}</span>
-            <span class="option-text">{{ option }}</span>
+  <section id="verb-forms-training" class="verb-practice" :aria-busy="busy">
+    <p v-if="error" class="practice-error" role="alert">{{ error }} <button type="button" @click="recover">{{ t('verbPractice.reload') }}</button></p>
+    <p v-if="loading" role="status">{{ t('common.loading') }}</p>
+    <template v-else-if="session?.completed">
+      <h2>{{ t('verbPractice.finished') }}</h2>
+      <p v-if="session.retry">{{ t('verbPractice.retryNotice') }}</p>
+      <dl class="result-grid">
+        <div><dt>{{ t('verbPractice.independent') }}</dt><dd>{{ count('correct', false) }}</dd></div>
+        <div><dt>{{ t('verbPractice.withHelp') }}</dt><dd>{{ count('correct', true) }}</dd></div>
+        <div><dt>{{ t('verbPractice.mistakes') }}</dt><dd>{{ count('incorrect') }}</dd></div>
+        <div><dt>{{ t('verbPractice.unknownCount') }}</dt><dd>{{ count('unknown') }}</dd></div>
+      </dl>
+      <div v-if="mistakes.length" class="mistake-list">
+        <h3>{{ t('verbPractice.review') }}</h3>
+        <p v-for="result in mistakes" :key="result.card_id"><strong>{{ result.lemma }} → {{ result.correct_answer }}</strong><br>{{ tenseLabel(result.tense) }} · {{ pronoun(result.person, result.number) }}</p>
+      </div>
+      <div class="practice-actions">
+        <button v-if="mistakes.length" class="btn btn-primary" :disabled="busy" @click="act('repeat')">{{ t('verbPractice.repeat') }}</button>
+        <button class="btn btn-secondary" :disabled="busy" @click="act('start')">{{ t('verbPractice.continue') }}</button>
+      </div>
+    </template>
+    <template v-else-if="session?.card_id && session.prompt">
+      <div class="practice-progress">
+        <span>{{ t('verbTraining.cardProgress', { current: session.card_index, total: session.total_cards }) }}</span>
+        <span v-if="session.retry">{{ t('verbPractice.repeat') }}</span>
+        <progress :value="session.card_index - 1 + (session.feedback ? 1 : 0)" :max="session.total_cards" :aria-label="t('verbPractice.progress')" />
+      </div>
+      <p class="practice-tense">{{ tenseLabel(session.prompt.tense) }} · {{ moodLabel(session.prompt.mood) }}</p>
+      <p class="practice-lemma"><strong>{{ session.prompt.lemma }}</strong><span v-if="session.prompt.ru_gloss"> — {{ session.prompt.ru_gloss }}</span></p>
+      <h2 ref="questionHeading" tabindex="-1" class="practice-question">{{ session.prompt.question }}</h2>
+      <p v-if="!session.feedback" class="practice-instruction">{{ t(session.input_mode === 'typed' ? 'verbPractice.type' : 'verbPractice.choose') }}</p>
+      <div v-if="session.input_mode === 'choice'" class="practice-options">
+        <button v-for="option in session.options" :key="option" type="button" class="practice-option"
+          :class="{ correct: session.feedback?.correct_answer === option, incorrect: session.feedback?.outcome === 'incorrect' && session.feedback.chosen_option === option }"
+          :disabled="busy || !!session.feedback" @click="answer(option)">{{ option }}</button>
+      </div>
+      <form v-else class="practice-input" @submit.prevent="answer(typedAnswer)">
+        <label for="verb-answer">{{ t('verbTraining.typeFormPlaceholder') }}</label>
+        <input id="verb-answer" v-model="typedAnswer" autocomplete="off" autocapitalize="none" :spellcheck="false" :disabled="busy || !!session.feedback" />
+        <button v-if="!session.feedback" class="btn btn-primary" :disabled="busy || !typedAnswer.trim()">{{ t('verbTraining.submitAnswer') }}</button>
+      </form>
+      <template v-if="!session.feedback">
+        <div class="practice-help-actions">
+          <button class="practice-tool practice-tool--hint" type="button" :disabled="busy" :aria-expanded="showHint" aria-controls="verb-practice-hint" @click="help">
+            <span class="practice-tool-icon"><LgIcon name="lightbulb" :s="20" aria-hidden="true" /></span>
+            <span>{{ t('verbPractice.hint') }}</span>
+          </button>
+          <button class="practice-tool" type="button" :disabled="busy" aria-haspopup="dialog" @click="openForms">
+            <span class="practice-tool-icon"><LgIcon name="book-open" :s="20" aria-hidden="true" /></span>
+            <span>{{ t('verbPractice.allForms') }}</span>
+          </button>
+          <button class="practice-skip" type="button" :disabled="busy" @click="act('answer', { skip: true })">
+            <span>{{ t('verbPractice.dontKnow') }}</span><LgIcon name="chevron-right" :s="18" aria-hidden="true" />
           </button>
         </div>
-
-        <div v-else-if="inputMode === 'typed' && card" class="type-block">
-          <div class="type-answer-row">
-            <span class="type-answer-label">{{ t('verbTraining.typeFormPlaceholder') }}</span>
-            <div class="type-input-inline">
-              <input
-                v-model.trim="typedAnswer"
-                type="text"
-                class="type-input"
-                :placeholder="t('training.typeWordPlaceholder') || ''"
-                :disabled="!!verbFeedback || answeringLocal"
-                @keydown.enter.prevent="submitTyped"
-              />
-              <button
-                type="button"
-                class="type-submit-inline"
-                :disabled="!typedAnswer || !!verbFeedback || answeringLocal"
-                :aria-label="t('training.check')"
-                @click="submitTyped"
-              >
-                <Icon name="check" class="type-submit-icon" />
-              </button>
-            </div>
-          </div>
-        </div>
-
-        <div v-if="!verbFeedback && !answeringLocal" class="type-actions-row">
-          <button type="button" class="btn btn-secondary type-skip" @click="submitSkip">{{ t('training.skip') }}</button>
-        </div>
-
-        <div v-if="verbFeedback" class="feedback-section">
-          <div v-if="verbFeedback.is_correct" class="feedback-badge feedback-success">
-            <div class="success-particles">
-              <div
-                v-for="i in 12"
-                :key="i"
-                class="success-particle"
-                :style="getSuccessParticleStyle(i)"
-              ></div>
-            </div>
-            <span class="feedback-icon"><Icon name="check" /></span>
-            <span class="feedback-text">{{ encouragingPhrase }}</span>
-          </div>
-          <template v-else>
-            <div class="feedback-badge feedback-error">
-              <div v-if="waitingDelay" class="error-progress-wrapper">
-                <div class="error-progress-pulse"></div>
-                <svg class="error-progress-ring" width="40" height="40">
-                  <circle
-                    class="error-progress-circle-bg"
-                    stroke="rgba(255, 255, 255, 0.2)"
-                    stroke-width="2.5"
-                    fill="transparent"
-                    r="16"
-                    cx="20"
-                    cy="20"
-                  />
-                  <circle
-                    class="error-progress-circle"
-                    stroke="white"
-                    stroke-width="2.5"
-                    fill="transparent"
-                    r="16"
-                    cx="20"
-                    cy="20"
-                    :style="{ strokeDasharray: errorCircumference, strokeDashoffset: errorProgressOffset }"
-                  />
-                </svg>
-                <svg class="error-icon-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-                  <line x1="18" y1="6" x2="6" y2="18"></line>
-                  <line x1="6" y1="6" x2="18" y2="18"></line>
-                </svg>
-              </div>
-              <svg v-else class="error-icon-svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
-                <line x1="18" y1="6" x2="6" y2="18"></line>
-                <line x1="6" y1="6" x2="18" y2="18"></line>
-              </svg>
-              <span class="feedback-text">{{ disappointingPhrase }}</span>
-            </div>
-          </template>
-        </div>
+        <p v-if="session.assisted" class="practice-assisted">{{ t('verbPractice.helpUsed') }}</p>
+        <div v-if="showHint && session.prompt.rule" id="verb-practice-hint" class="practice-hint">{{ ruleText(session.prompt.rule) }}</div>
       </template>
-    </div>
-
-    <div v-if="showWordInfoPopup" class="verb-word-popup-overlay" @click.self="closeWordInfo">
-      <div class="verb-word-popup">
-        <div class="verb-word-popup__header">
-          <h4>{{ wordInfoLemma || t('verbTraining.title') }}</h4>
-          <button type="button" class="verb-word-popup__close" @click="closeWordInfo">×</button>
-        </div>
-        <p v-if="wordInfoError" class="verb-word-popup__error">{{ wordInfoError }}</p>
-        <p v-else-if="wordInfoLoading" class="verb-word-popup__loading">{{ t('common.loading') }}</p>
-        <div v-else class="verb-word-popup__table-wrap">
-          <table class="verb-word-popup__table">
-            <thead>
-              <tr>
-                <th>Mood</th>
-                <th>Tense</th>
-                <th>Pronoun</th>
-                <th>Form</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr v-for="(row, idx) in wordInfoRows" :key="`${idx}-${row.mood}-${row.tense}-${row.person}-${row.number}`">
-                <td>{{ row.mood }}</td>
-                <td>{{ row.tense }}</td>
-                <td>{{ subjectPronoun(row.person, row.number) }}</td>
-                <td>{{ row.surface_form }}</td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+      <div v-else class="practice-feedback" role="status" aria-live="polite">
+        <p class="feedback-title"><LgIcon :name="session.feedback.outcome === 'correct' ? 'check' : 'book-open'" />{{ t('verbPractice.' + session.feedback.outcome) }}</p>
+        <p v-if="session.feedback.chosen_option && session.feedback.outcome === 'incorrect'">{{ t('verbPractice.yourAnswer') }}: {{ session.feedback.chosen_option }}</p>
+        <p class="practice-answer">{{ session.feedback.correct_answer }}</p>
+        <p v-if="session.feedback.accent_only">{{ t('verbPractice.accent') }}</p>
+        <p>{{ ruleText(session.feedback.rule) }}</p>
+        <p><strong>{{ session.feedback.sentence }}</strong><br><span v-if="session.feedback.translation">{{ session.feedback.translation }}</span></p>
+        <p v-if="session.feedback.assisted">{{ t('verbPractice.helpUsed') }}</p>
+        <button class="practice-tool feedback-forms" type="button" :disabled="busy" aria-haspopup="dialog" @click="openForms"><LgIcon name="book-open" :s="20" aria-hidden="true" /><span>{{ t('verbPractice.allForms') }}</span></button>
+        <div class="practice-next"><button ref="nextButton" class="btn btn-primary" :disabled="busy" @click="advance">{{ t('verbPractice.next') }}</button></div>
       </div>
+    </template>
+    <template v-else>
+      <h2 v-if="!hidePageTitle">{{ t('verbTraining.title') }}</h2>
+      <p>{{ t(session?.empty ? 'verbPractice.empty' : 'verbPractice.intro') }}</p>
+      <button type="button" class="btn btn-primary" :disabled="busy" @click="act('start')">{{ t('verbTraining.start') }}</button>
+    </template>
+    <div v-if="showForms" class="forms-overlay" @click.self="closeForms" @keydown.esc="closeForms">
+      <section ref="formsDialog" role="dialog" aria-modal="true" :aria-label="t('verbPractice.allForms')" class="forms-dialog" tabindex="-1" @keydown.tab="trapFocus">
+        <header><h3>{{ session?.prompt?.lemma }}</h3><button type="button" :aria-label="t('verbPractice.close')" @click="closeForms">×</button></header>
+        <p v-if="formsLoading">{{ t('common.loading') }}</p>
+        <p v-if="formsError" role="alert">{{ t('verbPractice.networkError') }}</p>
+        <label for="verb-tense">{{ t('verbPractice.tense') }}</label>
+        <select id="verb-tense" v-model="selectedScope"><option v-for="group in formGroups" :key="group.key" :value="group.key">{{ tenseLabel(group.tense) }} · {{ moodLabel(group.mood) }}</option></select>
+        <table><thead><tr><th>{{ t('verbPractice.person') }}</th><th>{{ t('verbPractice.form') }}</th></tr></thead><tbody><tr v-for="(row,index) in selectedForms" :key="index"><td>{{ pronoun(row.person,row.number) }}</td><td>{{ row.surface_form }}</td></tr></tbody></table>
+      </section>
     </div>
-  </div>
+  </section>
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, nextTick, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { useRouter } from 'vue-router'
 import { apiClient } from '../api/client'
-import Icon from './Icon.vue'
-import TrainingSessionCompletion from './TrainingSessionCompletion.vue'
-import { useAudio } from '../composables/useAudio'
-import { useTrainingAnswerDelay } from '../composables/useTrainingAnswerDelay'
+import LgIcon from './linglow/LgIcon.vue'
 
-const props = withDefaults(
-  defineProps<{
-    embedded?: boolean
-    autoStart?: boolean
-    /** Parent view shows LgPageHeader title — hide duplicate h1/h3 on idle screen */
-    hidePageTitle?: boolean
-  }>(),
-  { embedded: true, autoStart: false, hidePageTitle: false }
-)
-
-const router = useRouter()
-const { t, tm } = useI18n()
-const { playSuccess, playFail } = useAudio()
-const { waitingDelay, remainingMs, initialDelayMs, runWrongAnswerDelay, clearAll } = useTrainingAnswerDelay()
-
-const headingTag = computed(() => (props.embedded ? 'h3' : 'h1'))
-
-interface VerbFeedback {
-  is_correct: boolean
-  chosen_option: string
-  correct_answer: string
-  delay_seconds?: number
-}
-
-interface VerbCard {
-  input_mode?: string
-  typed_min_reps?: number
-  options?: string[]
-  prompt?: { question?: string; example_translation?: string; lemma?: string }
-  user_verb_card_id?: number
-  word_card_id?: number
-  /** Spanish infinitive from backend (same as prompt.lemma). */
-  lemma?: string
-  card_index?: number
-  total_cards?: number
-}
-
-interface VerbFormRow {
-  lemma?: string
-  mood: string
-  tense: string
-  person: string
-  number: string
-  surface_form: string
-}
-
-const active = ref(false)
-const finished = ref(false)
-const error = ref('')
-const autoStarting = ref(false)
-const trainingStats = ref({ totalCards: 0, correctCards: 0 })
-const availableForTraining = ref<number | null>(null)
-/** Full cloze verb-form card pool for user (from API); distinct from session queue size (`due`). */
-const totalVerbCardsPool = ref<number | null>(null)
-
-/** Waiting for /api/verb-training/upcoming so we know total_cards. */
-const verbPoolUnset = computed(
-  () => totalVerbCardsPool === null && !active.value && !autoStarting.value
-)
-
-/** No materialized verb-form cards in DB — cannot train. */
-const showNoCardsInPool = computed(
-  () =>
-    totalVerbCardsPool !== null &&
-    totalVerbCardsPool === 0 &&
-    !active.value &&
-    !autoStarting.value
-)
-
-/** Title + intro only before the first successful start (idle). Hidden during load and whole session. */
-const showIdleChrome = computed(
-  () =>
-    !active.value &&
-    !autoStarting.value &&
-    !verbPoolUnset.value &&
-    !showNoCardsInPool.value
-)
-
-const canOpenVerbInfo = computed(() => {
-  const c = card.value
-  if (!c) return false
-  const fromPrompt = (c.prompt as { lemma?: string } | undefined)?.lemma
-  const lem = (fromPrompt || c.lemma || '').trim()
-  if (lem.length > 0) return true
-  return !!c.word_card_id
-})
-const typedAnswer = ref('')
-const card = ref<VerbCard | null>(null)
-const verbFeedback = ref<VerbFeedback | null>(null)
-const answeringLocal = ref(false)
-const encouragingPhrase = ref('')
-const disappointingPhrase = ref('')
-const showWordInfoPopup = ref(false)
-const wordInfoLoading = ref(false)
-const wordInfoError = ref('')
-const wordInfoRows = ref<VerbFormRow[]>([])
-const wordInfoLemma = ref('')
-
-const inputMode = computed(() => {
-  const c = card.value
-  if (!c) return 'choice'
-  if (c.input_mode === 'typed') return 'typed'
-  if (c.input_mode === 'choice') return 'choice'
-  return c.options && c.options.length > 0 ? 'choice' : 'typed'
-})
-const estimatedTimeForRemaining = computed(() => {
-  const cards = availableForTraining.value
-  if (!cards || cards <= 0) return null
-  const minutes = Math.floor((cards * 15) / 60)
-  if (minutes < 1) return t('training.oneMin')
-  if (minutes === 1) return t('training.oneMin')
-  return t('training.min', { minutes })
-})
-
-const errorCircumference = 2 * Math.PI * 16
-const errorProgressOffset = computed(() => {
-  if (initialDelayMs.value === 0 || remainingMs.value <= 0 || verbFeedback.value?.is_correct) {
-    return 0
+const props = withDefaults(defineProps<{ embedded?: boolean; autoStart?: boolean; hidePageTitle?: boolean }>(), { embedded: true, autoStart: false, hidePageTitle: false })
+const { t, te } = useI18n()
+interface Rule { id: string; regular: boolean; ending?: string; stem?: string; pattern?: string }
+interface Feedback { card_id: number; outcome: string; assisted: boolean; chosen_option: string; correct_answer: string; sentence: string; translation: string; lemma: string; tense: string; mood: string; person: string; number: string; rule: Rule | null; accent_only: boolean }
+interface Prompt { question: string; lemma: string; ru_gloss?: string; mood: string; tense: string; person: string; number: string; rule?: Rule }
+interface Session { session_id: number; card_id?: number; card_index: number; total_cards: number; input_mode: string; options?: string[]; prompt?: Prompt; completed?: boolean; idle?: boolean; empty?: boolean; retry?: boolean; assisted?: boolean; feedback?: Feedback; results?: Feedback[] }
+interface Form { mood: string; tense: string; person: string; number: string; surface_form: string }
+const session = ref<Session | null>(null)
+const loading = ref(true), busy = ref(false), error = ref(''), typedAnswer = ref(''), showHint = ref(false)
+const showForms = ref(false), formsLoading = ref(false), formsError = ref(false), forms = ref<Form[]>([]), selectedScope = ref('')
+const nextButton = ref<HTMLButtonElement>(), questionHeading = ref<HTMLElement>(), formsDialog = ref<HTMLElement>()
+let previousFocus: HTMLElement | null = null
+const mistakes = computed(() => session.value?.results?.filter(r => r.outcome !== 'correct') || [])
+const formGroups = computed(() => Array.from(new Map(forms.value.map(row => [scopeKey(row.mood, row.tense), { key: scopeKey(row.mood, row.tense), mood: row.mood, tense: row.tense }])).values()))
+const selectedForms = computed(() => {
+  const slots = new Map<string, Form>()
+  for (const row of forms.value.filter(row => scopeKey(row.mood, row.tense) === selectedScope.value)) {
+    const key = row.person + row.number, existing = slots.get(key)
+    if (!existing) slots.set(key, { ...row })
+    else if (!existing.surface_form.split(' / ').includes(row.surface_form)) existing.surface_form += ' / ' + row.surface_form
   }
-  const progress = remainingMs.value / initialDelayMs.value
-  return errorCircumference * (1 - progress)
+  return [...slots.values()]
 })
-
-function phraseList(key: string): string[] {
-  const raw = tm(key) as unknown
-  if (!Array.isArray(raw)) return []
-  return raw.filter((x): x is string => typeof x === 'string' && x.length > 0)
+function count(outcome: string, assisted?: boolean) { return session.value?.results?.filter(r => r.outcome === outcome && (assisted === undefined || r.assisted === assisted)).length || 0 }
+function scopeKey(mood: string, tense: string) {
+  const aliases: Record<string, string> = { preterito_indefinido: 'pretérito', preterito_imperfecto: 'imperfecto', futuro_simple: 'futuro', condicional_simple: 'condicional', preterito_perfecto_compuesto: 'pretérito perfecto', preterito_perfecto: 'pretérito perfecto', preterito_pluscuamperfecto: 'pluscuamperfecto', preterito_anterior: 'pretérito anterior', futuro_perfecto: 'futuro perfecto', condicional_perfecto: 'condicional perfecto' }
+  return mood + '|' + (aliases[tense] || tense)
 }
-
-function pickRandom(list: string[]): string {
-  if (!list.length) return ''
-  return list[Math.floor(Math.random() * list.length)]
+function tenseLabel(tense: string) { const key = 'verbPractice.tenses.' + tense; return te(key) ? t(key) : tense }
+function moodLabel(mood: string) { const key = 'verbPractice.moods.' + mood; return te(key) ? t(key) : mood }
+function pronoun(person: string, number: string) { return ({ '1singular': 'yo', '2singular': 'tú', '3singular': 'él / ella / usted', '1plural': 'nosotros / nosotras', '2plural': 'vosotros / vosotras', '3plural': 'ellos / ellas / ustedes' } as Record<string,string>)[person + number] || person }
+function ruleText(rule?: Rule | null) {
+  const p = session.value?.prompt
+  if (rule?.pattern && te('verbPractice.patterns.' + rule.pattern)) return t('verbPractice.patterns.' + rule.pattern)
+  if (rule?.pattern) return t('verbPractice.stemChange', { change: rule.pattern.replace('_', ' → '), ending: rule.ending })
+  if (rule?.regular) return t('verbPractice.regularRule', { pronoun: pronoun(p?.person || '', p?.number || ''), ending: rule.ending })
+  return t('verbPractice.exceptionRule', { pronoun: pronoun(p?.person || '', p?.number || '') })
 }
+async function act(action: string, extra: Record<string,unknown> = {}) {
+  if (busy.value) return
+  busy.value = true; error.value = ''
+  try {
+    session.value = await apiClient.request<Session>('/api/verb-training/v2/' + action, { method: 'POST', body: { session_id: session.value?.session_id, card_id: session.value?.card_id, ...extra } })
+    if (action === 'start' || action === 'repeat' || action === 'advance') { typedAnswer.value = ''; showHint.value = false }
 
-function getSuccessParticleStyle(index: number) {
-  const angle = index * 30 + 7
-  const angleRad = (angle * Math.PI) / 180
-  const distance = 72 + (index % 5) * 8
-  const endX = Math.cos(angleRad) * distance
-  const endY = Math.sin(angleRad) * distance
-  const size = 5 + (index % 3)
-  const delay = (index % 5) * 0.04
-  return {
-    '--particle-end-x': `${endX}px`,
-    '--particle-end-y': `${endY}px`,
-    '--particle-size': `${size}px`,
-    '--particle-delay': `${delay}s`,
-  }
+  } catch { error.value = t('verbPractice.networkError') }
+  finally { busy.value = false; await nextTick(); if (session.value?.feedback) nextButton.value?.focus() }
 }
-
-const start = async () => {
+async function answer(value: string) { if (value.trim()) await act('answer', { answer: value.trim() }) }
+async function advance() { await act('advance'); await nextTick(); questionHeading.value?.focus() }
+async function help() { await act('help'); if (!error.value) showHint.value = true }
+async function recover() {
   error.value = ''
-  verbFeedback.value = null
-  typedAnswer.value = ''
-  finished.value = false
-  clearAll()
-  trainingStats.value = { totalCards: 0, correctCards: 0 }
+  try { session.value = await apiClient.request<Session>('/api/verb-training/v2/current') }
+  catch { error.value = t('verbPractice.networkError') }
+}
+async function openForms() {
+  previousFocus = document.activeElement as HTMLElement
+  await act('help'); if (error.value) return
+  showForms.value = true; formsLoading.value = true; formsError.value = false
+  await nextTick(); formsDialog.value?.focus()
   try {
-    const data = await apiClient.request<VerbCard>('/api/verb-training/start', { method: 'POST' })
-    active.value = true
-    card.value = data
-  } catch (e: any) {
-    active.value = false
-    if (e?.code === 'verb_training_disabled') {
-      error.value = t('verbTraining.featureDisabledHint')
-    } else {
-      error.value = e?.message || t('verbTraining.startFailed')
-    }
-  }
+    const response = await apiClient.request<{ forms: Form[] }>('/api/verb-training/forms-by-lemma?lemma=' + encodeURIComponent(session.value?.prompt?.lemma || ''))
+    forms.value = response.forms || []
+    const current = scopeKey(session.value?.prompt?.mood || '', session.value?.prompt?.tense || '')
+    selectedScope.value = formGroups.value.some(g => g.key === current) ? current : (formGroups.value[0]?.key || '')
+  } catch { formsError.value = true } finally { formsLoading.value = false }
 }
-
-async function loadUpcomingVerbCards() {
-  try {
-    const data = await apiClient.request<{ due?: number; total_cards?: number }>('/api/verb-training/upcoming')
-    availableForTraining.value = typeof data?.due === 'number' ? data.due : 0
-    totalVerbCardsPool.value = typeof data?.total_cards === 'number' ? data.total_cards : null
-  } catch {
-    availableForTraining.value = null
-    totalVerbCardsPool.value = 0
-  }
+function closeForms() { showForms.value = false; previousFocus?.focus() }
+function trapFocus(event: KeyboardEvent) {
+  const nodes = formsDialog.value?.querySelectorAll<HTMLElement>('button, select, [tabindex="0"]')
+  if (!nodes?.length) return
+  const first = nodes[0], last = nodes[nodes.length - 1]
+  if (event.shiftKey && (document.activeElement === first || document.activeElement === formsDialog.value)) { event.preventDefault(); last.focus() }
+  else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus() }
 }
-
-onMounted(async () => {
-  if (!props.autoStart) {
-    await loadUpcomingVerbCards()
-    return
-  }
-  autoStarting.value = true
-  try {
-    await start()
-    if (active.value && !error.value) {
-      await router.replace({ path: '/training/verbs' })
-    }
-  } finally {
-    autoStarting.value = false
-  }
-})
-
-async function postAnswer(body: { answer?: string; skip?: boolean }) {
-  if (!card.value?.user_verb_card_id) return
-  answeringLocal.value = true
-  try {
-    const data = await apiClient.request<VerbFeedback & { next?: boolean; total_cards?: number; correct_cards?: number }>('/api/verb-training/answer', {
-      method: 'POST',
-      body: {
-        user_verb_card_id: card.value.user_verb_card_id,
-        ...body,
-      },
-    })
-    verbFeedback.value = {
-      is_correct: !!data.is_correct,
-      chosen_option: data.chosen_option ?? '',
-      correct_answer: data.correct_answer ?? '',
-      delay_seconds: data.delay_seconds,
-    }
-    if (data.is_correct) {
-      playSuccess()
-      encouragingPhrase.value = pickRandom(phraseList('trainingFeedback.encouragingPhrases')) || t('verbTraining.correct')
-    } else {
-      playFail()
-      disappointingPhrase.value = pickRandom(phraseList('trainingFeedback.disappointingPhrases')) || t('verbTraining.incorrect', { expected: data.correct_answer })
-    }
-
-    const advance = async () => {
-      verbFeedback.value = null
-      encouragingPhrase.value = ''
-      disappointingPhrase.value = ''
-      typedAnswer.value = ''
-      clearAll()
-      if (!data.next) {
-        finished.value = true
-        trainingStats.value = {
-          totalCards: data.total_cards || card.value?.total_cards || 0,
-          correctCards: data.correct_cards || 0,
-        }
-        await loadUpcomingVerbCards()
-        card.value = null
-        return
-      }
-      card.value = await apiClient.request<VerbCard>('/api/verb-training/current')
-    }
-
-    if (data.is_correct) {
-      await new Promise((r) => setTimeout(r, 1000))
-      await advance()
-    } else {
-      runWrongAnswerDelay(data.delay_seconds ?? 0, () => {
-        void advance()
-      })
-    }
-  } catch (e) {
-    console.error(e)
-    verbFeedback.value = null
-  } finally {
-    answeringLocal.value = false
-  }
-}
-
-const submitAnswer = (option: string) => {
-  void postAnswer({ answer: option })
-}
-
-const submitTyped = () => {
-  if (!typedAnswer.value) return
-  void postAnswer({ answer: typedAnswer.value })
-}
-
-const submitSkip = () => {
-  void postAnswer({ skip: true })
-}
-
-function subjectPronoun(person: string, number: string): string {
-  const p = String(person || '').trim()
-  const n = String(number || '').trim().toLowerCase()
-  if (p === '1' && n === 'singular') return 'yo'
-  if (p === '2' && n === 'singular') return 'tú'
-  if (p === '3' && n === 'singular') return 'él/ella/usted'
-  if (p === '1' && n === 'plural') return 'nosotros'
-  if (p === '2' && n === 'plural') return 'vosotros/ustedes'
-  if (p === '3' && n === 'plural') return 'ellos/ellas/ustedes'
-  return `${person}/${number}`
-}
-
-async function openWordInfo() {
-  const c = card.value
-  if (!c) return
-  const lemmaHint = (
-    (c.prompt as { lemma?: string } | undefined)?.lemma ||
-    c.lemma ||
-    ''
-  ).trim()
-  showWordInfoPopup.value = true
-  wordInfoLoading.value = true
-  wordInfoError.value = ''
-  wordInfoRows.value = []
-  wordInfoLemma.value = ''
-  try {
-    if (lemmaHint) {
-      const resp = await apiClient.request<{ forms?: VerbFormRow[] }>(
-        `/api/verb-training/forms-by-lemma?lemma=${encodeURIComponent(lemmaHint)}`
-      )
-      wordInfoRows.value = Array.isArray(resp?.forms) ? resp.forms : []
-      wordInfoLemma.value = wordInfoRows.value[0]?.lemma || lemmaHint
-      return
-    }
-    const wordCardID = c.word_card_id
-    if (!wordCardID) {
-      wordInfoError.value = 'No lemma for this card'
-      return
-    }
-    const resp = await apiClient.request<{ forms?: VerbFormRow[] }>(`/api/vocab/${wordCardID}/verb-forms`)
-    wordInfoRows.value = Array.isArray(resp?.forms) ? resp.forms : []
-    wordInfoLemma.value = wordInfoRows.value[0]?.lemma || ''
-  } catch (e: any) {
-    wordInfoError.value = e?.message || 'Failed to load forms'
-  } finally {
-    wordInfoLoading.value = false
-  }
-}
-
-function closeWordInfo() {
-  showWordInfoPopup.value = false
-}
+onMounted(async () => { await recover(); loading.value = false; if (!error.value && props.autoStart && session.value?.idle) await act('start') })
 </script>
 
 <style scoped>
-.verb-forms-root {
-  width: 100%;
-  max-width: 100%;
-  box-sizing: border-box;
-}
-
-.verb-forms-root--embedded {
-  padding: 0;
-}
-
-.verb-forms-loading {
-  padding: 28px 16px;
-  text-align: center;
-}
-
-.verb-forms-loading-text {
-  margin: 0;
-  font-size: 1rem;
-  color: var(--text-secondary);
-}
-
-.verb-forms-pre {
-  text-align: center;
-  padding: 24px 20px;
-}
-
-.verb-forms-pre__title {
-  margin: 0 0 10px;
-  font-size: 1.5rem;
-  font-weight: 700;
-  color: var(--text-primary);
-}
-
-.verb-forms-root--embedded .verb-forms-pre__title {
-  font-size: 1.15rem;
-}
-
-.verb-forms-pre__intro {
-  margin: 0 0 10px;
-  font-size: 0.95rem;
-  line-height: 1.45;
-  color: var(--text-secondary);
-}
-
-.verb-forms-pre__pool {
-  margin: 0 0 18px;
-  font-size: 0.92rem;
-  font-weight: 600;
-  color: var(--text-primary);
-}
-
-.verb-forms-pre__error {
-  margin: 14px 0 0;
-  color: #c62828;
-  font-size: 0.9rem;
-}
-
-.verb-forms-finished {
-  text-align: center;
-  padding: 20px 12px;
-}
-
-.verb-forms-finished p {
-  margin: 0 0 16px;
-}
-
-/* —— session card: mirror TrainingView (word training) —— */
-.verb-forms-training-card .training-progress {
-  margin-bottom: 20px;
-  text-align: center;
-}
-
-.verb-forms-training-card .verb-forms-question {
-  font-size: clamp(1.35rem, 3.2vw, 1.85rem);
-  line-height: 1.35;
-  margin: 24px 0 28px;
-  text-align: center;
-  font-weight: 600;
-  word-wrap: break-word;
-  overflow-wrap: break-word;
-  hyphens: auto;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
-}
-
-.verb-forms-ru-line {
-  margin: 14px 0 0;
-  padding: 0;
-  font-size: 0.95rem;
-  font-weight: 400;
-  line-height: 1.45;
-  text-align: center;
-  color: var(--text-secondary, #888);
-}
-
-.verb-forms-info-row {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 10px;
-}
-
-.verb-forms-info-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid var(--border-primary);
-  background: var(--bg-secondary);
-  color: var(--text-secondary);
-  border-radius: 999px;
-  min-width: 32px;
-  height: 32px;
-  padding: 0;
-  cursor: pointer;
-}
-
-.verb-forms-info-btn .verb-forms-info-icon.icon {
-  display: inline-flex;
-}
-
-.verb-forms-info-btn .verb-forms-info-icon.icon svg {
-  width: 18px;
-  height: 18px;
-}
-
-.verb-word-popup-overlay {
-  position: fixed;
-  inset: 0;
-  background: rgba(0, 0, 0, 0.45);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1200;
-}
-
-.verb-word-popup {
-  width: min(900px, 95vw);
-  max-height: 85vh;
-  overflow: auto;
-  background: var(--bg-primary);
-  border: 1px solid var(--border-primary);
-  border-radius: 12px;
-  padding: 16px;
-}
-
-.verb-word-popup__header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 12px;
-}
-
-.verb-word-popup__close {
-  border: 0;
-  background: transparent;
-  color: var(--text-secondary);
-  font-size: 1.4rem;
-  cursor: pointer;
-}
-
-.verb-word-popup__error {
-  color: #c62828;
-}
-
-.verb-word-popup__table-wrap {
-  overflow: auto;
-}
-
-.verb-word-popup__table {
-  width: 100%;
-  border-collapse: collapse;
-}
-
-.verb-word-popup__table th,
-.verb-word-popup__table td {
-  border-bottom: 1px solid var(--border-primary);
-  padding: 8px 10px;
-  text-align: left;
-}
-
-.type-block {
-  margin: 20px 0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-}
-.type-answer-row {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  margin-bottom: 12px;
-  width: 100%;
-}
-.type-input-inline {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  max-width: 320px;
-  border: 2px solid var(--border-color, #ddd);
-  border-radius: 10px;
-  background: var(--bg-primary);
-  overflow: hidden;
-  transition: border-color 0.2s ease;
-}
-.type-input-inline:focus-within {
-  border-color: var(--primary, #4a90d9);
-}
-.type-answer-label {
-  font-size: 0.95rem;
-  color: var(--text-secondary, #666);
-}
-.type-input {
-  flex: 1;
-  min-width: 0;
-  height: 44px;
-  padding: 0 12px 0 10px;
-  margin-bottom: 0;
-  font-size: 1.1rem;
-  border: none;
-  background: transparent;
-  color: var(--text-primary);
-  text-align: center;
-  box-sizing: border-box;
-}
-.type-input:focus {
-  outline: none;
-}
-.type-input::placeholder {
-  color: var(--text-tertiary, #999);
-}
-.type-submit-inline {
-  flex-shrink: 0;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 44px;
-  height: 44px;
-  align-self: stretch;
-  padding: 0;
-  border: none;
-  background: transparent;
-  cursor: pointer;
-  color: var(--text-secondary);
-  transition: color 0.2s ease, background 0.2s ease;
-}
-.type-submit-inline:hover:not(:disabled) {
-  color: var(--primary, #4a90d9);
-  background: var(--bg-secondary, rgba(0, 0, 0, 0.05));
-}
-.type-submit-inline:disabled {
-  opacity: 0.4;
-  cursor: default;
-}
-.type-submit-icon {
-  width: 22px;
-  height: 22px;
-}
-.type-actions-row {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 12px;
-  margin-top: 12px;
-}
-.type-skip {
-  margin: 0;
-}
-
-.options {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-  gap: 10px;
-  margin: 20px 0;
-}
-
-@media (min-width: 768px) {
-  .options {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-}
-
-.option-btn {
-  min-height: 60px;
-  font-size: 16px;
-  transition: all 0.3s ease;
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  padding: 12px 16px;
-  min-width: 0;
-  white-space: normal;
-  overflow-wrap: anywhere;
-  word-break: break-word;
-  background-color: var(--bg-secondary);
-  color: var(--text-primary);
-  border: 1px solid var(--border-primary);
-}
-
-[data-theme='dark'] .option-btn {
-  background-color: var(--bg-tertiary);
-  border-color: var(--border-secondary);
-}
-
-.option-btn:hover:not(.option-disabled) {
-  background-color: var(--bg-hover);
-  border-color: var(--border-focus);
-}
-
-.option-number {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 28px;
-  height: 28px;
-  background: rgba(0, 0, 0, 0.1);
-  border-radius: 50%;
-  font-weight: 600;
-  font-size: 14px;
-  flex-shrink: 0;
-}
-
-.option-btn.option-correct .option-number,
-.option-btn.option-incorrect .option-number {
-  background: rgba(255, 255, 255, 0.3);
-}
-
-.option-text {
-  flex: 1;
-  min-width: 0;
-  text-align: left;
-  overflow-wrap: anywhere;
-  word-break: break-word;
-}
-
-.option-btn.option-disabled {
-  cursor: not-allowed;
-  opacity: 0.7;
-  background-color: var(--bg-secondary);
-  border-color: var(--border-primary);
-}
-
-.option-btn.option-correct {
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-  color: white;
-  border: 1px solid #10b981;
-  box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-  animation: vft-correct-success 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
-  position: relative;
-  overflow: hidden;
-}
-
-.option-btn.option-correct::before {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: linear-gradient(
-    45deg,
-    transparent 30%,
-    rgba(255, 255, 255, 0.3) 50%,
-    transparent 70%
-  );
-  animation: vft-correct-shine 0.8s ease-out;
-  pointer-events: none;
-}
-
-.option-btn.option-incorrect {
-  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-  color: white;
-  border: 1px solid #ef4444;
-  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
-  animation: vft-incorrect-fail 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-  position: relative;
-}
-
-.option-btn.option-incorrect::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 100%;
-  height: 100%;
-  border-radius: 8px;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
-  transform: translate(-50%, -50%) scale(0);
-  animation: vft-incorrect-pulse 0.6s ease-out;
-  pointer-events: none;
-}
-
-@keyframes vft-incorrect-pulse {
-  0% {
-    transform: translate(-50%, -50%) scale(0);
-    opacity: 0.6;
-  }
-  50% {
-    transform: translate(-50%, -50%) scale(1.2);
-    opacity: 0.3;
-  }
-  100% {
-    transform: translate(-50%, -50%) scale(1.5);
-    opacity: 0;
-  }
-}
-
-@keyframes vft-correct-success {
-  0% {
-    transform: scale(1);
-    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-  }
-  30% {
-    transform: scale(1.15) rotate(2deg);
-    box-shadow: 0 8px 24px rgba(16, 185, 129, 0.5);
-  }
-  60% {
-    transform: scale(1.08) rotate(-1deg);
-    box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
-  }
-  100% {
-    transform: scale(1);
-    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-  }
-}
-
-@keyframes vft-correct-shine {
-  0% {
-    transform: translateX(-100%) translateY(-100%) rotate(45deg);
-  }
-  100% {
-    transform: translateX(100%) translateY(100%) rotate(45deg);
-  }
-}
-
-@keyframes vft-incorrect-fail {
-  0%,
-  100% {
-    transform: translateX(0) scale(1);
-  }
-  10% {
-    transform: translateX(-12px) scale(0.95) rotate(-3deg);
-  }
-  20% {
-    transform: translateX(12px) scale(0.95) rotate(3deg);
-  }
-  30% {
-    transform: translateX(-10px) scale(0.97) rotate(-2deg);
-  }
-  40% {
-    transform: translateX(10px) scale(0.97) rotate(2deg);
-  }
-  50% {
-    transform: translateX(-8px) scale(0.98) rotate(-1deg);
-  }
-  60% {
-    transform: translateX(8px) scale(0.98) rotate(1deg);
-  }
-  70% {
-    transform: translateX(-4px) scale(0.99);
-  }
-  80% {
-    transform: translateX(4px) scale(0.99);
-  }
-  90% {
-    transform: translateX(-2px) scale(1);
-  }
-}
-
-.feedback-section {
-  margin-top: 30px;
-  text-align: center;
-}
-
-.feedback-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 12px;
-  padding: 16px 32px;
-  border-radius: 12px;
-  font-size: 20px;
-  font-weight: 600;
-  margin-bottom: 20px;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-  position: relative;
-  overflow: hidden;
-}
-
-.feedback-success {
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-  color: white;
-  animation: vft-feedback-success-appear 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-.feedback-success::before {
-  content: '';
-  position: absolute;
-  top: -50%;
-  left: -50%;
-  width: 200%;
-  height: 200%;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.3) 0%, transparent 70%);
-  animation: vft-feedback-success-glow 1.5s ease-out;
-  pointer-events: none;
-}
-
-.feedback-error {
-  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-  color: white;
-  animation: vft-feedback-error-appear 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-}
-
-.feedback-error::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 100%;
-  height: 100%;
-  border-radius: 12px;
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.2) 0%, transparent 70%);
-  transform: translate(-50%, -50%) scale(0);
-  animation: vft-feedback-error-pulse 0.6s ease-out;
-  pointer-events: none;
-}
-
-@keyframes vft-feedback-error-pulse {
-  0% {
-    transform: translate(-50%, -50%) scale(0);
-    opacity: 0.8;
-  }
-  50% {
-    transform: translate(-50%, -50%) scale(1.3);
-    opacity: 0.4;
-  }
-  100% {
-    transform: translate(-50%, -50%) scale(1.6);
-    opacity: 0;
-  }
-}
-
-@keyframes vft-feedback-success-appear {
-  0% {
-    opacity: 0;
-    transform: scale(0.3) translateY(-30px) rotate(-10deg);
-    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-  }
-  50% {
-    transform: scale(1.1) translateY(0) rotate(5deg);
-    box-shadow: 0 12px 32px rgba(16, 185, 129, 0.5);
-  }
-  70% {
-    transform: scale(0.95) translateY(0) rotate(-2deg);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1) translateY(0) rotate(0deg);
-    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
-  }
-}
-
-@keyframes vft-feedback-success-glow {
-  0% {
-    transform: translate(-50%, -50%) scale(0);
-    opacity: 1;
-  }
-  100% {
-    transform: translate(-50%, -50%) scale(1.5);
-    opacity: 0;
-  }
-}
-
-@keyframes vft-feedback-error-appear {
-  0% {
-    opacity: 0;
-    transform: scale(0.5) translateY(20px) rotate(10deg);
-    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
-  }
-  30% {
-    transform: scale(1.15) translateY(-5px) rotate(-5deg);
-    box-shadow: 0 8px 24px rgba(239, 68, 68, 0.5);
-  }
-  60% {
-    transform: scale(0.9) translateY(2px) rotate(2deg);
-  }
-  100% {
-    opacity: 1;
-    transform: scale(1) translateY(0) rotate(0deg);
-    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
-  }
-}
-
-.feedback-icon {
-  font-size: 28px;
-  font-weight: bold;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  width: 40px;
-  height: 40px;
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 50%;
-  flex-shrink: 0;
-  animation: vft-feedback-icon-spin 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-
-@keyframes vft-feedback-icon-spin {
-  0% {
-    transform: scale(0) rotate(-180deg);
-  }
-  60% {
-    transform: scale(1.3) rotate(10deg);
-  }
-  100% {
-    transform: scale(1) rotate(0deg);
-  }
-}
-
-.success-particles {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 0;
-  height: 0;
-  pointer-events: none;
-  z-index: 1;
-}
-
-.success-particle {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: var(--particle-size, 6px);
-  height: var(--particle-size, 6px);
-  background: radial-gradient(circle, rgba(255, 255, 255, 0.9) 0%, rgba(16, 185, 129, 0.8) 100%);
-  border-radius: 50%;
-  box-shadow: 0 0 6px rgba(16, 185, 129, 0.6);
-  animation: vft-success-particle-fly 1s ease-out var(--particle-delay, 0s) forwards;
-}
-
-@keyframes vft-success-particle-fly {
-  0% {
-    opacity: 1;
-    transform: translate(0, 0) scale(1);
-  }
-  100% {
-    opacity: 0;
-    transform: translate(var(--particle-end-x, 0), var(--particle-end-y, 0)) scale(0);
-  }
-}
-
-.feedback-text {
-  letter-spacing: 0.5px;
-}
-
-.error-progress-wrapper {
-  position: relative;
-  width: 40px;
-  height: 40px;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.error-progress-pulse {
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  border: 2px solid rgba(255, 255, 255, 0.6);
-  transform: translate(-50%, -50%);
-  animation: vft-error-progress-pulse 1s linear 0.5s forwards;
-  pointer-events: none;
-}
-
-@keyframes vft-error-progress-pulse {
-  0% {
-    transform: translate(-50%, -50%) scale(1);
-    opacity: 0.8;
-  }
-  50% {
-    transform: translate(-50%, -50%) scale(1.3);
-    opacity: 0.4;
-  }
-  100% {
-    transform: translate(-50%, -50%) scale(1.6);
-    opacity: 0;
-  }
-}
-
-.error-progress-ring {
-  position: absolute;
-  width: 40px;
-  height: 40px;
-  transform: rotate(-90deg);
-}
-
-.error-progress-circle-bg {
-  opacity: 0.3;
-}
-
-.error-progress-circle {
-  transition: stroke-dashoffset 0.1s linear;
-  stroke-linecap: round;
-}
-
-.error-icon-svg {
-  position: relative;
-  z-index: 1;
-  color: white;
-  flex-shrink: 0;
-}
+.verb-practice { max-width: 620px; margin: 0 auto; padding: 20px; border-radius: 24px; background: var(--lg-surface, var(--card-bg, #fff9ed)); color: var(--lg-text, inherit); }
+.practice-progress { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; font-size: .9rem; }
+progress { width: 100%; height: 6px; border: 0; border-radius: 8px; overflow: hidden; accent-color: var(--salvia, #52754a); background: var(--surface-3); }
+progress::-webkit-progress-bar { background: var(--surface-3); }
+progress::-webkit-progress-value { background: var(--salvia, #52754a); border-radius: 8px; }
+.practice-tense { margin-top: 12px; }
+.practice-instruction { margin-bottom: 12px; }
+.practice-feedback p + p { margin-top: 10px; }
+.practice-tense, .practice-instruction, .practice-assisted { font-size: .9rem; opacity: .75; }
+.practice-lemma { margin: 20px 0 12px; }
+.practice-question { font: inherit; font-size: clamp(1.3rem, 5vw, 1.75rem); font-weight: 650; line-height: 1.4; margin: 0 0 12px; overflow-wrap: anywhere; }
+.practice-question:focus { outline: none; }
+.practice-options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.practice-option { min-height: 54px; padding: 14px 10px; border: 1px solid var(--border-green, currentColor); border-radius: 16px; background: transparent; color: inherit; font: inherit; font-weight: 600; overflow-wrap: anywhere; cursor: pointer; }
+.practice-option:disabled { cursor: default; opacity: .8; }
+.practice-option.correct { background: #deedd8; color: #24431c; border-color: #52754a; }
+.practice-option.incorrect { background: #f9e0dc; color: #792f27; border-color: #b75145; }
+.practice-help-actions { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 10px; margin-top: 24px; padding-top: 18px; border-top: 1px solid var(--border, #8883); }
+.practice-tool, .practice-skip { display: flex; align-items: center; justify-content: center; gap: 9px; min-height: 50px; padding: 10px 12px; border: 1px solid var(--border-green, #52754a40); border-radius: 16px; background: var(--surface-2, #fff4e2); color: var(--text, inherit); font: inherit; font-size: .9rem; font-weight: 650; line-height: 1.25; text-align: center; cursor: pointer; transition: background .15s, border-color .15s, transform .15s; }
+.practice-tool-icon { display: grid; place-items: center; flex-shrink: 0; width: 30px; height: 30px; border-radius: 10px; background: var(--card-bg, #fff9ed); color: var(--salvia, #52754a); }
+:global([data-theme="dark"]) .practice-tool-icon { color: var(--hoja, #7fae6a); }
+.practice-tool--hint { border-color: color-mix(in srgb, var(--dorado, #d9a83f) 45%, transparent); }
+.practice-tool--hint .practice-tool-icon { color: var(--dorado, #a37a29); }
+.practice-tool[aria-expanded="true"] { background: var(--surface-3, #f5e9d4); }
+.practice-skip { grid-column: 1 / -1; min-height: 44px; background: transparent; border-color: var(--border, #8883); color: var(--subtext, inherit); font-weight: 550; }
+.practice-tool svg, .practice-skip svg { flex-shrink: 0; }
+.feedback-forms { width: 100%; margin-top: 14px; }
+.practice-tool:disabled, .practice-skip:disabled { opacity: .55; cursor: default; }
+@media (hover: hover) { .practice-tool:not(:disabled):hover, .practice-skip:not(:disabled):hover { background: var(--surface-3, #f5e9d4); border-color: var(--salvia, #52754a); } }
+.practice-tool:not(:disabled):active, .practice-skip:not(:disabled):active { transform: translateY(1px); }
+@media (prefers-reduced-motion: reduce) { .practice-tool, .practice-skip { transition: none; } }
+.practice-error button { padding: 10px 0; background: transparent; border: 0; color: inherit; text-decoration: underline; font: inherit; cursor: pointer; min-height: 44px; }
+.practice-hint, .practice-feedback { margin-top: 16px; padding: 16px; border: 1px solid currentColor; border-radius: 16px; line-height: 1.5; }
+.feedback-title { display: flex; align-items: center; gap: 8px; font-weight: 600; margin-top: 0; }
+.feedback-title svg { width: 20px; height: 20px; }
+.practice-answer { font-size: 1.5rem; font-weight: 700; margin: 8px 0; }
+.practice-next { position: sticky; bottom: calc(88px + env(safe-area-inset-bottom)); padding-top: 12px; background: var(--card-bg); }
+.practice-next button { width: 100%; min-height: 48px; }
+.practice-input { display: grid; gap: 10px; }
+.practice-input input { min-height: 48px; padding: 10px; border: 1px solid currentColor; border-radius: 12px; font: inherit; color: inherit; background: transparent; width: 100%; box-sizing: border-box; }
+.result-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.result-grid div { padding: 12px; border: 1px solid currentColor; border-radius: 12px; }
+.result-grid dd { margin: 8px 0 0; font-size: 1.5rem; font-weight: 650; }
+.practice-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+.practice-error { padding: 12px; border: 1px solid #b75145; border-radius: 12px; }
+.forms-overlay { position: fixed; inset: 0; z-index: 1100; background: #0008; display: grid; place-items: center; padding: 16px; }
+.forms-dialog { width: min(100%, 520px); max-height: 80dvh; overflow-y: auto; padding: 20px; box-sizing: border-box; border-radius: 20px; background: var(--lg-surface, var(--card-bg, #fff9ed)); }
+.forms-dialog header { display: flex; justify-content: space-between; align-items: center; }
+.forms-dialog header button { font-size: 1.6rem; border: 0; background: transparent; color: inherit; width: 44px; height: 44px; }
+.forms-dialog label { display: block; }
+.forms-dialog select { width: 100%; padding: 12px; margin: 8px 0 16px; font: inherit; color: inherit; background: transparent; }
+table { width: 100%; border-collapse: collapse; } th, td { padding: 12px 4px; text-align: left; border-bottom: 1px solid #8885; }
+button:focus-visible, input:focus-visible, select:focus-visible { outline: 2px solid var(--lg-primary, #52754a); outline-offset: 3px; }
+@media (max-width: 390px) { .verb-practice { padding: 16px; } }
 </style>

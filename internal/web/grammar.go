@@ -605,6 +605,7 @@ func (r *Router) handleLearningGrammarSubmitTest(w http.ResponseWriter, req *htt
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
+	r.BumpUserCache(userID) // Passed chapters can unlock new verb-practice tenses.
 	r.recordLinglowGrammarTestAttempt(req, userID, request.Scope, request.ScopeID, "", request.Answers, result)
 
 	w.Header().Set("Content-Type", "application/json")
