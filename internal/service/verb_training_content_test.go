@@ -78,3 +78,43 @@ func TestPracticeContent_CompoundAndSpellingRules(t *testing.T) {
 		t.Fatal(d)
 	}
 }
+
+func TestPracticeContent_ContextEligibility(t *testing.T) {
+	for _, lemma := range []string{"hablar", "haber", "soler"} {
+		row := repository.LinkedVerbFormRow{Lemma: lemma, Mood: "indicativo", Tense: "pretérito", Person: "1", Number: "singular"}
+		for _, c := range artifactCards(lemma) {
+			if c.Mood == row.Mood && verbtraining.CanonicalTense(c.Tense) == row.Tense && c.Person == row.Person && c.Number == row.Number {
+				row.SurfaceForm = c.SurfaceForm
+				break
+			}
+		}
+		p := map[string]interface{}{}
+		enrichVerbCard(row, p, nil)
+		if p["practice_eligible"] != (lemma == "hablar") {
+			t.Fatalf("%s: %v", lemma, p)
+		}
+	}
+}
+
+func TestPracticeContent_ContrastsUseOnlyAvailableForms(t *testing.T) {
+	card := repository.VerbQueueCard{UserVerbCardID: 42, PromptJSON: `{"lemma":"hablar","mood":"indicativo","tense":"presente","person":"1","number":"singular"}`, DistractorsJSON: `["hablo","hablas","habla","hablan"]`}
+	rows := []repository.LinkedVerbFormRow{}
+	for _, f := range []struct{ tense, form string }{{"presente", "hablo"}, {"pretérito", "hablé"}, {"imperfecto", "hablaba"}} {
+		rows = append(rows, repository.LinkedVerbFormRow{Lemma: "hablar", Mood: "indicativo", Tense: f.tense, Person: "1", Number: "singular", SurfaceForm: f.form})
+	}
+	contrastVerbOptions(&card, rows)
+	options := ParseStringJSONArray(card.DistractorsJSON)
+	for _, wanted := range []string{"hablo", "hablé", "hablaba"} {
+		if !strings.Contains(card.DistractorsJSON, `"`+wanted+`"`) {
+			t.Fatal(options)
+		}
+	}
+	if strings.Contains(card.DistractorsJSON, "hablaré") || len(options) != 4 {
+		t.Fatal(options)
+	}
+	card.DistractorsJSON = `["hablo","hablas","habla","hablan"]`
+	contrastVerbOptions(&card, rows[:1])
+	if strings.Contains(card.DistractorsJSON, "hablé") {
+		t.Fatal("locked tense leaked")
+	}
+}

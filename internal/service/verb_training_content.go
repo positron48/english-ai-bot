@@ -6,6 +6,7 @@ import (
 	"regexp"
 	"strings"
 	"sync"
+	"unicode/utf8"
 
 	"tgbot-skeleton/internal/grammartrainingpack"
 	"tgbot-skeleton/internal/repository"
@@ -48,8 +49,9 @@ func enrichVerbCard(row repository.LinkedVerbFormRow, prompt map[string]interfac
 		prompt["example_translation"] = ""
 	}
 	question, _ := prompt["question"].(string)
-	prompt["question"] = MaskClozeVerbSurfaceInQuestion(question, row.SurfaceForm)
-	prompt["content_version"] = 2
+	prompt["question"] = strings.TrimSpace(strings.TrimSuffix(MaskClozeVerbSurfaceInQuestion(question, row.SurfaceForm), "("+row.Lemma+")"))
+	prompt["content_version"] = 3
+	prompt["practice_eligible"] = contextualVerbExample(row, prompt)
 	prompt["tense"] = verbtraining.CanonicalTense(row.Tense)
 	rule := spanishverbs.FormRule(row.Lemma, row.Mood, row.Tense, row.Person, row.Number, row.SurfaceForm)
 	prompt["rule"] = rule
@@ -60,4 +62,81 @@ func enrichVerbCard(row repository.LinkedVerbFormRow, prompt map[string]interfac
 		}
 	}
 	return RealVerbFormOptions(row.SurfaceForm, wrong, stableVerbTrainingSeed(row))
+}
+
+// Rare literary paradigms and metalinguistic prompts do not teach tense from context.
+// Haber is practiced as an auxiliary in compound forms of the other verbs.
+func contextualVerbExample(row repository.LinkedVerbFormRow, prompt map[string]interface{}) bool {
+	q, _ := prompt["question"].(string)
+	translation, _ := prompt["example_translation"].(string)
+	tense := verbtraining.CanonicalTense(row.Tense)
+	if row.Lemma == "haber" || tense == "pretérito anterior" || (row.Mood == "subjuntivo" && (tense == "futuro" || tense == "futuro perfecto")) {
+		return false
+	}
+	if row.Lemma == "soler" && tense != "presente" && tense != "imperfecto" {
+		return false
+	}
+	if row.Lemma == "consistir" && row.Person != "3" {
+		return false
+	}
+	lower := strings.ToLower(q)
+	for _, marker := range []string{"metaling", "pronombre", "jurídic", "arcaic", "se lee:", "ejemplo gramatical"} {
+		if strings.Contains(lower, marker) {
+			return false
+		}
+	}
+	return translation != "" && utf8.RuneCountInString(q) <= 110 && strings.Count(q, "____") == 1
+}
+
+// Build per-session options: stored training cards are shared by users, whereas
+// unlocked scopes are personal. Different tenses keep the same grammatical person.
+func contrastVerbOptions(card *repository.VerbQueueCard, rows []repository.LinkedVerbFormRow) {
+	var p struct{ Lemma, Mood, Tense, Person, Number string }
+	if json.Unmarshal([]byte(card.PromptJSON), &p) != nil {
+		return
+	}
+	// Translation supplies temporal meaning and past aspect. Compound and
+	// conditional/subjunctive alternatives can be equivalent, so stay separate.
+	family := map[string]bool{"presente": true, "pretérito": true, "futuro": true, "imperfecto": true}
+	if p.Mood != "indicativo" || !family[verbtraining.CanonicalTense(p.Tense)] {
+		return
+	}
+	var correct string
+	for _, row := range rows {
+		if row.Lemma == p.Lemma && row.Mood == p.Mood && row.Person == p.Person && row.Number == p.Number && verbtraining.CanonicalTense(row.Tense) == verbtraining.CanonicalTense(p.Tense) {
+			correct = row.SurfaceForm
+			break
+		}
+	}
+	if correct == "" {
+		return
+	}
+	different := []string{}
+	for _, row := range rows {
+		// Present can also express a scheduled future (mañana hablo).
+		if verbtraining.CanonicalTense(p.Tense) == "futuro" && verbtraining.CanonicalTense(row.Tense) == "presente" {
+			continue
+		}
+		if row.Lemma == p.Lemma && row.Mood == p.Mood && row.Person == p.Person && row.Number == p.Number && family[verbtraining.CanonicalTense(row.Tense)] && verbtraining.CanonicalTense(row.Tense) != verbtraining.CanonicalTense(p.Tense) && !spanishverbs.AcceptedVerbAnswer(correct, row.SurfaceForm, p.Mood, p.Tense) {
+			different = append(different, row.SurfaceForm)
+		}
+	}
+	// Select the cross-tense contrasts first, then fill with same-tense persons.
+	chosen := RealVerbFormOptions(correct, different, card.UserVerbCardID)
+	for _, option := range ParseStringJSONArray(card.DistractorsJSON) {
+		if len(chosen) >= VerbChoiceOptionCount {
+			break
+		}
+		found := false
+		for _, existing := range chosen {
+			if existing == option {
+				found = true
+			}
+		}
+		if !found {
+			chosen = append(chosen, option)
+		}
+	}
+	raw, _ := json.Marshal(RealVerbFormOptions(correct, chosen, card.UserVerbCardID))
+	card.DistractorsJSON = string(raw)
 }

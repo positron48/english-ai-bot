@@ -72,8 +72,10 @@ func (r *VerbFormsRepository) CreateVerbPractice(userID int64, state *VerbPracti
 		var active VerbPractice
 		if json.Unmarshal([]byte(existing), &active) == nil && !active.Completed && active.Index < len(active.Queue) {
 			var prompt struct {
-				Tense string `json:"tense"`
-				Mood  string `json:"mood"`
+				ContentVersion int    `json:"content_version"`
+				Eligible       bool   `json:"practice_eligible"`
+				Tense          string `json:"tense"`
+				Mood           string `json:"mood"`
 			}
 			_ = json.Unmarshal([]byte(active.Queue[active.Index].PromptJSON), &prompt)
 			permitted := false
@@ -82,7 +84,7 @@ func (r *VerbFormsRepository) CreateVerbPractice(userID int64, state *VerbPracti
 					permitted = true
 				}
 			}
-			if permitted {
+			if permitted && prompt.ContentVersion == 3 && prompt.Eligible {
 				// An already-created concurrent start wins. Callers resume this session.
 				*state = active
 				return tx.Commit()

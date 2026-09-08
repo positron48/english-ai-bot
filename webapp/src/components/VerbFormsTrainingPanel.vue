@@ -26,9 +26,9 @@
         <span v-if="session.retry">{{ t('verbPractice.repeat') }}</span>
         <progress :value="session.card_index - 1 + (session.feedback ? 1 : 0)" :max="session.total_cards" :aria-label="t('verbPractice.progress')" />
       </div>
-      <p class="practice-tense">{{ tenseLabel(session.prompt.tense) }} · {{ moodLabel(session.prompt.mood) }}</p>
       <p class="practice-lemma"><strong>{{ session.prompt.lemma }}</strong><span v-if="session.prompt.ru_gloss"> — {{ session.prompt.ru_gloss }}</span></p>
       <h2 ref="questionHeading" tabindex="-1" class="practice-question">{{ session.prompt.question }}</h2>
+      <p v-if="session.prompt.example_translation" class="practice-translation">{{ session.prompt.example_translation }}</p>
       <p v-if="!session.feedback" class="practice-instruction">{{ t(session.input_mode === 'typed' ? 'verbPractice.type' : 'verbPractice.choose') }}</p>
       <div v-if="session.input_mode === 'choice'" class="practice-options">
         <button v-for="option in session.options" :key="option" type="button" class="practice-option"
@@ -55,13 +55,14 @@
           </button>
         </div>
         <p v-if="session.assisted" class="practice-assisted">{{ t('verbPractice.helpUsed') }}</p>
-        <div v-if="showHint && session.prompt.rule" id="verb-practice-hint" class="practice-hint">{{ ruleText(session.prompt.rule) }}</div>
+        <div v-if="showHint && session.prompt.rule" id="verb-practice-hint" class="practice-hint"><strong>{{ tenseLabel(session.prompt.tense) }} · {{ moodLabel(session.prompt.mood) }}</strong><p>{{ ruleText(session.prompt.rule) }}</p></div>
       </template>
       <div v-else class="practice-feedback" role="status" aria-live="polite">
         <p class="feedback-title"><LgIcon :name="session.feedback.outcome === 'correct' ? 'check' : 'book-open'" />{{ t('verbPractice.' + session.feedback.outcome) }}</p>
         <p v-if="session.feedback.chosen_option && session.feedback.outcome === 'incorrect'">{{ t('verbPractice.yourAnswer') }}: {{ session.feedback.chosen_option }}</p>
         <p class="practice-answer">{{ session.feedback.correct_answer }}</p>
         <p v-if="session.feedback.accent_only">{{ t('verbPractice.accent') }}</p>
+        <p class="practice-tense">{{ tenseLabel(session.prompt.tense) }} · {{ moodLabel(session.prompt.mood) }}</p>
         <p>{{ ruleText(session.feedback.rule) }}</p>
         <p><strong>{{ session.feedback.sentence }}</strong><br><span v-if="session.feedback.translation">{{ session.feedback.translation }}</span></p>
         <p v-if="session.feedback.assisted">{{ t('verbPractice.helpUsed') }}</p>
@@ -97,7 +98,7 @@ const props = withDefaults(defineProps<{ embedded?: boolean; autoStart?: boolean
 const { t, te } = useI18n()
 interface Rule { id: string; regular: boolean; ending?: string; stem?: string; pattern?: string }
 interface Feedback { card_id: number; outcome: string; assisted: boolean; chosen_option: string; correct_answer: string; sentence: string; translation: string; lemma: string; tense: string; mood: string; person: string; number: string; rule: Rule | null; accent_only: boolean }
-interface Prompt { question: string; lemma: string; ru_gloss?: string; mood: string; tense: string; person: string; number: string; rule?: Rule }
+interface Prompt { question: string; example_translation?: string; lemma: string; ru_gloss?: string; mood: string; tense: string; person: string; number: string; rule?: Rule }
 interface Session { session_id: number; card_id?: number; card_index: number; total_cards: number; input_mode: string; options?: string[]; prompt?: Prompt; completed?: boolean; idle?: boolean; empty?: boolean; retry?: boolean; assisted?: boolean; feedback?: Feedback; results?: Feedback[] }
 interface Form { mood: string; tense: string; person: string; number: string; surface_form: string }
 const session = ref<Session | null>(null)
@@ -173,6 +174,8 @@ onMounted(async () => { await recover(); loading.value = false; if (!error.value
 </script>
 
 <style scoped>
+.practice-translation { color: var(--text-secondary); font-size: 1rem; line-height: 1.5; margin: 0 0 1rem; }
+.practice-hint p { margin-bottom: 0; }
 .verb-practice { max-width: 620px; margin: 0 auto; padding: 20px; border-radius: 24px; background: var(--lg-surface, var(--card-bg, #fff9ed)); color: var(--lg-text, inherit); }
 .practice-progress { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; font-size: .9rem; }
 progress { width: 100%; height: 6px; border: 0; border-radius: 8px; overflow: hidden; accent-color: var(--salvia, #52754a); background: var(--surface-3); }

@@ -17,6 +17,9 @@ import (
 func verbScopeAllowed(item repository.VerbQueueCard, scopes []string) bool {
 	var p map[string]interface{}
 	_ = json.Unmarshal([]byte(item.PromptJSON), &p)
+	if p["content_version"] != float64(3) || p["practice_eligible"] != true {
+		return false
+	}
 	scope := verbtraining.CanonicalScope("es." + promptString(p, "tense") + "." + promptString(p, "mood"))
 	for _, s := range scopes {
 		if scope == verbtraining.CanonicalScope(s) {
@@ -233,13 +236,15 @@ func (r *Router) writeVerbPractice(w http.ResponseWriter, state *repository.Verb
 		item := state.Queue[state.Index]
 		var p map[string]interface{}
 		_ = json.Unmarshal([]byte(item.PromptJSON), &p)
-		// Whitelist task data; no expected_form, translation or completed sentence.
+		// Whitelist task data; translation is part of the task; the Spanish answer remains private.
 		prompt := map[string]interface{}{}
-		for _, key := range []string{"question", "lemma", "ru_gloss", "mood", "tense", "person", "number"} {
+		for _, key := range []string{"question", "lemma", "ru_gloss", "example_translation", "person", "number"} {
 			prompt[key] = p[key]
 		}
 		if state.Assisted || state.Feedback != nil {
 			prompt["rule"] = p["rule"]
+			prompt["tense"] = p["tense"]
+			prompt["mood"] = p["mood"]
 		}
 		options := service.ParseStringJSONArray(item.DistractorsJSON)
 		mode := item.InputMode

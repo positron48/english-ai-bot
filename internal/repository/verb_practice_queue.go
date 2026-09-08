@@ -40,7 +40,8 @@ func (r *VerbFormsRepository) GetPracticeQueue(userID int64, scopes []string, ma
  SELECT tc.word_card_id FROM user_cards uc JOIN training_cards tc ON tc.id=uc.training_card_id WHERE uc.user_id=?
  UNION SELECT word_card_id FROM user_word_knowledge WHERE user_id=? AND status='known'))
  AND (u.state='new' OR u.next_due_at IS NULL OR u.next_due_at<=?)
- AND c.prompt_json::jsonb->>'content_version'='2'
+ AND c.prompt_json::jsonb->>'content_version'='3'
+ AND c.prompt_json::jsonb->>'practice_eligible'='true'
  ORDER BY CASE WHEN u.state='learning' THEN 0 WHEN u.state='review' THEN 1 ELSE 2 END,
  COALESCE(array_position(ARRAY[`+freqSQL+`]::text[],LOWER(w.word)),1000),u.next_due_at NULLS FIRST,u.id LIMIT 3000`, args...)
 	if err != nil {

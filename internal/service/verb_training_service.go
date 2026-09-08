@@ -330,6 +330,13 @@ func (s *VerbTrainingService) PracticeQueue(userID int64, scopes []string) ([]re
 	if err != nil {
 		return nil, err
 	}
+	rows, err := s.repo.GetLinkedVerbFormsForUser(userID, scopes)
+	if err != nil {
+		return nil, err
+	}
+	for i := range queue {
+		contrastVerbOptions(&queue[i], rows)
+	}
 	shuffleSeed := time.Now().UnixNano() ^ userID ^ int64(len(queue)<<20)
 	ShuffleVerbQueue(queue, shuffleSeed)
 	queue = SpreadAdjacentDuplicateVerbPromptKeys(queue)

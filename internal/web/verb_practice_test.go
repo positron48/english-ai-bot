@@ -67,8 +67,11 @@ func TestVerbPractice_DurableFeedbackHelpRetryAndOwnership(t *testing.T) {
 		t.Fatalf("only present core cards expected: %v", state)
 	}
 	prompt := state["prompt"].(map[string]interface{})
-	if prompt["expected_form"] != nil || prompt["example_translation"] != nil || prompt["rule"] != nil {
+	if prompt["expected_form"] != nil || prompt["tense"] != nil || prompt["mood"] != nil || prompt["rule"] != nil {
 		t.Fatalf("answer leaked: %v", prompt)
+	}
+	if prompt["example_translation"] == nil || prompt["example_translation"] == "" {
+		t.Fatal("translation missing before answer")
 	}
 	sessionID := state["session_id"]
 	for index := 0; index < 2; index++ {
@@ -173,5 +176,21 @@ func TestVerbPractice_RuleMasteryRequiresDifferentVerbs(t *testing.T) {
 	rules, err = repo.MasteredVerbRules(user)
 	if err != nil || rules["regular.ar.2s"] {
 		t.Fatal("new mistake must reopen practice", err, rules)
+	}
+}
+
+func TestVerbPractice_RejectsStaleContent(t *testing.T) {
+	scopes := []string{"es.presente.indicativo"}
+	for _, tc := range []struct {
+		prompt string
+		want   bool
+	}{
+		{`{"tense":"presente","mood":"indicativo","content_version":2}`, false},
+		{`{"tense":"presente","mood":"indicativo","content_version":3,"practice_eligible":false}`, false},
+		{`{"tense":"presente","mood":"indicativo","content_version":3,"practice_eligible":true}`, true},
+	} {
+		if got := verbScopeAllowed(repository.VerbQueueCard{PromptJSON: tc.prompt}, scopes); got != tc.want {
+			t.Fatalf("%s: got %v", tc.prompt, got)
+		}
 	}
 }

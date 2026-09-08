@@ -5,13 +5,13 @@ import Panel from './VerbFormsTrainingPanel.vue'
 import { apiClient } from '../api/client'
 import ru from '../locales/ru.json'
 vi.mock('../api/client', () => ({ apiClient: { request: vi.fn() } }))
-const fixture = () => ({ session_id: 1, card_id: 8, card_index: 1, total_cards: 10, input_mode: 'choice', options: ['barréis','barres','barre','barren'], prompt: { lemma:'barrer',ru_gloss:'подметать',question:'Vosotros ____ el suelo cada mañana.',tense:'presente',mood:'indicativo',person:'2',number:'plural' },results:[] })
+const fixture = () => ({ session_id: 1, card_id: 8, card_index: 1, total_cards: 10, input_mode: 'choice', options: ['barréis','barres','barre','barren'], prompt: { lemma:'barrer',ru_gloss:'подметать',question:'Vosotros ____ el suelo cada mañana.',example_translation:'Вы подметаете пол каждое утро.',tense:'presente',mood:'indicativo',person:'2',number:'plural' },results:[] })
 async function setup() { const wrapper=mount(Panel,{global:{plugins:[createI18n({legacy:false,locale:'ru',messages:{ru}})]}});await flushPromises();return wrapper }
 describe('verb conjugation practice',()=>{
  beforeEach(()=>{vi.clearAllMocks();vi.mocked(apiClient.request).mockResolvedValue(fixture())})
  it('shows a compact question with no explanation until help or an answer',async()=>{
   const w=await setup();expect(w.findAll('.practice-option')).toHaveLength(4);expect(w.find('.practice-feedback').exists()).toBe(false);expect(w.find('.practice-hint').exists()).toBe(false)
-  expect(w.text()).toContain('barrer — подметать');expect(w.text()).not.toContain('Нейтральный пример');w.unmount()
+  expect(w.text()).toContain('Вы подметаете пол каждое утро.');expect(w.find('.practice-tense').exists()).toBe(false);expect(w.text()).toContain('barrer — подметать');expect(w.text()).not.toContain('Нейтральный пример');w.unmount()
  })
  it('keeps feedback visible and advances only on explicit Next',async()=>{
   const w=await setup();const result={...fixture(),feedback:{card_id:8,outcome:'incorrect',assisted:false,chosen_option:'barres',correct_answer:'barréis',sentence:'Vosotros barréis el suelo cada mañana.',translation:'Вы подметаете пол каждое утро.',rule:{regular:true,ending:'éis'},person:'2',number:'plural'}}
