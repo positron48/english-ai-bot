@@ -215,19 +215,21 @@ onMounted(async () => {
   await loadWordSet()
 })
 
-const loadWordSet = async () => {
-  loading.value = true
-  error.value = null
+const loadWordSet = async (background = false) => {
+  if (!background) {
+    loading.value = true
+    error.value = null
+  }
   try {
     const data: { word_set: WordSet; words: WordInfo[] } = 
       await apiClient.request(`/api/learning/words/sets/${setId}`)
     wordSet.value = data.word_set
     words.value = data.words || []
-  } catch (error: any) {
-    console.error('Failed to load word set:', error)
-    error.value = error.message || t('wordSets.loadFailed')
+  } catch (cause: any) {
+    console.error('Failed to load word set:', cause)
+    if (!background) error.value = cause.message || t('wordSets.loadFailed')
   } finally {
-    loading.value = false
+    if (!background) loading.value = false
   }
 }
 
@@ -362,9 +364,8 @@ const markLearn = async () => {
     }
     
     // Reload word set to update progress
-    await loadWordSet()
-    
     closeWordModal()
+    void loadWordSet(true)
   } catch (error: any) {
     console.error('Failed to add to learning:', error)
     await showAlert(error.message || t('wordSets.addLearningFailed'))

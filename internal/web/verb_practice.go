@@ -29,7 +29,7 @@ func verbScopeAllowed(item repository.VerbQueueCard, scopes []string) bool {
 func (r *Router) handleVerbPractice(w http.ResponseWriter, req *http.Request) {
 	userID := getUserIDFromContext(req.Context())
 	if userID == 0 {
-		http.Error(w, "Unauthorized", 401)
+		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		return
 	}
 	if !r.verbFormsEnabledForUser(req.Context(), userID) {
@@ -56,7 +56,7 @@ func (r *Router) handleVerbPractice(w http.ResponseWriter, req *http.Request) {
 		return
 	}
 	if req.Method != http.MethodPost {
-		http.Error(w, "Method not allowed", 405)
+		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
 	}
 	var body struct {
@@ -83,7 +83,7 @@ func (r *Router) handleVerbPractice(w http.ResponseWriter, req *http.Request) {
 		state := &repository.VerbPractice{Version: 2, Retry: action == "repeat"}
 		if state.Retry {
 			if previous == nil || !previous.Completed || previous.ID != body.SessionID {
-				http.Error(w, "Finish the session first", 409)
+				http.Error(w, "Finish the session first", http.StatusConflict)
 				return
 			}
 			wrong := map[int64]bool{}
@@ -210,7 +210,7 @@ func (r *Router) handleVerbPractice(w http.ResponseWriter, req *http.Request) {
 	})
 	if err != nil {
 		r.logger.Warn("verb practice transition failed")
-		http.Error(w, "Unable to update practice. Reload the current session.", 409)
+		http.Error(w, "Unable to update practice. Reload the current session.", http.StatusConflict)
 		return
 	}
 	r.BumpUserCache(userID)

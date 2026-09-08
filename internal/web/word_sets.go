@@ -654,6 +654,15 @@ func (r *Router) handleLearningWordsSetStudyLearn(w http.ResponseWriter, req *ht
 		return
 	}
 
+	started := time.Now()
+	var wordCardsDuration, verbCardsDuration time.Duration
+	defer func() {
+		if elapsed := time.Since(started); elapsed >= 500*time.Millisecond {
+			r.logger.Info("slow word set vocabulary addition", zap.Int64("word_card_id", requestData.WordCardID),
+				zap.Duration("duration", elapsed), zap.Duration("word_cards_duration", wordCardsDuration), zap.Duration("verb_cards_duration", verbCardsDuration))
+		}
+	}()
+
 	// Remove known status if exists
 	userWordKnowledgeRepo := repository.NewUserWordKnowledgeRepository(r.db, r.logger)
 	if err := userWordKnowledgeRepo.RemoveKnown(userID, requestData.WordCardID); err != nil {
@@ -670,7 +679,10 @@ func (r *Router) handleLearningWordsSetStudyLearn(w http.ResponseWriter, req *ht
 		)
 	}
 
-	r.ensureVerbFormUserCardsAfterVocab(userID)
+	wordCardsDuration = time.Since(started)
+	verbStarted := time.Now()
+	r.ensureVerbFormUserCardsAfterWord(req, userID, requestData.WordCardID)
+	verbCardsDuration = time.Since(verbStarted)
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)

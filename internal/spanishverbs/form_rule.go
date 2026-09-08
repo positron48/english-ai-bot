@@ -46,21 +46,24 @@ func FormRule(lemma, mood, tense, person, number, surface string) Rule {
 		stem = lemma[:len(lemma)-2]
 		switch tense {
 		case "presente":
-			if suffix == "ar" {
+			switch suffix {
+			case "ar":
 				ending = []string{"e", "es", "e", "emos", "éis", "en"}[index]
-			} else if suffix == "er" || suffix == "ir" {
+			case "er", "ir":
 				ending = []string{"a", "as", "a", "amos", "áis", "an"}[index]
 			}
 		case "imperfecto":
-			if suffix == "ar" {
+			switch suffix {
+			case "ar":
 				ending = []string{"ara", "aras", "ara", "áramos", "arais", "aran"}[index]
-			} else if suffix == "er" || suffix == "ir" {
+			case "er", "ir":
 				ending = []string{"iera", "ieras", "iera", "iéramos", "ierais", "ieran"}[index]
 			}
 		case "futuro":
-			if suffix == "ar" {
+			switch suffix {
+			case "ar":
 				ending = []string{"are", "ares", "are", "áremos", "areis", "aren"}[index]
-			} else if suffix == "er" || suffix == "ir" {
+			case "er", "ir":
 				ending = []string{"iere", "ieres", "iere", "iéremos", "iereis", "ieren"}[index]
 			}
 		}

@@ -332,6 +332,14 @@ func verbCoreSQL() string {
 }
 
 func (r *VerbFormsRepository) GetLinkedVerbFormsForUser(userID int64, scopes []string) ([]LinkedVerbFormRow, error) {
+	return r.getLinkedVerbForms(userID, 0, scopes)
+}
+
+func (r *VerbFormsRepository) GetLinkedVerbFormsForWord(userID, wordCardID int64, scopes []string) ([]LinkedVerbFormRow, error) {
+	return r.getLinkedVerbForms(userID, wordCardID, scopes)
+}
+
+func (r *VerbFormsRepository) getLinkedVerbForms(userID, wordCardID int64, scopes []string) ([]LinkedVerbFormRow, error) {
 	scopes = verbtraining.ExpandScopes(scopes)
 	if len(scopes) == 0 {
 		return nil, nil
@@ -353,7 +361,12 @@ func (r *VerbFormsRepository) GetLinkedVerbFormsForUser(userID int64, scopes []s
 	          UNION
 	          SELECT word_card_id FROM user_word_knowledge WHERE user_id=? AND status='known'
 	        )
-	      ) ORDER BY w.id, d.mood, d.tense, d.person, d.number`
+	      )`
+	if wordCardID > 0 {
+		q += ` AND w.id = ?`
+		args = append(args, wordCardID)
+	}
+	q += ` ORDER BY w.id, d.mood, d.tense, d.person, d.number`
 	rows, err := r.db.Query(q, args...)
 	if err != nil {
 		return nil, fmt.Errorf("get linked verb forms for user: %w", err)
@@ -427,7 +440,11 @@ func (r *VerbFormsRepository) UpsertVerbTrainingCard(card *models.VerbTrainingCa
 		answer_json=excluded.answer_json,
 		distractors_json=excluded.distractors_json,
 		example_id=excluded.example_id,
-		updated_at=CURRENT_TIMESTAMP`
+		updated_at=CURRENT_TIMESTAMP
+ WHERE (verb_training_cards.prompt_json, verb_training_cards.answer_json,
+        verb_training_cards.distractors_json, verb_training_cards.example_id)
+ IS DISTINCT FROM (excluded.prompt_json, excluded.answer_json,
+                   excluded.distractors_json, excluded.example_id)`
 	if _, err := r.db.Exec(q, card.WordCardID, card.VerbFormDictID, card.CardType, card.PromptJSON, card.AnswerJSON, card.DistractorsJSON, card.ExampleID); err != nil {
 		return 0, fmt.Errorf("upsert verb training card: %w", err)
 	}

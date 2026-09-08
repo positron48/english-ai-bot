@@ -122,6 +122,10 @@ func (s *VerbTrainingService) ensureTrainingCardsForUser(userID int64, scopes []
 	if err != nil {
 		return err
 	}
+	return s.ensureTrainingCardsForRows(rows)
+}
+
+func (s *VerbTrainingService) ensureTrainingCardsForRows(rows []repository.LinkedVerbFormRow) error {
 	if len(rows) == 0 {
 		return nil
 	}

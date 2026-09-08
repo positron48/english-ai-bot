@@ -105,9 +105,10 @@ func (r *VerbFormsRepository) GetPracticeQueue(userID int64, scopes []string, ma
 				continue
 			}
 			score := 100.0 - float64(c.rank)/100
-			if c.state == "learning" {
+			switch c.state {
+			case "learning":
 				score += 55
-			} else if c.state == "review" {
+			case "review":
 				score += 35
 			}
 			score -= float64(lemmas[c.lemma]*35 + rules[c.rule]*25 + scopeCounts[c.scope]*12)
