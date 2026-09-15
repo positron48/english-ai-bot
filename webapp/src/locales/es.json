@@ -1064,6 +1064,8 @@
     "unknownCount": "Sin responder",
     "dontKnow": "No lo sé",
     "hint": "Pista",
+    "showTranslation": "Mostrar traducción",
+    "hideTranslation": "Ocultar traducción",
     "allForms": "Todas las formas",
     "helpUsed": "Con ayuda: este intento no cuenta como respuesta independiente.",
     "correct": "Correcto",

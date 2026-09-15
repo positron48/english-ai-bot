@@ -17,7 +17,7 @@ import (
 func verbScopeAllowed(item repository.VerbQueueCard, scopes []string) bool {
 	var p map[string]interface{}
 	_ = json.Unmarshal([]byte(item.PromptJSON), &p)
-	if p["content_version"] != float64(3) || p["practice_eligible"] != true {
+	if p["content_version"] != float64(4) || p["practice_eligible"] != true {
 		return false
 	}
 	scope := verbtraining.CanonicalScope("es." + promptString(p, "tense") + "." + promptString(p, "mood"))

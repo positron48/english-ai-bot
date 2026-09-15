@@ -50,7 +50,7 @@ func enrichVerbCard(row repository.LinkedVerbFormRow, prompt map[string]interfac
 	}
 	question, _ := prompt["question"].(string)
 	prompt["question"] = strings.TrimSpace(strings.TrimSuffix(MaskClozeVerbSurfaceInQuestion(question, row.SurfaceForm), "("+row.Lemma+")"))
-	prompt["content_version"] = 3
+	prompt["content_version"] = 4
 	prompt["practice_eligible"] = contextualVerbExample(row, prompt)
 	prompt["tense"] = verbtraining.CanonicalTense(row.Tense)
 	rule := spanishverbs.FormRule(row.Lemma, row.Mood, row.Tense, row.Person, row.Number, row.SurfaceForm)
@@ -95,9 +95,13 @@ func contrastVerbOptions(card *repository.VerbQueueCard, rows []repository.Linke
 	if json.Unmarshal([]byte(card.PromptJSON), &p) != nil {
 		return
 	}
-	// Translation supplies temporal meaning and past aspect. Compound and
-	// conditional/subjunctive alternatives can be equivalent, so stay separate.
-	family := map[string]bool{"presente": true, "pretérito": true, "futuro": true, "imperfecto": true}
+	// Translation supplies temporal meaning and past aspect. Mix simple and
+	// compound indicative forms so the learner must identify the tense as well
+	// as the person. Only forms from the user's unlocked scopes are present in rows.
+	family := map[string]bool{
+		"presente": true, "pretérito": true, "imperfecto": true, "futuro": true, "condicional": true,
+		"pretérito perfecto": true, "pluscuamperfecto": true, "futuro perfecto": true, "condicional perfecto": true,
+	}
 	if p.Mood != "indicativo" || !family[verbtraining.CanonicalTense(p.Tense)] {
 		return
 	}
@@ -112,6 +116,7 @@ func contrastVerbOptions(card *repository.VerbQueueCard, rows []repository.Linke
 		return
 	}
 	different := []string{}
+	simple := []string{}
 	for _, row := range rows {
 		// Present can also express a scheduled future (mañana hablo).
 		if verbtraining.CanonicalTense(p.Tense) == "futuro" && verbtraining.CanonicalTense(row.Tense) == "presente" {
@@ -119,6 +124,24 @@ func contrastVerbOptions(card *repository.VerbQueueCard, rows []repository.Linke
 		}
 		if row.Lemma == p.Lemma && row.Mood == p.Mood && row.Person == p.Person && row.Number == p.Number && family[verbtraining.CanonicalTense(row.Tense)] && verbtraining.CanonicalTense(row.Tense) != verbtraining.CanonicalTense(p.Tense) && !spanishverbs.AcceptedVerbAnswer(correct, row.SurfaceForm, p.Mood, p.Tense) {
 			different = append(different, row.SurfaceForm)
+			if isSimpleIndicativeTense(row.Tense) {
+				simple = append(simple, row.SurfaceForm)
+			}
+		}
+	}
+	// A compound-tense question must contain at least one simple-tense contrast
+	// when the learner has one unlocked. Otherwise it degrades into choosing he/has/ha.
+	if !isSimpleIndicativeTense(p.Tense) && len(simple) > 0 {
+		preferred := simple[int(card.UserVerbCardID%int64(len(simple)))]
+		prioritized := []string{preferred}
+		for _, option := range different {
+			if option != preferred {
+				prioritized = append(prioritized, option)
+			}
+		}
+		different = prioritized
+		if len(different) > VerbChoiceOptionCount-1 {
+			different = different[:VerbChoiceOptionCount-1]
 		}
 	}
 	// Select the cross-tense contrasts first, then fill with same-tense persons.
@@ -139,4 +162,13 @@ func contrastVerbOptions(card *repository.VerbQueueCard, rows []repository.Linke
 	}
 	raw, _ := json.Marshal(RealVerbFormOptions(correct, chosen, card.UserVerbCardID))
 	card.DistractorsJSON = string(raw)
+}
+
+func isSimpleIndicativeTense(tense string) bool {
+	switch verbtraining.CanonicalTense(tense) {
+	case "presente", "pretérito", "imperfecto", "futuro", "condicional":
+		return true
+	default:
+		return false
+	}
 }

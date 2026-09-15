@@ -186,8 +186,9 @@ func TestVerbPractice_RejectsStaleContent(t *testing.T) {
 		want   bool
 	}{
 		{`{"tense":"presente","mood":"indicativo","content_version":2}`, false},
-		{`{"tense":"presente","mood":"indicativo","content_version":3,"practice_eligible":false}`, false},
-		{`{"tense":"presente","mood":"indicativo","content_version":3,"practice_eligible":true}`, true},
+		{`{"tense":"presente","mood":"indicativo","content_version":3,"practice_eligible":true}`, false},
+		{`{"tense":"presente","mood":"indicativo","content_version":4,"practice_eligible":false}`, false},
+		{`{"tense":"presente","mood":"indicativo","content_version":4,"practice_eligible":true}`, true},
 	} {
 		if got := verbScopeAllowed(repository.VerbQueueCard{PromptJSON: tc.prompt}, scopes); got != tc.want {
 			t.Fatalf("%s: got %v", tc.prompt, got)

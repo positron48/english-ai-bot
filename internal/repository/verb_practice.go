@@ -84,7 +84,7 @@ func (r *VerbFormsRepository) CreateVerbPractice(userID int64, state *VerbPracti
 					permitted = true
 				}
 			}
-			if permitted && prompt.ContentVersion == 3 && prompt.Eligible {
+			if permitted && prompt.ContentVersion == 4 && prompt.Eligible {
 				// An already-created concurrent start wins. Callers resume this session.
 				*state = active
 				return tx.Commit()

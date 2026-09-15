@@ -118,3 +118,24 @@ func TestPracticeContent_ContrastsUseOnlyAvailableForms(t *testing.T) {
 		t.Fatal("locked tense leaked")
 	}
 }
+
+func TestPracticeContent_CompoundTenseContrastsWithUnlockedSimpleTense(t *testing.T) {
+	card := repository.VerbQueueCard{
+		UserVerbCardID:  43,
+		PromptJSON:      `{"lemma":"hablar","mood":"indicativo","tense":"pretérito perfecto","person":"1","number":"singular"}`,
+		DistractorsJSON: `["he hablado","has hablado","ha hablado","hemos hablado"]`,
+	}
+	rows := []repository.LinkedVerbFormRow{
+		{Lemma: "hablar", Mood: "indicativo", Tense: "presente", Person: "1", Number: "singular", SurfaceForm: "hablo"},
+		{Lemma: "hablar", Mood: "indicativo", Tense: "pretérito", Person: "1", Number: "singular", SurfaceForm: "hablé"},
+		{Lemma: "hablar", Mood: "indicativo", Tense: "pretérito perfecto", Person: "1", Number: "singular", SurfaceForm: "he hablado"},
+		{Lemma: "hablar", Mood: "indicativo", Tense: "pluscuamperfecto", Person: "1", Number: "singular", SurfaceForm: "había hablado"},
+		{Lemma: "hablar", Mood: "indicativo", Tense: "futuro perfecto", Person: "1", Number: "singular", SurfaceForm: "habré hablado"},
+		{Lemma: "hablar", Mood: "indicativo", Tense: "condicional perfecto", Person: "1", Number: "singular", SurfaceForm: "habría hablado"},
+	}
+	contrastVerbOptions(&card, rows)
+	containsSimple := strings.Contains(card.DistractorsJSON, `"hablo"`) || strings.Contains(card.DistractorsJSON, `"hablé"`)
+	if !containsSimple || !strings.Contains(card.DistractorsJSON, `"he hablado"`) {
+		t.Fatal(ParseStringJSONArray(card.DistractorsJSON))
+	}
+}

@@ -26,9 +26,15 @@
         <span v-if="session.retry">{{ t('verbPractice.repeat') }}</span>
         <progress :value="session.card_index - 1 + (session.feedback ? 1 : 0)" :max="session.total_cards" :aria-label="t('verbPractice.progress')" />
       </div>
-      <p class="practice-lemma"><strong>{{ session.prompt.lemma }}</strong><span v-if="session.prompt.ru_gloss"> — {{ session.prompt.ru_gloss }}</span></p>
-      <h2 ref="questionHeading" tabindex="-1" class="practice-question">{{ session.prompt.question }}</h2>
-      <p v-if="session.prompt.example_translation" class="practice-translation">{{ session.prompt.example_translation }}</p>
+      <p class="practice-lemma"><strong><ClickableText :text="session.prompt.lemma" subtle-underline /></strong><span v-if="session.prompt.ru_gloss"> — {{ session.prompt.ru_gloss }}</span></p>
+      <h2 ref="questionHeading" tabindex="-1" class="practice-question"><ClickableText :text="session.prompt.question" subtle-underline /></h2>
+      <div v-if="currentTranslation" class="practice-translation-wrap">
+        <button type="button" class="practice-translation-toggle" :aria-expanded="showTranslation" aria-controls="verb-practice-translation" @click="showTranslation = !showTranslation">
+          {{ t(showTranslation ? 'verbPractice.hideTranslation' : 'verbPractice.showTranslation') }}
+          <LgIcon name="chevron-down" :s="16" aria-hidden="true" />
+        </button>
+        <p v-if="showTranslation" id="verb-practice-translation" class="practice-translation">{{ currentTranslation }}</p>
+      </div>
       <p v-if="!session.feedback" class="practice-instruction">{{ t(session.input_mode === 'typed' ? 'verbPractice.type' : 'verbPractice.choose') }}</p>
       <div v-if="session.input_mode === 'choice'" class="practice-options">
         <button v-for="option in session.options" :key="option" type="button" class="practice-option"
@@ -64,7 +70,7 @@
         <p v-if="session.feedback.accent_only">{{ t('verbPractice.accent') }}</p>
         <p class="practice-tense">{{ tenseLabel(session.prompt.tense) }} · {{ moodLabel(session.prompt.mood) }}</p>
         <p>{{ ruleText(session.feedback.rule) }}</p>
-        <p><strong>{{ session.feedback.sentence }}</strong><br><span v-if="session.feedback.translation">{{ session.feedback.translation }}</span></p>
+        <p v-if="session.feedback.sentence" class="practice-completed-sentence"><strong><ClickableText :text="session.feedback.sentence" subtle-underline /></strong></p>
         <p v-if="session.feedback.assisted">{{ t('verbPractice.helpUsed') }}</p>
         <button class="practice-tool feedback-forms" type="button" :disabled="busy" aria-haspopup="dialog" @click="openForms"><LgIcon name="book-open" :s="20" aria-hidden="true" /><span>{{ t('verbPractice.allForms') }}</span></button>
         <div class="practice-next"><button ref="nextButton" class="btn btn-primary" :disabled="busy" @click="advance">{{ t('verbPractice.next') }}</button></div>
@@ -92,6 +98,7 @@
 import { computed, nextTick, onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiClient } from '../api/client'
+import ClickableText from './ClickableText.vue'
 import LgIcon from './linglow/LgIcon.vue'
 
 const props = withDefaults(defineProps<{ embedded?: boolean; autoStart?: boolean; hidePageTitle?: boolean }>(), { embedded: true, autoStart: false, hidePageTitle: false })
@@ -102,11 +109,12 @@ interface Prompt { question: string; example_translation?: string; lemma: string
 interface Session { session_id: number; card_id?: number; card_index: number; total_cards: number; input_mode: string; options?: string[]; prompt?: Prompt; completed?: boolean; idle?: boolean; empty?: boolean; retry?: boolean; assisted?: boolean; feedback?: Feedback; results?: Feedback[] }
 interface Form { mood: string; tense: string; person: string; number: string; surface_form: string }
 const session = ref<Session | null>(null)
-const loading = ref(true), busy = ref(false), error = ref(''), typedAnswer = ref(''), showHint = ref(false)
+const loading = ref(true), busy = ref(false), error = ref(''), typedAnswer = ref(''), showHint = ref(false), showTranslation = ref(false)
 const showForms = ref(false), formsLoading = ref(false), formsError = ref(false), forms = ref<Form[]>([]), selectedScope = ref('')
 const nextButton = ref<HTMLButtonElement>(), questionHeading = ref<HTMLElement>(), formsDialog = ref<HTMLElement>()
 let previousFocus: HTMLElement | null = null
 const mistakes = computed(() => session.value?.results?.filter(r => r.outcome !== 'correct') || [])
+const currentTranslation = computed(() => session.value?.feedback?.translation || session.value?.prompt?.example_translation || '')
 const formGroups = computed(() => Array.from(new Map(forms.value.map(row => [scopeKey(row.mood, row.tense), { key: scopeKey(row.mood, row.tense), mood: row.mood, tense: row.tense }])).values()))
 const selectedForms = computed(() => {
   const slots = new Map<string, Form>()
@@ -137,7 +145,7 @@ async function act(action: string, extra: Record<string,unknown> = {}) {
   busy.value = true; error.value = ''
   try {
     session.value = await apiClient.request<Session>('/api/verb-training/v2/' + action, { method: 'POST', body: { session_id: session.value?.session_id, card_id: session.value?.card_id, ...extra } })
-    if (action === 'start' || action === 'repeat' || action === 'advance') { typedAnswer.value = ''; showHint.value = false }
+    if (action === 'start' || action === 'repeat' || action === 'advance') { typedAnswer.value = ''; showHint.value = false; showTranslation.value = false }
 
   } catch { error.value = t('verbPractice.networkError') }
   finally { busy.value = false; await nextTick(); if (session.value?.feedback) nextButton.value?.focus() }
@@ -174,7 +182,12 @@ onMounted(async () => { await recover(); loading.value = false; if (!error.value
 </script>
 
 <style scoped>
-.practice-translation { color: var(--text-secondary); font-size: 1rem; line-height: 1.5; margin: 0 0 1rem; }
+.practice-translation-wrap { margin: 0 0 1rem; }
+.practice-translation-toggle { display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 4px 0; border: 0; background: transparent; color: var(--subtext, inherit); font: inherit; font-size: .9rem; cursor: pointer; }
+.practice-translation-toggle svg { transition: transform .15s; }
+.practice-translation-toggle[aria-expanded="true"] svg { transform: rotate(180deg); }
+.practice-translation { color: var(--text-secondary, inherit); font-size: 1rem; line-height: 1.5; margin: 4px 0 0; }
+.practice-completed-sentence { font-size: 1.05rem; }
 .practice-hint p { margin-bottom: 0; }
 .verb-practice { max-width: 620px; margin: 0 auto; padding: 20px; border-radius: 24px; background: var(--lg-surface, var(--card-bg, #fff9ed)); color: var(--lg-text, inherit); }
 .practice-progress { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; font-size: .9rem; }

@@ -1103,6 +1103,8 @@
     "unknownCount": "Did not know",
     "dontKnow": "I don’t know",
     "hint": "Hint",
+    "showTranslation": "Show translation",
+    "hideTranslation": "Hide translation",
     "allForms": "All forms",
     "helpUsed": "With help: this attempt does not count as independent recall.",
     "correct": "Correct",

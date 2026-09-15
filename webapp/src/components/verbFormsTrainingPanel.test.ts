@@ -11,7 +11,10 @@ describe('verb conjugation practice',()=>{
  beforeEach(()=>{vi.clearAllMocks();vi.mocked(apiClient.request).mockResolvedValue(fixture())})
  it('shows a compact question with no explanation until help or an answer',async()=>{
   const w=await setup();expect(w.findAll('.practice-option')).toHaveLength(4);expect(w.find('.practice-feedback').exists()).toBe(false);expect(w.find('.practice-hint').exists()).toBe(false)
-  expect(w.text()).toContain('Вы подметаете пол каждое утро.');expect(w.find('.practice-tense').exists()).toBe(false);expect(w.text()).toContain('barrer — подметать');expect(w.text()).not.toContain('Нейтральный пример');w.unmount()
+  expect(w.text()).not.toContain('Вы подметаете пол каждое утро.');expect(w.find('.practice-tense').exists()).toBe(false);expect(w.text()).toContain('barrer — подметать');expect(w.text()).not.toContain('Нейтральный пример')
+  expect(w.findAll('.practice-question .ct-word').length).toBeGreaterThan(0)
+  await w.get('.practice-translation-toggle').trigger('click')
+  expect(w.text()).toContain('Вы подметаете пол каждое утро.');expect(apiClient.request).toHaveBeenCalledTimes(1);w.unmount()
  })
  it('keeps feedback visible and advances only on explicit Next',async()=>{
   const w=await setup();const result={...fixture(),feedback:{card_id:8,outcome:'incorrect',assisted:false,chosen_option:'barres',correct_answer:'barréis',sentence:'Vosotros barréis el suelo cada mañana.',translation:'Вы подметаете пол каждое утро.',rule:{regular:true,ending:'éis'},person:'2',number:'plural'}}
@@ -35,6 +38,14 @@ describe('verb conjugation practice',()=>{
   const w=await setup();vi.mocked(apiClient.request).mockResolvedValue({...fixture(),assisted:true,prompt:{...fixture().prompt,rule:{regular:true,ending:'éis'}}})
   const hint=w.findAll('.practice-help-actions button')[0];await hint.trigger('click');await flushPromises()
   expect(apiClient.request).toHaveBeenLastCalledWith('/api/verb-training/v2/help',expect.anything());expect(w.get('.practice-hint').text()).toContain('-éis');w.unmount()
+ })
+ it('opens the shared dictionary card from words without marking help',async()=>{
+  const w=await setup()
+  vi.mocked(apiClient.request).mockResolvedValueOnce({lemma:'vosotros',cards:[]})
+  await w.find('.practice-question .ct-word').trigger('click');await flushPromises()
+  expect(apiClient.request).toHaveBeenLastCalledWith(expect.stringContaining('/api/reading/word-lookup?lemma='))
+  expect(apiClient.request).not.toHaveBeenCalledWith('/api/verb-training/v2/help',expect.anything())
+  expect(document.body.querySelector('.ct-modal-overlay')).not.toBeNull();w.unmount()
  })
  it('opens the current tense in the reference table despite legacy tense names',async()=>{
   const state={...fixture(),prompt:{...fixture().prompt,tense:'imperfecto'}}
