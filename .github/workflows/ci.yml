@@ -245,7 +245,10 @@ jobs:
         java-version: '17'
 
     - name: Install Android SDK packages
-      run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
+      run: >-
+        "$ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager"
+        "platforms;android-35"
+        "build-tools;35.0.0"
 
     - name: Install webapp dependencies
       working-directory: ./webapp
