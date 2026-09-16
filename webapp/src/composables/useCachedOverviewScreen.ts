@@ -23,6 +23,7 @@ export function useCachedOverviewScreen<T>(options: CachedOverviewOptions<T>) {
   const error = ref('')
   const lastFetchedAt = ref<string | null>(null)
   let loadToken = 0
+  const loads = new Map<string, Promise<void>>()
 
   async function hydrateFromCache(): Promise<boolean> {
     const code = options.courseCode.value
@@ -98,9 +99,16 @@ export function useCachedOverviewScreen<T>(options: CachedOverviewOptions<T>) {
     }
   }
 
-  async function load(force = false): Promise<void> {
-    if (!force) await hydrateFromCache()
-    await refresh(force)
+  function load(force = false): Promise<void> {
+    const key = `${resolveUserScopeFromStorage()}:${options.courseCode.value}:${options.locale?.value || 'ru'}:${force}`
+    const existing = loads.get(key)
+    if (existing) return existing
+    const job = (async () => {
+      if (!force) await hydrateFromCache()
+      await refresh(force)
+    })().finally(() => loads.delete(key))
+    loads.set(key, job)
+    return job
   }
 
   function onRefreshEvent(event: Event) {
@@ -108,7 +116,7 @@ export function useCachedOverviewScreen<T>(options: CachedOverviewOptions<T>) {
     if (!detail) return
     if (detail.courseCode !== options.courseCode.value) return
     if (!detail.screens.includes(options.screenKey)) return
-    void refresh(true)
+    void load(true)
   }
 
   onMounted(() => {
@@ -117,6 +125,7 @@ export function useCachedOverviewScreen<T>(options: CachedOverviewOptions<T>) {
     }
   })
   onUnmounted(() => {
+    ++loadToken
     if (typeof window !== 'undefined') {
       window.removeEventListener('linglow-app-data-refresh', onRefreshEvent)
     }

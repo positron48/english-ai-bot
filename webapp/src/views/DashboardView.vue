@@ -235,7 +235,6 @@ import LgActivityIcon from '../components/linglow/LgActivityIcon.vue'
 import { useStats } from '../composables/useStats'
 import { useGrammarContinueChapter } from '../composables/useGrammarContinueChapter'
 import { useCachedOverviewScreen } from '../composables/useCachedOverviewScreen'
-import { refreshAppData, prefetchAppData } from '../composables/useAppDataRefresh'
 import { maybeRunOfflineAutoDownload } from '../composables/useOfflineAutoDownload'
 import { useLocale } from '../composables/useLocale'
 import { masteryStudyingPath } from '../utils/masteryDisplay'
@@ -404,23 +403,8 @@ const loadData = async (force = false) => {
 }
 
 const refreshData = async () => {
-  const code = currentCourseCode.value
-  if (!code) {
-    await loadData(true)
-    refreshStats()
-    return
-  }
-  try {
-    await refreshAppData({
-      courseCode: code,
-      locale: currentLocale.value,
-      reason: 'manual-refresh',
-    })
-    await loadData(true)
-    refreshStats()
-  } catch (error) {
-    console.error('Failed to refresh dashboard data:', error)
-  }
+  await loadData(true)
+  refreshStats()
 }
 
 // Grammar statistics computed properties
@@ -496,10 +480,6 @@ watch(isAuthenticated, (authenticated) => {
 onMounted(() => {
   if (isAuthenticated.value) {
     void maybeRunOfflineAutoDownload()
-    const code = currentCourseCode.value
-    if (code) {
-      void prefetchAppData(code, currentLocale.value)
-    }
   }
 })
 </script>

@@ -80,11 +80,6 @@ vi.mock('../composables/useGrammarContinueChapter', () => ({
   }),
 }))
 
-vi.mock('../composables/useAppDataRefresh', () => ({
-  refreshAppData: vi.fn().mockResolvedValue(undefined),
-  prefetchAppData: vi.fn().mockResolvedValue(undefined),
-}))
-
 vi.mock('../composables/useOfflineAutoDownload', () => ({
   maybeRunOfflineAutoDownload: vi.fn().mockResolvedValue(undefined),
 }))

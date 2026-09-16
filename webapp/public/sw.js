@@ -1,4 +1,4 @@
-const APP_SHELL_CACHE = 'qantrix-app-shell-v10'
+const APP_SHELL_CACHE = 'qantrix-app-shell-v11'
 const ASSET_MANIFEST_URL = '/app/asset-manifest.json'
 const APP_SHELL_URLS = ['/app', '/app/', '/app/manifest.webmanifest', '/telegram-web-app.js', '/favicon.svg']
 
@@ -11,13 +11,7 @@ const cacheAppShell = async () => {
   const cache = await caches.open(APP_SHELL_CACHE)
   await Promise.all(APP_SHELL_URLS.map((url) => cacheURL(cache, url).catch(() => undefined)))
 
-  const manifestResponse = await fetch(ASSET_MANIFEST_URL, { cache: 'no-store' }).catch(() => null)
-  if (!manifestResponse || !manifestResponse.ok) return
-
-  await cache.put(ASSET_MANIFEST_URL, manifestResponse.clone())
-  const manifest = await manifestResponse.json().catch(() => null)
-  const assets = Array.isArray(manifest?.assets) ? manifest.assets : []
-  await Promise.all(assets.map((url) => cacheURL(cache, url).catch(() => undefined)))
+  // Route chunks and media are cached on demand by the fetch handler.
 }
 
 self.addEventListener('install', (event) => {
@@ -29,7 +23,7 @@ self.addEventListener('activate', (event) => {
   event.waitUntil(
     caches.keys().then((keys) =>
       Promise.all(keys.filter((key) => key !== APP_SHELL_CACHE).map((key) => caches.delete(key)))
-    ).then(() => cacheAppShell()).catch(() => undefined)
+    ).catch(() => undefined)
   )
   self.clients.claim()
 })

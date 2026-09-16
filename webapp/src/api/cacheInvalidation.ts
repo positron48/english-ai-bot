@@ -14,7 +14,7 @@ const listeners = new Set<AppDataListener>()
 let activeCourseCode = ''
 let refreshHandler: ((screens: AppDataScreenKey[], courseCode: string, reason: string) => void) | null = null
 let debounceTimer: ReturnType<typeof setTimeout> | null = null
-const pendingScreens = new Set<AppDataScreenKey>()
+const pendingScreens = new Map<string, Set<AppDataScreenKey>>()
 
 export function setActiveCourseCodeForInvalidation(courseCode: string): void {
   activeCourseCode = courseCode
@@ -36,13 +36,17 @@ export function emitAppDataEvent(event: AppDataEvent, courseCode?: string, extra
   for (const listener of listeners) listener(event, tags, code)
   void markScreensDirty(code, tags, resolveUserScopeFromStorage(), getAppDataLocale())
   if (refreshHandler && typeof navigator !== 'undefined' && navigator.onLine !== false) {
-    for (const screen of screensForTags(tags)) pendingScreens.add(screen)
+    const courseScreens = pendingScreens.get(code) || new Set<AppDataScreenKey>()
+    for (const screen of screensForTags(tags)) courseScreens.add(screen)
+    pendingScreens.set(code, courseScreens)
     if (debounceTimer) clearTimeout(debounceTimer)
     debounceTimer = setTimeout(() => {
-      const screens = [...pendingScreens]
+      const pending = [...pendingScreens]
       pendingScreens.clear()
       debounceTimer = null
-      if (screens.length > 0) refreshHandler?.(screens, code, event)
+      for (const [course, screens] of pending) {
+        if (screens.size > 0) refreshHandler?.([...screens], course, event)
+      }
     }, 400)
   }
 }
