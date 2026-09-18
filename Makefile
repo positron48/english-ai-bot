@@ -225,7 +225,7 @@ llm-es: llm-words-es llm-cards-es
 	@echo "✅ Spanish LLM prompt regression tests completed"
 
 # Packages included in coverage (exclude cmd, integration tests and test-only helpers)
-COVER_PKGS := $(shell $(GO) list ./... | grep -v '/cmd/' | grep -v 'internal/integration/' | grep -v 'internal/testutil')
+COVER_PKGS := $(shell $(GO) list ./... | grep -v '/node_modules/' | grep -v '/cmd/' | grep -v 'internal/integration/' | grep -v 'internal/testutil')
 
 # Local test parallelism / cache knobs (CI is unaffected; it pins -p 3 -count=1 in ci.yml).
 #   make check P=3        -> match CI parallelism

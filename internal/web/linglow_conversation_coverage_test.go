@@ -49,10 +49,10 @@ func setupLinglowCovRouter(t *testing.T, telegramID int64, learning config.Learn
 func insertLinglowCovScenario(t *testing.T, conn *sql.DB, userID int64, courseCode, districtCode, scenarioCode string, opts ...func(*scenarioInsertOpts)) linglowCovFixture {
 	t.Helper()
 	o := scenarioInsertOpts{
-		npcName:    "Mara",
-		npcCode:    "mara_cov",
-		isQuest:    true,
-		maxTurns:   16,
+		npcName:     "Mara",
+		npcCode:     "mara_cov",
+		isQuest:     true,
+		maxTurns:    16,
 		tokenBudget: 6000,
 	}
 	for _, fn := range opts {
@@ -136,15 +136,15 @@ func insertLinglowCovScenario(t *testing.T, conn *sql.DB, userID int64, courseCo
 }
 
 type scenarioInsertOpts struct {
-	title             string
-	npcName           string
-	npcCode           string
-	isQuest           bool
-	maxTurns          int
-	tokenBudget       int
-	prerequisiteCode  string
-	npcImageURL       string
-	tasks             []struct {
+	title            string
+	npcName          string
+	npcCode          string
+	isQuest          bool
+	maxTurns         int
+	tokenBudget      int
+	prerequisiteCode string
+	npcImageURL      string
+	tasks            []struct {
 		code     string
 		order    int
 		required bool
@@ -443,7 +443,9 @@ func TestLinglowConversationCoverage_ScenariosHandler(t *testing.T) {
 	})
 
 	t.Run("nil repo", func(t *testing.T) {
-		r := *router
+		r := router
+		original := r.conversationRepo
+		t.Cleanup(func() { r.conversationRepo = original })
 		r.conversationRepo = nil
 		req := httptest.NewRequest(http.MethodGet, "/api/linglow/conversation/scenarios?district_code="+fxNext.districtCode, nil)
 		req = setUserIDInContext(req, userID)
@@ -592,7 +594,9 @@ func TestLinglowConversationCoverage_SessionsHandler(t *testing.T) {
 	})
 
 	t.Run("nil repo", func(t *testing.T) {
-		r := *router
+		r := router
+		original := r.conversationRepo
+		t.Cleanup(func() { r.conversationRepo = original })
 		r.conversationRepo = nil
 		body, _ := json.Marshal(map[string]string{"scenario_code": fxNext.scenarioCode})
 		req := httptest.NewRequest(http.MethodPost, "/api/linglow/conversation/sessions", bytes.NewReader(body))
@@ -682,7 +686,9 @@ func TestLinglowConversationCoverage_GenerateOpeningLine(t *testing.T) {
 	sess, _, _ := router.conversationRepo.StartSession(ctx, fx.userCourseID, fx.scenarioID)
 
 	t.Run("nil ai", func(t *testing.T) {
-		r := *router
+		r := router
+		original := r.aiService
+		t.Cleanup(func() { r.aiService = original })
 		r.aiService = nil
 		r.generateOpeningLine(ctx, fx.courseCode, "es", scenario, sess.ID)
 	})
@@ -909,7 +915,9 @@ func TestLinglowConversationCoverage_SessionByIDExtras(t *testing.T) {
 	})
 
 	t.Run("nil conversation repo", func(t *testing.T) {
-		r := *router
+		r := router
+		original := r.conversationRepo
+		t.Cleanup(func() { r.conversationRepo = original })
 		r.conversationRepo = nil
 		req := httptest.NewRequest(http.MethodGet, fmt.Sprintf("/api/linglow/conversation/sessions/%d", startResp.SessionID), nil)
 		req = setUserIDInContext(req, userID)

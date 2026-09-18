@@ -98,7 +98,7 @@
 import { computed, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
-import { courseClient, CourseMap, CourseMapLocation, CourseProgress, ReviewQueue } from '../api/courseClient'
+import { courseClient, CourseMap, CourseProgress, ReviewQueue } from '../api/courseClient'
 import { useCourse } from '../composables/useCourse'
 import { routeForLinglowItem } from '../utils/linglowNavigation'
 import LgChip from '../components/linglow/LgChip.vue'
@@ -130,7 +130,7 @@ const districtArt = (district: { metadata?: { image?: string } }, index: number)
 
 const { t } = useI18n()
 const router = useRouter()
-const { courses, currentCourseCode, ensureCourseLoaded, selectCourse: setCurrentCourse } = useCourse()
+const { currentCourseCode, ensureCourseLoaded } = useCourse()
 
 const openDistrict = (districtCode: string) => {
   router.push({
@@ -145,7 +145,6 @@ const reviewQueue = ref<ReviewQueue | null>(null)
 const progress = ref<CourseProgress | null>(null)
 const selectedCourseCode = ref('')
 const loading = ref(false)
-const selectingCourse = ref(false)
 const error = ref('')
 
 // keep local select in sync with global course state
@@ -154,11 +153,6 @@ watch(currentCourseCode, (code) => {
     selectedCourseCode.value = code
     loadCity()
   }
-})
-
-const itemTypes = computed(() => {
-  const totals = safeCourseMap.value?.totals.by_type || {}
-  return Object.entries(totals).sort((left, right) => right[1] - left[1])
 })
 
 const safeCourseMap = computed(() => {
@@ -186,14 +180,6 @@ const districtProgressByCode = computed(() => {
   return out
 })
 
-const locationProgressByCode = computed(() => {
-  const out: Record<string, NonNullable<CourseProgress['by_location']>[number]> = {}
-  for (const row of progress.value?.by_location || []) {
-    out[row.location_code] = row
-  }
-  return out
-})
-
 function formatType(type: string): string {
   return type.replace(/_/g, ' ')
 }
@@ -216,10 +202,6 @@ function districtSignal(code: string) {
   return districtProgressByCode.value[code] || emptySignal()
 }
 
-function locationSignal(code: string) {
-  return locationProgressByCode.value[code] || emptySignal()
-}
-
 function formatDate(value: string): string {
   try {
     return new Intl.DateTimeFormat(undefined, { month: 'short', day: 'numeric' }).format(new Date(value))
@@ -228,26 +210,8 @@ function formatDate(value: string): string {
   }
 }
 
-function locationTitle(type: string, fallback: string): string {
-  const key = `city.locationTypes.${type}`
-  const translated = t(key)
-  return translated === key ? fallback : translated
-}
-
-function visibleModules(location: CourseMapLocation) {
-  return safeModules(location).slice(0, 4)
-}
-
 function safeLocations(district: CourseMap['districts'][number]) {
   return Array.isArray(district.locations) ? district.locations : []
-}
-
-function safeModules(location: CourseMapLocation) {
-  return Array.isArray(location.modules) ? location.modules : []
-}
-
-function safeItems(module: CourseMapLocation['modules'][number]) {
-  return Array.isArray(module.items) ? module.items : []
 }
 
 async function loadCity() {
@@ -268,20 +232,6 @@ async function loadCity() {
     error.value = err?.message || t('common.networkError')
   } finally {
     loading.value = false
-  }
-}
-
-async function selectCourse() {
-  if (!selectedCourseCode.value) return
-  selectingCourse.value = true
-  error.value = ''
-  try {
-    await setCurrentCourse(selectedCourseCode.value)
-    await loadCity()
-  } catch (err: any) {
-    error.value = err?.message || t('common.networkError')
-  } finally {
-    selectingCourse.value = false
   }
 }
 

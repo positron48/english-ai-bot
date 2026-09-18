@@ -297,7 +297,7 @@ import { useStats } from '../composables/useStats'
 import { isEmbeddedAndroidApp } from '../utils/runtime'
 import { useAppUpdate } from '../composables/useAppUpdate'
 
-const { t, locale } = useI18n()
+const { t } = useI18n()
 const { currentLocale, setLocale } = useLocale()
 const availableLocales = AVAILABLE_LOCALES
 const { courses, currentCourse, currentCourseCode, selectCourse } = useCourse()
@@ -367,23 +367,7 @@ const hasOfflineData = computed(
   () => (grammarOffline.value?.downloadedChapters ?? 0) > 0 || (wordOffline.value?.downloadedCards ?? 0) > 0
 )
 const verbFormsProgressionIndex = ref(0)
-const verbProgressionSaved = ref(false)
 let trainingDelaysSavedTimeout: ReturnType<typeof setTimeout> | null = null
-let verbProgressionSavedTimeout: ReturnType<typeof setTimeout> | null = null
-
-const showVerbFormProgression = computed(
-  () =>
-    learning.value?.target_lang === 'es' &&
-    learning.value?.spanish_verb_forms_enabled === true &&
-    (learning.value?.spanish_verb_scope_ladder?.length ?? 0) > 0
-)
-
-const verbLadder = computed(() => learning.value?.spanish_verb_scope_ladder ?? [])
-
-const verbProgressionOptionLabel = (step: { label_ru: string; label_en: string }) => {
-  const label = locale.value === 'ru' ? step.label_ru : step.label_en
-  return t('settings.verbFormProgressionThrough', { label })
-}
 
 onMounted(async () => {
   await ensureLearningLoaded()
@@ -493,36 +477,6 @@ const loadTrainingDelaysSettings = async () => {
     }
   } catch (error) {
     console.error('Failed to load training delay settings:', error)
-  }
-}
-
-const handleVerbFormProgressionChange = async () => {
-  const ladderLen = learning.value?.spanish_verb_scope_ladder?.length ?? 0
-  if (ladderLen === 0) return
-  let idx = verbFormsProgressionIndex.value
-  if (idx < 0) idx = 0
-  if (idx >= ladderLen) idx = ladderLen - 1
-  verbFormsProgressionIndex.value = idx
-  try {
-    const data = await apiClient.request<SettingsResponse>('/api/settings/training', {
-      method: 'POST',
-      body: JSON.stringify({ verb_forms_progression_index: idx }),
-    })
-    mergeLearningFromSettings(data)
-    if (data.settings?.verb_forms_progression_index !== undefined) {
-      verbFormsProgressionIndex.value = data.settings.verb_forms_progression_index
-    }
-    if (verbProgressionSavedTimeout) {
-      clearTimeout(verbProgressionSavedTimeout)
-      verbProgressionSavedTimeout = null
-    }
-    verbProgressionSaved.value = true
-    verbProgressionSavedTimeout = setTimeout(() => {
-      verbProgressionSaved.value = false
-      verbProgressionSavedTimeout = null
-    }, 2500)
-  } catch (error) {
-    console.error('Failed to save verb form progression:', error)
   }
 }
 

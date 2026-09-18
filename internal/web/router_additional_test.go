@@ -12,8 +12,10 @@ import (
 	"net/http/httptest"
 	"net/url"
 	"sort"
+	"strconv"
 	"strings"
 	"testing"
+	"time"
 
 	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/repository"
@@ -266,7 +268,7 @@ func TestRouter_HandleAuthTelegram_Success(t *testing.T) {
 	router.authMiddleware = authMiddleware
 
 	telegramID := int64(777888999)
-	authDate := "1234567890"
+	authDate := strconv.FormatInt(time.Now().Unix(), 10)
 	userJSON, _ := json.Marshal(map[string]int64{"id": telegramID})
 	userEncoded := url.QueryEscape(string(userJSON))
 	params := map[string]string{"auth_date": authDate, "user": string(userJSON)}

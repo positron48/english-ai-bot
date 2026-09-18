@@ -9,8 +9,10 @@ import (
 	"net/http/httptest"
 	"net/url"
 	"sort"
+	"strconv"
 	"strings"
 	"testing"
+	"time"
 
 	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/repository"
@@ -54,7 +56,7 @@ func TestAuthMiddleware_ValidateTelegramInitData(t *testing.T) {
 	// Create valid initData
 	// Format: key1=value1&key2=value2&hash=...
 	userID := int64(12345)
-	authDate := "1234567890"
+	authDate := strconv.FormatInt(time.Now().Unix(), 10)
 
 	// Create user JSON
 	userJSON, _ := json.Marshal(map[string]int64{"id": userID})

@@ -1,3 +1,4 @@
+import { currentUserScope as resolveUserScopeFromStorage } from './sessionScope'
 import {
   APP_DATA_CACHE_DB_NAME,
   APP_DATA_CACHE_DB_VERSION,
@@ -8,7 +9,6 @@ import {
   buildScreenStorageKey,
   computeStaleAt,
   entryNeedsRefresh,
-  hashTokenScope,
   screensForTags,
   SCREEN_DIRTY_TAGS,
 } from './appDataCacheLogic'
@@ -73,19 +73,7 @@ export function getAppDataVersion(): string {
   return APP_VERSION
 }
 
-export function resolveUserScopeFromStorage(): string {
-  if (typeof localStorage === 'undefined') return 'anon'
-  try {
-    const raw = localStorage.getItem('me_profile_cache_v1')
-    if (raw) {
-      const parsed = JSON.parse(raw) as { data?: { id?: number } }
-      if (parsed?.data?.id) return `user:${parsed.data.id}`
-    }
-  } catch { /* ignore */ }
-  const token = localStorage.getItem('access_token')
-  if (token) return hashTokenScope(token)
-  return 'anon'
-}
+export { currentUserScope as resolveUserScopeFromStorage } from './sessionScope'
 
 export async function getCachedScreen<T>(
   screenKey: AppDataScreenKey,

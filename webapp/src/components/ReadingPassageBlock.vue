@@ -70,7 +70,7 @@
                   }"
                   @click.stop="onTokenClick($event, token, segment)"
                 >
-                  {{ tokenText(segment.tokens || [], tokenIndex) }}
+                  {{ tokenText(segment.tokens || [], Number(tokenIndex)) }}
                 </span>
               </div>
               <div v-if="segment.text_translation_ru" class="translation" :class="{ hidden: !showTranslation }">
@@ -564,7 +564,7 @@ onUnmounted(() => {
   if (wordLookupGeneratingTimer) clearTimeout(wordLookupGeneratingTimer)
 })
 
-const onTokenClick = async (event: MouseEvent, token: any, segment: any) => {
+const onTokenClick = async (_event: MouseEvent, token: any, segment: any) => {
   if (!token?.clickable || !token?.lemma) return
 
   selectedTokenKey.value = tokenKey(segment.segment_id, token.token_idx)

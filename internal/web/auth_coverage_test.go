@@ -10,7 +10,9 @@ import (
 	"fmt"
 	"net/http"
 	"net/http/httptest"
+	"strconv"
 	"testing"
+	"time"
 
 	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/repository"
@@ -165,7 +167,7 @@ func TestValidateTelegramInitData_UserNotFound(t *testing.T) {
 
 	// Build valid initData without "user" field
 	initData := buildInitDataWithHash(botToken, map[string]string{
-		"auth_date": "1234567890",
+		"auth_date": strconv.FormatInt(time.Now().Unix(), 10),
 	})
 
 	_, err := middleware.ValidateTelegramInitData(initData)
@@ -193,7 +195,8 @@ func TestValidateTelegramInitData_QueryUnescapeFails(t *testing.T) {
 	// Build initData with a param value that causes QueryUnescape to fail (invalid %-encoding, e.g. %Z).
 	// The hash is computed from the raw value; handler keeps original value when decode fails.
 	initData := buildInitDataWithHash(botToken, map[string]string{
-		"auth_date": "%Z",
+		"auth_date": strconv.FormatInt(time.Now().Unix(), 10),
+		"query_id":  "%Z",
 		"user":      `{"id":99999}`,
 	})
 
@@ -221,7 +224,7 @@ func TestValidateTelegramInitData_InvalidUserJSON(t *testing.T) {
 
 	// Build valid initData with invalid user JSON
 	initData := buildInitDataWithHash(botToken, map[string]string{
-		"auth_date": "1234567890",
+		"auth_date": strconv.FormatInt(time.Now().Unix(), 10),
 		"user":      "not-valid-json",
 	})
 

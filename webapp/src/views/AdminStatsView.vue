@@ -458,7 +458,7 @@ const loadData = async () => {
   error.value = null
   
   try {
-    const data = await apiClient.request(`/api/admin/stats?days=${selectedDays.value}`)
+    const data = await apiClient.request<{ users_total: number; windows: typeof windows.value; cards_state: typeof cardsState.value; daily: typeof dailyStats.value }>(`/api/admin/stats?days=${selectedDays.value}`)
     stats.value = { users_total: data.users_total || 0 }
     windows.value = data.windows || {}
     cardsState.value = data.cards_state || {}

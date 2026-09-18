@@ -5,8 +5,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"strconv"
 	"strings"
+	"sync"
 	"time"
 
 	"tgbot-skeleton/internal/cache"
@@ -90,6 +90,8 @@ type optionsServiceInterface interface {
 
 // Router handles web routes
 type Router struct {
+	trainingLocks                     trainingUserLocks
+	trainingInit                      sync.Once
 	mux                               *http.ServeMux
 	logger                            *zap.Logger
 	config                            *config.Config
@@ -435,18 +437,8 @@ func (r *Router) setupRoutes() {
 	telegramMiddleware := NewRateLimitMiddleware(r.rateLimiter, r.logger, telegramPolicy, KeyFuncIP)
 	r.mux.HandleFunc("/auth/telegram", telegramMiddleware.Wrap(r.handleAuthTelegram))
 
-	// POST /auth/telegram_unsafe - strict limit per IP, stricter per IP+user_id
-	telegramUnsafePolicyIP := r.getRateLimitPolicy(
-		r.config.WebApp.RateLimitAuthTelegramUnsafePerIP,
-		r.config.WebApp.RateLimitBurstMultiplier,
-	)
-	telegramUnsafePolicyIPUser := r.getRateLimitPolicy(
-		r.config.WebApp.RateLimitAuthTelegramUnsafePerIPUser,
-		r.config.WebApp.RateLimitBurstMultiplier,
-	)
-	telegramUnsafeMiddlewareIP := NewRateLimitMiddleware(r.rateLimiter, r.logger, telegramUnsafePolicyIP, KeyFuncIP)
-	telegramUnsafeMiddlewareIPUser := NewRateLimitMiddleware(r.rateLimiter, r.logger, telegramUnsafePolicyIPUser, KeyFuncIPAndUserID)
-	r.mux.HandleFunc("/auth/telegram_unsafe", telegramUnsafeMiddlewareIP.Wrap(telegramUnsafeMiddlewareIPUser.Wrap(r.handleAuthTelegramUnsafe)))
+	// Retired: unsigned Telegram IDs must never authenticate a user.
+	r.mux.HandleFunc("/auth/telegram_unsafe", r.handleAuthTelegramUnsafe)
 
 	// POST /auth/request_otp - strict limit per IP, stricter per IP+username
 	requestOTPPolicyIP := r.getRateLimitPolicy(
@@ -1472,85 +1464,9 @@ func (r *Router) handleAuthTelegram(w http.ResponseWriter, req *http.Request) {
 	})
 }
 
-// handleAuthTelegramUnsafe handles Telegram WebApp authentication using initDataUnsafe (less secure, fallback)
-// @Summary      Аутентификация через Telegram WebApp (небезопасный метод)
-// @Description  Аутентификация пользователя через user_id напрямую (менее безопасный метод, используется как fallback). Возвращает пару JWT токенов (access и refresh) для авторизованного пользователя.
-// @Tags         Auth
-// @Accept       application/x-www-form-urlencoded
-// @Produce      application/json
-// @Param        user_id  formData  string  true  "Telegram User ID"
-// @Success      200  {object}  map[string]interface{}  "Успешная аутентификация с JWT токенами"
-// @Failure      400  {string}  string  "Неверный запрос (отсутствует user_id)"
-// @Failure      500  {string}  string  "Внутренняя ошибка сервера"
-// @Router       /auth/telegram_unsafe [post]
+// handleAuthTelegramUnsafe rejects the retired unsigned authentication endpoint.
 func (r *Router) handleAuthTelegramUnsafe(w http.ResponseWriter, req *http.Request) {
-	r.logger.Info("handleAuthTelegramUnsafe called",
-		zap.String("method", req.Method),
-		zap.String("path", req.URL.Path),
-		zap.String("remote_addr", req.RemoteAddr))
-
-	if req.Method != http.MethodPost {
-		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
-		return
-	}
-
-	// Get user ID directly from initDataUnsafe (less secure, but works when initData is not available)
-	userIDStr := req.FormValue("user_id")
-	r.logger.Info("received user_id", zap.String("user_id", userIDStr))
-
-	if userIDStr == "" {
-		r.logger.Warn("user_id is empty")
-		http.Error(w, "user_id is required", http.StatusBadRequest)
-		return
-	}
-
-	telegramID, err := strconv.ParseInt(userIDStr, 10, 64)
-	if err != nil {
-		r.logger.Warn("invalid user_id", zap.String("user_id", userIDStr), zap.Error(err))
-		http.Error(w, "Invalid user_id", http.StatusBadRequest)
-		return
-	}
-
-	r.logger.Info("authenticating via initDataUnsafe", zap.Int64("telegram_id", telegramID))
-
-	// Get or create user
-	var user *models.User
-	if r.getOrCreateUserForTelegram != nil {
-		user, err = r.getOrCreateUserForTelegram(telegramID)
-	} else {
-		userRepo := r.userRepo.(*repository.UserRepository)
-		user, err = userRepo.GetOrCreateUser(telegramID)
-	}
-	if err != nil {
-		r.logger.Error("failed to get/create user", zap.Error(err))
-		http.Error(w, "Internal server error", http.StatusInternalServerError)
-		return
-	}
-
-	// Generate JWT token pair
-	auth := r.getAuthMiddleware()
-	var accessToken, refreshToken string
-	if r.generateTokenPairForTelegram != nil {
-		accessToken, refreshToken, err = r.generateTokenPairForTelegram(user.ID, user.TelegramID)
-	} else {
-		accessToken, refreshToken, err = auth.GenerateTokenPair(user.ID, user.TelegramID)
-	}
-	if err != nil {
-		r.logger.Error("failed to generate JWT tokens", zap.Error(err))
-		http.Error(w, "Internal server error", http.StatusInternalServerError)
-		return
-	}
-
-	// Return success response with JWT tokens
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(map[string]interface{}{
-		"success":       true,
-		"message":       "Authentication successful",
-		"access_token":  accessToken,
-		"refresh_token": refreshToken,
-		"token_type":    "Bearer",
-	})
+	http.Error(w, "Use signed Telegram authentication or OTP", http.StatusGone)
 }
 
 // handleAuthRequestOTP and handleAuthOTP are implemented in auth_otp.go

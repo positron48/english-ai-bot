@@ -78,7 +78,7 @@
           :class="{ 'correct': item.correct, 'incorrect': !item.correct, 'clickable': item.correct }"
           role="button"
           :tabindex="item.correct ? 0 : -1"
-          :aria-expanded="item.correct ? String(isResultExpanded(item, index)) : null"
+          :aria-expanded="item.correct ? isResultExpanded(item, index) : undefined"
           @click="toggleResult(item, index)"
           @keydown.enter.prevent="toggleResult(item, index)"
           @keydown.space.prevent="toggleResult(item, index)"
@@ -206,7 +206,7 @@
 import { ref, computed, onMounted, nextTick, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
-import { marked } from 'marked'
+import { renderMarkdown } from '../utils/markdown'
 import { grammarClient } from '../api/grammarClient'
 import GrammarQuestion from '../components/GrammarQuestion.vue'
 import ConfirmModal from '../components/ConfirmModal.vue'
@@ -222,7 +222,7 @@ const loading = ref(true)
 const error = ref<string | null>(null)
 const submitting = ref(false)
 const testSubmitted = ref(false)
-const result = ref<any>(null)
+const result = ref<{ results: any[]; [key: string]: any } | null>(null)
 const questionRefs = ref<any[]>([])
 const showExitConfirm = ref(false)
 const animatedScore = ref(0)
@@ -397,19 +397,6 @@ const getChoiceFeedback = (questionId: string, userAnswer: any): string => {
   return c?.feedback || ''
 }
 
-const renderMarkdown = (text: string): string => {
-  if (!text) return ''
-  try {
-    return marked.parse(text) as string
-  } catch {
-    return text
-  }
-}
-
-const handleAnswer = (index: number, answer: any) => {
-  answers.value.set(index, answer)
-}
-
 const handleAnswerWithAutoNext = (index: number, answer: any) => {
   answers.value.set(index, answer)
   
@@ -481,6 +468,7 @@ const submitTest = async () => {
   try {
     const data: { 
       score: number
+      results: any[]
       total_questions: number
       correct: number
       opened_sections: string[]

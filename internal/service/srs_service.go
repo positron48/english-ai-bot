@@ -40,6 +40,11 @@ func NewSRSService(userCardRepo *repository.UserCardRepository, learning config.
 
 // GradeCard grades a card based on attempt data and updates its state
 func (s *SRSService) GradeCard(userCard *models.UserCard, attemptData models.AttemptData) error {
+	// Only publish the new in-memory state after the database accepts it.
+	original := userCard
+	next := *userCard
+	userCard = &next
+
 	// Calculate quality from attempt
 	quality := models.CalculateQuality(attemptData)
 
@@ -75,7 +80,11 @@ func (s *SRSService) GradeCard(userCard *models.UserCard, attemptData models.Att
 	userCard.LastQuality = &q
 
 	// Save to database
-	return s.userCardRepo.UpdateUserCard(userCard)
+	if err := s.userCardRepo.UpdateUserCard(userCard); err != nil {
+		return err
+	}
+	*original = next
+	return nil
 }
 
 // updateCardState updates card state based on quality using SM-2 algorithm

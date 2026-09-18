@@ -252,7 +252,7 @@ const { learning, ensureLearningLoaded } = useLearningConfig()
 
 const showSidebar = ref(false)
 const windowWidth = ref(window.innerWidth)
-const { theme: currentTheme, toggleTheme, setTheme } = useTheme()
+const { theme: currentTheme,  setTheme } = useTheme()
 const selectedTheme = ref<'light' | 'dark'>(currentTheme.value)
 
 const isMobile = computed(() => windowWidth.value < 768)

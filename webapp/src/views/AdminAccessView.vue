@@ -164,7 +164,7 @@
 <script setup lang="ts">
 import { ref, onMounted, onUnmounted, watch } from 'vue'
 import { apiClient } from '../api/client'
-import { showAlert, showConfirm } from '../composables/useDialog'
+import { showAlert } from '../composables/useDialog'
 import { useAuth } from '../composables/useAuth'
 
 const { loadPermissions } = useAuth()
@@ -208,7 +208,6 @@ const savingPermissions = ref(false)
 const users = ref<User[]>([])
 const usersLoading = ref(false)
 const selectedUserId = ref<number | null>(null)
-const userCategories = ref<number[]>([])
 const selectedUserCategories = ref<number[]>([])
 const userCategoriesLoading = ref(false)
 const userCategoriesError = ref<string | null>(null)

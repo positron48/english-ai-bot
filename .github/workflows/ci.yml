@@ -35,6 +35,10 @@ jobs:
       working-directory: ./webapp
       run: npm run type-check
 
+    - name: Lint and test webapp
+      working-directory: ./webapp
+      run: npm run lint && npm test
+
     - name: Build webapp
       working-directory: ./webapp
       run: npm run build
@@ -56,7 +60,7 @@ jobs:
         TESTCONTAINERS_RYUK_DISABLED: "true"
       run: |
         set -o pipefail
-        go test -tags=test -count=1 -p 3 -timeout 30m -coverprofile=coverage.out -covermode=atomic -json $(go list ./... | grep -v '/cmd/' | grep -v 'internal/integration/' | grep -v 'internal/testutil') 2>&1 | python3 scripts/go-test-compact.py
+        go test -tags=test -count=1 -p 3 -timeout 30m -coverprofile=coverage.out -covermode=atomic -json $(go list ./... | grep -v '/node_modules/' | grep -v '/cmd/' | grep -v 'internal/integration/' | grep -v 'internal/testutil') 2>&1 | python3 scripts/go-test-compact.py
 
     - name: Run golangci-lint
       uses: golangci/golangci-lint-action@v9

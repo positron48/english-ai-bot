@@ -1,3 +1,4 @@
+import { captureUserScope, currentUserScope } from './sessionScope'
 import { apiClient } from './client'
 import {
   ContentReportSourceType,
@@ -140,6 +141,7 @@ export const contentReportClient = {
   },
 
   async submit(input: SubmitContentReportInput): Promise<{ queued: boolean }> {
+    const checkUser = captureUserScope()
     const clientReportID = createID('offline-content-report')
     const body = buildOnlineBody(input, clientReportID)
     const endpoint = endpointForSource(input.sourceType)
@@ -156,15 +158,18 @@ export const contentReportClient = {
       }
     }
 
+    checkUser()
     await enqueueContentReport(toQueuedReport(input, clientReportID))
     return { queued: true }
   },
 
   async syncQueuedReports(): Promise<number> {
-    if (isBrowserOffline()) return 0
+    if (isBrowserOffline() || currentUserScope() === 'anon') return 0
+    const checkUser = captureUserScope()
     const reports = await getQueuedContentReports()
     if (reports.length === 0) return 0
 
+    checkUser()
     let response: any
     try {
       response = await apiClient.request('/api/content-reports/offline/sync-reports', {
@@ -193,9 +198,11 @@ export const contentReportClient = {
       throw error
     }
 
+    checkUser()
     let synced = 0
     for (const item of response.results || []) {
       if (item.synced && item.client_report_id) {
+        checkUser()
         await deleteQueuedContentReport(item.client_report_id)
         synced++
       }

@@ -631,8 +631,8 @@ func TestHandleTrainingAnswer_AnswerTextWithNoActiveSession(t *testing.T) {
 	router.handleTrainingAnswer(w, req)
 
 	// Falls through to option_index parsing which fails (empty string)
-	if w.Code != http.StatusBadRequest {
-		t.Errorf("expected 400 (invalid option_index), got %d", w.Code)
+	if w.Code != http.StatusNotFound {
+		t.Errorf("expected 404 (no active session), got %d", w.Code)
 	}
 }
 
@@ -1580,8 +1580,8 @@ func TestHandleTrainingAnswer_AnswerTextCurrentIndexExhausted(t *testing.T) {
 	router.handleTrainingAnswer(w, req)
 
 	// Falls through to option_index parsing which fails (empty string)
-	if w.Code != http.StatusBadRequest {
-		t.Errorf("expected 400 (invalid option_index), got %d", w.Code)
+	if w.Code != http.StatusConflict {
+		t.Errorf("expected 409 (missing card identity), got %d", w.Code)
 	}
 }
 
@@ -1618,7 +1618,7 @@ func TestHandleTrainingAnswer_AnswerTextWithCardType(t *testing.T) {
 
 	// Falls through to card answer handling - card mismatch (ID=1 but no real card in db)
 	// or invalid option index
-	if w.Code != http.StatusBadRequest && w.Code != http.StatusOK && w.Code != http.StatusNotFound {
+	if w.Code != http.StatusConflict && w.Code != http.StatusOK && w.Code != http.StatusNotFound {
 		t.Errorf("unexpected status %d", w.Code)
 	}
 }

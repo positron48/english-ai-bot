@@ -1,3 +1,4 @@
+import { currentUserScope } from '../api/sessionScope'
 import { ref, computed } from 'vue'
 import { courseClient, CourseSummary } from '../api/courseClient'
 import { setGrammarCourse } from '../api/grammarClient'
@@ -7,7 +8,8 @@ import { emitAppDataEvent, setActiveCourseCodeForInvalidation } from '../api/cac
 const courses = ref<CourseSummary[]>([])
 const currentCourse = ref<CourseSummary | null>(null)
 let loadPromise: Promise<void> | null = null
-const CACHE_KEY = 'linglow.courseCache.v1'
+const cacheKey = () => `linglow.courseCache.v2:${currentUserScope()}`
+let loadedScope = ''
 
 interface CourseCache {
   courses: CourseSummary[]
@@ -19,7 +21,7 @@ const isBrowserOffline = () => typeof navigator !== 'undefined' && navigator.onL
 const readCache = (): CourseCache | null => {
   if (typeof localStorage === 'undefined') return null
   try {
-    const raw = localStorage.getItem(CACHE_KEY)
+    const raw = localStorage.getItem(cacheKey())
     if (!raw) return null
     const parsed = JSON.parse(raw) as CourseCache
     if (!Array.isArray(parsed.courses)) return null
@@ -31,7 +33,7 @@ const readCache = (): CourseCache | null => {
 
 const writeCache = () => {
   if (typeof localStorage === 'undefined' || courses.value.length === 0) return
-  localStorage.setItem(CACHE_KEY, JSON.stringify({
+  localStorage.setItem(cacheKey(), JSON.stringify({
     courses: courses.value,
     currentCourseCode: currentCourse.value?.code || '',
   }))
@@ -63,6 +65,8 @@ const setCurrentCourse = (course: CourseSummary) => {
 }
 
 async function ensureCourseLoaded(): Promise<void> {
+  const scope = currentUserScope()
+  if (loadedScope !== scope) { resetCourse(); loadedScope = scope }
   if (loadPromise) {
     await loadPromise
     return
@@ -71,6 +75,7 @@ async function ensureCourseLoaded(): Promise<void> {
     if (isBrowserOffline() && hydrateFromCache()) return
     try {
       const data = await courseClient.getCourses()
+      if (currentUserScope() !== scope) return
       courses.value = data.courses || []
       currentCourse.value = courses.value.find(c => c.is_current) || courses.value[0] || null
       if (currentCourse.value?.code) {
@@ -79,6 +84,7 @@ async function ensureCourseLoaded(): Promise<void> {
       }
       writeCache()
     } catch {
+      if (currentUserScope() !== scope) return
       // Offline or flaky network: keep the course selector usable from last known data.
       hydrateFromCache()
     }
@@ -86,10 +92,13 @@ async function ensureCourseLoaded(): Promise<void> {
   await loadPromise
 }
 
-function resetCourse(): void {
+export function resetCourse(): void {
   courses.value = []
   currentCourse.value = null
   loadPromise = null
+  setGrammarCourse('')
+  setActiveCourseCodeForInvalidation('')
+  resetLearning()
 }
 
 export function useCourse() {

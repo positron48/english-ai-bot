@@ -644,7 +644,7 @@
       <div v-if="showDeleteCardConfirm && cardToDelete" class="modal" @click.self="closeDeleteCardConfirm">
         <div class="modal-content">
           <h3>Confirm Delete</h3>
-          <p>Are you sure you want to delete training card #{{ cardToDelete.sense_index + 1 }} (ID: {{ cardToDelete.id }})?</p>
+          <p>Are you sure you want to delete training card #{{ cardToDelete.card.sense_index + 1 }} (ID: {{ cardToDelete.card.id }})?</p>
           <p class="warning-text">This will delete the training card and all associated user cards. This action cannot be undone.</p>
           <div class="modal-actions">
             <button v-if="can('words.edit_all')" @click="deleteTrainingCard" class="btn btn-danger">Delete</button>
@@ -700,7 +700,6 @@ import Icon from '../components/Icon.vue'
 
 const { can, loadPermissions } = useAuth()
 const { learning, ensureLearningLoaded } = useLearningConfig()
-
 
 interface User {
   id: number
@@ -763,8 +762,6 @@ interface TTSStatus {
   audio_url: string
   updated_at: string
 }
-
-const loading = ref(false)
 
 // Words management
 const words = ref<WordCard[]>([])
@@ -1142,7 +1139,7 @@ const parseJSONArray = (jsonStr: string | undefined): string[] | null => {
   }
 }
 
-const editTrainingCard = async (card: TrainingCard, word: WordCard) => {
+const editTrainingCard = async (card: TrainingCard, _word: WordCard) => {
   cardToEdit.value = card
   
   // Parse distractors from JSON arrays
@@ -1256,7 +1253,6 @@ const deleteTrainingCard = async () => {
     showDeleteCardConfirm.value = false
     
     const word = cardToDelete.value.word
-    const cardId = cardToDelete.value.card.id
     cardToDelete.value = null
     
     // Reload cards
@@ -1734,7 +1730,6 @@ watch([showEditWordModal, showEditCardModal, showCreateCardModal, showGenerateCa
 onUnmounted(() => {
   window.removeEventListener('keydown', handleKeydown)
 })
-
 
 const formatDateRelative = (dateStr: string | null | undefined): string => {
   if (!dateStr) return '—'

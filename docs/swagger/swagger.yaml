@@ -3477,38 +3477,6 @@ paths:
       summary: Аутентификация через Telegram WebApp
       tags:
       - Auth
-  /auth/telegram_unsafe:
-    post:
-      consumes:
-      - application/x-www-form-urlencoded
-      description: Аутентификация пользователя через user_id напрямую (менее безопасный
-        метод, используется как fallback). Возвращает пару JWT токенов (access и refresh)
-        для авторизованного пользователя.
-      parameters:
-      - description: Telegram User ID
-        in: formData
-        name: user_id
-        required: true
-        type: string
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Успешная аутентификация с JWT токенами
-          schema:
-            additionalProperties: true
-            type: object
-        "400":
-          description: Неверный запрос (отсутствует user_id)
-          schema:
-            type: string
-        "500":
-          description: Внутренняя ошибка сервера
-          schema:
-            type: string
-      summary: Аутентификация через Telegram WebApp (небезопасный метод)
-      tags:
-      - Auth
 securityDefinitions:
   ApiKeyAuth:
     description: Bearer JWT token authentication. В Swagger UI введите только токен

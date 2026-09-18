@@ -240,7 +240,8 @@ func TestJWTService_ValidateRefreshToken_Expired(t *testing.T) {
 	// Build refresh token with expiry in the past
 	expiredAt := time.Now().Add(-time.Hour)
 	claims := &RefreshClaims{
-		UserID: 42,
+		TokenType: "refresh",
+		UserID:    42,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(expiredAt),
 			IssuedAt:  jwt.NewNumericDate(expiredAt.Add(-24 * time.Hour)),
@@ -280,7 +281,8 @@ func TestJWTService_ValidateRefreshToken_WrongSigningKey(t *testing.T) {
 	// Token signed with different secret
 	expiresAt := time.Now().Add(time.Hour)
 	claims := &RefreshClaims{
-		UserID: 42,
+		TokenType: "refresh",
+		UserID:    42,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(expiresAt),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),
@@ -396,8 +398,9 @@ func TestJWTService_ValidateToken_Expired(t *testing.T) {
 	roleJSON, _ := json.Marshal(RoleClaim{Categories: []int64{1}})
 	expiredAt := time.Now().Add(-time.Hour)
 	claims := &Claims{
-		UserID: 99,
-		Role:   roleJSON,
+		TokenType: "access",
+		UserID:    99,
+		Role:      roleJSON,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(expiredAt),
 			IssuedAt:  jwt.NewNumericDate(expiredAt.Add(-time.Hour)),
@@ -438,8 +441,9 @@ func TestJWTService_ValidateToken_LegacyRoleString(t *testing.T) {
 	roleJSON := json.RawMessage(`"admin"`)
 	expiresAt := time.Now().Add(time.Hour)
 	claims := &Claims{
-		UserID: 42,
-		Role:   roleJSON,
+		TokenType: "access",
+		UserID:    42,
+		Role:      roleJSON,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(expiresAt),
 			IssuedAt:  jwt.NewNumericDate(time.Now()),

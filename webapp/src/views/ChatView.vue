@@ -65,7 +65,7 @@ import { useRoute, useRouter } from 'vue-router'
 import LgIcon from '../components/linglow/LgIcon.vue'
 import LgLumi from '../components/linglow/LgLumi.vue'
 import { useI18n } from 'vue-i18n'
-import { marked } from 'marked'
+import { renderMarkdown } from '../utils/markdown'
 import { apiClient } from '../api/client'
 import { useLearningConfig } from '../composables/useLearningConfig'
 
@@ -153,21 +153,6 @@ const sendMessage = async () => {
   } finally {
     sending.value = false
     await scrollToBottom()
-  }
-}
-
-// Configure marked for security
-marked.setOptions({
-  breaks: true, // Convert line breaks to <br>
-  gfm: true, // GitHub Flavored Markdown
-})
-
-const renderMarkdown = (text: string): string => {
-  try {
-    return marked.parse(text) as string
-  } catch (error) {
-    console.error('Failed to render markdown:', error)
-    return escapeHtml(text)
   }
 }
 

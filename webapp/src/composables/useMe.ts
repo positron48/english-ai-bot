@@ -1,3 +1,4 @@
+import { currentUserScope } from '../api/sessionScope'
 import { ref } from 'vue'
 import { apiClient } from '../api/client'
 
@@ -25,6 +26,7 @@ function readCachedMe(): MeProfile | null {
     const parsed = JSON.parse(raw) as { at: number; data: MeProfile }
     if (!parsed?.data || typeof parsed.at !== 'number') return null
     if (Date.now() - parsed.at > ME_CACHE_TTL_MS) return null
+    if (`user:${parsed.data.id}` !== currentUserScope()) return null
     return parsed.data
   } catch {
     return null
@@ -70,9 +72,11 @@ export function useMe() {
       }
     }
     if (!loadPromise) {
+      const scope = currentUserScope()
       loadPromise = apiClient
         .request<MeProfile>('/api/me')
         .then((data) => {
+          if (currentUserScope() !== scope) return null
           me.value = data
           writeCachedMe(data)
           return data

@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
+	"strings"
 	"testing"
 
 	"tgbot-skeleton/internal/config"
@@ -70,7 +71,7 @@ func TestGrammarOfflineManifest_OK(t *testing.T) {
 	}
 	var body struct {
 		Sections []map[string]interface{} `json:"sections"`
-		Total    int                        `json:"total_chapters"`
+		Total    int                      `json:"total_chapters"`
 	}
 	if err := json.Unmarshal(w.Body.Bytes(), &body); err != nil {
 		t.Fatalf("decode: %v", err)
@@ -226,5 +227,54 @@ func TestGrammarOfflineSyncTrainingAttempts(t *testing.T) {
 	router.handleLearningGrammarOfflineSyncTrainingAttempts(w, req)
 	if w.Code != http.StatusBadRequest {
 		t.Fatalf("bad json expected 400, got %d", w.Code)
+	}
+}
+
+// The default service is English; an explicit Spanish download must use Spanish
+// content and keep that course in subsequent download links.
+func TestGrammarOfflineExplicitCourse(t *testing.T) {
+	router, userID, _ := setupPlacementHTTP(t)
+	for _, lang := range []string{"en", "es"} {
+		t.Run(lang, func(t *testing.T) {
+			req := setUserIDInContext(httptest.NewRequest(http.MethodGet, "/api/learning/grammar/offline/manifest?course_code="+lang+"_ru", nil), userID)
+			w := httptest.NewRecorder()
+			router.handleLearningGrammarOfflineManifest(w, req)
+			if w.Code != http.StatusOK {
+				t.Fatalf("manifest: %d %s", w.Code, w.Body.String())
+			}
+			var manifest struct {
+				BundleID     string                   `json:"bundle_id"`
+				Sections     []offlineSectionManifest `json:"sections"`
+				TrainingPack struct {
+					DownloadURL string `json:"download_url"`
+				} `json:"training_pack"`
+			}
+			if err := json.Unmarshal(w.Body.Bytes(), &manifest); err != nil {
+				t.Fatal(err)
+			}
+			if manifest.BundleID != lang || len(manifest.Sections) == 0 || len(manifest.Sections[0].Chapters) == 0 {
+				t.Fatalf("wrong bundle: %+v", manifest)
+			}
+			chapter := manifest.Sections[0].Chapters[0]
+			if !strings.Contains(chapter.DownloadURL, "course_code="+lang+"_ru") || !strings.Contains(manifest.TrainingPack.DownloadURL, "course_code="+lang+"_ru") {
+				t.Fatal("download URLs lost course")
+			}
+			w = httptest.NewRecorder()
+			router.handleLearningGrammarOfflineChapter(w, setUserIDInContext(httptest.NewRequest(http.MethodGet, chapter.DownloadURL, nil), userID))
+			if w.Code != http.StatusOK {
+				t.Fatalf("chapter: %d %s", w.Code, w.Body.String())
+			}
+			var downloaded struct {
+				Chapter struct {
+					ID string `json:"id"`
+				} `json:"chapter"`
+			}
+			if err := json.Unmarshal(w.Body.Bytes(), &downloaded); err != nil {
+				t.Fatal(err)
+			}
+			if downloaded.Chapter.ID != chapter.ChapterID {
+				t.Fatalf("wrong chapter: %s", downloaded.Chapter.ID)
+			}
+		})
 	}
 }

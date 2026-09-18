@@ -27,14 +27,16 @@ type RoleClaim struct {
 
 // Claims represents JWT claims
 type Claims struct {
-	UserID int64           `json:"user_id"`
-	Role   json.RawMessage `json:"role"` // Can be string (legacy) or object with categories
+	TokenType string          `json:"token_type"`
+	UserID    int64           `json:"user_id"`
+	Role      json.RawMessage `json:"role"` // Can be string (legacy) or object with categories
 	jwt.RegisteredClaims
 }
 
 // RefreshClaims represents refresh token claims
 type RefreshClaims struct {
-	UserID int64 `json:"user_id"`
+	TokenType string `json:"token_type"`
+	UserID    int64  `json:"user_id"`
 	jwt.RegisteredClaims
 }
 
@@ -83,8 +85,9 @@ func (s *JWTService) GenerateToken(userID int64, categories []int64) (string, er
 	roleJSON, _ := json.Marshal(roleClaim)
 
 	claims := &Claims{
-		UserID: userID,
-		Role:   roleJSON,
+		TokenType: "access",
+		UserID:    userID,
+		Role:      roleJSON,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(expiresAt),
 			IssuedAt:  jwt.NewNumericDate(now),
@@ -106,7 +109,8 @@ func (s *JWTService) GenerateRefreshToken(userID int64) (string, error) {
 	expiresAt := now.Add(time.Duration(s.refreshHours) * time.Hour)
 
 	claims := &RefreshClaims{
-		UserID: userID,
+		TokenType: "refresh",
+		UserID:    userID,
 		RegisteredClaims: jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(expiresAt),
 			IssuedAt:  jwt.NewNumericDate(now),
@@ -130,7 +134,7 @@ func (s *JWTService) ValidateRefreshToken(tokenString string) (int64, error) {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
 		return s.secret, nil
-	})
+	}, jwt.WithValidMethods([]string{"HS256"}), jwt.WithIssuer("english-bot"), jwt.WithExpirationRequired())
 
 	if err != nil {
 		s.logger.Warn("failed to parse refresh token", zap.Error(err))
@@ -138,6 +142,9 @@ func (s *JWTService) ValidateRefreshToken(tokenString string) (int64, error) {
 	}
 
 	claims := token.Claims.(*RefreshClaims)
+	if claims.TokenType != "refresh" || claims.UserID <= 0 {
+		return 0, errors.New("invalid refresh token purpose or user")
+	}
 	s.logger.Info("refresh token validated", zap.Int64("user_id", claims.UserID))
 	return claims.UserID, nil
 }
@@ -151,7 +158,7 @@ func (s *JWTService) ValidateToken(tokenString string) (int64, []int64, error) {
 			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
 		}
 		return s.secret, nil
-	})
+	}, jwt.WithValidMethods([]string{"HS256"}), jwt.WithIssuer("english-bot"), jwt.WithExpirationRequired())
 
 	if err != nil {
 		s.logger.Warn("failed to parse JWT token", zap.Error(err))
@@ -159,6 +166,9 @@ func (s *JWTService) ValidateToken(tokenString string) (int64, []int64, error) {
 	}
 
 	claims := token.Claims.(*Claims)
+	if claims.TokenType != "access" || claims.UserID <= 0 {
+		return 0, nil, errors.New("invalid access token purpose or user")
+	}
 
 	// Parse role claim - support both legacy string format and new object format
 	var categories []int64

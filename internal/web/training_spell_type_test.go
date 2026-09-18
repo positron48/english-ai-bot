@@ -59,6 +59,8 @@ func TestHandleTrainingAnswer_SpellAnswerText(t *testing.T) {
 
 	form := url.Values{}
 	form.Set("answer_text", " APPLE ")
+	form.Set("session_id", "11")
+	form.Set("card_index", "1")
 	req := httptest.NewRequest(http.MethodPost, "/api/training/answer", strings.NewReader(form.Encode()))
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	req = setUserIDInContext(req, userID)
@@ -114,6 +116,8 @@ func TestHandleTrainingAnswer_TypeAnswerTextWrong(t *testing.T) {
 
 	form := url.Values{}
 	form.Set("answer_text", "wrong")
+	form.Set("session_id", "12")
+	form.Set("card_index", "1")
 	req := httptest.NewRequest(http.MethodPost, "/api/training/answer", strings.NewReader(form.Encode()))
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	req = setUserIDInContext(req, userID)
@@ -231,6 +235,8 @@ func TestHandleTrainingSpellAnswer_WrongAnswer(t *testing.T) {
 
 	form := url.Values{}
 	form.Set("answer_text", "wrong")
+	form.Set("session_id", "12")
+	form.Set("card_index", "1")
 	req := httptest.NewRequest(http.MethodPost, "/api/training/answer", strings.NewReader(form.Encode()))
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	req = setUserIDInContext(req, userID)

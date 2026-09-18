@@ -25,7 +25,6 @@ const ready = ref(false)
 
 const autoStart = computed(() => {
   const v = route.query.start
-  if (v === true) return true
   if (Array.isArray(v)) return v.some((x) => String(x).toLowerCase() === '1' || String(x).toLowerCase() === 'true')
   return String(v || '').toLowerCase() === '1' || String(v || '').toLowerCase() === 'true'
 })

@@ -320,10 +320,6 @@ const visibleCategories = computed(() => {
   return categories.value.filter(cat => cat.level?.toUpperCase() === districtLevel.value)
 })
 
-const availableCategories = computed(() => {
-  return visibleCategories.value.filter(cat => cat.can_access).length
-})
-
 const getLocalizedTitle = (title: string, titleTranslations?: Record<string, string>) => {
   const currentLocale = locale.value
   if (currentLocale && currentLocale !== 'en' && titleTranslations?.[currentLocale]) {
@@ -338,15 +334,6 @@ const levelBadgeClass = computed(() => {
   if (level.startsWith('B')) return 'badge-b'
   if (level.startsWith('A')) return 'badge-a'
   return 'badge-none'
-})
-
-const levelDescription = computed(() => {
-  const level = statistics.value?.confirmed_level || ''
-  if (!level || level === 'Not started') return 'Start learning to unlock your level'
-  if (level.startsWith('C')) return 'Advanced proficiency'
-  if (level.startsWith('B')) return 'Intermediate level'
-  if (level.startsWith('A')) return 'Beginner level'
-  return 'Keep learning!'
 })
 
 // Small circle calculations

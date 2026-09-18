@@ -159,7 +159,6 @@ interface TrainingCard {
   distractors_en?: string
   hint?: string
   pos?: string
-  display_word?: string
   morph?: MorphInfo
 }
 
@@ -234,7 +233,6 @@ const loadWordSet = async (background = false) => {
 }
 
 const openWordCard = async (word: WordInfo) => {
-  const targetWordCardId = word.word_card_id
   const gen = ++openWordCardGen
   selectedWord.value = word
   showWordModal.value = true

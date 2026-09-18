@@ -276,7 +276,7 @@
 
 <script setup lang="ts">
 import { ref, computed, watch, nextTick } from 'vue'
-import { marked } from 'marked'
+import { renderMarkdown } from '../utils/markdown'
 import { useI18n } from 'vue-i18n'
 import GrammarTheoryExamples from './GrammarTheoryExamples.vue'
 import Icon from './Icon.vue'
@@ -656,19 +656,6 @@ const compareAnswers = (user: any, correct: any): boolean => {
     return user.every((val, idx) => val === correct[idx])
   }
   return user === correct
-}
-
-const renderMarkdown = (text: string): string => {
-  if (!text) return ''
-  try {
-    marked.setOptions({
-      breaks: true,
-      gfm: true,
-    })
-    return marked.parse(text) as string
-  } catch (error) {
-    return text
-  }
 }
 
 // Restore answer from initialAnswer prop

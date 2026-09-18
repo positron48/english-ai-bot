@@ -132,7 +132,7 @@
 import { ref, computed, onMounted } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
-import { marked } from 'marked'
+import { renderMarkdown } from '../utils/markdown'
 import { grammarClient, getGrammarCourseCode } from '../api/grammarClient'
 import { writeStoredGrammarContinueChapter } from '../utils/grammarContinueChapter'
 import GrammarQuestion from '../components/GrammarQuestion.vue'
@@ -404,20 +404,6 @@ const submitChapterReport = async () => {
 
 const startTest = () => {
   router.push(`/learning/grammar/chapter/${chapterId.value}/test`)
-}
-
-const renderMarkdown = (text: string): string => {
-  if (!text) return ''
-  try {
-    marked.setOptions({
-      breaks: true,
-      gfm: true,
-    })
-    return marked.parse(text) as string
-  } catch (error) {
-    console.error('Failed to render markdown:', error)
-    return text
-  }
 }
 
 onMounted(() => {

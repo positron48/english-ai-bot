@@ -1,5 +1,5 @@
-const DB_NAME = 'qantrix-grammar-offline'
-const DB_VERSION = 2
+import { captureUserScope } from './sessionScope'
+import { createOfflineStore } from './offlineStore'
 const META_KEY = 'bundle'
 const DEFAULT_SCOPE = 'default'
 
@@ -79,44 +79,10 @@ export interface QueuedGrammarTrainingAttempt {
 
 type StoreName = 'meta' | 'chapters' | 'queue' | 'training' | 'training_queue'
 
-let dbPromise: Promise<IDBDatabase> | null = null
-
-function openDB(): Promise<IDBDatabase> {
-  if (dbPromise) return dbPromise
-  dbPromise = new Promise((resolve, reject) => {
-    const request = indexedDB.open(DB_NAME, DB_VERSION)
-    request.onupgradeneeded = () => {
-      const db = request.result
-      if (!db.objectStoreNames.contains('meta')) db.createObjectStore('meta')
-      if (!db.objectStoreNames.contains('chapters')) db.createObjectStore('chapters', { keyPath: 'chapter_id' })
-      if (!db.objectStoreNames.contains('queue')) db.createObjectStore('queue', { keyPath: 'client_attempt_id' })
-      if (!db.objectStoreNames.contains('training')) db.createObjectStore('training')
-      if (!db.objectStoreNames.contains('training_queue')) db.createObjectStore('training_queue', { keyPath: 'client_attempt_id' })
-    }
-    request.onsuccess = () => resolve(request.result)
-    request.onerror = () => reject(request.error)
-  })
-  return dbPromise
-}
-
-async function tx<T>(storeName: StoreName, mode: IDBTransactionMode, fn: (store: IDBObjectStore) => IDBRequest<T> | void): Promise<T | void> {
-  const db = await openDB()
-  return new Promise((resolve, reject) => {
-    const transaction = db.transaction(storeName, mode)
-    const store = transaction.objectStore(storeName)
-    const request = fn(store)
-    let result: T | void
-    if (request) {
-      request.onsuccess = () => { result = request.result }
-      request.onerror = () => reject(request.error)
-    }
-    transaction.oncomplete = () => resolve(result)
-    transaction.onerror = () => reject(transaction.error)
-  })
-}
+const tx = createOfflineStore<StoreName>('grammarOfflineStore', { meta: undefined, chapters: { keyPath: 'chapter_id' }, queue: { keyPath: 'client_attempt_id' }, training: undefined, training_queue: { keyPath: 'client_attempt_id' } })
 
 function getAllFromStore<T>(storeName: StoreName): Promise<T[]> {
-  return tx<T[]>(storeName, 'readonly', (store) => store.getAll()) as Promise<T[]>
+  return tx<T[]>(storeName, 'readonly', (store) => store.getAll()).then(rows => rows || [])
 }
 
 function scopeKey(courseCode?: string): string {
@@ -142,7 +108,7 @@ function matchesScope(rowCourseCode: string | undefined, courseCode?: string): b
 }
 
 export async function getOfflineMeta(courseCode?: string): Promise<OfflineGrammarMeta | null> {
-  return (await tx<OfflineGrammarMeta>( 'meta', 'readonly', (store) => store.get(metaKey(courseCode)))) || null
+  return (await tx<OfflineGrammarMeta>('meta', 'readonly', (store) => store.get(metaKey(courseCode)))) || null
 }
 
 export async function setOfflineMeta(meta: OfflineGrammarMeta, courseCode?: string): Promise<void> {
@@ -173,29 +139,25 @@ export async function countStoredChapters(courseCode?: string): Promise<number> 
 }
 
 export async function clearOfflineGrammar(courseCode?: string): Promise<void> {
+  const checkUser = captureUserScope()
   const scope = scopeKey(courseCode)
   if (scope === DEFAULT_SCOPE) {
     await tx('meta', 'readwrite', (store) => store.clear())
+    checkUser()
     await tx('chapters', 'readwrite', (store) => store.clear())
-    await tx('queue', 'readwrite', (store) => store.clear())
+    checkUser()
     await tx('training', 'readwrite', (store) => store.clear())
-    await tx('training_queue', 'readwrite', (store) => store.clear())
     return
   }
   await tx('meta', 'readwrite', (store) => store.delete(metaKey(courseCode)))
+  checkUser()
   const chapters = await getAllFromStore<StoredOfflineChapter>('chapters')
+  checkUser()
   await tx('chapters', 'readwrite', (store) => {
     for (const row of chapters) if (matchesScope(row.course_code, courseCode)) store.delete(row.chapter_id)
   })
-  const attempts = await getAllFromStore<QueuedGrammarAttempt>('queue')
-  await tx('queue', 'readwrite', (store) => {
-    for (const row of attempts) if (matchesScope(row.course_code, courseCode)) store.delete(row.client_attempt_id)
-  })
+  checkUser()
   await tx('training', 'readwrite', (store) => store.delete(trainingKey(courseCode)))
-  const trainingAttempts = await getAllFromStore<QueuedGrammarTrainingAttempt>('training_queue')
-  await tx('training_queue', 'readwrite', (store) => {
-    for (const row of trainingAttempts) if (matchesScope(row.course_code, courseCode)) store.delete(row.client_attempt_id)
-  })
 }
 
 export async function enqueueAttempt(attempt: QueuedGrammarAttempt): Promise<void> {

@@ -1,3 +1,5 @@
+import { resetCourse } from './useCourse'
+import { currentUserScope } from '../api/sessionScope'
 import { ref, computed } from 'vue'
 import { apiClient } from '../api/client'
 import { clearMeCache } from './useMe'
@@ -9,6 +11,7 @@ const categories = ref<number[]>([])
 const permissions = ref<string[]>([])
 const permissionsLoading = ref(false)
 let permissionsLoadPromise: Promise<void> | null = null
+let permissionsGeneration = 0
 
 // Decode JWT token to extract claims
 function decodeJWT(token: string): any | null {
@@ -63,10 +66,13 @@ async function loadPermissions(): Promise<void> {
     return
   }
   
+  const scope = currentUserScope()
+  const generation = permissionsGeneration
   permissionsLoading.value = true
   permissionsLoadPromise = (async () => {
     try {
       const data: { categories: number[]; permissions: string[] } = await apiClient.request('/api/access/me')
+      if (generation !== permissionsGeneration || currentUserScope() !== scope) return
       categories.value = data.categories || []
       permissions.value = data.permissions || []
       
@@ -81,6 +87,7 @@ async function loadPermissions(): Promise<void> {
                      permissions.value.includes('stats.read') ||
                      categories.value.length > 0 // Also check categories as fallback
     } catch (error) {
+      if (generation !== permissionsGeneration || currentUserScope() !== scope) return
       console.error('Failed to load permissions:', error)
       // Don't reset isAdmin on error - keep optimistic value if categories exist
       // Only reset if we're sure user has no access
@@ -88,8 +95,10 @@ async function loadPermissions(): Promise<void> {
         isAdmin.value = false
       }
     } finally {
-      permissionsLoading.value = false
-      permissionsLoadPromise = null
+      if (generation === permissionsGeneration) {
+        permissionsLoading.value = false
+        permissionsLoadPromise = null
+      }
     }
   })()
 
@@ -127,6 +136,12 @@ export function useAuth() {
   }
 
   const login = async (accessToken: string, refreshToken: string) => {
+    permissionsGeneration++
+    permissionsLoadPromise = null
+    permissions.value = []
+    isAdmin.value = false
+    clearMeCache()
+    resetCourse()
     apiClient.saveTokens(accessToken, refreshToken)
     isAuthenticated.value = true
     
@@ -147,6 +162,10 @@ export function useAuth() {
     void clearAppDataCacheForUser()
     apiClient.clearTokens()
     clearMeCache()
+    resetCourse()
+    permissionsGeneration++
+    permissionsLoadPromise = null
+    permissionsLoading.value = false
     isAuthenticated.value = false
     isAdmin.value = false
     categories.value = []

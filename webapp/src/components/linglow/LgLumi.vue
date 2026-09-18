@@ -3,7 +3,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue'
+import { computed, type CSSProperties } from 'vue'
 import lumiHappy from '../../assets/linglow/art/lumi-happy.png'
 import lumiWelcome from '../../assets/linglow/art/lumi-welcome.png'
 import lumiBook from '../../assets/linglow/art/lumi-reading-book.png'
@@ -31,14 +31,14 @@ import lumiWithWordCard from '../../assets/linglow/art/lumi-with-word-card-casa.
 
 const props = withDefaults(defineProps<{
   size?: number
-  pose?: 'default' | 'welcome' | 'book' | 'pencil' | 'writes' | 'map' | 'teacher'
+  pose?: 'happy' | 'default' | 'welcome' | 'book' | 'pencil' | 'writes' | 'map' | 'teacher'
     | 'thumbs-up' | 'clapping' | 'hugging' | 'proud' | 'dreaming' | 'quizzical'
     | 'hearing' | 'point' | 'pointer' | 'star' | 'heart' | 'cup' | 'speech'
     | 'message' | 'fire' | 'book-pointer' | 'word-card'
 }>(), { size: 80, pose: 'welcome' })
 
 // PNG files have ~20% whitespace on each side; render 1.6x larger and pull in with negative margin
-const imgStyle = computed(() => {
+const imgStyle = computed<CSSProperties>(() => {
   const rendered = Math.round(props.size * 1.6)
   const offset = Math.round((rendered - props.size) / 2)
   return {

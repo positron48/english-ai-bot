@@ -9,7 +9,9 @@ import (
 	"fmt"
 	"net/http"
 	"net/url"
+	"strconv"
 	"strings"
+	"time"
 
 	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/i18n"
@@ -189,8 +191,15 @@ func (m *AuthMiddleware) ValidateTelegramInitData(initData string) (int64, error
 	calculatedHash.Write([]byte(dataCheckString))
 	expectedHash := hex.EncodeToString(calculatedHash.Sum(nil))
 
-	if hash != expectedHash {
+	if !hmac.Equal([]byte(hash), []byte(expectedHash)) {
 		return 0, fmt.Errorf("invalid hash")
+	}
+
+	// Signed data is still a replayable credential: bound its lifetime.
+	authDate, err := strconv.ParseInt(params["auth_date"], 10, 64)
+	now := time.Now().Unix()
+	if err != nil || authDate < now-int64((24*time.Hour)/time.Second) || authDate > now+60 {
+		return 0, fmt.Errorf("expired or invalid auth_date")
 	}
 
 	// Extract user ID

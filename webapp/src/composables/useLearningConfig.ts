@@ -24,8 +24,10 @@ export interface LearningPayload {
 
 const learning = ref<LearningPayload | null>(null)
 let loadPromise: Promise<void> | null = null
+let generation = 0
 
 export function resetLearning(): void {
+  generation++
   learning.value = null
   loadPromise = null
 }
@@ -67,12 +69,14 @@ function learningFromHealthPayload(raw: unknown): LearningPayload | null {
  *  concurrently since settings doesn't depend on health's result. Safe to call multiple times. */
 export async function ensureLearningLoaded(): Promise<void> {
   if (!loadPromise) {
+    const expectedGeneration = generation
     loadPromise = (async () => {
       const [healthResult, settingsResult] = await Promise.allSettled([
         fetch('/health').then((hr) => (hr.ok ? hr.json() : null)),
         apiClient.request<{ learning?: Partial<LearningPayload> }>('/api/settings'),
       ])
 
+      if (generation !== expectedGeneration) return
       if (healthResult.status === 'fulfilled') {
         const pub = learningFromHealthPayload(healthResult.value?.learning)
         if (pub) {

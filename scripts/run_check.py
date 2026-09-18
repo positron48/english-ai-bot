@@ -54,7 +54,8 @@ fi
 
 WEBAPP = (
     WEBAPP_DEPS
-    + "\necho '--- type-check ---'\nnpm run type-check\n"
+    + "\necho '--- lint ---'\nnpm run lint\n"
+    + "echo '--- type-check ---'\nnpm run type-check\n"
     + "echo '--- unit tests ---'\nnpm test\n"
     + "echo '--- build ---'\nnpm run build\n"
 )

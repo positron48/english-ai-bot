@@ -94,6 +94,8 @@ func (r *Router) courseCodeForUserCard(userCardID int64) string {
 
 // WebTrainingState holds the state of a web training session
 type WebTrainingState struct {
+	LastAnswerIndex      int
+	LastAnswerJSON       []byte
 	UserID               int64
 	SessionID            int64
 	SessionConfig        *service.SessionConfig
@@ -197,27 +199,29 @@ func NewWebTrainingHandler(
 }
 
 func (r *Router) ensureWebTrainingHandler() {
-	if r.webTrainingHandler != nil {
-		return
-	}
-	sessionRepo := repository.NewSessionRepository(r.db, r.logger)
-	var concreteSRS *service.SRSService
-	if srs, ok := r.srsService.(*service.SRSService); ok {
-		concreteSRS = srs
-	}
-	var concreteOpts *service.OptionsService
-	if opts, ok := r.optionsService.(*service.OptionsService); ok {
-		concreteOpts = opts
-	}
-	r.webTrainingHandler = NewWebTrainingHandler(
-		r.trainingService,
-		concreteSRS,
-		concreteOpts,
-		sessionRepo,
-		r.logger,
-		r.config.Training.OptionsDelayMS,
-		r.config.Training.WrongAnswerDelaySeconds,
-	)
+	r.trainingInit.Do(func() {
+		if r.webTrainingHandler != nil {
+			return
+		}
+		sessionRepo := repository.NewSessionRepository(r.db, r.logger)
+		var concreteSRS *service.SRSService
+		if srs, ok := r.srsService.(*service.SRSService); ok {
+			concreteSRS = srs
+		}
+		var concreteOpts *service.OptionsService
+		if opts, ok := r.optionsService.(*service.OptionsService); ok {
+			concreteOpts = opts
+		}
+		r.webTrainingHandler = NewWebTrainingHandler(
+			r.trainingService,
+			concreteSRS,
+			concreteOpts,
+			sessionRepo,
+			r.logger,
+			r.config.Training.OptionsDelayMS,
+			r.config.Training.WrongAnswerDelaySeconds,
+		)
+	})
 }
 
 func (r *Router) persistWebTrainingState(state *WebTrainingState) {
@@ -280,9 +284,9 @@ func (r *Router) restoreWebTrainingState(userID int64) (*WebTrainingState, bool)
 		RecentCorrectAnswers: make([]string, 0, 2),
 		PrefetchedCards:      make(map[int]*PrefetchedTrainingCard),
 	}
-	r.webTrainingHandler.sessionsMutex.Lock()
-	r.webTrainingHandler.sessions[userID] = state
-	r.webTrainingHandler.sessionsMutex.Unlock()
+
+	r.webTrainingHandler.setSession(userID, state)
+
 	return state, true
 }
 
@@ -309,8 +313,8 @@ func (r *Router) handleTrainingStart(w http.ResponseWriter, req *http.Request) {
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		return
 	}
-
-	// Create web training handler if not exists
+	unlock := r.trainingLocks.lock(userID)
+	defer unlock()
 	r.ensureWebTrainingHandler()
 
 	// Build session config from user settings (spell mode and threshold)
@@ -411,25 +415,21 @@ func (r *Router) handleTrainingStart(w http.ResponseWriter, req *http.Request) {
 		PrefetchedCards:      make(map[int]*PrefetchedTrainingCard),
 	}
 
-	r.webTrainingHandler.sessionsMutex.Lock()
-	r.webTrainingHandler.sessions[userID] = state
-	r.webTrainingHandler.sessionsMutex.Unlock()
+	r.webTrainingHandler.setSession(userID, state)
+
 	r.persistWebTrainingState(state)
 
 	// Show first card
 	r.showActiveTrainingCard(w, req, state)
 }
 
-// Serialize rendering with prefetch/reveal/answer: rendering also updates the
-// options used to grade the active card. Completion takes the same lock itself.
+// Callers hold the per-user lock while rendering or updating a session.
 func (r *Router) showActiveTrainingCard(w http.ResponseWriter, req *http.Request, state *WebTrainingState) {
-	r.webTrainingHandler.sessionsMutex.Lock()
 	if state.CurrentIndex >= len(state.Queue) {
-		r.webTrainingHandler.sessionsMutex.Unlock()
 		r.finishTrainingSession(w, req, state)
 		return
 	}
-	defer r.webTrainingHandler.sessionsMutex.Unlock()
+
 	r.showTrainingCard(w, req, state)
 }
 
@@ -821,12 +821,11 @@ func (r *Router) handleTrainingCurrent(w http.ResponseWriter, req *http.Request)
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		return
 	}
-
+	unlock := r.trainingLocks.lock(userID)
+	defer unlock()
 	r.ensureWebTrainingHandler()
 
-	r.webTrainingHandler.sessionsMutex.RLock()
-	state, exists := r.webTrainingHandler.sessions[userID]
-	r.webTrainingHandler.sessionsMutex.RUnlock()
+	state, exists := r.webTrainingHandler.session(userID)
 
 	if !exists || state == nil {
 		if restored, ok := r.restoreWebTrainingState(userID); ok {
@@ -849,9 +848,9 @@ func (r *Router) handleTrainingCurrent(w http.ResponseWriter, req *http.Request)
 		if err := r.trainingService.FinishSession(state.SessionID, state.CurrentIndex); err != nil {
 			r.logger.Error("failed to finish stale session on course switch", zap.Error(err))
 		}
-		r.webTrainingHandler.sessionsMutex.Lock()
-		delete(r.webTrainingHandler.sessions, userID)
-		r.webTrainingHandler.sessionsMutex.Unlock()
+
+		r.webTrainingHandler.deleteSession(userID)
+
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(map[string]interface{}{
@@ -875,6 +874,9 @@ func (r *Router) handleTrainingPrefetchNext(w http.ResponseWriter, req *http.Req
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		return
 	}
+	unlock := r.trainingLocks.lock(userID)
+	defer unlock()
+	r.ensureWebTrainingHandler()
 
 	if r.webTrainingHandler == nil {
 		w.Header().Set("Content-Type", "application/json")
@@ -883,10 +885,8 @@ func (r *Router) handleTrainingPrefetchNext(w http.ResponseWriter, req *http.Req
 		return
 	}
 
-	r.webTrainingHandler.sessionsMutex.Lock()
-	state, exists := r.webTrainingHandler.sessions[userID]
+	state, exists := r.webTrainingHandler.session(userID)
 	if !exists || state == nil {
-		r.webTrainingHandler.sessionsMutex.Unlock()
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		_ = json.NewEncoder(w).Encode(map[string]interface{}{"active": false, "message": "No active session"})
@@ -895,7 +895,6 @@ func (r *Router) handleTrainingPrefetchNext(w http.ResponseWriter, req *http.Req
 
 	nextIndex := state.CurrentIndex + 1
 	if nextIndex >= len(state.Queue) {
-		r.webTrainingHandler.sessionsMutex.Unlock()
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		_ = json.NewEncoder(w).Encode(map[string]interface{}{"active": false, "message": "No next card"})
@@ -905,7 +904,6 @@ func (r *Router) handleTrainingPrefetchNext(w http.ResponseWriter, req *http.Req
 		state.PrefetchedCards = make(map[int]*PrefetchedTrainingCard)
 	}
 	if prefetched := state.PrefetchedCards[nextIndex]; prefetched != nil {
-		r.webTrainingHandler.sessionsMutex.Unlock()
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		_, _ = w.Write(prefetched.Response)
@@ -927,7 +925,6 @@ func (r *Router) handleTrainingPrefetchNext(w http.ResponseWriter, req *http.Req
 			CorrectAnswer: prefetchState.CorrectAnswer,
 		}
 	}
-	r.webTrainingHandler.sessionsMutex.Unlock()
 
 	if capture.status == 0 {
 		capture.status = http.StatusOK
@@ -967,16 +964,17 @@ func (r *Router) handleTrainingReveal(w http.ResponseWriter, req *http.Request) 
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		return
 	}
+	unlock := r.trainingLocks.lock(userID)
+	defer unlock()
+	r.ensureWebTrainingHandler()
 
 	if r.webTrainingHandler == nil {
 		http.Error(w, "No active session", http.StatusNotFound)
 		return
 	}
 
-	r.webTrainingHandler.sessionsMutex.Lock()
-	state, exists := r.webTrainingHandler.sessions[userID]
+	state, exists := r.webTrainingHandler.session(userID)
 	if !exists || state == nil || state.CurrentIndex >= len(state.Queue) {
-		r.webTrainingHandler.sessionsMutex.Unlock()
 		http.Error(w, "No active session", http.StatusNotFound)
 		return
 	}
@@ -984,7 +982,6 @@ func (r *Router) handleTrainingReveal(w http.ResponseWriter, req *http.Request) 
 	// Reveal only applies to card type
 	item := state.Queue[state.CurrentIndex]
 	if item.Type != "card" || item.Card == nil {
-		r.webTrainingHandler.sessionsMutex.Unlock()
 		http.Error(w, "Reveal not applicable to this card type", http.StatusBadRequest)
 		return
 	}
@@ -1002,7 +999,6 @@ func (r *Router) handleTrainingReveal(w http.ResponseWriter, req *http.Request) 
 		"session_id":   state.SessionID,
 		"card_index":   state.CurrentIndex + 1,
 	}
-	r.webTrainingHandler.sessionsMutex.Unlock()
 
 	// Return options as JSON
 	w.Header().Set("Content-Type", "application/json")
@@ -1012,12 +1008,12 @@ func (r *Router) handleTrainingReveal(w http.ResponseWriter, req *http.Request) 
 
 // gradeReplacedCardForSpellType grades the user_card that was replaced by a spell/type challenge so SRS is updated and the card won't stay due.
 // mode is "spell" or "type", wordLen is the length of the word (for type: longer = higher time multiplier).
-func (r *Router) gradeReplacedCardForSpellType(userID int64, userCardID int64, isCorrect bool, chosenOption string, shownAt, answeredAt time.Time, sessionID int64, mode string, wordLen int) {
+func (r *Router) gradeReplacedCardForSpellType(userID int64, userCardID int64, isCorrect bool, chosenOption string, shownAt, answeredAt time.Time, sessionID int64, mode string, wordLen int) error {
 	userCardRepo := repository.NewUserCardRepository(r.db, r.logger)
 	userCard, err := userCardRepo.GetUserCard(userCardID)
 	if err != nil || userCard == nil {
 		r.logger.Warn("failed to load replaced user card for spell/type grade", zap.Int64("user_card_id", userCardID), zap.Error(err))
-		return
+		return fmt.Errorf("failed to grade card: %v", err)
 	}
 	answerTimeMS := 0
 	if !answeredAt.IsZero() {
@@ -1050,7 +1046,7 @@ func (r *Router) gradeReplacedCardForSpellType(userID int64, userCardID int64, i
 	srsBeforeJSON, _ := json.Marshal(srsBefore)
 	if err := r.srsService.GradeCard(userCard, attemptData); err != nil {
 		r.logger.Error("failed to grade replaced card after spell/type", zap.Int64("user_card_id", userCardID), zap.Error(err))
-		return
+		return fmt.Errorf("failed to grade card: %v", err)
 	}
 	srsAfter := models.SRSState{
 		State:        userCard.State,
@@ -1099,120 +1095,65 @@ func (r *Router) gradeReplacedCardForSpellType(userID int64, userCardID int64, i
 			r.logger.Error("failed to record wrong answer for spell/type", zap.Error(err))
 		}
 	}
+	return nil
 }
 
-// handleTrainingSpellAnswer handles the answer for a spell (compose word) challenge
 func (r *Router) handleTrainingSpellAnswer(w http.ResponseWriter, req *http.Request, userID int64, userAnswer string) {
-	if r.webTrainingHandler == nil {
-		http.Error(w, "No active session", http.StatusNotFound)
-		return
-	}
-	r.webTrainingHandler.sessionsMutex.Lock()
-	state, exists := r.webTrainingHandler.sessions[userID]
-	if !exists || state == nil || state.CurrentIndex >= len(state.Queue) {
-		r.webTrainingHandler.sessionsMutex.Unlock()
-		http.Error(w, "No active session", http.StatusNotFound)
-		return
-	}
-	item := state.Queue[state.CurrentIndex]
-	if item.Type != "spell" || item.Spell == nil {
-		r.webTrainingHandler.sessionsMutex.Unlock()
-		http.Error(w, "Not a spell challenge", http.StatusBadRequest)
-		return
-	}
-	correctNorm := strings.TrimSpace(strings.ToLower(item.Spell.DisplayWord))
-	userNorm := userAnswer
-	if userNorm == "" {
-		userNorm = " "
-	}
-	isCorrect := userNorm == correctNorm
-	correctAnswer := item.Spell.DisplayWord
-	replacedUserCardID := item.Spell.ReplacedUserCardID
-	shownAt := state.ShownAt
-	sessionID := state.SessionID
-	answeredAt := time.Now()
-	if isCorrect {
-		state.CorrectCount++
-	}
-	state.CurrentIndex++
-	r.webTrainingHandler.sessionsMutex.Unlock()
-	r.persistWebTrainingState(state)
-
-	// Grade the replaced user_card so it gets next_due_at updated and doesn't reappear next session
-	if replacedUserCardID != 0 {
-		wordLen := len(item.Spell.DisplayWord)
-		r.gradeReplacedCardForSpellType(userID, replacedUserCardID, isCorrect, userAnswer, shownAt, answeredAt, sessionID, "spell", wordLen)
-	}
-
-	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	feedback := map[string]interface{}{
-		"is_correct":     isCorrect,
-		"chosen_option":  userAnswer,
-		"correct_answer": correctAnswer,
-	}
-	_, wrongAnswerDelaySeconds := r.getTrainingDelaysForUser(userID)
-	if !isCorrect {
-		feedback["delay_seconds"] = wrongAnswerDelaySeconds
-	}
-	json.NewEncoder(w).Encode(feedback)
+	r.handleTrainingTextAnswer(w, req, userID, userAnswer, "spell")
 }
 
-// handleTrainingTypeAnswer handles the answer for a type-the-word challenge (no letter hints)
 func (r *Router) handleTrainingTypeAnswer(w http.ResponseWriter, req *http.Request, userID int64, userAnswer string) {
+	r.handleTrainingTextAnswer(w, req, userID, userAnswer, "type")
+}
+
+func (r *Router) handleTrainingTextAnswer(w http.ResponseWriter, req *http.Request, userID int64, userAnswer, mode string) {
 	if r.webTrainingHandler == nil {
 		http.Error(w, "No active session", http.StatusNotFound)
 		return
 	}
-	r.webTrainingHandler.sessionsMutex.Lock()
-	state, exists := r.webTrainingHandler.sessions[userID]
-	if !exists || state == nil || state.CurrentIndex >= len(state.Queue) {
-		r.webTrainingHandler.sessionsMutex.Unlock()
+	state, exists := r.webTrainingHandler.session(userID)
+	if !exists || state == nil {
 		http.Error(w, "No active session", http.StatusNotFound)
 		return
 	}
-	item := state.Queue[state.CurrentIndex]
-	if item.Type != "type" || item.TypeChallenge == nil {
-		r.webTrainingHandler.sessionsMutex.Unlock()
-		http.Error(w, "Not a type challenge", http.StatusBadRequest)
+	if state.CurrentIndex >= len(state.Queue) {
+		http.Error(w, "No active session", http.StatusNotFound)
 		return
 	}
-	correctNorm := strings.TrimSpace(strings.ToLower(item.TypeChallenge.DisplayWord))
-	userNorm := userAnswer
-	if userNorm == "" {
-		userNorm = " "
+	cardIndex := state.CurrentIndex + 1
+	item := state.Queue[state.CurrentIndex]
+	var correctAnswer string
+	var userCardID int64
+	switch {
+	case mode == "spell" && item.Type == mode && item.Spell != nil:
+		correctAnswer, userCardID = item.Spell.DisplayWord, item.Spell.ReplacedUserCardID
+	case mode == "type" && item.Type == mode && item.TypeChallenge != nil:
+		correctAnswer, userCardID = item.TypeChallenge.DisplayWord, item.TypeChallenge.ReplacedUserCardID
+	default:
+		http.Error(w, "Card type mismatch", http.StatusBadRequest)
+		return
 	}
-	isCorrect := userNorm == correctNorm
-	correctAnswer := item.TypeChallenge.DisplayWord
-	replacedUserCardID := item.TypeChallenge.ReplacedUserCardID
-	shownAt := state.ShownAt
-	sessionID := state.SessionID
-	answeredAt := time.Now()
+	isCorrect := strings.TrimSpace(strings.ToLower(userAnswer)) == strings.TrimSpace(strings.ToLower(correctAnswer)) && strings.TrimSpace(userAnswer) != ""
+	if userCardID != 0 {
+		if err := r.gradeReplacedCardForSpellType(userID, userCardID, isCorrect, userAnswer, state.ShownAt, time.Now(), state.SessionID, mode, len([]rune(correctAnswer))); err != nil {
+			http.Error(w, "Failed to save progress", http.StatusInternalServerError)
+			return
+		}
+	}
+	feedback := map[string]interface{}{"is_correct": isCorrect, "chosen_option": userAnswer, "correct_answer": correctAnswer}
+	if !isCorrect {
+		_, delay := r.getTrainingDelaysForUser(userID)
+		feedback["delay_seconds"] = delay
+	}
 	if isCorrect {
 		state.CorrectCount++
 	}
 	state.CurrentIndex++
-	r.webTrainingHandler.sessionsMutex.Unlock()
+	state.LastAnswerIndex = cardIndex
+	state.LastAnswerJSON, _ = json.Marshal(feedback)
 	r.persistWebTrainingState(state)
-
-	// Grade the replaced user_card so it gets next_due_at updated and doesn't reappear next session
-	if replacedUserCardID != 0 {
-		wordLen := len(item.TypeChallenge.DisplayWord)
-		r.gradeReplacedCardForSpellType(userID, replacedUserCardID, isCorrect, userAnswer, shownAt, answeredAt, sessionID, "type", wordLen)
-	}
-
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusOK)
-	feedback := map[string]interface{}{
-		"is_correct":     isCorrect,
-		"chosen_option":  userAnswer,
-		"correct_answer": correctAnswer,
-	}
-	_, wrongAnswerDelaySeconds := r.getTrainingDelaysForUser(userID)
-	if !isCorrect {
-		feedback["delay_seconds"] = wrongAnswerDelaySeconds
-	}
-	json.NewEncoder(w).Encode(feedback)
+	_, _ = w.Write(state.LastAnswerJSON)
 }
 
 // handleTrainingAnswer handles the user's answer
@@ -1241,6 +1182,9 @@ func (r *Router) handleTrainingAnswer(w http.ResponseWriter, req *http.Request) 
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		return
 	}
+	unlock := r.trainingLocks.lock(userID)
+	defer unlock()
+	r.ensureWebTrainingHandler()
 	// Answering a card changes its SRS state → invalidate cached vocab-summary counts.
 	defer r.BumpUserCache(userID)
 
@@ -1249,26 +1193,31 @@ func (r *Router) handleTrainingAnswer(w http.ResponseWriter, req *http.Request) 
 		return
 	}
 
-	answerText := req.FormValue("answer_text")
-	// answer_text present (including empty for "skip" in spell/type) → spell or type handler
-	if req.Form.Has("answer_text") && r.webTrainingHandler != nil {
-		r.webTrainingHandler.sessionsMutex.Lock()
-		state, exists := r.webTrainingHandler.sessions[userID]
-		if exists && state != nil && state.CurrentIndex < len(state.Queue) {
-			item := state.Queue[state.CurrentIndex]
-			r.webTrainingHandler.sessionsMutex.Unlock()
-			text := strings.TrimSpace(strings.ToLower(answerText))
-			if item.Type == "type" {
-				r.handleTrainingTypeAnswer(w, req, userID, text)
-				return
-			}
-			if item.Type == "spell" {
-				r.handleTrainingSpellAnswer(w, req, userID, text)
-				return
-			}
-		} else {
-			r.webTrainingHandler.sessionsMutex.Unlock()
+	answerText := strings.TrimSpace(strings.ToLower(req.FormValue("answer_text")))
+	if req.Form.Has("answer_text") {
+		state, exists := r.webTrainingHandler.session(userID)
+		if !exists || state == nil {
+			http.Error(w, "No active session", http.StatusNotFound)
+			return
 		}
+		sessionID, _ := strconv.ParseInt(req.FormValue("session_id"), 10, 64)
+		cardIndex, _ := strconv.Atoi(req.FormValue("card_index"))
+		if sessionID != state.SessionID || cardIndex <= 0 {
+			http.Error(w, "Session and card index required", http.StatusConflict)
+			return
+		}
+		if cardIndex == state.LastAnswerIndex && len(state.LastAnswerJSON) > 0 {
+			w.Header().Set("Content-Type", "application/json")
+			_, _ = w.Write(state.LastAnswerJSON)
+			return
+		}
+		if cardIndex != state.CurrentIndex+1 || state.CurrentIndex >= len(state.Queue) {
+			http.Error(w, "Card mismatch", http.StatusConflict)
+			return
+		}
+		mode := state.Queue[state.CurrentIndex].Type
+		r.handleTrainingTextAnswer(w, req, userID, answerText, mode)
+		return
 	}
 
 	optionIndexStr := req.FormValue("option_index")
@@ -1291,23 +1240,19 @@ func (r *Router) handleTrainingAnswer(w http.ResponseWriter, req *http.Request) 
 		return
 	}
 
-	r.webTrainingHandler.sessionsMutex.Lock()
-	state, exists := r.webTrainingHandler.sessions[userID]
+	state, exists := r.webTrainingHandler.session(userID)
 	if !exists || state == nil || state.CurrentIndex >= len(state.Queue) {
-		r.webTrainingHandler.sessionsMutex.Unlock()
 		http.Error(w, "No active session", http.StatusNotFound)
 		return
 	}
 
 	item := state.Queue[state.CurrentIndex]
 	if item.Type != "card" || item.Card == nil {
-		r.webTrainingHandler.sessionsMutex.Unlock()
 		http.Error(w, "Not a card answer", http.StatusBadRequest)
 		return
 	}
 	card := item.Card
 	if card.UserCard.ID != userCardID {
-		r.webTrainingHandler.sessionsMutex.Unlock()
 		http.Error(w, "Card mismatch", http.StatusBadRequest)
 		return
 	}
@@ -1319,7 +1264,6 @@ func (r *Router) handleTrainingAnswer(w http.ResponseWriter, req *http.Request) 
 	correctAnswer := state.CorrectAnswer
 
 	if optionIndex < 0 || optionIndex >= len(options) {
-		r.webTrainingHandler.sessionsMutex.Unlock()
 		http.Error(w, "Invalid option index", http.StatusBadRequest)
 		return
 	}
@@ -1382,7 +1326,7 @@ func (r *Router) handleTrainingAnswer(w http.ResponseWriter, req *http.Request) 
 			zap.Int64("user_id", userID),
 			zap.Error(err),
 		)
-		r.webTrainingHandler.sessionsMutex.Unlock()
+
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusInternalServerError)
 		_ = json.NewEncoder(w).Encode(map[string]interface{}{
@@ -1473,7 +1417,7 @@ func (r *Router) handleTrainingAnswer(w http.ResponseWriter, req *http.Request) 
 
 	// Move to next card
 	state.CurrentIndex++
-	r.webTrainingHandler.sessionsMutex.Unlock()
+
 	r.persistWebTrainingState(state)
 
 	// Show feedback and next card
@@ -1583,9 +1527,7 @@ func (r *Router) finishTrainingSession(w http.ResponseWriter, req *http.Request,
 
 	// Remove from memory
 	if r.webTrainingHandler != nil {
-		r.webTrainingHandler.sessionsMutex.Lock()
-		delete(r.webTrainingHandler.sessions, state.UserID)
-		r.webTrainingHandler.sessionsMutex.Unlock()
+		r.webTrainingHandler.deleteSession(state.UserID)
 	}
 
 	// Show completion message

@@ -9,7 +9,7 @@
       <button @click="loadTest" class="btn btn-primary">{{ t('common.retry') }}</button>
     </div>
     
-    <div v-else-if="testSubmitted" class="test-results">
+    <div v-else-if="testSubmitted && result" class="test-results">
       <div class="results-header">
         <h1>{{ t('grammar.testResults') }}</h1>
         <div class="score-display-wrapper">
@@ -58,7 +58,7 @@
           :class="{ 'correct': item.correct, 'incorrect': !item.correct, 'clickable': item.correct }"
           role="button"
           :tabindex="item.correct ? 0 : -1"
-          :aria-expanded="item.correct ? String(isResultExpanded(item, index)) : null"
+          :aria-expanded="item.correct ? isResultExpanded(item, index) : undefined"
           @click="toggleResult(item, index)"
           @keydown.enter.prevent="toggleResult(item, index)"
           @keydown.space.prevent="toggleResult(item, index)"
@@ -214,7 +214,7 @@
 import { ref, computed, onMounted, watch, nextTick } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter, onBeforeRouteUpdate } from 'vue-router'
-import { marked } from 'marked'
+import { renderMarkdown } from '../utils/markdown'
 import { grammarClient } from '../api/grammarClient'
 import GrammarQuestion from '../components/GrammarQuestion.vue'
 import ConfirmModal from '../components/ConfirmModal.vue'
@@ -265,7 +265,7 @@ const loading = ref(true)
 const error = ref<string | null>(null)
 const submitting = ref(false)
 const testSubmitted = ref(false)
-const result = ref<any>(null)
+const result = ref<{ results: any[]; [key: string]: any } | null>(null)
 const questionRefs = ref<any[]>([])
 const showExitConfirm = ref(false)
 const animatedScore = ref(0)
@@ -275,7 +275,6 @@ const nextChapterId = ref<string | null>(null)
 const nextSectionId = ref<string | null>(null)
 const isLastChapterInCategory = ref(false)
 const nextActionLoading = ref(false)
-const nextActionButtonRef = ref<HTMLButtonElement | null>(null)
 
 const testReportCategories = GRAMMAR_TEST_REPORT_CATEGORIES
 const reportDialogOpen = ref(false)
@@ -445,15 +444,6 @@ const loadTest = async () => {
   } finally {
     loading.value = false
   }
-}
-
-const handleAnswer = (index: number, answer: any) => {
-  const question = questions.value[index]
-  if (!question) {
-    return
-  }
-  const questionKey = getQuestionKey(question)
-  answers.value.set(questionKey, answer)
 }
 
 const handleAnswerWithAutoNext = (index: number, answer: any) => {
@@ -629,7 +619,7 @@ const getConfettiStyle = (index: number) => {
 }
 
 // Firework styles - explode from random points on circle edge
-const getFireworkStyle = (index: number) => {
+const getFireworkStyle = (_index: number) => {
   // Random angle on circle edge
   const startAngle = Math.random() * 360
   const startAngleRad = (startAngle * Math.PI) / 180
@@ -651,7 +641,7 @@ const getFireworkStyle = (index: number) => {
 }
 
 // Failure item styles - falling poop from top
-const getFailureItemStyle = (index: number) => {
+const getFailureItemStyle = (_index: number) => {
   // Start from random position at top (well above visible area)
   const startX = (Math.random() - 0.5) * 400 // -200 to 200px from center
   const startY = -200 - Math.random() * 150 // Start well above screen
@@ -787,19 +777,6 @@ const toggleResult = (item: any, index: number) => {
   expandedCorrectResults.value = {
     ...expandedCorrectResults.value,
     [key]: !expandedCorrectResults.value[key]
-  }
-}
-
-const renderMarkdown = (text: string): string => {
-  if (!text) return ''
-  try {
-    marked.setOptions({
-      breaks: true,
-      gfm: true,
-    })
-    return marked.parse(text) as string
-  } catch (error) {
-    return text
   }
 }
 

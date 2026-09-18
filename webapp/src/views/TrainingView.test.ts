@@ -139,3 +139,13 @@ it('still shows a valid prefetched card and waits for server synchronization bef
   await flushPromises()
   expect(w.findAll('.option-text').map(n => n.text())).toEqual(['árbol', 'flor'])
 })
+
+it('sanitizes training question HTML while preserving word formatting', async () => {
+  vi.mocked(wordTrainingClient.current).mockResolvedValue({
+    ...card(1), question: '<strong>casa</strong><img src=x onerror="alert(1)"><script>alert(1)</script>',
+  })
+  const w = await mountTraining()
+  expect(w.get('.question strong').text()).toBe('casa')
+  expect(w.find('.question script').exists()).toBe(false)
+  expect(w.get('.question img').attributes('onerror')).toBeUndefined()
+})

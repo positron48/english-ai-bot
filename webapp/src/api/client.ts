@@ -1,20 +1,11 @@
+import { currentUserScope } from './sessionScope'
 const API_BASE = ''
 
-// Get current locale for Accept-Language header
 function getCurrentLocale(): string {
-  if (typeof window === 'undefined') {
-    return 'en'
-  }
   const stored = localStorage.getItem('locale')
-  if (stored === 'ru' || stored === 'en' || stored === 'es') {
-    return stored
-  }
-  // Detect from browser
-  const browserLang = navigator.language || (navigator as any).userLanguage || 'en'
-  const lang = browserLang.toLowerCase().split('-')[0]
-  if (lang === 'ru') return 'ru'
-  if (lang === 'es') return 'es'
-  return 'en'
+  if (stored && ['ru', 'en', 'es'].includes(stored)) return stored
+  const language = navigator.language?.toLowerCase().split('-')[0]
+  return language === 'ru' || language === 'es' ? language : 'en'
 }
 
 interface AuthResponse {
@@ -26,121 +17,41 @@ interface AuthResponse {
   user_id?: number
 }
 
-interface RefreshResponse {
-  success: boolean
-  message?: string
-  access_token: string
-  refresh_token: string
-  token_type: string
-}
-
-/** Parses JSON error bodies from API; exposes stable `code` (e.g. verb_training_disabled) on the thrown Error. */
-function parseApiErrorBody(errorText: string, status: number): { message: string; code?: string } {
-  const fallback = `API error: ${status} ${errorText}`
-  try {
-    const errorJson = JSON.parse(errorText) as { message?: string; error?: string; code?: string }
-    const code = typeof errorJson.code === 'string' ? errorJson.code : undefined
-    let message = fallback
-    if (errorJson.message) {
-      message = errorJson.message
-    } else if (errorJson.error) {
-      message = errorJson.error
-    } else if (code) {
-      message = code
-    }
-    return { message, code }
-  } catch {
-    return { message: fallback }
+export class ApiError extends Error {
+  constructor(message: string, public status = 0, public code?: string, public isNetworkError = false) {
+    super(message)
   }
 }
 
-// Network error callback type
+async function responseError(response: Response): Promise<ApiError> {
+  const text = await response.text()
+  let message = `API error: ${response.status} ${text}`
+  let code: string | undefined
+  try {
+    const body = JSON.parse(text)
+    message = body.message || body.error || body.code || message
+    code = body.code
+  } catch { /* Plain-text HTTP errors are valid too. */ }
+  return new ApiError(message, response.status, code)
+}
+
 type NetworkErrorCallback = (isRetrying: boolean, attempt: number, maxAttempts: number) => void
-type NetworkSuccessCallback = () => void
+
+type ApiRequestOptions = Omit<RequestInit, 'body'> & { body?: BodyInit | Record<string, unknown> | null }
 
 class ApiClient {
   private accessToken: string | null = null
   private refreshToken: string | null = null
+  private refreshPromise: Promise<boolean> | null = null
   private networkErrorCallback: NetworkErrorCallback | null = null
-  private networkSuccessCallback: NetworkSuccessCallback | null = null
-  private maxRetries: number = 3
-  private retryDelayMs: number = 1000 // Initial delay
+  private networkSuccessCallback: (() => void) | null = null
+  private maxRetries = 3
+  private retryDelayMs = 1000
 
-  constructor() {
-    this.loadTokens()
-  }
-
-  setNetworkErrorCallback(callback: NetworkErrorCallback | null) {
-    this.networkErrorCallback = callback
-  }
-
-  setNetworkSuccessCallback(callback: NetworkSuccessCallback | null) {
-    this.networkSuccessCallback = callback
-  }
-
-  setMaxRetries(maxRetries: number) {
-    this.maxRetries = maxRetries
-  }
-
-  private isNetworkError(error: any): boolean {
-    // Check for network errors
-    if (error.name === 'TypeError' && 
-        (error.message?.includes('Failed to fetch') || 
-         error.message?.includes('NetworkError') ||
-         error.message?.includes('network'))) {
-      return true
-    }
-    
-    // Check for fetch errors (no response)
-    if (error.message?.includes('Failed to fetch') || 
-        error.message?.includes('NetworkError') ||
-        error.isNetworkError) {
-      return true
-    }
-    
-    return false
-  }
-
-  private async sleep(ms: number): Promise<void> {
-    return new Promise(resolve => setTimeout(resolve, ms))
-  }
-
-  private async retryWithBackoff<T>(
-    fn: () => Promise<T>,
-    url: string,
-    attempt: number = 1
-  ): Promise<T> {
-    try {
-      const result = await fn()
-      // Notify about successful request (hide error notification)
-      // Call on any successful attempt to hide notification after retry
-      if (this.networkSuccessCallback) {
-        this.networkSuccessCallback()
-      }
-      return result
-    } catch (error: any) {
-      const isNetworkErr = this.isNetworkError(error)
-      
-      // Only retry network errors, not HTTP errors (4xx, 5xx)
-      if (!isNetworkErr || attempt >= this.maxRetries) {
-        if (isNetworkErr && this.networkErrorCallback) {
-          this.networkErrorCallback(false, attempt, this.maxRetries)
-        }
-        throw error
-      }
-
-      // Notify about retry
-      if (this.networkErrorCallback) {
-        this.networkErrorCallback(true, attempt, this.maxRetries)
-      }
-
-      // Exponential backoff: delay = initialDelay * 2^(attempt-1)
-      const delay = this.retryDelayMs * Math.pow(2, attempt - 1)
-      await this.sleep(delay)
-
-      return this.retryWithBackoff(fn, url, attempt + 1)
-    }
-  }
+  constructor() { this.loadTokens() }
+  setNetworkErrorCallback(callback: NetworkErrorCallback | null) { this.networkErrorCallback = callback }
+  setNetworkSuccessCallback(callback: (() => void) | null) { this.networkSuccessCallback = callback }
+  setMaxRetries(maxRetries: number) { this.maxRetries = Math.max(1, maxRetries) }
 
   loadTokens() {
     this.accessToken = localStorage.getItem('access_token')
@@ -154,13 +65,8 @@ class ApiClient {
     localStorage.setItem('refresh_token', refreshToken)
   }
 
-  getAccessToken(): string | null {
-    return this.accessToken
-  }
-
-  isAuthenticated(): boolean {
-    return !!this.accessToken
-  }
+  getAccessToken(): string | null { return this.accessToken }
+  isAuthenticated(): boolean { return !!this.accessToken }
 
   clearTokens() {
     this.accessToken = null
@@ -169,264 +75,121 @@ class ApiClient {
     localStorage.removeItem('refresh_token')
   }
 
-  async refreshAccessToken(): Promise<boolean> {
-    if (!this.refreshToken) {
-      return false
-    }
-
+  private async fetch(url: string, options: RequestInit): Promise<Response> {
     try {
-      const response = await fetch(`${API_BASE}/auth/refresh`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          refresh_token: this.refreshToken
-        })
-      })
+      return await fetch(`${API_BASE}${url}`, options)
+    } catch (error) {
+      if (options.signal?.aborted || (error as Error).name === 'AbortError') throw error
+      throw new ApiError((error as Error).message || 'Network error', 0, undefined, true)
+    }
+  }
 
-      if (!response.ok) {
+  async refreshAccessToken(): Promise<boolean> {
+    if (this.refreshPromise) return this.refreshPromise
+    this.loadTokens()
+    const token = this.refreshToken
+    if (!token) return false
+    this.refreshPromise = (async () => {
+      const response = await this.fetch('/auth/refresh', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ refresh_token: token }),
+      })
+      // A logout/account switch while this request was pending wins over its result.
+      if (localStorage.getItem('refresh_token') !== token) throw new ApiError('Session changed', 409)
+      if (response.status === 401 || response.status === 403) {
+        this.clearTokens()
         return false
       }
-
-      const data: RefreshResponse = await response.json()
+      if (!response.ok) throw await responseError(response)
+      const data: AuthResponse = await response.json()
+      if (localStorage.getItem('refresh_token') !== token) throw new ApiError('Session changed', 409)
+      if (!data.access_token || !data.refresh_token) throw new ApiError('Invalid refresh response', 502)
       this.saveTokens(data.access_token, data.refresh_token)
       return true
-    } catch (error) {
-      console.error('Failed to refresh token:', error)
-      return false
+    })()
+    try { return await this.refreshPromise } finally { this.refreshPromise = null }
+  }
+
+  async request<T>(url: string, options: ApiRequestOptions = {}): Promise<T> {
+    const userScope = currentUserScope()
+    const checkSession = () => {
+      if (currentUserScope() !== userScope) throw new ApiError('Session changed', 409)
+    }
+    const method = (options.method || 'GET').toUpperCase()
+    // A lost response does not mean a write failed. Never automatically replay writes.
+    const maxAttempts = method === 'GET' || method === 'HEAD' ? this.maxRetries : 1
+    const headers = new Headers(options.headers)
+    headers.set('Accept-Language', getCurrentLocale())
+    let body = options.body
+    if (body && typeof body === 'object' && !(body instanceof FormData) && !(body instanceof URLSearchParams) && !(body instanceof Blob) && !(body instanceof ArrayBuffer) && !ArrayBuffer.isView(body)) {
+      body = JSON.stringify(body)
+    }
+    if (!(body instanceof FormData) && !headers.has('Content-Type')) headers.set('Content-Type', 'application/json')
+    for (let attempt = 1; ; attempt++) {
+      try {
+        checkSession()
+        this.loadTokens()
+        const sentToken = this.accessToken
+        if (sentToken) headers.set('Authorization', `Bearer ${sentToken}`)
+        let response = await this.fetch(url, { ...options, body: body as BodyInit | null | undefined, headers })
+        checkSession()
+        if (response.status === 401 && this.refreshToken && !url.startsWith('/auth/')) {
+          // Another request may already have refreshed the shared token.
+          const current = localStorage.getItem('access_token')
+          if (current === sentToken && !await this.refreshAccessToken()) throw new ApiError('Unauthorized', 401)
+          this.loadTokens()
+          if (!this.accessToken) throw new ApiError('Unauthorized', 401)
+          headers.set('Authorization', `Bearer ${this.accessToken}`)
+          response = await this.fetch(url, { ...options, body: body as BodyInit | null | undefined, headers })
+        }
+        checkSession()
+        if (!response.ok) throw await responseError(response)
+        const result = response.status === 204 ? undefined : await response.json()
+        checkSession()
+        this.networkSuccessCallback?.()
+        return result as T
+      } catch (error) {
+        // Do not let a failed request from the previous account fall back to its offline data.
+        if (error instanceof ApiError && error.isNetworkError) checkSession()
+        const networkError = error instanceof ApiError && error.isNetworkError
+        if (!networkError || attempt >= maxAttempts) {
+          if (networkError) this.networkErrorCallback?.(false, attempt, maxAttempts)
+          throw error
+        }
+        this.networkErrorCallback?.(true, attempt, maxAttempts)
+        await new Promise(resolve => setTimeout(resolve, this.retryDelayMs * 2 ** (attempt - 1)))
+      }
     }
   }
 
-  async request<T>(url: string, options: RequestInit = {}): Promise<T> {
-    return this.retryWithBackoff(async () => {
-      // Handle POST/PUT/PATCH with body object
-      if (options.body && typeof options.body === 'object' && !(options.body instanceof FormData)) {
-        options.body = JSON.stringify(options.body)
-        if (!options.headers) {
-          options.headers = {}
-        }
-        if (typeof options.headers === 'object' && !(options.headers instanceof Headers)) {
-          (options.headers as Record<string, string>)['Content-Type'] = 'application/json'
-        }
-      }
-      // CRITICAL: Load tokens from localStorage RIGHT BEFORE creating headers
-      // This ensures tokens are always fresh, especially on direct URL access
-      this.loadTokens()
-      
-      const isFormData = options.body instanceof FormData
-      const headers: Record<string, string> = {
-        'Accept-Language': getCurrentLocale(),
-        ...(options.headers as Record<string, string> || {}),
-      }
-      // Default to JSON, but never override a Content-Type the caller set
-      // explicitly (e.g. application/x-www-form-urlencoded for the admin
-      // training-card create/edit forms) — otherwise a form-encoded body
-      // arrives tagged as JSON and the server rejects it as invalid JSON.
-      if (!isFormData && !headers['Content-Type']) {
-        headers['Content-Type'] = 'application/json'
-      }
-
-      // Get token directly from localStorage to ensure it's current
-      // This is critical for direct URL access when components mount before tokens are loaded
-      const token = localStorage.getItem('access_token')
-      if (token) {
-        headers['Authorization'] = `Bearer ${token}`
-        // Also update instance variable for consistency
-        this.accessToken = token
-      } else if (this.accessToken) {
-        // Fallback to instance variable if localStorage is empty
-        headers['Authorization'] = `Bearer ${this.accessToken}`
-      } else {
-        // Debug: log when no token is available
-        console.warn('[ApiClient] No access token available for request:', url)
-      }
-
-      let response: Response
-      try {
-        response = await fetch(`${API_BASE}${url}`, {
-          ...options,
-          headers,
-        })
-      } catch (fetchError: any) {
-        // Wrap fetch errors as network errors
-        const networkError = new Error(fetchError.message || 'Network error')
-        ;(networkError as any).name = fetchError.name || 'TypeError'
-        ;(networkError as any).isNetworkError = true
-        throw networkError
-      }
-
-      if (response.status === 401 && this.refreshToken) {
-        const refreshed = await this.refreshAccessToken()
-        if (refreshed) {
-          // Reload token after refresh to ensure we have the latest one
-          this.loadTokens()
-          const refreshedToken = localStorage.getItem('access_token') || this.accessToken
-          if (refreshedToken) {
-            headers['Authorization'] = `Bearer ${refreshedToken}`
-          }
-          try {
-            response = await fetch(`${API_BASE}${url}`, {
-              ...options,
-              headers,
-            })
-          } catch (fetchError: any) {
-            const networkError = new Error(fetchError.message || 'Network error')
-            ;(networkError as any).name = fetchError.name || 'TypeError'
-            ;(networkError as any).isNetworkError = true
-            throw networkError
-          }
-        } else {
-          this.clearTokens()
-          throw new Error('Unauthorized')
-        }
-      }
-
-      if (!response.ok) {
-        const errorText = await response.text()
-        const { message: errorMessage, code } = parseApiErrorBody(errorText, response.status)
-        const error = new Error(errorMessage)
-        ;(error as any).status = response.status
-        ;(error as any).response = response
-        if (code) {
-          ;(error as any).code = code
-        }
-        throw error
-      }
-
-      return response.json()
-    }, url)
+  requestFormData<T>(url: string, formData: FormData): Promise<T> {
+    const params = new URLSearchParams()
+    formData.forEach((value, key) => params.append(key, value.toString()))
+    return this.request(url, {
+      method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: params.toString(),
+    })
   }
 
-  async requestFormData<T>(url: string, formData: FormData): Promise<T> {
-    return this.retryWithBackoff(async () => {
-      // CRITICAL: Load tokens from localStorage RIGHT BEFORE creating headers
-      // This ensures tokens are always fresh, especially on direct URL access
-      this.loadTokens()
-      
-      // Convert FormData to URLSearchParams for application/x-www-form-urlencoded
-      const params = new URLSearchParams()
-      formData.forEach((value, key) => {
-        params.append(key, value.toString())
-      })
-
-      const headers: Record<string, string> = {
-        'Content-Type': 'application/x-www-form-urlencoded',
-        'Accept-Language': getCurrentLocale(),
-      }
-
-      // Get token directly from localStorage to ensure it's current
-      // This is critical for direct URL access when components mount before tokens are loaded
-      const token = localStorage.getItem('access_token')
-      if (token) {
-        headers['Authorization'] = `Bearer ${token}`
-        // Also update instance variable for consistency
-        this.accessToken = token
-      } else if (this.accessToken) {
-        // Fallback to instance variable if localStorage is empty
-        headers['Authorization'] = `Bearer ${this.accessToken}`
-      } else {
-        // Debug: log when no token is available
-        console.warn('[ApiClient] No access token available for requestFormData:', url)
-      }
-
-      const fullUrl = `${API_BASE}${url}`
-
-      let response: Response
-      try {
-        response = await fetch(fullUrl, {
-          method: 'POST',
-          headers,
-          body: params.toString(),
-        })
-      } catch (fetchError: any) {
-        // Wrap fetch errors as network errors
-        const networkError = new Error(fetchError.message || 'Network error')
-        ;(networkError as any).name = fetchError.name || 'TypeError'
-        ;(networkError as any).isNetworkError = true
-        throw networkError
-      }
-
-      if (response.status === 401 && this.refreshToken) {
-        const refreshed = await this.refreshAccessToken()
-        if (refreshed) {
-          // Reload token after refresh to ensure we have the latest one
-          this.loadTokens()
-          const refreshedToken = localStorage.getItem('access_token') || this.accessToken
-          if (refreshedToken) {
-            headers['Authorization'] = `Bearer ${refreshedToken}`
-          }
-          try {
-            response = await fetch(fullUrl, {
-              method: 'POST',
-              headers,
-              body: params.toString(),
-            })
-          } catch (fetchError: any) {
-            const networkError = new Error(fetchError.message || 'Network error')
-            ;(networkError as any).name = fetchError.name || 'TypeError'
-            ;(networkError as any).isNetworkError = true
-            throw networkError
-          }
-        } else {
-          this.clearTokens()
-          throw new Error('Unauthorized')
-        }
-      }
-
-      if (!response.ok) {
-        const errorText = await response.text()
-        const { message: errorMessage, code } = parseApiErrorBody(errorText, response.status)
-        const error = new Error(errorMessage)
-        ;(error as any).status = response.status
-        ;(error as any).response = response
-        if (code) {
-          ;(error as any).code = code
-        }
-        throw error
-      }
-
-      return response.json()
-    }, url)
+  authTelegram(initData: string): Promise<AuthResponse> {
+    const form = new FormData()
+    form.append('initData', initData)
+    return this.requestFormData('/auth/telegram', form)
   }
 
-  async authTelegram(initData: string): Promise<AuthResponse> {
-    const formData = new FormData()
-    formData.append('initData', initData)
-    
-    try {
-      const response = await this.requestFormData<AuthResponse>('/auth/telegram', formData)
-      return response
-    } catch (error: any) {
-      // Check for network/CORS errors
-      if (error.message?.includes('Failed to fetch') || 
-          error.message?.includes('NetworkError') ||
-          error.name === 'TypeError') {
-        const networkError = new Error('Ошибка сети: не удалось отправить запрос. Возможно, проблема с CORS или сервер недоступен.')
-        ;(networkError as any).status = 0
-        ;(networkError as any).isNetworkError = true
-        throw networkError
-      }
-      
-      throw error
-    }
-  }
-
-  async requestOTP(username: string): Promise<{ success: boolean; message: string; user_id: number }> {
-    const formData = new FormData()
-    formData.append('username', username)
-    return this.requestFormData('/auth/request_otp', formData)
+  requestOTP(username: string): Promise<{ success: boolean; message: string; user_id: number }> {
+    const form = new FormData()
+    form.append('username', username)
+    return this.requestFormData('/auth/request_otp', form)
   }
 
   async verifyOTP(userId: string, code: string): Promise<AuthResponse> {
-    const formData = new FormData()
-    formData.append('user_id', userId)
-    formData.append('code', code)
-    const response = await this.requestFormData<AuthResponse>('/auth/otp', formData)
+    const form = new FormData()
+    form.append('user_id', userId)
+    form.append('code', code)
+    const response = await this.requestFormData<AuthResponse>('/auth/otp', form)
     this.saveTokens(response.access_token, response.refresh_token)
     return response
   }
 }
 
 export const apiClient = new ApiClient()
-

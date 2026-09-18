@@ -1,6 +1,9 @@
 package testkit
 
 import (
+	"crypto/hmac"
+	"crypto/sha256"
+	"encoding/hex"
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
@@ -147,13 +150,20 @@ func testConfig() *config.Config {
 	}
 }
 
-// AuthAsUser authenticates via /auth/telegram_unsafe and returns Bearer token
+// AuthAsUser authenticates with signed Telegram initData and returns a Bearer token.
 func (h *Harness) AuthAsUser(telegramID int64) string {
 	h.T.Helper()
 
 	form := url.Values{}
-	form.Set("user_id", strconv.FormatInt(telegramID, 10))
-	req := httptest.NewRequest(http.MethodPost, "/auth/telegram_unsafe", strings.NewReader(form.Encode()))
+	user, _ := json.Marshal(map[string]int64{"id": telegramID})
+	initData := url.Values{"auth_date": {strconv.FormatInt(time.Now().Unix(), 10)}, "user": {string(user)}}
+	secret := hmac.New(sha256.New, []byte("WebAppData"))
+	secret.Write([]byte("test-bot-token"))
+	signature := hmac.New(sha256.New, secret.Sum(nil))
+	signature.Write([]byte("auth_date=" + initData.Get("auth_date") + "\nuser=" + initData.Get("user")))
+	initData.Set("hash", hex.EncodeToString(signature.Sum(nil)))
+	form.Set("initData", initData.Encode())
+	req := httptest.NewRequest(http.MethodPost, "/auth/telegram", strings.NewReader(form.Encode()))
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	w := httptest.NewRecorder()
 

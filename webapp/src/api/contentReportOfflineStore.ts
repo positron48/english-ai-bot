@@ -1,5 +1,4 @@
-const DB_NAME = 'qantrix-content-reports-offline'
-const DB_VERSION = 1
+import { createOfflineStore } from './offlineStore'
 
 export type ContentReportSourceType =
   | 'word_training'
@@ -30,52 +29,14 @@ export interface QueuedContentReport {
 
 type StoreName = 'meta' | 'queue'
 
-let dbPromise: Promise<IDBDatabase> | null = null
-
-function openDB(): Promise<IDBDatabase> {
-  if (dbPromise) return dbPromise
-  dbPromise = new Promise((resolve, reject) => {
-    const request = indexedDB.open(DB_NAME, DB_VERSION)
-    request.onupgradeneeded = () => {
-      const db = request.result
-      if (!db.objectStoreNames.contains('meta')) db.createObjectStore('meta')
-      if (!db.objectStoreNames.contains('queue')) db.createObjectStore('queue', { keyPath: 'client_report_id' })
-    }
-    request.onsuccess = () => resolve(request.result)
-    request.onerror = () => reject(request.error)
-  })
-  return dbPromise
-}
-
-async function withStore<T>(storeName: StoreName, mode: IDBTransactionMode, fn: (store: IDBObjectStore) => IDBRequest<T> | void): Promise<T | void> {
-  const db = await openDB()
-  return new Promise((resolve, reject) => {
-    const tx = db.transaction(storeName, mode)
-    const store = tx.objectStore(storeName)
-    const request = fn(store)
-    if (!request) {
-      tx.oncomplete = () => resolve(undefined)
-      tx.onerror = () => reject(tx.error)
-      return
-    }
-    request.onsuccess = () => resolve(request.result as T)
-    request.onerror = () => reject(request.error)
-  })
-}
+const withStore = createOfflineStore<StoreName>('contentReportOfflineStore', { meta: undefined, queue: { keyPath: 'client_report_id' } })
 
 export async function enqueueContentReport(report: QueuedContentReport): Promise<void> {
   await withStore('queue', 'readwrite', (store) => store.put(report))
 }
 
 export async function getQueuedContentReports(): Promise<QueuedContentReport[]> {
-  const db = await openDB()
-  return new Promise((resolve, reject) => {
-    const tx = db.transaction('queue', 'readonly')
-    const store = tx.objectStore('queue')
-    const request = store.getAll()
-    request.onsuccess = () => resolve((request.result || []) as QueuedContentReport[])
-    request.onerror = () => reject(request.error)
-  })
+  return await withStore<QueuedContentReport[]>('queue', 'readonly', store => store.getAll()) || []
 }
 
 export async function deleteQueuedContentReport(clientReportID: string): Promise<void> {

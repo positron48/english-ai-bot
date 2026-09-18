@@ -98,7 +98,7 @@
       </div>
       
       <div class="filters">
-        <select v-model="selectedCategory" @change="loadWordSets" class="form-select">
+        <select v-model="selectedCategory" @change="loadWordSets()" class="form-select">
           <option :value="null">All Categories</option>
           <option v-for="cat in allCategoriesFlat" :key="cat.id" :value="cat.id">
             {{ cat.name }}
@@ -333,7 +333,7 @@
 import { ref, computed, onMounted, onUnmounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { apiClient } from '../api/client'
-import { showAlert, showConfirm } from '../composables/useDialog'
+import { showAlert } from '../composables/useDialog'
 import { useAuth } from '../composables/useAuth'
 import { courseClient, type CourseSummary } from '../api/courseClient'
 

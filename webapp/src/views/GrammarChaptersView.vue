@@ -37,7 +37,7 @@
       
       <div v-else class="chapters-list">
         <div
-          v-for="(chapter, index) in chapters"
+          v-for="chapter in chapters"
           :key="chapter.chapter_id"
           class="chapter-item"
           :class="{ 'locked': !chapter.can_access && !chapter.passed }"

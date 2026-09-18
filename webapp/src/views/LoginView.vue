@@ -60,7 +60,7 @@
           <p>{{ t('auth.enterOTP') }}</p>
           <div class="otp-input-container">
             <input
-              v-for="(digit, index) in otpDigits"
+              v-for="(_digit, index) in otpDigits"
               :key="index"
               :ref="(el) => { if (el) otpInputs[index] = el as HTMLInputElement }"
               v-model="otpDigits[index]"
@@ -482,7 +482,6 @@ const verifyOTP = async () => {
 .register-hint .bot-link:hover {
   text-decoration: underline;
 }
-
 
 .otp-input-container {
   display: flex;

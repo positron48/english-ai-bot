@@ -55,6 +55,7 @@ const freshUseCourse = async () => {
 describe('useCourse', () => {
   beforeEach(() => {
     localStorage.clear()
+    localStorage.setItem('access_token', `header.${btoa(JSON.stringify({ user_id: 1 }))}.signature`)
     getCourses.mockReset()
     selectCourse.mockReset()
     setGrammarCourse.mockReset()
@@ -73,11 +74,11 @@ describe('useCourse', () => {
 
     expect(c.currentCourseCode.value).toBe('en_ru')
     expect(setGrammarCourse).toHaveBeenCalledWith('en_ru')
-    expect(localStorage.getItem('linglow.courseCache.v1')).toContain('en_ru')
+    expect(localStorage.getItem('linglow.courseCache.v2:user:1')).toContain('en_ru')
   })
 
   it('hydrates courses from cache while offline', async () => {
-    localStorage.setItem('linglow.courseCache.v1', JSON.stringify({
+    localStorage.setItem('linglow.courseCache.v2:user:1', JSON.stringify({
       courses: [enCourse, { ...esCourse, is_current: true }],
       currentCourseCode: 'es_ru',
     }))
@@ -92,7 +93,7 @@ describe('useCourse', () => {
   })
 
   it('switches course locally while offline', async () => {
-    localStorage.setItem('linglow.courseCache.v1', JSON.stringify({
+    localStorage.setItem('linglow.courseCache.v2:user:1', JSON.stringify({
       courses: [enCourse, esCourse],
       currentCourseCode: 'en_ru',
     }))
@@ -105,7 +106,7 @@ describe('useCourse', () => {
     expect(selectCourse).not.toHaveBeenCalled()
     expect(c.currentCourseCode.value).toBe('es_ru')
     expect(resetLearning).toHaveBeenCalled()
-    expect(JSON.parse(localStorage.getItem('linglow.courseCache.v1') || '{}').currentCourseCode).toBe('es_ru')
+    expect(JSON.parse(localStorage.getItem('linglow.courseCache.v2:user:1') || '{}').currentCourseCode).toBe('es_ru')
   })
 
   it('keeps online select backed by API', async () => {
@@ -118,6 +119,6 @@ describe('useCourse', () => {
 
     expect(selectCourse).toHaveBeenCalledWith('es_ru')
     expect(c.currentCourseCode.value).toBe('es_ru')
-    expect(localStorage.getItem('linglow.courseCache.v1')).toContain('es_ru')
+    expect(localStorage.getItem('linglow.courseCache.v2:user:1')).toContain('es_ru')
   })
 })

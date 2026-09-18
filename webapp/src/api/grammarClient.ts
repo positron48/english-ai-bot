@@ -1,3 +1,4 @@
+import { captureUserScope, currentUserScope } from './sessionScope'
 import { apiClient } from './client'
 import { emitAppDataEvent } from './cacheInvalidation'
 import { patchLearningAfterGrammarSubmit } from './appDataCachePatches'
@@ -144,7 +145,7 @@ function grammarCourseParam(): string {
   return code ? `?course_code=${encodeURIComponent(code)}` : ''
 }
 
-const COURSE_CACHE_KEY = 'linglow.courseCache.v1'
+const courseCacheKey = () => `linglow.courseCache.v2:${currentUserScope()}`
 
 /** Active course code: in-memory selection, then localStorage cache (survives refresh before ensureCourseLoaded). */
 export function getActiveCourseCode(): string {
@@ -152,7 +153,7 @@ export function getActiveCourseCode(): string {
   if (live) return live
   if (typeof localStorage === 'undefined') return ''
   try {
-    const raw = localStorage.getItem(COURSE_CACHE_KEY)
+    const raw = localStorage.getItem(courseCacheKey())
     if (!raw) return ''
     const parsed = JSON.parse(raw) as { currentCourseCode?: string }
     return String(parsed.currentCourseCode || '').trim()
@@ -256,8 +257,19 @@ async function filterTrainingQuestionsByStudiedChapters(questions: any[]): Promi
   })
 }
 
+function captureGrammarScope(): () => void {
+  const checkUser = captureUserScope()
+  const course = activeCourseCode()
+  return () => {
+    checkUser()
+    if (activeCourseCode() !== course) throw new Error('Course changed')
+  }
+}
+
 async function updateLocalProgress(scope: 'chapter' | 'category', scopeID: string, result: any): Promise<void> {
+  const checkScope = captureGrammarScope()
   const meta = await requireMeta()
+  checkScope()
   const now = new Date().toISOString()
   if (scope === 'chapter') {
     for (const section of meta.sections) {
@@ -324,7 +336,9 @@ async function gradeOfflineTest(scope: 'chapter' | 'category', scopeID: string, 
 }
 
 async function queueOfflineAttempt(scope: 'chapter' | 'category', scopeID: string, answers: any[], result: any): Promise<void> {
+  const checkScope = captureGrammarScope()
   const meta = await requireMeta()
+  checkScope()
   const id = typeof crypto !== 'undefined' && 'randomUUID' in crypto
     ? crypto.randomUUID()
     : `offline-${Date.now()}-${Math.random().toString(16).slice(2)}`
@@ -436,22 +450,27 @@ export const grammarClient = {
   },
 
   async preload(onProgress?: (done: number, total: number) => void): Promise<OfflineStatus> {
+    const checkUser = captureUserScope()
+    const course = activeCourseCode()
     const manifest = await apiClient.request<OfflineGrammarMeta>(`/api/learning/grammar/offline/manifest${grammarCourseParam()}`)
     const meta = { ...manifest, downloaded_at: new Date().toISOString() }
-    await setOfflineMeta(meta, activeCourseCode())
+    checkUser()
+    await setOfflineMeta(meta, course)
     const chapters = meta.sections.flatMap((section) => section.chapters)
     let done = 0
     onProgress?.(done, chapters.length)
     for (const chapter of chapters) {
       const payload = await apiClient.request<any>(chapter.download_url)
-      await setStoredChapter(chapter.chapter_id, payload, activeCourseCode())
+      checkUser()
+      await setStoredChapter(chapter.chapter_id, payload, course)
       done++
       onProgress?.(done, chapters.length)
     }
     const trainingURL = (manifest as any)?.training_pack?.download_url
     if (trainingURL) {
       const trainingPack = await apiClient.request<any>(trainingURL)
-      await setTrainingQuestions(trainingPack?.questions || [], activeCourseCode())
+      checkUser()
+      await setTrainingQuestions(trainingPack?.questions || [], course)
     }
     return this.getOfflineStatus()
   },
@@ -461,13 +480,18 @@ export const grammarClient = {
   },
 
   async syncQueuedAttempts(): Promise<number> {
-    if (isBrowserOffline()) return 0
-    const attempts = await getQueuedAttempts(activeCourseCode())
+    if (isBrowserOffline() || currentUserScope() === 'anon') return 0
+    const checkUser = captureUserScope()
+    const courseParam = grammarCourseParam()
+    const course = activeCourseCode()
+    const attempts = await getQueuedAttempts(course)
+    checkUser()
     let synced = 0
     if (attempts.length > 0) {
+      checkUser()
       let response: any
       try {
-        response = await apiClient.request('/api/learning/grammar/offline/sync-attempts', {
+        response = await apiClient.request(`/api/learning/grammar/offline/sync-attempts${courseParam}`, {
           method: 'POST',
           body: { attempts } as any,
         })
@@ -475,19 +499,22 @@ export const grammarClient = {
         if (isNetworkError(error)) return synced
         throw error
       }
+      checkUser()
       for (const item of response.results || []) {
         if (item.synced && item.client_attempt_id) {
+          checkUser()
           await deleteQueuedAttempt(item.client_attempt_id)
           synced++
         }
       }
       if (synced > 0) clearCategoriesCache()
     }
-    const trainingAttempts = await getQueuedTrainingAttempts(activeCourseCode())
+    const trainingAttempts = await getQueuedTrainingAttempts(course)
     if (trainingAttempts.length > 0) {
+      checkUser()
       let trainingResponse: any
       try {
-        trainingResponse = await apiClient.request('/api/learning/grammar/offline/sync-training-attempts', {
+        trainingResponse = await apiClient.request(`/api/learning/grammar/offline/sync-training-attempts${courseParam}`, {
           method: 'POST',
           body: { attempts: trainingAttempts } as any,
         })
@@ -495,8 +522,10 @@ export const grammarClient = {
         if (isNetworkError(error)) return synced
         throw error
       }
+      checkUser()
       for (const item of trainingResponse.results || []) {
         if (item.synced && item.client_attempt_id) {
+          checkUser()
           await deleteQueuedTrainingAttempt(item.client_attempt_id)
           synced++
         }
@@ -608,6 +637,7 @@ export const grammarClient = {
   },
 
   async submitTrainingAnswer(questionID: string, answer: any): Promise<any> {
+    const checkScope = captureGrammarScope()
     if (!isBrowserOffline()) {
       try {
         const result = await apiClient.request(`/api/learning/grammar/training/session/answer${grammarCourseParam()}`, {
@@ -620,7 +650,9 @@ export const grammarClient = {
         if (!isNetworkError(error)) throw error
       }
     }
+    checkScope()
     const questions = await getOfflineTrainingQuestionPool()
+    checkScope()
     const question = questions.find((q: any) => q?.id === questionID || q?._offline_original_question_id === questionID)
     if (!question) throw new OfflineGrammarUnavailableError('Training question is not available offline')
     const correct = compareAnswers(answer, question.correct_answer, question.type)
@@ -758,6 +790,7 @@ export const grammarClient = {
   },
 
   async submitTest(scope: 'chapter' | 'category', scopeID: string, answers: any[]): Promise<any> {
+    const checkScope = captureGrammarScope()
     if (!isBrowserOffline()) {
       try {
         const result = await apiClient.request(`/api/learning/grammar/tests/submit${grammarCourseParam()}`, {
@@ -771,8 +804,11 @@ export const grammarClient = {
         if (!isNetworkError(error)) throw error
       }
     }
+    checkScope()
     const result = await gradeOfflineTest(scope, scopeID, answers)
+    checkScope()
     await updateLocalProgress(scope, scopeID, result)
+    checkScope()
     await queueOfflineAttempt(scope, scopeID, answers, result)
     notifyGrammarTestSubmitted(result)
     return result

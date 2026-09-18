@@ -1,7 +1,8 @@
-const DB_NAME = 'qantrix-word-training-offline'
-const DB_VERSION = 1
-const PACK_KEY = 'pack'
-const SESSION_KEY = 'active_session'
+import { getActiveCourseCodeForInvalidation } from './cacheInvalidation'
+import { captureUserScope } from './sessionScope'
+import { createOfflineStore } from './offlineStore'
+const packKey = (course = getActiveCourseCodeForInvalidation()) => `pack:${course || 'default'}`
+const sessionKey = (course = getActiveCourseCodeForInvalidation()) => `session:${course || 'default'}`
 
 export interface OfflineWordTrainingCard {
   question: string
@@ -80,45 +81,16 @@ export interface QueuedWordTrainingAttempt {
 
 type StoreName = 'meta' | 'queue'
 
-let dbPromise: Promise<IDBDatabase> | null = null
-
-function openDB(): Promise<IDBDatabase> {
-  if (dbPromise) return dbPromise
-  dbPromise = new Promise((resolve, reject) => {
-    const request = indexedDB.open(DB_NAME, DB_VERSION)
-    request.onupgradeneeded = () => {
-      const db = request.result
-      if (!db.objectStoreNames.contains('meta')) db.createObjectStore('meta')
-      if (!db.objectStoreNames.contains('queue')) db.createObjectStore('queue', { keyPath: 'client_attempt_id' })
-    }
-    request.onsuccess = () => resolve(request.result)
-    request.onerror = () => reject(request.error)
-  })
-  return dbPromise
-}
-
-async function tx<T>(storeName: StoreName, mode: IDBTransactionMode, fn: (store: IDBObjectStore) => IDBRequest<T> | void): Promise<T | void> {
-  const db = await openDB()
-  return new Promise((resolve, reject) => {
-    const transaction = db.transaction(storeName, mode)
-    const store = transaction.objectStore(storeName)
-    const request = fn(store)
-    let result: T | void
-    if (request) {
-      request.onsuccess = () => { result = request.result }
-      request.onerror = () => reject(request.error)
-    }
-    transaction.oncomplete = () => resolve(result)
-    transaction.onerror = () => reject(transaction.error)
-  })
-}
+const tx = createOfflineStore<StoreName>('wordTrainingOfflineStore', { meta: undefined, queue: { keyPath: 'client_attempt_id' } })
 
 export async function getWordTrainingPack(): Promise<OfflineWordTrainingPack | null> {
-  return (await tx<OfflineWordTrainingPack>('meta', 'readonly', (store) => store.get(PACK_KEY))) || null
+  const key = packKey()
+  return (await tx<OfflineWordTrainingPack>('meta', 'readonly', (store) => store.get(key))) || null
 }
 
 export async function setWordTrainingPack(pack: OfflineWordTrainingPack): Promise<void> {
-  await tx('meta', 'readwrite', (store) => store.put(pack, PACK_KEY))
+  const key = packKey()
+  await tx('meta', 'readwrite', (store) => store.put(pack, key))
 }
 
 export function packQueueItems(pack: OfflineWordTrainingPack | null): OfflineWordTrainingQueueItem[] {
@@ -129,7 +101,11 @@ export function packQueueItems(pack: OfflineWordTrainingPack | null): OfflineWor
 
 export async function removeWordTrainingUserCards(userCardIDs: number[]): Promise<void> {
   if (userCardIDs.length === 0) return
+  const checkUser = captureUserScope()
+  const course = getActiveCourseCodeForInvalidation()
   const pack = await getWordTrainingPack()
+  checkUser()
+  if (getActiveCourseCodeForInvalidation() !== course) throw new Error('Course changed')
   if (!pack) return
   const ids = new Set(userCardIDs)
   await setWordTrainingPack({
@@ -145,21 +121,24 @@ export async function removeWordTrainingCards(userCardIDs: number[]): Promise<vo
 }
 
 export async function clearWordTrainingPack(): Promise<void> {
-  await tx('meta', 'readwrite', (store) => store.delete(PACK_KEY))
-  await tx('meta', 'readwrite', (store) => store.delete(SESSION_KEY))
-  await tx('queue', 'readwrite', (store) => store.clear())
+  const pack = packKey()
+  const session = sessionKey()
+  await tx('meta', 'readwrite', (store) => { store.delete(pack); store.delete(session) })
 }
 
 export async function getWordTrainingSession(): Promise<OfflineWordTrainingSession | null> {
-  return (await tx<OfflineWordTrainingSession>('meta', 'readonly', (store) => store.get(SESSION_KEY))) || null
+  const key = sessionKey()
+  return (await tx<OfflineWordTrainingSession>('meta', 'readonly', (store) => store.get(key))) || null
 }
 
 export async function setWordTrainingSession(session: OfflineWordTrainingSession): Promise<void> {
-  await tx('meta', 'readwrite', (store) => store.put(session, SESSION_KEY))
+  const key = sessionKey()
+  await tx('meta', 'readwrite', (store) => store.put(session, key))
 }
 
 export async function clearWordTrainingSession(): Promise<void> {
-  await tx('meta', 'readwrite', (store) => store.delete(SESSION_KEY))
+  const key = sessionKey()
+  await tx('meta', 'readwrite', (store) => store.delete(key))
 }
 
 export async function enqueueWordTrainingAttempt(attempt: QueuedWordTrainingAttempt): Promise<void> {

@@ -22,7 +22,7 @@
           <LgIcon v-if="isCategoryLocked(category)" name="lock" :s="16" class="lock-icon" />
         </div>
         <p class="meta">
-          {{ t('reading.textsCount', category.text_count, { n: category.text_count }) }}
+          {{ t('reading.textsCount', { n: category.text_count }, category.text_count) }}
           <span v-if="!isCategoryLocked(category) && category.text_count > 0" class="meta-pct">
             · {{ Math.round((category.read_count || 0) / category.text_count * 100) }}%
           </span>

@@ -3,6 +3,7 @@ package web
 import (
 	"encoding/json"
 	"net/http"
+	"net/url"
 	"strings"
 
 	"tgbot-skeleton/internal/service"
@@ -37,12 +38,13 @@ type offlineSectionManifest struct {
 	TotalChapters      int                      `json:"total_chapters"`
 	ProgressPercentage int                      `json:"progress_percentage"`
 	CanAccess          bool                     `json:"can_access"`
-  CategoryTestScore  *int                     `json:"category_test_score,omitempty"`
-  OpenedByPlacement  bool                     `json:"opened_by_placement,omitempty"`
-  Chapters           []offlineChapterManifest `json:"chapters"`
+	CategoryTestScore  *int                     `json:"category_test_score,omitempty"`
+	OpenedByPlacement  bool                     `json:"opened_by_placement,omitempty"`
+	Chapters           []offlineChapterManifest `json:"chapters"`
 }
 
 func (r *Router) handleLearningGrammarOfflineManifest(w http.ResponseWriter, req *http.Request) {
+	svc := r.grammarServiceForRequest(req, getUserIDFromContext(req.Context()))
 	if req.Method != http.MethodGet {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
@@ -54,31 +56,31 @@ func (r *Router) handleLearningGrammarOfflineManifest(w http.ResponseWriter, req
 		return
 	}
 
-	sectionsData, err := r.grammarService.ContentRepo.GetSections()
+	sectionsData, err := svc.ContentRepo.GetSections()
 	if err != nil {
 		r.logger.Error("failed to get offline grammar sections", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
-	versionHash, err := r.grammarService.ContentRepo.BundleVersionHash()
+	versionHash, err := svc.ContentRepo.BundleVersionHash()
 	if err != nil {
 		r.logger.Error("failed to hash offline grammar bundle", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
-	index, err := r.grammarService.ContentRepo.GetIndex()
+	index, err := svc.ContentRepo.GetIndex()
 	if err != nil {
 		r.logger.Error("failed to get offline grammar index", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
-	publishedSections, err := r.grammarService.PublishRepo.GetPublishedItemsByType("section")
+	publishedSections, err := svc.PublishRepo.GetPublishedItemsByType("section")
 	if err != nil {
 		r.logger.Error("failed to get published grammar sections", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 		return
 	}
-	publishedChapters, err := r.grammarService.PublishRepo.GetPublishedItemsByType("chapter")
+	publishedChapters, err := svc.PublishRepo.GetPublishedItemsByType("chapter")
 	if err != nil {
 		r.logger.Error("failed to get published grammar chapters", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
@@ -100,15 +102,15 @@ func (r *Router) handleLearningGrammarOfflineManifest(w http.ResponseWriter, req
 			title = *sectionItem.Name
 		}
 
-		canAccess, errAccess := r.grammarService.CanAccessSection(req.Context(), userID, section.SectionID)
+		canAccess, errAccess := svc.CanAccessSection(req.Context(), userID, section.SectionID)
 		if errAccess != nil {
 			r.logger.Warn("failed to check offline section access", zap.String("section_id", section.SectionID), zap.Error(errAccess))
 		}
-		openedByPlacement, errPlacement := r.grammarService.IsSectionOpenedByPlacement(req.Context(), userID, section.SectionID)
+		openedByPlacement, errPlacement := svc.IsSectionOpenedByPlacement(req.Context(), userID, section.SectionID)
 		if errPlacement != nil {
 			r.logger.Warn("failed to check offline placement section", zap.String("section_id", section.SectionID), zap.Error(errPlacement))
 		}
-		bestCategoryScore, errScore := r.grammarService.AttemptRepo.GetCategoryTestBestScore(userID, section.SectionID)
+		bestCategoryScore, errScore := svc.AttemptRepo.GetCategoryTestBestScore(userID, section.SectionID)
 		var categoryTestScore *int
 		if errScore == nil && bestCategoryScore > 0 {
 			categoryTestScore = &bestCategoryScore
@@ -122,12 +124,12 @@ func (r *Router) handleLearningGrammarOfflineManifest(w http.ResponseWriter, req
 			if !ok || !chapterItem.IsPublished {
 				continue
 			}
-			chapter, err := r.grammarService.ContentRepo.GetChapter(chapterID)
+			chapter, err := svc.ContentRepo.GetChapter(chapterID)
 			if err != nil {
 				r.logger.Warn("failed to load offline grammar chapter", zap.String("chapter_id", chapterID), zap.Error(err))
 				continue
 			}
-			raw, err := r.grammarService.ContentRepo.GetChapterRawJSON(chapterID)
+			raw, err := svc.ContentRepo.GetChapterRawJSON(chapterID)
 			if err != nil {
 				r.logger.Warn("failed to size offline grammar chapter", zap.String("chapter_id", chapterID), zap.Error(err))
 			}
@@ -135,12 +137,12 @@ func (r *Router) handleLearningGrammarOfflineManifest(w http.ResponseWriter, req
 			if chapterItem.Name != nil && *chapterItem.Name != "" {
 				chapterTitle = *chapterItem.Name
 			}
-			progress, _ := r.grammarService.AttemptRepo.GetChapterProgress(userID, chapterID)
+			progress, _ := svc.AttemptRepo.GetChapterProgress(userID, chapterID)
 			if progress.Passed {
 				passedChapters++
 			}
 			scoreSum += progress.BestScore
-			chapterAccess, _ := r.grammarService.CanAccessChapter(req.Context(), userID, chapterID)
+			chapterAccess, _ := svc.CanAccessChapter(req.Context(), userID, chapterID)
 			approxBytes := len(raw)
 			totalBytes += approxBytes
 			totalChapters++
@@ -156,7 +158,7 @@ func (r *Router) handleLearningGrammarOfflineManifest(w http.ResponseWriter, req
 				BestScore:         progress.BestScore,
 				Passed:            progress.Passed,
 				CanAccess:         chapterAccess,
-				DownloadURL:       "/api/learning/grammar/offline/chapters/" + chapter.ID,
+				DownloadURL:       "/api/learning/grammar/offline/chapters/" + chapter.ID + "?course_code=" + url.QueryEscape(r.placementCourseCode(req, userID)),
 				ApproxBytes:       approxBytes,
 			})
 		}
@@ -185,9 +187,9 @@ func (r *Router) handleLearningGrammarOfflineManifest(w http.ResponseWriter, req
 	w.Header().Set("Content-Type", "application/json")
 	_ = json.NewEncoder(w).Encode(map[string]interface{}{
 		"app_code":        r.config.Learning.AppCode,
-		"bundle_id":       r.config.Learning.GrammarBundleID,
+		"bundle_id":       grammarBundleForCourse(r.placementCourseCode(req, userID)),
 		"native_lang":     r.config.Learning.NativeLang,
-		"target_lang":     r.config.Learning.TargetLang,
+		"target_lang":     grammarBundleForCourse(r.placementCourseCode(req, userID)),
 		"course_version":  index.Version,
 		"generated_at":    index.GeneratedAt,
 		"version_hash":    versionHash,
@@ -196,12 +198,13 @@ func (r *Router) handleLearningGrammarOfflineManifest(w http.ResponseWriter, req
 		"downloaded_from": r.config.WebApp.PublicURL,
 		"sections":        sections,
 		"training_pack": map[string]interface{}{
-			"download_url": "/api/learning/grammar/offline/training-pack",
+			"download_url": "/api/learning/grammar/offline/training-pack?course_code=" + url.QueryEscape(r.placementCourseCode(req, userID)),
 		},
 	})
 }
 
 func (r *Router) handleLearningGrammarOfflineTrainingPack(w http.ResponseWriter, req *http.Request) {
+	svc := r.grammarServiceForRequest(req, getUserIDFromContext(req.Context()))
 	if req.Method != http.MethodGet {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
@@ -211,7 +214,7 @@ func (r *Router) handleLearningGrammarOfflineTrainingPack(w http.ResponseWriter,
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		return
 	}
-	questions, err := r.grammarService.GetOfflineGrammarTrainingQuestions(req.Context(), userID)
+	questions, err := svc.GetOfflineGrammarTrainingQuestions(req.Context(), userID)
 	if err != nil {
 		r.logger.Error("failed to get offline grammar training pack", zap.Error(err))
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
@@ -219,8 +222,8 @@ func (r *Router) handleLearningGrammarOfflineTrainingPack(w http.ResponseWriter,
 	}
 	w.Header().Set("Content-Type", "application/json")
 	_ = json.NewEncoder(w).Encode(map[string]interface{}{
-		"bundle_id":  r.config.Learning.GrammarBundleID,
-		"language":   r.config.Learning.TargetLang,
+		"bundle_id":  grammarBundleForCourse(r.placementCourseCode(req, userID)),
+		"language":   grammarBundleForCourse(r.placementCourseCode(req, userID)),
 		"questions":  questions,
 		"total":      len(questions),
 		"downloaded": false,
@@ -228,6 +231,7 @@ func (r *Router) handleLearningGrammarOfflineTrainingPack(w http.ResponseWriter,
 }
 
 func (r *Router) handleLearningGrammarOfflineChapter(w http.ResponseWriter, req *http.Request) {
+	svc := r.grammarServiceForRequest(req, getUserIDFromContext(req.Context()))
 	if req.Method != http.MethodGet {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
@@ -238,21 +242,21 @@ func (r *Router) handleLearningGrammarOfflineChapter(w http.ResponseWriter, req 
 		http.Error(w, "chapter_id required", http.StatusBadRequest)
 		return
 	}
-	if ok, err := r.grammarService.PublishRepo.IsPublished("chapter", chapterID); err != nil || !ok {
+	if ok, err := svc.PublishRepo.IsPublished("chapter", chapterID); err != nil || !ok {
 		http.Error(w, "Chapter not found", http.StatusNotFound)
 		return
 	}
-	chapter, err := r.grammarService.ContentRepo.GetChapter(chapterID)
+	chapter, err := svc.ContentRepo.GetChapter(chapterID)
 	if err != nil {
 		r.logger.Error("failed to get offline grammar chapter", zap.String("chapter_id", chapterID), zap.Error(err))
 		http.Error(w, "Chapter not found", http.StatusNotFound)
 		return
 	}
-	if ok, err := r.grammarService.PublishRepo.IsPublished("section", chapter.SectionID); err != nil || !ok {
+	if ok, err := svc.PublishRepo.IsPublished("section", chapter.SectionID); err != nil || !ok {
 		http.Error(w, "Chapter not found", http.StatusNotFound)
 		return
 	}
-	item, _ := r.grammarService.PublishRepo.GetPublishedItem("chapter", chapterID)
+	item, _ := svc.PublishRepo.GetPublishedItem("chapter", chapterID)
 	title := chapter.Title
 	if item.Name != nil && *item.Name != "" {
 		title = *item.Name
@@ -262,7 +266,7 @@ func (r *Router) handleLearningGrammarOfflineChapter(w http.ResponseWriter, req 
 		"title":              title,
 		"title_translations": chapter.TitleTranslations,
 	}
-	if sec, err := r.grammarService.GetSectionBySectionID(req.Context(), chapter.SectionID); err == nil && sec != nil {
+	if sec, err := svc.GetSectionBySectionID(req.Context(), chapter.SectionID); err == nil && sec != nil {
 		resp["section"] = map[string]interface{}{
 			"section_id":         sec.SectionID,
 			"title":              sec.Title,
@@ -285,6 +289,7 @@ type offlineSyncAttempt struct {
 }
 
 func (r *Router) handleLearningGrammarOfflineSyncAttempts(w http.ResponseWriter, req *http.Request) {
+	svc := r.grammarServiceForRequest(req, getUserIDFromContext(req.Context()))
 	if req.Method != http.MethodPost {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
@@ -312,7 +317,7 @@ func (r *Router) handleLearningGrammarOfflineSyncAttempts(w http.ResponseWriter,
 			})
 			continue
 		}
-		exists, err := r.grammarService.AttemptRepo.HasClientAttempt(userID, clientID)
+		exists, err := svc.AttemptRepo.HasClientAttempt(userID, clientID)
 		if err != nil {
 			results = append(results, map[string]interface{}{
 				"client_attempt_id": clientID,
@@ -329,7 +334,7 @@ func (r *Router) handleLearningGrammarOfflineSyncAttempts(w http.ResponseWriter,
 			})
 			continue
 		}
-		result, err := r.grammarService.SubmitTestWithClientAttemptID(
+		result, err := svc.SubmitTestWithClientAttemptID(
 			req.Context(),
 			userID,
 			attempt.Scope,
@@ -373,6 +378,7 @@ type offlineSyncTrainingAttempt struct {
 }
 
 func (r *Router) handleLearningGrammarOfflineSyncTrainingAttempts(w http.ResponseWriter, req *http.Request) {
+	svc := r.grammarServiceForRequest(req, getUserIDFromContext(req.Context()))
 	if req.Method != http.MethodPost {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
@@ -396,8 +402,8 @@ func (r *Router) handleLearningGrammarOfflineSyncTrainingAttempts(w http.Respons
 			results = append(results, map[string]interface{}{"client_attempt_id": clientID, "synced": false, "error": "client_attempt_id and question_id are required"})
 			continue
 		}
-		if r.grammarService.SRSRepo != nil {
-			exists, err := r.grammarService.SRSRepo.HasClientAttempt(userID, clientID)
+		if svc.SRSRepo != nil {
+			exists, err := svc.SRSRepo.HasClientAttempt(userID, clientID)
 			if err != nil {
 				results = append(results, map[string]interface{}{"client_attempt_id": clientID, "synced": false, "error": err.Error()})
 				continue
@@ -408,7 +414,7 @@ func (r *Router) handleLearningGrammarOfflineSyncTrainingAttempts(w http.Respons
 			}
 		}
 		answeredAt := parseOfflineTimestamp(attempt.AnsweredAt, attempt.CreatedAt)
-		result, err := r.grammarService.SubmitGrammarSrsAnswerWithClientAttemptID(req.Context(), userID, attempt.QuestionID, attempt.Answer, clientID, answeredAt)
+		result, err := svc.SubmitGrammarSrsAnswerWithClientAttemptID(req.Context(), userID, attempt.QuestionID, attempt.Answer, clientID, answeredAt)
 		if err != nil {
 			results = append(results, map[string]interface{}{"client_attempt_id": clientID, "synced": false, "error": err.Error()})
 			continue

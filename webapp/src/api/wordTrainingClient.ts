@@ -1,3 +1,4 @@
+import { captureUserScope, currentUserScope } from './sessionScope'
 import { apiClient } from './client'
 import { getGrammarCourseCode } from './grammarClient'
 import { emitAppDataEvent } from './cacheInvalidation'
@@ -166,7 +167,17 @@ function notifyWordReviewRecorded() {
   void patchDashboardAfterWordAttempt(code)
 }
 
+function captureTrainingScope(): () => void {
+  const checkUser = captureUserScope()
+  const course = getGrammarCourseCode()
+  return () => {
+    checkUser()
+    if (getGrammarCourseCode() !== course) throw new Error('Course changed')
+  }
+}
+
 async function queueCardAttempt(session: OfflineWordTrainingSession, item: OfflineWordTrainingQueueItem, optionIndex: number): Promise<any> {
+  const checkScope = captureTrainingScope()
   const options = item.options || []
   const optionsShownAt = session.options_shown_at || new Date().toISOString()
   const answeredAt = new Date().toISOString()
@@ -192,7 +203,9 @@ async function queueCardAttempt(session: OfflineWordTrainingSession, item: Offli
     correct_answer: item.correct_answer,
   }
   await enqueueWordTrainingAttempt(attempt)
+  checkScope()
   await removeWordTrainingUserCards([item.user_card_id])
+  checkScope()
   if (isCorrect) session.correct_count++
   session.index++
   await setWordTrainingSession(session)
@@ -211,6 +224,7 @@ async function queueCardAttempt(session: OfflineWordTrainingSession, item: Offli
 }
 
 async function queueSpellTypeAttempt(session: OfflineWordTrainingSession, item: OfflineWordTrainingQueueItem, answerText: string): Promise<any> {
+  const checkScope = captureTrainingScope()
   const shownAt = session.shown_at || new Date().toISOString()
   const answeredAt = new Date().toISOString()
   const normalizedAnswer = answerText.trim().toLowerCase()
@@ -234,9 +248,11 @@ async function queueSpellTypeAttempt(session: OfflineWordTrainingSession, item: 
     correct_answer: item.correct_answer,
   }
   await enqueueWordTrainingAttempt(attempt)
+  checkScope()
   if (item.user_card_id > 0) {
     await removeWordTrainingUserCards([item.user_card_id])
   }
+  checkScope()
   if (isCorrect) session.correct_count++
   session.index++
   await setWordTrainingSession(session)
@@ -266,14 +282,20 @@ export const wordTrainingClient = {
   },
 
   async preload(): Promise<WordTrainingOfflineStatus> {
+    const checkUser = captureUserScope()
+    const course = getGrammarCourseCode()
     const pack = await apiClient.request<OfflineWordTrainingPack>(withCourse('/api/training/offline/pack'))
     const queue = pack.queue?.length ? pack.queue : (pack.cards || []).map((card) => ({ ...card, type: 'card' as const }))
+    checkUser()
+    if (getGrammarCourseCode() !== course) return this.getOfflineStatus()
     await setWordTrainingPack({
       ...pack,
       downloaded_at: new Date().toISOString(),
       cards: pack.cards || [],
       queue,
     })
+    checkUser()
+    if (getGrammarCourseCode() !== course) throw new Error('Course changed')
     await clearWordTrainingSession()
     return this.getOfflineStatus()
   },
@@ -283,9 +305,11 @@ export const wordTrainingClient = {
   },
 
   async syncQueuedAttempts(): Promise<number> {
-    if (isBrowserOffline()) return 0
+    if (isBrowserOffline() || currentUserScope() === 'anon') return 0
+    const checkUser = captureUserScope()
     const attempts = await getQueuedWordTrainingAttempts()
     if (attempts.length === 0) return 0
+    checkUser()
     let response: any
     try {
       response = await apiClient.request('/api/training/offline/sync-attempts', {
@@ -296,9 +320,11 @@ export const wordTrainingClient = {
       if (isNetworkError(error)) return 0
       throw error
     }
+    checkUser()
     let synced = 0
     for (const item of response.results || []) {
       if (item.synced && item.client_attempt_id) {
+        checkUser()
         await deleteQueuedWordTrainingAttempt(item.client_attempt_id)
         synced++
       }
@@ -342,7 +368,9 @@ export const wordTrainingClient = {
     return offlineFallback(
       () => apiClient.request(withCourse('/api/training/start'), { method: 'POST' }),
       async () => {
+        const checkScope = captureTrainingScope()
         const pack = await requirePack()
+        checkScope()
         const source = packQueueItems(pack)
         const queue = shuffle(source).slice(0, Math.min(30, source.length))
         if (queue.length === 0) throw new OfflineWordTrainingUnavailableError('No preloaded cards available')
@@ -375,7 +403,9 @@ export const wordTrainingClient = {
     return offlineFallback(
       () => apiClient.request('/api/training/reveal', { method: 'POST', headers: { 'Content-Type': 'application/json' } }),
       async () => {
+        const checkScope = captureTrainingScope()
         const session = await getWordTrainingSession()
+        checkScope()
         if (!session || session.index >= session.queue.length) throw new OfflineWordTrainingUnavailableError('No active offline session')
         const item = session.queue[session.index]
         if (item.type !== 'card') throw new OfflineWordTrainingUnavailableError('Reveal is only available for card mode offline')
@@ -387,6 +417,7 @@ export const wordTrainingClient = {
   },
 
   async answer(formData: FormData): Promise<any> {
+    const checkUser = captureTrainingScope()
     if (!isBrowserOffline()) {
       try {
         const result = await apiClient.requestFormData('/api/training/answer', formData)
@@ -396,13 +427,19 @@ export const wordTrainingClient = {
         if (!isNetworkError(error)) throw error
       }
     }
+    checkUser()
     const session = await getWordTrainingSession()
+    checkUser()
     if (!session || session.index >= session.queue.length) throw new OfflineWordTrainingUnavailableError('No active offline session')
+    if (Number(formData.get('session_id')) !== session.id || Number(formData.get('card_index')) !== session.index + 1) {
+      throw new Error('Offline training session changed')
+    }
     const item = session.queue[session.index]
     if (formData.has('answer_text')) {
       if (isLegacyPack(await getWordTrainingPack())) {
         throw new OfflineWordTrainingUnavailableError('Spell/type word training is not available offline yet. Please update preload.')
       }
+      checkUser()
       return queueSpellTypeAttempt(session, item, String(formData.get('answer_text') || ''))
     }
     if (item.type !== 'card') throw new OfflineWordTrainingUnavailableError('Use text answer for spell/type offline cards')

@@ -215,7 +215,6 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from 'vue'
-import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { useAuth } from '../composables/useAuth'
 import { apiClient } from '../api/client'
@@ -317,8 +316,6 @@ const pathSteps = computed(() => {
   })
   return [...steps.filter(s => !s.done), ...steps.filter(s => s.done)]
 })
-
-const router = useRouter()
 const { isAuthenticated } = useAuth()
 
 interface DashboardStats {
@@ -459,7 +456,6 @@ function applySentenceToday(today: { available?: boolean; remaining?: number } |
   sentenceRemaining.value = today.remaining ?? 0
   sentenceAvailable.value = (today.remaining ?? 0) > 0
 }
-
 
 watch(currentCourseCode, () => {
   if (isAuthenticated.value) {

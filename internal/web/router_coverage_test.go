@@ -11,6 +11,7 @@ import (
 	"net/http/httptest"
 	"net/url"
 	"sort"
+	"strconv"
 	"strings"
 	"testing"
 	"time"
@@ -296,7 +297,7 @@ func newNopBotCommandService(logger *zap.Logger) *service.BotCommandService {
 
 // buildValidInitData builds a valid Telegram initData string for the given telegramID and botToken.
 func buildValidInitData(telegramID int64, botToken string) string {
-	authDate := "1234567890"
+	authDate := strconv.FormatInt(time.Now().Unix(), 10)
 	userJSON, _ := json.Marshal(map[string]int64{"id": telegramID})
 	params := map[string]string{"auth_date": authDate, "user": string(userJSON)}
 	var keys []string
@@ -398,71 +399,6 @@ func TestRouter_handleAuthTelegram_GenerateTokenPairError(t *testing.T) {
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	w := httptest.NewRecorder()
 	router.handleAuthTelegram(w, req)
-
-	if w.Code != http.StatusInternalServerError {
-		t.Errorf("Expected 500 when GenerateTokenPair fails, got %d: %s", w.Code, w.Body.String())
-	}
-}
-
-// TestRouter_handleAuthTelegramUnsafe_GetOrCreateUserError covers the GetOrCreateUser error path (lines 1165-1169).
-func TestRouter_handleAuthTelegramUnsafe_GetOrCreateUserError(t *testing.T) {
-	logger := zap.NewNop()
-	cfg := &config.Config{WebApp: config.WebAppConfig{JWTSecret: "test-secret"}}
-
-	db := testutil.SetupTestDB(t)
-	userRepo := repository.NewUserRepository(db, logger)
-	router := NewRouter(logger, cfg, db, nil, nil, nil, nil)
-	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
-	router.getOrCreateUserForTelegram = func(_ int64) (*models.User, error) {
-		return nil, errors.New("injected db error")
-	}
-
-	body := strings.NewReader("user_id=12345")
-	req := httptest.NewRequest("POST", "/auth/telegram_unsafe", body)
-	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-	w := httptest.NewRecorder()
-	router.handleAuthTelegramUnsafe(w, req)
-
-	if w.Code != http.StatusInternalServerError {
-		t.Errorf("Expected 500 when GetOrCreateUser fails, got %d: %s", w.Code, w.Body.String())
-	}
-}
-
-// TestRouter_handleAuthTelegramUnsafe_GenerateTokenPairError covers the GenerateTokenPair error path (lines 1174-1178).
-func TestRouter_handleAuthTelegramUnsafe_GenerateTokenPairError(t *testing.T) {
-	logger := zap.NewNop()
-	cfg := &config.Config{
-		WebApp: config.WebAppConfig{
-			JWTSecret:       "test-secret",
-			JWTTTLHours:     24,
-			RefreshTTLHours: 720,
-		},
-	}
-
-	db := testutil.SetupTestDB(t)
-	userRepo := repository.NewUserRepository(db, logger)
-	accessCategoryRepo := repository.NewUserAccessCategoryRepository(db, logger)
-	jwtService, err := NewJWTService(cfg, logger)
-	if err != nil {
-		t.Fatalf("NewJWTService: %v", err)
-	}
-	authMiddleware := NewAuthMiddleware(userRepo, accessCategoryRepo, jwtService, logger, cfg, "test-token")
-
-	router := NewRouter(logger, cfg, db, nil, nil, nil, nil)
-	router.SetDependencies(userRepo, nil, nil, nil, "test-token")
-	router.authMiddleware = authMiddleware
-	router.getOrCreateUserForTelegram = func(_ int64) (*models.User, error) {
-		return &models.User{ID: 1, TelegramID: 12345}, nil
-	}
-	router.generateTokenPairForTelegram = func(_, _ int64) (string, string, error) {
-		return "", "", errors.New("injected token pair error")
-	}
-
-	body := strings.NewReader("user_id=12345")
-	req := httptest.NewRequest("POST", "/auth/telegram_unsafe", body)
-	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
-	w := httptest.NewRecorder()
-	router.handleAuthTelegramUnsafe(w, req)
 
 	if w.Code != http.StatusInternalServerError {
 		t.Errorf("Expected 500 when GenerateTokenPair fails, got %d: %s", w.Code, w.Body.String())

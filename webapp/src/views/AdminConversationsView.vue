@@ -405,9 +405,6 @@ async function removeScenario(s: AdminScenario) {
 function newTask(s: AdminScenario) {
   taskForm.value = { scenarioId: s.id, code: '', title: '', completion_criteria: '', is_required: true, sort_order: s.tasks.length }
 }
-function editTask(s: AdminScenario, t: AdminTask) {
-  taskForm.value = { ...t, scenarioId: s.id }
-}
 
 async function saveTask() {
   const f = taskForm.value
@@ -433,16 +430,6 @@ async function saveTask() {
     await showAlert(e?.message || 'Не удалось сохранить')
   } finally {
     saving.value = false
-  }
-}
-
-async function removeTask(_s: AdminScenario, t: AdminTask) {
-  if (!await showConfirm(`Удалить задачу «${t.title}»?`)) return
-  try {
-    await apiClient.request(`/api/admin/conversations/tasks/${t.id}`, { method: 'DELETE' })
-    await load()
-  } catch (e: any) {
-    await showAlert(e?.message || 'Не удалось удалить')
   }
 }
 
