@@ -30,7 +30,14 @@ type generatedSentenceSet struct {
 }
 
 type sentenceQualityReview struct {
-	AcceptedPositions []int `json:"accepted_positions"`
+	Checks []sentenceQualityCheck `json:"checks"`
+}
+
+type sentenceQualityCheck struct {
+	Position        int      `json:"position"`
+	Accepted        bool     `json:"accepted"`
+	Reason          string   `json:"reason"`
+	ContextEvidence []string `json:"context_evidence"`
 }
 
 // SentenceGradeToken is one rendered token of teacher-style markup.
@@ -53,9 +60,13 @@ type SentenceGrade struct {
 }
 
 // SentenceGradeIssue makes model output auditable and prevents a vague numeric
-// score from hiding what was counted. The server derives the final count from it.
+// score from hiding what was counted. The server checks that these spans explain
+// every changed word before deriving the score from the minimal text edit.
 type SentenceGradeIssue struct {
-	Kind string `json:"kind"`
+	Kind        string `json:"kind"`
+	Original    string `json:"original"`
+	Corrected   string `json:"corrected"`
+	Explanation string `json:"explanation"`
 }
 
 // SetSentenceGenPromptForCourse registers the daily sentence-set generation prompt for a course.
@@ -87,6 +98,7 @@ func (s *Service) GenerateSentenceSetForCourse(ctx context.Context, courseCode s
 	}
 	const batchSize = 5
 	out := make([]GeneratedSentence, 0, count)
+	seen := make(map[string]bool, count*2)
 	for offset := 0; offset < count; offset += batchSize {
 		batchCount := batchSize
 		if remaining := count - offset; remaining < batchCount {
@@ -97,7 +109,6 @@ func (s *Service) GenerateSentenceSetForCourse(ctx context.Context, courseCode s
 			batchFocus = append(batchFocus, focusWords[(offset+i)%len(focusWords)])
 		}
 		batch := make([]GeneratedSentence, 0, batchCount)
-		seen := make(map[string]bool, batchCount*2)
 		for attempt := 0; attempt < 4 && len(batch) < batchCount; attempt++ {
 			candidateCount := (batchCount - len(batch)) * 2
 			// Keep refill batches wide enough to give a small model room to avoid
@@ -127,6 +138,9 @@ func (s *Service) GenerateSentenceSetForCourse(ctx context.Context, courseCode s
 		}
 		out = append(out, batch...)
 	}
+	if len(out) != count {
+		return nil, fmt.Errorf("sentence generation produced %d/%d reviewed unique items", len(out), count)
+	}
 	return out, nil
 }
 
@@ -151,7 +165,7 @@ func (s *Service) generateSentenceBatchForCourse(ctx context.Context, courseCode
 		{Role: "system", Content: prompt},
 		{Role: "user", Content: string(payloadJSON)},
 	}
-	model := s.modelOr(modelOverride...)
+	model := s.sentenceModelOr(modelOverride...)
 	raw, err := s.postChatCompletion(ctx, model, messages, 3000, 0.6, zap.String("kind", "sentence_gen"), zap.String("course", courseCode))
 	if err != nil {
 		return nil, err
@@ -177,7 +191,7 @@ func (s *Service) generateSentenceBatchForCourse(ctx context.Context, courseCode
 			return nil, fmt.Errorf("parse sentence generation retry: %w (raw: %s)", err, truncateForLog(raw))
 		}
 	}
-	set.Sentences = s.repairMissingArticleContexts(ctx, model, courseCode, set.Sentences)
+	set.Sentences = s.repairMissingSentenceContexts(ctx, model, courseCode, set.Sentences)
 	allWords := append(append(make([]GenSentenceWord, 0, len(focusWords)+len(supportWords)), focusWords...), supportWords...)
 	focusSet := make(map[string]bool, len(focusWords))
 	knownSet := make(map[string]bool, len(allWords))
@@ -208,9 +222,8 @@ func (s *Service) generateSentenceBatchForCourse(ctx context.Context, courseCode
 				zap.String("course", courseCode), zap.String("clarification_ru", sentence.ClarificationRU))
 			continue
 		}
-		if strings.TrimSpace(sentence.ClarificationRU) == "" && hasSpanishArticle(sentence.ReferenceES) {
-			s.logger.Warn("sentence generation left an article choice without learner context; dropping",
-				zap.String("course", courseCode), zap.String("reference_es", sentence.ReferenceES))
+		if strings.TrimSpace(sentence.ClarificationRU) == "" && ((courseCode == "es_ru" && hasRussianAddress(sentence.PromptRU)) || hasSentenceArticle(courseCode, sentence.ReferenceES)) {
+			s.logger.Warn("sentence generation left an article or addressee without context; dropping", zap.String("course", courseCode))
 			continue
 		}
 		// The native-language prompt must never leak a target-language word. Weaker models
@@ -255,16 +268,11 @@ func (s *Service) generateSentenceBatchForCourse(ctx context.Context, courseCode
 	if len(out) == 0 {
 		return []GeneratedSentence{}, nil
 	}
-	out = s.reviewGeneratedSentenceQuality(ctx, model, courseCode, focusWords, supportWords, out)
+	out = s.reviewGeneratedSentenceQuality(ctx, model, courseCode, focusWords, supportWords, tenses, out)
 	if len(out) == 0 {
 		return []GeneratedSentence{}, nil
 	}
-	// Cheap models are not perfectly stable as judges. A second independent pass
-	// makes acceptance conservative: an item is served only when both reviews agree.
-	out = s.reviewGeneratedSentenceQuality(ctx, model, courseCode, focusWords, supportWords, out)
-	if len(out) == 0 {
-		return []GeneratedSentence{}, nil
-	}
+
 	// The model occasionally overshoots the requested count; hold it to exactly `count`.
 	if count > 0 && len(out) > count {
 		out = out[:count]
@@ -272,10 +280,10 @@ func (s *Service) generateSentenceBatchForCourse(ctx context.Context, courseCode
 	return out, nil
 }
 
-func (s *Service) repairMissingArticleContexts(ctx context.Context, model, courseCode string, sentences []GeneratedSentence) []GeneratedSentence {
+func (s *Service) repairMissingSentenceContexts(ctx context.Context, model, courseCode string, sentences []GeneratedSentence) []GeneratedSentence {
 	needsRepair := false
 	for _, sentence := range sentences {
-		if strings.TrimSpace(sentence.ClarificationRU) == "" && hasSpanishArticle(sentence.ReferenceES) {
+		if strings.TrimSpace(sentence.ClarificationRU) == "" && (hasSentenceArticle(courseCode, sentence.ReferenceES) || (courseCode == "es_ru" && hasRussianAddress(sentence.PromptRU))) {
 			needsRepair = true
 			break
 		}
@@ -283,14 +291,15 @@ func (s *Service) repairMissingArticleContexts(ctx context.Context, model, cours
 	if !needsRepair {
 		return sentences
 	}
-	payload, err := json.Marshal(map[string]interface{}{"sentences": sentences})
+	payload, err := json.Marshal(map[string]interface{}{"course": courseCode, "sentences": sentences})
 	if err != nil {
 		return sentences
 	}
 	const prompt = `Return ONLY JSON with the same {"sentences":[...]} array and preserve every field exactly except clarification_ru.
-For each item whose Spanish reference contains el/la/los/las/un/una/unos/unas and clarification_ru is empty, write one short natural Russian context sentence that makes the article choice inferable.
-For a definite article, state a concrete reason both speakers can identify the referent (they discussed it, requested it, or can uniquely identify it). For an indefinite article, state that this noun is introduced for the first time and no previously identified one is intended.
-Cover every article-bearing noun in the item. Use Cyrillic Russian only. Never mention grammar, article names, "конкретный", el/la/un/una, or reveal the answer directly.`
+Write 1-2 short natural Russian context sentences where needed to disambiguate the translation. No target-language words or grammar labels.
+For Spanish Russian вы/вам/вас/ваш, specify number of addressees and formality: usted = one person politely; vosotros/vosotras = several friends informally in Spain; ustedes = several people politely or several friends in Latin America. Name the region if needed. Cover article ambiguity as well.
+For a definite article, state a concrete reason BOTH speakers can identify the referent. For an indefinite article, make clear no previously identified referent is intended. Cover ALL ambiguous nouns, including el in al/del. For generic/class articles explain that the whole category is meant; never invent a previously discussed individual. Every article-bearing reference needs useful context, even when no identification story is needed.
+Never invent a scene unrelated to the grammatical choice. Do not alter already supplied context. Context must be coherent with both sentences.`
 	raw, err := s.postChatCompletion(ctx, model, []Message{{Role: "system", Content: prompt}, {Role: "user", Content: string(payload)}}, 3000, 0, zap.String("kind", "sentence_context_repair"), zap.String("course", courseCode))
 	if err != nil {
 		s.logger.Warn("sentence context repair failed", zap.Error(err))
@@ -309,45 +318,60 @@ Cover every article-bearing noun in the item. Use Cyrillic Russian only. Never m
 	return sentences
 }
 
-func (s *Service) reviewGeneratedSentenceQuality(ctx context.Context, model, courseCode string, focusWords, supportWords []GenSentenceWord, sentences []GeneratedSentence) []GeneratedSentence {
+func (s *Service) reviewGeneratedSentenceQuality(ctx context.Context, model, courseCode string, focusWords, supportWords []GenSentenceWord, tenses []string, sentences []GeneratedSentence) []GeneratedSentence {
 	payload, err := json.Marshal(map[string]interface{}{
 		"allowed_vocabulary": append(append([]GenSentenceWord{}, focusWords...), supportWords...),
 		"sentences":          sentences,
+		"course":             courseCode,
+		"allowed_tenses":     tenses,
 	})
 	if err != nil {
 		return sentences
 	}
-	const reviewPrompt = `You are a strict quality gate for short language-learning translation exercises.
-Return ONLY JSON: {"accepted_positions":[0,2,...]}.
-Accept an item only when ALL conditions hold:
-- FIRST perform a token-by-token vocabulary audit of both languages. If any noun, adjective, adverb or main verb cannot be traced to allowed_vocabulary, reject immediately. Never infer that a common/easy word is allowed. For example, reject игрушка/juguete, сын/hijo, видеть/ver or брать/agarrar unless that exact concept occurs in allowed_vocabulary;
-- prompt_ru is fully grammatical, idiomatic Russian with correct agreement, government and cases;
-- it describes a plausible ordinary situation a Russian speaker might naturally say;
-- it is a complete useful sentence, not a forced word combination or translation calque;
-- reference_es is a faithful, grammatical and natural translation of prompt_ru;
-- clarification_ru, when present, is coherent and does not contradict either sentence.
-- article choice is inferable from prompt_ru plus clarification_ru. If reference_es chooses a definite or indefinite article but bare Russian wording permits both, clarification_ru is mandatory and must state an observable fact that distinguishes already identified from newly introduced. Reject items like "Они едят апельсин" -> "Comen una naranja" when clarification_ru is empty;
-- every content-bearing word and action in BOTH prompt_ru and reference_es is derived from an entry in allowed_vocabulary (lemma or translation). Inflected forms are allowed. Function words are allowed: articles, pronouns, determiners, prepositions, conjunctions, particles and negation. Linking/existential uses of ser, estar and haber are allowed. Being grammatical, common or easy never makes an unsupplied content word acceptable;
-- used_words is complete: reject the item if either sentence contains a supplied content word that is omitted from used_words, or if used_words claims a word that is not actually expressed in both sides.
-Reject any Russian item without a finite verb, including nominal/location fragments whose Spanish translation inserts ser/estar. Reject odd physical traits, body-part/color combinations, tautologies, nonsensical ownership, unnatural fragments, and phrases like "язык чистый", "рука рядом с столом", "голова старая", "зелёное окно близко" or "чёрный нож на столе".
-Reject semantically empty noun+generic-action combinations such as "ребёнок ест еду", including variants with an adjective such as "ребёнок ест красную еду". An adjective does not make a tautological exercise useful.
-Reject unsupplied actions even when the generator omitted them from used_words. For example, брать/agarrar, видеть/ver, читать/leer or possession with tener must be present in allowed_vocabulary to be accepted. Do not treat a content verb as a harmless function word.
-Do not repair anything and do not explain. Include only zero-based positions that are clearly good.`
+	const reviewPrompt = `Проверь каждое упражнение на перевод. Сначала найди основания для каждого выбора, затем реши, можно ли показывать задание ученику.
+Вход: course (es_ru или en_ru), allowed_vocabulary, allowed_tenses, sentences. reference_es — историческое имя поля эталона, в английском курсе там английский.
+Верни ТОЛЬКО JSON: {"checks":[{"position":0,"accepted":true,"reason":"краткое обоснование", "context_evidence":["точная цитата из clarification_ru для первого выбора", "цитата для второго выбора"]}]}.
+Одна проверка на каждую позицию. Отклоняй при ЛЮБОМ нарушении:
+1. Все смысловые слова ОБЕИХ языков должны быть в allowed_vocabulary (с учётом форм и перевода). Проверь каждое существительное, прилагательное, основной глагол, наречие. Новые слова нельзя добавлять ради естественности. used_words должен включать все использованные леммы без лишних. Например, «давать»/dar запрещён, если его нет в списке. Служебные слова и связки разрешены. Лексика только внутри пояснения не ограничена.
+2. Русское предложение должно быть естественной короткой фразой с личной формой глагола; эталон должен точно передавать смысл и соблюдать allowed_tenses. Отклоняй неестественные комбинации ради лексики (мать находит чистую книгу, рука чистая, язык красный, ребёнок ест еду).
+3. Проверь КАЖДЫЙ артикль в эталоне отдельно, включая подлежащее и объект, включая al/del. Найди в clarification_ru точную цитату, объясняющую, почему ОБА собеседника знают именно этого человека/предмет, или почему он впервые вводится/ещё не выбран, или что речь обо всём классе. Добавь по одной такой цитате в context_evidence для каждого артикля по порядку.
+«Друг открывает дверь» + пояснение только о двери НЕ обосновывает el amigo: отклони. «Врач открывает то самое окно в кабинете» не объясняет, как оба знают врача: отклони. Само наличие существительного в prompt_ru не делает его известным. Простого «мы его видим» тоже недостаточно, если непонятно, какой из многих предметов. Для неопределённого артикля контекст не должен одновременно указывать на уже опознанный предмет.
+4. Для испанского «вы/вам/вас/ваш» в русском задании добавь ЕЩЁ ОДНУ цитату в context_evidence, которая задаёт число адресатов, вежливость, при необходимости регион и пол. Если такой цитаты нет — отклони. Usted: один человек вежливо, глагол в 3-м лице ед. числа. Vosotros/vosotras: несколько человек на ты в Испании, 2-е лицо мн. числа. Ustedes: несколько человек вежливо или в Латинской Америке, 3-е лицо мн. числа. Проверь также глагол при опущенном местоимении. «Одному другу на вы» с abres — ОШИБКА, это форма tú. Не принимай контекст с развилками «вежливо ИЛИ в Латинской Америке»: нужна одна ясная ситуация.
+5. Контекст не должен противоречить переводу, добавлять смысл к самому предложению, выдавать испанские/английские слова, рассказывать абстрактные правила. Он должен помогать выбрать ответ. Если речь о поиске в контексте, а предложение говорит о находке — отклони как несогласованное.
+Если основания для хотя бы одного выбора нет, accepted=false. Не домысливай недостающие факты. В reason кратко назови факты или причину отказа. Ничего не исправляй.`
 	messages := []Message{{Role: "system", Content: reviewPrompt}, {Role: "user", Content: string(payload)}}
-	raw, err := s.postChatCompletion(ctx, model, messages, 1000, 0, zap.String("kind", "sentence_quality_review"), zap.String("course", courseCode))
+	raw, err := s.postChatCompletion(ctx, model, messages, 4500, 0, zap.String("kind", "sentence_quality_review"), zap.String("course", courseCode))
 	if err != nil {
-		s.logger.Warn("sentence quality review failed; keeping deterministically valid candidates", zap.Error(err))
-		return sentences
+		s.logger.Warn("sentence quality review failed; dropping unreviewed candidates", zap.Error(err))
+		return nil
 	}
 	var review sentenceQualityReview
 	if err := json.Unmarshal([]byte(raw), &review); err != nil {
-		s.logger.Warn("sentence quality review returned invalid JSON; keeping deterministically valid candidates", zap.Error(err))
-		return sentences
+		s.logger.Warn("sentence quality review returned invalid JSON; dropping unreviewed candidates", zap.Error(err))
+		return nil
 	}
-	accepted := make(map[int]bool, len(review.AcceptedPositions))
-	for _, position := range review.AcceptedPositions {
-		if position >= 0 && position < len(sentences) {
-			accepted[position] = true
+	accepted := make(map[int]bool, len(review.Checks))
+	for _, check := range review.Checks {
+		if check.Position < 0 || check.Position >= len(sentences) || !check.Accepted || strings.TrimSpace(check.Reason) == "" {
+			continue
+		}
+		sentence := sentences[check.Position]
+		required := sentenceArticleCount(courseCode, sentence.ReferenceES)
+		if courseCode == "es_ru" && hasRussianAddress(sentence.PromptRU) {
+			required++
+		}
+		if len(check.ContextEvidence) < required {
+			continue
+		}
+		valid := true
+		for _, evidence := range check.ContextEvidence {
+			if len([]rune(strings.TrimSpace(evidence))) < 12 || !strings.Contains(sentence.ClarificationRU, evidence) {
+				valid = false
+				break
+			}
+		}
+		if valid {
+			accepted[check.Position] = true
 		}
 	}
 	out := make([]GeneratedSentence, 0, len(accepted))
@@ -382,15 +406,36 @@ func hasSpanishArticle(sentence string) bool {
 		return unicode.IsSpace(r) || unicode.IsPunct(r)
 	}) {
 		switch token {
-		case "el", "la", "los", "las", "un", "una", "unos", "unas":
+		case "el", "la", "los", "las", "un", "una", "unos", "unas", "al", "del":
 			return true
 		}
 	}
 	return false
 }
 
-// GradeSentenceForCourse grades one learner submission against the prompt and reference,
-// returning teacher-style markup tokens and an error count.
+func hasSentenceArticle(courseCode, sentence string) bool {
+	return sentenceArticleCount(courseCode, sentence) > 0
+}
+
+func sentenceArticleCount(courseCode, sentence string) int {
+	count := 0
+	for _, word := range strings.FieldsFunc(strings.ToLower(sentence), func(r rune) bool { return !unicode.IsLetter(r) }) {
+		if courseCode == "en_ru" {
+			if word == "a" || word == "an" || word == "the" {
+				count++
+			}
+		} else {
+			switch word {
+			case "el", "la", "los", "las", "un", "una", "unos", "unas", "al", "del":
+				count++
+			}
+		}
+	}
+	return count
+}
+
+// GradeSentenceForCourse checks exact reference matches locally, then grades other
+// translations from learner-visible facts only, avoiding reference-answer bias.
 func (s *Service) GradeSentenceForCourse(ctx context.Context, courseCode, promptRU, clarificationRU, referenceES, userInput string, modelOverride ...string) (*SentenceGrade, error) {
 	prompt := s.sentenceGradePrompts[courseCode]
 	if prompt == "" {
@@ -400,7 +445,6 @@ func (s *Service) GradeSentenceForCourse(ctx context.Context, courseCode, prompt
 	payload := map[string]interface{}{
 		"prompt_ru":        promptRU,
 		"clarification_ru": clarificationRU,
-		"reference_es":     referenceES,
 		"user_input":       userInput,
 	}
 	payloadJSON, err := json.Marshal(payload)
@@ -412,68 +456,200 @@ func (s *Service) GradeSentenceForCourse(ctx context.Context, courseCode, prompt
 		{Role: "system", Content: prompt},
 		{Role: "user", Content: string(payloadJSON)},
 	}
-	model := s.modelOr(modelOverride...)
-	raw, err := s.postChatCompletion(ctx, model, messages, 2500, 0.2, zap.String("kind", "sentence_grade"), zap.String("course", courseCode))
-	if err != nil {
-		return nil, err
+	if NormalizedSentenceAnswer(userInput) != "" && NormalizedSentenceAnswer(userInput) == NormalizedSentenceAnswer(referenceES) {
+		return NewExactSentenceGrade(userInput), nil
 	}
-	// Some reasoning-capable local models can spend their initial completion
-	// budget on hidden reasoning and return an empty visible answer. Retry once
-	// with more room so a transient model-format failure never becomes a lost
-	// exercise attempt or a 502 for the learner.
-	if strings.TrimSpace(raw) == "" {
-		raw, err = s.postChatCompletion(ctx, model, messages, 3500, 0.2, zap.String("kind", "sentence_grade_retry"), zap.String("course", courseCode))
+	model := s.sentenceModelOr(modelOverride...)
+	var validationErr error
+	for attempt := 0; attempt < 2; attempt++ {
+		maxTokens := 2500
+		if attempt > 0 {
+			maxTokens = 3500
+		}
+		raw, err := s.postChatCompletion(ctx, model, messages, maxTokens, 0.1, zap.String("kind", "sentence_grade"), zap.String("course", courseCode))
 		if err != nil {
 			return nil, err
 		}
-	}
-	if strings.TrimSpace(raw) == "" {
-		return nil, fmt.Errorf("sentence grader returned an empty response")
-	}
-	var grade SentenceGrade
-	if err := json.Unmarshal([]byte(raw), &grade); err != nil {
-		return nil, fmt.Errorf("parse sentence grade: %w (raw: %s)", err, truncateForLog(raw))
-	}
-	if strings.TrimSpace(clarificationRU) == "" && sentenceGradeHasIssue(grade, "article") {
-		retryMessages := append(append([]Message{}, messages...), Message{Role: "system", Content: "Your previous grading incorrectly counted an article error even though clarification_ru is empty. With no disambiguating context, preserve any natural definite/indefinite article chosen by the learner. Re-grade from scratch, correct only genuine errors, minimally edit user_input, and return the complete JSON."})
-		raw, err = s.postChatCompletion(ctx, model, retryMessages, 2500, 0, zap.String("kind", "sentence_grade_ambiguous_article_retry"), zap.String("course", courseCode))
-		if err != nil {
-			return nil, err
-		}
+		// Always decode into a fresh value: fields omitted on retry must not survive.
+		var grade SentenceGrade
 		if err := json.Unmarshal([]byte(raw), &grade); err != nil {
-			return nil, fmt.Errorf("parse sentence ambiguous article retry: %w (raw: %s)", err, truncateForLog(raw))
+			validationErr = fmt.Errorf("invalid grading JSON: %w", err)
+		} else {
+			validationErr = normalizeSentenceGrade(&grade, promptRU, userInput)
+			if validationErr == nil {
+				if attempt == 0 && sentenceGradeNeedsMeaningAudit(grade) {
+					messages = append(messages, Message{Role: "assistant", Content: raw}, Message{Role: "user", Content: sentenceMeaningAuditPrompt})
+					continue
+				}
+				return &grade, nil
+			}
 		}
+		s.logger.Warn("inconsistent sentence grade", zap.Int("attempt", attempt+1), zap.Error(validationErr))
+		messages = append(messages, Message{Role: "assistant", Content: raw}, Message{Role: "user", Content: "Re-grade the original learner input. The previous response was inconsistent: " + validationErr.Error() + ". Return complete JSON with a minimal corrected_es and exactly one anchored issue (original, corrected, Russian explanation) per necessary correction. Cosmetic punctuation/case/spacing and optional style do not count. If there are no real errors, keep user_input unchanged, issues=[], explanation=\"\". Do not invent context absent from the input."})
 	}
-	if !sentenceExplanationLanguageMatches(promptRU, grade.Explanation) {
-		retryMessages := append(append([]Message{}, messages...), Message{Role: "system", Content: "The explanation field MUST be written in Russian using Cyrillic. Re-evaluate the original input and return the complete JSON again. Do not translate the explanation into Spanish."})
-		raw, err = s.postChatCompletion(ctx, model, retryMessages, 2500, 0, zap.String("kind", "sentence_grade_language_retry"), zap.String("course", courseCode))
-		if err != nil {
-			return nil, err
-		}
-		if err := json.Unmarshal([]byte(raw), &grade); err != nil {
-			return nil, fmt.Errorf("parse sentence grade language retry: %w (raw: %s)", err, truncateForLog(raw))
-		}
-		if !sentenceExplanationLanguageMatches(promptRU, grade.Explanation) {
-			grade.Explanation = "Исправьте отмеченные части предложения и проверьте согласование слов."
-		}
-	}
-	if grade.ErrorCount < 0 {
-		grade.ErrorCount = 0
-	}
-	if grade.Issues != nil {
-		grade.ErrorCount = len(grade.Issues)
-	}
-	grade.Outcome = strings.TrimSpace(grade.Outcome)
-	return &grade, nil
+	return nil, fmt.Errorf("sentence grader failed consistency check: %w", validationErr)
 }
 
-func sentenceGradeHasIssue(grade SentenceGrade, kind string) bool {
+// Context-dependent penalties and added Spanish subjects are the most common
+// sources of false negatives. Audit these selectively rather than doubling every call.
+const sentenceMeaningAuditPrompt = `Проведи независимую проверку предложенных исправлений и верни полный JSON заново.
+Проверь каждую замену артикля/обращения: какой ИМЕННО факт из показанного контекста или исходного русского текста её требует? Отсутствие факта о книге НЕ доказывает, что книга неизвестная; контекст про стол НЕ задаёт известность книги. Если оба варианта естественны, восстанови выбор ученика и убери ложную ошибку, сохранив остальные реальные исправления.
+Проверь род/число в ИСПРАВЛЕННОМ ответе: нельзя исправить el libro на una libro.
+Не вставляй и не удаляй необязательные испанские местоимения подлежащего. Если ученик написал неверную форму глагола без местоимения, исправь только форму, сохранив отсутствие местоимения (например, для обращения к группе в Мексике достаточно поменять только форму глагола). Не увеличивай число ошибок за добавленное тобой местоимение.
+Явные факты контекста обязательны: вежливое обращение к одному человеку не может оставаться множественным; явно выбранный общий предмет нельзя заменить любым случайным. Не принимай предыдущую оценку на веру. Объяснения — по-русски.`
+
+func sentenceGradeNeedsMeaningAudit(grade SentenceGrade) bool {
 	for _, issue := range grade.Issues {
-		if strings.EqualFold(strings.TrimSpace(issue.Kind), kind) {
+		if issue.Kind == "article" || issue.Kind == "pronoun" {
+			return true
+		}
+		if len(strings.Fields(issue.Corrected)) > len(strings.Fields(issue.Original)) {
+			for _, word := range strings.Fields(NormalizedSentenceAnswer(issue.Corrected)) {
+				switch word {
+				case "yo", "tú", "él", "ella", "usted", "nosotros", "nosotras", "vosotros", "vosotras", "ellos", "ellas", "ustedes":
+					return true
+				}
+			}
+		}
+	}
+	return false
+}
+
+// normalizeSentenceGrade enforces the contract shared by score, correction markup
+// and explanations. Invalid output is re-graded before an attempt can be recorded.
+func normalizeSentenceGrade(grade *SentenceGrade, promptRU, userInput string) error {
+	if strings.TrimSpace(grade.CorrectedES) == "" {
+		return fmt.Errorf("corrected_es is empty")
+	}
+	if grade.Issues == nil {
+		return fmt.Errorf("issues array is missing")
+	}
+	issues := make([]SentenceGradeIssue, 0, len(grade.Issues))
+	for _, issue := range grade.Issues {
+		if strings.TrimSpace(issue.Original) == "" && strings.TrimSpace(issue.Corrected) == "" {
+			return fmt.Errorf("issue has no original/corrected spans")
+		}
+		if NormalizedSentenceAnswer(issue.Original) == NormalizedSentenceAnswer(issue.Corrected) {
+			continue
+		}
+		switch issue.Kind {
+		case "spelling", "article", "pronoun", "verb_form", "missing_word", "extra_word", "agreement", "preposition", "meaning":
+		default:
+			return fmt.Errorf("unsupported issue kind %q", issue.Kind)
+		}
+		if !sentenceContainsSpan(userInput, issue.Original) || !sentenceContainsSpan(grade.CorrectedES, issue.Corrected) {
+			return fmt.Errorf("issue spans do not match the input and correction")
+		}
+		if strings.TrimSpace(issue.Explanation) == "" || !sentenceExplanationLanguageMatches(promptRU, issue.Explanation) {
+			return fmt.Errorf("each issue needs a Russian explanation")
+		}
+		issues = append(issues, issue)
+	}
+	unchanged := NormalizedSentenceAnswer(userInput) == NormalizedSentenceAnswer(grade.CorrectedES)
+	if len(issues) == 0 {
+		if !unchanged {
+			return fmt.Errorf("corrected_es changes words without issues")
+		}
+		*grade = *NewExactSentenceGrade(userInput)
+		return nil
+	}
+	if unchanged {
+		return fmt.Errorf("issues claim errors but corrected_es has no visible correction")
+	}
+	if !sentenceIssuesCoverCorrection(userInput, grade.CorrectedES, issues) {
+		return fmt.Errorf("issues do not account for all corrected words, or count the same edit twice")
+	}
+	// Build feedback from exactly the issues counted. The model's summary can omit
+	// an error or introduce an unsupported suggestion, so it is not authoritative.
+	explanations := make([]string, 0, len(issues))
+	for _, issue := range issues {
+		explanations = append(explanations, strings.TrimSpace(issue.Explanation))
+	}
+	grade.Explanation = strings.Join(explanations, " ")
+	grade.Issues = issues
+	grade.ErrorCount = sentenceWordEditDistance(userInput, grade.CorrectedES)
+	grade.Outcome = "passed"
+	if grade.ErrorCount > 1 {
+		grade.Outcome = "failed"
+	}
+	grade.Tokens = nil // The UI derives markup from the validated minimal correction.
+	return nil
+}
+
+// Account for every inserted/deleted/replaced word, including repeated words.
+// A model may otherwise explain only one edit while silently rewriting others.
+func sentenceIssuesCoverCorrection(input, corrected string, issues []SentenceGradeIssue) bool {
+	balance := map[string]int{}
+	add := func(text string, sign int) {
+		for _, word := range strings.Fields(NormalizedSentenceAnswer(text)) {
+			balance[word] += sign
+		}
+	}
+	add(input, 1)
+	add(corrected, -1)
+	coveredEdits := 0
+	for _, issue := range issues {
+		add(issue.Original, -1)
+		add(issue.Corrected, 1)
+		coveredEdits += sentenceWordEditDistance(issue.Original, issue.Corrected)
+	}
+	for _, count := range balance {
+		if count != 0 {
+			return false
+		}
+	}
+	edits := sentenceWordEditDistance(input, corrected)
+	return coveredEdits == edits && len(issues) <= edits
+}
+
+func sentenceWordEditDistance(a, b string) int {
+	left, right := strings.Fields(NormalizedSentenceAnswer(a)), strings.Fields(NormalizedSentenceAnswer(b))
+	row := make([]int, len(right)+1)
+	for j := range row {
+		row[j] = j
+	}
+	for i, word := range left {
+		previous := row[0]
+		row[0] = i + 1
+		for j, other := range right {
+			old := row[j+1]
+			cost := 0
+			if word != other {
+				cost = 1
+			}
+			row[j+1] = min(row[j]+1, row[j+1]+1, previous+cost)
+			previous = old
+		}
+	}
+	return row[len(right)]
+}
+
+func sentenceContainsSpan(sentence, span string) bool {
+	span = NormalizedSentenceAnswer(span)
+	return span == "" || strings.Contains(" "+NormalizedSentenceAnswer(sentence)+" ", " "+span+" ")
+}
+
+func hasRussianAddress(sentence string) bool {
+	for _, word := range strings.FieldsFunc(strings.ToLower(sentence), func(r rune) bool { return !unicode.IsLetter(r) }) {
+		switch word {
+		case "вы", "вас", "вам", "вами", "ваш", "ваша", "ваше", "ваши", "вашего", "вашей", "ваших", "вашему", "вашим", "вашими", "вашу", "вашем":
 			return true
 		}
 	}
 	return false
+}
+
+// Sentence models are configured independently of dictionary and chat models.
+func (s *Service) SetSentenceModel(model string) { s.sentenceModel = strings.TrimSpace(model) }
+
+func (s *Service) sentenceModelOr(overrides ...string) string {
+	if len(overrides) > 0 && strings.TrimSpace(overrides[0]) != "" {
+		return strings.TrimSpace(overrides[0])
+	}
+	if s.sentenceModel != "" {
+		return s.sentenceModel
+	}
+	return s.model
 }
 
 func sentenceExplanationLanguageMatches(prompt, explanation string) bool {
@@ -483,23 +659,27 @@ func sentenceExplanationLanguageMatches(prompt, explanation string) bool {
 	return strings.ContainsFunc(explanation, func(r rune) bool { return unicode.Is(unicode.Cyrillic, r) })
 }
 
-// NormalizedSentenceAnswer ignores the presentation differences explicitly not
-// assessed by this exercise: leading capitalization and terminal punctuation.
+// NormalizedSentenceAnswer ignores cosmetic punctuation, case and spacing, as
+// does the correction UI. Keep lexical accents, apostrophes and hyphens: they
+// can distinguish words (te/té, we're/were, re-sign/resign).
 func NormalizedSentenceAnswer(s string) string {
-	s = strings.TrimSpace(s)
-	s = strings.TrimRightFunc(s, func(r rune) bool {
-		return unicode.IsSpace(r) || strings.ContainsRune(".!?¡¿", r)
-	})
-	s = strings.TrimLeftFunc(s, func(r rune) bool { return strings.ContainsRune("¡¿", r) })
-	s = strings.Join(strings.Fields(s), " ")
-	return strings.ToLower(s)
+	s = strings.Map(func(r rune) rune {
+		if strings.ContainsRune(".,!?¡¿:;\"«»“”()[]{}…", r) {
+			return ' '
+		}
+		if r == '’' {
+			return '\''
+		}
+		return unicode.ToLower(r)
+	}, s)
+	return strings.Join(strings.Fields(s), " ")
 }
 
 // NewExactSentenceGrade is used for an answer equal to the stored reference
 // after harmless normalization. It guarantees that a missing final dot can
 // never be turned into a lost star by a model.
 func NewExactSentenceGrade(userInput string) *SentenceGrade {
-	return &SentenceGrade{ErrorCount: 0, Outcome: "star", CorrectedES: strings.TrimSpace(userInput)}
+	return &SentenceGrade{ErrorCount: 0, Outcome: "star", CorrectedES: strings.TrimSpace(userInput), Issues: []SentenceGradeIssue{}}
 }
 
 // modelOr returns the first non-empty model override, else the default model.

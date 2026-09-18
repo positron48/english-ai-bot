@@ -242,7 +242,7 @@ func (r *Router) handleSentenceTrainingAnswer(w http.ResponseWriter, req *http.R
 		http.Error(w, "AI service unavailable", http.StatusServiceUnavailable)
 		return
 	}
-	// Grade with the default model (5.5-nano by config) — the grading prompt is tuned for it.
+	// Grade using the dedicated sentence model and validate correction/score consistency.
 	userInput := strings.TrimSpace(body.UserInput)
 	// Punctuation and leading capitalization are presentation, not language errors.
 	// Avoid an LLM call for this common exact-answer path altogether.

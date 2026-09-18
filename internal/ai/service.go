@@ -81,6 +81,7 @@ type Service struct {
 	conversationModel             string            // optional model override for NPC conversations ("" = use model)
 	pictureQuestPrompts           map[string]string // course_code -> picture quest task evaluation prompt
 	pictureLumiPrompts            map[string]string // course_code -> Lumi reply prompt for picture quests
+	sentenceModel                 string            // optional model override for translation exercises
 	sentenceGenPrompts            map[string]string // course_code -> daily sentence-set generation prompt
 	sentenceGradePrompts          map[string]string // course_code -> per-sentence grading prompt
 	logger                        *zap.Logger

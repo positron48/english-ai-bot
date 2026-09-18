@@ -1,0 +1,201 @@
+[
+  {
+    "prompt_ru": "Вы пьёте воду.",
+    "clarification_ru": "Разговор в Испании. Вы обращаетесь к группе друзей. Речь идёт о воде в целом как о напитке.",
+    "reference_es": "Bebéis agua",
+    "used_words": [
+      "beber",
+      "agua"
+    ]
+  },
+  {
+    "prompt_ru": "Вы открываете окно.",
+    "clarification_ru": "Вы вежливо обращаетесь к одному человеку. Окно в комнате одно, и оба собеседника это видят.",
+    "reference_es": "Usted abre la ventana",
+    "used_words": [
+      "abrir",
+      "ventana"
+    ]
+  },
+  {
+    "prompt_ru": "Вы находите друга.",
+    "clarification_ru": "Вы вежливо обращаетесь к одному врачу. Это какой-то один друг из многих, о котором раньше не говорили.",
+    "reference_es": "Usted encuentra a un amigo",
+    "used_words": [
+      "encontrar",
+      "amigo"
+    ]
+  },
+  {
+    "prompt_ru": "Друг покупает старую книгу.",
+    "clarification_ru": "Собеседники знают, о каком именно друге идёт речь. Книга упоминается впервые.",
+    "reference_es": "El amigo compra un libro viejo",
+    "used_words": [
+      "amigo",
+      "comprar",
+      "libro",
+      "viejo"
+    ]
+  },
+  {
+    "prompt_ru": "Мать открывает зелёную дверь.",
+    "clarification_ru": "Собеседники говорят о своей матери. В доме только одна дверь такого цвета.",
+    "reference_es": "La madre abre la puerta verde",
+    "used_words": [
+      "madre",
+      "abrir",
+      "puerta",
+      "verde"
+    ]
+  },
+  {
+    "prompt_ru": "Вы пьёте воду.",
+    "clarification_ru": "Разговор в Испании: вы обращаетесь к двум друзьям. Речь идёт о воде в целом как о веществе.",
+    "reference_es": "Vosotros bebéis agua.",
+    "used_words": [
+      "beber",
+      "agua",
+      "amigo"
+    ]
+  },
+  {
+    "prompt_ru": "Вы ищете книгу.",
+    "clarification_ru": "Разговор в Латинской Америке: вы вежливо обращаетесь к группе соседей. Вы ищете какую-то одну любую книгу, чтобы почитать.",
+    "reference_es": "Ustedes buscan un libro.",
+    "used_words": [
+      "buscar",
+      "libro",
+      "vecino"
+    ]
+  },
+  {
+    "prompt_ru": "Вы покупаете большой стол.",
+    "clarification_ru": "Разговор в Испании: вы обращаетесь к двум друзьям (мужчине и женщине). Вы покупаете один новый стол, о котором раньше не говорили.",
+    "reference_es": "Vosotros compráis una mesa grande.",
+    "used_words": [
+      "comprar",
+      "mesa",
+      "grande",
+      "amigo"
+    ]
+  },
+  {
+    "prompt_ru": "Друг читает новую книгу.",
+    "clarification_ru": "Собеседники знают, о каком друге речь. Книга упоминается впервые.",
+    "reference_es": "El amigo lee un libro nuevo.",
+    "used_words": [
+      "amigo",
+      "leer",
+      "libro",
+      "nuevo"
+    ]
+  },
+  {
+    "prompt_ru": "Сосед смотрит на дверь.",
+    "clarification_ru": "Собеседники знают этого соседа. Они оба смотрят на ту же единственную дверь в коридоре.",
+    "reference_es": "El vecino mira la puerta.",
+    "used_words": [
+      "vecino",
+      "mirar",
+      "puerta"
+    ]
+  },
+  {
+    "prompt_ru": "Друг читает старую книгу.",
+    "clarification_ru": "Собеседники знают, о каком друге идёт речь. Книгу они видят впервые.",
+    "reference_es": "El amigo lee un libro viejo",
+    "used_words": [
+      "amigo",
+      "leer",
+      "libro",
+      "viejo"
+    ]
+  },
+  {
+    "prompt_ru": "Вы пьёте воду.",
+    "clarification_ru": "Разговор в Испании: вы обращаетесь к нескольким друзьям. Вода — это то, что они пьют в данный момент.",
+    "reference_es": "Bebéis el agua.",
+    "used_words": [
+      "beber",
+      "agua"
+    ]
+  },
+  {
+    "prompt_ru": "Вы ищете книгу.",
+    "clarification_ru": "Разговор в Мексике: вы вежливо обращаетесь к нескольким людям. Они ищут какую-то одну книгу, о которой вы говорили раньше.",
+    "reference_es": "Ustedes buscan el libro.",
+    "used_words": [
+      "buscar",
+      "libro"
+    ]
+  },
+  {
+    "prompt_ru": "Вы закрываете дверь.",
+    "clarification_ru": "Разговор в Испании: вы обращаетесь к двум подругам. Речь идёт о двери в этой комнате.",
+    "reference_es": "Cerráis la puerta.",
+    "used_words": [
+      "cerrar",
+      "puerta"
+    ]
+  },
+  {
+    "prompt_ru": "Друг покупает новую книгу.",
+    "clarification_ru": "Собеседники знают, о каком друге идёт речь. Книга упоминается впервые, это одна из многих новых книг.",
+    "reference_es": "El amigo compra un libro nuevo.",
+    "used_words": [
+      "amigo",
+      "comprar",
+      "nuevo",
+      "libro"
+    ]
+  },
+  {
+    "prompt_ru": "Вы ищете друга.",
+    "clarification_ru": "Разговор в Испании: вы обращаетесь к двум подругам. Вы ищете одного общего знакомого друга.",
+    "reference_es": "Buscáis al amigo",
+    "used_words": [
+      "buscar",
+      "amigo"
+    ]
+  },
+  {
+    "prompt_ru": "Вы закрываете дверь.",
+    "clarification_ru": "Вы вежливо обращаетесь к пожилому соседу. Вы оба стоите у единственной двери в дом.",
+    "reference_es": "Usted cierra la puerta",
+    "used_words": [
+      "cerrar",
+      "puerta"
+    ]
+  },
+  {
+    "prompt_ru": "Мальчик находит старую книгу.",
+    "clarification_ru": "Мальчик — это сын собеседника, о котором уже говорили. Книга упоминается впервые.",
+    "reference_es": "El niño encuentra un libro viejo",
+    "used_words": [
+      "niño",
+      "encontrar",
+      "libro",
+      "viejo"
+    ]
+  },
+  {
+    "prompt_ru": "Друг несёт чистую воду.",
+    "clarification_ru": "Это ваш общий друг. Он несёт воду, которую вы только что попросили принести.",
+    "reference_es": "El amigo lleva el agua limpia",
+    "used_words": [
+      "amigo",
+      "llevar",
+      "agua",
+      "limpio"
+    ]
+  },
+  {
+    "prompt_ru": "Вы ищете книгу?",
+    "clarification_ru": "Вы вежливо обращаетесь к нескольким людям. Книга упоминается впервые, любая из категории.",
+    "reference_es": "¿Buscan ustedes un libro?",
+    "used_words": [
+      "buscar",
+      "libro"
+    ]
+  }
+]

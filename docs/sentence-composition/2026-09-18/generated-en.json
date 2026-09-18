@@ -1,0 +1,49 @@
+[
+  {
+    "prompt_ru": "Вы читаете книгу.",
+    "clarification_ru": "Обращение к одному человеку вежливо; книга упоминается впервые.",
+    "reference_es": "You are reading a book.",
+    "used_words": [
+      "read",
+      "book"
+    ]
+  },
+  {
+    "prompt_ru": "Вы закрываете дверь?",
+    "clarification_ru": "Обращение к группе людей; собеседники знают, о какой именно двери идет речь.",
+    "reference_es": "Are you closing the door?",
+    "used_words": [
+      "close",
+      "door"
+    ]
+  },
+  {
+    "prompt_ru": "Вы едите яблоко.",
+    "clarification_ru": "Обращение к группе друзей; яблоко — одно из многих на столе.",
+    "reference_es": "You are eating an apple.",
+    "used_words": [
+      "eat",
+      "apple"
+    ]
+  },
+  {
+    "prompt_ru": "Вы открываете новую книгу.",
+    "clarification_ru": "Обращение к одному человеку вежливо; книга уже лежит перед вами на столе.",
+    "reference_es": "You are opening the new book.",
+    "used_words": [
+      "open",
+      "new",
+      "book"
+    ]
+  },
+  {
+    "prompt_ru": "Друг пьет воду.",
+    "clarification_ru": "Собеседники знают этого человека; вода как вещество в стакане.",
+    "reference_es": "The friend is drinking water.",
+    "used_words": [
+      "friend",
+      "drink",
+      "water"
+    ]
+  }
+]

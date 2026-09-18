@@ -47,6 +47,7 @@ func unsetLearningEnvForDefaults() {
 }
 
 func TestLoad_Defaults(t *testing.T) {
+	t.Setenv("AI_SENTENCE_MODEL", "")
 	// Save original env vars - include all that might affect defaults
 	originalEnv := map[string]string{
 		"AI_URL":                     os.Getenv("AI_URL"),
@@ -100,6 +101,9 @@ func TestLoad_Defaults(t *testing.T) {
 	}
 
 	// Check defaults
+	if cfg.AI.SentenceModel != "google/gemini-3-flash-preview" {
+		t.Fatalf("sentence model default = %q", cfg.AI.SentenceModel)
+	}
 	if cfg.Server.Address != ":8184" {
 		t.Errorf("Expected default server address :8184, got %s", cfg.Server.Address)
 	}
@@ -637,6 +641,7 @@ func TestLoad_SessionSecretFallback(t *testing.T) {
 }
 
 func TestLoad_CustomEnvValues(t *testing.T) {
+	t.Setenv("AI_SENTENCE_MODEL", "custom-sentence-model")
 	learningEnv := backupLearningEnv()
 	originalEnv := map[string]string{
 		"AI_URL":            os.Getenv("AI_URL"),
@@ -684,6 +689,10 @@ func TestLoad_CustomEnvValues(t *testing.T) {
 
 	if cfg.AI.APIKey != "custom-api-key" {
 		t.Errorf("Expected custom API key, got %s", cfg.AI.APIKey)
+	}
+
+	if cfg.AI.SentenceModel != "custom-sentence-model" {
+		t.Fatalf("sentence model override = %q", cfg.AI.SentenceModel)
 	}
 
 	if cfg.AI.Model != "gpt-4" {

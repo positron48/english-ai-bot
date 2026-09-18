@@ -302,7 +302,7 @@ func (w *SentenceCompositionWorker) generateSet(ctx context.Context, user *model
 	focusWords := words[:focusCount]
 	supportWords := words[focusCount:]
 
-	// Uses the default model (5.5-nano by config); generation is once/day, grading is the hot path.
+	// Generation and quality review use the dedicated sentence model when configured.
 	sentences, err := w.aiService.GenerateSentenceSetForCourse(ctx, courseCode, focusWords, supportWords, humanizeScopes(scopes), w.sentencesPerSet())
 	if err != nil {
 		if w.cbService != nil {

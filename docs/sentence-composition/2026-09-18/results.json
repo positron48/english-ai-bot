@@ -1,0 +1,1008 @@
+{
+  "date": "2026-09-18",
+  "provider": "polza",
+  "notes": [
+    "Synthetic examples, no production learner data.",
+    "Baseline and final use different prompts and implementations; baseline measures the reported failure, not an isolated model ranking.",
+    "Holdout wording about the book was clarified to avoid suggesting that the book itself was unknown.",
+    "Paid calls run through the actual Go grading/generation implementation."
+  ],
+  "baseline": {
+    "model": "openai/gpt-4o-mini",
+    "passed": 10,
+    "total": 24,
+    "http_calls": 29,
+    "prompt_tokens": 37435,
+    "completion_tokens": 2275,
+    "cost_rub": 0.587132,
+    "elapsed_seconds": 67.7,
+    "cases": [
+      {
+        "case": "ambiguous usted",
+        "passed": false,
+        "grade": {
+          "error_count": 1,
+          "outcome": "failed",
+          "corrected_es": "Vosotros bebéis agua.",
+          "tokens": null,
+          "explanation": "В русском предложении используется форма множественного числа, поэтому в испанском нужно использовать 'vosotros' и 'bebéis', а не 'usted' и 'bebe'.",
+          "issues": [
+            {
+              "kind": "verb_form"
+            }
+          ]
+        }
+      },
+      {
+        "case": "ambiguous ustedes",
+        "passed": false,
+        "grade": {
+          "error_count": 1,
+          "outcome": "failed",
+          "corrected_es": "Ustedes beben agua",
+          "tokens": null,
+          "explanation": "В данном контексте лучше использовать 'vosotros', так как это форма обращения к группе в Испании. 'Ustedes' более формально и используется в Латинской Америке.",
+          "issues": [
+            {
+              "kind": "pronoun"
+            }
+          ]
+        }
+      },
+      {
+        "case": "ambiguous vosotros",
+        "passed": false,
+        "grade": {
+          "error_count": 1,
+          "outcome": "failed",
+          "corrected_es": "Ustedes beben agua.",
+          "tokens": null,
+          "explanation": "В предложении используется форма 'Вы', что подразумевает 'Usted' или 'Ustedes', а не 'vosotros'. Поэтому нужно использовать 'beben'.",
+          "issues": [
+            {
+              "kind": "verb_form"
+            }
+          ]
+        }
+      },
+      {
+        "case": "formal singular",
+        "passed": false,
+        "grade": {
+          "error_count": 1,
+          "outcome": "failed",
+          "corrected_es": "Usted bebe agua.",
+          "tokens": null,
+          "explanation": "В данном случае нужно использовать 'Usted', так как вы обращаетесь к одному незнакомому мужчине. 'Vosotros' подходит для обращения к группе.",
+          "issues": [
+            {
+              "kind": "pronoun"
+            }
+          ]
+        }
+      },
+      {
+        "case": "spain friends",
+        "passed": false,
+        "grade": {
+          "error_count": 1,
+          "outcome": "passed",
+          "corrected_es": "Vosotros bebéis agua",
+          "tokens": null,
+          "explanation": "В испанском языке, когда вы обращаетесь к нескольким людям, нужно использовать 'vosotros', чтобы указать на группу. Ваша версия правильная, но не хватает 'Vosotros'.",
+          "issues": [
+            {
+              "kind": "missing_word"
+            }
+          ]
+        }
+      },
+      {
+        "case": "latin america friends",
+        "passed": true,
+        "grade": {
+          "error_count": 0,
+          "outcome": "star",
+          "corrected_es": "Ustedes beben agua",
+          "tokens": null
+        }
+      },
+      {
+        "case": "they are not you",
+        "passed": false,
+        "grade": {
+          "error_count": 2,
+          "outcome": "failed",
+          "corrected_es": "Vosotros coméis la naranja",
+          "tokens": null,
+          "explanation": "Здесь нужно использовать 'coméis', потому что 'vosotros' требует формы второго лица множественного числа. Также необходимо согласование: 'la naranja' правильно.",
+          "issues": [
+            {
+              "kind": "verb_form"
+            },
+            {
+              "kind": "agreement"
+            }
+          ]
+        }
+      },
+      {
+        "case": "article no context",
+        "passed": false,
+        "grade": {
+          "error_count": 1,
+          "outcome": "passed",
+          "corrected_es": "Leo un libro.",
+          "tokens": null,
+          "explanation": "В данном случае не указано, о каком конкретном libro идёт речь, поэтому правильнее использовать un вместо el.",
+          "issues": [
+            {
+              "kind": "article"
+            }
+          ]
+        }
+      },
+      {
+        "case": "article irrelevant context",
+        "passed": false,
+        "grade": {
+          "error_count": 1,
+          "outcome": "passed",
+          "corrected_es": "Leo un libro.",
+          "tokens": null,
+          "explanation": "В данном случае книга не конкретная, поэтому нужен неопределённый артикль 'un', а не определённый 'el'.",
+          "issues": [
+            {
+              "kind": "article"
+            }
+          ]
+        }
+      },
+      {
+        "case": "known book",
+        "passed": true,
+        "grade": {
+          "error_count": 1,
+          "outcome": "passed",
+          "corrected_es": "Leo el libro.",
+          "tokens": null,
+          "explanation": "Книга уже передана, поэтому собеседник знает, о какой книге речь — нужен el, а не un.",
+          "issues": [
+            {
+              "kind": "article"
+            }
+          ]
+        }
+      },
+      {
+        "case": "new book",
+        "passed": true,
+        "grade": {
+          "error_count": 1,
+          "outcome": "passed",
+          "corrected_es": "Compro un libro.",
+          "tokens": null,
+          "explanation": "Вы ещё не выбрали книгу, поэтому нужно использовать неопределённый артикль un, а не определённый el.",
+          "issues": [
+            {
+              "kind": "article"
+            }
+          ]
+        }
+      },
+      {
+        "case": "article gender",
+        "passed": true,
+        "grade": {
+          "error_count": 1,
+          "outcome": "passed",
+          "corrected_es": "Leo un libro.",
+          "tokens": null,
+          "explanation": "Слово 'libro' — мужского рода, поэтому нужно использовать артикль 'un', а не 'una'.",
+          "issues": [
+            {
+              "kind": "agreement"
+            }
+          ]
+        }
+      },
+      {
+        "case": "generic article",
+        "passed": true,
+        "grade": {
+          "error_count": 1,
+          "outcome": "passed",
+          "corrected_es": "Me gusta la música",
+          "tokens": null,
+          "explanation": "Здесь нужен артикль 'la', чтобы указать на конкретную музыку. В данном контексте подразумевается известная музыка, а не музыка в общем.",
+          "issues": [
+            {
+              "kind": "article"
+            }
+          ]
+        }
+      },
+      {
+        "case": "comma optional pronoun",
+        "passed": false,
+        "grade": {
+          "error_count": 1,
+          "outcome": "passed",
+          "corrected_es": "Sí, bebo agua.",
+          "tokens": null,
+          "explanation": "Испанские местоимения могут опускаться, когда глагол уже указывает на подлежащее. В данном случае 'yo' лишнее.",
+          "issues": [
+            {
+              "kind": "extra_word"
+            }
+          ]
+        }
+      },
+      {
+        "case": "question marks optional pronoun",
+        "passed": false,
+        "grade": {
+          "error_count": 1,
+          "outcome": "passed",
+          "corrected_es": "¿Bebes agua?",
+          "tokens": null,
+          "explanation": "В испанском языке местоимения могут опускаться, если глагол уже указывает на подлежащее. Здесь tú не обязательно.",
+          "issues": [
+            {
+              "kind": "pronoun"
+            }
+          ]
+        }
+      },
+      {
+        "case": "valid order",
+        "passed": true,
+        "grade": {
+          "error_count": 0,
+          "outcome": "star",
+          "corrected_es": "Yo compro una bonita casa",
+          "tokens": null
+        }
+      },
+      {
+        "case": "verb agreement",
+        "passed": false,
+        "grade": {
+          "error_count": 2,
+          "outcome": "failed",
+          "corrected_es": "Nosotros bebemos agua.",
+          "tokens": null,
+          "explanation": "В предложении \"Nosotros bebe agua\" ошибка в форме глагола: \"bebe\" — это форма для третьего лица, а нам нужна форма для первого лица множественного числа — \"bebemos\".",
+          "issues": [
+            {
+              "kind": "verb_form"
+            },
+            {
+              "kind": "agreement"
+            }
+          ]
+        }
+      },
+      {
+        "case": "meaning omission",
+        "passed": false,
+        "grade": {
+          "error_count": 2,
+          "outcome": "failed",
+          "corrected_es": "No bebo leche.",
+          "tokens": null,
+          "explanation": "В предложении \"Я не пью молоко\" есть отрицание, которое нужно передать в испанском переводе. Поэтому правильный перевод — \"No bebo leche\".",
+          "issues": [
+            {
+              "kind": "verb_form"
+            },
+            {
+              "kind": "meaning"
+            }
+          ]
+        }
+      },
+      {
+        "case": "meaning accent",
+        "passed": true,
+        "grade": {
+          "error_count": 1,
+          "outcome": "passed",
+          "corrected_es": "Él bebe té",
+          "tokens": null,
+          "explanation": "Слово \"té\" с акцентом обозначает \"чай\". Без акцента это другое слово. Обратите внимание на правильное написание.",
+          "issues": [
+            {
+              "kind": "spelling"
+            }
+          ]
+        }
+      },
+      {
+        "case": "spelling",
+        "passed": true,
+        "grade": {
+          "error_count": 1,
+          "outcome": "passed",
+          "corrected_es": "Como una manzana.",
+          "tokens": null,
+          "explanation": "Слово 'mansana' написано с ошибкой. Правильное написание — 'manzana'.",
+          "issues": [
+            {
+              "kind": "spelling"
+            }
+          ]
+        }
+      },
+      {
+        "case": "two errors",
+        "passed": false,
+        "grade": {
+          "error_count": 2,
+          "outcome": "failed",
+          "corrected_es": "Nosotros bebemos leche.",
+          "tokens": null,
+          "explanation": "В предложении \"Nosotros bebe leche\" неверная форма глагола: нужно \"bebemos\" для первого лица множественного числа. Также \"leche\" требует согласования с глаголом.",
+          "issues": [
+            {
+              "kind": "verb_form"
+            },
+            {
+              "kind": "agreement"
+            }
+          ]
+        }
+      },
+      {
+        "case": "en contraction comma",
+        "passed": true,
+        "grade": {
+          "error_count": 0,
+          "outcome": "star",
+          "corrected_es": "No I don't drink milk",
+          "tokens": null
+        }
+      },
+      {
+        "case": "en article ambiguous",
+        "passed": false,
+        "grade": {
+          "error_count": 1,
+          "outcome": "passed",
+          "corrected_es": "I am reading a book",
+          "tokens": null,
+          "explanation": "В вашем ответе использован определённый артикль \"the\", который не нужен, так как книга не была упомянута ранее. Правильный вариант — \"a book\".",
+          "issues": [
+            {
+              "kind": "article"
+            }
+          ]
+        }
+      },
+      {
+        "case": "en agreement",
+        "passed": true,
+        "grade": {
+          "error_count": 1,
+          "outcome": "passed",
+          "corrected_es": "She drinks water.",
+          "tokens": null,
+          "explanation": "Слово 'drink' здесь неверно, так как нужно использовать форму третьего лица настоящего времени 'drinks'.",
+          "issues": [
+            {
+              "kind": "verb_form"
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "final_regression": {
+    "model": "google/gemini-3-flash-preview",
+    "passed": 24,
+    "total": 24,
+    "http_calls": 29,
+    "prompt_tokens": 44787,
+    "completion_tokens": 3359,
+    "cost_rub": 3.840351,
+    "elapsed_seconds": 82.1,
+    "cases": [
+      {
+        "case": "ambiguous usted",
+        "passed": true,
+        "grade": {
+          "error_count": 0,
+          "outcome": "star",
+          "corrected_es": "Usted bebe agua",
+          "tokens": null
+        }
+      },
+      {
+        "case": "ambiguous ustedes",
+        "passed": true,
+        "grade": {
+          "error_count": 0,
+          "outcome": "star",
+          "corrected_es": "Ustedes beben agua",
+          "tokens": null
+        }
+      },
+      {
+        "case": "ambiguous vosotros",
+        "passed": true,
+        "grade": {
+          "error_count": 0,
+          "outcome": "star",
+          "corrected_es": "Bebéis agua",
+          "tokens": null
+        }
+      },
+      {
+        "case": "formal singular",
+        "passed": true,
+        "grade": {
+          "error_count": 2,
+          "outcome": "failed",
+          "corrected_es": "Usted bebe agua",
+          "tokens": null,
+          "explanation": "В контексте указано вежливое обращение к одному человеку, для этого используется местоимение Usted. Форма глагола должна соответствовать подлежащему Usted (3-е лицо, единственное число).",
+          "issues": [
+            {
+              "kind": "pronoun",
+              "original": "Vosotros",
+              "corrected": "Usted",
+              "explanation": "В контексте указано вежливое обращение к одному человеку, для этого используется местоимение Usted."
+            },
+            {
+              "kind": "verb_form",
+              "original": "bebéis",
+              "corrected": "bebe",
+              "explanation": "Форма глагола должна соответствовать подлежащему Usted (3-е лицо, единственное число)."
+            }
+          ]
+        }
+      },
+      {
+        "case": "spain friends",
+        "passed": true,
+        "grade": {
+          "error_count": 0,
+          "outcome": "star",
+          "corrected_es": "Bebéis agua",
+          "tokens": null
+        }
+      },
+      {
+        "case": "latin america friends",
+        "passed": true,
+        "grade": {
+          "error_count": 0,
+          "outcome": "star",
+          "corrected_es": "Ustedes beben agua",
+          "tokens": null
+        }
+      },
+      {
+        "case": "they are not you",
+        "passed": true,
+        "grade": {
+          "error_count": 1,
+          "outcome": "passed",
+          "corrected_es": "Ellos comen la naranja",
+          "tokens": null,
+          "explanation": "Местоимение «они» переводится на испанский как ellos (или ellas). Местоимение vosotros означает «вы» (при неформальном обращении к нескольким лицам в Испании).",
+          "issues": [
+            {
+              "kind": "pronoun",
+              "original": "Vosotros",
+              "corrected": "Ellos",
+              "explanation": "Местоимение «они» переводится на испанский как ellos (или ellas). Местоимение vosotros означает «вы» (при неформальном обращении к нескольким лицам в Испании)."
+            }
+          ]
+        }
+      },
+      {
+        "case": "article no context",
+        "passed": true,
+        "grade": {
+          "error_count": 0,
+          "outcome": "star",
+          "corrected_es": "Leo el libro",
+          "tokens": null
+        }
+      },
+      {
+        "case": "article irrelevant context",
+        "passed": true,
+        "grade": {
+          "error_count": 0,
+          "outcome": "star",
+          "corrected_es": "Leo el libro",
+          "tokens": null
+        }
+      },
+      {
+        "case": "known book",
+        "passed": true,
+        "grade": {
+          "error_count": 1,
+          "outcome": "passed",
+          "corrected_es": "Leo el libro",
+          "tokens": null,
+          "explanation": "Контекст указывает на конкретный предмет, который собеседник только что передал вам, поэтому требуется определенный артикль.",
+          "issues": [
+            {
+              "kind": "article",
+              "original": "un",
+              "corrected": "el",
+              "explanation": "Контекст указывает на конкретный предмет, который собеседник только что передал вам, поэтому требуется определенный артикль."
+            }
+          ]
+        }
+      },
+      {
+        "case": "new book",
+        "passed": true,
+        "grade": {
+          "error_count": 1,
+          "outcome": "passed",
+          "corrected_es": "Compro un libro",
+          "tokens": null,
+          "explanation": "Контекст явно указывает, что книга ещё не выбрана и вы хотите купить любую, поэтому требуется неопределённый артикль un.",
+          "issues": [
+            {
+              "kind": "article",
+              "original": "el",
+              "corrected": "un",
+              "explanation": "Контекст явно указывает, что книга ещё не выбрана и вы хотите купить любую, поэтому требуется неопределённый артикль un."
+            }
+          ]
+        }
+      },
+      {
+        "case": "article gender",
+        "passed": true,
+        "grade": {
+          "error_count": 1,
+          "outcome": "passed",
+          "corrected_es": "Leo un libro",
+          "tokens": null,
+          "explanation": "Существительное libro мужского рода, поэтому артикль должен быть в форме мужского рода un.",
+          "issues": [
+            {
+              "kind": "agreement",
+              "original": "una",
+              "corrected": "un",
+              "explanation": "Существительное libro мужского рода, поэтому артикль должен быть в форме мужского рода un."
+            }
+          ]
+        }
+      },
+      {
+        "case": "generic article",
+        "passed": true,
+        "grade": {
+          "error_count": 1,
+          "outcome": "passed",
+          "corrected_es": "Me gusta la música",
+          "tokens": null,
+          "explanation": "Существительные, обозначающие абстрактные понятия или категории в целом, в роли подлежащего требуют определенного артикля.",
+          "issues": [
+            {
+              "kind": "article",
+              "original": "música",
+              "corrected": "la música",
+              "explanation": "Существительные, обозначающие абстрактные понятия или категории в целом, в роли подлежащего требуют определенного артикля."
+            }
+          ]
+        }
+      },
+      {
+        "case": "comma optional pronoun",
+        "passed": true,
+        "grade": {
+          "error_count": 0,
+          "outcome": "star",
+          "corrected_es": "Sí yo bebo agua",
+          "tokens": null
+        }
+      },
+      {
+        "case": "question marks optional pronoun",
+        "passed": true,
+        "grade": {
+          "error_count": 0,
+          "outcome": "star",
+          "corrected_es": "tú bebes agua",
+          "tokens": null
+        }
+      },
+      {
+        "case": "valid order",
+        "passed": true,
+        "grade": {
+          "error_count": 0,
+          "outcome": "star",
+          "corrected_es": "Yo compro una bonita casa",
+          "tokens": null
+        }
+      },
+      {
+        "case": "verb agreement",
+        "passed": true,
+        "grade": {
+          "error_count": 1,
+          "outcome": "passed",
+          "corrected_es": "Nosotros bebemos agua",
+          "tokens": null,
+          "explanation": "Глагол beber должен стоять в форме первого лица множественного числа (мы), которая оканчивается на -emos.",
+          "issues": [
+            {
+              "kind": "verb_form",
+              "original": "bebe",
+              "corrected": "bebemos",
+              "explanation": "Глагол beber должен стоять в форме первого лица множественного числа (мы), которая оканчивается на -emos."
+            }
+          ]
+        }
+      },
+      {
+        "case": "meaning omission",
+        "passed": true,
+        "grade": {
+          "error_count": 1,
+          "outcome": "passed",
+          "corrected_es": "No bebo leche",
+          "tokens": null,
+          "explanation": "В предложении пропущено отрицание «no».",
+          "issues": [
+            {
+              "kind": "missing_word",
+              "original": "",
+              "corrected": "No",
+              "explanation": "В предложении пропущено отрицание «no»."
+            }
+          ]
+        }
+      },
+      {
+        "case": "meaning accent",
+        "passed": true,
+        "grade": {
+          "error_count": 1,
+          "outcome": "passed",
+          "corrected_es": "Él bebe té",
+          "tokens": null,
+          "explanation": "Слово «té» (чай) всегда пишется с графическим ударением, чтобы отличать его от местоимения «te» (тебе/тебя).",
+          "issues": [
+            {
+              "kind": "spelling",
+              "original": "te",
+              "corrected": "té",
+              "explanation": "Слово «té» (чай) всегда пишется с графическим ударением, чтобы отличать его от местоимения «te» (тебе/тебя)."
+            }
+          ]
+        }
+      },
+      {
+        "case": "spelling",
+        "passed": true,
+        "grade": {
+          "error_count": 1,
+          "outcome": "passed",
+          "corrected_es": "Como una manzana",
+          "tokens": null,
+          "explanation": "Слово «яблоко» пишется через букву z.",
+          "issues": [
+            {
+              "kind": "spelling",
+              "original": "mansana",
+              "corrected": "manzana",
+              "explanation": "Слово «яблоко» пишется через букву z."
+            }
+          ]
+        }
+      },
+      {
+        "case": "two errors",
+        "passed": true,
+        "grade": {
+          "error_count": 2,
+          "outcome": "failed",
+          "corrected_es": "Nosotros no bebemos leche",
+          "tokens": null,
+          "explanation": "В предложении пропущено отрицание «no». Глагол «beber» должен стоять в форме 1-го лица множественного числа (мы) — «bebemos».",
+          "issues": [
+            {
+              "kind": "missing_word",
+              "original": "",
+              "corrected": "no",
+              "explanation": "В предложении пропущено отрицание «no»."
+            },
+            {
+              "kind": "verb_form",
+              "original": "bebe",
+              "corrected": "bebemos",
+              "explanation": "Глагол «beber» должен стоять в форме 1-го лица множественного числа (мы) — «bebemos»."
+            }
+          ]
+        }
+      },
+      {
+        "case": "en contraction comma",
+        "passed": true,
+        "grade": {
+          "error_count": 0,
+          "outcome": "star",
+          "corrected_es": "No I don't drink milk",
+          "tokens": null
+        }
+      },
+      {
+        "case": "en article ambiguous",
+        "passed": true,
+        "grade": {
+          "error_count": 0,
+          "outcome": "star",
+          "corrected_es": "I am reading the book",
+          "tokens": null
+        }
+      },
+      {
+        "case": "en agreement",
+        "passed": true,
+        "grade": {
+          "error_count": 1,
+          "outcome": "passed",
+          "corrected_es": "She drinks water",
+          "tokens": null,
+          "explanation": "В настоящем времени (Present Simple) для третьего лица единственного числа (she) к глаголу добавляется окончание -s.",
+          "issues": [
+            {
+              "kind": "verb_form",
+              "original": "drink",
+              "corrected": "drinks",
+              "explanation": "В настоящем времени (Present Simple) для третьего лица единственного числа (she) к глаголу добавляется окончание -s."
+            }
+          ]
+        }
+      }
+    ]
+  },
+  "final_holdout": {
+    "model": "google/gemini-3-flash-preview",
+    "passed": 14,
+    "total": 14,
+    "http_calls": 19,
+    "prompt_tokens": 28579,
+    "completion_tokens": 2254,
+    "cost_rub": 2.489803,
+    "elapsed_seconds": 57.0,
+    "cases": [
+      {
+        "case": "house context not addressee",
+        "passed": true,
+        "grade": {
+          "error_count": 0,
+          "outcome": "star",
+          "corrected_es": "Usted vende la casa",
+          "tokens": null
+        }
+      },
+      {
+        "case": "latin american plural form",
+        "passed": true,
+        "grade": {
+          "error_count": 1,
+          "outcome": "passed",
+          "corrected_es": "Leen un periódico",
+          "tokens": null,
+          "explanation": "В Мексике для обращения к нескольким друзьям используется форма третьего лица множественного числа (соответствующая ustedes), а не форма vosotros.",
+          "issues": [
+            {
+              "kind": "verb_form",
+              "original": "Leéis",
+              "corrected": "Leen",
+              "explanation": "В Мексике для обращения к нескольким друзьям используется форма третьего лица множественного числа (соответствующая ustedes), а не форма vosotros."
+            }
+          ]
+        }
+      },
+      {
+        "case": "women in spain",
+        "passed": true,
+        "grade": {
+          "error_count": 1,
+          "outcome": "passed",
+          "corrected_es": "Vosotras trabajáis",
+          "tokens": null,
+          "explanation": "Поскольку в контексте указано, что собеседницы — женщины, местоимение должно быть женского рода.",
+          "issues": [
+            {
+              "kind": "agreement",
+              "original": "Vosotros",
+              "corrected": "Vosotras",
+              "explanation": "Поскольку в контексте указано, что собеседницы — женщины, местоимение должно быть женского рода."
+            }
+          ]
+        }
+      },
+      {
+        "case": "known key",
+        "passed": true,
+        "grade": {
+          "error_count": 1,
+          "outcome": "passed",
+          "corrected_es": "Busco la llave",
+          "tokens": null,
+          "explanation": "Контекст указывает на поиск конкретного, ранее полученного ключа, поэтому требуется определенный артикль la.",
+          "issues": [
+            {
+              "kind": "article",
+              "original": "una",
+              "corrected": "la",
+              "explanation": "Контекст указывает на поиск конкретного, ранее полученного ключа, поэтому требуется определенный артикль la."
+            }
+          ]
+        }
+      },
+      {
+        "case": "new dog",
+        "passed": true,
+        "grade": {
+          "error_count": 1,
+          "outcome": "passed",
+          "corrected_es": "Quiero comprar un perro",
+          "tokens": null,
+          "explanation": "Контекст прямо указывает, что животное ещё не выбрано и вы готовы купить любую собаку, поэтому требуется неопределённый артикль.",
+          "issues": [
+            {
+              "kind": "article",
+              "original": "el",
+              "corrected": "un",
+              "explanation": "Контекст прямо указывает, что животное ещё не выбрано и вы готовы купить любую собаку, поэтому требуется неопределённый артикль."
+            }
+          ]
+        }
+      },
+      {
+        "case": "partial context",
+        "passed": true,
+        "grade": {
+          "error_count": 0,
+          "outcome": "star",
+          "corrected_es": "Pongo el libro en la mesa",
+          "tokens": null
+        }
+      },
+      {
+        "case": "accent changes noun",
+        "passed": true,
+        "grade": {
+          "error_count": 1,
+          "outcome": "passed",
+          "corrected_es": "Mi mamá lee libros",
+          "tokens": null,
+          "explanation": "Слово «mamá» (мама) всегда пишется с графическим ударением, иначе оно превращается в форму глагола «mamar» или существительное «грудь».",
+          "issues": [
+            {
+              "kind": "spelling",
+              "original": "mama",
+              "corrected": "mamá",
+              "explanation": "Слово «mamá» (мама) всегда пишется с графическим ударением, иначе оно превращается в форму глагола «mamar» или существительное «грудь»."
+            }
+          ]
+        }
+      },
+      {
+        "case": "correct synonym",
+        "passed": true,
+        "grade": {
+          "error_count": 0,
+          "outcome": "star",
+          "corrected_es": "Mi mamá lee libros",
+          "tokens": null
+        }
+      },
+      {
+        "case": "two independent mistakes",
+        "passed": true,
+        "grade": {
+          "error_count": 2,
+          "outcome": "failed",
+          "corrected_es": "Nosotros no compramos pan",
+          "tokens": null,
+          "explanation": "Пропущено отрицание «no» перед глаголом. Глагол comprar должен стоять в форме 1-го лица множественного числа (мы) — compramos.",
+          "issues": [
+            {
+              "kind": "missing_word",
+              "original": "",
+              "corrected": "no",
+              "explanation": "Пропущено отрицание «no» перед глаголом."
+            },
+            {
+              "kind": "verb_form",
+              "original": "compra",
+              "corrected": "compramos",
+              "explanation": "Глагол comprar должен стоять в форме 1-го лица множественного числа (мы) — compramos."
+            }
+          ]
+        }
+      },
+      {
+        "case": "en contraction",
+        "passed": true,
+        "grade": {
+          "error_count": 0,
+          "outcome": "star",
+          "corrected_es": "She doesn't work here",
+          "tokens": null
+        }
+      },
+      {
+        "case": "en known car",
+        "passed": true,
+        "grade": {
+          "error_count": 1,
+          "outcome": "passed",
+          "corrected_es": "I see the car",
+          "tokens": null,
+          "explanation": "Требуется определенный артикль, так как контекст указывает на конкретный объект, который собеседник только что показал.",
+          "issues": [
+            {
+              "kind": "article",
+              "original": "a",
+              "corrected": "the",
+              "explanation": "Требуется определенный артикль, так как контекст указывает на конкретный объект, который собеседник только что показал."
+            }
+          ]
+        }
+      },
+      {
+        "case": "en article grammar",
+        "passed": true,
+        "grade": {
+          "error_count": 1,
+          "outcome": "passed",
+          "corrected_es": "I am eating an apple",
+          "tokens": null,
+          "explanation": "Перед словами, начинающимися с гласного звука, используется артикль an.",
+          "issues": [
+            {
+              "kind": "article",
+              "original": "a",
+              "corrected": "an",
+              "explanation": "Перед словами, начинающимися с гласного звука, используется артикль an."
+            }
+          ]
+        }
+      },
+      {
+        "case": "en valid word order",
+        "passed": true,
+        "grade": {
+          "error_count": 0,
+          "outcome": "star",
+          "corrected_es": "In the morning I usually drink tea",
+          "tokens": null
+        }
+      },
+      {
+        "case": "en negation present",
+        "passed": true,
+        "grade": {
+          "error_count": 0,
+          "outcome": "star",
+          "corrected_es": "They don't read books",
+          "tokens": null
+        }
+      }
+    ]
+  },
+  "prompt_sha256": {
+    "prompts/sentence-gen-ru-es.txt": "d916844fc65d90083911cdb7f97215a462fb7a7e8d783e26bed277be689cfde6",
+    "prompts/sentence-grade-ru-en.txt": "e650836c2b5e499fe4b520f6280cbdbe71dd9d9b1e6476457253b17dc0d6893a",
+    "prompts/sentence-grade-ru-es.txt": "f95c749100f12dfc6a5a7344be4d2765e5560d7b00f4fcbee00a1b67cffee5dd",
+    "prompts/sentence-gen-ru-en.txt": "fbe89c042a2d1e4eb68315406879e3eba7a1948ceb0f0fe5b6a13c94fcfef21c"
+  }
+}

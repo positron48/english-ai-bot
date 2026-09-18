@@ -144,6 +144,11 @@ func New(cfg *config.Config, log *zap.Logger) (*Bot, error) {
 		log.Info("conversation model override active", zap.String("model", cfg.AI.ConversationModel))
 	}
 
+	aiService.SetSentenceModel(cfg.AI.SentenceModel)
+	if cfg.AI.SentenceModel != "" {
+		log.Info("sentence model override active", zap.String("model", cfg.AI.SentenceModel))
+	}
+
 	// Load Spanish dictionary-lookup prompt for the es_ru course so word-card generation
 	// doesn't validate Spanish words against the default English-only prompt.
 	if esPrompt, err := ai.LoadRenderedPromptFile("prompts/teacher-ru-es.txt", "ru", "es", "ru-es"); err != nil {
