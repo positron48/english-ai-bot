@@ -656,9 +656,9 @@ func TestGrammarService_SelectQuestions_Strategies(t *testing.T) {
 
 	pool := []interface{}{"q1", "q2", "q3"}
 	questionMap := map[string]interface{}{
-		"q1": map[string]interface{}{"id": "q1", "theory_block_id": "a"},
-		"q2": map[string]interface{}{"id": "q2", "theory_block_id": "a"},
-		"q3": map[string]interface{}{"id": "q3", "theory_block_id": "b"},
+		"q1": map[string]interface{}{"type": "mcq_single", "id": "q1", "theory_block_id": "a"},
+		"q2": map[string]interface{}{"type": "mcq_single", "id": "q2", "theory_block_id": "a"},
+		"q3": map[string]interface{}{"type": "mcq_single", "id": "q3", "theory_block_id": "b"},
 	}
 
 	config := map[string]interface{}{"type": "stratified_by_theory_block", "min_per_theory_block": 1.0}
@@ -676,10 +676,10 @@ func TestGrammarService_SelectQuestions_Strategies(t *testing.T) {
 	configMin := map[string]interface{}{"type": "stratified_by_theory_block", "min_per_theory_block": 2.0}
 	pool3 := []interface{}{"q1", "q2", "q3", "q4"}
 	qm3 := map[string]interface{}{
-		"q1": map[string]interface{}{"id": "q1"},
-		"q2": map[string]interface{}{"id": "q2"},
-		"q3": map[string]interface{}{"id": "q3", "theory_block_id": "b1"},
-		"q4": map[string]interface{}{"id": "q4", "theory_block_id": "b1"},
+		"q1": map[string]interface{}{"type": "mcq_single", "id": "q1"},
+		"q2": map[string]interface{}{"type": "mcq_single", "id": "q2"},
+		"q3": map[string]interface{}{"type": "mcq_single", "id": "q3", "theory_block_id": "b1"},
+		"q4": map[string]interface{}{"type": "mcq_single", "id": "q4", "theory_block_id": "b1"},
 	}
 	selectedStrat := svc.selectQuestions(pool3, qm3, configMin, 3)
 	if len(selectedStrat) < 2 {
@@ -689,8 +689,8 @@ func TestGrammarService_SelectQuestions_Strategies(t *testing.T) {
 	// selectRandom: non-string in poolIDs skipped; len(available) <= numQuestions returns all
 	poolMixed := []interface{}{"q1", 42, "q2"}
 	qmSmall := map[string]interface{}{
-		"q1": map[string]interface{}{"id": "q1"},
-		"q2": map[string]interface{}{"id": "q2"},
+		"q1": map[string]interface{}{"type": "mcq_single", "id": "q1"},
+		"q2": map[string]interface{}{"type": "mcq_single", "id": "q2"},
 	}
 	selectedSmall := svc.selectRandom(poolMixed, qmSmall, 10)
 	if len(selectedSmall) != 2 {
@@ -1668,7 +1668,7 @@ func TestGrammarService_FilterQuestionBankForQuizzes(t *testing.T) {
 			Blocks: []interface{}{"not-a-map"},
 			QuestionBank: map[string]interface{}{
 				"questions": []interface{}{
-					map[string]interface{}{"id": "q1"},
+					map[string]interface{}{"type": "mcq_single", "id": "q1"},
 				},
 			},
 		}
@@ -1692,9 +1692,9 @@ func TestGrammarService_FilterQuestionBankForQuizzes(t *testing.T) {
 			},
 			QuestionBank: map[string]interface{}{
 				"questions": []interface{}{
-					map[string]interface{}{"id": "q1", "prompt": "Q1"},
-					map[string]interface{}{"id": "q2", "prompt": "Q2"},
-					map[string]interface{}{"id": "q3", "prompt": "Q3"},
+					map[string]interface{}{"type": "mcq_single", "id": "q1", "prompt": "Q1"},
+					map[string]interface{}{"type": "mcq_single", "id": "q2", "prompt": "Q2"},
+					map[string]interface{}{"type": "mcq_single", "id": "q3", "prompt": "Q3"},
 				},
 			},
 		}
@@ -1719,7 +1719,7 @@ func TestGrammarService_FilterQuestionBankForQuizzes(t *testing.T) {
 				map[string]interface{}{"type": "theory", "content": "x"},
 			},
 			QuestionBank: map[string]interface{}{
-				"questions": []interface{}{map[string]interface{}{"id": "q1"}},
+				"questions": []interface{}{map[string]interface{}{"type": "mcq_single", "id": "q1"}},
 			},
 		}
 		out := svc.filterQuestionBankForQuizzes(ch)
@@ -1738,7 +1738,7 @@ func TestGrammarService_FilterQuestionBankForQuizzes(t *testing.T) {
 				},
 			},
 			QuestionBank: map[string]interface{}{
-				"questions": []interface{}{map[string]interface{}{"id": "q1"}},
+				"questions": []interface{}{map[string]interface{}{"type": "mcq_single", "id": "q1"}},
 			},
 		}
 		out := svc.filterQuestionBankForQuizzes(ch)
@@ -1781,7 +1781,7 @@ func TestGrammarService_FilterQuestionBankForQuizzes(t *testing.T) {
 				},
 			},
 			QuestionBank: map[string]interface{}{
-				"questions": []interface{}{map[string]interface{}{"id": "q1"}},
+				"questions": []interface{}{map[string]interface{}{"type": "mcq_single", "id": "q1"}},
 			},
 		}
 		out := svc.filterQuestionBankForQuizzes(ch)
@@ -1843,7 +1843,7 @@ func grammarServiceWithCustomChapterFS(t *testing.T, sectionsJSON, indexJSON, ch
 func TestGrammarService_GenerateChapterTest_InvalidTestConfig(t *testing.T) {
 	sectionsJSON := `{"version":"1","sections":[{"section_id":"s1","title":"S1","level":"A1","order":1,"chapter_ids":["ch1"]}]}`
 	indexJSON := `{"version":"1","generated_at":"","chapters":{"ch1":"one.json"}}`
-	chapterJSON := `{"schema_version":"1","id":"ch1","section_id":"s1","title":"T","blocks":[],"question_bank":{"questions":[{"id":"q1","type":"fill","correct_answer":"x"}]},"chapter_test":{"selection_strategy":"not-a-map","pool_question_ids":["q1"],"num_questions":10}}`
+	chapterJSON := `{"schema_version":"1","id":"ch1","section_id":"s1","title":"T","blocks":[],"question_bank":{"questions":[{"id":"q1","type":"fill_blank","correct_answer":"x"}]},"chapter_test":{"selection_strategy":"not-a-map","pool_question_ids":["q1"],"num_questions":10}}`
 	svc := grammarServiceWithCustomChapterFS(t, sectionsJSON, indexJSON, chapterJSON)
 
 	_, err := svc.GenerateChapterTest(context.Background(), "ch1")
@@ -1859,7 +1859,7 @@ func TestGrammarService_GenerateChapterTest_InvalidTestConfig(t *testing.T) {
 func TestGrammarService_GenerateChapterTest_InvalidPoolQuestionIDs(t *testing.T) {
 	sectionsJSON := `{"version":"1","sections":[{"section_id":"s1","title":"S1","level":"A1","order":1,"chapter_ids":["ch1"]}]}`
 	indexJSON := `{"version":"1","generated_at":"","chapters":{"ch1":"one.json"}}`
-	chapterJSON := `{"schema_version":"1","id":"ch1","section_id":"s1","title":"T","blocks":[],"question_bank":{"questions":[{"id":"q1","type":"fill"}]},"chapter_test":{"selection_strategy":{"type":"random"},"pool_question_ids":"not-a-slice","num_questions":10}}`
+	chapterJSON := `{"schema_version":"1","id":"ch1","section_id":"s1","title":"T","blocks":[],"question_bank":{"questions":[{"id":"q1","type":"fill_blank"}]},"chapter_test":{"selection_strategy":{"type":"random"},"pool_question_ids":"not-a-slice","num_questions":10}}`
 	svc := grammarServiceWithCustomChapterFS(t, sectionsJSON, indexJSON, chapterJSON)
 
 	_, err := svc.GenerateChapterTest(context.Background(), "ch1")
@@ -1892,7 +1892,7 @@ func TestGrammarService_GenerateChapterTest_QuestionWithNonStringID(t *testing.T
 	sectionsJSON := `{"version":"1","sections":[{"section_id":"s1","title":"S1","level":"A1","order":1,"chapter_ids":["ch1"]}]}`
 	indexJSON := `{"version":"1","generated_at":"","chapters":{"ch1":"one.json"}}`
 	// One question with string id "q1", one with numeric id so it is skipped in questionMap
-	chapterJSON := `{"schema_version":"1","id":"ch1","section_id":"s1","title":"T","blocks":[],"question_bank":{"questions":[{"id":"q1","type":"fill","correct_answer":"x"},{"id":123,"type":"fill","correct_answer":"y"}]},"chapter_test":{"selection_strategy":{"type":"random"},"pool_question_ids":["q1"],"num_questions":10}}`
+	chapterJSON := `{"schema_version":"1","id":"ch1","section_id":"s1","title":"T","blocks":[],"question_bank":{"questions":[{"id":"q1","type":"fill_blank","correct_answer":"x"},{"id":123,"type":"fill_blank","correct_answer":"y"}]},"chapter_test":{"selection_strategy":{"type":"random"},"pool_question_ids":["q1"],"num_questions":10}}`
 	svc := grammarServiceWithCustomChapterFS(t, sectionsJSON, indexJSON, chapterJSON)
 
 	out, err := svc.GenerateChapterTest(context.Background(), "ch1")
@@ -1909,7 +1909,7 @@ func TestGrammarService_GenerateChapterTest_QuestionWithNonStringID(t *testing.T
 func TestGrammarService_GenerateCategoryTest_GetChapterFailsForOneChapter(t *testing.T) {
 	sectionsJSON := `{"version":"1","sections":[{"section_id":"s1","title":"S1","level":"A1","order":1,"chapter_ids":["ch1","ch2"]}]}`
 	indexJSON := `{"version":"1","generated_at":"","chapters":{"ch1":"one.json"}}`
-	chapterJSON := `{"schema_version":"1","id":"ch1","section_id":"s1","title":"Ch1","blocks":[],"question_bank":{"questions":[{"id":"q1","type":"fill","correct_answer":"a"}]},"chapter_test":{"selection_strategy":{"type":"random"},"pool_question_ids":["q1"],"num_questions":10}}`
+	chapterJSON := `{"schema_version":"1","id":"ch1","section_id":"s1","title":"Ch1","blocks":[],"question_bank":{"questions":[{"id":"q1","type":"fill_blank","correct_answer":"a"}]},"chapter_test":{"selection_strategy":{"type":"random"},"pool_question_ids":["q1"],"num_questions":10}}`
 	fs := fstest.MapFS{
 		"sections.json":     {Data: []byte(sectionsJSON)},
 		"index.json":        {Data: []byte(indexJSON)},
@@ -1956,7 +1956,7 @@ func TestGrammarService_SubmitTest_Chapter_QuestionNotMap(t *testing.T) {
 	sectionsJSON := `{"version":"1","sections":[{"section_id":"s1","title":"S1","level":"A1","order":1,"chapter_ids":["ch1"]}]}`
 	indexJSON := `{"version":"1","generated_at":"","chapters":{"ch1":"one.json"}}`
 	// questions slice contains a string (not a map) so it is skipped in the loop
-	chapterJSON := `{"schema_version":"1","id":"ch1","section_id":"s1","title":"T","blocks":[],"question_bank":{"questions":[{"id":"q1","type":"fill","correct_answer":"x"},"not-a-map"]}}`
+	chapterJSON := `{"schema_version":"1","id":"ch1","section_id":"s1","title":"T","blocks":[],"question_bank":{"questions":[{"id":"q1","type":"fill_blank","correct_answer":"x"},"not-a-map"]}}`
 	svc := grammarServiceWithCustomChapterFS(t, sectionsJSON, indexJSON, chapterJSON)
 	_ = svc.PublishRepo.SetPublished("chapter", "ch1", true, nil)
 
@@ -2262,7 +2262,7 @@ func TestGrammarService_SubmitPlacementTest_GetPublishedItemsError(t *testing.T)
 func TestGrammarService_SubmitTest_Category_GetChapterFailsForOneChapter(t *testing.T) {
 	sectionsJSON := `{"version":"1","sections":[{"section_id":"s1","title":"S1","level":"A1","order":1,"chapter_ids":["ch1","ch2"]}]}`
 	indexJSON := `{"version":"1","generated_at":"","chapters":{"ch1":"one.json"}}`
-	chapterJSON := `{"schema_version":"1","id":"ch1","section_id":"s1","title":"Ch1","blocks":[],"question_bank":{"questions":[{"id":"q1","type":"fill","correct_answer":"ans1"}]},"chapter_test":{"selection_strategy":{"type":"random"},"pool_question_ids":["q1"],"num_questions":10}}`
+	chapterJSON := `{"schema_version":"1","id":"ch1","section_id":"s1","title":"Ch1","blocks":[],"question_bank":{"questions":[{"id":"q1","type":"fill_blank","correct_answer":"ans1"}]},"chapter_test":{"selection_strategy":{"type":"random"},"pool_question_ids":["q1"],"num_questions":10}}`
 	fs := fstest.MapFS{
 		"sections.json":     {Data: []byte(sectionsJSON)},
 		"index.json":        {Data: []byte(indexJSON)},

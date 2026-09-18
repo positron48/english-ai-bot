@@ -32,7 +32,14 @@ func GetDialect(db *sql.DB) string {
 	return DialectPostgres
 }
 
-func InsertAndReturnID(db *sql.DB, query string, args ...interface{}) (int64, error) {
+// DBTX is the common query surface of a connection pool and a transaction.
+type DBTX interface {
+	Exec(string, ...interface{}) (sql.Result, error)
+	Query(string, ...interface{}) (*sql.Rows, error)
+	QueryRow(string, ...interface{}) *sql.Row
+}
+
+func InsertAndReturnID(db DBTX, query string, args ...interface{}) (int64, error) {
 	q := query
 	if !strings.Contains(strings.ToUpper(q), "RETURNING") {
 		q += " RETURNING id"

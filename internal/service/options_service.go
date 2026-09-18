@@ -56,23 +56,13 @@ func (s *OptionsService) GenerateOptions(
 	sessionWordENs map[string]bool,
 	sessionWordRUs map[string]bool,
 ) ([]string, string, error) {
-	var correctAnswer string
-	var distractorsJSON string
-
-	// Determine correct answer and distractors based on direction
+	correctAnswer := card.TrainingCard.WordRU
 	if card.UserCard.Direction == models.DirectionRUtoEN {
-		// Question in Russian, answer in English
-		// Use display_word if available (e.g., "to spy" for verbs), otherwise word_en
-		if card.TrainingCard.DisplayWord != nil && *card.TrainingCard.DisplayWord != "" {
-			correctAnswer = *card.TrainingCard.DisplayWord
-		} else {
-			correctAnswer = card.TrainingCard.WordEN
-		}
+		correctAnswer = TrainingDisplayWord(&card.TrainingCard)
+	}
+	distractorsJSON := card.TrainingCard.DistractorsRU
+	if card.UserCard.Direction == models.DirectionRUtoEN {
 		distractorsJSON = card.TrainingCard.DistractorsEN
-	} else {
-		// Question in English, answer in Russian
-		correctAnswer = card.TrainingCard.WordRU
-		distractorsJSON = card.TrainingCard.DistractorsRU
 	}
 
 	// Parse distractors
@@ -315,7 +305,7 @@ func (s *OptionsService) GenerateOptions(
 
 	// Build final options array with correct answer
 	// Normalize correct answer for consistency (all options should be in the same format)
-	normalizedCorrectAnswerForOptions := s.normalizeVerbFormat(correctAnswer, currentPOS, card.UserCard.Direction)
+	normalizedCorrectAnswerForOptions := s.CorrectAnswer(card)
 	options := make([]string, 0, optionCount)
 	options = append(options, normalizedCorrectAnswerForOptions)
 	options = append(options, selectedDistractors...)
@@ -481,4 +471,25 @@ func (s *OptionsService) normalizeVerbFormat(word string, pos string, direction 
 
 	// Add "to " prefix
 	return "to " + word
+}
+
+// CorrectAnswer derives the canonical choice from stored content, without
+// loading distractors. Shared by online option generation and offline grading.
+func (s *OptionsService) CorrectAnswer(card *models.UserCardWithTraining) string {
+	answer := card.TrainingCard.WordRU
+	if card.UserCard.Direction == models.DirectionRUtoEN {
+		answer = TrainingDisplayWord(&card.TrainingCard)
+	}
+	pos := ""
+	if card.TrainingCard.POS != nil {
+		pos = *card.TrainingCard.POS
+	}
+	return s.normalizeVerbFormat(answer, pos, card.UserCard.Direction)
+}
+
+func TrainingDisplayWord(card *models.TrainingCard) string {
+	if card.DisplayWord != nil && *card.DisplayWord != "" {
+		return *card.DisplayWord
+	}
+	return card.WordEN
 }

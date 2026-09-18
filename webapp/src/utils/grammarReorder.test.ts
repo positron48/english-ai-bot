@@ -50,3 +50,14 @@ describe('grammar reorder translations', () => {
     }
   })
 })
+
+it('filters unsupported formats from cached questions and inline quizzes', () => {
+  const unsupported = ['matching', 'mcq_multi', 'cloze_mixed', 'transform', 'explain_choice', 'production_hint', 'short_answer', 'future_type']
+  for (const type of unsupported) expect(grammarQuestionAvailable({ type })).toBe(false)
+  const result = chapterForQuestionDisplay({
+    blocks: [{ type: 'quiz_inline', quiz_inline: { question_ids: ['good', 'bad'] } }],
+    question_bank: { questions: [{ id: 'good', type: 'mcq_single' }, { id: 'bad', type: 'matching' }] },
+  })
+  expect(result.question_bank.questions.map((q: any) => q.id)).toEqual(['good'])
+  expect(result.blocks[0].quiz_inline.question_ids).toEqual(['good'])
+})

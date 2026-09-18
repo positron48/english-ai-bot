@@ -132,19 +132,37 @@ func (r *Router) handleLinglowConversationScenarios(w http.ResponseWriter, req *
 		npcImages = map[string]string{}
 	}
 
+	ids := make([]int64, len(scenarios))
+	for i, scenario := range scenarios {
+		ids[i] = scenario.ID
+	}
+	tasksByScenario, err := r.conversationRepo.ListTasksForList(ctx, ids)
+	if err != nil {
+		r.logger.Error("list scenario tasks", zap.Error(err))
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	progressByScenario, err := r.conversationRepo.ListProgress(ctx, userCourseID, ids)
+	if err != nil {
+		r.logger.Error("list scenario progress", zap.Error(err))
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
 	now := time.Now()
 	out := make([]map[string]interface{}, 0, len(scenarios))
 	for i := range scenarios {
 		sc := &scenarios[i]
-		tasks, err := r.conversationRepo.ListTasks(ctx, sc.ID)
-		if err != nil {
-			r.logger.Error("list tasks", zap.Error(err))
-			http.Error(w, "Internal server error", http.StatusInternalServerError)
-			return
-		}
+		tasks := tasksByScenario[sc.ID]
 		locked, cooldownUntil := r.scenarioLockState(sc, passedCodes, passedAt, now)
-		questPassed, allTasksDone := r.scenarioProgressFlags(ctx, userCourseID, sc.ID, tasks)
-		sessionStatus := r.derivedSessionStatus(ctx, userCourseID, sc.ID, tasks, questPassed, allTasksDone)
+		progress, hasSession := progressByScenario[sc.ID]
+		questPassed := passedCodes[sc.Code] || (hasSession && allRequiredDone(tasks, progress.Completed))
+		allDone := hasSession && (progress.Status == "completed" || allTasksDone(tasks, progress.Completed))
+		sessionStatus := progress.Status
+		if allDone {
+			sessionStatus = "completed"
+		} else if questPassed {
+			sessionStatus = "passed"
+		}
 		entry := map[string]interface{}{
 			"code":              sc.Code,
 			"title":             sc.Title,
@@ -161,7 +179,7 @@ func (r *Router) handleLinglowConversationScenarios(w http.ResponseWriter, req *
 			"tasks":             tasksJSON(tasks, nil),
 			"session_status":    sessionStatus,
 			"quest_passed":      questPassed,
-			"all_tasks_done":    allTasksDone,
+			"all_tasks_done":    allDone,
 		}
 		if cooldownUntil != nil {
 			entry["cooldown_until"] = cooldownUntil.UTC().Format(time.RFC3339)

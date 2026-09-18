@@ -14,12 +14,12 @@ import (
 
 // TrainingCardRepository handles database operations for training cards
 type TrainingCardRepository struct {
-	db     *sql.DB
+	db     database.DBTX
 	logger *zap.Logger
 }
 
 // NewTrainingCardRepository creates a new training card repository
-func NewTrainingCardRepository(db *sql.DB, logger *zap.Logger) *TrainingCardRepository {
+func NewTrainingCardRepository(db database.DBTX, logger *zap.Logger) *TrainingCardRepository {
 	return &TrainingCardRepository{
 		db:     db,
 		logger: logger,

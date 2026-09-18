@@ -466,3 +466,25 @@ func (r *PictureQuestRepository) CloseSession(ctx context.Context, sessionID, us
 	}
 	return nil
 }
+
+// ListTasksForList loads the ordered tasks for the whole list in one query.
+func (r *PictureQuestRepository) ListTasksForList(ctx context.Context, ids []int64) (map[int64][]PictureQuestTask, error) {
+	out := make(map[int64][]PictureQuestTask)
+	if len(ids) == 0 {
+		return out, nil
+	}
+	placeholders, args := questIDArgs(ids)
+	rows, err := r.db.QueryContext(ctx, `SELECT id, quest_id, code, sort_order, is_required, title, completion_criteria FROM picture_quest_tasks WHERE quest_id IN (`+placeholders+`) ORDER BY quest_id, sort_order, id`, args...)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var task PictureQuestTask
+		if err := rows.Scan(&task.ID, &task.QuestID, &task.Code, &task.SortOrder, &task.IsRequired, &task.Title, &task.CompletionCriteria); err != nil {
+			return nil, err
+		}
+		out[task.QuestID] = append(out[task.QuestID], task)
+	}
+	return out, rows.Err()
+}

@@ -87,11 +87,11 @@ async function requirePack(): Promise<OfflineWordTrainingPack> {
   return pack
 }
 
-function queueItemToResponse(session: OfflineWordTrainingSession, item: OfflineWordTrainingQueueItem): any {
+async function queueItemToResponse(session: OfflineWordTrainingSession, item: OfflineWordTrainingQueueItem): Promise<any> {
   const shownAt = new Date().toISOString()
   session.shown_at = shownAt
   session.options_shown_at = item.type === 'card' ? undefined : shownAt
-  void setWordTrainingSession(session)
+  await setWordTrainingSession(session)
 
   const base = {
     type: item.type,
@@ -139,7 +139,7 @@ function queueItemToResponse(session: OfflineWordTrainingSession, item: OfflineW
   return base
 }
 
-function toCardResponse(session: OfflineWordTrainingSession): any {
+async function toCardResponse(session: OfflineWordTrainingSession): Promise<any> {
   if (session.index >= session.queue.length) {
     const response = {
       complete: true,
@@ -148,11 +148,20 @@ function toCardResponse(session: OfflineWordTrainingSession): any {
       correct_cards: session.correct_count,
       offline: true,
     }
-    void clearWordTrainingSession()
+    await clearWordTrainingSession()
     return response
   }
   const item = session.queue[session.index]
   return queueItemToResponse(session, item)
+}
+
+async function revealOfflineOptions(session: OfflineWordTrainingSession | null): Promise<any> {
+  if (!session || session.index >= session.queue.length) throw new OfflineWordTrainingUnavailableError('No active offline session')
+  const item = session.queue[session.index]
+  if (item.type !== 'card') throw new OfflineWordTrainingUnavailableError('Reveal is only available for card mode offline')
+  session.options_shown_at = new Date().toISOString()
+  await setWordTrainingSession(session)
+  return { options: item.options, user_card_id: item.user_card_id, session_id: session.id, card_index: session.index + 1, offline: true }
 }
 
 function createID(prefix: string): string {
@@ -366,7 +375,13 @@ export const wordTrainingClient = {
 
   async start(): Promise<any> {
     return offlineFallback(
-      () => apiClient.request(withCourse('/api/training/start'), { method: 'POST' }),
+      async () => {
+        const checkScope = captureTrainingScope()
+        const result = await apiClient.request(withCourse('/api/training/start'), { method: 'POST' })
+        checkScope()
+        await clearWordTrainingSession()
+        return result
+      },
       async () => {
         const checkScope = captureTrainingScope()
         const pack = await requirePack()
@@ -382,6 +397,10 @@ export const wordTrainingClient = {
   },
 
   async current(): Promise<any> {
+    const checkScope = captureTrainingScope()
+    const session = await getWordTrainingSession()
+    checkScope()
+    if (session) return toCardResponse(session)
     return offlineFallback(
       () => apiClient.request(withCourse('/api/training/current')),
       async () => {
@@ -393,6 +412,7 @@ export const wordTrainingClient = {
   },
 
   async prefetchNext(): Promise<any> {
+    if (await getWordTrainingSession()) return null
     return offlineFallback(
       () => apiClient.request(withCourse('/api/training/prefetch-next'), { method: 'POST' }),
       async () => null,
@@ -400,25 +420,27 @@ export const wordTrainingClient = {
   },
 
   async reveal(): Promise<any> {
+    const checkScope = captureTrainingScope()
+    const session = await getWordTrainingSession()
+    checkScope()
+    if (session) return revealOfflineOptions(session)
     return offlineFallback(
       () => apiClient.request('/api/training/reveal', { method: 'POST', headers: { 'Content-Type': 'application/json' } }),
       async () => {
         const checkScope = captureTrainingScope()
         const session = await getWordTrainingSession()
         checkScope()
-        if (!session || session.index >= session.queue.length) throw new OfflineWordTrainingUnavailableError('No active offline session')
-        const item = session.queue[session.index]
-        if (item.type !== 'card') throw new OfflineWordTrainingUnavailableError('Reveal is only available for card mode offline')
-        session.options_shown_at = new Date().toISOString()
-        await setWordTrainingSession(session)
-        return { options: item.options, user_card_id: item.user_card_id, session_id: session.id, card_index: session.index + 1, offline: true }
+        return revealOfflineOptions(session)
       },
     )
   },
 
   async answer(formData: FormData): Promise<any> {
     const checkUser = captureTrainingScope()
-    if (!isBrowserOffline()) {
+    const localSession = await getWordTrainingSession()
+    checkUser()
+    const isLocalSession = localSession?.id === Number(formData.get('session_id'))
+    if (!isLocalSession && !isBrowserOffline()) {
       try {
         const result = await apiClient.requestFormData('/api/training/answer', formData)
         notifyWordReviewRecorded()

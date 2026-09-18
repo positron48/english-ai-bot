@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 	"sort"
 	"strings"
+	"sync"
 
 	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/grammartrainingpack"
@@ -16,10 +17,13 @@ import (
 )
 
 type GrammarTrainingPackRepository struct {
-	fs       fs.FS
-	db       *sql.DB
-	bundleID string
-	logger   *zap.Logger
+	questionIndexOnce sync.Once
+	questionIndex     map[string]map[string]interface{}
+	questionIndexErr  error
+	fs                fs.FS
+	db                *sql.DB
+	bundleID          string
+	logger            *zap.Logger
 }
 
 // GrammarTrainingPackIndex is a parsed training pack index.
@@ -361,4 +365,49 @@ func (r *GrammarTrainingPackRepository) QuestionsByTheoryBlock() (map[string][]m
 		out[theoryBlockID] = append(out[theoryBlockID], q)
 	}
 	return out, nil
+}
+
+// GetQuestion uses the DB primary key, or a lazy index of the immutable embedded
+// pack. Answering one question must not reload the entire course.
+func (r *GrammarTrainingPackRepository) GetQuestion(id string) (map[string]interface{}, error) {
+	if r.db != nil {
+		var raw string
+		err := r.db.QueryRow(`SELECT raw_json FROM grammar_training_content_questions WHERE bundle_id = ? AND question_id = ?`, r.bundleID, id).Scan(&raw)
+		if err == sql.ErrNoRows {
+			return nil, nil
+		}
+		if err != nil {
+			return nil, err
+		}
+		var q map[string]interface{}
+		if err = json.Unmarshal([]byte(raw), &q); err != nil {
+			return nil, err
+		}
+		return q, nil
+	}
+	r.questionIndexOnce.Do(func() {
+		all, err := r.GetAllQuestions()
+		r.questionIndexErr = err
+		r.questionIndex = make(map[string]map[string]interface{}, len(all))
+		for _, q := range all {
+			if id, ok := q["id"].(string); ok {
+				r.questionIndex[id] = q
+			}
+		}
+	})
+	if r.questionIndexErr != nil {
+		return nil, r.questionIndexErr
+	}
+	q := r.questionIndex[id]
+	if q == nil {
+		return nil, nil
+	}
+	// Callers receive their own copy, including nested answer payloads.
+	raw, err := json.Marshal(q)
+	if err != nil {
+		return nil, err
+	}
+	var copy map[string]interface{}
+	err = json.Unmarshal(raw, &copy)
+	return copy, err
 }

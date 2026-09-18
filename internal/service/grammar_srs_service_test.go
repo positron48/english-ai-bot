@@ -49,7 +49,7 @@ func setupGrammarSRSServiceWithRepos(t *testing.T) (*GrammarService, *repository
 			"section_id":"s1",
 			"title":"Chapter 1",
 			"blocks":[{"id":"b1","type":"theory","theory":{"title":"T","content":"C"}}],
-			"question_bank":{"questions":[{"id":"q1","type":"single_choice","question":"Q?","options":["A","B"],"correct_answer":"A","explanation":"E","theory_block_id":"b1","chapter_id":"ch1","concept_id":"c1"}]},
+			"question_bank":{"questions":[{"id":"q1","type":"mcq_single","question":"Q?","options":["A","B"],"correct_answer":"A","explanation":"E","theory_block_id":"b1","chapter_id":"ch1","concept_id":"c1"}]},
 			"chapter_test":{"selection_strategy":{"type":"random"},"pool_question_ids":["q1"],"num_questions":1}
 		}`)},
 	}
@@ -71,8 +71,8 @@ func setupGrammarSRSServiceWithRepos(t *testing.T) (*GrammarService, *repository
 		"chapters/one_questions.json": {Data: []byte(`{
 			"chapter_id":"ch1",
 			"questions":[
-				{"id":"q1","chapter_id":"ch1","theory_block_id":"b1","concept_id":"c1","type":"single_choice","question":"Q?","options":["A","B"],"correct_answer":"A","explanation":"E"},
-				{"id":"q2","chapter_id":"ch1","theory_block_id":"b1","concept_id":"c1","type":"single_choice","question":"Q2?","options":["A","B"],"correct_answer":"B","explanation":"E2"}
+				{"id":"q1","chapter_id":"ch1","theory_block_id":"b1","concept_id":"c1","type":"mcq_single","question":"Q?","options":["A","B"],"correct_answer":"A","explanation":"E"},
+				{"id":"q2","chapter_id":"ch1","theory_block_id":"b1","concept_id":"c1","type":"mcq_single","question":"Q2?","options":["A","B"],"correct_answer":"B","explanation":"E2"}
 			]
 		}`)},
 	}
@@ -269,7 +269,7 @@ func TestGrammarSRS_StartSession_RemainingLoopBranches(t *testing.T) {
 	contentRepo := repository.NewGrammarContentRepositoryWithFS(fstest.MapFS{
 		"sections.json":     {Data: []byte(`{"version":"1","sections":[{"section_id":"s1","title":"S1","level":"A1","order":1,"chapter_ids":["ch1"]}]}`)},
 		"index.json":        {Data: []byte(`{"version":"1","generated_at":"","chapters":{"ch1":"one.json"}}`)},
-		"chapters/one.json": {Data: []byte(`{"schema_version":"1","id":"ch1","section_id":"s1","title":"Chapter 1","blocks":[],"question_bank":{"questions":[{"id":"q1","correct_answer":"A"}]},"chapter_test":{"selection_strategy":{"type":"random"},"pool_question_ids":["q1"],"num_questions":1}}`)},
+		"chapters/one.json": {Data: []byte(`{"schema_version":"1","id":"ch1","section_id":"s1","title":"Chapter 1","blocks":[],"question_bank":{"questions":[{"type":"mcq_single","id":"q1","correct_answer":"A"}]},"chapter_test":{"selection_strategy":{"type":"random"},"pool_question_ids":["q1"],"num_questions":1}}`)},
 	}, logger)
 	publishRepo := repository.NewGrammarPublishRepository(db.GetConnection(), logger)
 	attemptRepo := repository.NewGrammarAttemptRepository(db.GetConnection(), logger)
@@ -281,9 +281,9 @@ func TestGrammarSRS_StartSession_RemainingLoopBranches(t *testing.T) {
 	packFS := fstest.MapFS{
 		"index.json": {Data: []byte(`{"version":"1","language":"es","course_id":"es","generated_at":"","chapters":{"ch1":"q.json"}}`)},
 		"chapters/q.json": {Data: []byte(`{"chapter_id":"ch1","questions":[
-			{"id":"q1","chapter_id":"ch1","theory_block_id":"b1","correct_answer":"A"},
-			{"id":"q2","chapter_id":"ch1","theory_block_id":"b2","correct_answer":"B"},
-			{"id":"q3","chapter_id":"ch1","theory_block_id":"b3","correct_answer":"C"}
+			{"type":"mcq_single","id":"q1","chapter_id":"ch1","theory_block_id":"b1","correct_answer":"A"},
+			{"type":"mcq_single","id":"q2","chapter_id":"ch1","theory_block_id":"b2","correct_answer":"B"},
+			{"type":"mcq_single","id":"q3","chapter_id":"ch1","theory_block_id":"b3","correct_answer":"C"}
 		]}`)},
 	}
 	svc.SetTrainingPackRepository(repository.NewGrammarTrainingPackRepositoryWithFS(packFS, logger))
@@ -306,7 +306,7 @@ func TestGrammarSRS_StartSession_DueLoopBreakBranch(t *testing.T) {
 	contentRepo := repository.NewGrammarContentRepositoryWithFS(fstest.MapFS{
 		"sections.json":     {Data: []byte(`{"version":"1","sections":[{"section_id":"s1","title":"S1","level":"A1","order":1,"chapter_ids":["ch1"]}]}`)},
 		"index.json":        {Data: []byte(`{"version":"1","generated_at":"","chapters":{"ch1":"one.json"}}`)},
-		"chapters/one.json": {Data: []byte(`{"schema_version":"1","id":"ch1","section_id":"s1","title":"Chapter 1","blocks":[],"question_bank":{"questions":[{"id":"q1","correct_answer":"A"}]},"chapter_test":{"selection_strategy":{"type":"random"},"pool_question_ids":["q1"],"num_questions":1}}`)},
+		"chapters/one.json": {Data: []byte(`{"schema_version":"1","id":"ch1","section_id":"s1","title":"Chapter 1","blocks":[],"question_bank":{"questions":[{"type":"mcq_single","id":"q1","correct_answer":"A"}]},"chapter_test":{"selection_strategy":{"type":"random"},"pool_question_ids":["q1"],"num_questions":1}}`)},
 	}, logger)
 	publishRepo := repository.NewGrammarPublishRepository(db.GetConnection(), logger)
 	attemptRepo := repository.NewGrammarAttemptRepository(db.GetConnection(), logger)
@@ -318,8 +318,8 @@ func TestGrammarSRS_StartSession_DueLoopBreakBranch(t *testing.T) {
 	packFS := fstest.MapFS{
 		"index.json": {Data: []byte(`{"version":"1","language":"es","course_id":"es","generated_at":"","chapters":{"ch1":"q.json"}}`)},
 		"chapters/q.json": {Data: []byte(`{"chapter_id":"ch1","questions":[
-			{"id":"q1","chapter_id":"ch1","theory_block_id":"b1","correct_answer":"A"},
-			{"id":"q2","chapter_id":"ch1","theory_block_id":"b2","correct_answer":"B"}
+			{"type":"mcq_single","id":"q1","chapter_id":"ch1","theory_block_id":"b1","correct_answer":"A"},
+			{"type":"mcq_single","id":"q2","chapter_id":"ch1","theory_block_id":"b2","correct_answer":"B"}
 		]}`)},
 	}
 	svc.SetTrainingPackRepository(repository.NewGrammarTrainingPackRepositoryWithFS(packFS, logger))
@@ -355,7 +355,7 @@ func TestGrammarSRS_StartSession_DueTrimBranch_WithSQLMock(t *testing.T) {
 	contentRepo := repository.NewGrammarContentRepositoryWithFS(fstest.MapFS{
 		"sections.json":     {Data: []byte(`{"version":"1","sections":[{"section_id":"s1","title":"S1","level":"A1","order":1,"chapter_ids":["ch1"]}]}`)},
 		"index.json":        {Data: []byte(`{"version":"1","generated_at":"","chapters":{"ch1":"one.json"}}`)},
-		"chapters/one.json": {Data: []byte(`{"schema_version":"1","id":"ch1","section_id":"s1","title":"Chapter 1","blocks":[],"question_bank":{"questions":[{"id":"q1","correct_answer":"A"}]},"chapter_test":{"selection_strategy":{"type":"random"},"pool_question_ids":["q1"],"num_questions":1}}`)},
+		"chapters/one.json": {Data: []byte(`{"schema_version":"1","id":"ch1","section_id":"s1","title":"Chapter 1","blocks":[],"question_bank":{"questions":[{"type":"mcq_single","id":"q1","correct_answer":"A"}]},"chapter_test":{"selection_strategy":{"type":"random"},"pool_question_ids":["q1"],"num_questions":1}}`)},
 	}, logger)
 	publishRepo := repository.NewGrammarPublishRepository(db.GetConnection(), logger)
 	attemptRepo := repository.NewGrammarAttemptRepository(db.GetConnection(), logger)
@@ -367,8 +367,8 @@ func TestGrammarSRS_StartSession_DueTrimBranch_WithSQLMock(t *testing.T) {
 	packFS := fstest.MapFS{
 		"index.json": {Data: []byte(`{"version":"1","language":"es","course_id":"es","generated_at":"","chapters":{"ch1":"q.json"}}`)},
 		"chapters/q.json": {Data: []byte(`{"chapter_id":"ch1","questions":[
-			{"id":"q1","chapter_id":"ch1","theory_block_id":"b1","correct_answer":"A"},
-			{"id":"q2","chapter_id":"ch1","theory_block_id":"b2","correct_answer":"B"}
+			{"type":"mcq_single","id":"q1","chapter_id":"ch1","theory_block_id":"b1","correct_answer":"A"},
+			{"type":"mcq_single","id":"q2","chapter_id":"ch1","theory_block_id":"b2","correct_answer":"B"}
 		]}`)},
 	}
 	svc.SetTrainingPackRepository(repository.NewGrammarTrainingPackRepositoryWithFS(packFS, logger))
@@ -415,7 +415,7 @@ func TestGrammarSRS_AllowedTrainingChapters_IsSectionOpenedByPlacementErrorBranc
 	baseFS := fstest.MapFS{
 		"sections.json":     {Data: []byte(`{"version":"1","sections":[{"section_id":"s1","title":"S1","level":"A1","order":1,"chapter_ids":["ch1"]}]}`)},
 		"index.json":        {Data: []byte(`{"version":"1","generated_at":"","chapters":{"ch1":"one.json"}}`)},
-		"chapters/one.json": {Data: []byte(`{"schema_version":"1","id":"ch1","section_id":"s1","title":"Chapter 1","blocks":[],"question_bank":{"questions":[{"id":"q1","correct_answer":"A"}]},"chapter_test":{"selection_strategy":{"type":"random"},"pool_question_ids":["q1"],"num_questions":1}}`)},
+		"chapters/one.json": {Data: []byte(`{"schema_version":"1","id":"ch1","section_id":"s1","title":"Chapter 1","blocks":[],"question_bank":{"questions":[{"type":"mcq_single","id":"q1","correct_answer":"A"}]},"chapter_test":{"selection_strategy":{"type":"random"},"pool_question_ids":["q1"],"num_questions":1}}`)},
 	}
 	contentRepo := repository.NewGrammarContentRepositoryWithFS(&secondReadBadSectionsFS{valid: baseFS}, logger)
 	publishRepo := repository.NewGrammarPublishRepository(db.GetConnection(), logger)
@@ -522,7 +522,7 @@ func TestGrammarSRS_SubmitAnswer_WithoutTheoryBlock(t *testing.T) {
 	contentFS := fstest.MapFS{
 		"sections.json":     {Data: []byte(`{"version":"1","sections":[{"section_id":"s1","title":"S1","level":"A1","order":1,"chapter_ids":["ch1"]}]}`)},
 		"index.json":        {Data: []byte(`{"version":"1","generated_at":"","chapters":{"ch1":"one.json"}}`)},
-		"chapters/one.json": {Data: []byte(`{"schema_version":"1","id":"ch1","section_id":"s1","title":"Chapter 1","blocks":[],"question_bank":{"questions":[{"id":"q1","type":"single_choice","question":"Q?","options":["A","B"],"correct_answer":"A"}]},"chapter_test":{"selection_strategy":{"type":"random"},"pool_question_ids":["q1"],"num_questions":1}}`)},
+		"chapters/one.json": {Data: []byte(`{"schema_version":"1","id":"ch1","section_id":"s1","title":"Chapter 1","blocks":[],"question_bank":{"questions":[{"id":"q1","type":"mcq_single","question":"Q?","options":["A","B"],"correct_answer":"A"}]},"chapter_test":{"selection_strategy":{"type":"random"},"pool_question_ids":["q1"],"num_questions":1}}`)},
 	}
 	contentRepo := repository.NewGrammarContentRepositoryWithFS(contentFS, logger)
 	publishRepo := repository.NewGrammarPublishRepository(db.GetConnection(), logger)
@@ -532,7 +532,7 @@ func TestGrammarSRS_SubmitAnswer_WithoutTheoryBlock(t *testing.T) {
 	svc := NewGrammarService(contentRepo, publishRepo, attemptRepo, config.DefaultLearningConfig(), logger)
 	packFS := fstest.MapFS{
 		"index.json":                  {Data: []byte(`{"version":"1","language":"es","course_id":"es","generated_at":"","chapters":{"ch1":"one_questions.json"}}`)},
-		"chapters/one_questions.json": {Data: []byte(`{"chapter_id":"ch1","questions":[{"id":"q1","chapter_id":"ch1","type":"single_choice","question":"Q?","options":["A","B"],"correct_answer":"A"}]}`)},
+		"chapters/one_questions.json": {Data: []byte(`{"chapter_id":"ch1","questions":[{"id":"q1","chapter_id":"ch1","type":"mcq_single","question":"Q?","options":["A","B"],"correct_answer":"A"}]}`)},
 	}
 	svc.SetTrainingPackRepository(repository.NewGrammarTrainingPackRepositoryWithFS(packFS, logger))
 	_ = publishRepo.SetPublished("section", "s1", true, nil)
@@ -599,7 +599,7 @@ func TestGrammarSRS_ServiceErrorBranches_WithBrokenContentRepo(t *testing.T) {
 	svc := NewGrammarService(badContent, publishRepo, attemptRepo, lc, logger)
 	packFS := fstest.MapFS{
 		"index.json":                  {Data: []byte(`{"version":"1","language":"es","course_id":"es","generated_at":"","chapters":{"ch1":"one_questions.json"}}`)},
-		"chapters/one_questions.json": {Data: []byte(`{"chapter_id":"ch1","questions":[{"id":"q1","chapter_id":"ch1","theory_block_id":"b1","correct_answer":"A"}]}`)},
+		"chapters/one_questions.json": {Data: []byte(`{"chapter_id":"ch1","questions":[{"type":"mcq_single","id":"q1","chapter_id":"ch1","theory_block_id":"b1","correct_answer":"A"}]}`)},
 	}
 	svc.SetTrainingPackRepository(repository.NewGrammarTrainingPackRepositoryWithFS(packFS, logger))
 

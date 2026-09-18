@@ -3,7 +3,8 @@
 const normalizeSentence = (text: string): string => text.trim().replace(/\s+/g, ' ')
 
 export function grammarQuestionAvailable(question: any): boolean {
-  return question?.type !== 'reorder' || (
+  if (['mcq_single', 'fill_blank', 'error_spotting', 'true_false'].includes(question?.type)) return true
+  return question?.type === 'reorder' && (
     typeof question.translation_ru === 'string' && question.translation_ru.trim().length > 0
   )
 }
@@ -24,7 +25,7 @@ export function chapterQuestionsWithTranslations(chapter: any): any[] {
     translations.set(block.id, byText)
   }
   return questions.map((question: any) => {
-    if (grammarQuestionAvailable(question) || typeof question.correct_answer !== 'string') return question
+    if (question.type !== 'reorder' || grammarQuestionAvailable(question) || typeof question.correct_answer !== 'string') return question
     const translation = translations.get(question.theory_block_id)?.get(normalizeSentence(question.correct_answer))
     return translation ? { ...question, translation_ru: translation } : question
   })

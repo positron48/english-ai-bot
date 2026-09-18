@@ -13,7 +13,7 @@ import (
 )
 
 type GrammarSRSRepository struct {
-	db     *sql.DB
+	db     database.DBTX
 	logger *zap.Logger
 }
 
@@ -260,4 +260,54 @@ func (r *GrammarSRSRepository) HasClientAttempt(userID int64, clientAttemptID st
 		return false, fmt.Errorf("check grammar attempt client id: %w", err)
 	}
 	return exists, nil
+}
+
+// RecordAnswer commits the attempt and its memory update together. Locking the
+// user also serializes duplicate IDs submitted for different theory blocks.
+func (r *GrammarSRSRepository) RecordAnswer(userID int64, language, courseID, chapterID, theoryBlockID, conceptID, questionID string, answer, correct interface{}, isCorrect bool, clientID string, at time.Time) (int64, error) {
+	db, ok := r.db.(*sql.DB)
+	if !ok {
+		return 0, fmt.Errorf("record answer requires a connection pool")
+	}
+	tx, err := db.Begin()
+	if err != nil {
+		return 0, err
+	}
+	defer tx.Rollback()
+	var locked int64
+	if err = tx.QueryRow(`SELECT id FROM users WHERE id = ? FOR UPDATE`, userID).Scan(&locked); err != nil {
+		return 0, err
+	}
+	scoped := &GrammarSRSRepository{db: tx, logger: r.logger}
+	if strings.TrimSpace(clientID) != "" {
+		var id int64
+		err = tx.QueryRow(`SELECT id FROM grammar_attempts WHERE user_id = ? AND client_attempt_id = ?`, userID, strings.TrimSpace(clientID)).Scan(&id)
+		if err == nil {
+			return id, tx.Commit()
+		}
+		if err != sql.ErrNoRows {
+			return 0, err
+		}
+	}
+	if err = scoped.EnsureTheoryMemory(userID, language, courseID, chapterID, theoryBlockID, conceptID); err != nil {
+		return 0, err
+	}
+	m := &GrammarTheoryMemory{}
+	// Read the exact memory, regardless of its next review date or deck size.
+	err = tx.QueryRow(`SELECT id, review_count, correct_count, wrong_count, lapse_count, correct_streak, wrong_streak, interval_days, mastery_score
+ FROM grammar_theory_memory WHERE user_id = ? AND language = ? AND course_id = ? AND theory_block_id = ? FOR UPDATE`, userID, language, courseID, theoryBlockID).Scan(&m.ID, &m.ReviewCount, &m.CorrectCount, &m.WrongCount, &m.LapseCount, &m.CorrectStreak, &m.WrongStreak, &m.IntervalDays, &m.MasteryScore)
+	if err != nil {
+		return 0, err
+	}
+	if err = scoped.UpdateAfterAnswerAt(m, isCorrect, at); err != nil {
+		return 0, err
+	}
+	id, err := scoped.SaveAttemptWithClientID(userID, language, courseID, chapterID, theoryBlockID, conceptID, questionID, answer, correct, isCorrect, clientID, &at)
+	if err != nil {
+		return 0, err
+	}
+	if err = tx.Commit(); err != nil {
+		return 0, err
+	}
+	return id, nil
 }

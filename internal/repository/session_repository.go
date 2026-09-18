@@ -13,12 +13,12 @@ import (
 
 // SessionRepository handles database operations for training sessions
 type SessionRepository struct {
-	db     *sql.DB
+	db     database.DBTX
 	logger *zap.Logger
 }
 
 // NewSessionRepository creates a new session repository
-func NewSessionRepository(db *sql.DB, logger *zap.Logger) *SessionRepository {
+func NewSessionRepository(db database.DBTX, logger *zap.Logger) *SessionRepository {
 	return &SessionRepository{
 		db:     db,
 		logger: logger,

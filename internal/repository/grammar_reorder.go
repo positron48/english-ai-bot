@@ -2,11 +2,15 @@ package repository
 
 import "strings"
 
-// GrammarQuestionAvailable prevents word-order questions without a Russian
-// sentence from being selected. Keep the original bank for grading old attempts.
+// GrammarQuestionAvailable admits only formats supported by the learner UI.
+// Keep the original bank for grading historical attempts.
 func GrammarQuestionAvailable(question map[string]interface{}) bool {
-	if question["type"] != "reorder" {
+	switch question["type"] {
+	case "mcq_single", "fill_blank", "error_spotting", "true_false":
 		return true
+	case "reorder":
+	default:
+		return false
 	}
 	translation, _ := question["translation_ru"].(string)
 	return strings.TrimSpace(translation) != ""
@@ -56,7 +60,7 @@ func enrichReorderTranslations(chapter *Chapter) {
 	questions, _ := chapter.QuestionBank["questions"].([]interface{})
 	for _, raw := range questions {
 		question, ok := raw.(map[string]interface{})
-		if !ok || GrammarQuestionAvailable(question) {
+		if !ok || question["type"] != "reorder" || GrammarQuestionAvailable(question) {
 			continue
 		}
 		blockID, _ := question["theory_block_id"].(string)

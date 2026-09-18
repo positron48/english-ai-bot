@@ -30,7 +30,7 @@ func setupGrammarTrainingHandlersTest(t *testing.T) (*Router, int64, func()) {
 			"section_id":"s1",
 			"title":"Chapter 1",
 			"blocks":[{"id":"b1","type":"theory","theory":{"title":"T","content":"C"}}],
-			"question_bank":{"questions":[{"id":"q1","type":"single_choice","question":"Q?","options":["A","B"],"correct_answer":"A","theory_block_id":"b1","chapter_id":"ch1","concept_id":"c1"}]},
+			"question_bank":{"questions":[{"id":"q1","type":"mcq_single","question":"Q?","options":["A","B"],"correct_answer":"A","theory_block_id":"b1","chapter_id":"ch1","concept_id":"c1"}]},
 			"chapter_test":{"selection_strategy":{"type":"random"},"pool_question_ids":["q1"],"num_questions":1}
 		}`)},
 	}
@@ -43,7 +43,7 @@ func setupGrammarTrainingHandlersTest(t *testing.T) (*Router, int64, func()) {
 	gs := service.NewGrammarService(contentRepo, publishRepo, attemptRepo, lc, logger)
 	packFS := fstest.MapFS{
 		"index.json":                  {Data: []byte(`{"version":"1","language":"es","course_id":"es","generated_at":"","chapters":{"ch1":"one_questions.json"}}`)},
-		"chapters/one_questions.json": {Data: []byte(`{"chapter_id":"ch1","questions":[{"id":"q1","chapter_id":"ch1","theory_block_id":"b1","concept_id":"c1","type":"single_choice","question":"Q?","options":["A","B"],"correct_answer":"A","explanation":"E"}]}`)},
+		"chapters/one_questions.json": {Data: []byte(`{"chapter_id":"ch1","questions":[{"id":"q1","chapter_id":"ch1","theory_block_id":"b1","concept_id":"c1","type":"mcq_single","question":"Q?","options":["A","B"],"correct_answer":"A","explanation":"E"}]}`)},
 	}
 	gs.SetTrainingPackRepository(repository.NewGrammarTrainingPackRepositoryWithFS(packFS, logger))
 	gs.SetSRSRepository(repository.NewGrammarSRSRepository(db.GetConnection(), logger))

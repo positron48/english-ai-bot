@@ -62,10 +62,10 @@ type ConversationSession struct {
 
 // ConversationMessage is a single stored chat message (visible text only).
 type ConversationMessage struct {
-	ID        int64
-	Seq       int
-	Role      string
-	Content   string
+	ID      int64
+	Seq     int
+	Role    string
+	Content string
 	// CorrectionsJSON is the raw JSON array of error corrections attached to an assistant
 	// message ("[]" when none). The web layer parses it for the client.
 	CorrectionsJSON string
@@ -584,4 +584,26 @@ func (r *ConversationRepository) UpsertNPCImage(ctx context.Context, courseID in
 		return fmt.Errorf("upsert npc image: %w", err)
 	}
 	return nil
+}
+
+// ListTasksForList loads the ordered tasks for the whole list in one query.
+func (r *ConversationRepository) ListTasksForList(ctx context.Context, ids []int64) (map[int64][]ConversationTask, error) {
+	out := make(map[int64][]ConversationTask)
+	if len(ids) == 0 {
+		return out, nil
+	}
+	placeholders, args := questIDArgs(ids)
+	rows, err := r.db.QueryContext(ctx, `SELECT id, scenario_id, code, sort_order, is_required, title, completion_criteria FROM conversation_tasks WHERE scenario_id IN (`+placeholders+`) ORDER BY scenario_id, sort_order, id`, args...)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var task ConversationTask
+		if err := rows.Scan(&task.ID, &task.ScenarioID, &task.Code, &task.SortOrder, &task.IsRequired, &task.Title, &task.CompletionCriteria); err != nil {
+			return nil, err
+		}
+		out[task.ScenarioID] = append(out[task.ScenarioID], task)
+	}
+	return out, rows.Err()
 }

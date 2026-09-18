@@ -80,7 +80,7 @@ func TestGrammarService_FilterQuestionBankForQuizzes_QuestionNotMap(t *testing.T
 		QuestionBank: map[string]interface{}{
 			"questions": []interface{}{
 				"not-a-map", // this triggers the !ok branch at line 417
-				map[string]interface{}{"id": "q1", "prompt": "Q1"},
+				map[string]interface{}{"type": "mcq_single", "id": "q1", "prompt": "Q1"},
 			},
 		},
 	}
@@ -101,7 +101,7 @@ func TestGrammarService_GenerateChapterTest_QuestionNotMap(t *testing.T) {
 	sectionsJSON := `{"version":"1","sections":[{"section_id":"s1","title":"S1","level":"A1","order":1,"chapter_ids":["ch1"]}]}`
 	indexJSON := `{"version":"1","generated_at":"","chapters":{"ch1":"one.json"}}`
 	// questions slice contains a string (not a map) so it is skipped in questionMap building
-	chapterJSON := `{"schema_version":"1","id":"ch1","section_id":"s1","title":"T","blocks":[],"question_bank":{"questions":["not-a-map",{"id":"q1","type":"fill","correct_answer":"x"}]},"chapter_test":{"selection_strategy":{"type":"random"},"pool_question_ids":["q1"],"num_questions":10}}`
+	chapterJSON := `{"schema_version":"1","id":"ch1","section_id":"s1","title":"T","blocks":[],"question_bank":{"questions":["not-a-map",{"id":"q1","type":"fill_blank","correct_answer":"x"}]},"chapter_test":{"selection_strategy":{"type":"random"},"pool_question_ids":["q1"],"num_questions":10}}`
 	svc := grammarServiceWithCustomChapterFS(t, sectionsJSON, indexJSON, chapterJSON)
 
 	out, err := svc.GenerateChapterTest(context.Background(), "ch1")
@@ -139,7 +139,7 @@ func TestGrammarService_GenerateCategoryTest_QuestionBankEmpty(t *testing.T) {
 	indexJSON := `{"version":"1","generated_at":"","chapters":{"ch1":"one.json","ch2":"two.json"}}`
 	// ch1 has empty question bank, ch2 has questions
 	ch1JSON := `{"schema_version":"1","id":"ch1","section_id":"s1","title":"Ch1","blocks":[],"question_bank":{"questions":[]},"chapter_test":{"selection_strategy":{"type":"random"},"pool_question_ids":[],"num_questions":10}}`
-	ch2JSON := `{"schema_version":"1","id":"ch2","section_id":"s1","title":"Ch2","blocks":[],"question_bank":{"questions":[{"id":"q1","type":"fill","correct_answer":"a"}]},"chapter_test":{"selection_strategy":{"type":"random"},"pool_question_ids":["q1"],"num_questions":10}}`
+	ch2JSON := `{"schema_version":"1","id":"ch2","section_id":"s1","title":"Ch2","blocks":[],"question_bank":{"questions":[{"id":"q1","type":"fill_blank","correct_answer":"a"}]},"chapter_test":{"selection_strategy":{"type":"random"},"pool_question_ids":["q1"],"num_questions":10}}`
 	fs := fstest.MapFS{
 		"sections.json":     {Data: []byte(sectionsJSON)},
 		"index.json":        {Data: []byte(indexJSON)},
@@ -171,7 +171,7 @@ func TestGrammarService_GenerateCategoryTest_FallbackPoolIDs(t *testing.T) {
 	sectionsJSON := `{"version":"1","sections":[{"section_id":"s1","title":"S1","level":"A1","order":1,"chapter_ids":["ch1"]}]}`
 	indexJSON := `{"version":"1","generated_at":"","chapters":{"ch1":"one.json"}}`
 	// chapter_test has no pool_question_ids -> fallback to all questions from bank
-	chapterJSON := `{"schema_version":"1","id":"ch1","section_id":"s1","title":"Ch1","blocks":[],"question_bank":{"questions":[{"id":"q1","type":"fill","correct_answer":"a"},{"id":"q2","type":"fill","correct_answer":"b"}]},"chapter_test":{"selection_strategy":{"type":"random"},"num_questions":10}}`
+	chapterJSON := `{"schema_version":"1","id":"ch1","section_id":"s1","title":"Ch1","blocks":[],"question_bank":{"questions":[{"id":"q1","type":"fill_blank","correct_answer":"a"},{"id":"q2","type":"fill_blank","correct_answer":"b"}]},"chapter_test":{"selection_strategy":{"type":"random"},"num_questions":10}}`
 	fs := fstest.MapFS{
 		"sections.json":     {Data: []byte(sectionsJSON)},
 		"index.json":        {Data: []byte(indexJSON)},
@@ -201,7 +201,7 @@ func TestGrammarService_GenerateCategoryTest_QuestionNotMap(t *testing.T) {
 	sectionsJSON := `{"version":"1","sections":[{"section_id":"s1","title":"S1","level":"A1","order":1,"chapter_ids":["ch1"]}]}`
 	indexJSON := `{"version":"1","generated_at":"","chapters":{"ch1":"one.json"}}`
 	// questions slice contains a string (not a map) so it is skipped in questionMap building
-	chapterJSON := `{"schema_version":"1","id":"ch1","section_id":"s1","title":"Ch1","blocks":[],"question_bank":{"questions":["not-a-map",{"id":"q1","type":"fill","correct_answer":"a"}]},"chapter_test":{"selection_strategy":{"type":"random"},"pool_question_ids":["q1"],"num_questions":10}}`
+	chapterJSON := `{"schema_version":"1","id":"ch1","section_id":"s1","title":"Ch1","blocks":[],"question_bank":{"questions":["not-a-map",{"id":"q1","type":"fill_blank","correct_answer":"a"}]},"chapter_test":{"selection_strategy":{"type":"random"},"pool_question_ids":["q1"],"num_questions":10}}`
 	fs := fstest.MapFS{
 		"sections.json":     {Data: []byte(sectionsJSON)},
 		"index.json":        {Data: []byte(indexJSON)},
@@ -232,7 +232,7 @@ func TestGrammarService_GenerateCategoryTest_FallbackPoolIDsNonStringID(t *testi
 	sectionsJSON := `{"version":"1","sections":[{"section_id":"s1","title":"S1","level":"A1","order":1,"chapter_ids":["ch1"]}]}`
 	indexJSON := `{"version":"1","generated_at":"","chapters":{"ch1":"one.json"}}`
 	// chapter_test has no pool_question_ids -> fallback; one question has numeric id (skipped), one has string id
-	chapterJSON := `{"schema_version":"1","id":"ch1","section_id":"s1","title":"Ch1","blocks":[],"question_bank":{"questions":[{"id":123,"type":"fill","correct_answer":"a"},{"id":"q1","type":"fill","correct_answer":"b"}]},"chapter_test":{"selection_strategy":{"type":"random"},"num_questions":10}}`
+	chapterJSON := `{"schema_version":"1","id":"ch1","section_id":"s1","title":"Ch1","blocks":[],"question_bank":{"questions":[{"id":123,"type":"fill_blank","correct_answer":"a"},{"id":"q1","type":"fill_blank","correct_answer":"b"}]},"chapter_test":{"selection_strategy":{"type":"random"},"num_questions":10}}`
 	fs := fstest.MapFS{
 		"sections.json":     {Data: []byte(sectionsJSON)},
 		"index.json":        {Data: []byte(indexJSON)},
@@ -268,7 +268,7 @@ func TestGrammarService_GenerateCategoryTest_NonStringIDInPool(t *testing.T) {
 	// The non-string in poolIDs comes from the fallback path (line 569: poolIDs = append(poolIDs, id))
 	// which only appends strings. So the non-string in pool only happens if pool_question_ids has non-string.
 	// In JSON, numbers in arrays decode as float64, not string. So:
-	chapterJSON := `{"schema_version":"1","id":"ch1","section_id":"s1","title":"Ch1","blocks":[],"question_bank":{"questions":[{"id":"q1","type":"fill","correct_answer":"a"}]},"chapter_test":{"selection_strategy":{"type":"random"},"pool_question_ids":[42,"q1"],"num_questions":10}}`
+	chapterJSON := `{"schema_version":"1","id":"ch1","section_id":"s1","title":"Ch1","blocks":[],"question_bank":{"questions":[{"id":"q1","type":"fill_blank","correct_answer":"a"}]},"chapter_test":{"selection_strategy":{"type":"random"},"pool_question_ids":[42,"q1"],"num_questions":10}}`
 	fs := fstest.MapFS{
 		"sections.json":     {Data: []byte(sectionsJSON)},
 		"index.json":        {Data: []byte(indexJSON)},
@@ -302,7 +302,7 @@ func TestGrammarService_GenerateCategoryTest_SecondPassNonStringID(t *testing.T)
 	indexJSON := `{"version":"1","generated_at":"","chapters":{"ch1":"one.json"}}`
 	// pool_question_ids has a non-string (float64) entry; questions has 3 valid questions
 	// minQuestionsPerChapter=2, targetTotalQuestions=20 -> second pass needed
-	chapterJSON := `{"schema_version":"1","id":"ch1","section_id":"s1","title":"Ch1","blocks":[],"question_bank":{"questions":[{"id":"q1","type":"fill","correct_answer":"a"},{"id":"q2","type":"fill","correct_answer":"b"},{"id":"q3","type":"fill","correct_answer":"c"}]},"chapter_test":{"selection_strategy":{"type":"random"},"pool_question_ids":[42,"q1","q2","q3"],"num_questions":10}}`
+	chapterJSON := `{"schema_version":"1","id":"ch1","section_id":"s1","title":"Ch1","blocks":[],"question_bank":{"questions":[{"id":"q1","type":"fill_blank","correct_answer":"a"},{"id":"q2","type":"fill_blank","correct_answer":"b"},{"id":"q3","type":"fill_blank","correct_answer":"c"}]},"chapter_test":{"selection_strategy":{"type":"random"},"pool_question_ids":[42,"q1","q2","q3"],"num_questions":10}}`
 	fs := fstest.MapFS{
 		"sections.json":     {Data: []byte(sectionsJSON)},
 		"index.json":        {Data: []byte(indexJSON)},
@@ -335,8 +335,8 @@ func TestGrammarService_SelectStratified_NonStringPoolID(t *testing.T) {
 	// poolIDs contains a non-string (float64 42)
 	poolIDs := []interface{}{float64(42), "q1", "q2"}
 	questionMap := map[string]interface{}{
-		"q1": map[string]interface{}{"id": "q1", "theory_block_id": "blockA"},
-		"q2": map[string]interface{}{"id": "q2", "theory_block_id": "blockA"},
+		"q1": map[string]interface{}{"type": "mcq_single", "id": "q1", "theory_block_id": "blockA"},
+		"q2": map[string]interface{}{"type": "mcq_single", "id": "q2", "theory_block_id": "blockA"},
 	}
 	config := map[string]interface{}{"type": "stratified_by_theory_block", "min_per_theory_block": 1.0}
 	selected := svc.selectStratified(poolIDs, questionMap, config, 2)
@@ -355,7 +355,7 @@ func TestGrammarService_SelectStratified_QuestionNotInMap(t *testing.T) {
 	// poolIDs contains "missing" which is not in questionMap
 	poolIDs := []interface{}{"missing", "q1"}
 	questionMap := map[string]interface{}{
-		"q1": map[string]interface{}{"id": "q1", "theory_block_id": "blockA"},
+		"q1": map[string]interface{}{"type": "mcq_single", "id": "q1", "theory_block_id": "blockA"},
 	}
 	config := map[string]interface{}{"type": "stratified_by_theory_block", "min_per_theory_block": 1.0}
 	selected := svc.selectStratified(poolIDs, questionMap, config, 2)
@@ -378,7 +378,7 @@ func TestGrammarService_SelectStratified_QuestionNotMap(t *testing.T) {
 	poolIDs := []interface{}{"q1", "q2"}
 	questionMap := map[string]interface{}{
 		"q1": "not-a-map", // not a map -> skipped in blockGroups building
-		"q2": map[string]interface{}{"id": "q2", "theory_block_id": "blockA"},
+		"q2": map[string]interface{}{"type": "mcq_single", "id": "q2", "theory_block_id": "blockA"},
 	}
 	config := map[string]interface{}{"type": "stratified_by_theory_block", "min_per_theory_block": 1.0}
 	// numQuestions=1: first pass selects q2 (1 question), done
@@ -414,9 +414,9 @@ func TestGrammarService_SelectStratified_GroupItemNotMap(t *testing.T) {
 	// Second pass: poolIDs contains non-string
 	poolIDs := []interface{}{float64(99), "q1", "q2", "q3"}
 	questionMap := map[string]interface{}{
-		"q1": map[string]interface{}{"id": "q1", "theory_block_id": "blockA"},
-		"q2": map[string]interface{}{"id": "q2", "theory_block_id": "blockB"},
-		"q3": map[string]interface{}{"id": "q3", "theory_block_id": "blockC"},
+		"q1": map[string]interface{}{"type": "mcq_single", "id": "q1", "theory_block_id": "blockA"},
+		"q2": map[string]interface{}{"type": "mcq_single", "id": "q2", "theory_block_id": "blockB"},
+		"q3": map[string]interface{}{"type": "mcq_single", "id": "q3", "theory_block_id": "blockC"},
 	}
 	config := map[string]interface{}{"type": "stratified_by_theory_block", "min_per_theory_block": 1.0}
 	// numQuestions=4 so second pass is needed (3 questions from 3 blocks, need 4 total)
@@ -511,7 +511,7 @@ func TestGrammarService_SubmitTest_Category_QuestionNotMapInBank(t *testing.T) {
 	sectionsJSON := `{"version":"1","sections":[{"section_id":"s1","title":"S1","level":"A1","order":1,"chapter_ids":["ch1"]}]}`
 	indexJSON := `{"version":"1","generated_at":"","chapters":{"ch1":"one.json"}}`
 	// questions slice contains a string (not a map) so it is skipped
-	chapterJSON := `{"schema_version":"1","id":"ch1","section_id":"s1","title":"Ch1","blocks":[],"question_bank":{"questions":["not-a-map",{"id":"q1","type":"fill","correct_answer":"ans1"}]}}`
+	chapterJSON := `{"schema_version":"1","id":"ch1","section_id":"s1","title":"Ch1","blocks":[],"question_bank":{"questions":["not-a-map",{"id":"q1","type":"fill_blank","correct_answer":"ans1"}]}}`
 	fs := fstest.MapFS{
 		"sections.json":     {Data: []byte(sectionsJSON)},
 		"index.json":        {Data: []byte(indexJSON)},
@@ -562,7 +562,7 @@ func TestGrammarService_SubmitTest_Category_FallbackSearchAllChapters(t *testing
 	sectionsJSON := `{"version":"1","sections":[{"section_id":"s1","title":"S1","level":"A1","order":1,"chapter_ids":["ch1"]}]}`
 	indexJSON := `{"version":"1","generated_at":"","chapters":{"ch1":"one.json"}}`
 	// question has id "" (empty string) -> added to questionMapByChapter but not to questionMap
-	ch1JSON := `{"schema_version":"1","id":"ch1","section_id":"s1","title":"Ch1","blocks":[],"question_bank":{"questions":[{"id":"","type":"fill","correct_answer":"ans1","prompt":"Q1"}]}}`
+	ch1JSON := `{"schema_version":"1","id":"ch1","section_id":"s1","title":"Ch1","blocks":[],"question_bank":{"questions":[{"id":"","type":"fill_blank","correct_answer":"ans1","prompt":"Q1"}]}}`
 	fs := fstest.MapFS{
 		"sections.json":     {Data: []byte(sectionsJSON)},
 		"index.json":        {Data: []byte(indexJSON)},
@@ -950,7 +950,7 @@ func TestGrammarService_GetGrammarStatistics_SectionSkippedNoLevel(t *testing.T)
 	// Create a section with level "mixed" which has order -1 -> skipped
 	sectionsJSON := `{"version":"1","sections":[{"section_id":"s1","title":"S1","level":"mixed","order":1,"chapter_ids":["ch1"]}]}`
 	indexJSON := `{"version":"1","generated_at":"","chapters":{"ch1":"one.json"}}`
-	chapterJSON := `{"schema_version":"1","id":"ch1","section_id":"s1","title":"Ch1","blocks":[],"question_bank":{"questions":[{"id":"q1","type":"fill","correct_answer":"a"}]},"chapter_test":{}}`
+	chapterJSON := `{"schema_version":"1","id":"ch1","section_id":"s1","title":"Ch1","blocks":[],"question_bank":{"questions":[{"id":"q1","type":"fill_blank","correct_answer":"a"}]},"chapter_test":{}}`
 	fs := fstest.MapFS{
 		"sections.json":     {Data: []byte(sectionsJSON)},
 		"index.json":        {Data: []byte(indexJSON)},
@@ -1024,7 +1024,7 @@ func TestGrammarService_GeneratePlacementTest_ChapterLoadFails(t *testing.T) {
 	sectionsJSON := `{"version":"1","sections":[{"section_id":"s1","title":"S1","level":"A1","order":1,"chapter_ids":["ch1","ch2"]}]}`
 	indexJSON := `{"version":"1","generated_at":"","chapters":{"ch1":"one.json"}}`
 	// ch2 is published but not in index -> GetChapter fails -> skipped
-	chapterJSON := `{"schema_version":"1","id":"ch1","section_id":"s1","title":"Ch1","blocks":[],"question_bank":{"questions":[{"id":"q1","type":"fill","correct_answer":"a"}]},"chapter_test":{}}`
+	chapterJSON := `{"schema_version":"1","id":"ch1","section_id":"s1","title":"Ch1","blocks":[],"question_bank":{"questions":[{"id":"q1","type":"fill_blank","correct_answer":"a"}]},"chapter_test":{}}`
 	fs := fstest.MapFS{
 		"sections.json":     {Data: []byte(sectionsJSON)},
 		"index.json":        {Data: []byte(indexJSON)},
@@ -1056,7 +1056,7 @@ func TestGrammarService_GeneratePlacementTest_QuestionBankNotSlice(t *testing.T)
 	indexJSON := `{"version":"1","generated_at":"","chapters":{"ch1":"one.json","ch2":"two.json"}}`
 	// ch1 has non-slice question bank -> skipped; ch2 has valid questions
 	ch1JSON := `{"schema_version":"1","id":"ch1","section_id":"s1","title":"Ch1","blocks":[],"question_bank":{"questions":"not-a-slice"},"chapter_test":{}}`
-	ch2JSON := `{"schema_version":"1","id":"ch2","section_id":"s1","title":"Ch2","blocks":[],"question_bank":{"questions":[{"id":"q1","type":"fill","correct_answer":"a"}]},"chapter_test":{}}`
+	ch2JSON := `{"schema_version":"1","id":"ch2","section_id":"s1","title":"Ch2","blocks":[],"question_bank":{"questions":[{"id":"q1","type":"fill_blank","correct_answer":"a"}]},"chapter_test":{}}`
 	fs := fstest.MapFS{
 		"sections.json":     {Data: []byte(sectionsJSON)},
 		"index.json":        {Data: []byte(indexJSON)},
@@ -1088,7 +1088,7 @@ func TestGrammarService_GeneratePlacementTest_QuestionNotMap(t *testing.T) {
 	sectionsJSON := `{"version":"1","sections":[{"section_id":"s1","title":"S1","level":"A1","order":1,"chapter_ids":["ch1"]}]}`
 	indexJSON := `{"version":"1","generated_at":"","chapters":{"ch1":"one.json"}}`
 	// questions contains a non-map entry (string) -> skipped
-	chapterJSON := `{"schema_version":"1","id":"ch1","section_id":"s1","title":"Ch1","blocks":[],"question_bank":{"questions":["not-a-map",{"id":"q1","type":"fill","correct_answer":"a"}]},"chapter_test":{}}`
+	chapterJSON := `{"schema_version":"1","id":"ch1","section_id":"s1","title":"Ch1","blocks":[],"question_bank":{"questions":["not-a-map",{"id":"q1","type":"fill_blank","correct_answer":"a"}]},"chapter_test":{}}`
 	fs := fstest.MapFS{
 		"sections.json":     {Data: []byte(sectionsJSON)},
 		"index.json":        {Data: []byte(indexJSON)},
@@ -1119,7 +1119,7 @@ func TestGrammarService_GeneratePlacementTest_PoolLessThan25(t *testing.T) {
 	sectionsJSON := `{"version":"1","sections":[{"section_id":"s1","title":"S1","level":"A1","order":1,"chapter_ids":["ch1"]}]}`
 	indexJSON := `{"version":"1","generated_at":"","chapters":{"ch1":"one.json"}}`
 	// Only 3 questions total; 1 selected in phase 1, 2 remaining; need = 25-1=24 but pool=2 < 24
-	chapterJSON := `{"schema_version":"1","id":"ch1","section_id":"s1","title":"Ch1","blocks":[],"question_bank":{"questions":[{"id":"q1","type":"fill","correct_answer":"a"},{"id":"q2","type":"fill","correct_answer":"b"},{"id":"q3","type":"fill","correct_answer":"c"}]},"chapter_test":{}}`
+	chapterJSON := `{"schema_version":"1","id":"ch1","section_id":"s1","title":"Ch1","blocks":[],"question_bank":{"questions":[{"id":"q1","type":"fill_blank","correct_answer":"a"},{"id":"q2","type":"fill_blank","correct_answer":"b"},{"id":"q3","type":"fill_blank","correct_answer":"c"}]},"chapter_test":{}}`
 	fs := fstest.MapFS{
 		"sections.json":     {Data: []byte(sectionsJSON)},
 		"index.json":        {Data: []byte(indexJSON)},
@@ -1206,7 +1206,7 @@ func TestGrammarService_SubmitPlacementTest_LevelDash(t *testing.T) {
 	// Create a section with empty level string.
 	sectionsJSON := `{"version":"1","sections":[{"section_id":"s1","title":"S1","level":"","order":1,"chapter_ids":["ch1"]}]}`
 	indexJSON := `{"version":"1","generated_at":"","chapters":{"ch1":"one.json"}}`
-	chapterJSON := `{"schema_version":"1","id":"ch1","section_id":"s1","title":"Ch1","blocks":[],"question_bank":{"questions":[{"id":"q1","type":"fill","correct_answer":"a"}]},"chapter_test":{}}`
+	chapterJSON := `{"schema_version":"1","id":"ch1","section_id":"s1","title":"Ch1","blocks":[],"question_bank":{"questions":[{"id":"q1","type":"fill_blank","correct_answer":"a"}]},"chapter_test":{}}`
 	fs := fstest.MapFS{
 		"sections.json":     {Data: []byte(sectionsJSON)},
 		"index.json":        {Data: []byte(indexJSON)},
@@ -1252,7 +1252,7 @@ func TestGrammarService_SubmitPlacementTest_GetChapterFails(t *testing.T) {
 	sectionsJSON := `{"version":"1","sections":[{"section_id":"s1","title":"S1","level":"A1","order":1,"chapter_ids":["ch1","ch2"]}]}`
 	indexJSON := `{"version":"1","generated_at":"","chapters":{"ch1":"one.json"}}`
 	// ch2 is published but not in index -> GetChapter fails -> skipped in question map building
-	chapterJSON := `{"schema_version":"1","id":"ch1","section_id":"s1","title":"Ch1","blocks":[],"question_bank":{"questions":[{"id":"q1","type":"fill","correct_answer":"a"}]},"chapter_test":{}}`
+	chapterJSON := `{"schema_version":"1","id":"ch1","section_id":"s1","title":"Ch1","blocks":[],"question_bank":{"questions":[{"id":"q1","type":"fill_blank","correct_answer":"a"}]},"chapter_test":{}}`
 	fs := fstest.MapFS{
 		"sections.json":     {Data: []byte(sectionsJSON)},
 		"index.json":        {Data: []byte(indexJSON)},
@@ -1288,7 +1288,7 @@ func TestGrammarService_SubmitPlacementTest_QuestionBankNotSlice(t *testing.T) {
 	indexJSON := `{"version":"1","generated_at":"","chapters":{"ch1":"one.json","ch2":"two.json"}}`
 	// ch1 has non-slice question bank -> skipped; ch2 has valid questions
 	ch1JSON := `{"schema_version":"1","id":"ch1","section_id":"s1","title":"Ch1","blocks":[],"question_bank":{"questions":"not-a-slice"},"chapter_test":{}}`
-	ch2JSON := `{"schema_version":"1","id":"ch2","section_id":"s1","title":"Ch2","blocks":[],"question_bank":{"questions":[{"id":"q1","type":"fill","correct_answer":"a"}]},"chapter_test":{}}`
+	ch2JSON := `{"schema_version":"1","id":"ch2","section_id":"s1","title":"Ch2","blocks":[],"question_bank":{"questions":[{"id":"q1","type":"fill_blank","correct_answer":"a"}]},"chapter_test":{}}`
 	fs := fstest.MapFS{
 		"sections.json":     {Data: []byte(sectionsJSON)},
 		"index.json":        {Data: []byte(indexJSON)},
@@ -1323,7 +1323,7 @@ func TestGrammarService_SubmitPlacementTest_QuestionNotMap(t *testing.T) {
 	sectionsJSON := `{"version":"1","sections":[{"section_id":"s1","title":"S1","level":"A1","order":1,"chapter_ids":["ch1"]}]}`
 	indexJSON := `{"version":"1","generated_at":"","chapters":{"ch1":"one.json"}}`
 	// questions contains a non-map entry (string) -> skipped
-	chapterJSON := `{"schema_version":"1","id":"ch1","section_id":"s1","title":"Ch1","blocks":[],"question_bank":{"questions":["not-a-map",{"id":"q1","type":"fill","correct_answer":"a"}]},"chapter_test":{}}`
+	chapterJSON := `{"schema_version":"1","id":"ch1","section_id":"s1","title":"Ch1","blocks":[],"question_bank":{"questions":["not-a-map",{"id":"q1","type":"fill_blank","correct_answer":"a"}]},"chapter_test":{}}`
 	fs := fstest.MapFS{
 		"sections.json":     {Data: []byte(sectionsJSON)},
 		"index.json":        {Data: []byte(indexJSON)},
@@ -1357,7 +1357,7 @@ func TestGrammarService_SubmitPlacementTest_SortUnknownChapterOrder(t *testing.T
 	// This triggers the !oki and !okj branches in the sort function
 	sectionsJSON := `{"version":"1","sections":[{"section_id":"s1","title":"S1","level":"A1","order":1,"chapter_ids":["ch1"]}]}`
 	indexJSON := `{"version":"1","generated_at":"","chapters":{"ch1":"one.json"}}`
-	chapterJSON := `{"schema_version":"1","id":"ch1","section_id":"s1","title":"Ch1","blocks":[],"question_bank":{"questions":[{"id":"q1","type":"fill","correct_answer":"a"},{"id":"q2","type":"fill","correct_answer":"b"}]},"chapter_test":{}}`
+	chapterJSON := `{"schema_version":"1","id":"ch1","section_id":"s1","title":"Ch1","blocks":[],"question_bank":{"questions":[{"id":"q1","type":"fill_blank","correct_answer":"a"},{"id":"q2","type":"fill_blank","correct_answer":"b"}]},"chapter_test":{}}`
 	fs := fstest.MapFS{
 		"sections.json":     {Data: []byte(sectionsJSON)},
 		"index.json":        {Data: []byte(indexJSON)},
@@ -1400,8 +1400,8 @@ func TestGrammarService_SubmitPlacementTest_ExpandSectionsSkipsNoLevel(t *testin
 	// Create sections: s1 (A1 level with questions), s2 (mixed level = -1, skipped in expansion)
 	sectionsJSON := `{"version":"1","sections":[{"section_id":"s1","title":"S1","level":"A1","order":1,"chapter_ids":["ch1"]},{"section_id":"s2","title":"S2","level":"mixed","order":2,"chapter_ids":["ch2"]}]}`
 	indexJSON := `{"version":"1","generated_at":"","chapters":{"ch1":"one.json","ch2":"two.json"}}`
-	ch1JSON := `{"schema_version":"1","id":"ch1","section_id":"s1","title":"Ch1","blocks":[],"question_bank":{"questions":[{"id":"q1","type":"fill","correct_answer":"a"}]},"chapter_test":{}}`
-	ch2JSON := `{"schema_version":"1","id":"ch2","section_id":"s2","title":"Ch2","blocks":[],"question_bank":{"questions":[{"id":"q2","type":"fill","correct_answer":"b"}]},"chapter_test":{}}`
+	ch1JSON := `{"schema_version":"1","id":"ch1","section_id":"s1","title":"Ch1","blocks":[],"question_bank":{"questions":[{"id":"q1","type":"fill_blank","correct_answer":"a"}]},"chapter_test":{}}`
+	ch2JSON := `{"schema_version":"1","id":"ch2","section_id":"s2","title":"Ch2","blocks":[],"question_bank":{"questions":[{"id":"q2","type":"fill_blank","correct_answer":"b"}]},"chapter_test":{}}`
 	fs := fstest.MapFS{
 		"sections.json":     {Data: []byte(sectionsJSON)},
 		"index.json":        {Data: []byte(indexJSON)},
@@ -1448,8 +1448,8 @@ func TestGrammarService_SubmitPlacementTest_ExpandSectionsSkipsNoLevel(t *testin
 func TestGrammarService_SubmitPlacementTest_SortUnknownChapterOrderJ(t *testing.T) {
 	sectionsJSON := `{"version":"1","sections":[{"section_id":"s1","title":"S1","level":"A1","order":1,"chapter_ids":["ch1","ch2"]}]}`
 	indexJSON := `{"version":"1","generated_at":"","chapters":{"ch1":"one.json","ch2":"two.json"}}`
-	ch1JSON := `{"schema_version":"1","id":"ch1","section_id":"s1","title":"Ch1","blocks":[],"question_bank":{"questions":[{"id":"q1","type":"fill","correct_answer":"a"}]},"chapter_test":{}}`
-	ch2JSON := `{"schema_version":"1","id":"ch2","section_id":"s1","title":"Ch2","blocks":[],"question_bank":{"questions":[{"id":"q2","type":"fill","correct_answer":"b"}]},"chapter_test":{}}`
+	ch1JSON := `{"schema_version":"1","id":"ch1","section_id":"s1","title":"Ch1","blocks":[],"question_bank":{"questions":[{"id":"q1","type":"fill_blank","correct_answer":"a"}]},"chapter_test":{}}`
+	ch2JSON := `{"schema_version":"1","id":"ch2","section_id":"s1","title":"Ch2","blocks":[],"question_bank":{"questions":[{"id":"q2","type":"fill_blank","correct_answer":"b"}]},"chapter_test":{}}`
 	fs := fstest.MapFS{
 		"sections.json":     {Data: []byte(sectionsJSON)},
 		"index.json":        {Data: []byte(indexJSON)},
@@ -1528,7 +1528,7 @@ func TestGrammarService_SubmitPlacementTest_TrueFalseQuestion(t *testing.T) {
 func TestGrammarService_SubmitTest_Category_UpdateCategoryTestProgressFails_CustomFS(t *testing.T) {
 	sectionsJSON := `{"version":"1","sections":[{"section_id":"s1","title":"S1","level":"A1","order":1,"chapter_ids":["ch1"]}]}`
 	indexJSON := `{"version":"1","generated_at":"","chapters":{"ch1":"one.json"}}`
-	chapterJSON := `{"schema_version":"1","id":"ch1","section_id":"s1","title":"Ch1","blocks":[],"question_bank":{"questions":[{"id":"q1","type":"fill","correct_answer":"ans1","prompt":"Q1"}]},"chapter_test":{"selection_strategy":{"type":"random"},"pool_question_ids":["q1"],"num_questions":10}}`
+	chapterJSON := `{"schema_version":"1","id":"ch1","section_id":"s1","title":"Ch1","blocks":[],"question_bank":{"questions":[{"id":"q1","type":"fill_blank","correct_answer":"ans1","prompt":"Q1"}]},"chapter_test":{"selection_strategy":{"type":"random"},"pool_question_ids":["q1"],"num_questions":10}}`
 	fs := fstest.MapFS{
 		"sections.json":     {Data: []byte(sectionsJSON)},
 		"index.json":        {Data: []byte(indexJSON)},
@@ -1574,7 +1574,7 @@ func TestGrammarService_SubmitTest_Category_UpdateCategoryTestProgressFails_Cust
 func TestGrammarService_SubmitPlacementTest_SortBothUnknownChapters(t *testing.T) {
 	sectionsJSON := `{"version":"1","sections":[{"section_id":"s1","title":"S1","level":"A1","order":1,"chapter_ids":["ch1"]}]}`
 	indexJSON := `{"version":"1","generated_at":"","chapters":{"ch1":"one.json"}}`
-	chapterJSON := `{"schema_version":"1","id":"ch1","section_id":"s1","title":"Ch1","blocks":[],"question_bank":{"questions":[{"id":"q1","type":"fill","correct_answer":"a"}]},"chapter_test":{}}`
+	chapterJSON := `{"schema_version":"1","id":"ch1","section_id":"s1","title":"Ch1","blocks":[],"question_bank":{"questions":[{"id":"q1","type":"fill_blank","correct_answer":"a"}]},"chapter_test":{}}`
 	fs := fstest.MapFS{
 		"sections.json":     {Data: []byte(sectionsJSON)},
 		"index.json":        {Data: []byte(indexJSON)},
@@ -1665,7 +1665,7 @@ func TestGrammarService_GetPublishedChapters_GetPublishedItemsByTypeChapterError
 func TestGrammarService_SubmitTest_Category_EmptyChapterID(t *testing.T) {
 	sectionsJSON := `{"version":"1","sections":[{"section_id":"s1","title":"S1","level":"A1","order":1,"chapter_ids":["ch1"]}]}`
 	indexJSON := `{"version":"1","generated_at":"","chapters":{"ch1":"one.json"}}`
-	chapterJSON := `{"schema_version":"1","id":"ch1","section_id":"s1","title":"Ch1","blocks":[],"question_bank":{"questions":[{"id":"q1","type":"fill","correct_answer":"ans1","prompt":"Q1"}]},"chapter_test":{"selection_strategy":{"type":"random"},"pool_question_ids":["q1"],"num_questions":10}}`
+	chapterJSON := `{"schema_version":"1","id":"ch1","section_id":"s1","title":"Ch1","blocks":[],"question_bank":{"questions":[{"id":"q1","type":"fill_blank","correct_answer":"ans1","prompt":"Q1"}]},"chapter_test":{"selection_strategy":{"type":"random"},"pool_question_ids":["q1"],"num_questions":10}}`
 	fs := fstest.MapFS{
 		"sections.json":     {Data: []byte(sectionsJSON)},
 		"index.json":        {Data: []byte(indexJSON)},

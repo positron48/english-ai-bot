@@ -59,12 +59,12 @@ func (n *nullTimeScanner) parseString(s string) error {
 
 // UserCardRepository handles database operations for user cards
 type UserCardRepository struct {
-	db     *sql.DB
+	db     database.DBTX
 	logger *zap.Logger
 }
 
 // NewUserCardRepository creates a new user card repository
-func NewUserCardRepository(db *sql.DB, logger *zap.Logger) *UserCardRepository {
+func NewUserCardRepository(db database.DBTX, logger *zap.Logger) *UserCardRepository {
 	return &UserCardRepository{
 		db:     db,
 		logger: logger,

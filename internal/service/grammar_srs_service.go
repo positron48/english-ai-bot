@@ -175,16 +175,9 @@ func (s *GrammarService) SubmitGrammarSrsAnswerWithClientAttemptID(ctx context.C
 	if s.TrainingPackRepo == nil {
 		return nil, fmt.Errorf("training pack repository is not configured")
 	}
-	all, err := s.TrainingPackRepo.GetAllQuestions()
+	question, err := s.TrainingPackRepo.GetQuestion(questionID)
 	if err != nil {
 		return nil, err
-	}
-	var question map[string]interface{}
-	for _, q := range all {
-		if id, _ := q["id"].(string); id == questionID {
-			question = q
-			break
-		}
 	}
 	if question == nil {
 		return nil, fmt.Errorf("question not found: %s", questionID)
@@ -208,8 +201,10 @@ func (s *GrammarService) SubmitGrammarSrsAnswerWithClientAttemptID(ctx context.C
 		answered = answeredAt.UTC()
 	}
 	if s.SRSRepo != nil && theoryBlockID != "" {
-		_ = s.updateTheoryMemoryAt(userID, chapterID, theoryBlockID, conceptID, isCorrect, answered)
-		attemptID, _ = s.SRSRepo.SaveAttemptWithClientID(userID, s.learning.TargetLang, s.learning.GrammarBundleID, chapterID, theoryBlockID, conceptID, questionID, userAnswer, correctAnswer, isCorrect, clientAttemptID, &answered)
+		attemptID, err = s.SRSRepo.RecordAnswer(userID, s.learning.TargetLang, s.learning.GrammarBundleID, chapterID, theoryBlockID, conceptID, questionID, userAnswer, correctAnswer, isCorrect, clientAttemptID, answered)
+		if err != nil {
+			return nil, fmt.Errorf("save grammar answer: %w", err)
+		}
 	}
 
 	return &GrammarSrsAnswerResult{

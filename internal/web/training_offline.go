@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"strings"
 	"time"
+	"unicode/utf8"
 
 	"tgbot-skeleton/internal/i18n"
 	"tgbot-skeleton/internal/learning"
@@ -117,9 +118,9 @@ func (r *Router) handleTrainingOfflinePack(w http.ResponseWriter, req *http.Requ
 	if len(queue) == 0 {
 		w.Header().Set("Content-Type", "application/json")
 		_ = json.NewEncoder(w).Encode(map[string]interface{}{
-			"app_code":        r.config.Learning.AppCode,
-			"native_lang":     r.config.Learning.NativeLang,
-			"target_lang":     r.config.Learning.TargetLang,
+			"app_code":        userLC.AppCode,
+			"native_lang":     userLC.NativeLang,
+			"target_lang":     userLC.TargetLang,
 			"generated_at":    time.Now().UTC().Format(time.RFC3339),
 			"algo_version":    "word_training_offline_v2_queue",
 			"total_cards":     0,
@@ -145,7 +146,7 @@ func (r *Router) handleTrainingOfflinePack(w http.ResponseWriter, req *http.Requ
 			if item.Spell == nil {
 				continue
 			}
-			tl := learning.TargetLangNameRUPrepositional(r.config.Learning.TargetLang)
+			tl := learning.TargetLangNameRUPrepositional(userLC.TargetLang)
 			items = append(items, offlineWordTrainingQueueItem{
 				Type:          "spell",
 				Question:      fmt.Sprintf("Составьте слово на %s: <strong>%s</strong>", tl, item.Spell.WordRU),
@@ -183,7 +184,7 @@ func (r *Router) handleTrainingOfflinePack(w http.ResponseWriter, req *http.Requ
 				hintFirstLetter = string(runes[0])
 				hintLength = len(runes)
 			}
-			tl := learning.TargetLangNameRUPrepositional(r.config.Learning.TargetLang)
+			tl := learning.TargetLangNameRUPrepositional(userLC.TargetLang)
 			items = append(items, offlineWordTrainingQueueItem{
 				Type:            "type",
 				Question:        fmt.Sprintf("Введите слово на %s: <strong>%s</strong>", tl, item.TypeChallenge.WordRU),
@@ -238,9 +239,9 @@ func (r *Router) handleTrainingOfflinePack(w http.ResponseWriter, req *http.Requ
 	}
 
 	response := map[string]interface{}{
-		"app_code":        r.config.Learning.AppCode,
-		"native_lang":     r.config.Learning.NativeLang,
-		"target_lang":     r.config.Learning.TargetLang,
+		"app_code":        userLC.AppCode,
+		"native_lang":     userLC.NativeLang,
+		"target_lang":     userLC.TargetLang,
 		"generated_at":    time.Now().UTC().Format(time.RFC3339),
 		"algo_version":    "word_training_offline_v2_queue",
 		"total_cards":     len(items),
@@ -337,6 +338,11 @@ func collectWordRUs(queue []*models.UserCardWithTraining, excludeIndex int) map[
 }
 
 func (r *Router) buildOfflineWordTrainingCard(req *http.Request, lang string, card *models.UserCardWithTraining, options []string, correctAnswer string) offlineWordTrainingCard {
+	lc := r.config.Learning
+	if code := r.requestedCourseCodeForUser(req, getUserIDFromContext(req.Context())); code != "" {
+		lc = learningConfigForCourse(lc, code)
+	}
+
 	displayWord := card.TrainingCard.WordEN
 	if card.TrainingCard.DisplayWord != nil && *card.TrainingCard.DisplayWord != "" {
 		displayWord = *card.TrainingCard.DisplayWord
@@ -344,11 +350,11 @@ func (r *Router) buildOfflineWordTrainingCard(req *http.Request, lang string, ca
 	var tl string
 	switch lang {
 	case "ru":
-		tl = learning.TargetLangNameRUAccusative(r.config.Learning.TargetLang)
+		tl = learning.TargetLangNameRUAccusative(lc.TargetLang)
 	case "es":
-		tl = learning.TargetLangNameES(r.config.Learning.TargetLang)
+		tl = learning.TargetLangNameES(lc.TargetLang)
 	default:
-		tl = learning.TargetLangNameEN(r.config.Learning.TargetLang)
+		tl = learning.TargetLangNameEN(lc.TargetLang)
 	}
 	question := ""
 	if card.UserCard.Direction == models.DirectionRUtoEN {
@@ -396,11 +402,13 @@ func (r *Router) buildOfflineWordTrainingCard(req *http.Request, lang string, ca
 	}
 	wordRepo := repository.NewWordRepository(r.db, r.logger)
 	if wordCard, err := wordRepo.GetWordCardByID(card.TrainingCard.WordCardID); err == nil {
-		item.Morph = buildCompactMorphFromWordCard(r.config.Learning.TargetLang, wordCard, card.TrainingCard.POS)
+		item.Morph = buildCompactMorphFromWordCard(lc.TargetLang, wordCard, card.TrainingCard.POS)
 	}
 	return item
 }
 
+// Sync each answer atomically. A failed answer stays retryable; a committed
+// client_attempt_id can never advance SRS a second time, even across replicas.
 func (r *Router) handleTrainingOfflineSyncAttempts(w http.ResponseWriter, req *http.Request) {
 	if req.Method != http.MethodPost {
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
@@ -418,191 +426,179 @@ func (r *Router) handleTrainingOfflineSyncAttempts(w http.ResponseWriter, req *h
 		http.Error(w, "Invalid JSON", http.StatusBadRequest)
 		return
 	}
-
-	sessionRepo := repository.NewSessionRepository(r.db, r.logger)
-	userCardRepo := repository.NewUserCardRepository(r.db, r.logger)
-	trainingCardRepo := repository.NewTrainingCardRepository(r.db, r.logger)
-	masteringRepo := repository.NewUserWordMasteringRepository(r.db, r.logger)
-
-	sessionID := int64(0)
-	syncedCount := 0
+	unlock := r.trainingLocks.lock(userID)
+	defer unlock()
+	var sessionID int64
+	synced := 0
 	results := make([]map[string]interface{}, 0, len(payload.Attempts))
 	for _, attempt := range payload.Attempts {
 		result := map[string]interface{}{"client_attempt_id": attempt.ClientAttemptID}
-		if attempt.ClientAttemptID == "" || attempt.UserCardID == 0 {
-			result["synced"] = false
-			result["error"] = "invalid_attempt"
-			results = append(results, result)
-			continue
-		}
-		exists, err := sessionRepo.HasReviewEventClientAttempt(userID, attempt.ClientAttemptID)
+		event, err := r.syncOfflineWordAttempt(req, userID, &sessionID, len(payload.Attempts), attempt)
 		if err != nil {
 			result["synced"] = false
-			result["error"] = "idempotency_check_failed"
-			results = append(results, result)
-			continue
-		}
-		if exists {
-			result["synced"] = true
-			result["duplicate"] = true
-			results = append(results, result)
-			continue
-		}
-
-		mode := strings.TrimSpace(attempt.Mode)
-		if mode == "" {
-			mode = "card"
-		}
-		if mode == "spell" || mode == "type" {
-			if sessionID == 0 {
-				session := &models.TrainingSession{UserID: userID, Source: models.SourceManual, PlannedCount: len(payload.Attempts), SessionJSON: `{"offline_sync":true}`}
-				newID, err := sessionRepo.CreateSession(session)
-				if err != nil {
-					result["synced"] = false
-					result["error"] = "session_create_failed"
-					results = append(results, result)
-					continue
-				}
-				sessionID = newID
-			}
-			if err := r.syncOfflineSpellTypeAttempt(req, userID, sessionRepo, sessionID, attempt, mode, result); err != nil {
-				result["synced"] = false
-				result["error"] = err.Error()
-				results = append(results, result)
-				continue
-			}
-			syncedCount++
-			results = append(results, result)
-			continue
-		}
-
-		userCard, err := userCardRepo.GetUserCard(attempt.UserCardID)
-		if err != nil || userCard == nil || userCard.UserID != userID {
-			result["synced"] = false
-			result["error"] = "user_card_not_found"
-			results = append(results, result)
-			continue
-		}
-		trainingCard, err := trainingCardRepo.GetTrainingCard(userCard.TrainingCardID)
-		if err != nil || trainingCard == nil {
-			result["synced"] = false
-			result["error"] = "training_card_not_found"
-			results = append(results, result)
-			continue
-		}
-		if attempt.TrainingCardID != 0 && attempt.TrainingCardID != userCard.TrainingCardID {
-			result["synced"] = false
-			result["error"] = "training_card_mismatch"
-			results = append(results, result)
-			continue
-		}
-		if sessionID == 0 {
-			session := &models.TrainingSession{UserID: userID, Source: models.SourceManual, PlannedCount: len(payload.Attempts), SessionJSON: `{"offline_sync":true}`}
-			newID, err := sessionRepo.CreateSession(session)
-			if err != nil {
-				result["synced"] = false
-				result["error"] = "session_create_failed"
-				results = append(results, result)
-				continue
-			}
-			sessionID = newID
-		}
-
-		chosenOption := attempt.ChosenOption
-		correctAnswer := attempt.CorrectAnswer
-		if correctAnswer == "" {
-			syncCourseCode := r.requestedCourseCodeForUser(req, userID)
-			_, generatedCorrect, _ := r.optionsServiceForCourse(req.Context(), userID, syncCourseCode).GenerateOptions(&models.UserCardWithTraining{UserCard: *userCard, TrainingCard: *trainingCard}, models.DefaultOptionCount, nil, nil, nil)
-			correctAnswer = generatedCorrect
-		}
-		isCorrect := chosenOption == correctAnswer
-		shownAt := fallbackTime(attempt.ShownAt)
-		answeredAt := fallbackTime(attempt.AnsweredAt)
-		optionsShownAt := attempt.OptionsShownAt
-		if optionsShownAt.IsZero() {
-			optionsShownAt = shownAt
-		}
-		answerTimeMS := attempt.AnswerTimeMS
-		if answerTimeMS <= 0 {
-			answerTimeMS = int(answeredAt.Sub(optionsShownAt).Milliseconds())
-			if answerTimeMS < 0 {
-				answerTimeMS = 0
-			}
-		}
-		tDelayMS := attempt.TDelayMS
-		if tDelayMS <= 0 {
-			tDelayMS = int(optionsShownAt.Sub(shownAt).Milliseconds())
-			if tDelayMS < 0 {
-				tDelayMS = 0
-			}
-		}
-
-		attemptData := models.AttemptData{Correct: isCorrect, EarlyReveal: attempt.EarlyReveal, AnswerTimeMS: answerTimeMS, TDelayMS: tDelayMS, OptionCount: len(attempt.Options), ChosenOption: chosenOption, GradedAt: &answeredAt}
-		srsBefore := models.SRSState{State: userCard.State, EF: userCard.EF, Reps: userCard.Reps, IntervalDays: userCard.IntervalDays, LearningStep: userCard.LearningStep, LapseCount: userCard.LapseCount}
-		srsBeforeJSON, _ := json.Marshal(srsBefore)
-		if err := r.srsService.GradeCard(userCard, attemptData); err != nil {
-			result["synced"] = false
-			result["error"] = "grade_failed"
-			results = append(results, result)
-			continue
-		}
-		srsAfter := models.SRSState{State: userCard.State, EF: userCard.EF, Reps: userCard.Reps, IntervalDays: userCard.IntervalDays, LearningStep: userCard.LearningStep, LapseCount: userCard.LapseCount}
-		srsAfterJSON, _ := json.Marshal(srsAfter)
-		optionsJSON, _ := json.Marshal(attempt.Options)
-		metricsJSON, _ := json.Marshal(map[string]interface{}{"offline_sync": true, "answer_time_ms": answerTimeMS, "total_time_ms": int(answeredAt.Sub(shownAt).Milliseconds()), "mode": mode})
-		quality := models.CalculateQuality(attemptData)
-		reviewEvent := &models.ReviewEvent{
-			SessionID:       &sessionID,
-			UserID:          userID,
-			UserCardID:      userCard.ID,
-			CourseCode:      r.courseCodeForUserCard(userCard.ID),
-			ClientAttemptID: attempt.ClientAttemptID,
-			Direction:       userCard.Direction,
-			ShownAt:         shownAt,
-			OptionsShownAt:  &optionsShownAt,
-			AnsweredAt:      &answeredAt,
-			TDelayMS:        tDelayMS,
-			EarlyReveal:     attempt.EarlyReveal,
-			OptionCount:     len(attempt.Options),
-			OptionsJSON:     string(optionsJSON),
-			ChosenOption:    chosenOption,
-			IsCorrect:       isCorrect,
-			Quality:         int(quality),
-			MetricsJSON:     string(metricsJSON),
-			SRSBeforeJSON:   string(srsBeforeJSON),
-			SRSAfterJSON:    string(srsAfterJSON),
-		}
-		if reviewEventID, err := sessionRepo.CreateReviewEvent(reviewEvent); err != nil {
-			result["synced"] = false
-			result["error"] = "review_event_create_failed"
-			results = append(results, result)
-			continue
+			result["error"] = err.Error()
 		} else {
-			r.recordLinglowWordReviewEvent(req.Context(), reviewEvent.CourseCode, reviewEventID, reviewEvent)
-		}
-		if !isCorrect {
-			if err := r.srsService.RecordWrongAnswer(userCard, chosenOption); err != nil {
-				r.logger.Warn("failed to record offline wrong answer", zap.Int64("user_card_id", userCard.ID), zap.Error(err))
+			result["synced"] = true
+			if event == nil {
+				result["duplicate"] = true
+			} else {
+				result["is_correct"] = event.IsCorrect
+				synced++
+				r.recordLinglowWordReviewEvent(req.Context(), event.CourseCode, event.ID, event)
 			}
 		}
-		syncedCount++
-		result["synced"] = true
-		result["is_correct"] = isCorrect
 		results = append(results, result)
 	}
 	if sessionID != 0 {
-		if err := r.trainingService.FinishSession(sessionID, syncedCount); err != nil {
-			r.logger.Warn("failed to finish offline word training sync session", zap.Int64("session_id", sessionID), zap.Error(err))
-		}
-		if syncedCount > 0 {
-			pairs, err := masteringRepo.GetWordCardIDsBySessionID(sessionID)
-			if err == nil {
-				r.logger.Info("synced offline word training attempts", zap.Int64("user_id", userID), zap.Int("synced", syncedCount), zap.Int("words", len(pairs)))
-			}
+		if err := r.trainingService.FinishSession(sessionID, synced); err != nil {
+			r.logger.Warn("finish offline session", zap.Error(err))
 		}
 	}
-	w.Header().Set("Content-Type", "application/json")
-	_ = json.NewEncoder(w).Encode(map[string]interface{}{"results": results, "synced": syncedCount})
+	writeJSON(w, map[string]interface{}{"results": results, "synced": synced})
+}
+
+func (r *Router) syncOfflineWordAttempt(req *http.Request, userID int64, sessionID *int64, planned int, attempt offlineWordTrainingAttempt) (*models.ReviewEvent, error) {
+	if strings.TrimSpace(attempt.ClientAttemptID) == "" || attempt.UserCardID == 0 {
+		return nil, fmt.Errorf("invalid_attempt")
+	}
+	mode := strings.TrimSpace(attempt.Mode)
+	if mode == "" {
+		mode = "card"
+	}
+	if mode != "card" && mode != "spell" && mode != "type" {
+		return nil, fmt.Errorf("invalid_mode")
+	}
+	tx, err := r.db.BeginTx(req.Context(), nil)
+	if err != nil {
+		return nil, fmt.Errorf("transaction_failed")
+	}
+	defer tx.Rollback()
+	var locked int64
+	if err = tx.QueryRow(`SELECT id FROM users WHERE id = ? FOR UPDATE`, userID).Scan(&locked); err != nil {
+		return nil, fmt.Errorf("user_not_found")
+	}
+	sessions := repository.NewSessionRepository(tx, r.logger)
+	exists, err := sessions.HasReviewEventClientAttempt(userID, attempt.ClientAttemptID)
+	if err != nil {
+		return nil, fmt.Errorf("idempotency_check_failed")
+	}
+	if exists {
+		return nil, nil
+	}
+	// The row lock also protects against other writers while the grade is computed.
+	if err = tx.QueryRow(`SELECT id FROM user_cards WHERE id = ? AND user_id = ? FOR UPDATE`, attempt.UserCardID, userID).Scan(&locked); err != nil {
+		return nil, fmt.Errorf("user_card_not_found")
+	}
+	cards := repository.NewUserCardRepository(tx, r.logger)
+	card, err := cards.GetUserCard(attempt.UserCardID)
+	if err != nil {
+		return nil, fmt.Errorf("user_card_not_found")
+	}
+	training, err := repository.NewTrainingCardRepository(tx, r.logger).GetTrainingCard(card.TrainingCardID)
+	if err != nil || training == nil {
+		return nil, fmt.Errorf("training_card_not_found")
+	}
+	if attempt.TrainingCardID != 0 && attempt.TrainingCardID != training.ID {
+		return nil, fmt.Errorf("training_card_mismatch")
+	}
+	var course string
+	err = tx.QueryRow(`SELECT COALESCE(NULLIF(uc.course_code, ''), NULLIF(tc.course_code, ''), NULLIF(wc.course_code, ''), '') FROM user_cards uc JOIN training_cards tc ON tc.id = uc.training_card_id JOIN word_cards wc ON wc.id = tc.word_card_id WHERE uc.id = ?`, card.ID).Scan(&course)
+	if err != nil {
+		return nil, fmt.Errorf("course_lookup_failed")
+	}
+	lc := r.config.Learning
+	if course != "" {
+		lc = learningConfigForCourse(lc, course)
+	}
+	options := service.NewOptionsService(nil, r.logger, lc.TargetLang)
+	correct := options.CorrectAnswer(&models.UserCardWithTraining{UserCard: *card, TrainingCard: *training})
+	chosen := attempt.ChosenOption
+	if mode != "card" {
+		if card.Direction != models.DirectionRUtoEN {
+			return nil, fmt.Errorf("invalid_direction")
+		}
+		correct = service.TrainingDisplayWord(training)
+		if lc.TargetLang != "en" {
+			correct = strings.TrimPrefix(correct, "to ")
+		}
+		chosen = attempt.AnswerText
+		if chosen == "" {
+			chosen = attempt.ChosenOption
+		}
+	}
+	if strings.TrimSpace(correct) == "" {
+		return nil, fmt.Errorf("correct_answer_unavailable")
+	}
+	isCorrect := chosen == correct
+	if mode != "card" {
+		isCorrect = strings.EqualFold(strings.TrimSpace(chosen), strings.TrimSpace(correct))
+	}
+	shown, answered := fallbackTime(attempt.ShownAt), fallbackTime(attempt.AnsweredAt)
+	optionsShown := attempt.OptionsShownAt
+	if optionsShown.IsZero() {
+		optionsShown = shown
+	}
+	answerMS, delayMS := attempt.AnswerTimeMS, attempt.TDelayMS
+	if answerMS <= 0 {
+		answerMS = max(0, int(answered.Sub(optionsShown).Milliseconds()))
+	}
+	if delayMS <= 0 {
+		delayMS = max(0, int(optionsShown.Sub(shown).Milliseconds()))
+	}
+	data := models.AttemptData{
+		Correct: isCorrect, EarlyReveal: attempt.EarlyReveal,
+		AnswerTimeMS: answerMS, TDelayMS: delayMS,
+		OptionCount: len(attempt.Options), ChosenOption: chosen, GradedAt: &answered,
+	}
+	if mode != "card" {
+		data.EarlyReveal = false
+		data.TDelayMS = 0
+		data.OptionCount = 1
+		data.TimeMultiplier = models.TimeMultiplierForMode(mode, utf8.RuneCountInString(correct))
+	}
+	before, _ := json.Marshal(wordReviewSRSState(card))
+	srs := service.NewSRSService(cards, lc, r.logger)
+	if err = srs.GradeCard(card, data); err != nil {
+		return nil, fmt.Errorf("grade_failed")
+	}
+	after, _ := json.Marshal(wordReviewSRSState(card))
+	if !isCorrect {
+		if err = srs.RecordWrongAnswer(card, chosen); err != nil {
+			return nil, fmt.Errorf("wrong_answer_save_failed")
+		}
+	}
+	sid := *sessionID
+	if sid == 0 {
+		sid, err = sessions.CreateSession(&models.TrainingSession{UserID: userID, Source: models.SourceManual, PlannedCount: planned, SessionJSON: `{"offline_sync":true}`})
+		if err != nil {
+			return nil, fmt.Errorf("session_create_failed")
+		}
+	}
+	optionsJSON, _ := json.Marshal(attempt.Options)
+	metrics, _ := json.Marshal(map[string]interface{}{"offline_sync": true, "mode": mode, "answer_time_ms": answerMS, "total_time_ms": max(0, int(answered.Sub(shown).Milliseconds())), "spell_or_type": mode != "card"})
+	event := &models.ReviewEvent{
+		SessionID: &sid, UserID: userID, UserCardID: card.ID,
+		CourseCode: course, ClientAttemptID: attempt.ClientAttemptID,
+		Direction: card.Direction, ShownAt: shown, OptionsShownAt: &optionsShown, AnsweredAt: &answered,
+		TDelayMS: data.TDelayMS, EarlyReveal: data.EarlyReveal, OptionCount: data.OptionCount,
+		OptionsJSON: string(optionsJSON), ChosenOption: chosen, IsCorrect: isCorrect,
+		Quality: int(models.CalculateQuality(data)), MetricsJSON: string(metrics),
+		SRSBeforeJSON: string(before), SRSAfterJSON: string(after),
+	}
+	id, err := sessions.CreateReviewEvent(event)
+	if err != nil {
+		return nil, fmt.Errorf("review_event_create_failed")
+	}
+	if err = tx.Commit(); err != nil {
+		return nil, fmt.Errorf("commit_failed")
+	}
+	event.ID = id
+	*sessionID = sid
+	return event, nil
+}
+
+func wordReviewSRSState(card *models.UserCard) models.SRSState {
+	return models.SRSState{State: card.State, EF: card.EF, Reps: card.Reps, IntervalDays: card.IntervalDays, LearningStep: card.LearningStep, LapseCount: card.LapseCount}
 }
 
 func fallbackTime(value time.Time) time.Time {
@@ -610,94 +606,4 @@ func fallbackTime(value time.Time) time.Time {
 		return time.Now()
 	}
 	return value
-}
-
-func (r *Router) syncOfflineSpellTypeAttempt(req *http.Request, userID int64, sessionRepo *repository.SessionRepository, sessionID int64, attempt offlineWordTrainingAttempt, mode string, result map[string]interface{}) error {
-	userCardRepo := repository.NewUserCardRepository(r.db, r.logger)
-	userCard, err := userCardRepo.GetUserCard(attempt.UserCardID)
-	if err != nil || userCard == nil || userCard.UserID != userID {
-		return fmt.Errorf("user_card_not_found")
-	}
-	correctAnswer := strings.TrimSpace(attempt.CorrectAnswer)
-	if correctAnswer == "" {
-		return fmt.Errorf("correct_answer_required")
-	}
-	userAnswer := strings.TrimSpace(strings.ToLower(attempt.AnswerText))
-	if userAnswer == "" && attempt.ChosenOption != "" {
-		userAnswer = strings.TrimSpace(strings.ToLower(attempt.ChosenOption))
-	}
-	if userAnswer == "" {
-		userAnswer = " "
-	}
-	isCorrect := userAnswer == strings.TrimSpace(strings.ToLower(correctAnswer))
-	shownAt := fallbackTime(attempt.ShownAt)
-	answeredAt := fallbackTime(attempt.AnsweredAt)
-	answerTimeMS := attempt.AnswerTimeMS
-	if answerTimeMS <= 0 {
-		answerTimeMS = int(answeredAt.Sub(shownAt).Milliseconds())
-		if answerTimeMS < 0 {
-			answerTimeMS = 0
-		}
-	}
-	wordLen := len(correctAnswer)
-	attemptData := models.AttemptData{
-		Correct:        isCorrect,
-		EarlyReveal:    false,
-		AnswerTimeMS:   answerTimeMS,
-		TDelayMS:       0,
-		OptionCount:    1,
-		ChosenOption:   attempt.AnswerText,
-		TimeMultiplier: models.TimeMultiplierForMode(mode, wordLen),
-		GradedAt:       &answeredAt,
-	}
-	srsBefore := models.SRSState{
-		State: userCard.State, EF: userCard.EF, Reps: userCard.Reps,
-		IntervalDays: userCard.IntervalDays, LearningStep: userCard.LearningStep, LapseCount: userCard.LapseCount,
-	}
-	srsBeforeJSON, _ := json.Marshal(srsBefore)
-	if err := r.srsService.GradeCard(userCard, attemptData); err != nil {
-		return fmt.Errorf("grade_failed")
-	}
-	srsAfter := models.SRSState{
-		State: userCard.State, EF: userCard.EF, Reps: userCard.Reps,
-		IntervalDays: userCard.IntervalDays, LearningStep: userCard.LearningStep, LapseCount: userCard.LapseCount,
-	}
-	srsAfterJSON, _ := json.Marshal(srsAfter)
-	quality := models.CalculateQuality(attemptData)
-	metricsJSON, _ := json.Marshal(map[string]interface{}{
-		"offline_sync": true, "spell_or_type": true, "answer_time_ms": answerTimeMS, "mode": mode, "word_len": wordLen,
-	})
-	reviewEvent := &models.ReviewEvent{
-		SessionID:       &sessionID,
-		UserID:          userID,
-		UserCardID:      userCard.ID,
-		CourseCode:      r.courseCodeForUserCard(userCard.ID),
-		ClientAttemptID: attempt.ClientAttemptID,
-		Direction:       userCard.Direction,
-		ShownAt:         shownAt,
-		AnsweredAt:      &answeredAt,
-		TDelayMS:        0,
-		EarlyReveal:     false,
-		OptionCount:     1,
-		OptionsJSON:     "[]",
-		ChosenOption:    attempt.AnswerText,
-		IsCorrect:       isCorrect,
-		Quality:         int(quality),
-		MetricsJSON:     string(metricsJSON),
-		SRSBeforeJSON:   string(srsBeforeJSON),
-		SRSAfterJSON:    string(srsAfterJSON),
-	}
-	if reviewEventID, err := sessionRepo.CreateReviewEvent(reviewEvent); err != nil {
-		return fmt.Errorf("review_event_create_failed")
-	} else {
-		r.recordLinglowWordReviewEvent(req.Context(), reviewEvent.CourseCode, reviewEventID, reviewEvent)
-	}
-	if !isCorrect {
-		if err := r.srsService.RecordWrongAnswer(userCard, attempt.AnswerText); err != nil {
-			r.logger.Warn("failed to record offline spell/type wrong answer", zap.Int64("user_card_id", userCard.ID), zap.Error(err))
-		}
-	}
-	result["synced"] = true
-	result["is_correct"] = isCorrect
-	return nil
 }

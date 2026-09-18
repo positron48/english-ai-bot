@@ -80,16 +80,35 @@ func (r *Router) handleLinglowPictureQuests(w http.ResponseWriter, req *http.Req
 		return
 	}
 
+	ids := make([]int64, len(quests))
+	for i, quest := range quests {
+		ids[i] = quest.ID
+	}
+	tasksByQuest, err := r.pictureQuestRepo.ListTasksForList(ctx, ids)
+	if err != nil {
+		r.logger.Error("list picture tasks", zap.Error(err))
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	progressByQuest, err := r.pictureQuestRepo.ListProgress(ctx, userCourseID, ids)
+	if err != nil {
+		r.logger.Error("list picture progress", zap.Error(err))
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
+	passedCodes, err := r.pictureQuestRepo.PassedQuestCodes(ctx, userCourseID, courseID)
+	if err != nil {
+		r.logger.Error("list passed pictures", zap.Error(err))
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
+	}
 	out := make([]map[string]interface{}, 0, len(quests))
 	for i := range quests {
 		q := &quests[i]
-		tasks, err := r.pictureQuestRepo.ListTasks(ctx, q.ID)
-		if err != nil {
-			r.logger.Error("list picture quest tasks", zap.Error(err))
-			http.Error(w, "Internal server error", http.StatusInternalServerError)
-			return
-		}
-		questPassed, fullyDone := r.pictureQuestProgressFlags(ctx, userCourseID, q, tasks)
+		tasks := tasksByQuest[q.ID]
+		progress, hasSession := progressByQuest[q.ID]
+		questPassed := passedCodes[q.Code] || (hasSession && allRequiredPictureTasksDone(tasks, progress.Completed))
+		fullyDone := hasSession && (progress.Status == "completed" || allPictureTasksDone(tasks, progress.Completed))
 		// Split active list vs archive: passed quests live only in the archive.
 		if questPassed != archive {
 			continue
@@ -101,7 +120,7 @@ func (r *Router) handleLinglowPictureQuests(w http.ResponseWriter, req *http.Req
 		case questPassed:
 			sessionStatus = "passed"
 		default:
-			sessionStatus = r.latestPictureSessionStatus(ctx, userCourseID, q.ID)
+			sessionStatus = progress.Status
 		}
 		out = append(out, map[string]interface{}{
 			"code":           q.Code,

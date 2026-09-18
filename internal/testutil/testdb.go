@@ -36,6 +36,7 @@ var truncateTables = []string{
 	"conversation_tasks", "conversation_scenarios",
 	"learning_items", "learning_objectives", "modules", "user_courses",
 	"grammar_placement_test", "grammar_progress", "grammar_test_attempts",
+	"grammar_attempts", "grammar_theory_memory",
 	"user_access_user_categories", "user_access_category_permissions", "user_access_categories",
 	"web_otps", "web_sessions", "review_events", "training_sessions", "user_cards",
 	"training_cards", "word_set_items", "word_sets", "word_set_categories",
