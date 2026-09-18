@@ -417,6 +417,19 @@ func (r *Router) handleTrainingStart(w http.ResponseWriter, req *http.Request) {
 	r.persistWebTrainingState(state)
 
 	// Show first card
+	r.showActiveTrainingCard(w, req, state)
+}
+
+// Serialize rendering with prefetch/reveal/answer: rendering also updates the
+// options used to grade the active card. Completion takes the same lock itself.
+func (r *Router) showActiveTrainingCard(w http.ResponseWriter, req *http.Request, state *WebTrainingState) {
+	r.webTrainingHandler.sessionsMutex.Lock()
+	if state.CurrentIndex >= len(state.Queue) {
+		r.webTrainingHandler.sessionsMutex.Unlock()
+		r.finishTrainingSession(w, req, state)
+		return
+	}
+	defer r.webTrainingHandler.sessionsMutex.Unlock()
 	r.showTrainingCard(w, req, state)
 }
 
@@ -848,7 +861,7 @@ func (r *Router) handleTrainingCurrent(w http.ResponseWriter, req *http.Request)
 		return
 	}
 
-	r.showTrainingCard(w, req, state)
+	r.showActiveTrainingCard(w, req, state)
 }
 
 func (r *Router) handleTrainingPrefetchNext(w http.ResponseWriter, req *http.Request) {
@@ -899,27 +912,19 @@ func (r *Router) handleTrainingPrefetchNext(w http.ResponseWriter, req *http.Req
 		return
 	}
 
-	originalIndex := state.CurrentIndex
-	originalShownAt := state.ShownAt
-	originalOptionsShownAt := state.OptionsShownAt
-	originalOptions := append([]string(nil), state.Options...)
-	originalCorrectAnswer := state.CorrectAnswer
-	state.CurrentIndex = nextIndex
+	// Render into a separate state. Preparing the next question must never
+	// temporarily replace the active card or its answer options.
+	prefetchState := *state
+	prefetchState.CurrentIndex = nextIndex
+	prefetchState.PrefetchedCards = nil
 	capture := newTrainingResponseCapture()
-	r.showTrainingCard(capture, req, state)
-	prefetchedOptions := append([]string(nil), state.Options...)
-	prefetchedCorrectAnswer := state.CorrectAnswer
-	state.CurrentIndex = originalIndex
-	state.ShownAt = originalShownAt
-	state.OptionsShownAt = originalOptionsShownAt
-	state.Options = originalOptions
-	state.CorrectAnswer = originalCorrectAnswer
+	r.showTrainingCard(capture, req, &prefetchState)
 
 	if capture.status == http.StatusOK && capture.body.Len() > 0 {
 		state.PrefetchedCards[nextIndex] = &PrefetchedTrainingCard{
 			Response:      append([]byte(nil), capture.body.Bytes()...),
-			Options:       prefetchedOptions,
-			CorrectAnswer: prefetchedCorrectAnswer,
+			Options:       append([]string(nil), prefetchState.Options...),
+			CorrectAnswer: prefetchState.CorrectAnswer,
 		}
 	}
 	r.webTrainingHandler.sessionsMutex.Unlock()
@@ -970,7 +975,7 @@ func (r *Router) handleTrainingReveal(w http.ResponseWriter, req *http.Request) 
 
 	r.webTrainingHandler.sessionsMutex.Lock()
 	state, exists := r.webTrainingHandler.sessions[userID]
-	if !exists || state == nil {
+	if !exists || state == nil || state.CurrentIndex >= len(state.Queue) {
 		r.webTrainingHandler.sessionsMutex.Unlock()
 		http.Error(w, "No active session", http.StatusNotFound)
 		return
@@ -991,15 +996,18 @@ func (r *Router) handleTrainingReveal(w http.ResponseWriter, req *http.Request) 
 	// Mark options as shown
 	now := time.Now()
 	state.OptionsShownAt = &now
+	response := map[string]interface{}{
+		"options":      append([]string(nil), state.Options...),
+		"user_card_id": item.Card.UserCard.ID,
+		"session_id":   state.SessionID,
+		"card_index":   state.CurrentIndex + 1,
+	}
 	r.webTrainingHandler.sessionsMutex.Unlock()
 
 	// Return options as JSON
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(map[string]interface{}{
-		"options":      state.Options,
-		"user_card_id": item.Card.UserCard.ID,
-	})
+	json.NewEncoder(w).Encode(response)
 }
 
 // gradeReplacedCardForSpellType grades the user_card that was replaced by a spell/type challenge so SRS is updated and the card won't stay due.

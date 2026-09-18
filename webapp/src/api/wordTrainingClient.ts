@@ -381,7 +381,7 @@ export const wordTrainingClient = {
         if (item.type !== 'card') throw new OfflineWordTrainingUnavailableError('Reveal is only available for card mode offline')
         session.options_shown_at = new Date().toISOString()
         await setWordTrainingSession(session)
-        return { options: item.options, user_card_id: item.user_card_id, offline: true }
+        return { options: item.options, user_card_id: item.user_card_id, session_id: session.id, card_index: session.index + 1, offline: true }
       },
     )
   },

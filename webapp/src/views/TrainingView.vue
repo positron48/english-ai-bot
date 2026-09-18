@@ -615,6 +615,8 @@ interface MorphInfo {
 interface OptionsResponse {
   options: string[]
   user_card_id: number
+  session_id?: number
+  card_index?: number
 }
 
 interface Feedback {
@@ -758,6 +760,7 @@ const playingPronunciation = ref(false)
 const currentPronunciationURL = ref<string | null>(null)
 let pronunciationLoadRequestId = 0
 let currentCardGeneration = 0
+let revealingGeneration: number | null = null
 
 const sameTrainingCard = (a: Card | null | undefined, b: Card | null | undefined): boolean => {
   if (!a || !b) return false
@@ -1744,6 +1747,8 @@ const updateUpcomingChart = () => {
 }
 
 onUnmounted(() => {
+  sessionActive.value = false
+  currentCardGeneration++
   // Remove keyboard event listener
   window.removeEventListener('keydown', handleKeyPress)
   window.removeEventListener('online', handleNetworkChange)
@@ -1883,11 +1888,14 @@ const applyTrainingSessionResponse = async (response: any): Promise<boolean> => 
 const prefetchNextTrainingCard = () => {
   if (!sessionActive.value || prefetchInFlight) return
   const generation = currentCardGeneration
+  const card = currentCard.value
   prefetchInFlight = (async () => {
     try {
       const response = await wordTrainingClient.prefetchNext()
       if (!sessionActive.value || generation !== currentCardGeneration) return
       if (!response || response.complete || response.active === false || !response.card_index || !response.total_cards) return
+      // The server may have advanced while this request was in flight.
+      if (!card || response.session_id !== card.session_id || response.card_index !== card.card_index + 1) return
       prefetchedCardResponse.value = response
     } catch (error) {
       console.error('Failed to prefetch next training card:', error)
@@ -2129,15 +2137,30 @@ const revealOptions = async (isEarly: boolean = false) => {
   }
 
   // If already shown, don't do anything
-  if (optionsShown.value) {
+  if (!sessionActive.value || !currentCard.value || optionsShown.value || revealingGeneration === currentCardGeneration) {
     return
   }
 
+  const card = currentCard.value
+  const generation = currentCardGeneration
+  revealingGeneration = generation
+  const isCurrent = () => sessionActive.value && generation === currentCardGeneration && sameTrainingCard(card, currentCard.value)
   try {
     if (syncCurrentInFlight) {
       await syncCurrentInFlight
     }
+    if (!isCurrent()) return
     const data: OptionsResponse = await wordTrainingClient.reveal()
+    if (!isCurrent()) return
+    if (data.user_card_id !== card.user_card_id ||
+        (data.session_id != null && data.session_id !== card.session_id) ||
+        (data.card_index != null && data.card_index !== card.card_index)) {
+      // Recover from a session that advanced elsewhere without ever displaying
+      // another card's options alongside this question.
+      const response = await wordTrainingClient.current()
+      if (isCurrent()) await applyTrainingSessionResponse(response)
+      return
+    }
     options.value = data.options
     optionsShown.value = true
     
@@ -2157,12 +2180,15 @@ const revealOptions = async (isEarly: boolean = false) => {
       }, 2000)
     }
   } catch (error: any) {
+    if (!isCurrent()) return
     console.error('Failed to reveal options:', error)
     // Network error is already handled by callback, but we should handle other errors
     if (!error.isNetworkError) {
       // For non-network errors, show a simple message
       await showAlert(t('training.failedLoadOptions'))
     }
+  } finally {
+    if (revealingGeneration === generation) revealingGeneration = null
   }
 }
 
@@ -2781,7 +2807,8 @@ const nextCard = async () => {
   try {
     const cached = prefetchedCardResponse.value
     prefetchedCardResponse.value = null
-    if (cached) {
+    if (cached && currentCard.value && cached.session_id === currentCard.value.session_id &&
+        cached.card_index === currentCard.value.card_index + 1) {
       // Show the prefetched card immediately; sync backend session state in the
       // background so reveal/answer use options for the active card, not the previous one.
       void syncCurrentCardState()
