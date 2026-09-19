@@ -54,7 +54,7 @@ func TestSentenceReviewRegressionLLM(t *testing.T) {
 		sentences = append(sentences, GeneratedSentence{PromptRU: c.prompt, ClarificationRU: c.context, ReferenceES: c.reference, UsedWords: used[i]})
 	}
 	start := time.Now()
-	result, err := svc.reviewGeneratedSentenceQuality(context.Background(), model, "es_ru", sentenceTestWords("adversarial"), nil, []string{"presente (indicativo)"}, sentences)
+	result, err := svc.reviewGeneratedSentenceQuality(context.Background(), model, "es_ru", sentenceTestWords("adversarial"), nil, []string{"presente (indicativo)"}, sentences, nil)
 	if err != nil {
 		t.Fatal(err)
 	}
@@ -76,4 +76,63 @@ func TestSentenceReviewRegressionLLM(t *testing.T) {
 		t.Logf("REVIEW_REJECTION %s: %s", r.Sentence.PromptRU, r.Reason)
 	}
 	t.Logf("REVIEW_SUMMARY model=%s passed=%d/%d calls=%d cost=%f seconds=%.1f", model, passed, len(cases), usage.Calls, usage.Cost, time.Since(start).Seconds())
+}
+
+// Review must reject screenshot-style fragments and consider templates already
+// accepted before a refill, while preserving useful short complete sentences.
+func TestSentenceDiversityReviewLLM(t *testing.T) {
+	if os.Getenv("RUN_SENTENCE_REVIEW_LLM") != "1" {
+		t.Skip("opt-in paid diversity review regression")
+	}
+	env, _ := godotenv.Read("../../.env")
+	key := os.Getenv("POLZA_AI_API_KEY")
+	if key == "" {
+		key = env["POLZA_AI_API_KEY"]
+	}
+	if key == "" {
+		t.Fatal("POLZA_AI_API_KEY required")
+	}
+	model := "google/gemini-3.8-flash"
+	svc := NewServiceWithTimeout("https://polza.ai/api/v1", model, key, "", 90*time.Second, zap.NewNop())
+	svc.SetSentenceReasoningEffort("low")
+	usage := observeSentenceUsage(t, svc)
+	words := []GenSentenceWord{{"hola", "привет"}, {"gracias", "спасибо"}, {"té", "чай"}, {"café", "кофе"}, {"siete", "семь"}, {"ocho", "восемь"}, {"hotel", "отель"}, {"metro", "метро"}, {"terraza", "терраса"}, {"agua", "вода"}, {"leche", "молоко"}, {"beber", "пить"}, {"leer", "читать"}}
+	previous := []GeneratedSentence{
+		{PromptRU: "Где отель?", ReferenceES: "¿Dónde está el hotel?"},
+		{PromptRU: "Где метро?", ReferenceES: "¿Dónde está el metro?"},
+	}
+	cases := []struct {
+		sentence GeneratedSentence
+		good     bool
+	}{
+		{GeneratedSentence{PromptRU: "Привет, спасибо.", ReferenceES: "Hola, gracias.", UsedWords: []string{"hola", "gracias"}}, false},
+		{GeneratedSentence{PromptRU: "Чай или кофе?", ReferenceES: "¿Té o café?", UsedWords: []string{"té", "café"}}, false},
+		{GeneratedSentence{PromptRU: "Семь или восемь?", ReferenceES: "¿Siete u ocho?", UsedWords: []string{"siete", "ocho"}}, false},
+		{GeneratedSentence{PromptRU: "Где терраса?", ClarificationRU: "Вы спрашиваете официанта о единственной террасе ресторана, в котором вы оба находитесь.", ReferenceES: "¿Dónde está la terraza?", UsedWords: []string{"terraza"}}, false},
+		{GeneratedSentence{PromptRU: "Ты пьёшь воду или молоко?", ReferenceES: "¿Bebes agua o leche?", UsedWords: []string{"beber", "agua", "leche"}}, true},
+		{GeneratedSentence{PromptRU: "Она читает.", ReferenceES: "Ella lee.", UsedWords: []string{"leer"}}, true},
+	}
+	sentences := make([]GeneratedSentence, 0, len(cases))
+	for _, c := range cases {
+		sentences = append(sentences, c.sentence)
+	}
+	result, err := svc.reviewGeneratedSentenceQuality(context.Background(), model, "es_ru", words, nil, []string{"presente (indicativo)"}, sentences, previous)
+	if err != nil {
+		t.Fatal(err)
+	}
+	accepted := map[string]bool{}
+	for _, s := range result.Accepted {
+		accepted[s.PromptRU] = true
+	}
+	for _, c := range cases {
+		got := accepted[c.sentence.PromptRU]
+		if got != c.good {
+			t.Errorf("%s: accepted=%v want=%v", c.sentence.PromptRU, got, c.good)
+		}
+		t.Logf("DIVERSITY_CASE %s accepted=%v want=%v", c.sentence.PromptRU, got, c.good)
+	}
+	for _, r := range result.Rejected {
+		t.Logf("REJECTION %s: %s", r.Sentence.PromptRU, r.Reason)
+	}
+	t.Logf("DIVERSITY_REVIEW calls=%d cost=%f", usage.Calls, usage.Cost)
 }

@@ -1,0 +1,7 @@
+{
+  "internal/ai/sentence_composition.go": "cd05233e8b8170cf8eeba42079dec4694421be60103f3c8c93cad008ad5720a8",
+  "internal/repository/sentence_composition_repository.go": "e5f55dfbc7b74e6a7b51fa471b669cee2b9116a150567d74d466197efebcf237",
+  "internal/service/sentence_composition_worker.go": "585b366ed8ada33ea367bc257ab50a6eed1d066d9b81a3efc5c0d7080d4f8684",
+  "prompts/sentence-gen-ru-es.txt": "bf448d191f370ff653a42381010343dd32974a3c5d81fdaa8b24b046caef714f",
+  "prompts/sentence-gen-ru-en.txt": "9707c77e6cb84924d4771b2db60be03e095c709c7e0ec64519feb10f0c9929c4"
+}

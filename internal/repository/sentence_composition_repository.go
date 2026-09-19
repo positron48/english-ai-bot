@@ -25,6 +25,16 @@ func NewSentenceCompositionRepository(db *sql.DB, logger *zap.Logger) *SentenceC
 // above minMastery plus words explicitly marked known (even without a user_card). Explicitly
 // known and higher-mastery words rank first; sentence participation rotates equally mastered words.
 func (r *SentenceCompositionRepository) SelectCandidateWords(userID int64, courseCode string, minMastery, limit int) ([]models.SentenceWordCandidate, error) {
+	return r.selectCandidateWords(userID, courseCode, minMastery, limit, false)
+}
+
+// SelectSupportVerbs applies the same knowledge/course eligibility as focus words,
+// but reserves sentence-building verbs that can fall outside the main word limit.
+func (r *SentenceCompositionRepository) SelectSupportVerbs(userID int64, courseCode string, minMastery, limit int) ([]models.SentenceWordCandidate, error) {
+	return r.selectCandidateWords(userID, courseCode, minMastery, limit, true)
+}
+
+func (r *SentenceCompositionRepository) selectCandidateWords(userID int64, courseCode string, minMastery, limit int, verbsOnly bool) ([]models.SentenceWordCandidate, error) {
 	if minMastery < 0 {
 		minMastery = 0
 	}
@@ -67,6 +77,7 @@ func (r *SentenceCompositionRepository) SelectCandidateWords(userID int64, cours
 		 AND (? = '' OR tc_display.course_code IS NULL OR tc_display.course_code = '' OR tc_display.course_code = ?)
 		LEFT JOIN sentence_word_usage swu ON swu.user_id = ? AND swu.word_card_id = ranked.word_card_id AND swu.course_code = ?
 		GROUP BY ranked.word_card_id, ranked.mastery_score, ranked.explicitly_known
+		HAVING NOT ? OR BOOL_OR(COALESCE(LOWER(TRIM(tc_display.pos)), '') LIKE 'verb%')
 		ORDER BY ranked.explicitly_known DESC, ranked.mastery_score DESC,
 		         used_count ASC, MAX(COALESCE(swu.last_used_on, '1970-01-01')) ASC, RANDOM()
 		LIMIT ?`
@@ -76,7 +87,7 @@ func (r *SentenceCompositionRepository) SelectCandidateWords(userID int64, cours
 		userID, courseCode, courseCode, courseCode,
 		courseCode, courseCode,
 		userID, courseCode,
-		limit)
+		verbsOnly, limit)
 	if err != nil {
 		return nil, fmt.Errorf("select candidate words: %w", err)
 	}

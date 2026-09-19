@@ -74,6 +74,9 @@ func TestSentenceGenerationSharedPool(t *testing.T) {
 					response = generatedSentenceSet{Sentences: current}
 				} else {
 					reviews++
+					if reviews == 2 && len(payload.Accepted) != tc.firstAccepted {
+						t.Fatal("refill review is missing accepted sentences for diversity checks")
+					}
 					if reviews == 2 && tc.refillInvalidJSON {
 						return newJSONResponse(http.StatusOK, ChatResponse{Choices: []Choice{{Message: Message{Content: "invalid JSON"}}}}), nil
 					}
@@ -167,7 +170,7 @@ func TestSentenceReasoningAndReviewTemperatureAreScoped(t *testing.T) {
 		}
 		return newJSONResponse(http.StatusOK, ChatResponse{Choices: []Choice{{Message: Message{Content: `{"checks":[]}`}}}}), nil
 	})
-	if _, err := svc.reviewGeneratedSentenceQuality(context.Background(), "sentence", "es_ru", nil, nil, nil, []GeneratedSentence{{PromptRU: "Я пью воду.", ReferenceES: "Bebo agua."}}); err != nil {
+	if _, err := svc.reviewGeneratedSentenceQuality(context.Background(), "sentence", "es_ru", nil, nil, nil, []GeneratedSentence{{PromptRU: "Я пью воду.", ReferenceES: "Bebo agua."}}, nil); err != nil {
 		t.Fatal(err)
 	}
 	if _, err := svc.postChatCompletion(context.Background(), "general", []Message{{Role: "user", Content: "Hello"}}, 100, 0); err != nil {

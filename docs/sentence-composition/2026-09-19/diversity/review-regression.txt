@@ -1,0 +1,40 @@
+=== RUN   TestSentenceReviewRegressionLLM
+    sentence_regression_llm_test.go:201: LLM_RESPONSE model=google/gemini-3.8-flash provider=openrouter status=200 input=2656 output=565 cost=0.483885
+    sentence_review_llm_test.go:73: REVIEW_CASE formal singular valid accepted=true want=true
+    sentence_review_llm_test.go:73: REVIEW_CASE formal singular wrong verb accepted=false want=false
+    sentence_review_llm_test.go:73: REVIEW_CASE Russian vy cannot be tu accepted=false want=false
+    sentence_review_llm_test.go:73: REVIEW_CASE unselected book definite accepted=false want=false
+    sentence_review_llm_test.go:73: REVIEW_CASE missing subject identification accepted=false want=false
+    sentence_review_llm_test.go:73: REVIEW_CASE big is not tall accepted=false want=false
+    sentence_review_llm_test.go:73: REVIEW_CASE identified book indefinite accepted=false want=false
+    sentence_review_llm_test.go:73: REVIEW_CASE identified book valid accepted=true want=true
+    sentence_review_llm_test.go:73: REVIEW_CASE unselected book valid accepted=true want=true
+    sentence_review_llm_test.go:73: REVIEW_CASE Spain informal valid accepted=true want=true
+    sentence_review_llm_test.go:73: REVIEW_CASE artificial clean book accepted=false want=false
+    sentence_review_llm_test.go:73: REVIEW_CASE unknown content verb accepted=false want=false
+    sentence_review_llm_test.go:76: REVIEW_REJECTION Вы пьёте воду?: Несоответствие контекста и грамматической формы: контекст задаёт вежливое обращение к одному лицу (Usted), а в эталоне форма vosotros.
+    sentence_review_llm_test.go:76: REVIEW_REJECTION Вы покупаете книги.: В prompt_ru местоимение «Вы», а контекст и эталон используют обращение на «ты» (tú/compras).
+    sentence_review_llm_test.go:76: REVIEW_REJECTION Я покупаю книгу.: Противоречие между контекстом (любая подходящая книга) и эталоном с определённым артиклем (el libro).
+    sentence_review_llm_test.go:76: REVIEW_REJECTION Врач открывает окно.: Не обоснован определённый артикль для médico (в контексте прямо указано: «О враче ничего не сообщается»).
+    sentence_review_llm_test.go:76: REVIEW_REJECTION Она ищет большого друга.: Неестественное словосочетание «большой друг» в значении роста человека.
+    sentence_review_llm_test.go:76: REVIEW_REJECTION Я читаю книгу.: Противоречие: собеседник передал единственную конкретную книгу, а в эталоне неопределённый артикль (un libro).
+    sentence_review_llm_test.go:76: REVIEW_REJECTION Мать находит чистую книгу.: Нарушено правило 2: неестественная комбинация действий с «чистой книгой» ради лексики.
+    sentence_review_llm_test.go:76: REVIEW_REJECTION Я стираю книгу.: Глагол lavar / «стирать» отсутствует в allowed_vocabulary; также неестественное действие «стирать книгу».
+    sentence_review_llm_test.go:78: REVIEW_SUMMARY model=google/gemini-3.8-flash passed=12/12 calls=1 cost=0.483885 seconds=6.3
+--- PASS: TestSentenceReviewRegressionLLM (6.32s)
+=== RUN   TestSentenceDiversityReviewLLM
+    sentence_regression_llm_test.go:201: LLM_RESPONSE model=google/gemini-3.8-flash provider=openrouter status=200 input=1977 output=224 cost=0.273416
+    sentence_review_llm_test.go:132: DIVERSITY_CASE Привет, спасибо. accepted=false want=false
+    sentence_review_llm_test.go:132: DIVERSITY_CASE Чай или кофе? accepted=false want=false
+    sentence_review_llm_test.go:132: DIVERSITY_CASE Семь или восемь? accepted=false want=false
+    sentence_review_llm_test.go:132: DIVERSITY_CASE Где терраса? accepted=false want=false
+    sentence_review_llm_test.go:132: DIVERSITY_CASE Ты пьёшь воду или молоко? accepted=true want=true
+    sentence_review_llm_test.go:132: DIVERSITY_CASE Она читает. accepted=true want=true
+    sentence_review_llm_test.go:135: REJECTION Привет, спасибо.: Приветствия и благодарности без полноценного предложения отклоняются согласно правилу 2.
+    sentence_review_llm_test.go:135: REJECTION Чай или кофе?: Фрагмент без личной формы глагола отклоняется согласно правилу 2.
+    sentence_review_llm_test.go:135: REJECTION Семь или восемь?: Пары чисел без глагола отклоняются согласно правилу 2.
+    sentence_review_llm_test.go:135: REJECTION Где терраса?: Повтор каркаса «Где X?», в наборе уже есть два аналогичных вопроса («Где отель?», «Где метро?»).
+    sentence_review_llm_test.go:137: DIVERSITY_REVIEW calls=1 cost=0.273416
+--- PASS: TestSentenceDiversityReviewLLM (3.76s)
+PASS
+ok  	tgbot-skeleton/internal/ai	10.311s

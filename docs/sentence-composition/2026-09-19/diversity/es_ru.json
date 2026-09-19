@@ -1,0 +1,199 @@
+[
+  {
+    "prompt_ru": "Я ем суп.",
+    "clarification_ru": "Вы обедаете и отвечаете на вопрос, что за блюдо налито в стоящую перед вами тарелку.",
+    "reference_es": "Como la sopa.",
+    "used_words": [
+      "comer",
+      "sopa"
+    ]
+  },
+  {
+    "prompt_ru": "Ты покупаешь апельсины?",
+    "clarification_ru": "Ты стоишь на рынке перед прилавком с фруктами, приятель спрашивает, берешь ли ты какие-нибудь апельсины.",
+    "reference_es": "¿Compras naranjas?",
+    "used_words": [
+      "comprar",
+      "naranja"
+    ]
+  },
+  {
+    "prompt_ru": "Друг ищет метро.",
+    "clarification_ru": "Ваш общий давний товарищ впервые приехал в город и пытается найти ближайшую станцию подземки.",
+    "reference_es": "El amigo busca el metro.",
+    "used_words": [
+      "amigo",
+      "buscar",
+      "metro"
+    ]
+  },
+  {
+    "prompt_ru": "Сестра пьет чай на террасе.",
+    "clarification_ru": "Ваша общая родственница вышла на открытую площадку вашего общего дома и пьет там напиток без сахара.",
+    "reference_es": "La hermana bebe té en la terraza.",
+    "used_words": [
+      "hermana",
+      "beber",
+      "té",
+      "terraza"
+    ]
+  },
+  {
+    "prompt_ru": "Мы ждем министра в отеле.",
+    "clarification_ru": "Вы с коллегой находитесь в холле гостиницы, где забронирован номер для главы министерства, и встречаете его.",
+    "reference_es": "Esperamos al ministro en el hotel.",
+    "used_words": [
+      "esperar",
+      "ministro",
+      "hotel"
+    ]
+  },
+  {
+    "prompt_ru": "Они заказывают восемь яблок.",
+    "clarification_ru": "Покупатели в лавке просят взвесить ровно восемь плодов из ящика.",
+    "reference_es": "Piden ocho manzanas.",
+    "used_words": [
+      "pedir",
+      "ocho",
+      "manzana"
+    ]
+  },
+  {
+    "prompt_ru": "У меня есть семь апельсинов.",
+    "clarification_ru": "Вы пересчитываете фрукты в своем пакете перед приготовлением сока.",
+    "reference_es": "Tengo siete naranjas.",
+    "used_words": [
+      "tener",
+      "siete",
+      "naranja"
+    ]
+  },
+  {
+    "prompt_ru": "Водителю нужен отель.",
+    "clarification_ru": "Шофер вашей машины устал в пути и говорит, что ему требуется любое место для ночлега.",
+    "reference_es": "El conductor necesita un hotel.",
+    "used_words": [
+      "conductor",
+      "necesitar",
+      "hotel"
+    ]
+  },
+  {
+    "prompt_ru": "Друзья платят чаевые.",
+    "clarification_ru": "Ваши общие приятели после сытного ужина в ресторане отдают официанту дополнительное вознаграждение.",
+    "reference_es": "Los amigos pagan la propina.",
+    "used_words": [
+      "amigo",
+      "pagar",
+      "propina"
+    ]
+  },
+  {
+    "prompt_ru": "Мы не покупаем мотоцикл.",
+    "clarification_ru": "Мы с напарником решили вообще не брать двухколесный транспорт из-за высокой цены.",
+    "reference_es": "No compramos moto.",
+    "used_words": [
+      "comprar",
+      "moto"
+    ]
+  },
+  {
+    "prompt_ru": "Ты заказываешь суп?",
+    "clarification_ru": "Вы с приятелем сидите за столиком и изучаете меню перед заказом первого блюда.",
+    "reference_es": "¿Pides sopa?",
+    "used_words": [
+      "pedir",
+      "sopa"
+    ]
+  },
+  {
+    "prompt_ru": "Министр работает на террасе.",
+    "clarification_ru": "Глава ведомства сидит с документами на открытой площадке загородной резиденции.",
+    "reference_es": "El ministro trabaja en la terraza.",
+    "used_words": [
+      "ministro",
+      "trabajar",
+      "terraza"
+    ]
+  },
+  {
+    "prompt_ru": "Они пьют кофе с молоком в отеле.",
+    "clarification_ru": "Постояльцы спустились в буфет своей гостиницы на утренний завтрак.",
+    "reference_es": "Beben café con leche en el hotel.",
+    "used_words": [
+      "beber",
+      "café",
+      "leche",
+      "hotel"
+    ]
+  },
+  {
+    "prompt_ru": "Сестра ест яблоко.",
+    "clarification_ru": "Ваша общая родственница достала из корзины одно из яблок и перекусывает им.",
+    "reference_es": "La hermana come una manzana.",
+    "used_words": [
+      "hermana",
+      "comer",
+      "manzana"
+    ]
+  },
+  {
+    "prompt_ru": "У друга есть девять мотоциклов.",
+    "clarification_ru": "Ваш общий знакомый хвастается своей большой личной коллекцией двухколесного транспорта.",
+    "reference_es": "El amigo tiene nueve motos.",
+    "used_words": [
+      "amigo",
+      "tener",
+      "nueve",
+      "moto"
+    ]
+  },
+  {
+    "prompt_ru": "Ты ищешь отель?",
+    "clarification_ru": "Твой друг ходит по незнакомому кварталу с чемоданом, ты уточняешь его намерения найти место для сна.",
+    "reference_es": "¿Buscas un hotel?",
+    "used_words": [
+      "buscar",
+      "hotel"
+    ]
+  },
+  {
+    "prompt_ru": "Мы покупаем десять апельсинов.",
+    "clarification_ru": "Вы с другом взвешиваете на весах в супермаркете ровно десяток цитрусов.",
+    "reference_es": "Compramos diez naranjas.",
+    "used_words": [
+      "comprar",
+      "diez",
+      "naranja"
+    ]
+  },
+  {
+    "prompt_ru": "Вы просите чаевые?",
+    "clarification_ru": "Вы обращаетесь к водителю такси, который вез вас один, вежливо переспрашивая о названной сумме.",
+    "reference_es": "¿Pide propina?",
+    "used_words": [
+      "pedir",
+      "propina"
+    ]
+  },
+  {
+    "prompt_ru": "Водитель продает отель.",
+    "clarification_ru": "Шофер, который вас подвозит, рассказывает о принадлежащей ему небольшой гостинице, выставленной на продажу.",
+    "reference_es": "El conductor vende el hotel.",
+    "used_words": [
+      "conductor",
+      "vender",
+      "hotel"
+    ]
+  },
+  {
+    "prompt_ru": "Мы ждем сестру на террасе.",
+    "clarification_ru": "Вы с приятелем сидите на открытой площадке кафе и выглядываете вашу общую родственницу.",
+    "reference_es": "Esperamos a la hermana en la terraza.",
+    "used_words": [
+      "esperar",
+      "hermana",
+      "terraza"
+    ]
+  }
+]

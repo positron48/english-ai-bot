@@ -302,6 +302,20 @@ func (w *SentenceCompositionWorker) generateSet(ctx context.Context, user *model
 	focusCount := sentenceFocusWordCount(len(words), w.sentencesPerSet())
 	focusWords := words[:focusCount]
 	supportWords := words[focusCount:]
+	// A noun/greeting-heavy top-ranked pool must not hide the learner's known verbs.
+	// This bounded supplement uses the same mastery threshold and course isolation.
+	verbs, err := w.repo.SelectSupportVerbs(user.ID, courseCode, w.cfg.MasteringThreshold, 12)
+	if err != nil {
+		return 0, err
+	}
+	for _, verb := range verbs {
+		lemma := strings.ToLower(strings.TrimSpace(verb.Lemma))
+		if _, exists := lemmaToID[lemma]; exists {
+			continue
+		}
+		supportWords = append(supportWords, ai.GenSentenceWord{Lemma: verb.Lemma, Translation: verb.Translation})
+		lemmaToID[lemma] = verb.WordCardID
+	}
 
 	// Generation and quality review use the dedicated sentence model when configured.
 	sentences, err := w.aiService.GenerateSentenceSetForCourse(ctx, courseCode, focusWords, supportWords, humanizeScopes(scopes), w.sentencesPerSet())

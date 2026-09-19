@@ -279,6 +279,14 @@ func TestSentenceGenerationContextLLM(t *testing.T) {
 		words = []GenSentenceWord{{"leche", "молоко"}, {"café", "кофе"}, {"pan", "хлеб"}, {"coche", "машина"}, {"tienda", "магазин"}, {"profesor", "учитель"}, {"mujer", "женщина"}, {"hermano", "брат"}, {"comprar", "покупать"}, {"vender", "продавать"}, {"beber", "пить"}, {"comer", "есть"}, {"trabajar", "работать"}, {"esperar", "ждать"}, {"necesitar", "нуждаться / требоваться"}, {"buscar", "искать"}, {"nuevo", "новый"}, {"viejo", "старый"}, {"caro", "дорогой"}, {"barato", "дешёвый"}}
 		focus = words[:5]
 	}
+	if course == "es_ru" && (os.Getenv("SENTENCE_TEST_WORD_PROFILE") == "screenshot-nouns" || os.Getenv("SENTENCE_TEST_WORD_PROFILE") == "screenshot-with-verbs") {
+		// Synthetic reconstruction from reported examples, not a production vocabulary export.
+		words = []GenSentenceWord{{"hotel", "отель / гостиница"}, {"metro", "метро"}, {"terraza", "терраса"}, {"sopa", "суп"}, {"manzana", "яблоко"}, {"naranja", "апельсин"}, {"moto", "мотоцикл"}, {"propina", "чаевые"}, {"biblioteca", "библиотека"}, {"té", "чай"}, {"café", "кофе"}, {"leche", "молоко"}, {"azúcar", "сахар"}, {"amigo", "друг"}, {"hermana", "сестра"}, {"ministro", "министр"}, {"conductor", "водитель / кондуктор"}, {"problema", "проблема"}, {"forma", "форма"}, {"medio", "средство"}, {"siete", "семь"}, {"ocho", "восемь"}, {"nueve", "девять"}, {"diez", "десять"}, {"hola", "привет"}, {"gracias", "спасибо"}}
+		focus = words[:8]
+		if os.Getenv("SENTENCE_TEST_WORD_PROFILE") == "screenshot-with-verbs" {
+			words = append(words, []GenSentenceWord{{"beber", "пить"}, {"comer", "есть"}, {"comprar", "покупать"}, {"vender", "продавать"}, {"pedir", "просить / заказывать"}, {"buscar", "искать"}, {"esperar", "ждать"}, {"trabajar", "работать"}, {"pagar", "платить / оплачивать"}, {"necesitar", "нуждаться / требоваться"}, {"tener", "иметь"}, {"ir", "идти / ехать"}}...)
+		}
+	}
 	sentences, err := svc.GenerateSentenceSetForCourse(context.Background(), course, focus, words, tenses, count)
 	t.Logf("GENERATION model=%s course=%s count=%d calls=%d input=%d output=%d provider_cost=%f seconds=%.1f", model, course, len(sentences), usage.Calls, usage.Input, usage.Output, usage.Cost, time.Since(start).Seconds())
 	if dir := os.Getenv("SENTENCE_TEST_OUTPUT_DIR"); dir != "" {

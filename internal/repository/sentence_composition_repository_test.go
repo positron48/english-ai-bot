@@ -227,3 +227,60 @@ func TestOutcomeForErrorCount(t *testing.T) {
 		}
 	}
 }
+
+func TestSentenceComposition_SupportVerbsOutsideFocusPool(t *testing.T) {
+	logger := zap.NewNop()
+	db := testutil.SetupTestDB(t)
+	repo := NewSentenceCompositionRepository(db, logger)
+	users := NewUserRepository(db, logger)
+	user, err := users.GetOrCreateUser(7099)
+	if err != nil {
+		t.Fatal(err)
+	}
+	for _, c := range []struct {
+		lemma, ru, pos, course string
+		known                  bool
+		mastery                int
+	}{
+		{"hotel", "отель", "noun", "es_ru", true, 0},
+		{"metro", "метро", "noun", "es_ru", true, 0},
+		{"beber", "пить", " VERBO ", "es_ru", false, 80},
+		{"comer", "есть", "verb", "es_ru", false, 69},
+		{"buscar", "искать", "verb", "es_ru", false, 0},
+		{"drink", "пить", "verb", "en_ru", true, 0},
+	} {
+		var wordID, cardID int64
+		if err := db.QueryRow(`INSERT INTO word_cards (word, definition, course_code) VALUES (?, ?, ?) RETURNING id`, c.lemma, c.ru, c.course).Scan(&wordID); err != nil {
+			t.Fatal(err)
+		}
+		if err := db.QueryRow(`INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en, pos, course_code) VALUES (?, ?, 0, ?, 'meaning', ?, ?) RETURNING id`, wordID, c.lemma, c.ru, c.pos, c.course).Scan(&cardID); err != nil {
+			t.Fatal(err)
+		}
+		if c.known {
+			if _, err := db.Exec(`INSERT INTO user_word_knowledge (user_id, word_card_id, status, course_code) VALUES (?, ?, 'known', ?)`, user.ID, wordID, c.course); err != nil {
+				t.Fatal(err)
+			}
+		}
+		if c.mastery > 0 {
+			if _, err := db.Exec(`INSERT INTO user_cards (user_id, training_card_id, direction, state, ef, course_code) VALUES (?, ?, 'ru_en', 'review', 2.5, ?)`, user.ID, cardID, c.course); err != nil {
+				t.Fatal(err)
+			}
+			if _, err := db.Exec(`INSERT INTO user_word_mastering (user_id, word_card_id, mastering_score, course_code) VALUES (?, ?, ?, ?)`, user.ID, wordID, c.mastery, c.course); err != nil {
+				t.Fatal(err)
+			}
+		}
+	}
+	focus, err := repo.SelectCandidateWords(user.ID, "es_ru", 70, 2)
+	if err != nil || len(focus) != 2 {
+		t.Fatalf("focus=%+v err=%v", focus, err)
+	}
+	for _, word := range focus {
+		if word.Lemma == "beber" {
+			t.Fatal("fixture did not reproduce a verb falling outside the top-ranked pool")
+		}
+	}
+	verbs, err := repo.SelectSupportVerbs(user.ID, "es_ru", 70, 12)
+	if err != nil || len(verbs) != 1 || verbs[0].Lemma != "beber" || verbs[0].Translation != "пить" {
+		t.Fatalf("expected only eligible Spanish verb outside focus pool; verbs=%+v err=%v", verbs, err)
+	}
+}

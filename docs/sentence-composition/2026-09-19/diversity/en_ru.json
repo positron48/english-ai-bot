@@ -1,0 +1,201 @@
+[
+  {
+    "prompt_ru": "Я читаю новую книгу.",
+    "clarification_ru": "Вы держите в руках только что подаренное вам издание и прямо в эту секунду увлечены чтением.",
+    "reference_es": "I am reading the new book.",
+    "used_words": [
+      "read",
+      "new",
+      "book"
+    ]
+  },
+  {
+    "prompt_ru": "Друг открывает дверь.",
+    "clarification_ru": "Вы оба видите своего давнего знакомого, который прямо сейчас берётся за ручку входа в комнату.",
+    "reference_es": "The friend is opening the door.",
+    "used_words": [
+      "friend",
+      "open",
+      "door"
+    ]
+  },
+  {
+    "prompt_ru": "Мы покупаем большой дом.",
+    "clarification_ru": "Семья завершает сделку прямо сейчас, приобретая выбранное семейное жильё.",
+    "reference_es": "We are buying the big house.",
+    "used_words": [
+      "buy",
+      "big",
+      "house"
+    ]
+  },
+  {
+    "prompt_ru": "Ты ешь яблоко?",
+    "clarification_ru": "Вы спрашиваете собеседника, жуёт ли он в эту секунду фрукт, который взял со стола.",
+    "reference_es": "Are you eating the apple?",
+    "used_words": [
+      "eat",
+      "apple"
+    ]
+  },
+  {
+    "prompt_ru": "Друзья не закрывают маленькую дверь.",
+    "clarification_ru": "Речь идёт о постоянной привычке ваших знакомых оставлять створку в сад незапертой.",
+    "reference_es": "The friends do not close the small door.",
+    "used_words": [
+      "friend",
+      "close",
+      "small",
+      "door"
+    ]
+  },
+  {
+    "prompt_ru": "Он помогает другу.",
+    "clarification_ru": "Прямо сейчас брат оказывает поддержку своему товарищу, о котором вы только что говорили.",
+    "reference_es": "He is helping the friend.",
+    "used_words": [
+      "help",
+      "friend"
+    ]
+  },
+  {
+    "prompt_ru": "Она пьёт воду в доме.",
+    "clarification_ru": "Девушка прямо сейчас наливает и пьёт из стакана внутри вашего общего жилья.",
+    "reference_es": "She is drinking water in the house.",
+    "used_words": [
+      "drink",
+      "water",
+      "house"
+    ]
+  },
+  {
+    "prompt_ru": "Маленький дом закрыт?",
+    "clarification_ru": "Вы спрашиваете о состоянии известной вам обоим дачной постройки.",
+    "reference_es": "Is the small house closed?",
+    "used_words": [
+      "small",
+      "house",
+      "close"
+    ]
+  },
+  {
+    "prompt_ru": "Я покупаю яблоки.",
+    "clarification_ru": "Вы находитесь на рынке и прямо сейчас набираете любые плоды в пакет.",
+    "reference_es": "I am buying apples.",
+    "used_words": [
+      "buy",
+      "apple"
+    ]
+  },
+  {
+    "prompt_ru": "Друг читает книги?",
+    "clarification_ru": "Вопрос о постоянной привычке вашего общего знакомого проводить время за чтением литературы.",
+    "reference_es": "Does the friend read books?",
+    "used_words": [
+      "friend",
+      "read",
+      "book"
+    ]
+  },
+  {
+    "prompt_ru": "Ты помогаешь новому другу?",
+    "clarification_ru": "Вы спрашиваете, оказывает ли собеседник поддержку недавно появившемуся в компании человеку прямо сейчас.",
+    "reference_es": "Are you helping the new friend?",
+    "used_words": [
+      "help",
+      "new",
+      "friend"
+    ]
+  },
+  {
+    "prompt_ru": "Они едят яблоки в доме.",
+    "clarification_ru": "Дети регулярно перекусывают фруктами внутри семейного жилья.",
+    "reference_es": "They eat apples in the house.",
+    "used_words": [
+      "eat",
+      "apple",
+      "house"
+    ]
+  },
+  {
+    "prompt_ru": "Большая дверь закрывается.",
+    "clarification_ru": "Тяжёлая парадная створка прямо сейчас сама медленно захлопывается у вас на глазах.",
+    "reference_es": "The big door is closing.",
+    "used_words": [
+      "big",
+      "door",
+      "close"
+    ]
+  },
+  {
+    "prompt_ru": "Друг покупает маленькую книгу.",
+    "clarification_ru": "Ваш знакомый прямо сейчас оплачивает на кассе выбранный карманный сборник стихов.",
+    "reference_es": "The friend is buying the small book.",
+    "used_words": [
+      "friend",
+      "buy",
+      "small",
+      "book"
+    ]
+  },
+  {
+    "prompt_ru": "Вы открываете большую дверь?",
+    "clarification_ru": "Вы спрашиваете рабочих, собираются ли они прямо сейчас распахнуть главные ворота склада.",
+    "reference_es": "Are you opening the big door?",
+    "used_words": [
+      "open",
+      "big",
+      "door"
+    ]
+  },
+  {
+    "prompt_ru": "Мы помогаем друзьям.",
+    "clarification_ru": "Вы с братом регулярно оказываете поддержку кругу ваших постоянных товарищей.",
+    "reference_es": "We help the friends.",
+    "used_words": [
+      "help",
+      "friend"
+    ]
+  },
+  {
+    "prompt_ru": "Новый дом большой.",
+    "clarification_ru": "Вы оба обсуждаете недавно возведённый коттедж, мимо которого проходите.",
+    "reference_es": "The new house is big.",
+    "used_words": [
+      "new",
+      "house",
+      "big"
+    ]
+  },
+  {
+    "prompt_ru": "Он ест маленькое яблоко.",
+    "clarification_ru": "Мальчик прямо сейчас держит в руке и откусывает тот самый небольшой плод.",
+    "reference_es": "He is eating the small apple.",
+    "used_words": [
+      "eat",
+      "small",
+      "apple"
+    ]
+  },
+  {
+    "prompt_ru": "Друзья пьют воду в новом доме.",
+    "clarification_ru": "Ваши давние приятели в эту секунду утоляют жажду внутри недавно купленного ими здания.",
+    "reference_es": "The friends are drinking water in the new house.",
+    "used_words": [
+      "friend",
+      "drink",
+      "water",
+      "new",
+      "house"
+    ]
+  },
+  {
+    "prompt_ru": "Ты закрываешь книгу?",
+    "clarification_ru": "Вы видите, что собеседник закончил чтение и прямо сейчас опускает обложку пособия.",
+    "reference_es": "Are you closing the book?",
+    "used_words": [
+      "close",
+      "book"
+    ]
+  }
+]

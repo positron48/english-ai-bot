@@ -135,7 +135,7 @@ func TestSentenceQualityReviewFailsClosed(t *testing.T) {
 		}
 		return newJSONResponse(http.StatusOK, ChatResponse{Choices: []Choice{{Message: Message{Content: "not JSON"}}}}), nil
 	})
-	out, err := svc.reviewGeneratedSentenceQuality(context.Background(), "sentence", "es_ru", []GenSentenceWord{{"beber", "пить"}}, nil, []string{"presente"}, []GeneratedSentence{{PromptRU: "Вы пьёте воду.", ReferenceES: "Bebéis agua."}})
+	out, err := svc.reviewGeneratedSentenceQuality(context.Background(), "sentence", "es_ru", []GenSentenceWord{{"beber", "пить"}}, nil, []string{"presente"}, []GeneratedSentence{{PromptRU: "Вы пьёте воду.", ReferenceES: "Bebéis agua."}}, nil)
 	if err == nil || len(out.Accepted) != 0 {
 		t.Fatal("unreviewed ambiguous exercise escaped")
 	}
@@ -214,7 +214,7 @@ func TestSentenceReviewRequiresEvidenceForEveryChoice(t *testing.T) {
 			raw := `{"checks":[{"position":0,"accepted":true,"reason":"Проверено.","context_evidence":` + evidence + `}]}`
 			return newJSONResponse(http.StatusOK, ChatResponse{Choices: []Choice{{Message: Message{Content: raw}}}}), nil
 		})
-		out, err := svc.reviewGeneratedSentenceQuality(context.Background(), "sentence", "es_ru", nil, nil, []string{"presente"}, []GeneratedSentence{{PromptRU: "Вы читаете книгу.", ReferenceES: "Usted lee el libro.", ClarificationRU: "Говорящий вежливо обращается к одному человеку. Собеседник передал вам книгу."}})
+		out, err := svc.reviewGeneratedSentenceQuality(context.Background(), "sentence", "es_ru", nil, nil, []string{"presente"}, []GeneratedSentence{{PromptRU: "Вы читаете книгу.", ReferenceES: "Usted lee el libro.", ClarificationRU: "Говорящий вежливо обращается к одному человеку. Собеседник передал вам книгу."}}, nil)
 		want := 0
 		if strings.Contains(evidence, "Говорящий") {
 			want = 1
