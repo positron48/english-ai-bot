@@ -145,8 +145,9 @@ func New(cfg *config.Config, log *zap.Logger) (*Bot, error) {
 	}
 
 	aiService.SetSentenceModel(cfg.AI.SentenceModel)
+	aiService.SetSentenceReasoningEffort(cfg.AI.SentenceReasoningEffort)
 	if cfg.AI.SentenceModel != "" {
-		log.Info("sentence model override active", zap.String("model", cfg.AI.SentenceModel))
+		log.Info("sentence model override active", zap.String("model", cfg.AI.SentenceModel), zap.String("reasoning_effort", cfg.AI.SentenceReasoningEffort))
 	}
 
 	// Load Spanish dictionary-lookup prompt for the es_ru course so word-card generation

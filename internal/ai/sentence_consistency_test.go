@@ -135,8 +135,8 @@ func TestSentenceQualityReviewFailsClosed(t *testing.T) {
 		}
 		return newJSONResponse(http.StatusOK, ChatResponse{Choices: []Choice{{Message: Message{Content: "not JSON"}}}}), nil
 	})
-	out := svc.reviewGeneratedSentenceQuality(context.Background(), "sentence", "es_ru", []GenSentenceWord{{"beber", "пить"}}, nil, []string{"presente"}, []GeneratedSentence{{PromptRU: "Вы пьёте воду.", ReferenceES: "Bebéis agua."}})
-	if len(out) != 0 {
+	out, err := svc.reviewGeneratedSentenceQuality(context.Background(), "sentence", "es_ru", []GenSentenceWord{{"beber", "пить"}}, nil, []string{"presente"}, []GeneratedSentence{{PromptRU: "Вы пьёте воду.", ReferenceES: "Bebéis agua."}})
+	if err == nil || len(out.Accepted) != 0 {
 		t.Fatal("unreviewed ambiguous exercise escaped")
 	}
 }
@@ -162,7 +162,7 @@ func TestSentenceIssuesCoverEveryCorrection(t *testing.T) {
 	}
 }
 
-func TestSentenceGenerationDoesNotPublishIncompleteSet(t *testing.T) {
+func TestSentenceGenerationDoesNotPublishEmptySet(t *testing.T) {
 	svc := NewService("https://example.test", "default", "test", "", zap.NewNop())
 	svc.SetSentenceModel("sentence-model")
 	svc.SetSentenceGenPromptForCourse("es_ru", "Generate")
@@ -177,7 +177,7 @@ func TestSentenceGenerationDoesNotPublishIncompleteSet(t *testing.T) {
 		return newJSONResponse(http.StatusOK, ChatResponse{Choices: []Choice{{Message: Message{Content: `{"sentences":[]}`}}}}), nil
 	})
 	out, err := svc.GenerateSentenceSetForCourse(context.Background(), "es_ru", []GenSentenceWord{{"beber", "пить"}}, nil, []string{"presente"}, 1)
-	if err == nil || len(out) != 0 || calls != 4 {
+	if err == nil || len(out) != 0 || calls != 2 {
 		t.Fatalf("out=%v err=%v calls=%d", out, err, calls)
 	}
 }
@@ -214,13 +214,13 @@ func TestSentenceReviewRequiresEvidenceForEveryChoice(t *testing.T) {
 			raw := `{"checks":[{"position":0,"accepted":true,"reason":"Проверено.","context_evidence":` + evidence + `}]}`
 			return newJSONResponse(http.StatusOK, ChatResponse{Choices: []Choice{{Message: Message{Content: raw}}}}), nil
 		})
-		out := svc.reviewGeneratedSentenceQuality(context.Background(), "sentence", "es_ru", nil, nil, []string{"presente"}, []GeneratedSentence{{PromptRU: "Вы читаете книгу.", ReferenceES: "Usted lee el libro.", ClarificationRU: "Говорящий вежливо обращается к одному человеку. Собеседник передал вам книгу."}})
+		out, err := svc.reviewGeneratedSentenceQuality(context.Background(), "sentence", "es_ru", nil, nil, []string{"presente"}, []GeneratedSentence{{PromptRU: "Вы читаете книгу.", ReferenceES: "Usted lee el libro.", ClarificationRU: "Говорящий вежливо обращается к одному человеку. Собеседник передал вам книгу."}})
 		want := 0
 		if strings.Contains(evidence, "Говорящий") {
 			want = 1
 		}
-		if len(out) != want {
-			t.Fatalf("evidence=%s: accepted %d want %d", evidence, len(out), want)
+		if err != nil || len(out.Accepted) != want {
+			t.Fatalf("evidence=%s: accepted %d want %d err=%v", evidence, len(out.Accepted), want, err)
 		}
 	}
 }

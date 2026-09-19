@@ -1,0 +1,637 @@
+{
+  "accepted": 16,
+  "calls": 4,
+  "course": "es_ru",
+  "input_tokens": 13815,
+  "model": "google/gemini-3-flash-preview",
+  "output_tokens": 5490,
+  "provider_cost": 2.7518122799999998,
+  "seconds": 42.870111625,
+  "wanted": 20,
+  "calls_detail": [
+    {
+      "requested_model": "google/gemini-3-flash-preview",
+      "response_model": "google/gemini-3-flash-preview",
+      "provider_route": "openrouter",
+      "kind": "generation",
+      "requested_candidates": 30,
+      "returned_candidates": 30,
+      "reviewed_candidates": null,
+      "accepted_by_llm": 0,
+      "refill_rejections": null,
+      "review_checks": null,
+      "usage": {
+        "prompt_tokens": 3290,
+        "completion_tokens": 2549,
+        "total_tokens": 5839,
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "audio_tokens": 0,
+          "image_tokens": 0,
+          "accepted_prediction_tokens": null,
+          "rejected_prediction_tokens": null
+        },
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "server_tool_use": null,
+        "cost_rub": 1.0937799,
+        "cost": 1.0937799,
+        "plugins": null
+      }
+    },
+    {
+      "requested_model": "google/gemini-3-flash-preview",
+      "response_model": "google/gemini-3-flash-preview",
+      "provider_route": "openrouter",
+      "kind": "review",
+      "requested_candidates": null,
+      "returned_candidates": null,
+      "reviewed_candidates": 11,
+      "accepted_by_llm": 10,
+      "refill_rejections": null,
+      "review_checks": [
+        {
+          "position": 0,
+          "accepted": true,
+          "reason": "Лексика и грамматика соответствуют, контекст обосновывает определенные артикли для обоих существительных.",
+          "context_evidence": [
+            "собеседники говорят о своём общем друге",
+            "об окне в комнате, где они находятся"
+          ]
+        },
+        {
+          "position": 1,
+          "accepted": true,
+          "reason": "Лексика в норме, контекст разделяет определенность матери и неопределенность книги.",
+          "context_evidence": [
+            "обсуждают свою маму",
+            "выбрала одну из многих книг, о которой раньше не говорили"
+          ]
+        },
+        {
+          "position": 2,
+          "accepted": true,
+          "reason": "Контекст четко задает форму vosotros (Испания, двое друзей) и определенный артикль для двери.",
+          "context_evidence": [
+            "В Испании: вы обращаетесь к двум друзьям (мужчинам)",
+            "дверь в их доме"
+          ]
+        },
+        {
+          "position": 3,
+          "accepted": true,
+          "reason": "Существительное agua используется без артикля, так как обозначает неисчисляемое вещество в неопределенном количестве, что соответствует контексту.",
+          "context_evidence": [
+            "Речь о знакомом соседе",
+            "несёт какую-то воду (например, в бутылках), которую собеседники видят впервые"
+          ]
+        },
+        {
+          "position": 4,
+          "accepted": false,
+          "reason": "Неестественная ситуация: «найти чистую книгу» звучит странно для учебного примера без специфического контекста загрязнения.",
+          "context_evidence": [
+            "Собеседники наблюдают за знакомым мальчиком",
+            "нашёл одну из книг, которую раньше никто не обсуждал"
+          ]
+        },
+        {
+          "position": 5,
+          "accepted": true,
+          "reason": "Лексика разрешена, контекст обосновывает артикли: знакомый ребенок и новая (еще не обсуждавшаяся) книга.",
+          "context_evidence": [
+            "говорят о знакомом ребёнке",
+            "книге, которую ему только что подарили"
+          ]
+        },
+        {
+          "position": 6,
+          "accepted": true,
+          "reason": "Типовой вопрос с неисчисляемым существительным без артикля.",
+          "context_evidence": [
+            "Вопрос к другу",
+            "Речь о воде вообще (как о веществе) или о любой воде из бутылки"
+          ]
+        },
+        {
+          "position": 7,
+          "accepted": true,
+          "reason": "Используется личный предлог 'a' перед одушевленным дополнением и неопределенный артикль согласно контексту.",
+          "context_evidence": [
+            "Она ищет одного из своих друзей",
+            "Собеседник не знает, о ком именно речь"
+          ]
+        },
+        {
+          "position": 8,
+          "accepted": true,
+          "reason": "Лексика соблюдена, контекст подтверждает выбор неопределенного артикля.",
+          "context_evidence": [
+            "выбрал одну из многих дверей в магазине",
+            "о которой раньше не упоминалось"
+          ]
+        },
+        {
+          "position": 9,
+          "accepted": true,
+          "reason": "Все слова из списка, контекст обосновывает определенные артикли для соседа и конкретной двери.",
+          "context_evidence": [
+            "Речь о знакомом соседе",
+            "двери его квартиры"
+          ]
+        },
+        {
+          "position": 10,
+          "accepted": true,
+          "reason": "Грамматически верно, артикль 'el' перед 'agua' обоснован как конкретный объект поиска.",
+          "context_evidence": [
+            "Группа людей",
+            "которую они долго искали"
+          ]
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 2075,
+        "completion_tokens": 681,
+        "total_tokens": 2756,
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "audio_tokens": 0,
+          "image_tokens": 0,
+          "accepted_prediction_tokens": null,
+          "rejected_prediction_tokens": null
+        },
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "server_tool_use": null,
+        "cost_rub": 0.36261182,
+        "cost": 0.36261182,
+        "plugins": null
+      }
+    },
+    {
+      "requested_model": "google/gemini-3-flash-preview",
+      "response_model": "google/gemini-3-flash-preview",
+      "provider_route": "openrouter",
+      "kind": "generation",
+      "requested_candidates": 17,
+      "returned_candidates": 17,
+      "reviewed_candidates": null,
+      "accepted_by_llm": 0,
+      "refill_rejections": [
+        {
+          "sentence": {
+            "prompt_ru": "Ребёнок пьёт воду.",
+            "clarification_ru": "Речь идёт о конкретном ребёнке, которого видят оба собеседника, и о воде в стакане, которую ему дали.",
+            "reference_es": "El niño bebe el agua.",
+            "used_words": [
+              "niño",
+              "beber",
+              "agua"
+            ]
+          },
+          "reason": "Rewrite clarification_ru as observable Russian facts explaining every article and addressee. Do not use конкретн, определённ, определенн, артикл or Latin letters; do not merely label an object as specific."
+        },
+        {
+          "sentence": {
+            "prompt_ru": "Врач ищет нож.",
+            "clarification_ru": "Собеседники видят знакомого им врача. Он ищет конкретный медицинский нож, который лежал на столе.",
+            "reference_es": "El médico busca el cuchillo.",
+            "used_words": [
+              "médico",
+              "buscar",
+              "cuchillo"
+            ]
+          },
+          "reason": "Rewrite clarification_ru as observable Russian facts explaining every article and addressee. Do not use конкретн, определённ, определенн, артикл or Latin letters; do not merely label an object as specific."
+        },
+        {
+          "sentence": {
+            "prompt_ru": "Я смотрю на дверь.",
+            "clarification_ru": "Говорящий смотрит на конкретную дверь, которую видят оба собеседника.",
+            "reference_es": "Miro la puerta.",
+            "used_words": [
+              "mirar",
+              "puerta"
+            ]
+          },
+          "reason": "Rewrite clarification_ru as observable Russian facts explaining every article and addressee. Do not use конкретн, определённ, определенн, артикл or Latin letters; do not merely label an object as specific."
+        },
+        {
+          "sentence": {
+            "prompt_ru": "Друзья едят еду.",
+            "clarification_ru": "Речь об общих друзьях собеседников и о конкретном ужине, который стоит перед ними.",
+            "reference_es": "Los amigos comen la comida.",
+            "used_words": [
+              "amigo",
+              "comer",
+              "comida"
+            ]
+          },
+          "reason": "Rewrite clarification_ru as observable Russian facts explaining every article and addressee. Do not use конкретн, определённ, определенн, артикл or Latin letters; do not merely label an object as specific."
+        },
+        {
+          "sentence": {
+            "prompt_ru": "Вы помогаете врачу?",
+            "clarification_ru": "Вежливое обращение к одному человеку. Речь о конкретном враче, с которым они оба работают.",
+            "reference_es": "¿Ayuda usted al médico?",
+            "used_words": [
+              "ayudar",
+              "médico"
+            ]
+          },
+          "reason": "Rewrite clarification_ru as observable Russian facts explaining every article and addressee. Do not use конкретн, определённ, определенн, артикл or Latin letters; do not merely label an object as specific."
+        },
+        {
+          "sentence": {
+            "prompt_ru": "Мы кладём книги на стол.",
+            "clarification_ru": "Речь о конкретных книгах, которые мы сейчас держим, и о столе в нашей комнате.",
+            "reference_es": "Ponemos los libros en la mesa.",
+            "used_words": [
+              "poner",
+              "libro",
+              "mesa"
+            ]
+          },
+          "reason": "Rewrite clarification_ru as observable Russian facts explaining every article and addressee. Do not use конкретн, определённ, определенн, артикл or Latin letters; do not merely label an object as specific."
+        },
+        {
+          "sentence": {
+            "prompt_ru": "Соседи закрывают окна.",
+            "clarification_ru": "Речь о конкретных соседях, живущих рядом, и об окнах в их доме.",
+            "reference_es": "Los vecinos cierran las ventanas.",
+            "used_words": [
+              "vecino",
+              "cerrar",
+              "ventana"
+            ]
+          },
+          "reason": "Rewrite clarification_ru as observable Russian facts explaining every article and addressee. Do not use конкретн, определённ, определенн, артикл or Latin letters; do not merely label an object as specific."
+        },
+        {
+          "sentence": {
+            "prompt_ru": "Мать смотрит на окно.",
+            "clarification_ru": "Речь о нашей маме и о конкретном окне в доме.",
+            "reference_es": "La madre mira la ventana.",
+            "used_words": [
+              "madre",
+              "mirar",
+              "ventana"
+            ]
+          },
+          "reason": "Rewrite clarification_ru as observable Russian facts explaining every article and addressee. Do not use конкретн, определённ, определенн, артикл or Latin letters; do not merely label an object as specific."
+        },
+        {
+          "sentence": {
+            "prompt_ru": "Врачи читают книги.",
+            "clarification_ru": "Речь о группе врачей, которых мы видим. Они читают какие-то книги (не конкретные для нас).",
+            "reference_es": "Los médicos leen libros.",
+            "used_words": [
+              "médico",
+              "leer",
+              "libro"
+            ]
+          },
+          "reason": "Rewrite clarification_ru as observable Russian facts explaining every article and addressee. Do not use конкретн, определённ, определенн, артикл or Latin letters; do not merely label an object as specific."
+        },
+        {
+          "sentence": {
+            "prompt_ru": "Вы находите нож?",
+            "clarification_ru": "Обращение к нескольким друзьям в Испании. Речь о конкретном ноже, который был потерян на кухне.",
+            "reference_es": "¿Encontráis el cuchillo?",
+            "used_words": [
+              "encontrar",
+              "cuchillo"
+            ]
+          },
+          "reason": "Rewrite clarification_ru as observable Russian facts explaining every article and addressee. Do not use конкретн, определённ, определенн, артикл or Latin letters; do not merely label an object as specific."
+        },
+        {
+          "sentence": {
+            "prompt_ru": "Друг кладёт грязный нож здесь.",
+            "clarification_ru": "Речь о нашем общем друге и о конкретном ноже, который он только что использовал.",
+            "reference_es": "El amigo pone el cuchillo sucio aquí.",
+            "used_words": [
+              "amigo",
+              "poner",
+              "cuchillo",
+              "sucio",
+              "aquí"
+            ]
+          },
+          "reason": "Rewrite clarification_ru as observable Russian facts explaining every article and addressee. Do not use конкретн, определённ, определенн, артикл or Latin letters; do not merely label an object as specific."
+        },
+        {
+          "sentence": {
+            "prompt_ru": "Мы ищем старую больницу.",
+            "clarification_ru": "Мы ищем конкретную больницу в этом городе, про которую уже говорили.",
+            "reference_es": "Buscamos el hospital viejo.",
+            "used_words": [
+              "buscar",
+              "hospital",
+              "viejo"
+            ]
+          },
+          "reason": "Rewrite clarification_ru as observable Russian facts explaining every article and addressee. Do not use конкретн, определённ, определенн, артикл or Latin letters; do not merely label an object as specific."
+        },
+        {
+          "sentence": {
+            "prompt_ru": "Мальчики несут воду.",
+            "clarification_ru": "Речь о конкретных мальчиках во дворе и о воде, которую мы их попросили принести.",
+            "reference_es": "Los niños llevan el agua.",
+            "used_words": [
+              "niño",
+              "llevar",
+              "agua"
+            ]
+          },
+          "reason": "Rewrite clarification_ru as observable Russian facts explaining every article and addressee. Do not use конкретн, определённ, определенн, артикл or Latin letters; do not merely label an object as specific."
+        },
+        {
+          "sentence": {
+            "prompt_ru": "Вы читаете книгу?",
+            "clarification_ru": "Вежливое обращение к одному человеку. Речь о конкретной книге в его руках.",
+            "reference_es": "¿Lee usted el libro?",
+            "used_words": [
+              "leer",
+              "libro"
+            ]
+          },
+          "reason": "Rewrite clarification_ru as observable Russian facts explaining every article and addressee. Do not use конкретн, определённ, определенн, артикл or Latin letters; do not merely label an object as specific."
+        },
+        {
+          "sentence": {
+            "prompt_ru": "Мать помогает ребёнку.",
+            "clarification_ru": "Речь о нашей маме и о конкретном ребёнке (например, брате), которые находятся рядом.",
+            "reference_es": "La madre ayuda al niño.",
+            "used_words": [
+              "madre",
+              "ayudar",
+              "niño"
+            ]
+          },
+          "reason": "Rewrite clarification_ru as observable Russian facts explaining every article and addressee. Do not use конкретн, определённ, определенн, артикл or Latin letters; do not merely label an object as specific."
+        },
+        {
+          "sentence": {
+            "prompt_ru": "Я вижу красный язык.",
+            "clarification_ru": "Говорящий впервые замечает язык (например, у собаки или человека), о котором раньше не говорили.",
+            "reference_es": "Miro una lengua roja.",
+            "used_words": [
+              "mirar",
+              "lengua",
+              "rojo"
+            ]
+          },
+          "reason": "used_words must list supplied lemmas only and contain at least one focus lemma actually used in the sentence."
+        },
+        {
+          "sentence": {
+            "prompt_ru": "Друзья покупают еду там.",
+            "clarification_ru": "Речь о наших друзьях. Они покупают какую-то еду (неопределенную) в том магазине.",
+            "reference_es": "Los amigos compran comida allí.",
+            "used_words": [
+              "amigo",
+              "comprar",
+              "comida",
+              "allí"
+            ]
+          },
+          "reason": "Rewrite clarification_ru as observable Russian facts explaining every article and addressee. Do not use конкретн, определённ, определенн, артикл or Latin letters; do not merely label an object as specific."
+        },
+        {
+          "sentence": {
+            "prompt_ru": "Ты кладёшь руку на стол?",
+            "clarification_ru": "Вопрос к другу. Речь о его руке и конкретном столе рядом с ним.",
+            "reference_es": "¿Pones el brazo en la mesa?",
+            "used_words": [
+              "poner",
+              "brazo",
+              "mesa"
+            ]
+          },
+          "reason": "Rewrite clarification_ru as observable Russian facts explaining every article and addressee. Do not use конкретн, определённ, определенн, артикл or Latin letters; do not merely label an object as specific."
+        },
+        {
+          "sentence": {
+            "prompt_ru": "Врач закрывает окно.",
+            "clarification_ru": "Знакомый нам врач закрывает конкретное окно в кабинете.",
+            "reference_es": "El médico cierra la ventana.",
+            "used_words": [
+              "médico",
+              "cerrar",
+              "ventana"
+            ]
+          },
+          "reason": "Rewrite clarification_ru as observable Russian facts explaining every article and addressee. Do not use конкретн, определённ, определенн, артикл or Latin letters; do not merely label an object as specific."
+        },
+        {
+          "sentence": {
+            "prompt_ru": "Друг открывает окно.",
+            "clarification_ru": "Собеседники говорят о своём общем друге и об окне в комнате, где они находятся.",
+            "reference_es": "El amigo abre la ventana.",
+            "used_words": [
+              "amigo",
+              "abrir",
+              "ventana"
+            ]
+          },
+          "reason": "Context evidence must be an exact quote of at least 12 characters from clarification_ru: Лексика и грамматика соответствуют, контекст обосновывает определенные артикли для обоих существительных."
+        },
+        {
+          "sentence": {
+            "prompt_ru": "Мальчик находит чистую книгу.",
+            "clarification_ru": "Собеседники наблюдают за знакомым мальчиком. Он нашёл одну из книг, которую раньше никто не обсуждал.",
+            "reference_es": "El niño encuentra un libro limpio.",
+            "used_words": [
+              "niño",
+              "encontrar",
+              "libro",
+              "limpio"
+            ]
+          },
+          "reason": "Неестественная ситуация: «найти чистую книгу» звучит странно для учебного примера без специфического контекста загрязнения."
+        }
+      ],
+      "review_checks": null,
+      "usage": {
+        "prompt_tokens": 6253,
+        "completion_tokens": 1532,
+        "total_tokens": 7785,
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "audio_tokens": 0,
+          "image_tokens": 0,
+          "accepted_prediction_tokens": null,
+          "rejected_prediction_tokens": null
+        },
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "server_tool_use": null,
+        "cost_rub": 0.90903092,
+        "cost": 0.90903092,
+        "plugins": null
+      }
+    },
+    {
+      "requested_model": "google/gemini-3-flash-preview",
+      "response_model": "google/gemini-3-flash-preview",
+      "provider_route": "openrouter",
+      "kind": "review",
+      "requested_candidates": null,
+      "returned_candidates": null,
+      "reviewed_candidates": 12,
+      "accepted_by_llm": 10,
+      "refill_rejections": null,
+      "review_checks": [
+        {
+          "position": 0,
+          "accepted": true,
+          "reason": "Лексика и грамматика соблюдены, артикли обоснованы ситуацией в кабинете.",
+          "context_evidence": [
+            "сидят в кабинете у своего лечащего врача",
+            "видят, как он закрывает единственное окно в этой комнате"
+          ]
+        },
+        {
+          "position": 1,
+          "accepted": true,
+          "reason": "Соблюдены требования по вежливости и определенности объекта.",
+          "context_evidence": [
+            "сидят в кабинете у своего лечащего врача",
+            "держит в руках ту самую книгу, о которой вы только что говорили",
+            "Вы вежливо обращаетесь к одному незнакомому человеку"
+          ]
+        },
+        {
+          "position": 2,
+          "accepted": true,
+          "reason": "Артикли обоснованы контекстом стопки книг и конкретного стола.",
+          "context_evidence": [
+            "переносим стопку книг, которые уже обсуждали",
+            "на обеденный стол в нашей кухне"
+          ]
+        },
+        {
+          "position": 3,
+          "accepted": true,
+          "reason": "Артикли обоснованы конкретными людьми и всеми окнами в их квартире.",
+          "context_evidence": [
+            "Речь о знакомых людях из дома напротив",
+            "закрывают все окна в своей квартире"
+          ]
+        },
+        {
+          "position": 4,
+          "accepted": false,
+          "reason": "Фраза «Друзья едят еду» (Los amigos comen la comida) крайне неестественна для русского и испанского языков.",
+          "context_evidence": [
+            "Речь об общих друзьях компании",
+            "едят блюда, которые вместе заказали"
+          ]
+        },
+        {
+          "position": 5,
+          "accepted": true,
+          "reason": "Контекст обосновывает использование определенного артикля для конкретной двери.",
+          "context_evidence": [
+            "стоя перед входом в дом",
+            "смотрят на входную дверь"
+          ]
+        },
+        {
+          "position": 6,
+          "accepted": true,
+          "reason": "Артикли корректны: знакомые дети и конкретная вода для похода.",
+          "context_evidence": [
+            "видят знакомых мальчиков",
+            "несут ту воду, которую их попросили купить"
+          ]
+        },
+        {
+          "position": 7,
+          "accepted": true,
+          "reason": "Артикли корректны: определенные люди и неопределенные/неисчисляемые объекты (книги) без артикля во множественном числе.",
+          "context_evidence": [
+            "видят группу врачей в холле",
+            "медики читают какие-то книги... о них раньше не говорили"
+          ]
+        },
+        {
+          "position": 8,
+          "accepted": true,
+          "reason": "Артикли корректны: конкретный друг и один из многих новых ножей.",
+          "context_evidence": [
+            "Речь о нашем общем друге",
+            "выбирает один из многих новых ножей"
+          ]
+        },
+        {
+          "position": 9,
+          "accepted": false,
+          "reason": "Использование неопределенного артикля 'un' с вещественным существительным 'agua' в значении порции/бутылки допустимо, но фраза «Ты пьёшь чистую воду» как 'Bebes un agua limpia' сомнительна без явного указания на порцию.",
+          "context_evidence": [
+            "Обращение к другу",
+            "собеседники раньше о ней не говорили"
+          ]
+        },
+        {
+          "position": 10,
+          "accepted": true,
+          "reason": "Определенные артикли обоснованы контекстом общей комнаты.",
+          "context_evidence": [
+            "говорят о своём общем друге",
+            "открывает окно в той комнате, где они все находятся"
+          ]
+        },
+        {
+          "position": 11,
+          "accepted": true,
+          "reason": "Артикли обоснованы родством и единственным окном в комнате.",
+          "context_evidence": [
+            "обсуждают свою маму",
+            "единственное окно в этой комнате"
+          ]
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 2197,
+        "completion_tokens": 728,
+        "total_tokens": 2925,
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "audio_tokens": 0,
+          "image_tokens": 0,
+          "accepted_prediction_tokens": null,
+          "rejected_prediction_tokens": null
+        },
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "server_tool_use": null,
+        "cost_rub": 0.38638964,
+        "cost": 0.38638964,
+        "plugins": null
+      }
+    }
+  ],
+  "source_sha256": {
+    "internal/ai/sentence_composition.go": "d4c522a4a6de721c42e6274fceeb976f6fd906fd3b2f7ae45a0a2dedfa6ce587",
+    "prompts/sentence-gen-ru-es.txt": "653a80f9c437fb03f8d9ac6b72bf167805eeda6b1be85293d887e06fa3ece08b"
+  }
+}

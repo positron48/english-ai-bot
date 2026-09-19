@@ -3,6 +3,7 @@ package service
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"strings"
 	"time"
@@ -305,7 +306,7 @@ func (w *SentenceCompositionWorker) generateSet(ctx context.Context, user *model
 	// Generation and quality review use the dedicated sentence model when configured.
 	sentences, err := w.aiService.GenerateSentenceSetForCourse(ctx, courseCode, focusWords, supportWords, humanizeScopes(scopes), w.sentencesPerSet())
 	if err != nil {
-		if w.cbService != nil {
+		if w.cbService != nil && !errors.Is(err, ai.ErrNoReviewedSentences) {
 			_ = w.cbService.RecordFailure(err.Error())
 		}
 		return 0, err

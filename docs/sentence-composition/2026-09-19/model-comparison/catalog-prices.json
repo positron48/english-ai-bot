@@ -1,0 +1,66 @@
+[
+  {
+    "id": "google/gemini-3.8-flash",
+    "top_provider": "google-vertex/global/flex",
+    "pricing": {
+      "prompt_per_million": "44.14200000",
+      "completion_per_million": "220.71000000",
+      "image_input_per_million": "44.14200000",
+      "audio_per_million": "44.14200000",
+      "web_search_per_thousand": "1647.96800000",
+      "internal_reasoning_per_million": "220.71000000",
+      "input_cache_read_per_million": "4.41420000",
+      "input_cache_write_per_million": "2.45233333",
+      "input_audio_cache_per_million": "4.41420000",
+      "currency": "RUB"
+    }
+  },
+  {
+    "id": "openai/gpt-5.4-mini",
+    "top_provider": "openai/flex",
+    "pricing": {
+      "prompt_per_million": "44.14200000",
+      "completion_per_million": "264.85200000",
+      "web_search_per_thousand": "1177.12000000",
+      "input_cache_read_per_million": "4.41420000",
+      "currency": "RUB"
+    }
+  },
+  {
+    "id": "google/gemini-3-flash-preview",
+    "top_provider": "google-vertex/global/flex",
+    "pricing": {
+      "prompt_per_million": "29.42800000",
+      "completion_per_million": "176.56800000",
+      "image_input_per_million": "29.42800000",
+      "audio_per_million": "58.85600000",
+      "web_search_per_thousand": "1647.96800000",
+      "internal_reasoning_per_million": "176.56800000",
+      "input_cache_read_per_million": "2.94280000",
+      "input_cache_write_per_million": "4.90466667",
+      "input_audio_cache_per_million": "5.88560000",
+      "currency": "RUB"
+    }
+  },
+  {
+    "id": "deepseek/deepseek-v3.2",
+    "top_provider": "gmicloud/fp8",
+    "pricing": {
+      "prompt_per_million": "24.57826560",
+      "completion_per_million": "36.44363520",
+      "input_cache_read_per_million": "2.54257920",
+      "currency": "RUB"
+    }
+  },
+  {
+    "id": "anthropic/claude-haiku-4.5",
+    "top_provider": "drouter",
+    "pricing": {
+      "prompt_per_million": "50.44800000",
+      "completion_per_million": "50.44800000",
+      "input_cache_read_per_million": "50.44800000",
+      "input_cache_write_per_million": "50.44800000",
+      "currency": "RUB"
+    }
+  }
+]

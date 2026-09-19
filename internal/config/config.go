@@ -180,15 +180,16 @@ type AIConfig struct {
 	ModelHigh string `mapstructure:"model_high"`
 	// ConversationModel overrides the model used for NPC role-play conversations only (it benefits
 	// from stronger instruction-following than dictionary/training). Empty = fall back to Model.
-	ConversationModel string `mapstructure:"conversation_model"`
-	SentenceModel     string `mapstructure:"sentence_model"` // translation generation, review and grading only
-	APIKey            string `mapstructure:"api_key"`
-	PolzaURL          string `mapstructure:"polza_url"`
-	PolzaAPIKey       string `mapstructure:"polza_api_key"`
-	Prompt            string `mapstructure:"prompt"`
-	PromptFile        string `mapstructure:"prompt_file"`
-	RequestTimeout    string `mapstructure:"request_timeout"` // e.g. 120s, 3m; HTTP client timeout for chat/completions (default 30s)
-	Socks5Proxy       string `mapstructure:"socks5_proxy"`
+	ConversationModel       string `mapstructure:"conversation_model"`
+	SentenceReasoningEffort string `mapstructure:"sentence_reasoning_effort"`
+	SentenceModel           string `mapstructure:"sentence_model"` // translation generation, review and grading only
+	APIKey                  string `mapstructure:"api_key"`
+	PolzaURL                string `mapstructure:"polza_url"`
+	PolzaAPIKey             string `mapstructure:"polza_api_key"`
+	Prompt                  string `mapstructure:"prompt"`
+	PromptFile              string `mapstructure:"prompt_file"`
+	RequestTimeout          string `mapstructure:"request_timeout"` // e.g. 120s, 3m; HTTP client timeout for chat/completions (default 30s)
+	Socks5Proxy             string `mapstructure:"socks5_proxy"`
 }
 
 // TTSConfig holds text-to-speech/pronunciation audio configuration
@@ -346,7 +347,8 @@ func Load() (*Config, error) {
 	viper.SetDefault("logging.level", "info")
 	viper.SetDefault("ai.provider", AIProviderOpenRouter)
 	viper.SetDefault("ai.model", "gpt-3.5-turbo")
-	viper.SetDefault("ai.sentence_model", "google/gemini-3-flash-preview")
+	viper.SetDefault("ai.sentence_model", "google/gemini-3.8-flash")
+	viper.SetDefault("ai.sentence_reasoning_effort", "low")
 	viper.SetDefault("ai.polza_url", defaultPolzaURL)
 	viper.SetDefault("ai.socks5_proxy", "")
 	viper.SetDefault("tts.enabled", true)
@@ -488,6 +490,7 @@ func Load() (*Config, error) {
 	_ = viper.BindEnv("ai.model_high", "AI_MODEL_HIGH")
 	_ = viper.BindEnv("ai.conversation_model", "AI_CONVERSATION_MODEL")
 	_ = viper.BindEnv("ai.sentence_model", "AI_SENTENCE_MODEL")
+	_ = viper.BindEnv("ai.sentence_reasoning_effort", "AI_SENTENCE_REASONING_EFFORT")
 	_ = viper.BindEnv("ai.api_key", "AI_API_KEY")
 	_ = viper.BindEnv("ai.polza_url", "POLZA_AI_URL")
 	_ = viper.BindEnv("ai.polza_api_key", "POLZA_AI_API_KEY")

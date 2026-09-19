@@ -1,0 +1,286 @@
+{
+  "accepted": 20,
+  "calls": 2,
+  "course": "en_ru",
+  "input_tokens": 4210,
+  "model": "google/gemini-3-flash-preview",
+  "output_tokens": 3490,
+  "provider_cost": 1.4802284,
+  "seconds": 20.657274542,
+  "wanted": 20,
+  "calls_detail": [
+    {
+      "requested_model": "google/gemini-3-flash-preview",
+      "response_model": "google/gemini-3-flash-preview",
+      "provider_route": "openrouter",
+      "kind": "generation",
+      "requested_candidates": 30,
+      "returned_candidates": 30,
+      "reviewed_candidates": null,
+      "accepted_by_llm": 0,
+      "refill_rejections": null,
+      "review_checks": null,
+      "usage": {
+        "prompt_tokens": 1747,
+        "completion_tokens": 2245,
+        "total_tokens": 3992,
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "audio_tokens": 0,
+          "image_tokens": 0,
+          "accepted_prediction_tokens": null,
+          "rejected_prediction_tokens": null
+        },
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "server_tool_use": null,
+        "cost_rub": 0.89561175,
+        "cost": 0.89561175,
+        "plugins": null
+      }
+    },
+    {
+      "requested_model": "google/gemini-3-flash-preview",
+      "response_model": "google/gemini-3-flash-preview",
+      "provider_route": "openrouter",
+      "kind": "review",
+      "requested_candidates": null,
+      "returned_candidates": null,
+      "reviewed_candidates": 25,
+      "accepted_by_llm": 24,
+      "refill_rejections": null,
+      "review_checks": [
+        {
+          "position": 0,
+          "accepted": true,
+          "reason": "Контекст четко определяет конкретную книгу через отсылку к прошлому разговору.",
+          "context_evidence": [
+            "Собеседник видит, что я держу в руках то самое издание, о котором мы говорили вчера."
+          ]
+        },
+        {
+          "position": 1,
+          "accepted": true,
+          "reason": "Контекст четко определяет общего знакомого.",
+          "context_evidence": [
+            "Речь о нашем общем знакомом, которого мы оба хорошо знаем."
+          ]
+        },
+        {
+          "position": 2,
+          "accepted": true,
+          "reason": "Контекст описывает выбор одного любого неспецифического объекта.",
+          "context_evidence": [
+            "Он стоит в магазине и выбирает один любой плод из корзины."
+          ]
+        },
+        {
+          "position": 3,
+          "accepted": true,
+          "reason": "Контекст конкретизирует определенную дверь квартиры.",
+          "context_evidence": [
+            "Мы стоим перед входом в нашу квартиру, и я открываю именно эту створку."
+          ]
+        },
+        {
+          "position": 4,
+          "accepted": true,
+          "reason": "Контекст описывает выбор одного неспецифического объекта из группы.",
+          "context_evidence": [
+            "Она взяла из вазы какой-то один фрукт и сейчас его ест."
+          ]
+        },
+        {
+          "position": 5,
+          "accepted": true,
+          "reason": "Контекст обосновывает определенный артикль для друга и вещество без артикля.",
+          "context_evidence": [
+            "Мой товарищ, который сейчас находится со мной в комнате, пьет воду как вещество."
+          ]
+        },
+        {
+          "position": 6,
+          "accepted": true,
+          "reason": "Контекст указывает на совокупность конкретных дверей здания.",
+          "context_evidence": [
+            "Они закрывают все двери в этом здании перед уходом."
+          ]
+        },
+        {
+          "position": 7,
+          "accepted": true,
+          "reason": "Контекст четко указывает на конкретный экземпляр книги.",
+          "context_evidence": [
+            "Ты сейчас держишь в руках тот экземпляр, который я тебе подарил."
+          ]
+        },
+        {
+          "position": 8,
+          "accepted": true,
+          "reason": "Контекст определяет конкретную приметную дверь.",
+          "context_evidence": [
+            "В комнате есть одна приметная дверца шкафа, которую он сейчас тянет на себя."
+          ]
+        },
+        {
+          "position": 9,
+          "accepted": true,
+          "reason": "Контекст описывает класс объектов в общем смысле.",
+          "context_evidence": [
+            "Я говорю о том, что вообще люблю этот вид фруктов и ем их регулярно."
+          ]
+        },
+        {
+          "position": 10,
+          "accepted": true,
+          "reason": "Контекст четко указывает на конкретных общих друзей.",
+          "context_evidence": [
+            "Наши общие друзья, о которых мы упоминали ранее, оказывают нам поддержку."
+          ]
+        },
+        {
+          "position": 11,
+          "accepted": true,
+          "reason": "Контекст описывает категорию товаров в общем смысле.",
+          "context_evidence": [
+            "Она часто ходит в магазины и приобретает различные книги как категорию товаров."
+          ]
+        },
+        {
+          "position": 12,
+          "accepted": true,
+          "reason": "Контекст определяет конкретного друга и одну неспецифическую книгу.",
+          "context_evidence": [
+            "Наш общий знакомый сейчас занят чтением какого-то одного произведения."
+          ]
+        },
+        {
+          "position": 13,
+          "accepted": true,
+          "reason": "Контекст указывает на конкретные ворота, видимые обоим.",
+          "context_evidence": [
+            "Я закрываю главные ворота дома, которые мы оба видим."
+          ]
+        },
+        {
+          "position": 14,
+          "accepted": true,
+          "reason": "Контекст описывает выбор нескольких неспецифических объектов.",
+          "context_evidence": [
+            "Они стоят у прилавка и выбирают несколько плодов."
+          ]
+        },
+        {
+          "position": 15,
+          "accepted": true,
+          "reason": "Контекст указывает на неспецифического приятеля.",
+          "context_evidence": [
+            "Он помогает какому-то одному своему приятелю, личность которого нам пока не важна."
+          ]
+        },
+        {
+          "position": 16,
+          "accepted": true,
+          "reason": "Контекст четко указывает на конкретную обсуждавшуюся книгу.",
+          "context_evidence": [
+            "Она читает ту самую карманную книжку, которую мы обсуждали."
+          ]
+        },
+        {
+          "position": 17,
+          "accepted": false,
+          "reason": "Неестественная фраза: 'Друг открывает дом' (The friend is opening the house) в значении отпирания входной двери здания звучит искусственно.",
+          "context_evidence": [
+            "Наш знакомый сейчас отпирает ключом входную дверь своего жилища."
+          ]
+        },
+        {
+          "position": 18,
+          "accepted": true,
+          "reason": "Контекст четко указывает на конкретное яблоко на столе.",
+          "context_evidence": [
+            "Я ем именно то крупное яблоко, которое лежало на столе."
+          ]
+        },
+        {
+          "position": 19,
+          "accepted": true,
+          "reason": "Контекст описывает новинки литературы как общую категорию.",
+          "context_evidence": [
+            "Они регулярно читают любые новинки литературы."
+          ]
+        },
+        {
+          "position": 20,
+          "accepted": true,
+          "reason": "Контекст четко указывает на конкретного общего знакомого.",
+          "context_evidence": [
+            "Ты сейчас помогаешь нашему общему знакомому."
+          ]
+        },
+        {
+          "position": 21,
+          "accepted": true,
+          "reason": "Контекст указывает на конкретное здание при уходе.",
+          "context_evidence": [
+            "Мы уходим и запираем наше здание на ключ."
+          ]
+        },
+        {
+          "position": 22,
+          "accepted": true,
+          "reason": "Контекст описывает выбор любой одной книги.",
+          "context_evidence": [
+            "Я беру со стола одну любую книгу и открываю её."
+          ]
+        },
+        {
+          "position": 23,
+          "accepted": true,
+          "reason": "Контекст указывает на конкретные принесенные яблоки.",
+          "context_evidence": [
+            "Они сейчас сидят за столом и едят те яблоки, которые мы принесли."
+          ]
+        },
+        {
+          "position": 24,
+          "accepted": true,
+          "reason": "Контекст указывает на конкретного знакомого и конкретную дверь по просьбе.",
+          "context_evidence": [
+            "Наш знакомый закрывает ту самую маленькую дверцу, которую мы просили его прикрыть."
+          ]
+        }
+      ],
+      "usage": {
+        "prompt_tokens": 2463,
+        "completion_tokens": 1245,
+        "total_tokens": 3708,
+        "completion_tokens_details": {
+          "reasoning_tokens": 0,
+          "audio_tokens": 0,
+          "image_tokens": 0,
+          "accepted_prediction_tokens": null,
+          "rejected_prediction_tokens": null
+        },
+        "prompt_tokens_details": {
+          "cached_tokens": 0,
+          "cache_write_tokens": 0,
+          "audio_tokens": 0,
+          "video_tokens": 0
+        },
+        "server_tool_use": null,
+        "cost_rub": 0.58461665,
+        "cost": 0.58461665,
+        "plugins": null
+      }
+    }
+  ],
+  "source_sha256": {
+    "internal/ai/sentence_composition.go": "d4c522a4a6de721c42e6274fceeb976f6fd906fd3b2f7ae45a0a2dedfa6ce587",
+    "prompts/sentence-gen-ru-en.txt": "0ff1703758c59f1da5f9d19c282713ece6b2928be81064d61eac7019ffc80b01"
+  }
+}

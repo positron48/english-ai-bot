@@ -101,7 +101,10 @@ func TestLoad_Defaults(t *testing.T) {
 	}
 
 	// Check defaults
-	if cfg.AI.SentenceModel != "google/gemini-3-flash-preview" {
+	if cfg.AI.SentenceReasoningEffort != "low" {
+		t.Fatalf("sentence reasoning default = %q", cfg.AI.SentenceReasoningEffort)
+	}
+	if cfg.AI.SentenceModel != "google/gemini-3.8-flash" {
 		t.Fatalf("sentence model default = %q", cfg.AI.SentenceModel)
 	}
 	if cfg.Server.Address != ":8184" {
@@ -642,6 +645,7 @@ func TestLoad_SessionSecretFallback(t *testing.T) {
 
 func TestLoad_CustomEnvValues(t *testing.T) {
 	t.Setenv("AI_SENTENCE_MODEL", "custom-sentence-model")
+	t.Setenv("AI_SENTENCE_REASONING_EFFORT", "minimal")
 	learningEnv := backupLearningEnv()
 	originalEnv := map[string]string{
 		"AI_URL":            os.Getenv("AI_URL"),
@@ -691,6 +695,9 @@ func TestLoad_CustomEnvValues(t *testing.T) {
 		t.Errorf("Expected custom API key, got %s", cfg.AI.APIKey)
 	}
 
+	if cfg.AI.SentenceReasoningEffort != "minimal" {
+		t.Fatalf("sentence reasoning override = %q", cfg.AI.SentenceReasoningEffort)
+	}
 	if cfg.AI.SentenceModel != "custom-sentence-model" {
 		t.Fatalf("sentence model override = %q", cfg.AI.SentenceModel)
 	}

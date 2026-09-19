@@ -1,0 +1,188 @@
+[
+  {
+    "prompt_ru": "Я читаю книгу.",
+    "clarification_ru": "Собеседник передал вам книгу и спросил, что вы с ней делаете.",
+    "reference_es": "Leo un libro.",
+    "used_words": [
+      "leer",
+      "libro"
+    ]
+  },
+  {
+    "prompt_ru": "Я покупаю книгу.",
+    "clarification_ru": "Вы ещё не выбрали книгу и ищете любую подходящую в магазине.",
+    "reference_es": "Compro un libro.",
+    "used_words": [
+      "comprar",
+      "libro"
+    ]
+  },
+  {
+    "prompt_ru": "Я пью воду.",
+    "clarification_ru": "Собеседник видит, что вы пьёте из стакана, и спрашивает, что вы делаете.",
+    "reference_es": "Bebo agua.",
+    "used_words": [
+      "beber",
+      "agua"
+    ]
+  },
+  {
+    "prompt_ru": "Я открываю окно.",
+    "clarification_ru": "В комнате душно, вы подходите к единственному окну.",
+    "reference_es": "Abro la ventana.",
+    "used_words": [
+      "abrir",
+      "ventana"
+    ]
+  },
+  {
+    "prompt_ru": "Я закрываю дверь.",
+    "clarification_ru": "Вы выходите из комнаты и закрываете за собой дверь.",
+    "reference_es": "Cierro la puerta.",
+    "used_words": [
+      "cerrar",
+      "puerta"
+    ]
+  },
+  {
+    "prompt_ru": "Я помогаю другу.",
+    "clarification_ru": "Ваш друг рядом с вами несёт тяжёлые сумки.",
+    "reference_es": "Ayudo a un amigo.",
+    "used_words": [
+      "ayudar",
+      "amigo"
+    ]
+  },
+  {
+    "prompt_ru": "Я ищу книгу.",
+    "clarification_ru": "Вы не можете найти свою книгу на полке.",
+    "reference_es": "Busco un libro.",
+    "used_words": [
+      "buscar",
+      "libro"
+    ]
+  },
+  {
+    "prompt_ru": "Я нахожу книгу.",
+    "clarification_ru": "После поисков вы видите свою книгу под столом.",
+    "reference_es": "Encuentro el libro.",
+    "used_words": [
+      "encontrar",
+      "libro"
+    ]
+  },
+  {
+    "prompt_ru": "Я кладу книгу на стол.",
+    "clarification_ru": "Перед вами стоит чистый стол. Вы держите книгу в руках.",
+    "reference_es": "Pongo el libro en la mesa.",
+    "used_words": [
+      "poner",
+      "libro",
+      "mesa"
+    ]
+  },
+  {
+    "prompt_ru": "Я несу воду.",
+    "clarification_ru": "Вы несёте кувшин с водой из кухни в комнату.",
+    "reference_es": "Llevo agua.",
+    "used_words": [
+      "llevar",
+      "agua"
+    ]
+  },
+  {
+    "prompt_ru": "Я смотрю в окно.",
+    "clarification_ru": "Вы подходите к окну своей комнаты и смотрите наружу.",
+    "reference_es": "Miro por la ventana.",
+    "used_words": [
+      "mirar",
+      "ventana"
+    ]
+  },
+  {
+    "prompt_ru": "Друг читает книгу.",
+    "clarification_ru": "Ваш друг сидит в кресле с книгой в руках.",
+    "reference_es": "El amigo lee un libro.",
+    "used_words": [
+      "amigo",
+      "leer",
+      "libro"
+    ]
+  },
+  {
+    "prompt_ru": "Ребёнок пьёт воду.",
+    "clarification_ru": "Маленький мальчик пьёт воду из своей чашки.",
+    "reference_es": "El niño bebe agua.",
+    "used_words": [
+      "niño",
+      "beber",
+      "agua"
+    ]
+  },
+  {
+    "prompt_ru": "Сосед открывает дверь.",
+    "clarification_ru": "Вы стоите в коридоре и видите, как сосед открывает дверь своей квартиры.",
+    "reference_es": "El vecino abre la puerta.",
+    "used_words": [
+      "vecino",
+      "abrir",
+      "puerta"
+    ]
+  },
+  {
+    "prompt_ru": "Книга лежит на столе.",
+    "clarification_ru": "На столе перед вами лежит одна книга.",
+    "reference_es": "El libro está en la mesa.",
+    "used_words": [
+      "libro",
+      "mesa"
+    ]
+  },
+  {
+    "prompt_ru": "Вода здесь чистая.",
+    "clarification_ru": "Вы смотрите на воду в прозрачном стакане.",
+    "reference_es": "El agua aquí está limpia.",
+    "used_words": [
+      "agua",
+      "aquí",
+      "limpio"
+    ]
+  },
+  {
+    "prompt_ru": "Дверь там большая.",
+    "clarification_ru": "Вы указываете на дверь в дальнем конце зала.",
+    "reference_es": "La puerta allí es grande.",
+    "used_words": [
+      "puerta",
+      "allí",
+      "grande"
+    ]
+  },
+  {
+    "prompt_ru": "Окно близко.",
+    "clarification_ru": "Вы стоите рядом с окном.",
+    "reference_es": "La ventana está cerca.",
+    "used_words": [
+      "ventana",
+      "cerca"
+    ]
+  },
+  {
+    "prompt_ru": "Друг далеко.",
+    "clarification_ru": "Ваш друг стоит на другом берегу реки.",
+    "reference_es": "El amigo está lejos.",
+    "used_words": [
+      "amigo",
+      "lejos"
+    ]
+  },
+  {
+    "prompt_ru": "Книга красная.",
+    "clarification_ru": "Обложка книги на полке ярко-красного цвета.",
+    "reference_es": "El libro es rojo.",
+    "used_words": [
+      "libro",
+      "rojo"
+    ]
+  }
+]

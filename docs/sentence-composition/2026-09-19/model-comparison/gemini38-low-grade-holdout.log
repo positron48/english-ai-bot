@@ -1,0 +1,42 @@
+=== RUN   TestSentenceRegressionLLM
+=== RUN   TestSentenceRegressionLLM/google/gemini-3.8-flash
+=== PAUSE TestSentenceRegressionLLM/google/gemini-3.8-flash
+=== CONT  TestSentenceRegressionLLM/google/gemini-3.8-flash
+    sentence_regression_llm_test.go:200: LLM_RESPONSE model=google/gemini-3.8-flash provider=openrouter status=200 input=1491 output=154 cost=0.199610
+    sentence_regression_llm_test.go:136: CASE house context not addressee ok=true {"error_count":0,"outcome":"star","corrected_es":"Usted vende la casa","tokens":null}
+    sentence_regression_llm_test.go:200: LLM_RESPONSE model=google/gemini-3.8-flash provider=openrouter status=200 input=1506 output=94 cost=0.174449
+    sentence_regression_llm_test.go:136: CASE latin american plural form ok=true {"error_count":1,"outcome":"passed","corrected_es":"Leen un periódico","tokens":null,"explanation":"В Латинской Америке (в том числе в Мексике) при обращении к нескольким людям используется форма ustedes, поэтому глагол должен стоять в форме третьего лица множественного числа (leen), а не vosotros (leéis).","issues":[{"kind":"verb_form","original":"Leéis","corrected":"Leen","explanation":"В Латинской Америке (в том числе в Мексике) при обращении к нескольким людям используется форма ustedes, поэтому глагол должен стоять в форме третьего лица множественного числа (leen), а не vosotros (leéis)."}]}
+    sentence_regression_llm_test.go:200: LLM_RESPONSE model=google/gemini-3.8-flash provider=openrouter status=200 input=1492 output=130 cost=0.189104
+    sentence_regression_llm_test.go:200: LLM_RESPONSE model=google/gemini-3.8-flash provider=openrouter status=200 input=1905 output=136 cost=0.228214
+    sentence_regression_llm_test.go:136: CASE women in spain ok=true {"error_count":1,"outcome":"passed","corrected_es":"Vosotras trabajáis","tokens":null,"explanation":"В контексте указано, что обе собеседницы — женщины, поэтому требуется местоимение женского рода «vosotras».","issues":[{"kind":"pronoun","original":"Vosotros","corrected":"Vosotras","explanation":"В контексте указано, что обе собеседницы — женщины, поэтому требуется местоимение женского рода «vosotras»."}]}
+    sentence_regression_llm_test.go:200: LLM_RESPONSE model=google/gemini-3.8-flash provider=openrouter status=200 input=1496 output=105 cost=0.178422
+    sentence_regression_llm_test.go:200: LLM_RESPONSE model=google/gemini-3.8-flash provider=openrouter status=200 input=1884 output=108 cost=0.214000
+    sentence_regression_llm_test.go:136: CASE known key ok=true {"error_count":1,"outcome":"passed","corrected_es":"Busco la llave","tokens":null,"explanation":"Контекст указывает на конкретный известный ключ, поэтому требуется определённый артикль la.","issues":[{"kind":"article","original":"una","corrected":"la","explanation":"Контекст указывает на конкретный известный ключ, поэтому требуется определённый артикль la."}]}
+    sentence_regression_llm_test.go:200: LLM_RESPONSE model=google/gemini-3.8-flash provider=openrouter status=200 input=1496 output=251 cost=0.242869
+    sentence_regression_llm_test.go:200: LLM_RESPONSE model=google/gemini-3.8-flash provider=openrouter status=200 input=1873 output=108 cost=0.213029
+    sentence_regression_llm_test.go:136: CASE new dog ok=true {"error_count":1,"outcome":"passed","corrected_es":"Quiero comprar un perro","tokens":null,"explanation":"В контексте прямо указано, что животное ещё не выбрано и речь идёт о любой собаке, поэтому требуется неопределённый артикль un вместо определённого el.","issues":[{"kind":"article","original":"el","corrected":"un","explanation":"В контексте прямо указано, что животное ещё не выбрано и речь идёт о любой собаке, поэтому требуется неопределённый артикль un вместо определённого el."}]}
+    sentence_regression_llm_test.go:200: LLM_RESPONSE model=google/gemini-3.8-flash provider=openrouter status=200 input=1494 output=36 cost=0.147787
+    sentence_regression_llm_test.go:136: CASE partial context ok=true {"error_count":0,"outcome":"star","corrected_es":"Pongo el libro en la mesa","tokens":null}
+    sentence_regression_llm_test.go:200: LLM_RESPONSE model=google/gemini-3.8-flash provider=openrouter status=200 input=1476 output=69 cost=0.160765
+    sentence_regression_llm_test.go:136: CASE accent changes noun ok=true {"error_count":1,"outcome":"passed","corrected_es":"Mi mamá lee libros","tokens":null,"explanation":"Слово «mamá» (мама) пишется с графическим ударением на последнем слоге.","issues":[{"kind":"spelling","original":"mama","corrected":"mamá","explanation":"Слово «mamá» (мама) пишется с графическим ударением на последнем слоге."}]}
+    sentence_regression_llm_test.go:200: LLM_RESPONSE model=google/gemini-3.8-flash provider=openrouter status=200 input=1474 output=27 cost=0.142049
+    sentence_regression_llm_test.go:136: CASE correct synonym ok=true {"error_count":0,"outcome":"star","corrected_es":"Mi mamá lee libros","tokens":null}
+    sentence_regression_llm_test.go:200: LLM_RESPONSE model=google/gemini-3.8-flash provider=openrouter status=200 input=1474 output=164 cost=0.202523
+    sentence_regression_llm_test.go:136: CASE two independent mistakes ok=true {"error_count":2,"outcome":"failed","corrected_es":"Nosotros no compramos pan","tokens":null,"explanation":"Пропущена отрицательная частица no перед глаголом. Форма глагола должна согласовываться с местоимением nosotros: compramos.","issues":[{"kind":"missing_word","original":"","corrected":"no","explanation":"Пропущена отрицательная частица no перед глаголом."},{"kind":"verb_form","original":"compra","corrected":"compramos","explanation":"Форма глагола должна согласовываться с местоимением nosotros: compramos."}]}
+    sentence_regression_llm_test.go:200: LLM_RESPONSE model=google/gemini-3.8-flash provider=openrouter status=200 input=1213 output=35 cost=0.122538
+    sentence_regression_llm_test.go:136: CASE en contraction ok=true {"error_count":0,"outcome":"star","corrected_es":"She doesn't work here","tokens":null}
+    sentence_regression_llm_test.go:200: LLM_RESPONSE model=google/gemini-3.8-flash provider=openrouter status=200 input=1236 output=107 cost=0.156351
+    sentence_regression_llm_test.go:200: LLM_RESPONSE model=google/gemini-3.8-flash provider=openrouter status=200 input=1626 output=428 cost=0.332478
+    sentence_regression_llm_test.go:136: CASE en known car ok=true {"error_count":1,"outcome":"passed","corrected_es":"I see the car","tokens":null,"explanation":"Речь идёт о конкретной машине, которую вам только что показали, поэтому требуется определённый артикль the.","issues":[{"kind":"article","original":"a","corrected":"the","explanation":"Речь идёт о конкретной машине, которую вам только что показали, поэтому требуется определённый артикль the."}]}
+    sentence_regression_llm_test.go:200: LLM_RESPONSE model=google/gemini-3.8-flash provider=openrouter status=200 input=1212 output=90 cost=0.146728
+    sentence_regression_llm_test.go:200: LLM_RESPONSE model=google/gemini-3.8-flash provider=openrouter status=200 input=1585 output=89 cost=0.179217
+    sentence_regression_llm_test.go:136: CASE en article grammar ok=true {"error_count":1,"outcome":"passed","corrected_es":"I am eating an apple","tokens":null,"explanation":"Перед словами, которые начинаются с гласного звука, используется форма артикля an вместо a.","issues":[{"kind":"article","original":"a","corrected":"an","explanation":"Перед словами, которые начинаются с гласного звука, используется форма артикля an вместо a."}]}
+    sentence_regression_llm_test.go:200: LLM_RESPONSE model=google/gemini-3.8-flash provider=openrouter status=200 input=1215 output=30 cost=0.120508
+    sentence_regression_llm_test.go:136: CASE en valid word order ok=true {"error_count":0,"outcome":"star","corrected_es":"In the morning I usually drink tea","tokens":null}
+    sentence_regression_llm_test.go:200: LLM_RESPONSE model=google/gemini-3.8-flash provider=openrouter status=200 input=1214 output=35 cost=0.122626
+    sentence_regression_llm_test.go:136: CASE en negation present ok=true {"error_count":0,"outcome":"star","corrected_es":"They don't read books","tokens":null}
+    sentence_regression_llm_test.go:138: SUMMARY model=google/gemini-3.8-flash pass=14/14 calls=19 input=28362 output=2196 provider_cost=3.473269 seconds=85.1
+--- PASS: TestSentenceRegressionLLM (0.00s)
+    --- PASS: TestSentenceRegressionLLM/google/gemini-3.8-flash (85.06s)
+PASS
+ok  	tgbot-skeleton/internal/ai	85.618s

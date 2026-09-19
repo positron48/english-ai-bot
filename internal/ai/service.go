@@ -81,7 +81,8 @@ type Service struct {
 	conversationModel             string            // optional model override for NPC conversations ("" = use model)
 	pictureQuestPrompts           map[string]string // course_code -> picture quest task evaluation prompt
 	pictureLumiPrompts            map[string]string // course_code -> Lumi reply prompt for picture quests
-	sentenceModel                 string            // optional model override for translation exercises
+	sentenceModel                 string
+	sentenceReasoningEffort       string            // optional model override for translation exercises
 	sentenceGenPrompts            map[string]string // course_code -> daily sentence-set generation prompt
 	sentenceGradePrompts          map[string]string // course_code -> per-sentence grading prompt
 	logger                        *zap.Logger
@@ -335,13 +336,34 @@ type Error struct {
 
 // postChatCompletion sends a chat/completions request and returns the first assistant text.
 func (s *Service) postChatCompletion(ctx context.Context, model string, messages []Message, maxTokens int, temperature float64, logFields ...zap.Field) (string, error) {
+	return s.postChatCompletionWithReasoning(ctx, model, messages, maxTokens, temperature, "", logFields...)
+}
+
+func (s *Service) postSentenceChatCompletion(ctx context.Context, model string, messages []Message, maxTokens int, temperature float64, logFields ...zap.Field) (string, error) {
+	return s.postChatCompletionWithReasoning(ctx, model, messages, maxTokens, temperature, s.sentenceReasoningEffort, logFields...)
+}
+
+func (s *Service) postChatCompletionWithReasoning(ctx context.Context, model string, messages []Message, maxTokens int, temperature float64, effort string, logFields ...zap.Field) (string, error) {
 	req := ChatRequest{
 		Model:       model,
 		Messages:    messages,
 		MaxTokens:   maxTokens,
 		Temperature: temperature,
 	}
-	reqBody, err := jsonMarshalFunc(req)
+	// This method receives an explicit temperature. Preserve zero for quality
+	// review instead of allowing ChatRequest's omitempty to select provider defaults.
+	type requestReasoning struct {
+		Effort string `json:"effort"`
+	}
+	var reasoning *requestReasoning
+	if effort != "" {
+		reasoning = &requestReasoning{Effort: effort}
+	}
+	reqBody, err := jsonMarshalFunc(struct {
+		ChatRequest
+		Temperature float64           `json:"temperature"`
+		Reasoning   *requestReasoning `json:"reasoning,omitempty"`
+	}{ChatRequest: req, Temperature: temperature, Reasoning: reasoning})
 	if err != nil {
 		return "", fmt.Errorf("failed to marshal request: %w", err)
 	}

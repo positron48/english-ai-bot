@@ -1,0 +1,189 @@
+[
+  {
+    "prompt_ru": "Я читаю книгу.",
+    "clarification_ru": "Собеседник видит, что я держу в руках то самое издание, о котором мы говорили вчера.",
+    "reference_es": "I am reading the book.",
+    "used_words": [
+      "read",
+      "book"
+    ]
+  },
+  {
+    "prompt_ru": "Друг помогает мне.",
+    "clarification_ru": "Речь о нашем общем знакомом, которого мы оба хорошо знаем.",
+    "reference_es": "The friend is helping me.",
+    "used_words": [
+      "friend",
+      "help"
+    ]
+  },
+  {
+    "prompt_ru": "Он покупает яблоко.",
+    "clarification_ru": "Он стоит в магазине и выбирает один любой плод из корзины.",
+    "reference_es": "He is buying an apple.",
+    "used_words": [
+      "buy",
+      "apple"
+    ]
+  },
+  {
+    "prompt_ru": "Мы открываем дверь.",
+    "clarification_ru": "Мы стоим перед входом в нашу квартиру, и я открываю именно эту створку.",
+    "reference_es": "We are opening the door.",
+    "used_words": [
+      "open",
+      "door"
+    ]
+  },
+  {
+    "prompt_ru": "Она ест яблоко.",
+    "clarification_ru": "Она взяла из вазы какой-то один фрукт и сейчас его ест.",
+    "reference_es": "She is eating an apple.",
+    "used_words": [
+      "eat",
+      "apple"
+    ]
+  },
+  {
+    "prompt_ru": "Друг пьет воду.",
+    "clarification_ru": "Мой товарищ, который сейчас находится со мной в комнате, пьет воду как вещество.",
+    "reference_es": "The friend is drinking water.",
+    "used_words": [
+      "friend",
+      "drink",
+      "water"
+    ]
+  },
+  {
+    "prompt_ru": "Они закрывают двери.",
+    "clarification_ru": "Они закрывают все двери в этом здании перед уходом.",
+    "reference_es": "They are closing the doors.",
+    "used_words": [
+      "close",
+      "door"
+    ]
+  },
+  {
+    "prompt_ru": "Ты читаешь новую книгу.",
+    "clarification_ru": "Ты сейчас держишь в руках тот экземпляр, который я тебе подарил.",
+    "reference_es": "You are reading the new book.",
+    "used_words": [
+      "read",
+      "new",
+      "book"
+    ]
+  },
+  {
+    "prompt_ru": "Он открывает маленькую дверь.",
+    "clarification_ru": "В комнате есть одна приметная дверца шкафа, которую он сейчас тянет на себя.",
+    "reference_es": "He is opening the small door.",
+    "used_words": [
+      "open",
+      "small",
+      "door"
+    ]
+  },
+  {
+    "prompt_ru": "Я ем яблоки.",
+    "clarification_ru": "Я говорю о том, что вообще люблю этот вид фруктов и ем их регулярно.",
+    "reference_es": "I eat apples.",
+    "used_words": [
+      "eat",
+      "apple"
+    ]
+  },
+  {
+    "prompt_ru": "Друзья помогают нам.",
+    "clarification_ru": "Наши общие друзья, о которых мы упоминали ранее, оказывают нам поддержку.",
+    "reference_es": "The friends are helping us.",
+    "used_words": [
+      "friend",
+      "help"
+    ]
+  },
+  {
+    "prompt_ru": "Она покупает книги.",
+    "clarification_ru": "Она часто ходит в магазины и приобретает различные книги как категорию товаров.",
+    "reference_es": "She buys books.",
+    "used_words": [
+      "buy",
+      "book"
+    ]
+  },
+  {
+    "prompt_ru": "Я закрываю большую дверь.",
+    "clarification_ru": "Я закрываю главные ворота дома, которые мы оба видим.",
+    "reference_es": "I am closing the big door.",
+    "used_words": [
+      "close",
+      "big",
+      "door"
+    ]
+  },
+  {
+    "prompt_ru": "Они покупают яблоки.",
+    "clarification_ru": "Они стоят у прилавка и выбирают несколько плодов.",
+    "reference_es": "They are buying apples.",
+    "used_words": [
+      "buy",
+      "apple"
+    ]
+  },
+  {
+    "prompt_ru": "Он помогает другу.",
+    "clarification_ru": "Он помогает какому-то одному своему приятелю, личность которого нам пока не важна.",
+    "reference_es": "He is helping a friend.",
+    "used_words": [
+      "help",
+      "friend"
+    ]
+  },
+  {
+    "prompt_ru": "Она читает маленькую книгу.",
+    "clarification_ru": "Она читает ту самую карманную книжку, которую мы обсуждали.",
+    "reference_es": "She is reading the small book.",
+    "used_words": [
+      "read",
+      "small",
+      "book"
+    ]
+  },
+  {
+    "prompt_ru": "Я ем большое яблоко.",
+    "clarification_ru": "Я ем именно то крупное яблоко, которое лежало на столе.",
+    "reference_es": "I am eating the big apple.",
+    "used_words": [
+      "eat",
+      "big",
+      "apple"
+    ]
+  },
+  {
+    "prompt_ru": "Они читают новые книги.",
+    "clarification_ru": "Они регулярно читают любые новинки литературы.",
+    "reference_es": "They read new books.",
+    "used_words": [
+      "read",
+      "new",
+      "book"
+    ]
+  },
+  {
+    "prompt_ru": "Ты помогаешь другу.",
+    "clarification_ru": "Ты сейчас помогаешь нашему общему знакомому.",
+    "reference_es": "You are helping the friend.",
+    "used_words": [
+      "help",
+      "friend"
+    ]
+  },
+  {
+    "prompt_ru": "Мы закрываем дом.",
+    "clarification_ru": "Мы уходим и запираем наше здание на ключ.",
+    "reference_es": "We are closing the house.",
+    "used_words": [
+      "close",
+      "house"
+    ]
+  }
+]

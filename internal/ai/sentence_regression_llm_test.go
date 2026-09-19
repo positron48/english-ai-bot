@@ -3,6 +3,7 @@ package ai
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"io"
 	"net/http"
 	"os"
@@ -87,6 +88,7 @@ func TestSentenceRegressionLLM(t *testing.T) {
 		t.Run(model, func(t *testing.T) {
 			t.Parallel()
 			svc := NewServiceWithTimeout("https://polza.ai/api/v1", model, key, "", 90*time.Second, zap.NewNop())
+			svc.SetSentenceReasoningEffort(os.Getenv("SENTENCE_TEST_REASONING_EFFORT"))
 			for _, lang := range []string{"es", "en"} {
 				path := "../../prompts/sentence-grade-ru-" + lang + ".txt"
 				if dir := os.Getenv("SENTENCE_TEST_PROMPT_DIR"); dir != "" {
@@ -150,6 +152,19 @@ func observeSentenceUsage(t *testing.T, svc *Service) *sentenceCloudUsage {
 		transport = http.DefaultTransport
 	}
 	svc.client.Transport = roundTripperFunc(func(req *http.Request) (*http.Response, error) {
+		usage.Calls++
+		var requestBody []byte
+		if os.Getenv("RUN_SENTENCE_GENERATION_LLM") == "1" && req.GetBody != nil {
+			reader, err := req.GetBody()
+			if err != nil {
+				return nil, err
+			}
+			requestBody, err = io.ReadAll(reader)
+			reader.Close()
+			if err != nil {
+				return nil, err
+			}
+		}
 		resp, err := transport.RoundTrip(req)
 		if err != nil {
 			return nil, err
@@ -183,7 +198,20 @@ func observeSentenceUsage(t *testing.T, svc *Service) *sentenceCloudUsage {
 			t.Logf("EMPTY model=%s provider=%s finish=%s usage=%+v", metadata.Model, metadata.Provider, metadata.Choices[0].FinishReason, accounting.Usage)
 		}
 
-		usage.Calls++
+		t.Logf("LLM_RESPONSE model=%s provider=%s status=%d input=%d output=%d cost=%f", metadata.Model, metadata.Provider, resp.StatusCode, accounting.Usage.PromptTokens, accounting.Usage.CompletionTokens, accounting.Usage.Cost)
+		if dir := os.Getenv("SENTENCE_TEST_OUTPUT_DIR"); dir != "" && os.Getenv("RUN_SENTENCE_GENERATION_LLM") == "1" {
+			if err := os.MkdirAll(dir, 0755); err != nil {
+				t.Fatal(err)
+			}
+			// Test payloads contain authored vocabulary, never production learner data or headers.
+			snapshot, err := json.MarshalIndent(map[string]any{"request": json.RawMessage(requestBody), "response": json.RawMessage(body)}, "", "  ")
+			if err != nil {
+				t.Fatal(err)
+			}
+			if err := os.WriteFile(filepath.Join(dir, fmt.Sprintf("call-%02d.json", usage.Calls)), snapshot, 0644); err != nil {
+				t.Fatal(err)
+			}
+		}
 		usage.Input += accounting.Usage.PromptTokens
 		usage.Output += accounting.Usage.CompletionTokens
 		usage.Cost += accounting.Usage.Cost
@@ -206,7 +234,7 @@ func TestSentenceGenerationContextLLM(t *testing.T) {
 	}
 	model := os.Getenv("SENTENCE_TEST_MODEL")
 	if model == "" {
-		model = "openai/gpt-5.4-mini"
+		model = "google/gemini-3.8-flash"
 	}
 	course, lang := "es_ru", "es"
 	if os.Getenv("SENTENCE_TEST_COURSE") == "en_ru" {
@@ -214,12 +242,19 @@ func TestSentenceGenerationContextLLM(t *testing.T) {
 	}
 	svc := NewServiceWithTimeout("https://polza.ai/api/v1", "unused-default", key, "", 90*time.Second, zap.NewNop())
 	svc.SetSentenceModel(model)
+	effort, effortSet := os.LookupEnv("SENTENCE_TEST_REASONING_EFFORT")
+	if !effortSet {
+		effort = "low"
+	}
+	svc.SetSentenceReasoningEffort(effort)
 	prompt, err := LoadRenderedPromptFile("../../prompts/sentence-gen-ru-"+lang+".txt", "ru", lang, "ru-"+lang)
 	if err != nil {
 		t.Fatal(err)
 	}
 	// Exercise the reported ambiguity rather than hoping random generation uses вы.
-	prompt += "\nFor this validation set, make at least half the items address the learner as Russian вы; vary singular polite, plural polite and plural informal. Keep all the usual context requirements."
+	if os.Getenv("SENTENCE_TEST_REALISTIC") != "1" {
+		prompt += "\nFor this validation set, make at least half the items address the learner as Russian вы; vary singular polite, plural polite and plural informal. Keep all the usual context requirements."
+	}
 	svc.SetSentenceGenPromptForCourse(course, prompt)
 	gradePrompt, err := LoadRenderedPromptFile("../../prompts/sentence-grade-ru-"+lang+".txt", "ru", lang, "ru-"+lang)
 	if err != nil {
@@ -240,28 +275,53 @@ func TestSentenceGenerationContextLLM(t *testing.T) {
 	if course == "en_ru" {
 		focus = words[:5]
 	}
+	if course == "es_ru" && os.Getenv("SENTENCE_TEST_WORD_PROFILE") == "holdout" {
+		words = []GenSentenceWord{{"leche", "молоко"}, {"café", "кофе"}, {"pan", "хлеб"}, {"coche", "машина"}, {"tienda", "магазин"}, {"profesor", "учитель"}, {"mujer", "женщина"}, {"hermano", "брат"}, {"comprar", "покупать"}, {"vender", "продавать"}, {"beber", "пить"}, {"comer", "есть"}, {"trabajar", "работать"}, {"esperar", "ждать"}, {"necesitar", "нуждаться / требоваться"}, {"buscar", "искать"}, {"nuevo", "новый"}, {"viejo", "старый"}, {"caro", "дорогой"}, {"barato", "дешёвый"}}
+		focus = words[:5]
+	}
 	sentences, err := svc.GenerateSentenceSetForCourse(context.Background(), course, focus, words, tenses, count)
 	t.Logf("GENERATION model=%s course=%s count=%d calls=%d input=%d output=%d provider_cost=%f seconds=%.1f", model, course, len(sentences), usage.Calls, usage.Input, usage.Output, usage.Cost, time.Since(start).Seconds())
+	if dir := os.Getenv("SENTENCE_TEST_OUTPUT_DIR"); dir != "" {
+		if err := os.MkdirAll(dir, 0755); err != nil {
+			t.Fatal(err)
+		}
+		report, _ := json.MarshalIndent(map[string]any{"model": model, "reasoning_effort": effort, "course": course, "wanted": count, "accepted": len(sentences), "calls": usage.Calls, "input_tokens": usage.Input, "output_tokens": usage.Output, "provider_cost": usage.Cost, "seconds": time.Since(start).Seconds()}, "", "  ")
+		if err := os.WriteFile(filepath.Join(dir, strings.ReplaceAll(model, "/", "-")+"-"+course+"-metrics.json"), report, 0644); err != nil {
+			t.Fatal(err)
+		}
+		raw, _ := json.MarshalIndent(sentences, "", "  ")
+		if err := os.WriteFile(filepath.Join(dir, strings.ReplaceAll(model, "/", "-")+"-"+course+".json"), raw, 0644); err != nil {
+			t.Fatal(err)
+		}
+	}
 	if err != nil {
 		t.Fatal(err)
 	}
-	if len(sentences) != count {
+	if len(sentences) == 0 || len(sentences) > count {
 		t.Fatalf("got %d/%d", len(sentences), count)
+	}
+	if len(sentences) < count {
+		t.Logf("PARTIAL reviewed set retained: %d/%d", len(sentences), count)
+	}
+	if usage.Calls > 4 {
+		t.Errorf("shared-pool smoke exceeded four HTTP requests: %d", usage.Calls)
+	}
+	seen := map[string]bool{}
+	for _, sentence := range sentences {
+		key := NormalizedSentenceAnswer(sentence.PromptRU)
+		if seen[key] {
+			t.Errorf("duplicate Russian prompt: %s", sentence.PromptRU)
+		}
+		seen[key] = true
+		if !usableSentenceClarification(sentence.ClarificationRU) {
+			t.Errorf("unusable context: %s", sentence.ClarificationRU)
+		}
 	}
 	for i, sentence := range sentences {
 		raw, _ := json.Marshal(sentence)
 		t.Logf("GENERATED %d %s", i+1, raw)
 		if course == "es_ru" && hasRussianAddress(sentence.PromptRU) && strings.TrimSpace(sentence.ClarificationRU) == "" {
 			t.Errorf("%d: missing address context", i+1)
-		}
-	}
-	if dir := os.Getenv("SENTENCE_TEST_OUTPUT_DIR"); dir != "" {
-		if err := os.MkdirAll(dir, 0755); err != nil {
-			t.Fatal(err)
-		}
-		raw, _ := json.MarshalIndent(sentences, "", "  ")
-		if err := os.WriteFile(filepath.Join(dir, strings.ReplaceAll(model, "/", "-")+"-"+course+".json"), raw, 0644); err != nil {
-			t.Fatal(err)
 		}
 	}
 	// New exercises must accept their reference, with presentation omitted.

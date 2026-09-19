@@ -1,61 +1,63 @@
-You build a set of short translation exercises for a learner of {{target_lang}} (pair {{pair}}: {{native_lang}} → {{target_lang}}).
+Ты составляешь упражнения на перевод с русского на {{target_lang}}. Верни только JSON:
+{"sentences":[{"prompt_ru":"русское задание","clarification_ru":"ситуация по-русски","reference_es":"перевод на {{target_lang}}","used_words":["исходная лемма"]}]}
+reference_es — имя поля и для английского. Никаких пояснений вне JSON.
 
-INPUT
-You receive ONE JSON object:
-{
-  "sentence_count": <int>,        // how many sentences to produce
-  "allowed_tenses": [<string>],   // grammar tenses/moods the learner has unlocked; only use these
-  "focus_words": [ { "lemma": "...", "translation": "..." }, ... ],   // least-used known words to practise
-  "support_words": [ { "lemma": "...", "translation": "..." }, ... ]  // other words the learner already knows
-}
+Вход: sentence_count, allowed_tenses, focus_words и support_words (lemma + translation).
+На доборе также переданы accepted_sentences и rejected_sentences с причиной reason.
+Нужно ровно sentence_count РАЗНЫХ русских заданий. Принятые задания повторять нельзя,
+даже с новым переводом. Исправляй отклонённые по указанной причине или заменяй.
 
-TASK
-- Produce exactly `sentence_count` short, natural {{native_lang}} sentences for the learner to translate into {{target_lang}}.
-- CONTEXT MUST RESOLVE THE ACTUAL CHOICES. If Russian leaves person, number, formality, gender, tense or article interpretation open, add concrete learner-visible facts that resolve each necessary distinction. A decorative scene (weather, location, mood) is not enough. Context may use 1–2 short Russian sentences and vocabulary outside the supplied lists because the learner does not translate it.
-- Every Russian «вы/вас/вам/вами/ваш» address MUST specify the number of addressees and relationship/register. For vosotros/vosotras, explicitly place the conversation in Spain and address several friends informally (specify all women if vosotras is required). For usted, explicitly address one person politely. For ustedes, address several people politely, or explicitly place the conversation in Latin America. Avoid requiring a regional choice without naming the region. Example: «Разговор в Испании: вы обращаетесь к двум друзьям на ты.» Articles, gender and other ambiguities STILL need their own facts in that same context.
-- Before output, test the exercise using a different natural translation. If it differs in a choice the context has not settled, improve the context or choose a simpler sentence. reference_es is ONE valid answer, never the only wording allowed.
-- Every reference containing an article MUST have nonempty useful clarification_ru: explain identification, first introduction, or that the entire category is meant (generic articles). Do not invent prior discussion for a generic noun. If an item has several ambiguities, cover ALL of them, including every article and the addressee. The server rejects empty context on article-bearing items.
-- Plan clarification_ru by checking EACH article-bearing noun in reference_es, including subjects (the friend, the doctor, the mother), not only objects. Provide an explicit observable reason for each choice. For «Друг открывает дверь», explaining only the door does NOT establish el amigo; explain how both speakers identify the friend as well. A definite article is not justified merely because a noun appears in prompt_ru.
-- Context must describe ONE coherent situation, never alternative scenes joined by «или». For a Вы sentence, say exactly how many people are addressed and whether this is formal or informal. For example, «Говорящий вежливо обращается к одному врачу. Это врач, с которым он только что познакомился.» The reference must agree: usted abre, NEVER usted abres. With no subject pronoun, the same conjugation rule applies.
-- Do not contradict the main action: if prompt_ru says someone finds something, context must concern that find, not an ongoing search. Avoid artificial combinations like «Мать находит чистую книгу». Prefer ordinary actions like reading/buying books, helping friends, opening/closing doors.
-- Each sentence MUST be translatable using ONLY grammar within `allowed_tenses`. Never require a tense or mood that is not listed.
-- Each sentence MUST naturally practise at least ONE lemma from `focus_words`. Multiple focus words are welcome only when they belong together in an ordinary situation; never combine them merely for coverage. Other content words must come only from `support_words`. Quality is more important than vocabulary coverage, and it is fine to repeat a useful focus word or leave another unused.
-- VOCABULARY IS STRICTLY RESTRICTED. Every content-bearing word in BOTH `prompt_ru` and `reference_es` (noun, adjective, adverb, main verb, time/place expression) MUST be an inflected/translated form of an entry from `focus_words` or `support_words`. The learner does not know any other content word. Do NOT introduce even an easy word such as "сегодня", "стакан", "держать", "вчера", "rápido" unless its matching entry was supplied.
-- The ONLY additions not present in either list are grammatical/function words: articles, personal/possessive pronouns, basic determiners, prepositions, conjunctions, particles, negation, and the linking/existential verbs `ser`, `estar`, `haber`. `tener`, `hacer`, `ir` and every other meaning-bearing verb are forbidden unless supplied in one of the lists.
-- `used_words` must list EVERY supplied content lemma used in `prompt_ru`/`reference_es`. Ignore native wording used only inside `clarification_ru`. Never list an unsupplied lemma and never hide an added content word by omitting it from `used_words`.
-- DO NOT try to use every `focus_words` entry. First select only the focus lemmas that have an ordinary, self-contained situation with the available support vocabulary. Reuse those safe focus lemmas as often as needed. If a body part or other focus word lacks a suitable known action, skip it completely — do not describe its colour/cleanliness/location and do not invent a relationship merely to include it.
-- Do not add possessives or demonstratives merely to avoid article ambiguity. Use "мой/этот/эта" and `mi/este/esta` only when ownership or pointing is a natural part of the intended meaning; otherwise provide `clarification_ru` for the article choice.
-- Keep sentences short (3–8 words), everyday, and assessable. `clarification_ru` is optional context (1–2 short sentences) shown to the learner directly after `prompt_ru`. Use it only when Russian alone does not reveal a meaning distinction required by the Spanish answer, especially definite vs indefinite articles.
-- Context must give observable circumstances from which the learner can infer the choice. A known object must be identifiable to BOTH speaker and listener: say HOW both know it (already discussed, shown to each other, requested, or uniquely identified). It is not enough that only the speaker knows or sees it. For a newly introduced object, say that it appears for the first time or that no particular object was intended. Good examples: "Собеседники уже обсуждали эту книгу вчера."; "Говорящий впервые замечает книгу и раньше о ней не упоминал."
-- When introducing an unknown/new object, never call it "этот/эта/это/эту/тот/та" in `clarification_ru`: Russian demonstratives falsely make it sound already identified. Refer to it with the bare noun or say "какой-то/один из" only when natural.
-- If several nouns need disambiguation, `clarification_ru` must cover ALL of them in the same short context. Example: "Книгу только что купили, а речь идёт о столе в нашей комнате."
-- NEVER write a tautology or reveal grammar directly: no "конкретный/неконкретный предмет", "определённый/неопределённый артикль", "используй el/un", or target-language words. Context describes the situation, not the answer.
-- Use an empty `clarification_ru` when the sentence is already unambiguous or no such distinction matters. Never add generic study advice about pronouns or grammar.
-- Generic/class uses (e.g. liking music), mass nouns and fixed expressions do NOT require an invented prior discussion. Explain the real intended meaning only when a genuine alternative remains.
-- Before leaving `clarification_ru` empty, compare the chosen Spanish articles with every other natural article for the Russian sentence. If both definite and indefinite remain possible, context is REQUIRED. Example: "Они едят апельсин" cannot uniquely require either `la naranja` or `una naranja`; specify whether both speakers already know which orange is meant or whether an orange is being introduced for the first time.
-- NATURALNESS IS A HARD REQUIREMENT. Describe an ordinary situation that a native Russian speaker could realistically say without extra backstory. Every Russian sentence must contain an explicit finite verb; do not emit nominal or location fragments and then insert `ser`/`estar` only in Spanish. Reject odd physical traits, medical-looking abnormalities, accidental body-part/color combinations, tautologies, and fragment-like statements. Explicitly forbidden examples include "ребёнок ест еду" (also with any adjective, e.g. "ребёнок ест красную еду"), "язык красный/чистый", "язык помогает пить", "рука близко к двери", "он кладёт голову на стол", "зелёное окно близко", "большая больница далеко", "чёрный нож здесь" and "чёрный нож на столе". A location statement that needs a content verb such as "находится" is allowed only if that verb was supplied; otherwise choose another sentence. Use at most one adjective per noun and only for a conventional, useful description; grammatical correctness alone does not make a sentence natural.
-- Before producing JSON, silently review every item in this order: (1) Is the situation plausible and useful? (2) Is `prompt_ru` idiomatic Russian with correct agreement and cases, not a Spanish calque? (3) Does every content word come from the supplied vocabulary? (4) Is the Spanish translation faithful? Replace any item that fails even one check. Output only the reviewed final items.
-- Vary the sentences; do not repeat the same structure every time.
-- `prompt_ru` MUST be a fully grammatical, natural {{native_lang}} sentence a native speaker would actually say. If the available words cannot form a natural, correct {{native_lang}} sentence, build a SIMPLER sentence with fewer words rather than an awkward or broken one. NEVER output ungrammatical or nonsensical {{native_lang}} (e.g. wrong case, missing verb, word salad like "это фонду молодого человека").
+ПОРЯДОК РАБОТЫ ДЛЯ КАЖДОГО ЗАДАНИЯ
+1. Выбери обычное действие, которое можно описать известными словами. Используй хотя
+бы одно focus_word. Можно многократно тренировать удачную лемму, другие пропустить.
+Не соединяй слова ради охвата словаря. Не придумывай необычную историю, оправдывающую
+странное сочетание. Сначала простая естественная фраза, потом необходимый контекст.
+2. Напиши короткое русское предложение с личной формой глагола и точный перевод.
+Каждое смысловое слово в ОБОИХ текстах должно соответствовать supplied lemma/translation:
+существительное, смысловой глагол, прилагательное, наречие, место и время. Формы слов
+разрешены. Не добавляй общеизвестные слова, которых нет в словаре. Контекст этим
+словарём НЕ ограничен: его ученик не переводит. Только allowed_tenses.
+3. used_words перечисляет все использованные словарные леммы в исходном написании.
+Не включай слова только из контекста. Служебные слова можно добавлять без списка:
+местоимения, предлоги, союзы, отрицание, грамматические связки и вспомогательные глаголы.
+Смысловые tener, hacer, ir требуют наличия в словаре; только связки ser/estar/haber можно добавлять.
+4. Проверь, какие решения русский текст оставляет открытыми. Добавь 1–2 короткие
+фразы контекста, задающие ОДНУ понятную ситуацию без альтернатив через «или».
+Контекст не меняет действие, участников, число, время или значение слов задания.
+Он не объясняет абстрактное правило и не сообщает иностранный ответ.
+Испанское «вы/вам/вас/ваш» требует в контексте числа адресатов и отношения к ним.
+Usted: один человек, вежливо, глагол в третьем лице единственного числа.
+Vosotros/vosotras: в Испании, несколько друзей на ты (для vosotras — женщины).
+Ustedes: несколько человек вежливо либо несколько друзей в Латинской Америке.
+Регион и вежливость пишутся как факты выбранной ситуации. Одно «в Испании» не
+определяет форму обращения. У al/del тоже есть артикль: поясни соответствующий предмет.
+5. Любой артикль в переводе требует непустого контекста. Для КАЖДОГО существительного
+с артиклем, в том числе подлежащего, объясни, как ОБА собеседника узнают человека
+или предмет; либо что его впервые вводят и раньше не выбирали/не обсуждали;
+либо что речь обо всём классе. Не путай «только что куплен/подарен» с неизвестностью:
+собеседники уже могут понимать, о какой книге речь. Для массового/родового значения
+не выдумывай прежнее обсуждение или выбранную порцию. Не добавляй «мой/этот» только
+ради обхода артикля. Когда неоднозначности и артиклей нет, clarification_ru = "".
+6. Прочитай задание как русский носитель. Удали лишние прилагательные. «Большой друг»
+не обозначает высокого человека, «чистая книга» не нужна ради слова чистый,
+«мать ищет окно» не становится естественным от пояснения про комнату. Не используй
+части тела с произвольным цветом/чистотой, тавтологии и фразы «нести воду здесь».
+Нейтральные действия лучше: читать/покупать книгу, помогать другу, открыть дверь —
+ТОЛЬКО если их слова присутствуют во входном словаре.
 
-LANGUAGE
-- `prompt_ru` MUST be written entirely in {{native_lang}}, using ONLY the {{native_lang}} script/alphabet. It MUST NOT contain any {{target_lang}} word, name, or letter — translate every content word into {{native_lang}}. A single {{target_lang}} token leaking into `prompt_ru` makes the item invalid.
-- CRITICAL: entries in `focus_words` and `support_words` are {{target_lang}} lemmas. They belong ONLY in `reference_es`. In `prompt_ru` use the supplied `translation` — NEVER copy the lemma or invent a Russian synonym that may be unknown. When a translation contains alternatives separated by `/`, choose the natural alternative for the sentence; do not combine or expose the slash.
-- `reference_es` MUST be written entirely in {{target_lang}}. Never mix languages in a field.
+БЕЗУСЛОВНЫЕ ПРОВЕРКИ СЕРВЕРА ПЕРЕД ВЫДАЧЕЙ
+- prompt_ru и clarification_ru не содержат латинских букв.
+- clarification_ru НЕ содержит НИ ОДНОЙ из подстрок (в любом регистре):
+  конкретн, определённ, определенн, артикл.
+  Это запрет на подстроку в любом слове, а не только на выражение «конкретный предмет».
+  Вместо ярлыка опиши наблюдаемый факт.
+- Все использованные леммы даны во входе, есть хотя бы одна основная лемма.
+- Русские задания не повторяются. Не копируй пример, если его слов нет во входе.
 
-OUTPUT (STRICT)
-- Output ONLY the JSON object, nothing else. No markdown fences, no explanation before or after.
-- Shape:
-{
-  "sentences": [
-    {
-      "prompt_ru": "<sentence in {{native_lang}} for the learner to translate>",
-      "clarification_ru": "<one natural optional context sentence covering every otherwise ambiguous choice; empty if unnecessary>",
-      "reference_es": "<one correct {{target_lang}} translation>",
-      "used_words": ["<lemma from words[] actually used in this sentence>", ...]
-    }
-  ]
-}
-- `used_words` MUST contain only lemmas that appear (in any inflected form) in `reference_es` and that came from `focus_words` or `support_words`. Every item must contain at least one focus lemma. Omit only allowed function words.
-- `reference_es` MUST be a correct, natural translation respecting `allowed_tenses`.
-- Produce exactly `sentence_count` items.
+ПРИМЕРЫ СТИЛЯ КОНТЕКСТА
+«Я читаю книгу»: «Собеседник передал вам книгу и спросил, что вы с ней делаете.»
+«Я покупаю книгу»: «Вы ещё не выбрали книгу и ищете любую подходящую в магазине.»
+«Друг открывает дверь»: «Вы оба узнаёте вашего общего друга. Он открывает единственную
+входную дверь квартиры, где вы вместе живёте.»
+Не переноси эти факты в другую ситуацию автоматически. Перед JSON молча проверь
+каждый пункт и исправь нарушения. В ответе только готовые задания.

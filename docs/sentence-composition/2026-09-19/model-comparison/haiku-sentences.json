@@ -1,0 +1,150 @@
+[
+  {
+    "prompt_ru": "Мой друг открывает дверь.",
+    "clarification_ru": "Вы оба узнаёте вашего общего друга. Он открывает единственную входную дверь квартиры, где вы вместе живёте.",
+    "reference_es": "Mi amigo abre la puerta.",
+    "used_words": [
+      "amigo",
+      "abrir",
+      "puerta"
+    ]
+  },
+  {
+    "prompt_ru": "Ребёнок пьёт воду.",
+    "clarification_ru": "Мальчик жаждет. Вы видите, как он пьёт воду из стакана.",
+    "reference_es": "El niño bebe agua.",
+    "used_words": [
+      "niño",
+      "beber",
+      "agua"
+    ]
+  },
+  {
+    "prompt_ru": "Я покупаю новую книгу.",
+    "clarification_ru": "Вы ещё не выбрали книгу и ищете любую подходящую в магазине.",
+    "reference_es": "Compro un libro nuevo.",
+    "used_words": [
+      "comprar",
+      "libro",
+      "nuevo"
+    ]
+  },
+  {
+    "prompt_ru": "Я несу воду.",
+    "clarification_ru": "Вы берёте ведро с водой и несёте его в другую комнату.",
+    "reference_es": "Llevo agua.",
+    "used_words": [
+      "llevar",
+      "agua"
+    ]
+  },
+  {
+    "prompt_ru": "Друг пьёт воду здесь.",
+    "clarification_ru": "Вы оба находитесь в одной комнате. Друг пьёт воду в этом месте.",
+    "reference_es": "El amigo bebe agua aquí.",
+    "used_words": [
+      "amigo",
+      "beber",
+      "agua"
+    ]
+  },
+  {
+    "prompt_ru": "Я закрываю окно там.",
+    "clarification_ru": "Вы видите окно в другой комнате и закрываете его.",
+    "reference_es": "Cierro la ventana allí.",
+    "used_words": [
+      "cerrar",
+      "ventana"
+    ]
+  },
+  {
+    "prompt_ru": "Мальчик несёт грязную воду.",
+    "clarification_ru": "Ребёнок берёт ведро с грязной водой и несёт его в сад.",
+    "reference_es": "El niño lleva agua sucia.",
+    "used_words": [
+      "niño",
+      "llevar",
+      "agua",
+      "sucio"
+    ]
+  },
+  {
+    "prompt_ru": "Я смотрю на красную книгу.",
+    "clarification_ru": "На столе лежит книга с красной обложкой. Вы смотрите на неё.",
+    "reference_es": "Miro el libro rojo.",
+    "used_words": [
+      "mirar",
+      "libro",
+      "rojo"
+    ]
+  },
+  {
+    "prompt_ru": "Я читаю новую книгу.",
+    "clarification_ru": "Вы держите книгу, которая только что издана, и читаете её.",
+    "reference_es": "Leo un libro nuevo.",
+    "used_words": [
+      "leer",
+      "libro",
+      "nuevo"
+    ]
+  },
+  {
+    "prompt_ru": "Я кладу воду на стол.",
+    "clarification_ru": "Вы держите стакан с водой и кладёте его на стол перед собой.",
+    "reference_es": "Pongo agua en la mesa.",
+    "used_words": [
+      "poner",
+      "agua",
+      "mesa"
+    ]
+  },
+  {
+    "prompt_ru": "Врач пьёт воду здесь.",
+    "clarification_ru": "Вы оба находитесь в кабинете врача. Врач пьёт воду в этом месте.",
+    "reference_es": "El médico bebe agua aquí.",
+    "used_words": [
+      "médico",
+      "beber",
+      "agua"
+    ]
+  },
+  {
+    "prompt_ru": "Я смотрю на зелёную книгу.",
+    "clarification_ru": "На столе лежит книга с зелёной обложкой. Вы смотрите на неё.",
+    "reference_es": "Miro el libro verde.",
+    "used_words": [
+      "mirar",
+      "libro",
+      "verde"
+    ]
+  },
+  {
+    "prompt_ru": "Я помогаю другу.",
+    "clarification_ru": "Друг просит вас о помощи, и вы помогаете ему.",
+    "reference_es": "Ayudo al amigo.",
+    "used_words": [
+      "ayudar",
+      "amigo"
+    ]
+  },
+  {
+    "prompt_ru": "Я несу грязную воду.",
+    "clarification_ru": "Вы берёте ведро с грязной водой и несёте его на улицу.",
+    "reference_es": "Llevo agua sucia.",
+    "used_words": [
+      "llevar",
+      "agua",
+      "sucio"
+    ]
+  },
+  {
+    "prompt_ru": "Я кладу красную книгу здесь.",
+    "clarification_ru": "Вы держите книгу с красной обложкой и кладёте её на стол в этом месте.",
+    "reference_es": "Pongo el libro rojo aquí.",
+    "used_words": [
+      "poner",
+      "libro",
+      "rojo"
+    ]
+  }
+]

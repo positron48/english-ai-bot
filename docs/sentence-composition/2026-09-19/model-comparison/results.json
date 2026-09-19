@@ -1,0 +1,3711 @@
+[
+  {
+    "accepted": 20,
+    "calls": 2,
+    "course": "es_ru",
+    "input_tokens": 4704,
+    "model": "google/gemini-3-flash-preview",
+    "output_tokens": 3650,
+    "provider_cost": 1.56580502,
+    "seconds": 32.280136709,
+    "wanted": 20,
+    "run": "gemini3",
+    "test_passed": true,
+    "requests": [
+      {
+        "requested_model": "google/gemini-3-flash-preview",
+        "response_model": "google/gemini-3-flash-preview",
+        "temperature_sent": 0.6,
+        "reasoning_sent": null,
+        "phase": "generate",
+        "requested_count": 30,
+        "usage": {
+          "prompt_tokens": 1812,
+          "completion_tokens": 2485,
+          "total_tokens": 4297,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0,
+            "audio_tokens": 0,
+            "image_tokens": 0,
+            "accepted_prediction_tokens": null,
+            "rejected_prediction_tokens": null
+          },
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0,
+            "audio_tokens": 0,
+            "video_tokens": 0
+          },
+          "server_tool_use": null,
+          "cost_rub": 0.98419003,
+          "cost": 0.98419003,
+          "plugins": null
+        },
+        "finish_reason": "stop",
+        "returned_candidates": 30,
+        "review_checks": null
+      },
+      {
+        "requested_model": "google/gemini-3-flash-preview",
+        "response_model": "google/gemini-3-flash-preview",
+        "temperature_sent": null,
+        "reasoning_sent": null,
+        "phase": "review",
+        "requested_count": null,
+        "usage": {
+          "prompt_tokens": 2892,
+          "completion_tokens": 1165,
+          "total_tokens": 4057,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0,
+            "audio_tokens": 0,
+            "image_tokens": 0,
+            "accepted_prediction_tokens": null,
+            "rejected_prediction_tokens": null
+          },
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0,
+            "audio_tokens": 0,
+            "video_tokens": 0
+          },
+          "server_tool_use": null,
+          "cost_rub": 0.58161499,
+          "cost": 0.58161499,
+          "plugins": null
+        },
+        "finish_reason": "stop",
+        "returned_candidates": null,
+        "review_checks": [
+          {
+            "position": 0,
+            "accepted": true,
+            "reason": "Контекст обосновывает определенный артикль для книги.",
+            "context_evidence": [
+              "Вы держите в руках издание, которое вам только что подарили"
+            ]
+          },
+          {
+            "position": 1,
+            "accepted": true,
+            "reason": "Контекст обосновывает известность друга и единственность двери.",
+            "context_evidence": [
+              "Вы стоите в прихожей со своим знакомым",
+              "единственный выход из квартиры"
+            ]
+          },
+          {
+            "position": 2,
+            "accepted": true,
+            "reason": "Контекст обосновывает определенный артикль для субъекта и отсутствие артикля для вещества.",
+            "context_evidence": [
+              "Вы наблюдаете за ребенком",
+              "Речь идет о веществе в целом"
+            ]
+          },
+          {
+            "position": 3,
+            "accepted": true,
+            "reason": "Контекст обосновывает известность соседа и единственность окна.",
+            "context_evidence": [
+              "человек из квартиры рядом",
+              "единственное открытое окно"
+            ]
+          },
+          {
+            "position": 4,
+            "accepted": true,
+            "reason": "Контекст обосновывает определенный артикль для матери и конкретную книгу.",
+            "context_evidence": [
+              "Ваша мама потеряла ту самую книгу",
+              "которую читала вчера"
+            ]
+          },
+          {
+            "position": 5,
+            "accepted": true,
+            "reason": "Контекст обосновывает известность врача и окна.",
+            "context_evidence": [
+              "Доктор, который вас лечит",
+              "окну в кабинете, где вы оба находитесь"
+            ]
+          },
+          {
+            "position": 6,
+            "accepted": true,
+            "reason": "Контекст обосновывает неопределенный артикль для книги.",
+            "context_evidence": [
+              "решили взять любое издание"
+            ]
+          },
+          {
+            "position": 7,
+            "accepted": true,
+            "reason": "Контекст обосновывает артикли для друга и конкретной воды.",
+            "context_evidence": [
+              "Ваш товарищ идет к вам",
+              "бутылкой, которую вы просили принести"
+            ]
+          },
+          {
+            "position": 8,
+            "accepted": true,
+            "reason": "Контекст обосновывает определенные артикли для врача, справочника и стола.",
+            "context_evidence": [
+              "Доктор кладет свой медицинский справочник",
+              "стол, за которым вы сидите"
+            ]
+          },
+          {
+            "position": 9,
+            "accepted": true,
+            "reason": "Контекст обосновывает определенный артикль для конкретного знакомого.",
+            "context_evidence": [
+              "пытаетесь увидеть в толпе своего знакомого"
+            ]
+          },
+          {
+            "position": 10,
+            "accepted": true,
+            "reason": "Контекст обосновывает известность соседа и отсутствие артикля для вещества.",
+            "context_evidence": [
+              "Вы видите соседа",
+              "Речь о веществе"
+            ]
+          },
+          {
+            "position": 11,
+            "accepted": true,
+            "reason": "Контекст обосновывает определенные артикли для матери и двери.",
+            "context_evidence": [
+              "Ваша мама открывает входную дверь",
+              "вашего дома, услышав звонок"
+            ]
+          },
+          {
+            "position": 12,
+            "accepted": true,
+            "reason": "Контекст обосновывает артикли для мальчика и новой для него книги.",
+            "context_evidence": [
+              "Мальчик разглядывает какую-то новую книгу",
+              "которую он впервые видит"
+            ]
+          },
+          {
+            "position": 13,
+            "accepted": true,
+            "reason": "Контекст обосновывает отсутствие артикля у вещества и наречие.",
+            "context_evidence": [
+              "нашли источник воды",
+              "месте, где вы сейчас находитесь"
+            ]
+          },
+          {
+            "position": 14,
+            "accepted": true,
+            "reason": "Контекст обосновывает артикль для знакомого и неопределенный для любого ножа.",
+            "context_evidence": [
+              "Ваш знакомый выбирает",
+              "любой подходящий нож"
+            ]
+          },
+          {
+            "position": 15,
+            "accepted": true,
+            "reason": "Контекст обосновывает определенные артикли для матери и общего знакомого.",
+            "context_evidence": [
+              "Ваша мама оказывает помощь",
+              "вашему общему знакомому"
+            ]
+          },
+          {
+            "position": 16,
+            "accepted": true,
+            "reason": "Контекст обосновывает определенный артикль для единственного окна.",
+            "context_evidence": [
+              "Вы закрываете единственное окно"
+            ]
+          },
+          {
+            "position": 17,
+            "accepted": true,
+            "reason": "Контекст обосновывает артикли для ребенка и конкретной книги.",
+            "context_evidence": [
+              "Мальчик несет вам ту самую книгу",
+              "которую вы просили его принести"
+            ]
+          },
+          {
+            "position": 18,
+            "accepted": true,
+            "reason": "Контекст обосновывает артикли для друга, конкретной еды (ужина) и стола.",
+            "context_evidence": [
+              "Ваш товарищ ставит тарелку с ужином",
+              "стол в гостиной"
+            ]
+          },
+          {
+            "position": 19,
+            "accepted": true,
+            "reason": "Контекст обосновывает артикли для соседа и его двери.",
+            "context_evidence": [
+              "человека, живущего рядом",
+              "открывает дверь своего дома"
+            ]
+          },
+          {
+            "position": 20,
+            "accepted": true,
+            "reason": "Контекст обосновывает артикли для знакомого и конкретной больницы.",
+            "context_evidence": [
+              "увидели своего знакомого",
+              "Вы пришли в здание больницы"
+            ]
+          },
+          {
+            "position": 21,
+            "accepted": true,
+            "reason": "Контекст обосновывает артикли для мальчика и конкретного учебника.",
+            "context_evidence": [
+              "Ребенок читает учебник",
+              "который лежит перед ним на парте"
+            ]
+          },
+          {
+            "position": 22,
+            "accepted": true,
+            "reason": "Контекст обосновывает определенный артикль для врача и отсутствие артикля для воды.",
+            "context_evidence": [
+              "Доктор пьет воду",
+              "Речь о веществе"
+            ]
+          },
+          {
+            "position": 23,
+            "accepted": true,
+            "reason": "Контекст обосновывает артикли для знакомого и искомого выхода.",
+            "context_evidence": [
+              "Ваш знакомый находится",
+              "пытается нащупать выход"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "accepted": 20,
+    "calls": 2,
+    "course": "es_ru",
+    "input_tokens": 4959,
+    "model": "google/gemini-3.8-flash",
+    "output_tokens": 2982,
+    "provider_cost": 1.7541148,
+    "seconds": 22.974566667,
+    "wanted": 20,
+    "run": "gemini38",
+    "test_passed": true,
+    "requests": [
+      {
+        "requested_model": "google/gemini-3.8-flash",
+        "response_model": "google/gemini-3.8-flash",
+        "temperature_sent": 0.6,
+        "reasoning_sent": null,
+        "phase": "generate",
+        "requested_count": 30,
+        "usage": {
+          "prompt_tokens": 1812,
+          "completion_tokens": 1749,
+          "total_tokens": 3561,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0,
+            "audio_tokens": 0,
+            "image_tokens": 0,
+            "accepted_prediction_tokens": null,
+            "rejected_prediction_tokens": null
+          },
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0,
+            "audio_tokens": 0,
+            "video_tokens": 0
+          },
+          "server_tool_use": null,
+          "cost_rub": 0.93201419,
+          "cost": 0.93201419,
+          "plugins": null
+        },
+        "finish_reason": "stop",
+        "returned_candidates": 30,
+        "review_checks": null
+      },
+      {
+        "requested_model": "google/gemini-3.8-flash",
+        "response_model": "google/gemini-3.8-flash",
+        "temperature_sent": null,
+        "reasoning_sent": null,
+        "phase": "review",
+        "requested_count": null,
+        "usage": {
+          "prompt_tokens": 3147,
+          "completion_tokens": 1233,
+          "total_tokens": 4380,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0,
+            "audio_tokens": 0,
+            "image_tokens": 0,
+            "accepted_prediction_tokens": null,
+            "rejected_prediction_tokens": null
+          },
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0,
+            "audio_tokens": 0,
+            "video_tokens": 0
+          },
+          "server_tool_use": null,
+          "cost_rub": 0.82210061,
+          "cost": 0.82210061,
+          "plugins": null
+        },
+        "finish_reason": "stop",
+        "returned_candidates": null,
+        "review_checks": [
+          {
+            "position": 0,
+            "accepted": true,
+            "reason": "Все слова из списка, артикль конкретизирован контекстом.",
+            "context_evidence": [
+              "Собеседник передал вам эту книгу минуту назад"
+            ]
+          },
+          {
+            "position": 1,
+            "accepted": true,
+            "reason": "Все слова из списка, артикль мальчика и нулевой артикль воды обоснованы.",
+            "context_evidence": [
+              "Вы оба видите сына соседей",
+              "воду вообще как вещество"
+            ]
+          },
+          {
+            "position": 2,
+            "accepted": true,
+            "reason": "Оба объекта известны обоим собеседникам в контексте.",
+            "context_evidence": [
+              "Вы с приятелем сидите в комнате",
+              "единственную входную дверь"
+            ]
+          },
+          {
+            "position": 3,
+            "accepted": true,
+            "reason": "Единственное окно известно обоим собеседникам.",
+            "context_evidence": [
+              "В вашей комнате всего одно окно"
+            ]
+          },
+          {
+            "position": 4,
+            "accepted": true,
+            "reason": "Определенный артикль матери и неопределенный книги обоснованы.",
+            "context_evidence": [
+              "Вы говорите о своей маме",
+              "какую-нибудь одну книгу"
+            ]
+          },
+          {
+            "position": 5,
+            "accepted": true,
+            "reason": "Врач и окно однозначно определены ситуацией.",
+            "context_evidence": [
+              "Доктор, который вас лечит",
+              "окно в кабинете, где вы оба находитесь"
+            ]
+          },
+          {
+            "position": 6,
+            "accepted": true,
+            "reason": "Сосед и нулевой артикль воды обоснованы контекстом.",
+            "context_evidence": [
+              "Вы оба знаете соседа по лестничной площадке",
+              "делает глоток воды"
+            ]
+          },
+          {
+            "position": 7,
+            "accepted": true,
+            "reason": "Форма ты и конкретный друг обоснованы пояснением.",
+            "context_evidence": [
+              "одном общем знакомом из вашей компании"
+            ]
+          },
+          {
+            "position": 8,
+            "accepted": true,
+            "reason": "Книга и стол определены контекстом ситуации.",
+            "context_evidence": [
+              "держите ту самую книгу, которую читали",
+              "единственный стол в комнате"
+            ]
+          },
+          {
+            "position": 9,
+            "accepted": true,
+            "reason": "Дверь однозначно определена контекстом.",
+            "context_evidence": [
+              "единственную дверь вашей квартиры"
+            ]
+          },
+          {
+            "position": 10,
+            "accepted": false,
+            "reason": "Неверный перевод: «смотреть в окно» по-испански «mirar por la ventana». Конструкция «mirar la ventana» означает «смотреть на окно».",
+            "context_evidence": []
+          },
+          {
+            "position": 11,
+            "accepted": true,
+            "reason": "Оба участника однозначно известны обоим собеседникам.",
+            "context_evidence": [
+              "Ваш общий друг помогает",
+              "доктору, у которого вы оба лечитесь"
+            ]
+          },
+          {
+            "position": 12,
+            "accepted": true,
+            "reason": "Неисчисляемое вещество без артикля, лексика разрешена.",
+            "context_evidence": [
+              "обычную питьевую воду в киоске перед вами"
+            ]
+          },
+          {
+            "position": 13,
+            "accepted": true,
+            "reason": "Определенные артикли матери и окна обоснованы.",
+            "context_evidence": [
+              "Ваша мама закрывает",
+              "то самое окно в кухне, из которого шёл холод"
+            ]
+          },
+          {
+            "position": 14,
+            "accepted": true,
+            "reason": "Врач и книга однозначно известны собеседникам.",
+            "context_evidence": [
+              "Ваш лечащий врач пытается найти",
+              "о котором вы только что говорили"
+            ]
+          },
+          {
+            "position": 15,
+            "accepted": true,
+            "reason": "Сосед и дверь известны обоим.",
+            "context_evidence": [
+              "Жилец из квартиры напротив",
+              "входную дверь в подъезде"
+            ]
+          },
+          {
+            "position": 16,
+            "accepted": true,
+            "reason": "Сын соседей конкретен, вода как вещество без артикля.",
+            "context_evidence": [
+              "Сын соседей несёт",
+              "кружку с водой в комнату"
+            ]
+          },
+          {
+            "position": 17,
+            "accepted": true,
+            "reason": "Конкретный друг обоснован контекстом.",
+            "context_evidence": [
+              "своего давнего приятеля в условленном месте"
+            ]
+          },
+          {
+            "position": 18,
+            "accepted": true,
+            "reason": "Форма tú и конкретная книга обоснованы.",
+            "context_evidence": [
+              "ту недавно вышедшую книгу, которую он держит в руках"
+            ]
+          },
+          {
+            "position": 19,
+            "accepted": true,
+            "reason": "Дверь однозначно определена в контексте.",
+            "context_evidence": [
+              "единственную дверь в комнате"
+            ]
+          },
+          {
+            "position": 20,
+            "accepted": true,
+            "reason": "Друг определен, вода без артикля как вещество.",
+            "context_evidence": [
+              "Ваш общий друг наливает",
+              "простую прозрачную воду"
+            ]
+          },
+          {
+            "position": 21,
+            "accepted": true,
+            "reason": "Оба лица известны собеседникам.",
+            "context_evidence": [
+              "Живущий рядом сосед",
+              "вашему общему приятелю"
+            ]
+          },
+          {
+            "position": 22,
+            "accepted": true,
+            "reason": "Мать и книга однозначно определены.",
+            "context_evidence": [
+              "Ваша мама отыскала",
+              "тот самый семейный старинный том"
+            ]
+          },
+          {
+            "position": 23,
+            "accepted": true,
+            "reason": "Единственное окно в комнате обосновывает определенный артикль.",
+            "context_evidence": [
+              "перед единственным окном в этой комнате"
+            ]
+          },
+          {
+            "position": 24,
+            "accepted": true,
+            "reason": "Доктор конкретен, вода без артикля как вещество.",
+            "context_evidence": [
+              "Дежурный доктор несёт",
+              "стакан с водой для больного"
+            ]
+          },
+          {
+            "position": 25,
+            "accepted": true,
+            "reason": "Дверь определена контекстом.",
+            "context_evidence": [
+              "перед единственной дверью в дом"
+            ]
+          },
+          {
+            "position": 26,
+            "accepted": true,
+            "reason": "Неопределенный артикль для одной книги из многих обоснован.",
+            "context_evidence": [
+              "один какой-то подержанный том из многих"
+            ]
+          },
+          {
+            "position": 27,
+            "accepted": true,
+            "reason": "Конкретный общий друг обосновывает определенный артикль.",
+            "context_evidence": [
+              "вашем общем друге, который сейчас уехал"
+            ]
+          },
+          {
+            "position": 28,
+            "accepted": true,
+            "reason": "Мальчик и окно определены контекстом.",
+            "context_evidence": [
+              "Сын хозяйки закрывает",
+              "единственное открытое окно в комнате"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "accepted": 16,
+    "calls": 4,
+    "course": "es_ru",
+    "input_tokens": 9837,
+    "model": "openai/gpt-5.4-mini",
+    "output_tokens": 3160,
+    "provider_cost": 2.54231435,
+    "seconds": 20.268713208,
+    "wanted": 20,
+    "run": "mini",
+    "test_passed": true,
+    "requests": [
+      {
+        "requested_model": "openai/gpt-5.4-mini",
+        "response_model": "openai/gpt-5.4-mini",
+        "temperature_sent": 0.6,
+        "reasoning_sent": null,
+        "phase": "generate",
+        "requested_count": 30,
+        "usage": {
+          "prompt_tokens": 1817,
+          "completion_tokens": 1470,
+          "total_tokens": 3287,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0,
+            "audio_tokens": 0,
+            "image_tokens": 0,
+            "accepted_prediction_tokens": null,
+            "rejected_prediction_tokens": null
+          },
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0,
+            "audio_tokens": 0,
+            "video_tokens": 0
+          },
+          "server_tool_use": null,
+          "cost_rub": 0.93907691,
+          "cost": 0.93907691,
+          "plugins": null
+        },
+        "finish_reason": "stop",
+        "returned_candidates": 30,
+        "review_checks": null
+      },
+      {
+        "requested_model": "openai/gpt-5.4-mini",
+        "response_model": "openai/gpt-5.4-mini",
+        "temperature_sent": null,
+        "reasoning_sent": null,
+        "phase": "review",
+        "requested_count": null,
+        "usage": {
+          "prompt_tokens": 2684,
+          "completion_tokens": 1242,
+          "total_tokens": 3926,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0,
+            "audio_tokens": 0,
+            "image_tokens": 0,
+            "accepted_prediction_tokens": null,
+            "rejected_prediction_tokens": null
+          },
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0,
+            "audio_tokens": 0,
+            "video_tokens": 0
+          },
+          "server_tool_use": null,
+          "cost_rub": 0.89484662,
+          "cost": 0.89484662,
+          "plugins": null
+        },
+        "finish_reason": "stop",
+        "returned_candidates": null,
+        "review_checks": [
+          {
+            "position": 0,
+            "accepted": true,
+            "reason": "Книга уже у собеседников и действие происходит сейчас; артикль el обоснован.",
+            "context_evidence": [
+              "Собеседник передал мне книгу, и я смотрю на неё сейчас."
+            ]
+          },
+          {
+            "position": 1,
+            "accepted": true,
+            "reason": "Книга ещё не выбрана, поэтому el подходит; действие в настоящем.",
+            "context_evidence": [
+              "Я сейчас в магазине и ещё не выбрал ни одной книги."
+            ]
+          },
+          {
+            "position": 2,
+            "accepted": true,
+            "reason": "Друг уже известен обоим; определённый артикль el обоснован.",
+            "context_evidence": [
+              "Мы оба знаем этого друга. Он открывает дверь в вашу квартиру."
+            ]
+          },
+          {
+            "position": 3,
+            "accepted": true,
+            "reason": "Друг уже известен обоим; определённый артикль el обоснован.",
+            "context_evidence": [
+              "Мы оба знаем этого друга. Он закрывает дверь в вашу квартиру."
+            ]
+          },
+          {
+            "position": 4,
+            "accepted": true,
+            "reason": "Вода уже известна в ситуации и говорится о ней сейчас; el обоснован.",
+            "context_evidence": [
+              "Стакан с водой стоит передо мной, и я пью эту воду сейчас."
+            ]
+          },
+          {
+            "position": 5,
+            "accepted": true,
+            "reason": "Окно видно обоим и речь о нём сейчас; la обоснован.",
+            "context_evidence": [
+              "Окно в этой комнате видно нам обоим, и я открываю его сейчас."
+            ]
+          },
+          {
+            "position": 6,
+            "accepted": true,
+            "reason": "Окно видно обоим и речь о нём сейчас; la обоснован.",
+            "context_evidence": [
+              "Окно в этой комнате видно нам обоим, и я закрываю его сейчас."
+            ]
+          },
+          {
+            "position": 7,
+            "accepted": true,
+            "reason": "Друг уже известен обоим; al = a+el обоснован для конкретного друга.",
+            "context_evidence": [
+              "Я ищу человека, которого мы оба хорошо знаем."
+            ]
+          },
+          {
+            "position": 8,
+            "accepted": true,
+            "reason": "Одна конкретная книга лежит на столе; el обоснован.",
+            "context_evidence": [
+              "На столе лежит одна книга, и я нахожу её сейчас."
+            ]
+          },
+          {
+            "position": 9,
+            "accepted": true,
+            "reason": "Вода уже конкретизирована как та, которую держат и несут сейчас; el обоснован.",
+            "context_evidence": [
+              "Я держу воду и иду с ней сейчас."
+            ]
+          },
+          {
+            "position": 10,
+            "accepted": true,
+            "reason": "Окно известно из ситуации; la обоснован.",
+            "context_evidence": [
+              "Окно в комнате видно мне, и я смотрю на него сейчас."
+            ]
+          },
+          {
+            "position": 11,
+            "accepted": true,
+            "reason": "Друг уже известен обоим; al = a+el обоснован.",
+            "context_evidence": [
+              "Мы оба знаем этого друга, и я помогаю ему сейчас."
+            ]
+          },
+          {
+            "position": 12,
+            "accepted": true,
+            "reason": "Врач уже известен обоим; el обоснован.",
+            "context_evidence": [
+              "Мы оба знаем этого врача. Он открывает дверь в кабинет."
+            ]
+          },
+          {
+            "position": 13,
+            "accepted": true,
+            "reason": "Врач уже известен обоим; el обоснован.",
+            "context_evidence": [
+              "Мы оба знаем этого врача. Он закрывает дверь в кабинет."
+            ]
+          },
+          {
+            "position": 14,
+            "accepted": true,
+            "reason": "Сосед уже известен обоим; el обоснован.",
+            "context_evidence": [
+              "Мы оба знаем этого соседа, и он покупает книгу сейчас."
+            ]
+          },
+          {
+            "position": 15,
+            "accepted": true,
+            "reason": "Сосед уже известен обоим; el обоснован.",
+            "context_evidence": [
+              "Мы оба знаем этого соседа, и он читает книгу сейчас."
+            ]
+          },
+          {
+            "position": 16,
+            "accepted": true,
+            "reason": "Ребёнок и вода уже известны в ситуации; оба определённых артикля обоснованы.",
+            "context_evidence": [
+              "Ребёнок и вода уже известны в нашей ситуации, и он пьёт её сейчас."
+            ]
+          },
+          {
+            "position": 17,
+            "accepted": false,
+            "reason": "Недопустимо: 'Pongo el libro en la mesa' добавляет смысл 'на столе', а в пояснении только книга уже у меня в руках; к тому же для стола нет основания как для конкретного предмета.",
+            "context_evidence": []
+          },
+          {
+            "position": 18,
+            "accepted": false,
+            "reason": "Контекст объясняет поиск воды из-за потребности пить, а не конкретное опознание воды; для el agua нет основания.",
+            "context_evidence": []
+          },
+          {
+            "position": 19,
+            "accepted": true,
+            "reason": "Дверь в комнате видна обоим и речь о ней сейчас; la обоснован.",
+            "context_evidence": [
+              "Дверь в этой комнате видна мне, и я смотрю на неё сейчас."
+            ]
+          },
+          {
+            "position": 20,
+            "accepted": true,
+            "reason": "Дверь в комнате видна обоим и речь о ней сейчас; la обоснован.",
+            "context_evidence": [
+              "Дверь в этой комнате видна мне, и я открываю её сейчас."
+            ]
+          },
+          {
+            "position": 21,
+            "accepted": true,
+            "reason": "Дверь в комнате видна обоим и речь о ней сейчас; la обоснован.",
+            "context_evidence": [
+              "Дверь в этой комнате видна мне, и я закрываю её сейчас."
+            ]
+          },
+          {
+            "position": 22,
+            "accepted": true,
+            "reason": "Книга уже лежит перед говорящим; aquí не конфликтует и помогает локализовать сцену.",
+            "context_evidence": [
+              "Я сижу рядом со столом, и книга лежит передо мной."
+            ]
+          },
+          {
+            "position": 23,
+            "accepted": true,
+            "reason": "Стакан там виден, и говорящий идёт к нему; allí согласовано.",
+            "context_evidence": [
+              "Я вижу стакан там и иду к нему, чтобы пить."
+            ]
+          },
+          {
+            "position": 24,
+            "accepted": true,
+            "reason": "Книга новая и выбирается сейчас; adjective nuevo обоснован.",
+            "context_evidence": [
+              "Я сейчас в магазине и выбираю новую книгу."
+            ]
+          }
+        ]
+      },
+      {
+        "requested_model": "openai/gpt-5.4-mini",
+        "response_model": "openai/gpt-5.4-mini",
+        "temperature_sent": 0.6,
+        "reasoning_sent": null,
+        "phase": "generate",
+        "requested_count": 6,
+        "usage": {
+          "prompt_tokens": 3740,
+          "completion_tokens": 300,
+          "total_tokens": 4040,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0,
+            "audio_tokens": 0,
+            "image_tokens": 0,
+            "accepted_prediction_tokens": null,
+            "rejected_prediction_tokens": null
+          },
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0,
+            "audio_tokens": 0,
+            "video_tokens": 0
+          },
+          "server_tool_use": null,
+          "cost_rub": 0.48909336,
+          "cost": 0.48909336,
+          "plugins": null
+        },
+        "finish_reason": "stop",
+        "returned_candidates": 6,
+        "review_checks": null
+      },
+      {
+        "requested_model": "openai/gpt-5.4-mini",
+        "response_model": "openai/gpt-5.4-mini",
+        "temperature_sent": null,
+        "reasoning_sent": null,
+        "phase": "review",
+        "requested_count": null,
+        "usage": {
+          "prompt_tokens": 1596,
+          "completion_tokens": 148,
+          "total_tokens": 1744,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0,
+            "audio_tokens": 0,
+            "image_tokens": 0,
+            "accepted_prediction_tokens": null,
+            "rejected_prediction_tokens": null
+          },
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0,
+            "audio_tokens": 0,
+            "video_tokens": 0
+          },
+          "server_tool_use": null,
+          "cost_rub": 0.21929746,
+          "cost": 0.21929746,
+          "plugins": null
+        },
+        "finish_reason": "stop",
+        "returned_candidates": null,
+        "review_checks": [
+          {
+            "position": 0,
+            "accepted": false,
+            "reason": "Нельзя: в эталоне есть el libro, но уточнение не обосновывает конкретную известную книгу и одновременно добавляет выборанность; к тому же «читать» есть, но контекст только про уже выбранную книгу, без надежного основания для артикля.",
+            "context_evidence": []
+          },
+          {
+            "position": 1,
+            "accepted": false,
+            "reason": "Нельзя: фраза неестественна как перевод без добавления лишнего смысла; уточнение про стакан и стол не объясняет артикль el для воды и не подтверждает нужный выбор по контексту.",
+            "context_evidence": []
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "accepted": 15,
+    "calls": 4,
+    "course": "es_ru",
+    "input_tokens": 16133,
+    "model": "anthropic/claude-haiku-4.5",
+    "output_tokens": 9703,
+    "provider_cost": 7.609845379999999,
+    "seconds": 59.602211708,
+    "wanted": 20,
+    "run": "haiku",
+    "test_passed": true,
+    "requests": [
+      {
+        "requested_model": "anthropic/claude-haiku-4.5",
+        "response_model": "anthropic/claude-haiku-4.5",
+        "temperature_sent": 0.6,
+        "reasoning_sent": null,
+        "phase": "generate",
+        "requested_count": 30,
+        "usage": {
+          "prompt_tokens": 2468,
+          "completion_tokens": 2902,
+          "total_tokens": 5370,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0,
+            "audio_tokens": 0,
+            "image_tokens": 0,
+            "accepted_prediction_tokens": null,
+            "rejected_prediction_tokens": null
+          },
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0,
+            "audio_tokens": 0,
+            "video_tokens": 0
+          },
+          "server_tool_use": null,
+          "cost_rub": 1.99851434,
+          "cost": 1.99851434,
+          "plugins": null
+        },
+        "finish_reason": "stop",
+        "returned_candidates": 30,
+        "review_checks": null
+      },
+      {
+        "requested_model": "anthropic/claude-haiku-4.5",
+        "response_model": "anthropic/claude-haiku-4.5",
+        "temperature_sent": null,
+        "reasoning_sent": null,
+        "phase": "review",
+        "requested_count": null,
+        "usage": {
+          "prompt_tokens": 3679,
+          "completion_tokens": 3031,
+          "total_tokens": 6710,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0,
+            "audio_tokens": 0,
+            "image_tokens": 0,
+            "accepted_prediction_tokens": null,
+            "rejected_prediction_tokens": null
+          },
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0,
+            "audio_tokens": 0,
+            "video_tokens": 0
+          },
+          "server_tool_use": null,
+          "cost_rub": 2.21698781,
+          "cost": 2.21698781,
+          "plugins": null
+        },
+        "finish_reason": "stop",
+        "returned_candidates": null,
+        "review_checks": [
+          {
+            "position": 0,
+            "accepted": true,
+            "reason": "Лексика разрешена, время presente indicativo соблюдено. Неопределённый артикль un libro верен: собеседник передал книгу, но не указано, какую именно из возможных.",
+            "context_evidence": []
+          },
+          {
+            "position": 1,
+            "accepted": true,
+            "reason": "Лексика разрешена, время presente indicativo соблюдено. Определённый артикль la puerta и притяжательное mi amigo верны: оба собеседника знают друга и единственную входную дверь квартиры.",
+            "context_evidence": [
+              "Вы оба узнаёте вашего общего друга",
+              "единственную входную дверь квартиры, где вы вместе живёте"
+            ]
+          },
+          {
+            "position": 2,
+            "accepted": true,
+            "reason": "Лексика разрешена, время presente indicativo соблюдено. Определённый артикль el niño верен: контекст указывает на конкретного мальчика, которого видит говорящий.",
+            "context_evidence": [
+              "Вы видите, как он пьёт воду из стакана"
+            ]
+          },
+          {
+            "position": 3,
+            "accepted": false,
+            "reason": "Фраза неестественна. Контекст говорит о поиске конкретного окна, выходящего на улицу, но русское предложение «Мать ищет окно» звучит странно — это действие не соответствует нормальной ситуации. Кроме того, предложение не отражает цель поиска и звучит как попытка подогнать неестественное действие под грамматику."
+          },
+          {
+            "position": 4,
+            "accepted": true,
+            "reason": "Лексика разрешена, время presente indicativo соблюдено. Неопределённый артикль un libro верен: вы ищете любую подходящую книгу, ещё не выбрав конкретную.",
+            "context_evidence": [
+              "Вы ещё не выбрали книгу и ищете любую подходящую в магазине"
+            ]
+          },
+          {
+            "position": 5,
+            "accepted": true,
+            "reason": "Лексика разрешена, время presente indicativo соблюдено. Определённый артикль el vecino и la puerta верны: это дверь соседа, входная дверь его квартиры, которая известна из контекста.",
+            "context_evidence": [
+              "Сосед входит в свою квартиру и закрывает дверь позади себя"
+            ]
+          },
+          {
+            "position": 6,
+            "accepted": false,
+            "reason": "Несогласованность между предложением и контекстом. Русское предложение «Друг находит нож» описывает результат действия (находит = обнаружил), но clarification_ru говорит о процессе поиска и последующей находке. Используется неопределённый артикль un cuchillo, который указывает на новый предмет, но контекст подразумевает, что это конкретный нож на столе, который друг ищет и находит. Артикль не согласуется с описанной ситуацией."
+          },
+          {
+            "position": 7,
+            "accepted": true,
+            "reason": "Лексика разрешена, время presente indicativo соблюдено. Определённый артикль el libro верен: это книга, которую вы держите и кладёте перед собой, уже известная в контексте.",
+            "context_evidence": [
+              "Вы держите книгу в руках и кладёте её на стол перед собой"
+            ]
+          },
+          {
+            "position": 8,
+            "accepted": false,
+            "reason": "Неестественное действие. Контекст говорит о том, что ребёнок смотрит на улицу, но глагол «смотреть на окно» в русском предложении и испанском «mirar la ventana» буквально означают смотрение на сам предмет (окно), а не через него. Это странная фраза — естественнее было бы «смотрит в окно» (mira por la ventana)."
+          },
+          {
+            "position": 9,
+            "accepted": true,
+            "reason": "Лексика разрешена, время presente indicativo соблюдено. Глагол llevar с водой естественен в контексте переноса ведра. Артиклей нет, что соответствует абстрактному объекту.",
+            "context_evidence": []
+          },
+          {
+            "position": 10,
+            "accepted": false,
+            "reason": "Несогласованность артикля. Контекст описывает конкретную книгу, которая издана давно и которую мать держит и читает — это известный, определённый предмет. Но используется неопределённый артикль un libro viejo, который указывает на неизвестный предмет. Должен быть определённый артикль la."
+          },
+          {
+            "position": 11,
+            "accepted": true,
+            "reason": "Лексика разрешена, время presente indicativo соблюдено. Определённый артикль la puerta верен: это входная дверь больницы, конкретная и известная из контекста. Родительный падеж del hospital правильно указывает на принадлежность.",
+            "context_evidence": [
+              "Врач входит в больницу и открывает входную дверь"
+            ]
+          },
+          {
+            "position": 12,
+            "accepted": false,
+            "reason": "Несогласованность артикля. Контекст говорит о поиске конкретного окна, которое нужно открыть — это определённый предмет. Но русское предложение и испанский перевод используют определённый артикль la ventana, что верно, однако фраза «ищу окно в комнате» звучит неестественно: когда человек ищет конкретное окно в известной комнате, он обычно ищет его со знанием о месте, а не просто присутствия в комнате. Кроме того, в clarification_ru упоминается habitación, которой нет в allowed_vocabulary."
+          },
+          {
+            "position": 13,
+            "accepted": true,
+            "reason": "Лексика разрешена, время presente indicativo соблюдено. Определённый артикль el amigo верен: оба собеседника находятся вместе и знают друг друга. Наречие aquí указывает на место действия.",
+            "context_evidence": [
+              "Вы оба находитесь в одной комнате"
+            ]
+          },
+          {
+            "position": 14,
+            "accepted": true,
+            "reason": "Лексика разрешена, время presente indicativo соблюдено. Определённый артикль la ventana верен: вы видите конкретное окно в другой комнате. Наречие allí указывает на место.",
+            "context_evidence": [
+              "Вы видите окно в другой комнате и закрываете его"
+            ]
+          },
+          {
+            "position": 15,
+            "accepted": false,
+            "reason": "Несогласованность артикля. Контекст описывает поиск и находку конкретной, уже известной книги на близком расстоянии, но используется определённый артикль el libro. Однако сама структура странна: «находит книгу близко» — это неестественная фраза в русском языке. Наречие «близко» используется странно в контексте нахождения предмета."
+          },
+          {
+            "position": 16,
+            "accepted": false,
+            "reason": "Неестественное использование прилагательного. Русское предложение «Я открываю дверь с большой силой» и испанский перевод «Abro la puerta grande» не соответствуют друг другу. «Большой» в испанском означает размер двери, а не силу. Это странная фраза — дверь, открываемая с силой, не обязательно большая. Фраза неестественна и не соответствует нормальному употреблению."
+          },
+          {
+            "position": 17,
+            "accepted": true,
+            "reason": "Лексика разрешена, время presente indicativo соблюдено. Определённый артикль el niño верен: ребёнок известен из контекста. Прилагательное sucia естественно описывает воду.",
+            "context_evidence": [
+              "Ребёнок берёт ведро с грязной водой и несёт его в сад"
+            ]
+          },
+          {
+            "position": 18,
+            "accepted": true,
+            "reason": "Лексика разрешена, время presente indicativo соблюдено. Определённый артикль el libro верен: это конкретная книга с красной обложкой, которую вы видите и смотрите на неё.",
+            "context_evidence": [
+              "На столе лежит книга с красной обложкой. Вы смотрите на неё"
+            ]
+          },
+          {
+            "position": 19,
+            "accepted": false,
+            "reason": "Неестественное и странное действие. Фраза «Друг ищет зелёное окно» подразумевает поиск окна необычного цвета, что неестественно. Контекст говорит об окне с зелёной рамой, но сама концепция поиска окна по цвету его рамы звучит надуманно и странно. Это попытка подогнать действие под прилагательное из vocabulary."
+          },
+          {
+            "position": 20,
+            "accepted": false,
+            "reason": "Неестественное действие. Русское предложение «Мать пьёт воду далеко» содержит странное и неестественное сочетание: наречие «далеко» не применяется к действию питья, а указывает на расстояние места. Предложение звучит неправильно даже в русском: непонятно, что означает пить воду именно далеко. Это не является корректной русской фразой."
+          },
+          {
+            "position": 21,
+            "accepted": true,
+            "reason": "Лексика разрешена, время presente indicativo соблюдено. Неопределённый артикль un libro новый верен: врач держит новую, только что изданную книгу, которая в процессе — ещё не упоминавшаяся новая для контекста.",
+            "context_evidence": [
+              "Врач держит книгу, которая только что издана, и читает её"
+            ]
+          }
+        ]
+      },
+      {
+        "requested_model": "anthropic/claude-haiku-4.5",
+        "response_model": "anthropic/claude-haiku-4.5",
+        "temperature_sent": 0.6,
+        "reasoning_sent": null,
+        "phase": "generate",
+        "requested_count": 18,
+        "usage": {
+          "prompt_tokens": 6687,
+          "completion_tokens": 1737,
+          "total_tokens": 8424,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0,
+            "audio_tokens": 0,
+            "image_tokens": 0,
+            "accepted_prediction_tokens": null,
+            "rejected_prediction_tokens": null
+          },
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0,
+            "audio_tokens": 0,
+            "video_tokens": 0
+          },
+          "server_tool_use": null,
+          "cost_rub": 1.80946886,
+          "cost": 1.80946886,
+          "plugins": null
+        },
+        "finish_reason": "stop",
+        "returned_candidates": 18,
+        "review_checks": null
+      },
+      {
+        "requested_model": "anthropic/claude-haiku-4.5",
+        "response_model": "anthropic/claude-haiku-4.5",
+        "temperature_sent": null,
+        "reasoning_sent": null,
+        "phase": "review",
+        "requested_count": null,
+        "usage": {
+          "prompt_tokens": 3299,
+          "completion_tokens": 2033,
+          "total_tokens": 5332,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0,
+            "audio_tokens": 0,
+            "image_tokens": 0,
+            "accepted_prediction_tokens": null,
+            "rejected_prediction_tokens": null
+          },
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0,
+            "audio_tokens": 0,
+            "video_tokens": 0
+          },
+          "server_tool_use": null,
+          "cost_rub": 1.58487437,
+          "cost": 1.58487437,
+          "plugins": null
+        },
+        "finish_reason": "stop",
+        "returned_candidates": null,
+        "review_checks": [
+          {
+            "position": 0,
+            "accepted": true,
+            "reason": "Все слова в словаре. Presente indicativo. Неопределённый артикль un libro обоснован: ещё не выбрана конкретная книга.",
+            "context_evidence": [
+              "Вы держите книгу, которая только что издана, и читаете её."
+            ]
+          },
+          {
+            "position": 1,
+            "accepted": true,
+            "reason": "Все слова в словаре. Presente indicativo. Определённый артикль la puerta обоснован: входная дверь квартиры, известная обоим.",
+            "context_evidence": [
+              "Мать подходит к входной двери квартиры и открывает её."
+            ]
+          },
+          {
+            "position": 2,
+            "accepted": true,
+            "reason": "Все слова в словаре. Presente indicativo. Неопределённый артикль un libro обоснован: поиск любой подходящей книги, ещё не выбрана.",
+            "context_evidence": [
+              "Сосед ещё не выбрал книгу и ищет любую подходящую на полке."
+            ]
+          },
+          {
+            "position": 3,
+            "accepted": true,
+            "reason": "Все слова в словаре. Presente indicativo. Неопределённый артикль agua: вода как вещество, не требует артикля в испанском (pongo agua).",
+            "context_evidence": [
+              "Вы держите стакан с водой и кладёте его на стол перед собой."
+            ]
+          },
+          {
+            "position": 4,
+            "accepted": false,
+            "reason": "Неестественная фраза: ребёнок ищет окно в комнате и находит его — это абсурдно. Окно не теряется и не может быть предметом поиска. Контекст противоречит естественности предложения."
+          },
+          {
+            "position": 5,
+            "accepted": true,
+            "reason": "Все слова в словаре. Presente indicativo. Определённый артикль el médico обоснован: оба находятся в его кабинете, врач известен. Слово aquí указано в контексте места (кабинет).",
+            "context_evidence": [
+              "Вы оба находитесь в кабинете врача. Врач пьёт воду в этом месте."
+            ]
+          },
+          {
+            "position": 6,
+            "accepted": true,
+            "reason": "Все слова в словаре. Presente indicativo. Определённый артикль el libro: книга конкретная, на столе, видна обоим (зелёная обложка как идентификатор).",
+            "context_evidence": [
+              "На столе лежит книга с зелёной обложкой. Вы смотрите на неё."
+            ]
+          },
+          {
+            "position": 7,
+            "accepted": true,
+            "reason": "Все слова в словаре. Presente indicativo. Определённый артикль el amigo: друг известен обоим (вы оба дома). Определённый артикль la ventana: открытое окно в другой комнате видно обоим.",
+            "context_evidence": [
+              "Вы оба находитесь дома. Друг видит открытое окно в другой комнате и закрывает его."
+            ]
+          },
+          {
+            "position": 8,
+            "accepted": false,
+            "reason": "Неестественная фраза с семантической ошибкой: «новая вода» не имеет смысла. Вода — вещество, не может быть новой в речи о её переноске. Контекст пытается оправдать через «свежую воду», но это натяжка."
+          },
+          {
+            "position": 9,
+            "accepted": true,
+            "reason": "Все слова в словаре. Presente indicativo. Неопределённый артикль un libro: сосед в магазине выбирает книгу, ещё не выбрана конкретная.",
+            "context_evidence": [
+              "Сосед в магазине выбирает книгу с чёрной обложкой и покупает её."
+            ]
+          },
+          {
+            "position": 10,
+            "accepted": true,
+            "reason": "Все слова в словаре. Presente indicativo. Предложный артикль al amigo обоснован: друг просит помощи, вам известен этот человек.",
+            "context_evidence": [
+              "Друг просит вас о помощи, и вы помогаете ему."
+            ]
+          },
+          {
+            "position": 11,
+            "accepted": false,
+            "reason": "Отсутствует обоснование артикля la ventana в контексте. Пояснение говорит: врач открывает окно для свежего воздуха, но не объясняет, почему оба знают это конкретное окно. Ситуация его кабинета не делает окно известным обоим заранее."
+          },
+          {
+            "position": 12,
+            "accepted": false,
+            "reason": "Неестественная фраза с логической ошибкой: «ищет воду далеко» при контексте «находится в другой комнате дома» — это противоречие (дом — не расстояние «далеко»). Дополнительно: использование lejos (далеко) странно для поиска в доме."
+          },
+          {
+            "position": 13,
+            "accepted": true,
+            "reason": "Все слова в словаре. Presente indicativo. Прилагательное sucio обоснованно. Неопределённый артикль agua: вода как вещество.",
+            "context_evidence": [
+              "Вы берёте ведро с грязной водой и несёте его на улицу."
+            ]
+          },
+          {
+            "position": 14,
+            "accepted": true,
+            "reason": "Все слова в словаре. Presente indicativo. Определённый артикль la puerta: большая входная дверь дома, известна обоим (в доме есть такая дверь).",
+            "context_evidence": [
+              "В доме есть большая входная дверь. Сосед смотрит на неё."
+            ]
+          },
+          {
+            "position": 15,
+            "accepted": true,
+            "reason": "Все слова в словаре. Presente indicativo. Неопределённый артикль un libro: друг ещё не выбрал её из полки (поиск, затем находка).",
+            "context_evidence": [
+              "Друг ищет книгу на полке и находит её — это издание давних лет."
+            ]
+          },
+          {
+            "position": 16,
+            "accepted": true,
+            "reason": "Все слова в словаре. Presente indicativo. Определённый артикль el libro: конкретная книга с красной обложкой, видна вам (вы её держите). Наречие aquí указано в контексте места.",
+            "context_evidence": [
+              "Вы держите книгу с красной обложкой и кладёте её на стол в этом месте."
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "accepted": 0,
+    "calls": 2,
+    "course": "es_ru",
+    "input_tokens": 4314,
+    "model": "google/gemini-3-flash-preview",
+    "output_tokens": 2932,
+    "provider_cost": 1.28929953,
+    "seconds": 21.083618833,
+    "wanted": 20,
+    "run": "gemini3-holdout",
+    "test_passed": false,
+    "requests": [
+      {
+        "requested_model": "google/gemini-3-flash-preview",
+        "response_model": "google/gemini-3-flash-preview",
+        "temperature_sent": 0.6,
+        "reasoning_sent": null,
+        "phase": "generate",
+        "requested_count": 30,
+        "usage": {
+          "prompt_tokens": 1619,
+          "completion_tokens": 1668,
+          "total_tokens": 3287,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0,
+            "audio_tokens": 0,
+            "image_tokens": 0,
+            "accepted_prediction_tokens": null,
+            "rejected_prediction_tokens": null
+          },
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0,
+            "audio_tokens": 0,
+            "video_tokens": 0
+          },
+          "server_tool_use": null,
+          "cost_rub": 0.68431871,
+          "cost": 0.68431871,
+          "plugins": null
+        },
+        "finish_reason": "stop",
+        "returned_candidates": 30,
+        "review_checks": null
+      },
+      {
+        "requested_model": "google/gemini-3-flash-preview",
+        "response_model": "google/gemini-3-flash-preview",
+        "temperature_sent": null,
+        "reasoning_sent": null,
+        "phase": "review",
+        "requested_count": null,
+        "usage": {
+          "prompt_tokens": 2695,
+          "completion_tokens": 1264,
+          "total_tokens": 3959,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0,
+            "audio_tokens": 0,
+            "image_tokens": 0,
+            "accepted_prediction_tokens": null,
+            "rejected_prediction_tokens": null
+          },
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0,
+            "audio_tokens": 0,
+            "video_tokens": 0
+          },
+          "server_tool_use": null,
+          "cost_rub": 0.60498082,
+          "cost": 0.60498082,
+          "plugins": null
+        },
+        "finish_reason": "stop",
+        "invalid_json": true,
+        "returned_content": "\n{\"checks\":[{\"position\":0,\"accepted\":true,\"reason\":\"нулевой артикль для неисчисляемого объекта в значении части целого\",\"context_evidence\":[\"берете любую бутылку, которую раньше не обсуждали.\"]},{\"position\":1,\"accepted\":true,\"reason\":\"артикль el для родственника, известного собеседникам; отсутствие артикля для напитка как категории\",\"context_evidence\":[\"обсуждаете привычки брата\",\"речь идет о напитке как о виде продукта.\"]},{\"position\":2,\"accepted\":true,\"reason\":\"артикль el для известного лица; una для неопределенного места\",\"context_evidence\":[\"видите знакомого преподавателя\",\"найти любое место для покупок в округе.\"]},{\"position\":3,\"accepted\":true,\"reason\":\"определенные артикли для известных собеседникам объектов (женщины и её машины)\",\"context_evidence\":[\"говорите о знакомой даме\",\"выставила на продажу свой единственный автомобиль.\"]},{\"position\":4,\"accepted\":true,\"reason\":\"нулевой артикль для категории продукта\",\"context_evidence\":[\"хлеб упоминается как общая категория еды.\"]},{\"position\":5,\"accepted\":true,\"reason\":\"артикль la для конкретного здания перед глазами\",\"context_evidence\":[\"стоите перед зданием, которое оба собеседника хорошо знают.\"]},{\"position\":6,\"accepted\":true,\"reason\":\"форма вежливости Usted (3-е лицо ед.ч.) обоснована; неопределенный артикль un для любого объекта\",\"context_evidence\":[\"обращаетесь к одному человеку, с которым общаетесь официально\",\"предлагая любой автомобиль.\"]},{\"position\":7,\"accepted\":false,\"reason\":\"неудачное сочетание: хлеб не может быть 'новым' (свежим — fresco), фраза неестественна\",\"context_evidence\":[]},{\"position\":8,\"accepted\":true,\"reason\":\"артикль el для конкретного напитка, который только что принесли\",\"context_evidence\":[\"пробуете напиток в кафе, который вам обоим только что принесли.\"]},{\"position\":9,\"accepted\":true,\"reason\":\"нулевой артикль для поиска неопределенного количества неисчисляемого вещества\",\"context_evidence\":[\"поисках любого отдела с молочными продуктами.\"]},{\"position\":10,\"accepted\":true,\"reason\":\"артикль el для конкретного автомобиля перед глазами\",\"context_evidence\":[\"смотрите на автомобиль, который стоит перед вами.\"]},{\"position\":11,\"accepted\":true,\"reason\":\"артикли la для известных объектов (женщина и конкретная порция молока)\",\"context_evidence\":[\"наблюдаете за знакомой женщиной\",\"пьет из стакана, налитого ранее.\"]},{\"position\":12,\"accepted\":true,\"reason\":\"форма vosotros (2-е лицо мн.ч.) в Испании обоснована; хлеб как категория без артикля\",\"context_evidence\":[\"спрашиваете группу друзей в Испании\",\"едят ли они этот продукт вообще.\"]},{\"position\":13,\"accepted\":true,\"reason\":\"артикль la для конкретного магазина; кофе как категория без артикля\",\"context_evidence\":[\"торговой точке, мимо которой вы сейчас проходите.\"]},{\"position\":14,\"accepted\":true,\"reason\":\"нулевой артикль для потребности в некотором количестве продукта\",\"context_evidence\":[\"вам нужно купить любую бутылку.\"]},{\"position\":15,\"accepted\":true,\"reason\":\"артикль el для известного брата; un для любого нового предмета\",\"context_evidence\":[\"Ваш брат планирует\",\"покупку любого нового автомобиля\"] school},{\"position\":16,\"accepted\":true,\"reason\":\"артикли el для известного учителя и конкретной чашки кофе\",\"context_evidence\":[\"видите, как ваш преподаватель\",\"пьет напиток из своей чашки.\"]},{\"position\":17,\"accepted\":true,\"reason\":\"артикль el для конкретного семейного автомобиля\",\"context_evidence\":[\"обсуждаете транспортное средство, которое принадлежит вашей семье.\"]},{\"position\":18,\"accepted\":true,\"reason\":\"артикль una для любого неопределенного магазина\",\"context_evidence\":[\"пытаетесь найти хоть какое-то место, где продают еду.\"]},{\"position\":19,\"accepted\":true,\"reason\":\"артикли la и el для известных собеседникам объектов (женщина и выбранный хлеб)\",\"context_evidence\":[\"Знакомая вам дама\",\"берет буханку хлеба, которую она выбрала\"] school},{\"position\":20,\"accepted\":true,\"reason\":\"артикль el для обобщения (весь кофе в регионе)\",\"context_evidence\":[\"обсуждаете цену на этот продукт в данном регионе в целом.\"]},{\"position\":21,\"accepted\":true,\"reason\":\"артикль la для обобщения в конкретном контексте или продукта в магазине\",\"context_evidence\":[\"возмущены ценой на молоко в магазине, где вы сейчас находитесь.\"]},{\"position\":22,\"accepted\":true,\"reason\":\"нулевой артикль для предложения товара (хлеб с характеристикой)\",\"context_evidence\":[\"предлагаете покупателю остатки вчерашней выпечки.\"]},{\"position\":23,\"accepted\":true,\"reason\":\"артикль el для учителя; нулевой артикль для неопределенного количества кофе\",\"context_evidence\":[\"Ваш преподаватель выглядит\",\"хочет выпить любую чашку кофе.\"]},{\"position\":24,\"accepted\":true,\"reason\":\"артикль la для конкретного здания в районе\",\"context_evidence\":[\"указываете на здание, которое только что открылось в вашем районе.\"]},{\"position\":25,\"accepted\":true,\"reason\":\"артикль un для любого неопределенного автомобиля\",\"context_evidence\":[\"сообщаете о решении приобрести любой автомобиль для семьи.\"]}]}\n"
+      }
+    ]
+  },
+  {
+    "accepted": 20,
+    "calls": 2,
+    "course": "es_ru",
+    "input_tokens": 4542,
+    "model": "google/gemini-3.8-flash",
+    "output_tokens": 13300,
+    "provider_cost": 6.27187193,
+    "seconds": 78.714466667,
+    "wanted": 20,
+    "run": "gemini38-holdout",
+    "test_passed": true,
+    "requests": [
+      {
+        "requested_model": "google/gemini-3.8-flash",
+        "response_model": "google/gemini-3.8-flash",
+        "temperature_sent": 0.6,
+        "reasoning_sent": null,
+        "phase": "generate",
+        "requested_count": 30,
+        "usage": {
+          "prompt_tokens": 1619,
+          "completion_tokens": 1730,
+          "total_tokens": 3349,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0,
+            "audio_tokens": 0,
+            "image_tokens": 0,
+            "accepted_prediction_tokens": null,
+            "rejected_prediction_tokens": null
+          },
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0,
+            "audio_tokens": 0,
+            "video_tokens": 0
+          },
+          "server_tool_use": null,
+          "cost_rub": 0.9065884,
+          "cost": 0.9065884,
+          "plugins": null
+        },
+        "finish_reason": "stop",
+        "returned_candidates": 30,
+        "review_checks": null
+      },
+      {
+        "requested_model": "google/gemini-3.8-flash",
+        "response_model": "google/gemini-3.8-flash",
+        "temperature_sent": null,
+        "reasoning_sent": null,
+        "phase": "review",
+        "requested_count": null,
+        "usage": {
+          "prompt_tokens": 2923,
+          "completion_tokens": 11570,
+          "total_tokens": 14493,
+          "completion_tokens_details": {
+            "reasoning_tokens": 9692,
+            "audio_tokens": 0,
+            "image_tokens": 0,
+            "accepted_prediction_tokens": null,
+            "rejected_prediction_tokens": null
+          },
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0,
+            "audio_tokens": 0,
+            "video_tokens": 0
+          },
+          "server_tool_use": null,
+          "cost_rub": 5.36528353,
+          "cost": 5.36528353,
+          "plugins": null
+        },
+        "finish_reason": "stop",
+        "returned_candidates": null,
+        "review_checks": [
+          {
+            "position": 0,
+            "accepted": true,
+            "reason": "Лексика и грамматика соблюдены, артикли отсутствуют.",
+            "context_evidence": []
+          },
+          {
+            "position": 1,
+            "accepted": true,
+            "reason": "Форма глагола для tú и лексика соблюдены, артикли отсутствуют.",
+            "context_evidence": []
+          },
+          {
+            "position": 2,
+            "accepted": true,
+            "reason": "Определенный артикль обоснован общим родственником.",
+            "context_evidence": [
+              "Ваш общий брат отламывает"
+            ]
+          },
+          {
+            "position": 3,
+            "accepted": true,
+            "reason": "Определенный артикль обоснован конкретным учителем школы.",
+            "context_evidence": [
+              "Учитель вашей школы стоит"
+            ]
+          },
+          {
+            "position": 4,
+            "accepted": true,
+            "reason": "Определенный артикль обоснован видимостью женщины обоими, неопределенный — выбором любого автомобиля.",
+            "context_evidence": [
+              "Женщина, которую вы оба видите",
+              "покупку любого автомобиля."
+            ]
+          },
+          {
+            "position": 5,
+            "accepted": true,
+            "reason": "Неопределенный артикль обоснован поиском любого магазина.",
+            "context_evidence": [
+              "любой магазин поблизости."
+            ]
+          },
+          {
+            "position": 6,
+            "accepted": true,
+            "reason": "Лексика соблюдена, артикли отсутствуют при неисчисляемом объекте.",
+            "context_evidence": []
+          },
+          {
+            "position": 7,
+            "accepted": true,
+            "reason": "Лексика соблюдена, артикли отсутствуют.",
+            "context_evidence": []
+          },
+          {
+            "position": 8,
+            "accepted": true,
+            "reason": "Определенные артикли обоснованы известным учителем и конкретным вызванным такси.",
+            "context_evidence": [
+              "Знакомый вам обоим учитель",
+              "ждёт заказанное им такси."
+            ]
+          },
+          {
+            "position": 9,
+            "accepted": false,
+            "reason": "Слово «работа / trabajo» отсутствует в allowed_vocabulary (разрешён только глагол trabajar)."
+          },
+          {
+            "position": 10,
+            "accepted": true,
+            "reason": "Определенные артикли обоснованы знакомой обоим женщиной и конкретным соседним магазином.",
+            "context_evidence": [
+              "Знакомая вам обоим женщина",
+              "в соседнем гастрономе, мимо которого вы проходите."
+            ]
+          },
+          {
+            "position": 11,
+            "accepted": false,
+            "reason": "Слово «автомобиль» отсутствует в allowed_vocabulary (в списке только «машина»)."
+          },
+          {
+            "position": 12,
+            "accepted": true,
+            "reason": "Определенный артикль обоснован единственным автомобилем знакомого.",
+            "context_evidence": [
+              "свой единственный старый автомобиль."
+            ]
+          },
+          {
+            "position": 13,
+            "accepted": true,
+            "reason": "Лексика и грамматика соблюдены, артикли отсутствуют.",
+            "context_evidence": []
+          },
+          {
+            "position": 14,
+            "accepted": true,
+            "reason": "Неопределенный артикль обоснован поиском любого нового автомобиля.",
+            "context_evidence": [
+              "подобрать себе любой новый автомобиль."
+            ]
+          },
+          {
+            "position": 15,
+            "accepted": true,
+            "reason": "Определенный артикль обоснован знакомым обоим преподавателем.",
+            "context_evidence": [
+              "Знакомый вам обоим преподаватель"
+            ]
+          },
+          {
+            "position": 16,
+            "accepted": false,
+            "reason": "«У магазина» неверно переведено как en la tienda; не обоснован определенный артикль al hermano (нет подтверждения, что брат известен обоим собеседникам)."
+          },
+          {
+            "position": 17,
+            "accepted": true,
+            "reason": "Определенный артикль обоснован единственным магазином перед собеседниками.",
+            "context_evidence": [
+              "перед единственным в этом квартале магазином"
+            ]
+          },
+          {
+            "position": 18,
+            "accepted": true,
+            "reason": "Определенный артикль обоснован конкретным автомобилем перед глазами собеседников.",
+            "context_evidence": [
+              "стоящий перед вами роскошный автомобиль."
+            ]
+          },
+          {
+            "position": 19,
+            "accepted": true,
+            "reason": "Определенный артикль обоснован конкретным напитком, который пробуют собеседники.",
+            "context_evidence": [
+              "пробуете поданный напиток"
+            ]
+          },
+          {
+            "position": 20,
+            "accepted": true,
+            "reason": "Определенный артикль обоснован конкретным батоном на столе.",
+            "context_evidence": [
+              "батон, лежащий на кухонном столе."
+            ]
+          },
+          {
+            "position": 21,
+            "accepted": false,
+            "reason": "Неестественное сочетание «молоко старое» / «la leche es vieja» для передачи испорченного/скисшего молока."
+          },
+          {
+            "position": 22,
+            "accepted": true,
+            "reason": "Определенный артикль обоснован общим братом, неопределенный — потребностью в любой машине.",
+            "context_evidence": [
+              "Ваш общий брат сообщает",
+              "требуется любое авто для поездок"
+            ]
+          },
+          {
+            "position": 23,
+            "accepted": true,
+            "reason": "Определенный артикль обоснован знакомым учителем.",
+            "context_evidence": [
+              "Знакомый вам учитель"
+            ]
+          },
+          {
+            "position": 24,
+            "accepted": true,
+            "reason": "Определенный артикль обоснован знакомой обоим женщиной.",
+            "context_evidence": [
+              "Знакомая вам женщина"
+            ]
+          },
+          {
+            "position": 25,
+            "accepted": true,
+            "reason": "Определенный артикль обоснован знакомым магазином.",
+            "context_evidence": [
+              "в знакомый нам местный магазинчик."
+            ]
+          },
+          {
+            "position": 26,
+            "accepted": true,
+            "reason": "Определенный артикль обоснован конкретными заказанными напитками.",
+            "context_evidence": [
+              "ждут заказанные ими напитки."
+            ]
+          },
+          {
+            "position": 27,
+            "accepted": false,
+            "reason": "В контексте не обоснован определенный артикль la tienda (не показано, что магазин известен обоим собеседникам или уникален)."
+          },
+          {
+            "position": 28,
+            "accepted": true,
+            "reason": "Определенный артикль обоснован общим братом.",
+            "context_evidence": [
+              "Ваш общий брат берёт"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "accepted": 0,
+    "calls": 2,
+    "course": "es_ru",
+    "input_tokens": 5350,
+    "model": "google/gemini-3.8-flash",
+    "output_tokens": 21979,
+    "provider_cost": 10.17428958,
+    "seconds": 120.264399333,
+    "wanted": 20,
+    "run": "gemini38-address",
+    "test_passed": false,
+    "requests": [
+      {
+        "requested_model": "google/gemini-3.8-flash",
+        "response_model": "google/gemini-3.8-flash",
+        "temperature_sent": 0.6,
+        "reasoning_sent": null,
+        "phase": "generate",
+        "requested_count": 30,
+        "usage": {
+          "prompt_tokens": 1848,
+          "completion_tokens": 9983,
+          "total_tokens": 11831,
+          "completion_tokens_details": {
+            "reasoning_tokens": 7930,
+            "audio_tokens": 0,
+            "image_tokens": 0,
+            "accepted_prediction_tokens": null,
+            "rejected_prediction_tokens": null
+          },
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0,
+            "audio_tokens": 0,
+            "video_tokens": 0
+          },
+          "server_tool_use": null,
+          "cost_rub": 4.56984469,
+          "cost": 4.56984469,
+          "plugins": null
+        },
+        "finish_reason": "stop",
+        "returned_candidates": 30,
+        "review_checks": null
+      },
+      {
+        "requested_model": "google/gemini-3.8-flash",
+        "response_model": "google/gemini-3.8-flash",
+        "temperature_sent": null,
+        "reasoning_sent": null,
+        "phase": "review",
+        "requested_count": null,
+        "usage": {
+          "prompt_tokens": 3502,
+          "completion_tokens": 11996,
+          "total_tokens": 15498,
+          "completion_tokens_details": {
+            "reasoning_tokens": 11520,
+            "audio_tokens": 0,
+            "image_tokens": 0,
+            "accepted_prediction_tokens": null,
+            "rejected_prediction_tokens": null
+          },
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0,
+            "audio_tokens": 0,
+            "video_tokens": 0
+          },
+          "server_tool_use": null,
+          "cost_rub": 5.60444489,
+          "cost": 5.60444489,
+          "plugins": null
+        },
+        "finish_reason": "length",
+        "invalid_json": true,
+        "returned_content": "\n{\"checks\":[\n  {\"position\":0,\"accepted\":true,\"reason\":\"Лексика и грамматика верны, контекст однозначно определяет артикль и форму вежливого обращения к одному человеку.\", \"context_evidence\":[\"В комнате только одно окно, оба собеседника сидят рядом с ним.\", \"Обращение к пожилому гостю вежливо на «вы».\"]},\n  {\"position\":1,\"accepted\":true,\"reason\":\"Лексика и грамматика верны, контекст задает форму vosotros в Испании и вещественное значение без артикля.\", \"context_evidence\":[\"Друзья пьют обычную питьевую воду без указания на отдельную порцию.\", \"Обращение в Испании к двоим друзьям на «ты».\"]},\n  {\"position\":2,\"accepted\":true,\"reason\":\"Лексика и грамматика верны, контекст задает форму ustedes в Колумбии и неопределенный артикль для книги.\", \"context_evidence\":[\"Речь идёт об одной из многих недавно вышедших книг, которую они только что купили.\", \"Обращение в Колумбии к двум друзьям.\"]},\n  {\"position\":3,\"accepted\":true,\"reason\":\"Лексика и грамматика верны, контекст задает форму usted и определенный артикль единственной двери.\", \"context_evidence\":[\"Речь идёт о единственной двери его кабинета.\", \"Обращение к доктору вежливо на «вы».\"]},\n  {\"position\":4,\"accepted\":true,\"reason\":\"Лексика и грамматика верны, контекст задает форму vosotros и определенный артикль с предлогом a (al).\", \"context_evidence\":[\"Они помогают своему давнему знакомому, о котором оба собеседника хорошо знают.\", \"Обращение в Испании к двум приятелям на «ты».\"]},\n  {\"position\":5,\"accepted\":true,\"reason\":\"Лексика и грамматика верны, контекст задает вежливое обращение во множественном числе (ustedes) и определенный артикль.\", \"context_evidence\":[\"Они ищут одну из книг на полке, о которой ранее"
+      }
+    ]
+  },
+  {
+    "accepted": 20,
+    "calls": 4,
+    "course": "es_ru",
+    "input_tokens": 10345,
+    "model": "google/gemini-3-flash-preview",
+    "output_tokens": 3191,
+    "provider_cost": 1.7357223000000002,
+    "seconds": 31.32758125,
+    "wanted": 20,
+    "run": "gemini3-zero",
+    "test_passed": true,
+    "requests": [
+      {
+        "requested_model": "google/gemini-3-flash-preview",
+        "response_model": "google/gemini-3-flash-preview",
+        "temperature_sent": 0.6,
+        "reasoning_sent": null,
+        "phase": "generate",
+        "requested_count": 30,
+        "usage": {
+          "prompt_tokens": 1812,
+          "completion_tokens": 1866,
+          "total_tokens": 3678,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0,
+            "audio_tokens": 0,
+            "image_tokens": 0,
+            "accepted_prediction_tokens": null,
+            "rejected_prediction_tokens": null
+          },
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0,
+            "audio_tokens": 0,
+            "video_tokens": 0
+          },
+          "server_tool_use": null,
+          "cost_rub": 0.76559885,
+          "cost": 0.76559885,
+          "plugins": null
+        },
+        "finish_reason": "stop",
+        "returned_candidates": 30,
+        "review_checks": null
+      },
+      {
+        "requested_model": "google/gemini-3-flash-preview",
+        "response_model": "google/gemini-3-flash-preview",
+        "temperature_sent": 0,
+        "reasoning_sent": null,
+        "phase": "review",
+        "requested_count": null,
+        "usage": {
+          "prompt_tokens": 2855,
+          "completion_tokens": 973,
+          "total_tokens": 3828,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0,
+            "audio_tokens": 0,
+            "image_tokens": 0,
+            "accepted_prediction_tokens": null,
+            "rejected_prediction_tokens": null
+          },
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0,
+            "audio_tokens": 0,
+            "video_tokens": 0
+          },
+          "server_tool_use": null,
+          "cost_rub": 0.51163521,
+          "cost": 0.51163521,
+          "plugins": null
+        },
+        "finish_reason": "stop",
+        "returned_candidates": null,
+        "review_checks": [
+          {
+            "position": 0,
+            "accepted": true,
+            "reason": "Артикль el обоснован выбором конкретной книги в библиотеке.",
+            "context_evidence": [
+              "только что выбрали в библиотеке"
+            ]
+          },
+          {
+            "position": 1,
+            "accepted": true,
+            "reason": "Артикль el обоснован общим знакомством собеседников с другом.",
+            "context_evidence": [
+              "Ваш общий знакомый"
+            ]
+          },
+          {
+            "position": 2,
+            "accepted": true,
+            "reason": "Артикли обоснованы: сын соседей (известен) и единственный вход.",
+            "context_evidence": [
+              "сын соседей подходит",
+              "единственному входу в квартиру"
+            ]
+          },
+          {
+            "position": 3,
+            "accepted": false,
+            "reason": "Неестественная ситуация: мать в пустой комнате не может найти проем для света (окно)."
+          },
+          {
+            "position": 4,
+            "accepted": true,
+            "reason": "Форма tú обоснована обращением на «ты» к одному человеку.",
+            "context_evidence": [
+              "обращаетесь к одному человеку на «ты»"
+            ]
+          },
+          {
+            "position": 5,
+            "accepted": true,
+            "reason": "Артикли обоснованы: конкретный доктор в кабинете и единственное окно.",
+            "context_evidence": [
+              "Доктор подходит",
+              "единственному окну в помещении"
+            ]
+          },
+          {
+            "position": 6,
+            "accepted": true,
+            "reason": "Нулевой артикль для неисчисляемого вещества (вода в лейке).",
+            "context_evidence": [
+              "наполненной жидкостью"
+            ]
+          },
+          {
+            "position": 7,
+            "accepted": true,
+            "reason": "Артикли обоснованы: конкретный человек напротив и его единственное окно.",
+            "context_evidence": [
+              "человек из дома напротив",
+              "единственного окна"
+            ]
+          },
+          {
+            "position": 8,
+            "accepted": true,
+            "reason": "Артикли обоснованы: конкретный ребенок и его любимое издание.",
+            "context_evidence": [
+              "Ребенок долго искал",
+              "любимое издание"
+            ]
+          },
+          {
+            "position": 9,
+            "accepted": true,
+            "reason": "Артикли обоснованы: группа общих знакомых и конкретный обед в кафе.",
+            "context_evidence": [
+              "Группа ваших общих знакомых",
+              "сидит в кафе и обедает"
+            ]
+          },
+          {
+            "position": 10,
+            "accepted": true,
+            "reason": "Артикль el (al) обоснован поиском единственного близкого товарища.",
+            "context_evidence": [
+              "единственного близкого товарища"
+            ]
+          },
+          {
+            "position": 11,
+            "accepted": true,
+            "reason": "Артикли обоснованы: конкретный малыш и выход из комнаты.",
+            "context_evidence": [
+              "Малыш подошел",
+              "выходу из комнаты"
+            ]
+          },
+          {
+            "position": 12,
+            "accepted": true,
+            "reason": "Форма vosotros обоснована обращением к группе мужчин в Испании.",
+            "context_evidence": [
+              "В Испании вы обращаетесь к группе своих близких товарищей (мужчин)",
+              "одному их общему знакомому"
+            ]
+          },
+          {
+            "position": 13,
+            "accepted": true,
+            "reason": "Артикль los обоснован указанием на конкретных людей из квартиры рядом.",
+            "context_evidence": [
+              "Люди из квартиры рядом"
+            ]
+          },
+          {
+            "position": 14,
+            "accepted": true,
+            "reason": "Артикли обоснованы: конкретный доктор и дверь его кабинета.",
+            "context_evidence": [
+              "из своего кабинета выходит доктор"
+            ]
+          },
+          {
+            "position": 15,
+            "accepted": true,
+            "reason": "Артикли обоснованы: группа детей в классе и их учебники.",
+            "context_evidence": [
+              "Группа детей в классе",
+              "открыла свои учебники"
+            ]
+          },
+          {
+            "position": 16,
+            "accepted": true,
+            "reason": "Артикль el для воды обоснован тем, что она находится в конкретном кувшине.",
+            "context_evidence": [
+              "Ваш товарищ идет к вам",
+              "в прозрачном кувшине"
+            ]
+          },
+          {
+            "position": 17,
+            "accepted": true,
+            "reason": "Артикли обоснованы: конкретная мама и проем ее комнаты.",
+            "context_evidence": [
+              "Мама стоит во дворе",
+              "проем своей комнаты"
+            ]
+          },
+          {
+            "position": 18,
+            "accepted": true,
+            "reason": "Артикль el для воды обоснован поиском конкретного источника влаги.",
+            "context_evidence": [
+              "пытается найти источник влаги"
+            ]
+          },
+          {
+            "position": 19,
+            "accepted": true,
+            "reason": "Артикли обоснованы: знакомые собеседников и все окна в доме.",
+            "context_evidence": [
+              "ваши знакомые закрывают",
+              "все оконные проемы в доме"
+            ]
+          },
+          {
+            "position": 20,
+            "accepted": false,
+            "reason": "Лексическая ошибка: в русском «вижу», в испанском miro (смотрю). Глагол ver не в списке."
+          },
+          {
+            "position": 21,
+            "accepted": true,
+            "reason": "Артикли обоснованы: конкретный ребенок и конкретный том с полки.",
+            "context_evidence": [
+              "Ребенок взял с полки",
+              "потрепанный временем том"
+            ]
+          },
+          {
+            "position": 22,
+            "accepted": false,
+            "reason": "Глагол estar отсутствует в allowed_vocabulary."
+          }
+        ]
+      },
+      {
+        "requested_model": "google/gemini-3-flash-preview",
+        "response_model": "google/gemini-3-flash-preview",
+        "temperature_sent": 0.6,
+        "reasoning_sent": null,
+        "phase": "generate",
+        "requested_count": 3,
+        "usage": {
+          "prompt_tokens": 4087,
+          "completion_tokens": 221,
+          "total_tokens": 4308,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0,
+            "audio_tokens": 0,
+            "image_tokens": 0,
+            "accepted_prediction_tokens": null,
+            "rejected_prediction_tokens": null
+          },
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0,
+            "audio_tokens": 0,
+            "video_tokens": 0
+          },
+          "server_tool_use": null,
+          "cost_rub": 0.31858753,
+          "cost": 0.31858753,
+          "plugins": null
+        },
+        "finish_reason": "stop",
+        "returned_candidates": 3,
+        "review_checks": null
+      },
+      {
+        "requested_model": "google/gemini-3-flash-preview",
+        "response_model": "google/gemini-3-flash-preview",
+        "temperature_sent": 0,
+        "reasoning_sent": null,
+        "phase": "review",
+        "requested_count": null,
+        "usage": {
+          "prompt_tokens": 1591,
+          "completion_tokens": 131,
+          "total_tokens": 1722,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0,
+            "audio_tokens": 0,
+            "image_tokens": 0,
+            "accepted_prediction_tokens": null,
+            "rejected_prediction_tokens": null
+          },
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0,
+            "audio_tokens": 0,
+            "video_tokens": 0
+          },
+          "server_tool_use": null,
+          "cost_rub": 0.13990071,
+          "cost": 0.13990071,
+          "plugins": null
+        },
+        "finish_reason": "stop",
+        "returned_candidates": null,
+        "review_checks": [
+          {
+            "position": 0,
+            "accepted": true,
+            "reason": "Лексика и грамматика верны, контекст обосновывает вежливое обращение к одному лицу и конкретную дверь (выход из здания).",
+            "context_evidence": [
+              "Вы вежливо обращаетесь к одному пожилому человеку.",
+              "наконец подошел к выходу из здания."
+            ]
+          },
+          {
+            "position": 1,
+            "accepted": true,
+            "reason": "Все слова в списке, контекст четко определяет конкретную книгу и конкретный стол.",
+            "context_evidence": [
+              "единственный красный том из вашей коллекции",
+              "поверхность мебели, за которой обычно обедаете."
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "accepted": 20,
+    "calls": 2,
+    "course": "es_ru",
+    "input_tokens": 4505,
+    "model": "google/gemini-3-flash-preview",
+    "output_tokens": 2952,
+    "provider_cost": 1.3076037600000001,
+    "seconds": 22.863048458,
+    "wanted": 20,
+    "run": "gemini3-holdout-zero",
+    "test_passed": true,
+    "requests": [
+      {
+        "requested_model": "google/gemini-3-flash-preview",
+        "response_model": "google/gemini-3-flash-preview",
+        "temperature_sent": 0.6,
+        "reasoning_sent": null,
+        "phase": "generate",
+        "requested_count": 30,
+        "usage": {
+          "prompt_tokens": 1619,
+          "completion_tokens": 1792,
+          "total_tokens": 3411,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0,
+            "audio_tokens": 0,
+            "image_tokens": 0,
+            "accepted_prediction_tokens": null,
+            "rejected_prediction_tokens": null
+          },
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0,
+            "audio_tokens": 0,
+            "video_tokens": 0
+          },
+          "server_tool_use": null,
+          "cost_rub": 0.72810758,
+          "cost": 0.72810758,
+          "plugins": null
+        },
+        "finish_reason": "stop",
+        "returned_candidates": 30,
+        "review_checks": null
+      },
+      {
+        "requested_model": "google/gemini-3-flash-preview",
+        "response_model": "google/gemini-3-flash-preview",
+        "temperature_sent": 0,
+        "reasoning_sent": null,
+        "phase": "review",
+        "requested_count": null,
+        "usage": {
+          "prompt_tokens": 2886,
+          "completion_tokens": 1160,
+          "total_tokens": 4046,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0,
+            "audio_tokens": 0,
+            "image_tokens": 0,
+            "accepted_prediction_tokens": null,
+            "rejected_prediction_tokens": null
+          },
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0,
+            "audio_tokens": 0,
+            "video_tokens": 0
+          },
+          "server_tool_use": null,
+          "cost_rub": 0.57949618,
+          "cost": 0.57949618,
+          "plugins": null
+        },
+        "finish_reason": "stop",
+        "returned_candidates": null,
+        "review_checks": [
+          {
+            "position": 0,
+            "accepted": true,
+            "reason": "лексика и отсутствие артикля для неисчисляемого объекта обоснованы",
+            "context_evidence": [
+              "берете любую бутылку, которую раньше не обсуждали"
+            ]
+          },
+          {
+            "position": 1,
+            "accepted": true,
+            "reason": "артикль el для родственника и отсутствие артикля для кофе обоснованы",
+            "context_evidence": [
+              "Вы видите своего брата",
+              "напиток, который вы еще не видели и не выбирали"
+            ]
+          },
+          {
+            "position": 2,
+            "accepted": true,
+            "reason": "артикли el и una обоснованы контекстом",
+            "context_evidence": [
+              "знакомому вам обоим учителе",
+              "ищет любое место для покупок"
+            ]
+          },
+          {
+            "position": 3,
+            "accepted": true,
+            "reason": "определенные артикли обоснованы известностью объектов",
+            "context_evidence": [
+              "женщине, которую вы оба видите",
+              "автомобиль, о котором вы уже знаете"
+            ]
+          },
+          {
+            "position": 4,
+            "accepted": true,
+            "reason": "отсутствие артикля для неисчисляемого объекта обосновано",
+            "context_evidence": [
+              "нужно купить любое количество"
+            ]
+          },
+          {
+            "position": 5,
+            "accepted": true,
+            "reason": "форма tú и неопределенный артикль обоснованы",
+            "context_evidence": [
+              "обращаетесь к одному другу на ты",
+              "сорт, который раньше никогда не пробовал"
+            ]
+          },
+          {
+            "position": 6,
+            "accepted": true,
+            "reason": "определенный артикль обоснован визуальным контактом и обсуждением",
+            "context_evidence": [
+              "автомобилем, который вы оба хорошо знаете"
+            ]
+          },
+          {
+            "position": 7,
+            "accepted": true,
+            "reason": "отсутствие артикля обосновано первым упоминанием",
+            "context_evidence": [
+              "который вы видите впервые"
+            ]
+          },
+          {
+            "position": 8,
+            "accepted": true,
+            "reason": "форма Usted и отсутствие артикля обоснованы",
+            "context_evidence": [
+              "вежливо обращаетесь к одному пожилому человеку",
+              "ищет любой пакет молока"
+            ]
+          },
+          {
+            "position": 9,
+            "accepted": true,
+            "reason": "определенные артикли обоснованы контекстом владения и известности",
+            "context_evidence": [
+              "рассказываете о своем брате",
+              "которую вы оба хорошо знаете"
+            ]
+          },
+          {
+            "position": 10,
+            "accepted": true,
+            "reason": "артикли обоснованы известностью субъекта и новизной объекта",
+            "context_evidence": [
+              "наблюдаете за своим учителем",
+              "порцию недорогого напитка, купленного только что"
+            ]
+          },
+          {
+            "position": 11,
+            "accepted": true,
+            "reason": "определенные артикли обоснованы контекстом",
+            "context_evidence": [
+              "Знакомая вам дама",
+              "ждет свой автомобиль"
+            ]
+          },
+          {
+            "position": 12,
+            "accepted": true,
+            "reason": "неопределенный артикль обоснован выбором из множества",
+            "context_evidence": [
+              "любой самый недорогой батон из предложенных"
+            ]
+          },
+          {
+            "position": 13,
+            "accepted": true,
+            "reason": "форма vosotros и определенный артикль обоснованы",
+            "context_evidence": [
+              "В Испании вы обращаетесь к группе друзей",
+              "автомобиль, который вы все знаете"
+            ]
+          },
+          {
+            "position": 14,
+            "accepted": true,
+            "reason": "определенный артикль обоснован контекстом",
+            "context_evidence": [
+              "обсуждаете здание, которое только что открылось"
+            ]
+          },
+          {
+            "position": 15,
+            "accepted": true,
+            "reason": "артикли обоснованы известностью учителя и новизной хлеба",
+            "context_evidence": [
+              "Ваш общий преподаватель",
+              "сорт хлеба, который он купил впервые"
+            ]
+          },
+          {
+            "position": 16,
+            "accepted": true,
+            "reason": "артикли обоснованы родством и неопределенностью выбора",
+            "context_evidence": [
+              "Ваш брат находится в автосалоне",
+              "выбирает любой подходящий автомобиль"
+            ]
+          },
+          {
+            "position": 17,
+            "accepted": true,
+            "reason": "форма Ustedes и определенный артикль обоснованы",
+            "context_evidence": [
+              "В Латинской Америке вы обращаетесь к группе друзей",
+              "молоко, которое вы им только что налили"
+            ]
+          },
+          {
+            "position": 18,
+            "accepted": true,
+            "reason": "артикли обоснованы визуальным контактом и неопределенностью желания",
+            "context_evidence": [
+              "Вы видите незнакомую женщину",
+              "хочет любую чашку кофе"
+            ]
+          },
+          {
+            "position": 19,
+            "accepted": true,
+            "reason": "определенный артикль обоснован визуальным контактом",
+            "context_evidence": [
+              "автомобиль, который вы оба видите"
+            ]
+          },
+          {
+            "position": 20,
+            "accepted": true,
+            "reason": "определенный артикль обоснован контекстом обсуждения",
+            "context_evidence": [
+              "котором вы говорите"
+            ]
+          },
+          {
+            "position": 21,
+            "accepted": true,
+            "reason": "определенный артикль обоснован наличием предмета перед глазами",
+            "context_evidence": [
+              "лежит перед вами на столе"
+            ]
+          },
+          {
+            "position": 22,
+            "accepted": true,
+            "reason": "неопределенный артикль обоснован поиском любого нового авто",
+            "context_evidence": [
+              "выбирает ли он себе какой-нибудь новый автомобиль"
+            ]
+          },
+          {
+            "position": 23,
+            "accepted": true,
+            "reason": "неопределенный артикль для субъекта и отсутствие для объекта обоснованы",
+            "context_evidence": [
+              "видите, как незнакомая женщина",
+              "берет с полки любую бутылку молока"
+            ]
+          },
+          {
+            "position": 24,
+            "accepted": true,
+            "reason": "определенные артикли обоснованы известностью объектов",
+            "context_evidence": [
+              "Ваш преподаватель решил избавиться",
+              "о существовании которой вы все знаете"
+            ]
+          },
+          {
+            "position": 25,
+            "accepted": true,
+            "reason": "определенный артикль обоснован конкретной порцией",
+            "context_evidence": [
+              "которую вам только что принесли в офис"
+            ]
+          },
+          {
+            "position": 26,
+            "accepted": true,
+            "reason": "артикли обоснованы родством и новизной объекта",
+            "context_evidence": [
+              "Ваш брат пробует сорт хлеба",
+              "еще не обсуждали"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "accepted": 20,
+    "calls": 2,
+    "course": "es_ru",
+    "input_tokens": 5159,
+    "model": "deepseek/deepseek-v3.2",
+    "output_tokens": 4123,
+    "provider_cost": 0.35883326000000004,
+    "seconds": 67.6474755,
+    "wanted": 20,
+    "run": "deepseek-zero",
+    "test_passed": true,
+    "requests": [
+      {
+        "requested_model": "deepseek/deepseek-v3.2",
+        "response_model": "deepseek/deepseek-v3.2",
+        "temperature_sent": 0.6,
+        "reasoning_sent": null,
+        "phase": "generate",
+        "requested_count": 30,
+        "usage": {
+          "prompt_tokens": 2083,
+          "completion_tokens": 2153,
+          "total_tokens": 4236,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0,
+            "audio_tokens": 0,
+            "image_tokens": 0,
+            "accepted_prediction_tokens": null,
+            "rejected_prediction_tokens": null
+          },
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0,
+            "audio_tokens": 0,
+            "video_tokens": 0
+          },
+          "server_tool_use": null,
+          "cost_rub": 0.16005536,
+          "cost": 0.16005536,
+          "plugins": null
+        },
+        "finish_reason": "stop",
+        "returned_candidates": 30,
+        "review_checks": null
+      },
+      {
+        "requested_model": "deepseek/deepseek-v3.2",
+        "response_model": "deepseek/deepseek-v3.2",
+        "temperature_sent": 0,
+        "reasoning_sent": null,
+        "phase": "review",
+        "requested_count": null,
+        "usage": {
+          "prompt_tokens": 3076,
+          "completion_tokens": 1970,
+          "total_tokens": 5046,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0,
+            "audio_tokens": 0,
+            "image_tokens": 0,
+            "accepted_prediction_tokens": null,
+            "rejected_prediction_tokens": null
+          },
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0,
+            "audio_tokens": 0,
+            "video_tokens": 0
+          },
+          "server_tool_use": null,
+          "cost_rub": 0.1987779,
+          "cost": 0.1987779,
+          "plugins": null
+        },
+        "finish_reason": "stop",
+        "returned_candidates": null,
+        "review_checks": [
+          {
+            "position": 0,
+            "accepted": true,
+            "reason": "Лексика разрешена, время presente, артикль un обоснован (книга впервые вводится, передана собеседником).",
+            "context_evidence": [
+              "Собеседник передал вам книгу и спросил, что вы с ней делаете."
+            ]
+          },
+          {
+            "position": 1,
+            "accepted": true,
+            "reason": "Лексика разрешена, время presente, артикль un обоснован (книга ещё не выбрана).",
+            "context_evidence": [
+              "Вы ещё не выбрали книгу и ищете любую подходящую в магазине."
+            ]
+          },
+          {
+            "position": 2,
+            "accepted": false,
+            "reason": "Артикль el amigo не обоснован. Контекст объясняет, что друг общий и его узнают, но не объясняет, как собеседник знает, о каком именно друге идёт речь (из многих).",
+            "context_evidence": []
+          },
+          {
+            "position": 3,
+            "accepted": true,
+            "reason": "Лексика разрешена, время presente, артикль не требуется (agua как неисчисляемое).",
+            "context_evidence": [
+              "Собеседник видит, что вы пьёте из стакана, и спрашивает, что вы делаете."
+            ]
+          },
+          {
+            "position": 4,
+            "accepted": true,
+            "reason": "Лексика разрешена, время presente, артикль la обоснован (единственное окно в комнате).",
+            "context_evidence": [
+              "В комнате душно, вы подходите к единственному окну."
+            ]
+          },
+          {
+            "position": 5,
+            "accepted": true,
+            "reason": "Лексика разрешена, время presente, артикль la обоснован (дверь, которую закрывают за собой).",
+            "context_evidence": [
+              "Вы выходите из комнаты и закрываете за собой дверь."
+            ]
+          },
+          {
+            "position": 6,
+            "accepted": true,
+            "reason": "Лексика разрешена, время presente, артикль un обоснован (друг вводится впервые, он просто рядом).",
+            "context_evidence": [
+              "Ваш друг рядом с вами несёт тяжёлые сумки."
+            ]
+          },
+          {
+            "position": 7,
+            "accepted": true,
+            "reason": "Лексика разрешена, время presente, артикль un обоснован (книга не определена, своя книга, но она потеряна).",
+            "context_evidence": [
+              "Вы не можете найти свою книгу на полке."
+            ]
+          },
+          {
+            "position": 8,
+            "accepted": true,
+            "reason": "Лексика разрешена, время presente, артикль el обоснован (книга своя, конкретная, её искали).",
+            "context_evidence": [
+              "После поисков вы видите свою книгу под столом."
+            ]
+          },
+          {
+            "position": 9,
+            "accepted": true,
+            "reason": "Лексика разрешена, время presente, артикли el и la обоснованы (конкретная книга, которую держат, и конкретный стол перед вами).",
+            "context_evidence": [
+              "Перед вами стоит чистый стол. Вы держите книгу в руках.",
+              "Перед вами стоит чистый стол. Вы держите книгу в руках."
+            ]
+          },
+          {
+            "position": 10,
+            "accepted": true,
+            "reason": "Лексика разрешена, время presente, артикль не требуется (agua как неисчисляемое).",
+            "context_evidence": [
+              "Вы несёте кувшин с водой из кухни в комнату."
+            ]
+          },
+          {
+            "position": 11,
+            "accepted": false,
+            "reason": "Артикль al amigo не обоснован. Контекст не объясняет, как собеседник знает, о каком именно друге идёт речь (друг стоит там, но какой?).",
+            "context_evidence": []
+          },
+          {
+            "position": 12,
+            "accepted": true,
+            "reason": "Лексика разрешена, время presente, артикль la обоснован (окно своей комнаты).",
+            "context_evidence": [
+              "Вы подходите к окну своей комнаты и смотрите наружу."
+            ]
+          },
+          {
+            "position": 13,
+            "accepted": true,
+            "reason": "Лексика разрешена, время presente, артикли el и un обоснованы (конкретный друг в кресле и неопределённая книга в руках).",
+            "context_evidence": [
+              "Ваш друг сидит в кресле с книгой в руках.",
+              "Ваш друг сидит в кресле с книгой в руках."
+            ]
+          },
+          {
+            "position": 14,
+            "accepted": true,
+            "reason": "Лексика разрешена, время presente, артикль el обоснован (конкретный мальчик, о котором идёт речь), agua без артикля.",
+            "context_evidence": [
+              "Маленький мальчик пьёт воду из своей чашки."
+            ]
+          },
+          {
+            "position": 15,
+            "accepted": true,
+            "reason": "Лексика разрешена, время presente, артикли el и la обоснованы (конкретный сосед, которого видят, и дверь его квартиры).",
+            "context_evidence": [
+              "Вы стоите в коридоре и видите, как сосед открывает дверь своей квартиры.",
+              "Вы стоите в коридоре и видите, как сосед открывает дверь своей квартиры."
+            ]
+          },
+          {
+            "position": 16,
+            "accepted": true,
+            "reason": "Лексика разрешена, время presente (está), артикли el и la обоснованы (конкретная книга на конкретном столе перед вами).",
+            "context_evidence": [
+              "На столе перед вами лежит одна книга.",
+              "На столе перед вами лежит одна книга."
+            ]
+          },
+          {
+            "position": 17,
+            "accepted": true,
+            "reason": "Лексика разрешена, время presente (está), артикль el обоснован (конкретная вода в стакане, на которую смотрят).",
+            "context_evidence": [
+              "Вы смотрите на воду в прозрачном стакане."
+            ]
+          },
+          {
+            "position": 18,
+            "accepted": true,
+            "reason": "Лексика разрешена, время presente (es), артикль La обоснован (конкретная дверь, на которую указывают).",
+            "context_evidence": [
+              "Вы указываете на дверь в дальнем конце зала."
+            ]
+          },
+          {
+            "position": 19,
+            "accepted": true,
+            "reason": "Лексика разрешена, время presente (está), артикль La обоснован (конкретное окно, рядом с которым стоят).",
+            "context_evidence": [
+              "Вы стоите рядом с окном."
+            ]
+          },
+          {
+            "position": 20,
+            "accepted": true,
+            "reason": "Лексика разрешена, время presente (está), артикль El обоснован (конкретный друг, о котором говорят).",
+            "context_evidence": [
+              "Ваш друг стоит на другом берегу реки."
+            ]
+          },
+          {
+            "position": 21,
+            "accepted": true,
+            "reason": "Лексика разрешена, время presente (es), артикль El обоснован (конкретная книга на полке).",
+            "context_evidence": [
+              "Обложка книги на полке ярко-красного цвета."
+            ]
+          },
+          {
+            "position": 22,
+            "accepted": true,
+            "reason": "Лексика разрешена, время presente (es), артикль La обоснован (конкретная входная дверь в ваш дом).",
+            "context_evidence": [
+              "Входная дверь в ваш дом уже много лет не менялась."
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "accepted": 20,
+    "calls": 2,
+    "course": "es_ru",
+    "input_tokens": 5057,
+    "model": "google/gemini-3.8-flash@reasoning_effort=low",
+    "output_tokens": 3317,
+    "provider_cost": 1.91064233,
+    "seconds": 26.264875209,
+    "wanted": 20,
+    "run": "gemini38-low-address",
+    "test_passed": true,
+    "requests": [
+      {
+        "requested_model": "google/gemini-3.8-flash@reasoning_effort=low",
+        "response_model": "google/gemini-3.8-flash",
+        "temperature_sent": 0.6,
+        "reasoning_sent": null,
+        "phase": "generate",
+        "requested_count": 30,
+        "usage": {
+          "prompt_tokens": 1848,
+          "completion_tokens": 1938,
+          "total_tokens": 3786,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0,
+            "audio_tokens": 0,
+            "image_tokens": 0,
+            "accepted_prediction_tokens": null,
+            "rejected_prediction_tokens": null
+          },
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0,
+            "audio_tokens": 0,
+            "video_tokens": 0
+          },
+          "server_tool_use": null,
+          "cost_rub": 1.01862079,
+          "cost": 1.01862079,
+          "plugins": null
+        },
+        "finish_reason": "stop",
+        "returned_candidates": 30,
+        "review_checks": null
+      },
+      {
+        "requested_model": "google/gemini-3.8-flash@reasoning_effort=low",
+        "response_model": "google/gemini-3.8-flash",
+        "temperature_sent": 0,
+        "reasoning_sent": null,
+        "phase": "review",
+        "requested_count": null,
+        "usage": {
+          "prompt_tokens": 3209,
+          "completion_tokens": 1379,
+          "total_tokens": 4588,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0,
+            "audio_tokens": 0,
+            "image_tokens": 0,
+            "accepted_prediction_tokens": null,
+            "rejected_prediction_tokens": null
+          },
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0,
+            "audio_tokens": 0,
+            "video_tokens": 0
+          },
+          "server_tool_use": null,
+          "cost_rub": 0.89202154,
+          "cost": 0.89202154,
+          "plugins": null
+        },
+        "finish_reason": "stop",
+        "returned_candidates": null,
+        "review_checks": [
+          {
+            "position": 0,
+            "accepted": true,
+            "reason": "Все слова разрешены, форма usted и артикль el libro подтверждены цитатами.",
+            "context_evidence": [
+              "то самое издание, о котором вас только что спросили",
+              "Обращение вежливо к одному человеку"
+            ]
+          },
+          {
+            "position": 1,
+            "accepted": true,
+            "reason": "Все слова разрешены, vosotros и нулевой артикль подтверждены.",
+            "context_evidence": [
+              "В Испании, обращение к компании близких друзей"
+            ]
+          },
+          {
+            "position": 2,
+            "accepted": true,
+            "reason": "Все слова разрешены, ustedes и la puerta подтверждены цитатами.",
+            "context_evidence": [
+              "единственной входной двери в кабинет",
+              "Обращение вежливо к группе людей"
+            ]
+          },
+          {
+            "position": 3,
+            "accepted": true,
+            "reason": "Все слова разрешены, usted и la ventana подтверждены цитатами.",
+            "context_evidence": [
+              "В этой комнате всего одна створка окна",
+              "Обращение вежливо к одному человеку"
+            ]
+          },
+          {
+            "position": 4,
+            "accepted": true,
+            "reason": "Все слова разрешены, vosotras и al amigo обоснованы цитатами.",
+            "context_evidence": [
+              "их общем давнем товарище, о котором все знают",
+              "В Испании, обращение к группе подруг-девушек"
+            ]
+          },
+          {
+            "position": 5,
+            "accepted": true,
+            "reason": "Все слова разрешены, ustedes обоснован цитатой.",
+            "context_evidence": [
+              "Обращение вежливо к группе людей в книжном магазине"
+            ]
+          },
+          {
+            "position": 6,
+            "accepted": true,
+            "reason": "Все слова разрешены, usted обоснован цитатой.",
+            "context_evidence": [
+              "Обращение вежливо к одному человеку"
+            ]
+          },
+          {
+            "position": 7,
+            "accepted": false,
+            "reason": "Неверный перевод: 'mirar' переведено как 'видеть/смотреть в', но 'mirar la ventana' означает 'смотреть на окно', а русский prompt 'смотрите в окно' обычно 'miráis por la ventana' (предлог por отсутствует в словаре). Кроме того, 'mirar' означает 'смотреть', а не 'смотреть в'.",
+            "context_evidence": []
+          },
+          {
+            "position": 8,
+            "accepted": true,
+            "reason": "Все слова разрешены, usted и la puerta подтверждены цитатами.",
+            "context_evidence": [
+              "той самой нужной выходной двери",
+              "Обращение вежливо к одному человеку в тёмном коридоре"
+            ]
+          },
+          {
+            "position": 9,
+            "accepted": true,
+            "reason": "Все слова разрешены, артикли и ustedes обоснованы цитатами.",
+            "context_evidence": [
+              "Они держат в руках учебник, который обсуждали",
+              "кладут его на рабочий стол в центре",
+              "Обращение вежливо к группе людей в офисе"
+            ]
+          },
+          {
+            "position": 10,
+            "accepted": true,
+            "reason": "Все слова разрешены, vosotros обоснован цитатой.",
+            "context_evidence": [
+              "В Испании, обращение к друзьям на ты"
+            ]
+          },
+          {
+            "position": 11,
+            "accepted": true,
+            "reason": "Все слова разрешены, las ventanas и usted подтверждены цитатами.",
+            "context_evidence": [
+              "обо всех имеющихся окнах в этой аудитории",
+              "Обращение вежливо к одному человеку"
+            ]
+          },
+          {
+            "position": 12,
+            "accepted": true,
+            "reason": "Все слова разрешены, las puertas и ustedes подтверждены цитатами.",
+            "context_evidence": [
+              "обо всех дверях того дальнего коридора",
+              "Обращение вежливо к группе людей"
+            ]
+          },
+          {
+            "position": 13,
+            "accepted": true,
+            "reason": "Все слова разрешены, un libro nuevo и vosotras подтверждены цитатами.",
+            "context_evidence": [
+              "один любой новый экземпляр среди новинок",
+              "В Испании, обращение к подругам на ты"
+            ]
+          },
+          {
+            "position": 14,
+            "accepted": true,
+            "reason": "Все слова разрешены, a los amigos и usted подтверждены цитатами.",
+            "context_evidence": [
+              "его собственных давних товарищах, которых все знают",
+              "Обращение вежливо к одному человеку"
+            ]
+          },
+          {
+            "position": 15,
+            "accepted": true,
+            "reason": "Все слова разрешены, el amigo и un libro viejo подтверждены контекстом.",
+            "context_evidence": [
+              "Собеседники говорят о своём общем товарище",
+              "одну из старых книг из домашней библиотеки"
+            ]
+          },
+          {
+            "position": 16,
+            "accepted": true,
+            "reason": "Все слова разрешены, la madre и la puerta обоснованы контекстом.",
+            "context_evidence": [
+              "Собеседники говорят о матери семейства",
+              "единственную дверь детской комнаты"
+            ]
+          },
+          {
+            "position": 17,
+            "accepted": true,
+            "reason": "Все слова разрешены, el niño подтверждён цитатой.",
+            "context_evidence": [
+              "Собеседники видят знакомого мальчика"
+            ]
+          },
+          {
+            "position": 18,
+            "accepted": true,
+            "reason": "Все слова разрешены, el médico и la ventana обоснованы контекстом.",
+            "context_evidence": [
+              "дежурном враче в палате",
+              "единственное имеющееся окно"
+            ]
+          },
+          {
+            "position": 19,
+            "accepted": true,
+            "reason": "Все слова разрешены, el vecino и al amigo обоснованы контекстом.",
+            "context_evidence": [
+              "Оба собеседника знают соседа по лестничной площадке",
+              "своего постоянного приятеля"
+            ]
+          },
+          {
+            "position": 20,
+            "accepted": false,
+            "reason": "Несоответствие перевода и словаря: в русском prompt 'вижу', а в эталоне 'Miro' (глагол 'смотреть', леммы 'ver' нет в словаре).",
+            "context_evidence": []
+          },
+          {
+            "position": 21,
+            "accepted": false,
+            "reason": "Глагол 'está' (estar) отсутствует в allowed_vocabulary.",
+            "context_evidence": []
+          },
+          {
+            "position": 22,
+            "accepted": true,
+            "reason": "Все слова разрешены, el amigo и una mesa grande подтверждены контекстом.",
+            "context_evidence": [
+              "Собеседники говорят о своём общем друге",
+              "один любой большой стол"
+            ]
+          },
+          {
+            "position": 23,
+            "accepted": true,
+            "reason": "Все слова разрешены, la madre подтверждена контекстом.",
+            "context_evidence": [
+              "Говорящие обсуждают маму семейства"
+            ]
+          },
+          {
+            "position": 24,
+            "accepted": true,
+            "reason": "Все слова разрешены, el médico, las puertas и el hospital обоснованы контекстом.",
+            "context_evidence": [
+              "Собеседники знают лечащего доктора",
+              "закрывает двери палат в этом здании",
+              "закрывает двери палат в этом здании"
+            ]
+          },
+          {
+            "position": 25,
+            "accepted": true,
+            "reason": "Все слова разрешены, el vecino и el libro rojo подтверждены контекстом.",
+            "context_evidence": [
+              "Оба говорят о соседе с первого этажа",
+              "ту самую красную книгу, которую брал почитать"
+            ]
+          },
+          {
+            "position": 26,
+            "accepted": true,
+            "reason": "Все слова разрешены, al amigo и el hospital обоснованы контекстом.",
+            "context_evidence": [
+              "своего давнего приятеля",
+              "районной больнице, о которой шла речь"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "accepted": 20,
+    "calls": 2,
+    "course": "es_ru",
+    "input_tokens": 4474,
+    "model": "google/gemini-3.8-flash",
+    "output_tokens": 2922,
+    "provider_cost": 1.68481186,
+    "seconds": 20.036627958,
+    "wanted": 20,
+    "run": "gemini38-low-holdout",
+    "test_passed": true,
+    "requests": [
+      {
+        "requested_model": "google/gemini-3.8-flash",
+        "response_model": "google/gemini-3.8-flash",
+        "temperature_sent": 0.6,
+        "reasoning_sent": {
+          "effort": "low"
+        },
+        "phase": "generate",
+        "requested_count": 30,
+        "usage": {
+          "prompt_tokens": 1619,
+          "completion_tokens": 1770,
+          "total_tokens": 3389,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0,
+            "audio_tokens": 0,
+            "image_tokens": 0,
+            "accepted_prediction_tokens": null,
+            "rejected_prediction_tokens": null
+          },
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0,
+            "audio_tokens": 0,
+            "video_tokens": 0
+          },
+          "server_tool_use": null,
+          "cost_rub": 0.9242452,
+          "cost": 0.9242452,
+          "plugins": null
+        },
+        "finish_reason": "stop",
+        "returned_candidates": 30,
+        "review_checks": null
+      },
+      {
+        "requested_model": "google/gemini-3.8-flash",
+        "response_model": "google/gemini-3.8-flash",
+        "temperature_sent": 0,
+        "reasoning_sent": {
+          "effort": "low"
+        },
+        "phase": "review",
+        "requested_count": null,
+        "usage": {
+          "prompt_tokens": 2855,
+          "completion_tokens": 1152,
+          "total_tokens": 4007,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0,
+            "audio_tokens": 0,
+            "image_tokens": 0,
+            "accepted_prediction_tokens": null,
+            "rejected_prediction_tokens": null
+          },
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0,
+            "audio_tokens": 0,
+            "video_tokens": 0
+          },
+          "server_tool_use": null,
+          "cost_rub": 0.76056666,
+          "cost": 0.76056666,
+          "plugins": null
+        },
+        "finish_reason": "stop",
+        "returned_candidates": null,
+        "review_checks": [
+          {
+            "position": 0,
+            "accepted": true,
+            "reason": "Неисчисляемое существительное leche без артикля корректно обосновано.",
+            "context_evidence": [
+              "Речь идёт о продукте вообще, без указания на отдельную порцию."
+            ]
+          },
+          {
+            "position": 1,
+            "accepted": true,
+            "reason": "Определенный артикль для учителя обоснован общим контекстом.",
+            "context_evidence": [
+              "вашего школьного преподавателя"
+            ]
+          },
+          {
+            "position": 2,
+            "accepted": true,
+            "reason": "Определенный артикль для брата обоснован конкретным родным братом.",
+            "context_evidence": [
+              "своём родном брате"
+            ]
+          },
+          {
+            "position": 3,
+            "accepted": true,
+            "reason": "Неисчисляемое существительное leche без артикля корректно обосновано.",
+            "context_evidence": [
+              "берете пакет любого молока"
+            ]
+          },
+          {
+            "position": 4,
+            "accepted": true,
+            "reason": "Неисчисляемое существительное café без артикля корректно обосновано.",
+            "context_evidence": [
+              "этим товаром как категорией продуктов"
+            ]
+          },
+          {
+            "position": 5,
+            "accepted": true,
+            "reason": "Неопределенные артикли для женщины и магазина обоснованы.",
+            "context_evidence": [
+              "которую вы видите впервые",
+              "любой работающий торговый пункт"
+            ]
+          },
+          {
+            "position": 6,
+            "accepted": true,
+            "reason": "Неопределенный артикль для coche обоснован выбором любого автомобиля.",
+            "context_evidence": [
+              "любого автомобиля себе в пользование"
+            ]
+          },
+          {
+            "position": 7,
+            "accepted": true,
+            "reason": "Определенный артикль для учителя обоснован.",
+            "context_evidence": [
+              "вашим общим преподавателем"
+            ]
+          },
+          {
+            "position": 8,
+            "accepted": true,
+            "reason": "Определенный артикль для брата обоснован.",
+            "context_evidence": [
+              "Ваш родной брат зашёл"
+            ]
+          },
+          {
+            "position": 9,
+            "accepted": true,
+            "reason": "Неопределенный артикль для женщины обоснован.",
+            "context_evidence": [
+              "Незнакомая посетительница кафе"
+            ]
+          },
+          {
+            "position": 10,
+            "accepted": true,
+            "reason": "Неопределенный артикль для coche обоснован.",
+            "context_evidence": [
+              "любого автомобиля без пробега"
+            ]
+          },
+          {
+            "position": 11,
+            "accepted": true,
+            "reason": "Определенный артикль для coche обоснован известным собеседникам автомобилем.",
+            "context_evidence": [
+              "Речь о его единственном подержанном автомобиле, который вы отлично знаете."
+            ]
+          },
+          {
+            "position": 12,
+            "accepted": true,
+            "reason": "Определенные артикли для учителя и магазина обоснованы.",
+            "context_evidence": [
+              "Вы оба знаете этого преподавателя",
+              "единственной местной лавке"
+            ]
+          },
+          {
+            "position": 13,
+            "accepted": true,
+            "reason": "Неисчисляемое существительное pan без артикля корректно обосновано.",
+            "context_evidence": [
+              "любой недорогой сорт хлеба"
+            ]
+          },
+          {
+            "position": 14,
+            "accepted": true,
+            "reason": "Неопределенные артикли для женщины и машины обоснованы.",
+            "context_evidence": [
+              "Незнакомка стоит на улице",
+              "любого свободного такси"
+            ]
+          },
+          {
+            "position": 15,
+            "accepted": true,
+            "reason": "Неопределенный артикль для coche обоснован.",
+            "context_evidence": [
+              "любой автомобиль по низкой цене"
+            ]
+          },
+          {
+            "position": 16,
+            "accepted": true,
+            "reason": "Определенные артикли для брата и магазина обоснованы.",
+            "context_evidence": [
+              "Ваш родной брат выставил",
+              "о котором вы оба знаете"
+            ]
+          },
+          {
+            "position": 17,
+            "accepted": false,
+            "reason": "В prompt_ru есть слово 'горячее', которого нет ни в reference_es, ни в used_words, ни в allowed_vocabulary."
+          },
+          {
+            "position": 18,
+            "accepted": true,
+            "reason": "Неисчисляемое существительное café без артикля обосновано.",
+            "context_evidence": [
+              "пробуете элитный сорт кофе"
+            ]
+          },
+          {
+            "position": 19,
+            "accepted": true,
+            "reason": "Неисчисляемое существительное leche без артикля обосновано.",
+            "context_evidence": [
+              "пакет обычного молока"
+            ]
+          },
+          {
+            "position": 20,
+            "accepted": true,
+            "reason": "Неопределенный артикль для женщины обоснован.",
+            "context_evidence": [
+              "Незнакомая посетительница берёт"
+            ]
+          },
+          {
+            "position": 21,
+            "accepted": true,
+            "reason": "Определенный артикль для coche обоснован конкретной машиной, на которую смотрят.",
+            "context_evidence": [
+              "Вы оба смотрите на поддержанный автомобиль на стоянке"
+            ]
+          },
+          {
+            "position": 22,
+            "accepted": true,
+            "reason": "Определенный артикль для магазина обоснован конкретным известным магазином.",
+            "context_evidence": [
+              "местным универмагом, куда часто заходите"
+            ]
+          },
+          {
+            "position": 23,
+            "accepted": true,
+            "reason": "Определенный артикль для кофе обоснован конкретной пачкой кофе.",
+            "context_evidence": [
+              "смотрят на пачку редких зёрен на витрине"
+            ]
+          },
+          {
+            "position": 24,
+            "accepted": true,
+            "reason": "Определенный артикль для хлеба обоснован конкретным батоном.",
+            "context_evidence": [
+              "держите в руках вчерашний батон из вашей кухни"
+            ]
+          },
+          {
+            "position": 25,
+            "accepted": true,
+            "reason": "Определенный артикль для учителя и неопределенный для машины обоснованы.",
+            "context_evidence": [
+              "Ваш преподаватель оформляет",
+              "любого нового автомобиля"
+            ]
+          },
+          {
+            "position": 26,
+            "accepted": true,
+            "reason": "Неопределенные артикли для женщины и магазина обоснованы.",
+            "context_evidence": [
+              "Незнакомая вам дама трудится",
+              "в одном из элитных бутиков города"
+            ]
+          }
+        ]
+      }
+    ]
+  },
+  {
+    "accepted": 20,
+    "calls": 2,
+    "course": "en_ru",
+    "input_tokens": 4259,
+    "model": "google/gemini-3.8-flash",
+    "output_tokens": 2946,
+    "provider_cost": 1.67642487,
+    "seconds": 21.550130041,
+    "wanted": 20,
+    "run": "gemini38-low-en",
+    "test_passed": true,
+    "requests": [
+      {
+        "requested_model": "google/gemini-3.8-flash",
+        "response_model": "google/gemini-3.8-flash",
+        "temperature_sent": 0.6,
+        "reasoning_sent": {
+          "effort": "low"
+        },
+        "phase": "generate",
+        "requested_count": 30,
+        "usage": {
+          "prompt_tokens": 1473,
+          "completion_tokens": 1711,
+          "total_tokens": 3184,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0,
+            "audio_tokens": 0,
+            "image_tokens": 0,
+            "accepted_prediction_tokens": null,
+            "rejected_prediction_tokens": null
+          },
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0,
+            "audio_tokens": 0,
+            "video_tokens": 0
+          },
+          "server_tool_use": null,
+          "cost_rub": 0.88531195,
+          "cost": 0.88531195,
+          "plugins": null
+        },
+        "finish_reason": "stop",
+        "returned_candidates": 30,
+        "review_checks": null
+      },
+      {
+        "requested_model": "google/gemini-3.8-flash",
+        "response_model": "google/gemini-3.8-flash",
+        "temperature_sent": 0,
+        "reasoning_sent": {
+          "effort": "low"
+        },
+        "phase": "review",
+        "requested_count": null,
+        "usage": {
+          "prompt_tokens": 2786,
+          "completion_tokens": 1235,
+          "total_tokens": 4021,
+          "completion_tokens_details": {
+            "reasoning_tokens": 0,
+            "audio_tokens": 0,
+            "image_tokens": 0,
+            "accepted_prediction_tokens": null,
+            "rejected_prediction_tokens": null
+          },
+          "prompt_tokens_details": {
+            "cached_tokens": 0,
+            "cache_write_tokens": 0,
+            "audio_tokens": 0,
+            "video_tokens": 0
+          },
+          "server_tool_use": null,
+          "cost_rub": 0.79111292,
+          "cost": 0.79111292,
+          "plugins": null
+        },
+        "finish_reason": "stop",
+        "returned_candidates": null,
+        "review_checks": [
+          {
+            "position": 0,
+            "accepted": true,
+            "reason": "Определенный артикль обоснован упоминанием известного собеседникам издания.",
+            "context_evidence": [
+              "издание, о котором только что говорили с собеседником"
+            ]
+          },
+          {
+            "position": 1,
+            "accepted": true,
+            "reason": "Неопределенный артикль обоснован выбором любого неспецифического издания.",
+            "context_evidence": [
+              "одно любое понравившееся издание"
+            ]
+          },
+          {
+            "position": 2,
+            "accepted": true,
+            "reason": "Нулевой артикль обоснован обобщенным значением книг во множественном числе.",
+            "context_evidence": [
+              "литературными новинками вообще"
+            ]
+          },
+          {
+            "position": 3,
+            "accepted": true,
+            "reason": "Оба определенных артикля обоснованы общим знакомым и конкретной дверью.",
+            "context_evidence": [
+              "Ваш общий давний товарищ",
+              "входную створку в вашей комнате"
+            ]
+          },
+          {
+            "position": 4,
+            "accepted": true,
+            "reason": "Определенный артикль обоснован единственной дверью в помещении.",
+            "context_evidence": [
+              "единственную дверь в комнате, где сидите вдвоём"
+            ]
+          },
+          {
+            "position": 5,
+            "accepted": true,
+            "reason": "Неопределенный артикль обоснован выбором одного случайного плода.",
+            "context_evidence": [
+              "один любой плод"
+            ]
+          },
+          {
+            "position": 6,
+            "accepted": true,
+            "reason": "Оба определенных артикля обоснованы общими друзьями и конкретными яблоками на тарелке.",
+            "context_evidence": [
+              "Ваши давние товарищи",
+              "плоды, лежащие перед ними на общей тарелке"
+            ]
+          },
+          {
+            "position": 7,
+            "accepted": true,
+            "reason": "Определенный артикль обоснован конкретным заранее осмотренным домом.",
+            "context_evidence": [
+              "одного выбранного здания, которое уже вместе осматривали"
+            ]
+          },
+          {
+            "position": 8,
+            "accepted": false,
+            "reason": "Глагол build/строить отсутствует в allowed_vocabulary."
+          },
+          {
+            "position": 9,
+            "accepted": true,
+            "reason": "Определенный артикль обоснован общим товарищем.",
+            "context_evidence": [
+              "Ваш общий товарищ"
+            ]
+          },
+          {
+            "position": 10,
+            "accepted": true,
+            "reason": "Определенный артикль обоснован человеком, которого оба отлично знают.",
+            "context_evidence": [
+              "человеку, которого вы оба отлично знаете"
+            ]
+          },
+          {
+            "position": 11,
+            "accepted": true,
+            "reason": "Определенный артикль обоснован конкретной лежащей перед ними книгой.",
+            "context_evidence": [
+              "издание, которое лежит у него на коленях"
+            ]
+          },
+          {
+            "position": 12,
+            "accepted": true,
+            "reason": "Определенный артикль обоснован конкретной книгой из посылки.",
+            "context_evidence": [
+              "томик, который собеседники только что вместе достали из посылки"
+            ]
+          },
+          {
+            "position": 13,
+            "accepted": false,
+            "reason": "В clarification_ru 'Ваши общие товарищи' требует определенного артикля the friends, а в эталоне Friends read books."
+          },
+          {
+            "position": 14,
+            "accepted": true,
+            "reason": "Фраза 'Мы закрываем большой дом' в значении запирания дома на ключ является неестественной (close house)."
+          },
+          {
+            "position": 15,
+            "accepted": true,
+            "reason": "Неопределенный артикль обоснован случайным плодом.",
+            "context_evidence": [
+              "одно случайное небольшое яблоко"
+            ]
+          },
+          {
+            "position": 16,
+            "accepted": true,
+            "reason": "Неопределенный артикль обоснован покупкой некоего одного жилья.",
+            "context_evidence": [
+              "покупку одного какого-то жилья"
+            ]
+          },
+          {
+            "position": 17,
+            "accepted": true,
+            "reason": "Определенный артикль для друга обоснован общим знакомым, нулевой для water — неисчисляемое вещество в общем смысле.",
+            "context_evidence": [
+              "Ваш общий приятель",
+              "обычной питьевой воды"
+            ]
+          },
+          {
+            "position": 18,
+            "accepted": true,
+            "reason": "Определенный артикль обоснован всеми конкретными створками в вестибюле.",
+            "context_evidence": [
+              "все входные створки в общем вестибюле"
+            ]
+          },
+          {
+            "position": 19,
+            "accepted": true,
+            "reason": "Нулевой артикль обоснован обобщенным предпочтением.",
+            "context_evidence": [
+              "вкусовых предпочтениях вообще"
+            ]
+          },
+          {
+            "position": 20,
+            "accepted": true,
+            "reason": "Нулевой артикль обоснован обобщенной категорией людей по жизни.",
+            "context_evidence": [
+              "людей, с которыми дружишь"
+            ]
+          },
+          {
+            "position": 21,
+            "accepted": true,
+            "reason": "Определенный артикль обоснован конкретной видимой дверью перед собеседниками.",
+            "context_evidence": [
+              "находящуюся прямо перед вами"
+            ]
+          },
+          {
+            "position": 22,
+            "accepted": true,
+            "reason": "Нулевой артикль обоснован неопределенным количеством яблок.",
+            "context_evidence": [
+              "выбираем порцию плодов для дома"
+            ]
+          },
+          {
+            "position": 23,
+            "accepted": true,
+            "reason": "Определенный артикль обоснован известным обоим экземпляром из типографии.",
+            "context_evidence": [
+              "экземпляр, который вы вместе ждали"
+            ]
+          },
+          {
+            "position": 24,
+            "accepted": true,
+            "reason": "Оба определенных артикля обоснованы общим знакомым и единственной дверью.",
+            "context_evidence": [
+              "Ваш общий приятель",
+              "единственную входную дверь в коридоре"
+            ]
+          },
+          {
+            "position": 25,
+            "accepted": true,
+            "reason": "Нулевой артикль обоснован неопределенными книгами.",
+            "context_evidence": [
+              "набирают какие-то томики для чтения"
+            ]
+          },
+          {
+            "position": 26,
+            "accepted": true,
+            "reason": "Определенный артикль обоснован общим приятелем.",
+            "context_evidence": [
+              "нашему общему приятелю"
+            ]
+          },
+          {
+            "position": 27,
+            "accepted": true,
+            "reason": "Определенный артикль обоснован конкретным обсуждавшимся зданием.",
+            "context_evidence": [
+              "здания, которое собеседники вместе обсуждали на днях"
+            ]
+          }
+        ]
+      }
+    ]
+  }
+]

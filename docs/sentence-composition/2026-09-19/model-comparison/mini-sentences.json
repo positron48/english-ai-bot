@@ -1,0 +1,149 @@
+[
+  {
+    "prompt_ru": "Я читаю книгу.",
+    "clarification_ru": "Собеседник передал мне книгу, и я смотрю на неё сейчас.",
+    "reference_es": "Leo el libro.",
+    "used_words": [
+      "leer",
+      "libro"
+    ]
+  },
+  {
+    "prompt_ru": "Я покупаю книгу.",
+    "clarification_ru": "Я сейчас в магазине и ещё не выбрал ни одной книги.",
+    "reference_es": "Compro el libro.",
+    "used_words": [
+      "comprar",
+      "libro"
+    ]
+  },
+  {
+    "prompt_ru": "Я пью воду.",
+    "clarification_ru": "Стакан с водой стоит передо мной, и я пью эту воду сейчас.",
+    "reference_es": "Bebo el agua.",
+    "used_words": [
+      "beber",
+      "agua"
+    ]
+  },
+  {
+    "prompt_ru": "Я открываю окно.",
+    "clarification_ru": "Окно в этой комнате видно нам обоим, и я открываю его сейчас.",
+    "reference_es": "Abro la ventana.",
+    "used_words": [
+      "abrir",
+      "ventana"
+    ]
+  },
+  {
+    "prompt_ru": "Я закрываю окно.",
+    "clarification_ru": "Окно в этой комнате видно нам обоим, и я закрываю его сейчас.",
+    "reference_es": "Cierro la ventana.",
+    "used_words": [
+      "cerrar",
+      "ventana"
+    ]
+  },
+  {
+    "prompt_ru": "Я ищу друга.",
+    "clarification_ru": "Я ищу человека, которого мы оба хорошо знаем.",
+    "reference_es": "Busco al amigo.",
+    "used_words": [
+      "buscar",
+      "amigo"
+    ]
+  },
+  {
+    "prompt_ru": "Я нахожу книгу.",
+    "clarification_ru": "На столе лежит одна книга, и я нахожу её сейчас.",
+    "reference_es": "Encuentro el libro.",
+    "used_words": [
+      "encontrar",
+      "libro"
+    ]
+  },
+  {
+    "prompt_ru": "Я несу воду.",
+    "clarification_ru": "Я держу воду и иду с ней сейчас.",
+    "reference_es": "Llevo el agua.",
+    "used_words": [
+      "llevar",
+      "agua"
+    ]
+  },
+  {
+    "prompt_ru": "Я смотрю на окно.",
+    "clarification_ru": "Окно в комнате видно мне, и я смотрю на него сейчас.",
+    "reference_es": "Miro la ventana.",
+    "used_words": [
+      "mirar",
+      "ventana"
+    ]
+  },
+  {
+    "prompt_ru": "Я помогаю другу.",
+    "clarification_ru": "Мы оба знаем этого друга, и я помогаю ему сейчас.",
+    "reference_es": "Ayudo al amigo.",
+    "used_words": [
+      "ayudar",
+      "amigo"
+    ]
+  },
+  {
+    "prompt_ru": "Я смотрю на дверь.",
+    "clarification_ru": "Дверь в этой комнате видна мне, и я смотрю на неё сейчас.",
+    "reference_es": "Miro la puerta.",
+    "used_words": [
+      "mirar",
+      "puerta"
+    ]
+  },
+  {
+    "prompt_ru": "Я открываю дверь.",
+    "clarification_ru": "Дверь в этой комнате видна мне, и я открываю её сейчас.",
+    "reference_es": "Abro la puerta.",
+    "used_words": [
+      "abrir",
+      "puerta"
+    ]
+  },
+  {
+    "prompt_ru": "Я закрываю дверь.",
+    "clarification_ru": "Дверь в этой комнате видна мне, и я закрываю её сейчас.",
+    "reference_es": "Cierro la puerta.",
+    "used_words": [
+      "cerrar",
+      "puerta"
+    ]
+  },
+  {
+    "prompt_ru": "Я читаю книгу здесь.",
+    "clarification_ru": "Я сижу рядом со столом, и книга лежит передо мной.",
+    "reference_es": "Leo el libro aquí.",
+    "used_words": [
+      "leer",
+      "libro",
+      "aquí"
+    ]
+  },
+  {
+    "prompt_ru": "Я пью воду там.",
+    "clarification_ru": "Я вижу стакан там и иду к нему, чтобы пить.",
+    "reference_es": "Bebo el agua allí.",
+    "used_words": [
+      "beber",
+      "agua",
+      "allí"
+    ]
+  },
+  {
+    "prompt_ru": "Я покупаю новую книгу.",
+    "clarification_ru": "Я сейчас в магазине и выбираю новую книгу.",
+    "reference_es": "Compro el libro nuevo.",
+    "used_words": [
+      "comprar",
+      "libro",
+      "nuevo"
+    ]
+  }
+]

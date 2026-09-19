@@ -1,0 +1,197 @@
+[
+  {
+    "prompt_ru": "Я пью молоко.",
+    "clarification_ru": "Вы наливаете напиток из только что открытой пачки. Речь идёт о продукте вообще, без указания на отдельную порцию.",
+    "reference_es": "Bebo leche.",
+    "used_words": [
+      "beber",
+      "leche"
+    ]
+  },
+  {
+    "prompt_ru": "Учитель пьёт кофе.",
+    "clarification_ru": "Вы с другом смотрите на вашего школьного преподавателя, пьющего напиток за столом.",
+    "reference_es": "El profesor bebe café.",
+    "used_words": [
+      "profesor",
+      "beber",
+      "café"
+    ]
+  },
+  {
+    "prompt_ru": "Брат ест хлеб.",
+    "clarification_ru": "Вы говорите о своём родном брате, который сидит рядом и просто ест этот продукт.",
+    "reference_es": "El hermano come pan.",
+    "used_words": [
+      "hermano",
+      "comer",
+      "pan"
+    ]
+  },
+  {
+    "prompt_ru": "Мы покупаем молоко.",
+    "clarification_ru": "Вы с приятелем стоите в супермаркете и берете пакет любого молока.",
+    "reference_es": "Compramos leche.",
+    "used_words": [
+      "comprar",
+      "leche"
+    ]
+  },
+  {
+    "prompt_ru": "Они продают кофе.",
+    "clarification_ru": "Речь идёт о торговле этим товаром как категорией продуктов.",
+    "reference_es": "Venden café.",
+    "used_words": [
+      "vender",
+      "café"
+    ]
+  },
+  {
+    "prompt_ru": "Женщина ищет магазин.",
+    "clarification_ru": "Прохожая дама, которую вы видите впервые, пытается найти любой работающий торговый пункт.",
+    "reference_es": "Una mujer busca una tienda.",
+    "used_words": [
+      "mujer",
+      "buscar",
+      "tienda"
+    ]
+  },
+  {
+    "prompt_ru": "Я покупаю машину.",
+    "clarification_ru": "Вы делитесь планами о приобретении любого автомобиля себе в пользование.",
+    "reference_es": "Compro un coche.",
+    "used_words": [
+      "comprar",
+      "coche"
+    ]
+  },
+  {
+    "prompt_ru": "Учитель ищет кофе.",
+    "clarification_ru": "Вы наблюдаете за вашим общим преподавателем, который пытается найти в шкафу хоть какой-то кофе.",
+    "reference_es": "El profesor busca café.",
+    "used_words": [
+      "profesor",
+      "buscar",
+      "café"
+    ]
+  },
+  {
+    "prompt_ru": "Брат покупает хлеб.",
+    "clarification_ru": "Ваш родной брат зашёл в булочную за обычной порцией хлеба.",
+    "reference_es": "El hermano compra pan.",
+    "used_words": [
+      "hermano",
+      "comprar",
+      "pan"
+    ]
+  },
+  {
+    "prompt_ru": "Женщина пьёт молоко.",
+    "clarification_ru": "Незнакомая посетительница кафе за соседним столиком пьёт этот напиток.",
+    "reference_es": "Una mujer bebe leche.",
+    "used_words": [
+      "mujer",
+      "beber",
+      "leche"
+    ]
+  },
+  {
+    "prompt_ru": "Мы ищем новую машину.",
+    "clarification_ru": "Вы с коллегой обсуждаете покупку любого автомобиля без пробега.",
+    "reference_es": "Buscamos un coche nuevo.",
+    "used_words": [
+      "buscar",
+      "coche",
+      "nuevo"
+    ]
+  },
+  {
+    "prompt_ru": "Ты продаёшь старую машину.",
+    "clarification_ru": "Обращение к приятелю на ты. Речь о его единственном подержанном автомобиле, который вы отлично знаете.",
+    "reference_es": "Vendes el coche viejo.",
+    "used_words": [
+      "vender",
+      "coche",
+      "viejo"
+    ]
+  },
+  {
+    "prompt_ru": "Учитель работает в магазине.",
+    "clarification_ru": "Вы оба знаете этого преподавателя, подрабатывающего в единственной местной лавке рядом с домом.",
+    "reference_es": "El profesor trabaja en la tienda.",
+    "used_words": [
+      "profesor",
+      "trabajar",
+      "tienda"
+    ]
+  },
+  {
+    "prompt_ru": "Они покупают дешёвый хлеб.",
+    "clarification_ru": "Покупатели выбирают любой недорогой сорт хлеба.",
+    "reference_es": "Compran pan barato.",
+    "used_words": [
+      "comprar",
+      "pan",
+      "barato"
+    ]
+  },
+  {
+    "prompt_ru": "Женщина ждёт машину.",
+    "clarification_ru": "Незнакомка стоит на улице в ожидании любого свободного такси.",
+    "reference_es": "Una mujer espera un coche.",
+    "used_words": [
+      "mujer",
+      "esperar",
+      "coche"
+    ]
+  },
+  {
+    "prompt_ru": "Я ищу дешёвую машину.",
+    "clarification_ru": "Вы ищете любой автомобиль по низкой цене.",
+    "reference_es": "Busco un coche barato.",
+    "used_words": [
+      "buscar",
+      "coche",
+      "barato"
+    ]
+  },
+  {
+    "prompt_ru": "Брат продаёт магазин.",
+    "clarification_ru": "Ваш родной брат выставил на продажу принадлежащее ему торговое заведение, о котором вы оба знаете.",
+    "reference_es": "El hermano vende la tienda.",
+    "used_words": [
+      "hermano",
+      "vender",
+      "tienda"
+    ]
+  },
+  {
+    "prompt_ru": "Мы пьём дорогой кофе.",
+    "clarification_ru": "Вы с другом пробуете элитный сорт кофе в гостях.",
+    "reference_es": "Bebemos café caro.",
+    "used_words": [
+      "beber",
+      "café",
+      "caro"
+    ]
+  },
+  {
+    "prompt_ru": "Ты покупаешь молоко.",
+    "clarification_ru": "Обращение на ты к приятелю, который выбирает пакет обычного молока.",
+    "reference_es": "Compras leche.",
+    "used_words": [
+      "comprar",
+      "leche"
+    ]
+  },
+  {
+    "prompt_ru": "Женщина покупает хлеб.",
+    "clarification_ru": "Незнакомая посетительница берёт выпечку у прилавка.",
+    "reference_es": "Una mujer compra pan.",
+    "used_words": [
+      "mujer",
+      "comprar",
+      "pan"
+    ]
+  }
+]

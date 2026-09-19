@@ -3,6 +3,7 @@ package ai
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"strings"
 	"unicode"
@@ -90,75 +91,78 @@ func (s *Service) HasSentencePromptsForCourse(courseCode string) bool {
 	return s.sentenceGenPrompts[courseCode] != "" && s.sentenceGradePrompts[courseCode] != ""
 }
 
-// GenerateSentenceSetForCourse asks the model to build `count` Russian sentences from the
-// given well-learned words, constrained to the provided grammar tenses (human-readable).
+// ErrNoReviewedSentences is a content-quality shortfall, not an AI availability failure.
+var ErrNoReviewedSentences = errors.New("sentence generation produced no reviewed unique items")
+
+type sentenceRejection struct {
+	Sentence GeneratedSentence `json:"sentence"`
+	Reason   string            `json:"reason"`
+}
+
+type sentenceGenerationResult struct {
+	Accepted []GeneratedSentence
+	Rejected []sentenceRejection
+}
+
+// GenerateSentenceSetForCourse reviews one shared candidate pool and makes at most
+// one targeted refill. Only reviewed, unique items are returned, even on a shortfall.
 func (s *Service) GenerateSentenceSetForCourse(ctx context.Context, courseCode string, focusWords, supportWords []GenSentenceWord, tenses []string, count int, modelOverride ...string) ([]GeneratedSentence, error) {
 	if count <= 0 || len(focusWords) == 0 {
 		return nil, fmt.Errorf("sentence generation requires a positive count and focus vocabulary")
 	}
-	const batchSize = 5
 	out := make([]GeneratedSentence, 0, count)
-	seen := make(map[string]bool, count*2)
-	for offset := 0; offset < count; offset += batchSize {
-		batchCount := batchSize
-		if remaining := count - offset; remaining < batchCount {
-			batchCount = remaining
-		}
-		batchFocus := make([]GenSentenceWord, 0, batchCount)
-		for i := 0; i < batchCount; i++ {
-			batchFocus = append(batchFocus, focusWords[(offset+i)%len(focusWords)])
-		}
-		batch := make([]GeneratedSentence, 0, batchCount)
-		for attempt := 0; attempt < 4 && len(batch) < batchCount; attempt++ {
-			candidateCount := (batchCount - len(batch)) * 2
-			// Keep refill batches wide enough to give a small model room to avoid
-			// duplicates and unsafe focus-word combinations.
-			if candidateCount < batchCount {
-				candidateCount = batchCount
-			}
-			generated, err := s.generateSentenceBatchForCourse(ctx, courseCode, batchFocus, supportWords, tenses, candidateCount, modelOverride...)
-			if err != nil {
+	seen := make(map[string]bool, count)
+	var rejected []sentenceRejection
+	for attempt := 0; attempt < 2 && len(out) < count; attempt++ {
+		missing := count - len(out)
+		candidateCount := missing + (missing+1)/2
+		result, err := s.generateSentenceBatchForCourse(ctx, courseCode, focusWords, supportWords, tenses, candidateCount, out, rejected, modelOverride...)
+		if err != nil {
+			if len(out) == 0 {
 				return nil, err
 			}
-			for _, sentence := range generated {
-				key := NormalizedSentenceAnswer(sentence.PromptRU) + "\x00" + NormalizedSentenceAnswer(sentence.ReferenceES)
-				if seen[key] {
-					continue
-				}
-				seen[key] = true
-				batch = append(batch, sentence)
-				if len(batch) == batchCount {
-					break
-				}
+			s.logger.Warn("sentence refill failed; keeping reviewed items", zap.String("course", courseCode), zap.Error(err), zap.Int("accepted", len(out)))
+			break
+		}
+		rejected = result.Rejected
+		for _, sentence := range result.Accepted {
+			key := NormalizedSentenceAnswer(sentence.PromptRU)
+			if seen[key] {
+				continue
+			}
+			seen[key] = true
+			out = append(out, sentence)
+			if len(out) == count {
+				break
 			}
 		}
-		if len(batch) < batchCount {
-			s.logger.Warn("sentence generation batch remained short after quality retries",
-				zap.String("course", courseCode), zap.Int("wanted", batchCount), zap.Int("generated", len(batch)))
-		}
-		out = append(out, batch...)
 	}
-	if len(out) != count {
-		return nil, fmt.Errorf("sentence generation produced %d/%d reviewed unique items", len(out), count)
+	if len(out) == 0 {
+		return nil, ErrNoReviewedSentences
+	}
+	if len(out) < count {
+		s.logger.Warn("sentence generation returning partial reviewed set", zap.String("course", courseCode), zap.Int("wanted", count), zap.Int("accepted", len(out)))
 	}
 	return out, nil
 }
 
-func (s *Service) generateSentenceBatchForCourse(ctx context.Context, courseCode string, focusWords, supportWords []GenSentenceWord, tenses []string, count int, modelOverride ...string) ([]GeneratedSentence, error) {
+func (s *Service) generateSentenceBatchForCourse(ctx context.Context, courseCode string, focusWords, supportWords []GenSentenceWord, tenses []string, count int, accepted []GeneratedSentence, rejected []sentenceRejection, modelOverride ...string) (sentenceGenerationResult, error) {
 	prompt := s.sentenceGenPrompts[courseCode]
 	if prompt == "" {
-		return nil, fmt.Errorf("sentence generation prompt not set for course %q", courseCode)
+		return sentenceGenerationResult{}, fmt.Errorf("sentence generation prompt not set for course %q", courseCode)
 	}
 
 	payload := map[string]interface{}{
-		"sentence_count": count,
-		"allowed_tenses": tenses,
-		"focus_words":    focusWords,
-		"support_words":  supportWords,
+		"sentence_count":     count,
+		"allowed_tenses":     tenses,
+		"focus_words":        focusWords,
+		"support_words":      supportWords,
+		"accepted_sentences": accepted,
+		"rejected_sentences": rejected,
 	}
 	payloadJSON, err := json.Marshal(payload)
 	if err != nil {
-		return nil, fmt.Errorf("marshal generation payload: %w", err)
+		return sentenceGenerationResult{}, fmt.Errorf("marshal generation payload: %w", err)
 	}
 
 	messages := []Message{
@@ -166,32 +170,24 @@ func (s *Service) generateSentenceBatchForCourse(ctx context.Context, courseCode
 		{Role: "user", Content: string(payloadJSON)},
 	}
 	model := s.sentenceModelOr(modelOverride...)
-	raw, err := s.postChatCompletion(ctx, model, messages, 3000, 0.6, zap.String("kind", "sentence_gen"), zap.String("course", courseCode))
+	// A single request per round; invalid output does not trigger hidden retries.
+	raw, err := s.postSentenceChatCompletion(ctx, model, messages, sentenceGenerationTokenLimit(count), 0.6, zap.String("kind", "sentence_gen"), zap.String("course", courseCode))
 	if err != nil {
-		return nil, err
-	}
-	if strings.TrimSpace(raw) == "" {
-		raw, err = s.postChatCompletion(ctx, model, messages, 4500, 0.4, zap.String("kind", "sentence_gen_retry"), zap.String("course", courseCode))
-		if err != nil {
-			return nil, err
-		}
-	}
-	if strings.TrimSpace(raw) == "" {
-		return nil, fmt.Errorf("sentence generator returned an empty response")
+		return sentenceGenerationResult{}, err
 	}
 	var set generatedSentenceSet
 	if err := json.Unmarshal([]byte(raw), &set); err != nil {
-		s.logger.Warn("sentence generator returned malformed JSON; retrying",
-			zap.String("course", courseCode), zap.Error(err))
-		raw, retryErr := s.postChatCompletion(ctx, model, messages, 8000, 0.2, zap.String("kind", "sentence_gen_json_retry"), zap.String("course", courseCode))
-		if retryErr != nil {
-			return nil, retryErr
-		}
-		if err := json.Unmarshal([]byte(raw), &set); err != nil {
-			return nil, fmt.Errorf("parse sentence generation retry: %w (raw: %s)", err, truncateForLog(raw))
-		}
+		return sentenceGenerationResult{}, fmt.Errorf("parse sentence generation: %w", err)
 	}
-	set.Sentences = s.repairMissingSentenceContexts(ctx, model, courseCode, set.Sentences)
+	// Bound review size even if the generator ignores sentence_count.
+	if len(set.Sentences) > count {
+		set.Sentences = set.Sentences[:count]
+	}
+	var result sentenceGenerationResult
+	reject := func(sentence GeneratedSentence, reason string) {
+		result.Rejected = append(result.Rejected, sentenceRejection{Sentence: sentence, Reason: reason})
+		s.logger.Info("sentence rejected by local validation", zap.String("course", courseCode), zap.String("prompt_ru", sentence.PromptRU), zap.String("reason", reason))
+	}
 	allWords := append(append(make([]GenSentenceWord, 0, len(focusWords)+len(supportWords)), focusWords...), supportWords...)
 	focusSet := make(map[string]bool, len(focusWords))
 	knownSet := make(map[string]bool, len(allWords))
@@ -211,30 +207,27 @@ func (s *Service) generateSentenceBatchForCourse(ctx context.Context, courseCode
 		}
 	}
 	out := make([]GeneratedSentence, 0, len(set.Sentences))
+	seenPrompts := make(map[string]bool, len(accepted)+len(set.Sentences))
+	for _, sentence := range accepted {
+		seenPrompts[NormalizedSentenceAnswer(sentence.PromptRU)] = true
+	}
 	for _, sentence := range set.Sentences {
 		sentence.PromptRU = strings.TrimSpace(sentence.PromptRU)
 		sentence.ReferenceES = strings.TrimSpace(sentence.ReferenceES)
 		if sentence.PromptRU == "" || sentence.ReferenceES == "" {
+			reject(sentence, "Russian prompt and target translation must both be nonempty.")
 			continue
 		}
 		if !usableSentenceClarification(sentence.ClarificationRU) {
-			s.logger.Warn("sentence generation returned an unusable learner context; dropping",
-				zap.String("course", courseCode), zap.String("clarification_ru", sentence.ClarificationRU))
+			reject(sentence, "Rewrite clarification_ru as observable Russian facts explaining every article and addressee. Do not use конкретн, определённ, определенн, артикл or Latin letters; do not merely label an object as specific.")
 			continue
 		}
 		if strings.TrimSpace(sentence.ClarificationRU) == "" && ((courseCode == "es_ru" && hasRussianAddress(sentence.PromptRU)) || hasSentenceArticle(courseCode, sentence.ReferenceES)) {
-			s.logger.Warn("sentence generation left an article or addressee without context; dropping", zap.String("course", courseCode))
+			reject(sentence, "Add Russian context resolving every article and, for Spanish вы, number of addressees, formality and region when needed.")
 			continue
 		}
-		// The native-language prompt must never leak a target-language word. Weaker models
-		// occasionally drop a supplied target lemma (or its inflected form) straight into
-		// `prompt_ru` instead of translating it, which shows the learner the answer. Detect
-		// that and skip the item rather than serve a corrupted exercise.
 		if leaked := leakedTargetWord(sentence.PromptRU, allWords); leaked != "" {
-			s.logger.Warn("sentence generation leaked target word into native prompt; dropping",
-				zap.String("course", courseCode),
-				zap.String("leaked_word", leaked),
-				zap.String("prompt_ru", sentence.PromptRU))
+			reject(sentence, "Translate the leaked target-language word in prompt_ru: "+leaked)
 			continue
 		}
 		focusUses := 0
@@ -256,69 +249,40 @@ func (s *Service) generateSentenceBatchForCourse(ctx context.Context, courseCode
 			}
 		}
 		if !validUsedWords || focusUses < 1 {
-			s.logger.Warn("sentence generation did not use a valid focus vocabulary word; dropping",
-				zap.String("course", courseCode),
-				zap.String("prompt_ru", sentence.PromptRU),
-				zap.Strings("used_words", sentence.UsedWords))
+			reject(sentence, "used_words must list supplied lemmas only and contain at least one focus lemma actually used in the sentence.")
 			continue
 		}
+		key := NormalizedSentenceAnswer(sentence.PromptRU)
+		if seenPrompts[key] {
+			reject(sentence, "Duplicate Russian prompt. Write a different sentence, not another translation or context for the same prompt.")
+			continue
+		}
+		seenPrompts[key] = true
 		sentence.UsedWords = canonicalUsedWords
 		out = append(out, sentence)
 	}
 	if len(out) == 0 {
-		return []GeneratedSentence{}, nil
+		return result, nil
 	}
-	out = s.reviewGeneratedSentenceQuality(ctx, model, courseCode, focusWords, supportWords, tenses, out)
-	if len(out) == 0 {
-		return []GeneratedSentence{}, nil
+	reviewed, err := s.reviewGeneratedSentenceQuality(ctx, model, courseCode, focusWords, supportWords, tenses, out)
+	if err != nil {
+		return result, err
 	}
-
-	// The model occasionally overshoots the requested count; hold it to exactly `count`.
-	if count > 0 && len(out) > count {
-		out = out[:count]
-	}
-	return out, nil
+	result.Accepted = reviewed.Accepted
+	result.Rejected = append(result.Rejected, reviewed.Rejected...)
+	return result, nil
 }
 
-func (s *Service) repairMissingSentenceContexts(ctx context.Context, model, courseCode string, sentences []GeneratedSentence) []GeneratedSentence {
-	needsRepair := false
-	for _, sentence := range sentences {
-		if strings.TrimSpace(sentence.ClarificationRU) == "" && (hasSentenceArticle(courseCode, sentence.ReferenceES) || (courseCode == "es_ru" && hasRussianAddress(sentence.PromptRU))) {
-			needsRepair = true
-			break
-		}
+// Allow enough output for a shared pool including learner-visible context.
+func sentenceGenerationTokenLimit(count int) int {
+	limit := count * 400
+	if limit < 3000 {
+		return 3000
 	}
-	if !needsRepair {
-		return sentences
-	}
-	payload, err := json.Marshal(map[string]interface{}{"course": courseCode, "sentences": sentences})
-	if err != nil {
-		return sentences
-	}
-	const prompt = `Return ONLY JSON with the same {"sentences":[...]} array and preserve every field exactly except clarification_ru.
-Write 1-2 short natural Russian context sentences where needed to disambiguate the translation. No target-language words or grammar labels.
-For Spanish Russian вы/вам/вас/ваш, specify number of addressees and formality: usted = one person politely; vosotros/vosotras = several friends informally in Spain; ustedes = several people politely or several friends in Latin America. Name the region if needed. Cover article ambiguity as well.
-For a definite article, state a concrete reason BOTH speakers can identify the referent. For an indefinite article, make clear no previously identified referent is intended. Cover ALL ambiguous nouns, including el in al/del. For generic/class articles explain that the whole category is meant; never invent a previously discussed individual. Every article-bearing reference needs useful context, even when no identification story is needed.
-Never invent a scene unrelated to the grammatical choice. Do not alter already supplied context. Context must be coherent with both sentences.`
-	raw, err := s.postChatCompletion(ctx, model, []Message{{Role: "system", Content: prompt}, {Role: "user", Content: string(payload)}}, 3000, 0, zap.String("kind", "sentence_context_repair"), zap.String("course", courseCode))
-	if err != nil {
-		s.logger.Warn("sentence context repair failed", zap.Error(err))
-		return sentences
-	}
-	var repaired generatedSentenceSet
-	if err := json.Unmarshal([]byte(raw), &repaired); err != nil || len(repaired.Sentences) != len(sentences) {
-		s.logger.Warn("sentence context repair returned invalid payload", zap.Error(err))
-		return sentences
-	}
-	for i := range sentences {
-		if strings.TrimSpace(sentences[i].ClarificationRU) == "" {
-			sentences[i].ClarificationRU = strings.TrimSpace(repaired.Sentences[i].ClarificationRU)
-		}
-	}
-	return sentences
+	return limit
 }
 
-func (s *Service) reviewGeneratedSentenceQuality(ctx context.Context, model, courseCode string, focusWords, supportWords []GenSentenceWord, tenses []string, sentences []GeneratedSentence) []GeneratedSentence {
+func (s *Service) reviewGeneratedSentenceQuality(ctx context.Context, model, courseCode string, focusWords, supportWords []GenSentenceWord, tenses []string, sentences []GeneratedSentence) (sentenceGenerationResult, error) {
 	payload, err := json.Marshal(map[string]interface{}{
 		"allowed_vocabulary": append(append([]GenSentenceWord{}, focusWords...), supportWords...),
 		"sentences":          sentences,
@@ -326,63 +290,69 @@ func (s *Service) reviewGeneratedSentenceQuality(ctx context.Context, model, cou
 		"allowed_tenses":     tenses,
 	})
 	if err != nil {
-		return sentences
+		return sentenceGenerationResult{}, err
 	}
 	const reviewPrompt = `Проверь каждое упражнение на перевод. Сначала найди основания для каждого выбора, затем реши, можно ли показывать задание ученику.
 Вход: course (es_ru или en_ru), allowed_vocabulary, allowed_tenses, sentences. reference_es — историческое имя поля эталона, в английском курсе там английский.
 Верни ТОЛЬКО JSON: {"checks":[{"position":0,"accepted":true,"reason":"краткое обоснование", "context_evidence":["точная цитата из clarification_ru для первого выбора", "цитата для второго выбора"]}]}.
-Одна проверка на каждую позицию. Отклоняй при ЛЮБОМ нарушении:
+Одна проверка на каждую позицию. context_evidence — дословные подстроки clarification_ru длиной НЕ МЕНЕЕ 12 символов каждая. Копируй их с тем же регистром, пунктуацией, ё/е и пробелами, не пересказывай. Можно скопировать целое предложение и повторить его, если оно обосновывает несколько выборов. При отказе цитаты не обязательны. Отклоняй при ЛЮБОМ нарушении:
 1. Все смысловые слова ОБЕИХ языков должны быть в allowed_vocabulary (с учётом форм и перевода). Проверь каждое существительное, прилагательное, основной глагол, наречие. Новые слова нельзя добавлять ради естественности. used_words должен включать все использованные леммы без лишних. Например, «давать»/dar запрещён, если его нет в списке. Служебные слова и связки разрешены. Лексика только внутри пояснения не ограничена.
-2. Русское предложение должно быть естественной короткой фразой с личной формой глагола; эталон должен точно передавать смысл и соблюдать allowed_tenses. Отклоняй неестественные комбинации ради лексики (мать находит чистую книгу, рука чистая, язык красный, ребёнок ест еду).
+2. Русское предложение должно быть естественной короткой фразой с личной формой глагола; эталон должен точно передавать смысл и соблюдать allowed_tenses. Отклоняй неестественные комбинации ради лексики (любые действия с «чистой книгой», мать ищет окно в комнате, «ты несёшь воду здесь», рука чистая, язык красный, ребёнок ест еду). Не оправдывай странную фразу специально придуманной предысторией.
 3. Проверь КАЖДЫЙ артикль в эталоне отдельно, включая подлежащее и объект, включая al/del. Найди в clarification_ru точную цитату, объясняющую, почему ОБА собеседника знают именно этого человека/предмет, или почему он впервые вводится/ещё не выбран, или что речь обо всём классе. Добавь по одной такой цитате в context_evidence для каждого артикля по порядку.
 «Друг открывает дверь» + пояснение только о двери НЕ обосновывает el amigo: отклони. «Врач открывает то самое окно в кабинете» не объясняет, как оба знают врача: отклони. Само наличие существительного в prompt_ru не делает его известным. Простого «мы его видим» тоже недостаточно, если непонятно, какой из многих предметов. Для неопределённого артикля контекст не должен одновременно указывать на уже опознанный предмет.
 4. Для испанского «вы/вам/вас/ваш» в русском задании добавь ЕЩЁ ОДНУ цитату в context_evidence, которая задаёт число адресатов, вежливость, при необходимости регион и пол. Если такой цитаты нет — отклони. Usted: один человек вежливо, глагол в 3-м лице ед. числа. Vosotros/vosotras: несколько человек на ты в Испании, 2-е лицо мн. числа. Ustedes: несколько человек вежливо или в Латинской Америке, 3-е лицо мн. числа. Проверь также глагол при опущенном местоимении. «Одному другу на вы» с abres — ОШИБКА, это форма tú. Не принимай контекст с развилками «вежливо ИЛИ в Латинской Америке»: нужна одна ясная ситуация.
 5. Контекст не должен противоречить переводу, добавлять смысл к самому предложению, выдавать испанские/английские слова, рассказывать абстрактные правила. Он должен помогать выбрать ответ. Если речь о поиске в контексте, а предложение говорит о находке — отклони как несогласованное.
 Если основания для хотя бы одного выбора нет, accepted=false. Не домысливай недостающие факты. В reason кратко назови факты или причину отказа. Ничего не исправляй.`
 	messages := []Message{{Role: "system", Content: reviewPrompt}, {Role: "user", Content: string(payload)}}
-	raw, err := s.postChatCompletion(ctx, model, messages, 4500, 0, zap.String("kind", "sentence_quality_review"), zap.String("course", courseCode))
+	raw, err := s.postSentenceChatCompletion(ctx, model, messages, sentenceGenerationTokenLimit(len(sentences)), 0, zap.String("kind", "sentence_quality_review"), zap.String("course", courseCode))
 	if err != nil {
 		s.logger.Warn("sentence quality review failed; dropping unreviewed candidates", zap.Error(err))
-		return nil
+		return sentenceGenerationResult{}, fmt.Errorf("sentence quality review: %w", err)
 	}
 	var review sentenceQualityReview
 	if err := json.Unmarshal([]byte(raw), &review); err != nil {
 		s.logger.Warn("sentence quality review returned invalid JSON; dropping unreviewed candidates", zap.Error(err))
-		return nil
+		return sentenceGenerationResult{}, fmt.Errorf("sentence quality review: %w", err)
 	}
-	accepted := make(map[int]bool, len(review.Checks))
+	checks := make(map[int][]sentenceQualityCheck, len(review.Checks))
 	for _, check := range review.Checks {
-		if check.Position < 0 || check.Position >= len(sentences) || !check.Accepted || strings.TrimSpace(check.Reason) == "" {
-			continue
-		}
-		sentence := sentences[check.Position]
-		required := sentenceArticleCount(courseCode, sentence.ReferenceES)
-		if courseCode == "es_ru" && hasRussianAddress(sentence.PromptRU) {
-			required++
-		}
-		if len(check.ContextEvidence) < required {
-			continue
-		}
-		valid := true
-		for _, evidence := range check.ContextEvidence {
-			if len([]rune(strings.TrimSpace(evidence))) < 12 || !strings.Contains(sentence.ClarificationRU, evidence) {
-				valid = false
-				break
+		checks[check.Position] = append(checks[check.Position], check)
+	}
+	var result sentenceGenerationResult
+	for i, sentence := range sentences {
+		reason := "Quality review must return exactly one check per candidate with a nonempty reason."
+		passed := false
+		if entries := checks[i]; len(entries) == 1 {
+			check := entries[0]
+			if strings.TrimSpace(check.Reason) != "" {
+				reason = check.Reason
+				if check.Accepted {
+					required := sentenceArticleCount(courseCode, sentence.ReferenceES)
+					if courseCode == "es_ru" && hasRussianAddress(sentence.PromptRU) {
+						required++
+					}
+					passed = len(check.ContextEvidence) >= required
+					if !passed {
+						reason = "Missing context evidence for one or more articles or the addressee: " + check.Reason
+					}
+					for _, evidence := range check.ContextEvidence {
+						if len([]rune(strings.TrimSpace(evidence))) < 12 || !strings.Contains(sentence.ClarificationRU, evidence) {
+							passed = false
+							reason = "Context evidence must be an exact quote of at least 12 characters from clarification_ru: " + check.Reason
+							break
+						}
+					}
+				}
 			}
 		}
-		if valid {
-			accepted[check.Position] = true
-		}
-	}
-	out := make([]GeneratedSentence, 0, len(accepted))
-	for i, sentence := range sentences {
-		if accepted[i] {
-			out = append(out, sentence)
+		if passed {
+			result.Accepted = append(result.Accepted, sentence)
 		} else {
-			s.logger.Info("sentence rejected by quality review", zap.String("prompt_ru", sentence.PromptRU))
+			result.Rejected = append(result.Rejected, sentenceRejection{Sentence: sentence, Reason: reason})
+			s.logger.Info("sentence rejected by quality review", zap.String("course", courseCode), zap.String("prompt_ru", sentence.PromptRU), zap.String("reason", reason))
 		}
 	}
-	return out
+	return result, nil
 }
 
 func usableSentenceClarification(context string) bool {
@@ -466,7 +436,7 @@ func (s *Service) GradeSentenceForCourse(ctx context.Context, courseCode, prompt
 		if attempt > 0 {
 			maxTokens = 3500
 		}
-		raw, err := s.postChatCompletion(ctx, model, messages, maxTokens, 0.1, zap.String("kind", "sentence_grade"), zap.String("course", courseCode))
+		raw, err := s.postSentenceChatCompletion(ctx, model, messages, maxTokens, 0.1, zap.String("kind", "sentence_grade"), zap.String("course", courseCode))
 		if err != nil {
 			return nil, err
 		}
@@ -640,6 +610,10 @@ func hasRussianAddress(sentence string) bool {
 }
 
 // Sentence models are configured independently of dictionary and chat models.
+func (s *Service) SetSentenceReasoningEffort(effort string) {
+	s.sentenceReasoningEffort = strings.ToLower(strings.TrimSpace(effort))
+}
+
 func (s *Service) SetSentenceModel(model string) { s.sentenceModel = strings.TrimSpace(model) }
 
 func (s *Service) sentenceModelOr(overrides ...string) string {

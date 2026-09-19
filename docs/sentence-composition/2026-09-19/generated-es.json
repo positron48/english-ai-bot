@@ -1,0 +1,162 @@
+[
+  {
+    "prompt_ru": "Мать покупает книгу.",
+    "clarification_ru": "Говорящие обсуждают свою маму. Она пришла в магазин и выбрала одну из многих книг, о которой раньше не говорили.",
+    "reference_es": "La madre compra un libro.",
+    "used_words": [
+      "madre",
+      "comprar",
+      "libro"
+    ]
+  },
+  {
+    "prompt_ru": "Вы закрываете дверь?",
+    "clarification_ru": "В Испании: вы обращаетесь к двум друзьям (мужчинам) и спрашиваете про дверь в их доме.",
+    "reference_es": "¿Cerráis la puerta?",
+    "used_words": [
+      "cerrar",
+      "puerta"
+    ]
+  },
+  {
+    "prompt_ru": "Сосед несёт воду.",
+    "clarification_ru": "Речь о знакомом соседе. Он несёт какую-то воду (например, в бутылках), которую собеседники видят впервые.",
+    "reference_es": "El vecino lleva agua.",
+    "used_words": [
+      "vecino",
+      "llevar",
+      "agua"
+    ]
+  },
+  {
+    "prompt_ru": "Ребёнок открывает новую книгу.",
+    "clarification_ru": "Собеседники говорят о знакомом ребёнке и книге, которую ему только что подарили.",
+    "reference_es": "El niño abre un libro nuevo.",
+    "used_words": [
+      "niño",
+      "abrir",
+      "libro",
+      "nuevo"
+    ]
+  },
+  {
+    "prompt_ru": "Ты пьёшь воду?",
+    "clarification_ru": "Вопрос к другу. Речь о воде вообще (как о веществе) или о любой воде из бутылки.",
+    "reference_es": "¿Bebes agua?",
+    "used_words": [
+      "beber",
+      "agua"
+    ]
+  },
+  {
+    "prompt_ru": "Она ищет большого друга.",
+    "clarification_ru": "Она ищет одного из своих друзей, который отличается высоким ростом. Собеседник не знает, о ком именно речь.",
+    "reference_es": "Busca a un amigo grande.",
+    "used_words": [
+      "buscar",
+      "amigo",
+      "grande"
+    ]
+  },
+  {
+    "prompt_ru": "Я покупаю зелёную дверь.",
+    "clarification_ru": "Говорящий выбрал одну из многих дверей в магазине, о которой раньше не упоминалось.",
+    "reference_es": "Compro una puerta verde.",
+    "used_words": [
+      "comprar",
+      "puerta",
+      "verde"
+    ]
+  },
+  {
+    "prompt_ru": "Сосед открывает чёрную дверь.",
+    "clarification_ru": "Речь о знакомом соседе и о двери его квартиры.",
+    "reference_es": "El vecino abre la puerta negra.",
+    "used_words": [
+      "vecino",
+      "abrir",
+      "puerta",
+      "negro"
+    ]
+  },
+  {
+    "prompt_ru": "Они находят воду.",
+    "clarification_ru": "Группа людей нашла источник воды или бутылку, которую они долго искали.",
+    "reference_es": "Encuentran el agua.",
+    "used_words": [
+      "encontrar",
+      "agua"
+    ]
+  },
+  {
+    "prompt_ru": "Врач закрывает окно.",
+    "clarification_ru": "Собеседники сидят в кабинете у своего лечащего врача и видят, как он закрывает единственное окно в этой комнате.",
+    "reference_es": "El médico cierra la ventana.",
+    "used_words": [
+      "médico",
+      "cerrar",
+      "ventana"
+    ]
+  },
+  {
+    "prompt_ru": "Мы кладём книги на стол.",
+    "clarification_ru": "Мы вместе переносим стопку книг, которые уже обсуждали, на обеденный стол в нашей кухне.",
+    "reference_es": "Ponemos los libros en la mesa.",
+    "used_words": [
+      "poner",
+      "libro",
+      "mesa"
+    ]
+  },
+  {
+    "prompt_ru": "Соседи закрывают окна.",
+    "clarification_ru": "Речь о знакомых людях из дома напротив. Начался дождь, и они закрывают все окна в своей квартире.",
+    "reference_es": "Los vecinos cierran las ventanas.",
+    "used_words": [
+      "vecino",
+      "cerrar",
+      "ventana"
+    ]
+  },
+  {
+    "prompt_ru": "Мальчики несут воду.",
+    "clarification_ru": "Собеседники видят знакомых мальчиков из соседнего класса. Ребята несут ту воду, которую их попросили купить для похода.",
+    "reference_es": "Los niños llevan el agua.",
+    "used_words": [
+      "niño",
+      "llevar",
+      "agua"
+    ]
+  },
+  {
+    "prompt_ru": "Друг покупает новый нож.",
+    "clarification_ru": "Речь о нашем общем друге. Он зашел в магазин и выбирает один из многих новых ножей, о котором мы раньше не упоминали.",
+    "reference_es": "El amigo compra un cuchillo nuevo.",
+    "used_words": [
+      "amigo",
+      "comprar",
+      "cuchillo",
+      "nuevo"
+    ]
+  },
+  {
+    "prompt_ru": "Друг открывает окно.",
+    "clarification_ru": "Собеседники говорят о своём общем друге, который сейчас открывает окно в той комнате, где они все находятся.",
+    "reference_es": "El amigo abre la ventana.",
+    "used_words": [
+      "amigo",
+      "abrir",
+      "ventana"
+    ]
+  },
+  {
+    "prompt_ru": "Мать смотрит на окно.",
+    "clarification_ru": "Собеседники обсуждают свою маму. Она стоит в гостиной и смотрит на единственное окно в этой комнате.",
+    "reference_es": "La madre mira la ventana.",
+    "used_words": [
+      "madre",
+      "mirar",
+      "ventana"
+    ]
+  }
+]

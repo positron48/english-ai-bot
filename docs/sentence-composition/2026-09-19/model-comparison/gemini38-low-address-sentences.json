@@ -1,0 +1,196 @@
+[
+  {
+    "prompt_ru": "Вы читаете книгу.",
+    "clarification_ru": "Обращение вежливо к одному человеку. Вы держите в руках то самое издание, о котором вас только что спросили.",
+    "reference_es": "Usted lee el libro.",
+    "used_words": [
+      "libro",
+      "leer"
+    ]
+  },
+  {
+    "prompt_ru": "Вы пьёте воду.",
+    "clarification_ru": "В Испании, обращение к компании близких друзей. Речь идёт о питье воды вообще как напитка.",
+    "reference_es": "Vosotros bebéis agua.",
+    "used_words": [
+      "beber",
+      "agua"
+    ]
+  },
+  {
+    "prompt_ru": "Вы открываете дверь.",
+    "clarification_ru": "Обращение вежливо к группе людей. Речь идёт о единственной входной двери в кабинет.",
+    "reference_es": "Ustedes abren la puerta.",
+    "used_words": [
+      "abrir",
+      "puerta"
+    ]
+  },
+  {
+    "prompt_ru": "Вы закрываете окно.",
+    "clarification_ru": "Обращение вежливо к одному человеку. В этой комнате всего одна створка окна, из неё дует.",
+    "reference_es": "Usted cierra la ventana.",
+    "used_words": [
+      "cerrar",
+      "ventana"
+    ]
+  },
+  {
+    "prompt_ru": "Вы помогаете другу.",
+    "clarification_ru": "В Испании, обращение к группе подруг-девушек. Речь идёт об их общем давнем товарище, о котором все знают.",
+    "reference_es": "Vosotras ayudáis al amigo.",
+    "used_words": [
+      "ayudar",
+      "amigo"
+    ]
+  },
+  {
+    "prompt_ru": "Вы покупаете книги.",
+    "clarification_ru": "Обращение вежливо к группе людей в книжном магазине. Они берут книги вообще, любые издания без уточнения.",
+    "reference_es": "Ustedes compran libros.",
+    "used_words": [
+      "comprar",
+      "libro"
+    ]
+  },
+  {
+    "prompt_ru": "Вы ищете воду.",
+    "clarification_ru": "Обращение вежливо к одному человеку. Речь идёт о воде вообще, когда мучает жажда.",
+    "reference_es": "Usted busca agua.",
+    "used_words": [
+      "buscar",
+      "agua"
+    ]
+  },
+  {
+    "prompt_ru": "Вы находите дверь.",
+    "clarification_ru": "Обращение вежливо к одному человеку в тёмном коридоре. Речь идёт о той самой нужной выходной двери.",
+    "reference_es": "Usted encuentra la puerta.",
+    "used_words": [
+      "encontrar",
+      "puerta"
+    ]
+  },
+  {
+    "prompt_ru": "Вы кладёте книгу на стол.",
+    "clarification_ru": "Обращение вежливо к группе людей в офисе. Они держат в руках учебник, который обсуждали, и кладут его на рабочий стол в центре.",
+    "reference_es": "Ustedes ponen el libro en la mesa.",
+    "used_words": [
+      "poner",
+      "libro",
+      "mesa"
+    ]
+  },
+  {
+    "prompt_ru": "Вы несёте воду.",
+    "clarification_ru": "В Испании, обращение к друзьям на ты. Они несут воду как вещество в кувшине.",
+    "reference_es": "Vosotros lleváis agua.",
+    "used_words": [
+      "llevar",
+      "agua"
+    ]
+  },
+  {
+    "prompt_ru": "Вы открываете окна здесь.",
+    "clarification_ru": "Обращение вежливо к одному человеку. Речь идёт обо всех имеющихся окнах в этой аудитории.",
+    "reference_es": "Usted abre las ventanas aquí.",
+    "used_words": [
+      "abrir",
+      "ventana",
+      "aquí"
+    ]
+  },
+  {
+    "prompt_ru": "Вы закрываете двери там.",
+    "clarification_ru": "Обращение вежливо к группе людей. Речь идёт обо всех дверях того дальнего коридора.",
+    "reference_es": "Ustedes cierran las puertas allí.",
+    "used_words": [
+      "cerrar",
+      "puerta",
+      "allí"
+    ]
+  },
+  {
+    "prompt_ru": "Вы покупаете новую книгу.",
+    "clarification_ru": "В Испании, обращение к подругам на ты. Девушки выбирают в магазине один любой новый экземпляр среди новинок.",
+    "reference_es": "Vosotras compráis un libro nuevo.",
+    "used_words": [
+      "comprar",
+      "nuevo",
+      "libro"
+    ]
+  },
+  {
+    "prompt_ru": "Вы помогаете друзьям.",
+    "clarification_ru": "Обращение вежливо к одному человеку. Речь идёт о его собственных давних товарищах, которых все знают.",
+    "reference_es": "Usted ayuda a los amigos.",
+    "used_words": [
+      "ayudar",
+      "amigo"
+    ]
+  },
+  {
+    "prompt_ru": "Друг читает старую книгу.",
+    "clarification_ru": "Собеседники говорят о своём общем товарище. Он читает одну из старых книг из домашней библиотеки.",
+    "reference_es": "El amigo lee un libro viejo.",
+    "used_words": [
+      "amigo",
+      "leer",
+      "viejo",
+      "libro"
+    ]
+  },
+  {
+    "prompt_ru": "Мать закрывает дверь.",
+    "clarification_ru": "Собеседники говорят о матери семейства, которая закрывает единственную дверь детской комнаты.",
+    "reference_es": "La madre cierra la puerta.",
+    "used_words": [
+      "madre",
+      "cerrar",
+      "puerta"
+    ]
+  },
+  {
+    "prompt_ru": "Ребёнок пьёт чистую воду.",
+    "clarification_ru": "Собеседники видят знакомого мальчика. Он пьёт чистую воду как вещество.",
+    "reference_es": "El niño bebe agua limpia.",
+    "used_words": [
+      "niño",
+      "beber",
+      "limpio",
+      "agua"
+    ]
+  },
+  {
+    "prompt_ru": "Врач открывает окно.",
+    "clarification_ru": "Речь идёт о дежурном враче в палате, который открывает единственное имеющееся окно.",
+    "reference_es": "El médico abre la ventana.",
+    "used_words": [
+      "médico",
+      "abrir",
+      "ventana"
+    ]
+  },
+  {
+    "prompt_ru": "Сосед ищет друга здесь.",
+    "clarification_ru": "Оба собеседника знают соседа по лестничной площадке. Он ищет своего постоянного приятеля.",
+    "reference_es": "El vecino busca al amigo aquí.",
+    "used_words": [
+      "vecino",
+      "buscar",
+      "amigo",
+      "aquí"
+    ]
+  },
+  {
+    "prompt_ru": "Друг покупает большой стол.",
+    "clarification_ru": "Собеседники говорят о своём общем друге. В мебельном магазине он покупает один любой большой стол.",
+    "reference_es": "El amigo compra una mesa grande.",
+    "used_words": [
+      "amigo",
+      "comprar",
+      "grande",
+      "mesa"
+    ]
+  }
+]

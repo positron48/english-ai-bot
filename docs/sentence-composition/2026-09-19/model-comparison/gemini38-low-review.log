@@ -1,0 +1,26 @@
+=== RUN   TestSentenceReviewRegressionLLM
+    sentence_regression_llm_test.go:200: LLM_RESPONSE model=google/gemini-3.8-flash provider=openrouter status=200 input=2104 output=549 cost=0.428089
+    sentence_review_llm_test.go:73: REVIEW_CASE formal singular valid accepted=true want=true
+    sentence_review_llm_test.go:73: REVIEW_CASE formal singular wrong verb accepted=false want=false
+    sentence_review_llm_test.go:73: REVIEW_CASE Russian vy cannot be tu accepted=false want=false
+    sentence_review_llm_test.go:73: REVIEW_CASE unselected book definite accepted=false want=false
+    sentence_review_llm_test.go:73: REVIEW_CASE missing subject identification accepted=false want=false
+    sentence_review_llm_test.go:73: REVIEW_CASE big is not tall accepted=false want=false
+    sentence_review_llm_test.go:73: REVIEW_CASE identified book indefinite accepted=false want=false
+    sentence_review_llm_test.go:73: REVIEW_CASE identified book valid accepted=true want=true
+    sentence_review_llm_test.go:73: REVIEW_CASE unselected book valid accepted=true want=true
+    sentence_review_llm_test.go:73: REVIEW_CASE Spain informal valid accepted=true want=true
+    sentence_review_llm_test.go:73: REVIEW_CASE artificial clean book accepted=false want=false
+    sentence_review_llm_test.go:73: REVIEW_CASE unknown content verb accepted=false want=false
+    sentence_review_llm_test.go:76: REVIEW_REJECTION Вы пьёте воду?: Несоответствие контекста (одному человеку вежливо) и формы глагола (vosotros bebéis).
+    sentence_review_llm_test.go:76: REVIEW_REJECTION Вы покупаете книги.: В prompt_ru 'Вы', а в clarification_ru 'на ты' (Compras) — противоречие в лице/местоимении. Либо неверный перевод Вы как tú.
+    sentence_review_llm_test.go:76: REVIEW_REJECTION Я покупаю книгу.: Контекст требует неопределённого артикля (любую подходящую), а в эталоне определённый (el libro).
+    sentence_review_llm_test.go:76: REVIEW_REJECTION Врач открывает окно.: Артикль el перед médico не обоснован: контекст прямо указывает 'О враче ничего не сообщается'.
+    sentence_review_llm_test.go:76: REVIEW_REJECTION Она ищет большого друга.: Неестественное словосочетание 'большой друг' в значении высокого приятеля (grande постпозитивно означает крупный/большой по размеру, а не просто высокий приятель, к тому же 'своего' противоречит un amigo).
+    sentence_review_llm_test.go:76: REVIEW_REJECTION Я читаю книгу.: Контекст описывает конкретную известную книгу, а в эталоне неопределённый артикль un libro.
+    sentence_review_llm_test.go:76: REVIEW_REJECTION Мать находит чистую книгу.: Нарушение правила естественности: 'чистая книга' / действия с чистой книгой запрещены инструкцией.
+    sentence_review_llm_test.go:76: REVIEW_REJECTION Я стираю книгу.: Глагол lavar / стирать отсутствует в allowed_vocabulary, фраза неестественна.
+    sentence_review_llm_test.go:78: REVIEW_SUMMARY model=google/gemini-3.8-flash passed=12/12 calls=1 cost=0.428089 seconds=6.0
+--- PASS: TestSentenceReviewRegressionLLM (6.05s)
+PASS
+ok  	tgbot-skeleton/internal/ai	6.737s

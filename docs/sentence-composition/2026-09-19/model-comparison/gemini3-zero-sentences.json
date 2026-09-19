@@ -1,0 +1,200 @@
+[
+  {
+    "prompt_ru": "Я читаю книгу.",
+    "clarification_ru": "Вы держите в руках книгу, которую только что выбрали в библиотеке, и отвечаете на вопрос друга о вашем занятии.",
+    "reference_es": "Leo el libro",
+    "used_words": [
+      "leer",
+      "libro"
+    ]
+  },
+  {
+    "prompt_ru": "Друг пьет воду.",
+    "clarification_ru": "Вы сидите на кухне. Ваш общий знакомый взял стакан и пьет обычную питьевую воду.",
+    "reference_es": "El amigo bebe agua",
+    "used_words": [
+      "amigo",
+      "beber",
+      "agua"
+    ]
+  },
+  {
+    "prompt_ru": "Мальчик открывает дверь.",
+    "clarification_ru": "Вы стоите в коридоре и видите, как сын соседей подходит к единственному входу в квартиру и тянет за ручку.",
+    "reference_es": "El niño abre la puerta",
+    "used_words": [
+      "niño",
+      "abrir",
+      "puerta"
+    ]
+  },
+  {
+    "prompt_ru": "Вы покупаете книги.",
+    "clarification_ru": "Вы обращаетесь к одному человеку на «ты». Он стоит в магазине и выбирает несколько любых пособий для учебы.",
+    "reference_es": "Compras libros",
+    "used_words": [
+      "comprar",
+      "libro"
+    ]
+  },
+  {
+    "prompt_ru": "Врач закрывает окно.",
+    "clarification_ru": "В кабинете стало холодно. Доктор подходит к единственному окну в помещении и тянет за раму.",
+    "reference_es": "El médico cierra la ventana",
+    "used_words": [
+      "médico",
+      "cerrar",
+      "ventana"
+    ]
+  },
+  {
+    "prompt_ru": "Я несу воду.",
+    "clarification_ru": "Вы идете по саду с лейкой, наполненной жидкостью, чтобы полить цветы.",
+    "reference_es": "Llevo agua",
+    "used_words": [
+      "llevar",
+      "agua"
+    ]
+  },
+  {
+    "prompt_ru": "Сосед открывает окно.",
+    "clarification_ru": "Вы живете в частном доме и видите, как человек из дома напротив открывает створку своего единственного окна.",
+    "reference_es": "El vecino abre la ventana",
+    "used_words": [
+      "vecino",
+      "abrir",
+      "ventana"
+    ]
+  },
+  {
+    "prompt_ru": "Мальчик находит книгу.",
+    "clarification_ru": "Ребенок долго искал в шкафу свое любимое издание и, наконец, увидел его на полке.",
+    "reference_es": "El niño encuentra el libro",
+    "used_words": [
+      "niño",
+      "encontrar",
+      "libro"
+    ]
+  },
+  {
+    "prompt_ru": "Друзья едят еду.",
+    "clarification_ru": "Группа ваших общих знакомых сидит в кафе и обедает.",
+    "reference_es": "Los amigos comen la comida",
+    "used_words": [
+      "amigo",
+      "comer",
+      "comida"
+    ]
+  },
+  {
+    "prompt_ru": "Я ищу друга.",
+    "clarification_ru": "Вы пришли на праздник и пытаетесь увидеть в толпе своего единственного близкого товарища.",
+    "reference_es": "Busco al amigo",
+    "used_words": [
+      "buscar",
+      "amigo"
+    ]
+  },
+  {
+    "prompt_ru": "Ребенок закрывает дверь.",
+    "clarification_ru": "Малыш подошел к выходу из комнаты и захлопнул створку.",
+    "reference_es": "El niño cierra la puerta",
+    "used_words": [
+      "niño",
+      "cerrar",
+      "puerta"
+    ]
+  },
+  {
+    "prompt_ru": "Вы помогаете другу.",
+    "clarification_ru": "В Испании вы обращаетесь к группе своих близких товарищей (мужчин). Вы говорите им, что оказываете поддержку одному их общему знакомому.",
+    "reference_es": "Ayudáis al amigo",
+    "used_words": [
+      "ayudar",
+      "amigo"
+    ]
+  },
+  {
+    "prompt_ru": "Соседи пьют воду здесь.",
+    "clarification_ru": "Люди из квартиры рядом зашли к вам в гости и пьют простую воду из стаканов.",
+    "reference_es": "Los vecinos beben agua aquí",
+    "used_words": [
+      "vecino",
+      "beber",
+      "agua",
+      "aquí"
+    ]
+  },
+  {
+    "prompt_ru": "Мальчики читают книги.",
+    "clarification_ru": "Группа детей в классе открыла свои учебники и начала изучение текста.",
+    "reference_es": "Los niños leen los libros",
+    "used_words": [
+      "niño",
+      "leer",
+      "libro"
+    ]
+  },
+  {
+    "prompt_ru": "Друг несет чистую воду.",
+    "clarification_ru": "Ваш товарищ идет к вам с прозрачной питьевой водой в прозрачном кувшине.",
+    "reference_es": "El amigo lleva el agua limpia",
+    "used_words": [
+      "amigo",
+      "llevar",
+      "agua",
+      "limpio"
+    ]
+  },
+  {
+    "prompt_ru": "Мать смотрит на окно.",
+    "clarification_ru": "Мама стоит во дворе и глядит на проем своей комнаты на втором этаже.",
+    "reference_es": "La madre mira la ventana",
+    "used_words": [
+      "madre",
+      "mirar",
+      "ventana"
+    ]
+  },
+  {
+    "prompt_ru": "Друзья закрывают окна.",
+    "clarification_ru": "Начался дождь, и ваши знакомые закрывают все оконные проемы в доме.",
+    "reference_es": "Los amigos cierran las ventanas",
+    "used_words": [
+      "amigo",
+      "cerrar",
+      "ventana"
+    ]
+  },
+  {
+    "prompt_ru": "Мальчик несет старую книгу.",
+    "clarification_ru": "Ребенок взял с полки потрепанный временем том и несет его вам показать.",
+    "reference_es": "El niño lleva el libro viejo",
+    "used_words": [
+      "niño",
+      "llevar",
+      "libro",
+      "viejo"
+    ]
+  },
+  {
+    "prompt_ru": "Вы находите дверь.",
+    "clarification_ru": "Вы вежливо обращаетесь к одному пожилому человеку. Он долго блуждал по коридору и наконец подошел к выходу из здания.",
+    "reference_es": "Usted encuentra la puerta",
+    "used_words": [
+      "encontrar",
+      "puerta"
+    ]
+  },
+  {
+    "prompt_ru": "Я кладу красную книгу на стол.",
+    "clarification_ru": "Вы держите в руках единственный красный том из вашей коллекции и кладете его на поверхность мебели, за которой обычно обедаете.",
+    "reference_es": "Pongo el libro rojo en la mesa",
+    "used_words": [
+      "poner",
+      "libro",
+      "rojo",
+      "mesa"
+    ]
+  }
+]
