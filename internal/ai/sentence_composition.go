@@ -700,11 +700,3 @@ func lemmaRoot(lemma string) string {
 	}
 	return lemma
 }
-
-func truncateForLog(s string) string {
-	const max = 300
-	if len(s) > max {
-		return s[:max] + "…"
-	}
-	return s
-}

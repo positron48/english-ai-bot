@@ -220,39 +220,6 @@ func (r *Router) handleLinglowPictureQuestDistricts(w http.ResponseWriter, req *
 	writeJSON(w, map[string]interface{}{"course_code": courseCode, "districts": out})
 }
 
-// pictureQuestProgressFlags derives mandatory-pass and 100% completion for a quest.
-func (r *Router) pictureQuestProgressFlags(ctx context.Context, userCourseID int64, quest *repository.PictureQuest, tasks []repository.PictureQuestTask) (questPassed, fullyDone bool) {
-	var sessionID int64
-	var status string
-	err := r.db.QueryRowContext(ctx, `
-		SELECT id, status FROM picture_quest_sessions
-		WHERE user_course_id = ? AND quest_id = ?
-		ORDER BY started_at DESC, id DESC LIMIT 1`, userCourseID, quest.ID).Scan(&sessionID, &status)
-	if err == nil {
-		completed, _ := r.pictureQuestRepo.GetCompletedTaskIDs(ctx, sessionID)
-		questPassed = allRequiredPictureTasksDone(tasks, completed)
-		fullyDone = status == "completed" || allPictureTasksDone(tasks, completed)
-	}
-	if !questPassed {
-		ever, _ := r.pictureQuestRepo.QuestEverPassed(ctx, userCourseID, quest.Code)
-		questPassed = ever
-	}
-	return questPassed, fullyDone
-}
-
-// latestPictureSessionStatus returns the most recent session status for a quest, or "" if none.
-func (r *Router) latestPictureSessionStatus(ctx context.Context, userCourseID, questID int64) string {
-	var status string
-	err := r.db.QueryRowContext(ctx, `
-		SELECT status FROM picture_quest_sessions
-		WHERE user_course_id = ? AND quest_id = ?
-		ORDER BY started_at DESC, id DESC LIMIT 1`, userCourseID, questID).Scan(&status)
-	if err != nil {
-		return ""
-	}
-	return status
-}
-
 // handleLinglowPictureQuestSessions starts (or resumes) a session for a quest.
 // @Summary      Начать сессию «опиши картинку»
 // @Tags         Linglow
