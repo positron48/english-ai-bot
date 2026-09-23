@@ -1,0 +1,105 @@
+[
+  {
+    "prompt_ru": "Ты ешь суп в отеле?",
+    "clarification_ru": "Вы оба уже знаете, о каком отеле идёт речь: вы остановились там.",
+    "reference_es": "¿Comes sopa en el hotel?",
+    "used_words": [
+      "comer",
+      "sopa",
+      "hotel"
+    ]
+  },
+  {
+    "prompt_ru": "Друг ест яблоки с моей сестрой.",
+    "clarification_ru": "Вы оба знаете этого общего друга.",
+    "reference_es": "El amigo come manzanas con mi hermana.",
+    "used_words": [
+      "amigo",
+      "comer",
+      "manzana",
+      "hermana"
+    ]
+  },
+  {
+    "prompt_ru": "Ты оставляешь чаевые в отеле?",
+    "clarification_ru": "Вы оба уже знаете, о каком отеле идёт речь: вы остановились там.",
+    "reference_es": "¿Pagas propina en el hotel?",
+    "used_words": [
+      "pagar",
+      "propina",
+      "hotel"
+    ]
+  },
+  {
+    "prompt_ru": "Ты едешь в отель на мотоцикле?",
+    "clarification_ru": "Вы оба знаете отель, куда направляется собеседник.",
+    "reference_es": "¿Vas en moto al hotel?",
+    "used_words": [
+      "ir",
+      "moto",
+      "hotel"
+    ]
+  },
+  {
+    "prompt_ru": "В отеле есть библиотека.",
+    "clarification_ru": "Вы оба уже знаете, о каком отеле идёт речь. О библиотеке в нём вы спрашиваете впервые и раньше её не выбирали.",
+    "reference_es": "En el hotel hay una biblioteca.",
+    "used_words": [
+      "hotel",
+      "biblioteca"
+    ]
+  },
+  {
+    "prompt_ru": "В отеле есть суп?",
+    "clarification_ru": "Вы оба уже знаете, о каком отеле идёт речь: вы остановились там.",
+    "reference_es": "¿Hay sopa en el hotel?",
+    "used_words": [
+      "sopa",
+      "hotel"
+    ]
+  },
+  {
+    "prompt_ru": "Ты ждёшь сестру на террасе?",
+    "clarification_ru": "Вы оба знаете террасу, где договорились встретиться.",
+    "reference_es": "¿Esperas a tu hermana en la terraza?",
+    "used_words": [
+      "esperar",
+      "hermana",
+      "terraza"
+    ]
+  },
+  {
+    "prompt_ru": "Твоя сестра едет в отель на метро?",
+    "clarification_ru": "Вы оба знаете отель, куда направляется сестра собеседника.",
+    "reference_es": "¿Tu hermana va al hotel en metro?",
+    "used_words": [
+      "hermana",
+      "ir",
+      "hotel",
+      "metro"
+    ]
+  },
+  {
+    "prompt_ru": "Мой друг покупает восемь яблок для своей сестры.",
+    "clarification_ru": "",
+    "reference_es": "Mi amigo compra ocho manzanas para su hermana.",
+    "used_words": [
+      "amigo",
+      "comprar",
+      "ocho",
+      "manzana",
+      "hermana"
+    ]
+  },
+  {
+    "prompt_ru": "Министр заказывает суп для своей сестры.",
+    "clarification_ru": "Вы оба знаете, о каком министре идёт речь.",
+    "reference_es": "El ministro pide sopa para su hermana.",
+    "used_words": [
+      "ministro",
+      "pedir",
+      "sopa",
+      "hermana"
+    ]
+  }
+]

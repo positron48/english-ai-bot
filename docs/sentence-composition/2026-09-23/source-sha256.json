@@ -1,0 +1,11 @@
+{
+  "internal/repository/sentence_composition_repository.go": "e5f55dfbc7b74e6a7b51fa471b669cee2b9116a150567d74d466197efebcf237",
+  "internal/service/sentence_composition_worker.go": "585b366ed8ada33ea367bc257ab50a6eed1d066d9b81a3efc5c0d7080d4f8684",
+  "internal/ai/sentence_composition.go": "cd05233e8b8170cf8eeba42079dec4694421be60103f3c8c93cad008ad5720a8",
+  "internal/ai/sentence_regression_llm_test.go": "4a960d279920c20334958df9c8638c427a1153c9e66bdf354868f2f75a98e252",
+  "internal/ai/sentence_review_llm_test.go": "2a7bd0fcf16ba722d1cfbfdd69714f09bc33b3a1a72f749c1cbc8178b8a64dd5",
+  "prompts/sentence-gen-ru-es.txt": "bf448d191f370ff653a42381010343dd32974a3c5d81fdaa8b24b046caef714f",
+  "prompts/sentence-gen-ru-en.txt": "9707c77e6cb84924d4771b2db60be03e095c709c7e0ec64519feb10f0c9929c4",
+  "prompts/sentence-grade-ru-es.txt": "f95c749100f12dfc6a5a7344be4d2765e5560d7b00f4fcbee00a1b67cffee5dd",
+  "prompts/sentence-grade-ru-en.txt": "e650836c2b5e499fe4b520f6280cbdbe71dd9d9b1e6476457253b17dc0d6893a"
+}

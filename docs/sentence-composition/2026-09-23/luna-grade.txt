@@ -1,0 +1,64 @@
+=== RUN   TestSentenceRegressionLLM
+=== RUN   TestSentenceRegressionLLM/openai/gpt-6-luna
+=== PAUSE TestSentenceRegressionLLM/openai/gpt-6-luna
+=== CONT  TestSentenceRegressionLLM/openai/gpt-6-luna
+    sentence_regression_llm_test.go:201: LLM_RESPONSE model=openai/gpt-6-luna provider=openrouter status=200 input=1468 output=70 cost=0.025772
+    sentence_regression_llm_test.go:136: CASE ambiguous usted ok=true {"error_count":0,"outcome":"star","corrected_es":"Usted bebe agua","tokens":null}
+    sentence_regression_llm_test.go:201: LLM_RESPONSE model=openai/gpt-6-luna provider=openrouter status=200 input=1475 output=122 cost=0.009418
+    sentence_regression_llm_test.go:136: CASE ambiguous ustedes ok=true {"error_count":0,"outcome":"star","corrected_es":"Ustedes beben agua","tokens":null}
+    sentence_regression_llm_test.go:201: LLM_RESPONSE model=openai/gpt-6-luna provider=openrouter status=200 input=1468 output=100 cost=0.008016
+    sentence_regression_llm_test.go:136: CASE ambiguous vosotros ok=true {"error_count":0,"outcome":"star","corrected_es":"Bebéis agua","tokens":null}
+    sentence_regression_llm_test.go:201: LLM_RESPONSE model=openai/gpt-6-luna provider=openrouter status=200 input=1484 output=247 cost=0.016925
+    sentence_regression_llm_test.go:201: LLM_RESPONSE model=openai/gpt-6-luna provider=openrouter status=200 input=1952 output=236 cost=0.022608
+    sentence_regression_llm_test.go:136: CASE formal singular ok=true {"error_count":2,"outcome":"failed","corrected_es":"Usted bebe agua","tokens":null,"explanation":"Контекст уточняет, что «вы» — вежливое обращение к одному человеку, а vosotros обращается к группе. С usted глагол употребляется в форме третьего лица единственного числа.","issues":[{"kind":"pronoun","original":"Vosotros","corrected":"Usted","explanation":"Контекст уточняет, что «вы» — вежливое обращение к одному человеку, а vosotros обращается к группе."},{"kind":"verb_form","original":"bebéis","corrected":"bebe","explanation":"С usted глагол употребляется в форме третьего лица единственного числа."}]}
+    sentence_regression_llm_test.go:201: LLM_RESPONSE model=openai/gpt-6-luna provider=openrouter status=200 input=1489 output=58 cost=0.005848
+    sentence_regression_llm_test.go:136: CASE spain friends ok=true {"error_count":0,"outcome":"star","corrected_es":"Bebéis agua","tokens":null}
+    sentence_regression_llm_test.go:136: CASE latin america friends ok=true {"error_count":0,"outcome":"star","corrected_es":"Ustedes beben agua","tokens":null}
+    sentence_regression_llm_test.go:201: LLM_RESPONSE model=openai/gpt-6-luna provider=openrouter status=200 input=1472 output=252 cost=0.017043
+    sentence_regression_llm_test.go:201: LLM_RESPONSE model=openai/gpt-6-luna provider=openrouter status=200 input=1879 output=264 cost=0.023346
+    sentence_regression_llm_test.go:136: CASE they are not you ok=true {"error_count":1,"outcome":"passed","corrected_es":"Ellos comen la naranja","tokens":null,"explanation":"«Они» — третье лицо, а vosotros означает «вы».","issues":[{"kind":"pronoun","original":"Vosotros","corrected":"Ellos","explanation":"«Они» — третье лицо, а vosotros означает «вы»."}]}
+    sentence_regression_llm_test.go:201: LLM_RESPONSE model=openai/gpt-6-luna provider=openrouter status=200 input=1466 output=96 cost=0.007751
+    sentence_regression_llm_test.go:136: CASE article no context ok=true {"error_count":0,"outcome":"star","corrected_es":"Leo el libro","tokens":null}
+    sentence_regression_llm_test.go:201: LLM_RESPONSE model=openai/gpt-6-luna provider=openrouter status=200 input=1473 output=91 cost=0.007559
+    sentence_regression_llm_test.go:136: CASE article irrelevant context ok=true {"error_count":0,"outcome":"star","corrected_es":"Leo el libro","tokens":null}
+    sentence_regression_llm_test.go:201: LLM_RESPONSE model=openai/gpt-6-luna provider=openrouter status=200 input=1487 output=194 cost=0.013842
+    sentence_regression_llm_test.go:201: LLM_RESPONSE model=openai/gpt-6-luna provider=openrouter status=200 input=1909 output=44 cost=0.010606
+    sentence_regression_llm_test.go:134: case known book expected 1 errors: {"error_count":0,"outcome":"star","corrected_es":"Leo un libro","tokens":null}
+    sentence_regression_llm_test.go:136: CASE known book ok=false {"error_count":0,"outcome":"star","corrected_es":"Leo un libro","tokens":null}
+    sentence_regression_llm_test.go:201: LLM_RESPONSE model=openai/gpt-6-luna provider=openrouter status=200 input=1485 output=180 cost=0.012987
+    sentence_regression_llm_test.go:201: LLM_RESPONSE model=openai/gpt-6-luna provider=openrouter status=200 input=1910 output=178 cost=0.018554
+    sentence_regression_llm_test.go:136: CASE new book ok=true {"error_count":1,"outcome":"passed","corrected_es":"Compro un libro","tokens":null,"explanation":"Контекст прямо указывает, что книга ещё не выбрана и подойдёт любая, поэтому нужен неопределённый артикль.","issues":[{"kind":"article","original":"el","corrected":"un","explanation":"Контекст прямо указывает, что книга ещё не выбрана и подойдёт любая, поэтому нужен неопределённый артикль."}]}
+    sentence_regression_llm_test.go:201: LLM_RESPONSE model=openai/gpt-6-luna provider=openrouter status=200 input=1466 output=131 cost=0.009816
+    sentence_regression_llm_test.go:201: LLM_RESPONSE model=openai/gpt-6-luna provider=openrouter status=200 input=1844 output=86 cost=0.012410
+    sentence_regression_llm_test.go:136: CASE article gender ok=true {"error_count":1,"outcome":"passed","corrected_es":"Leo un libro","tokens":null,"explanation":"Артикль должен согласоваться с существительным «libro»: это слово мужского рода.","issues":[{"kind":"agreement","original":"una","corrected":"un","explanation":"Артикль должен согласоваться с существительным «libro»: это слово мужского рода."}]}
+    sentence_regression_llm_test.go:201: LLM_RESPONSE model=openai/gpt-6-luna provider=openrouter status=200 input=1465 output=162 cost=0.011630
+    sentence_regression_llm_test.go:201: LLM_RESPONSE model=openai/gpt-6-luna provider=openrouter status=200 input=1878 output=183 cost=0.018648
+    sentence_regression_llm_test.go:136: CASE generic article ok=true {"error_count":1,"outcome":"passed","corrected_es":"Me gusta la música","tokens":null,"explanation":"В обобщённом значении перед «música» обычно нужен определённый артикль.","issues":[{"kind":"article","original":"","corrected":"la","explanation":"В обобщённом значении перед «música» обычно нужен определённый артикль."}]}
+    sentence_regression_llm_test.go:201: LLM_RESPONSE model=openai/gpt-6-luna provider=openrouter status=200 input=1470 output=65 cost=0.005981
+    sentence_regression_llm_test.go:136: CASE comma optional pronoun ok=true {"error_count":0,"outcome":"star","corrected_es":"Sí yo bebo agua","tokens":null}
+    sentence_regression_llm_test.go:201: LLM_RESPONSE model=openai/gpt-6-luna provider=openrouter status=200 input=1470 output=76 cost=0.006630
+    sentence_regression_llm_test.go:136: CASE question marks optional pronoun ok=true {"error_count":0,"outcome":"star","corrected_es":"tú bebes agua","tokens":null}
+    sentence_regression_llm_test.go:201: LLM_RESPONSE model=openai/gpt-6-luna provider=openrouter status=200 input=1483 output=81 cost=0.007117
+    sentence_regression_llm_test.go:136: CASE valid order ok=true {"error_count":0,"outcome":"star","corrected_es":"Yo compro una bonita casa","tokens":null}
+    sentence_regression_llm_test.go:201: LLM_RESPONSE model=openai/gpt-6-luna provider=openrouter status=200 input=1467 output=148 cost=0.010833
+    sentence_regression_llm_test.go:136: CASE verb agreement ok=true {"error_count":1,"outcome":"passed","corrected_es":"Nosotros bebemos agua","tokens":null,"explanation":"С подлежащим nosotros нужна форма первого лица множественного числа bebemos.","issues":[{"kind":"verb_form","original":"bebe","corrected":"bebemos","explanation":"С подлежащим nosotros нужна форма первого лица множественного числа bebemos."}]}
+    sentence_regression_llm_test.go:201: LLM_RESPONSE model=openai/gpt-6-luna provider=openrouter status=200 input=1468 output=154 cost=0.011202
+    sentence_regression_llm_test.go:136: CASE meaning omission ok=true {"error_count":1,"outcome":"passed","corrected_es":"No bebo leche","tokens":null,"explanation":"Пропущено отрицание: «не пью» — No bebo.","issues":[{"kind":"missing_word","original":"","corrected":"No","explanation":"Пропущено отрицание: «не пью» — No bebo."}]}
+    sentence_regression_llm_test.go:201: LLM_RESPONSE model=openai/gpt-6-luna provider=openrouter status=200 input=1467 output=126 cost=0.009536
+    sentence_regression_llm_test.go:136: CASE meaning accent ok=true {"error_count":1,"outcome":"passed","corrected_es":"Él bebe té","tokens":null,"explanation":"В значении «чай» слово пишется с ударением: té; te — безударное местоимение.","issues":[{"kind":"spelling","original":"te","corrected":"té","explanation":"В значении «чай» слово пишется с ударением: té; te — безударное местоимение."}]}
+    sentence_regression_llm_test.go:201: LLM_RESPONSE model=openai/gpt-6-luna provider=openrouter status=200 input=1488 output=142 cost=0.010789
+    sentence_regression_llm_test.go:136: CASE spelling ok=true {"error_count":1,"outcome":"passed","corrected_es":"Como una manzana","tokens":null,"explanation":"В слове manzana пишется z, а не s.","issues":[{"kind":"spelling","original":"mansana","corrected":"manzana","explanation":"В слове manzana пишется z, а не s."}]}
+    sentence_regression_llm_test.go:201: LLM_RESPONSE model=openai/gpt-6-luna provider=openrouter status=200 input=1469 output=217 cost=0.014934
+    sentence_regression_llm_test.go:136: CASE two errors ok=true {"error_count":2,"outcome":"failed","corrected_es":"Nosotros no bebemos leche","tokens":null,"explanation":"В переводе пропущено отрицание «не». С nosotros нужна форма bebemos.","issues":[{"kind":"missing_word","original":"","corrected":"no","explanation":"В переводе пропущено отрицание «не»."},{"kind":"verb_form","original":"bebe","corrected":"bebemos","explanation":"С nosotros нужна форма bebemos."}]}
+    sentence_regression_llm_test.go:201: LLM_RESPONSE model=openai/gpt-6-luna provider=openrouter status=200 input=1200 output=55 cost=0.020935
+    sentence_regression_llm_test.go:136: CASE en contraction comma ok=true {"error_count":0,"outcome":"star","corrected_es":"No I don't drink milk","tokens":null}
+    sentence_regression_llm_test.go:201: LLM_RESPONSE model=openai/gpt-6-luna provider=openrouter status=200 input=1203 output=114 cost=0.008625
+    sentence_regression_llm_test.go:136: CASE en article ambiguous ok=true {"error_count":0,"outcome":"star","corrected_es":"I am reading the book","tokens":null}
+    sentence_regression_llm_test.go:201: LLM_RESPONSE model=openai/gpt-6-luna provider=openrouter status=200 input=1194 output=158 cost=0.011088
+    sentence_regression_llm_test.go:136: CASE en agreement ok=true {"error_count":1,"outcome":"passed","corrected_es":"She drinks water","tokens":null,"explanation":"С местоимением «she» в Present Simple к глаголу добавляется окончание -s.","issues":[{"kind":"verb_form","original":"drink","corrected":"drinks","explanation":"С местоимением «she» в Present Simple к глаголу добавляется окончание -s."}]}
+    sentence_regression_llm_test.go:138: SUMMARY model=openai/gpt-6-luna pass=23/24 calls=29 input=44449 output=4030 provider_cost=0.370449 seconds=112.1
+--- FAIL: TestSentenceRegressionLLM (0.00s)
+    --- FAIL: TestSentenceRegressionLLM/openai/gpt-6-luna (112.09s)
+FAIL
+FAIL	tgbot-skeleton/internal/ai	112.316s
+FAIL

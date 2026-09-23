@@ -1,0 +1,190 @@
+[
+  {
+    "prompt_ru": "Я читаю книги.",
+    "clarification_ru": "Речь о чтении книг вообще, а не о действии в эту минуту.",
+    "reference_es": "I read books.",
+    "used_words": [
+      "read",
+      "book"
+    ]
+  },
+  {
+    "prompt_ru": "Мой друг помогает мне.",
+    "clarification_ru": "Вы оба знаете этого друга.",
+    "reference_es": "My friend helps me.",
+    "used_words": [
+      "friend",
+      "help"
+    ]
+  },
+  {
+    "prompt_ru": "Мы покупаем яблоки.",
+    "clarification_ru": "Вы говорите о привычном выборе яблок, а не о покупке в эту минуту.",
+    "reference_es": "We buy apples.",
+    "used_words": [
+      "buy",
+      "apple"
+    ]
+  },
+  {
+    "prompt_ru": "Она открывает дверь.",
+    "clarification_ru": "Вы оба знаете дверь, о которой идёт речь.",
+    "reference_es": "She opens the door.",
+    "used_words": [
+      "open",
+      "door"
+    ]
+  },
+  {
+    "prompt_ru": "Они едят яблоки.",
+    "clarification_ru": "Речь о яблоках вообще.",
+    "reference_es": "They eat apples.",
+    "used_words": [
+      "eat",
+      "apple"
+    ]
+  },
+  {
+    "prompt_ru": "Я сейчас читаю книгу.",
+    "clarification_ru": "Вы впервые заводите разговор о книге: до этого вы её не выбирали и не обсуждали.",
+    "reference_es": "I am reading a book.",
+    "used_words": [
+      "read",
+      "book"
+    ]
+  },
+  {
+    "prompt_ru": "Мой друг сейчас помогает мне.",
+    "clarification_ru": "Вы оба знаете этого друга; помощь нужна вам в эту минуту.",
+    "reference_es": "My friend is helping me.",
+    "used_words": [
+      "friend",
+      "help"
+    ]
+  },
+  {
+    "prompt_ru": "Ты покупаешь новый дом?",
+    "clarification_ru": "Вы ещё не выбрали дом и впервые заводите о нём разговор.",
+    "reference_es": "Are you buying a new house?",
+    "used_words": [
+      "buy",
+      "new",
+      "house"
+    ]
+  },
+  {
+    "prompt_ru": "Мы закрываем дверь.",
+    "clarification_ru": "Вы оба знаете дверь, которую закрываете.",
+    "reference_es": "We close the door.",
+    "used_words": [
+      "close",
+      "door"
+    ]
+  },
+  {
+    "prompt_ru": "Он читает книгу другу?",
+    "clarification_ru": "Вы впервые заводите разговор о книге; вы оба знаете этого друга.",
+    "reference_es": "Is he reading a book to his friend?",
+    "used_words": [
+      "read",
+      "book",
+      "friend"
+    ]
+  },
+  {
+    "prompt_ru": "Сколько яблок ты покупаешь?",
+    "clarification_ru": "",
+    "reference_es": "How many apples do you buy?",
+    "used_words": [
+      "apple",
+      "buy"
+    ]
+  },
+  {
+    "prompt_ru": "Она не ест яблоки.",
+    "clarification_ru": "Речь о яблоках вообще, а не о еде в эту минуту.",
+    "reference_es": "She does not eat apples.",
+    "used_words": [
+      "eat",
+      "apple"
+    ]
+  },
+  {
+    "prompt_ru": "Мой друг не пьёт воду.",
+    "clarification_ru": "Вы оба знаете этого друга; речь о его привычке.",
+    "reference_es": "My friend does not drink water.",
+    "used_words": [
+      "friend",
+      "drink",
+      "water"
+    ]
+  },
+  {
+    "prompt_ru": "Ты сейчас закрываешь дверь?",
+    "clarification_ru": "Вы оба знаете дверь, которую закрывают в эту минуту.",
+    "reference_es": "Are you closing the door?",
+    "used_words": [
+      "close",
+      "door"
+    ]
+  },
+  {
+    "prompt_ru": "Я покупаю маленькие яблоки.",
+    "clarification_ru": "Речь о привычном выборе яблок такого размера.",
+    "reference_es": "I buy small apples.",
+    "used_words": [
+      "buy",
+      "small",
+      "apple"
+    ]
+  },
+  {
+    "prompt_ru": "Ты помогаешь другу закрыть дверь?",
+    "clarification_ru": "Вы оба знаете друга и дверь, о которых идёт речь.",
+    "reference_es": "Do you help your friend close the door?",
+    "used_words": [
+      "help",
+      "friend",
+      "close",
+      "door"
+    ]
+  },
+  {
+    "prompt_ru": "Он сейчас ест яблоко.",
+    "clarification_ru": "Вы впервые заводите разговор об этом яблоке; до этого его не выбирали и не обсуждали.",
+    "reference_es": "He is eating an apple.",
+    "used_words": [
+      "eat",
+      "apple"
+    ]
+  },
+  {
+    "prompt_ru": "Какую дверь она закрывает?",
+    "clarification_ru": "Вы впервые заводите разговор о двери; в эту минуту она закрывает одну из дверей.",
+    "reference_es": "Which door is she closing?",
+    "used_words": [
+      "door",
+      "close"
+    ]
+  },
+  {
+    "prompt_ru": "Я не покупаю новую книгу.",
+    "clarification_ru": "Вы впервые заводите разговор о книге: до этого её не выбирали и не обсуждали.",
+    "reference_es": "I am not buying a new book.",
+    "used_words": [
+      "buy",
+      "new",
+      "book"
+    ]
+  },
+  {
+    "prompt_ru": "Ты помогаешь мне есть яблоко?",
+    "clarification_ru": "Вы впервые заводите разговор об этом яблоке; до этого его не выбирали и не обсуждали.",
+    "reference_es": "Are you helping me eat an apple?",
+    "used_words": [
+      "help",
+      "eat",
+      "apple"
+    ]
+  }
+]

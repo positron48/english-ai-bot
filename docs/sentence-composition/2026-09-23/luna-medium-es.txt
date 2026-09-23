@@ -1,0 +1,20 @@
+=== RUN   TestSentenceGenerationContextLLM
+    sentence_regression_llm_test.go:201: LLM_RESPONSE model=openai/gpt-6-luna provider=openrouter status=200 input=2665 output=6290 cost=0.410382
+    sentence_regression_llm_test.go:201: LLM_RESPONSE model=openai/gpt-6-luna provider=openrouter status=200 input=3378 output=3586 cost=0.240409
+    sentence_regression_llm_test.go:198: EMPTY model=openai/gpt-6-luna provider=openrouter finish=length usage={PromptTokens:5051 CompletionTokens:6000 Cost:0.39968433}
+    sentence_regression_llm_test.go:201: LLM_RESPONSE model=openai/gpt-6-luna provider=openrouter status=200 input=5051 output=6000 cost=0.399684
+    sentence_regression_llm_test.go:291: GENERATION model=openai/gpt-6-luna course=es_ru count=10 calls=3 input=11094 output=15876 provider_cost=1.050475 seconds=119.9
+    sentence_regression_llm_test.go:312: PARTIAL reviewed set retained: 10/20
+    sentence_regression_llm_test.go:330: GENERATED 1 {"prompt_ru":"Ты ешь суп в отеле?","clarification_ru":"Вы оба уже знаете, о каком отеле идёт речь: вы остановились там.","reference_es":"¿Comes sopa en el hotel?","used_words":["comer","sopa","hotel"]}
+    sentence_regression_llm_test.go:330: GENERATED 2 {"prompt_ru":"Друг ест яблоки с моей сестрой.","clarification_ru":"Вы оба знаете этого общего друга.","reference_es":"El amigo come manzanas con mi hermana.","used_words":["amigo","comer","manzana","hermana"]}
+    sentence_regression_llm_test.go:330: GENERATED 3 {"prompt_ru":"Ты оставляешь чаевые в отеле?","clarification_ru":"Вы оба уже знаете, о каком отеле идёт речь: вы остановились там.","reference_es":"¿Pagas propina en el hotel?","used_words":["pagar","propina","hotel"]}
+    sentence_regression_llm_test.go:330: GENERATED 4 {"prompt_ru":"Ты едешь в отель на мотоцикле?","clarification_ru":"Вы оба знаете отель, куда направляется собеседник.","reference_es":"¿Vas en moto al hotel?","used_words":["ir","moto","hotel"]}
+    sentence_regression_llm_test.go:330: GENERATED 5 {"prompt_ru":"В отеле есть библиотека.","clarification_ru":"Вы оба уже знаете, о каком отеле идёт речь. О библиотеке в нём вы спрашиваете впервые и раньше её не выбирали.","reference_es":"En el hotel hay una biblioteca.","used_words":["hotel","biblioteca"]}
+    sentence_regression_llm_test.go:330: GENERATED 6 {"prompt_ru":"В отеле есть суп?","clarification_ru":"Вы оба уже знаете, о каком отеле идёт речь: вы остановились там.","reference_es":"¿Hay sopa en el hotel?","used_words":["sopa","hotel"]}
+    sentence_regression_llm_test.go:330: GENERATED 7 {"prompt_ru":"Ты ждёшь сестру на террасе?","clarification_ru":"Вы оба знаете террасу, где договорились встретиться.","reference_es":"¿Esperas a tu hermana en la terraza?","used_words":["esperar","hermana","terraza"]}
+    sentence_regression_llm_test.go:330: GENERATED 8 {"prompt_ru":"Твоя сестра едет в отель на метро?","clarification_ru":"Вы оба знаете отель, куда направляется сестра собеседника.","reference_es":"¿Tu hermana va al hotel en metro?","used_words":["hermana","ir","hotel","metro"]}
+    sentence_regression_llm_test.go:330: GENERATED 9 {"prompt_ru":"Мой друг покупает восемь яблок для своей сестры.","clarification_ru":"","reference_es":"Mi amigo compra ocho manzanas para su hermana.","used_words":["amigo","comprar","ocho","manzana","hermana"]}
+    sentence_regression_llm_test.go:330: GENERATED 10 {"prompt_ru":"Министр заказывает суп для своей сестры.","clarification_ru":"Вы оба знаете, о каком министре идёт речь.","reference_es":"El ministro pide sopa para su hermana.","used_words":["ministro","pedir","sopa","hermana"]}
+--- PASS: TestSentenceGenerationContextLLM (119.87s)
+PASS
+ok  	tgbot-skeleton/internal/ai	120.098s

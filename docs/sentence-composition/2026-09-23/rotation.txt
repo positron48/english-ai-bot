@@ -1,0 +1,116 @@
+=== RUN   TestSentenceComposition_DiagnosticCrossSetRotation
+2026/09/23 10:05:12 github.com/testcontainers/testcontainers-go - Connected to docker:
+  Server Version: 29.7.2
+  API Version: 1.51
+  Operating System: Docker Desktop
+  Total Memory: 15969 MB
+  Labels:
+    com.docker.desktop.address=unix:///Users/antonfilatov/Library/Containers/com.docker.docker/Data/docker-cli.sock
+  Testcontainers for Go Version: v0.40.0
+  Resolved Docker Host: unix:///var/run/docker.sock
+  Resolved Docker Socket Path: /var/run/docker.sock
+  Test SessionID: ab0f08106b0d7b2f9e4759b9f4c53df24899dd5f16e07b3efff31117133de874
+  Test ProcessID: 3de6ef86-4e21-460a-a0b9-1793ab16cf7f
+2026/09/23 10:05:12 🐳 Creating container for image postgres:16-alpine
+2026/09/23 10:05:13 🐳 Creating container for image testcontainers/ryuk:0.13.0
+2026/09/23 10:05:13 ✅ Container created: d3052cc55106
+2026/09/23 10:05:13 🐳 Starting container: d3052cc55106
+2026/09/23 10:05:13 ✅ Container started: d3052cc55106
+2026/09/23 10:05:13 ⏳ Waiting for container id d3052cc55106 image: testcontainers/ryuk:0.13.0. Waiting for: port 8080/tcp to be listening
+2026/09/23 10:05:13 Shell not found in container
+2026/09/23 10:05:13 🔔 Container is ready: d3052cc55106
+2026/09/23 10:05:13 ✅ Container created: 399e0941276b
+2026/09/23 10:05:13 🐳 Starting container: 399e0941276b
+2026/09/23 10:05:13 ✅ Container started: 399e0941276b
+2026/09/23 10:05:13 🔔 Container is ready: 399e0941276b
+2026-09-23T10:05:14.933+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000001_baseline"}
+2026-09-23T10:05:14.938+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000002_seed_spanish_frequency_word_sets"}
+2026-09-23T10:05:14.956+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000002_verb_forms"}
+2026-09-23T10:05:14.958+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000003_grammar_placement_admin_override"}
+2026-09-23T10:05:14.960+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000004_localize_spanish_word_sets_to_es"}
+2026-09-23T10:05:14.965+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000005_verb_example_catalog"}
+2026-09-23T10:05:14.971+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000006_grammar_srs"}
+2026-09-23T10:05:14.976+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000007_content_reports"}
+2026-09-23T10:05:14.978+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000008_content_reports_internal_indexes"}
+2026-09-23T10:05:14.980+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000009_content_reports_comment_text"}
+2026-09-23T10:05:14.982+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000010_content_reports_report_category"}
+2026-09-23T10:05:14.984+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000010_reading_text_progress"}
+2026-09-23T10:05:14.988+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000011_reading_catalog"}
+2026-09-23T10:05:14.990+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000012_user_subscription_tier"}
+2026-09-23T10:05:14.998+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000013_speaking_catalog"}
+2026-09-23T10:05:15.000+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000014_grammar_offline_attempt_id"}
+2026-09-23T10:05:15.002+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000015_word_training_offline_attempt_id"}
+2026-09-23T10:05:15.011+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000016_db_first_learning_content"}
+2026-09-23T10:05:15.054+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000017_linglow_course_architecture"}
+2026-09-23T10:05:15.057+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000018_linglow_grammar_theory_blocks"}
+2026-09-23T10:05:15.059+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000019_content_reports_client_report_id"}
+2026-09-23T10:05:15.073+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000020_linglow_legacy_merge_mappings"}
+2026-09-23T10:05:15.076+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000021_linglow_attempt_srs_link_indexes"}
+2026-09-23T10:05:15.080+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000022_linglow_course_scoped_word_training"}
+2026-09-23T10:05:15.082+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000023_admin_content_course_scope"}
+2026-09-23T10:05:15.085+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000024_course_scoped_tts"}
+2026-09-23T10:05:15.088+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000025_district_content_links"}
+2026-09-23T10:05:15.093+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000026_lumi_facts"}
+2026-09-23T10:05:15.095+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000027_district_content"}
+2026-09-23T10:05:15.098+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000028_lumi_facts_grammar_seed"}
+2026-09-23T10:05:15.101+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000029_lumi_facts_all_contexts_seed"}
+2026-09-23T10:05:15.103+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000030_en_district_titles"}
+2026-09-23T10:05:15.106+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000031_reseed_districts_locations"}
+2026-09-23T10:05:15.109+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000032_word_sets_add_level"}
+2026-09-23T10:05:15.112+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000033_delete_spanish_word_sets"}
+2026-09-23T10:05:15.135+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000034_word_sets_seed_levels_structure"}
+2026-09-23T10:05:15.344+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000035_word_sets_seed_items_partial"}
+2026-09-23T10:05:15.347+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000036_tts_circuit_breaker"}
+2026-09-23T10:05:15.805+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000037_word_sets_sync_items_es_ru"}
+2026-09-23T10:05:15.815+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000038_word_cards_unique_word_course"}
+2026-09-23T10:05:15.817+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000039_word_cards_legacy_word_unique_index"}
+2026-09-23T10:05:15.834+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000040_conversation_quests"}
+2026-09-23T10:05:15.836+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000041_reading_text_cover"}
+2026-09-23T10:05:15.840+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000042_reseed_conversation_scenarios"}
+2026-09-23T10:05:15.843+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000043_strip_es_infinitive_to"}
+2026-09-23T10:05:15.844+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000044_conversation_message_corrections"}
+2026-09-23T10:05:15.847+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000045_conversation_npc_chains"}
+2026-09-23T10:05:15.852+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000046_seed_npc_chains"}
+2026-09-23T10:05:15.854+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000047_raise_conversation_budgets"}
+2026-09-23T10:05:15.855+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000048_generalize_task_criteria"}
+2026-09-23T10:05:15.860+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000049_extend_mara_cafe_chain"}
+2026-09-23T10:05:15.867+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000050_extend_sam_park_chains"}
+2026-09-23T10:05:16.985+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000051_word_sets_seed_items_full"}
+2026-09-23T10:05:16.989+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000052_npc_quest_images_cooldown"}
+2026-09-23T10:05:16.994+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000052_seed_spanish_npc_ines_robles"}
+2026-09-23T10:05:16.998+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000053_seed_spanish_npc_martin_sol"}
+2026-09-23T10:05:17.001+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000054_seed_spanish_npc_dona_pilar"}
+2026-09-23T10:05:17.005+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000055_seed_spanish_npc_mateo_cruz"}
+2026-09-23T10:05:17.008+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000056_seed_spanish_npc_umbrella_man"}
+2026-09-23T10:05:17.012+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000057_seed_spanish_npc_carmen_sombra"}
+2026-09-23T10:05:17.016+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000058_seed_spanish_npc_rafa_bus"}
+2026-09-23T10:05:17.020+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000059_seed_spanish_npc_lucia_canta"}
+2026-09-23T10:05:17.024+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000060_seed_spanish_npc_bibliotecaria_vega"}
+2026-09-23T10:05:17.028+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000061_seed_spanish_npc_don_alvaro"}
+2026-09-23T10:05:17.032+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000062_seed_english_npc_june_vale"}
+2026-09-23T10:05:17.036+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000063_seed_english_npc_rowan_pike"}
+2026-09-23T10:05:17.041+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000064_seed_english_npc_nora_finch"}
+2026-09-23T10:05:17.045+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000065_seed_english_npc_elias_stone"}
+2026-09-23T10:05:17.049+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000066_seed_english_npc_mr_bell"}
+2026-09-23T10:05:17.053+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000067_seed_english_npc_iris_lane"}
+2026-09-23T10:05:17.057+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000068_seed_english_npc_captain_grey"}
+2026-09-23T10:05:17.061+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000069_seed_english_npc_lila_moon"}
+2026-09-23T10:05:17.064+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000070_seed_english_npc_ada_quill"}
+2026-09-23T10:05:17.069+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000071_seed_english_npc_victor_north"}
+2026-09-23T10:05:17.076+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000072_sentence_composition"}
+2026-09-23T10:05:17.090+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000073_word_lookup_functional_indexes"}
+2026-09-23T10:05:17.091+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000074_sentence_sets_allow_multiple_per_day"}
+2026-09-23T10:05:17.104+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000075_picture_quests"}
+2026-09-23T10:05:17.106+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000076_sentence_item_clarifications"}
+2026-09-23T10:05:17.115+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000077_language_placement"}
+2026-09-23T10:05:17.117+0300	INFO	database/sql_migrations.go:66	applied sql migration	{"version": "000078_verb_practice_indexes"}
+2026-09-23T10:05:17.117+0300	INFO	database/postgres_migrate.go:311	postgres database migration completed successfully
+2026-09-23T10:05:17.180+0300	INFO	repository/user_repository.go:48	created new user	{"user_id": 1, "telegram_id": 7001}
+    sentence_composition_repository_test.go:55: set=1 focus=gato previous_usage=2
+    sentence_composition_repository_test.go:55: set=2 focus=gato previous_usage=3
+    sentence_composition_repository_test.go:55: set=3 focus=gato previous_usage=4
+    sentence_composition_repository_test.go:55: set=4 focus=gato previous_usage=5
+    sentence_composition_repository_test.go:55: set=5 focus=gato previous_usage=6
+--- PASS: TestSentenceComposition_DiagnosticCrossSetRotation (4.28s)
+PASS
+ok  	tgbot-skeleton/internal/repository	9.979s

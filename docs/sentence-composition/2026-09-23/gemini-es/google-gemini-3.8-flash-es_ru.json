@@ -1,0 +1,200 @@
+[
+  {
+    "prompt_ru": "Я ем суп.",
+    "clarification_ru": "Перед вами стоит тарелка супа, которую вам только что принесли.",
+    "reference_es": "Como la sopa.",
+    "used_words": [
+      "comer",
+      "sopa"
+    ]
+  },
+  {
+    "prompt_ru": "Мы пьём чай на террасе.",
+    "clarification_ru": "Вы сидите на единственной пристроенной площадке вашего дома.",
+    "reference_es": "Bebemos té en la terraza.",
+    "used_words": [
+      "beber",
+      "té",
+      "terraza"
+    ]
+  },
+  {
+    "prompt_ru": "Сестра ищет метро.",
+    "clarification_ru": "Вы говорите о вашей сестре, которая ищет ближайшую городскую подземку.",
+    "reference_es": "La hermana busca el metro.",
+    "used_words": [
+      "hermana",
+      "buscar",
+      "metro"
+    ]
+  },
+  {
+    "prompt_ru": "Ты платишь чаевые?",
+    "clarification_ru": "Вы спрашиваете приятеля на ты в кафе, собирается ли он оставить какую-то сумму на чай.",
+    "reference_es": "¿Pagas propina?",
+    "used_words": [
+      "pagar",
+      "propina"
+    ]
+  },
+  {
+    "prompt_ru": "Водитель продаёт мотоцикл.",
+    "clarification_ru": "Речь идёт о знакомом шофёре автобуса и его личном двухколёсном транспорте.",
+    "reference_es": "El conductor vende la moto.",
+    "used_words": [
+      "conductor",
+      "vender",
+      "moto"
+    ]
+  },
+  {
+    "prompt_ru": "Они заказывают кофе и семь апельсинов.",
+    "clarification_ru": "Посетители заказывают напиток и счётное количество фруктов.",
+    "reference_es": "Piden café y siete naranjas.",
+    "used_words": [
+      "pedir",
+      "café",
+      "siete",
+      "naranja"
+    ]
+  },
+  {
+    "prompt_ru": "Министр ждёт в гостинице.",
+    "clarification_ru": "Вы оба знаете, о каком чиновнике речь, и он находится в заранее забронированном месте проживания.",
+    "reference_es": "El ministro espera en el hotel.",
+    "used_words": [
+      "ministro",
+      "esperar",
+      "hotel"
+    ]
+  },
+  {
+    "prompt_ru": "Я не ем апельсины.",
+    "clarification_ru": "Вы сообщаете о своих вкусовых предпочтениях ко всем плодам этого вида.",
+    "reference_es": "No como naranjas.",
+    "used_words": [
+      "comer",
+      "naranja"
+    ]
+  },
+  {
+    "prompt_ru": "Друзья едут на метро в библиотеку.",
+    "clarification_ru": "Ваши общие друзья направляются городским транспортом в городскую читальню.",
+    "reference_es": "Los amigos van en metro a la biblioteca.",
+    "used_words": [
+      "amigo",
+      "ir",
+      "metro",
+      "biblioteca"
+    ]
+  },
+  {
+    "prompt_ru": "У сестры есть восемь яблок.",
+    "clarification_ru": "Ваша сестра держит в корзине восемь штук фруктов.",
+    "reference_es": "La hermana tiene ocho manzanas.",
+    "used_words": [
+      "hermana",
+      "tener",
+      "ocho",
+      "manzana"
+    ]
+  },
+  {
+    "prompt_ru": "Вы ищете отель?",
+    "clarification_ru": "Вы вежливо обращаетесь к одному незнакомому человеку на улице, который оглядывается по сторонам в поисках любого места для ночлега.",
+    "reference_es": "¿Busca un hotel?",
+    "used_words": [
+      "buscar",
+      "hotel"
+    ]
+  },
+  {
+    "prompt_ru": "Мы заказываем суп.",
+    "clarification_ru": "Вы делаете заказ официанту, выбирая первое блюдо из меню без уточнения порции.",
+    "reference_es": "Pedimos sopa.",
+    "used_words": [
+      "pedir",
+      "sopa"
+    ]
+  },
+  {
+    "prompt_ru": "У тебя есть мотоцикл?",
+    "clarification_ru": "Вы спрашиваете друга на ты о наличии у него такого вида транспорта вообще.",
+    "reference_es": "¿Tienes moto?",
+    "used_words": [
+      "tener",
+      "moto"
+    ]
+  },
+  {
+    "prompt_ru": "Водитель не пьёт молоко на террасе.",
+    "clarification_ru": "Вы наблюдаете за знакомым водителем на площадке кафе.",
+    "reference_es": "El conductor no bebe leche en la terraza.",
+    "used_words": [
+      "conductor",
+      "beber",
+      "leche",
+      "terraza"
+    ]
+  },
+  {
+    "prompt_ru": "Министру требуется гостиница.",
+    "clarification_ru": "Вы обсуждаете поездку чиновника, которому необходимо любое место для ночлега.",
+    "reference_es": "El ministro necesita un hotel.",
+    "used_words": [
+      "ministro",
+      "necesitar",
+      "hotel"
+    ]
+  },
+  {
+    "prompt_ru": "Я покупаю девять яблок для сестры.",
+    "clarification_ru": "Вы покупаете фрукты по счёту для вашей общей родственницы.",
+    "reference_es": "Compro nueve manzanas para la hermana.",
+    "used_words": [
+      "comprar",
+      "nueve",
+      "manzana",
+      "hermana"
+    ]
+  },
+  {
+    "prompt_ru": "Сестра работает в гостинице.",
+    "clarification_ru": "Речь идёт о вашей сестре и месте её постоянной работы, о котором собеседник знает.",
+    "reference_es": "La hermana trabaja en el hotel.",
+    "used_words": [
+      "hermana",
+      "trabajar",
+      "hotel"
+    ]
+  },
+  {
+    "prompt_ru": "Ты едешь на мотоцикле?",
+    "clarification_ru": "Вы спрашиваете знакомого на ты о способе передвижения.",
+    "reference_es": "¿Vas en moto?",
+    "used_words": [
+      "ir",
+      "moto"
+    ]
+  },
+  {
+    "prompt_ru": "Мы ищем террасу.",
+    "clarification_ru": "Вы с приятелем бродите по зданию и хотите найти любую открытую площадку.",
+    "reference_es": "Buscamos una terraza.",
+    "used_words": [
+      "buscar",
+      "terraza"
+    ]
+  },
+  {
+    "prompt_ru": "Они не пьют чай с сахаром в метро.",
+    "clarification_ru": "Вы говорите о поведении людей в подземном транспорте.",
+    "reference_es": "No beben té con azúcar en el metro.",
+    "used_words": [
+      "beber",
+      "té",
+      "azúcar",
+      "metro"
+    ]
+  }
+]

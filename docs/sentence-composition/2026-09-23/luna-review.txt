@@ -1,0 +1,27 @@
+=== RUN   TestSentenceReviewRegressionLLM
+    sentence_regression_llm_test.go:201: LLM_RESPONSE model=openai/gpt-6-luna provider=openrouter status=200 input=2643 output=1273 cost=0.114075
+    sentence_review_llm_test.go:73: REVIEW_CASE formal singular valid accepted=true want=true
+    sentence_review_llm_test.go:73: REVIEW_CASE formal singular wrong verb accepted=false want=false
+    sentence_review_llm_test.go:71: Russian vy cannot be tu: accepted=true want=false
+    sentence_review_llm_test.go:73: REVIEW_CASE Russian vy cannot be tu accepted=true want=false
+    sentence_review_llm_test.go:73: REVIEW_CASE unselected book definite accepted=false want=false
+    sentence_review_llm_test.go:73: REVIEW_CASE missing subject identification accepted=false want=false
+    sentence_review_llm_test.go:73: REVIEW_CASE big is not tall accepted=false want=false
+    sentence_review_llm_test.go:73: REVIEW_CASE identified book indefinite accepted=false want=false
+    sentence_review_llm_test.go:73: REVIEW_CASE identified book valid accepted=true want=true
+    sentence_review_llm_test.go:73: REVIEW_CASE unselected book valid accepted=true want=true
+    sentence_review_llm_test.go:73: REVIEW_CASE Spain informal valid accepted=true want=true
+    sentence_review_llm_test.go:71: artificial clean book: accepted=true want=false
+    sentence_review_llm_test.go:73: REVIEW_CASE artificial clean book accepted=true want=false
+    sentence_review_llm_test.go:73: REVIEW_CASE unknown content verb accepted=false want=false
+    sentence_review_llm_test.go:76: REVIEW_REJECTION Вы пьёте воду?: Vosotros bebéis — обращение на ты к нескольким людям в Испании, но пояснение задаёт одного человека и вежливое обращение.
+    sentence_review_llm_test.go:76: REVIEW_REJECTION Я покупаю книгу.: Эталон содержит определённый артикль el, хотя пояснение говорит о любой ещё не выбранной книге.
+    sentence_review_llm_test.go:76: REVIEW_REJECTION Врач открывает окно.: Пояснение устанавливает, какая именно дверь известна собеседникам, но не объясняет, почему врач известен обоим.
+    sentence_review_llm_test.go:76: REVIEW_REJECTION Она ищет большого друга.: Не обоснован неопределённый артикль un для друга: пояснение говорит о своём конкретном приятеле; кроме того, grande не означает «высокий».
+    sentence_review_llm_test.go:76: REVIEW_REJECTION Я читаю книгу.: Пояснение указывает на конкретную единственную книгу, переданную собеседником, поэтому неопределённый артикль un не обоснован.
+    sentence_review_llm_test.go:76: REVIEW_REJECTION Я стираю книгу.: Lavo отсутствует в разрешённой лексике, а used_words не включает глагол; стирка книги также неестественна.
+    sentence_review_llm_test.go:78: REVIEW_SUMMARY model=openai/gpt-6-luna passed=10/12 calls=1 cost=0.114075 seconds=14.5
+--- FAIL: TestSentenceReviewRegressionLLM (14.55s)
+FAIL
+FAIL	tgbot-skeleton/internal/ai	14.779s
+FAIL

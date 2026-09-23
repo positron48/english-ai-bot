@@ -1,0 +1,26 @@
+=== RUN   TestSentenceReviewRegressionLLM
+    sentence_regression_llm_test.go:201: LLM_RESPONSE model=google/gemini-3.8-flash provider=openrouter status=200 input=2656 output=589 cost=0.495655
+    sentence_review_llm_test.go:73: REVIEW_CASE formal singular valid accepted=true want=true
+    sentence_review_llm_test.go:73: REVIEW_CASE formal singular wrong verb accepted=false want=false
+    sentence_review_llm_test.go:73: REVIEW_CASE Russian vy cannot be tu accepted=false want=false
+    sentence_review_llm_test.go:73: REVIEW_CASE unselected book definite accepted=false want=false
+    sentence_review_llm_test.go:73: REVIEW_CASE missing subject identification accepted=false want=false
+    sentence_review_llm_test.go:73: REVIEW_CASE big is not tall accepted=false want=false
+    sentence_review_llm_test.go:73: REVIEW_CASE identified book indefinite accepted=false want=false
+    sentence_review_llm_test.go:73: REVIEW_CASE identified book valid accepted=true want=true
+    sentence_review_llm_test.go:73: REVIEW_CASE unselected book valid accepted=true want=true
+    sentence_review_llm_test.go:73: REVIEW_CASE Spain informal valid accepted=true want=true
+    sentence_review_llm_test.go:73: REVIEW_CASE artificial clean book accepted=false want=false
+    sentence_review_llm_test.go:73: REVIEW_CASE unknown content verb accepted=false want=false
+    sentence_review_llm_test.go:76: REVIEW_REJECTION Вы пьёте воду?: Несоответствие контекста и эталона: контекст описывает вежливое обращение к одному человеку (Usted), а эталон использует vosotros bebéis.
+    sentence_review_llm_test.go:76: REVIEW_REJECTION Вы покупаете книги.: В русском задании использовано местоимение «Вы», а в эталоне и пояснении глагол стоит в форме tú (compras), при этом «ты» не переводится как «вы».
+    sentence_review_llm_test.go:76: REVIEW_REJECTION Я покупаю книгу.: Противоречие: контекст указывает на любую невыбранную книгу, а в эталоне использован определенный артикль el libro.
+    sentence_review_llm_test.go:76: REVIEW_REJECTION Врач открывает окно.: Не обоснован определенный артикль подлежащего el médico: в пояснении прямо указано «О враче ничего не сообщается».
+    sentence_review_llm_test.go:76: REVIEW_REJECTION Она ищет большого друга.: Контекст («своего высокого приятеля») предполагает конкретного определенного друга, а в эталоне un amigo; кроме того, неестественное словоупотребление «большой друг» в значении высокого роста.
+    sentence_review_llm_test.go:76: REVIEW_REJECTION Я читаю книгу.: Противоречие: контекст описывает конкретную переданную книгу, а в эталоне использован неопределенный артикль un libro.
+    sentence_review_llm_test.go:76: REVIEW_REJECTION Мать находит чистую книгу.: Нарушено правило 2: запрещены неестественные комбинации ради лексики («чистая книга» / любые действия с «чистой книгой»).
+    sentence_review_llm_test.go:76: REVIEW_REJECTION Я стираю книгу.: Глагол «стирать» / lavar отсутствует в allowed_vocabulary; также действие неестественно.
+    sentence_review_llm_test.go:78: REVIEW_SUMMARY model=google/gemini-3.8-flash passed=12/12 calls=1 cost=0.495655 seconds=8.1
+--- PASS: TestSentenceReviewRegressionLLM (8.08s)
+PASS
+ok  	tgbot-skeleton/internal/ai	8.375s

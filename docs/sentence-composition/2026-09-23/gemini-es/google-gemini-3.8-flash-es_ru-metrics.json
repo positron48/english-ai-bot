@@ -1,0 +1,12 @@
+{
+  "accepted": 20,
+  "calls": 2,
+  "course": "es_ru",
+  "input_tokens": 6566,
+  "model": "google/gemini-3.8-flash",
+  "output_tokens": 3178,
+  "provider_cost": 1.98722127,
+  "reasoning_effort": "low",
+  "seconds": 35.155701334,
+  "wanted": 20
+}

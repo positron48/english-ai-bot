@@ -1,0 +1,12 @@
+{
+  "accepted": 16,
+  "calls": 4,
+  "course": "es_ru",
+  "input_tokens": 14247,
+  "model": "openai/gpt-6-luna",
+  "output_tokens": 6589,
+  "provider_cost": 0.52810978,
+  "reasoning_effort": "low",
+  "seconds": 68.092146334,
+  "wanted": 20
+}

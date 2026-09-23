@@ -21,9 +21,9 @@ func NewSentenceCompositionRepository(db *sql.DB, logger *zap.Logger) *SentenceC
 	return &SentenceCompositionRepository{db: db, logger: logger}
 }
 
-// SelectCandidateWords returns the user's best-known course vocabulary: reviewed words at or
-// above minMastery plus words explicitly marked known (even without a user_card). Explicitly
-// known and higher-mastery words rank first; sentence participation rotates equally mastered words.
+// SelectCandidateWords returns eligible course vocabulary: reviewed words at or above
+// minMastery plus words explicitly marked known (even without a user_card). Knowledge
+// is only an eligibility filter; least-used, then least-recently-used words rank first.
 func (r *SentenceCompositionRepository) SelectCandidateWords(userID int64, courseCode string, minMastery, limit int) ([]models.SentenceWordCandidate, error) {
 	return r.selectCandidateWords(userID, courseCode, minMastery, limit, false)
 }
@@ -78,8 +78,7 @@ func (r *SentenceCompositionRepository) selectCandidateWords(userID int64, cours
 		LEFT JOIN sentence_word_usage swu ON swu.user_id = ? AND swu.word_card_id = ranked.word_card_id AND swu.course_code = ?
 		GROUP BY ranked.word_card_id, ranked.mastery_score, ranked.explicitly_known
 		HAVING NOT ? OR BOOL_OR(COALESCE(LOWER(TRIM(tc_display.pos)), '') LIKE 'verb%')
-		ORDER BY ranked.explicitly_known DESC, ranked.mastery_score DESC,
-		         used_count ASC, MAX(COALESCE(swu.last_used_on, '1970-01-01')) ASC, RANDOM()
+		ORDER BY used_count ASC, MAX(COALESCE(swu.last_used_on, '1970-01-01')) ASC, RANDOM()
 		LIMIT ?`
 	rows, err := r.db.Query(query,
 		courseCode, courseCode,

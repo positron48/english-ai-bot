@@ -9,7 +9,7 @@ import (
 	"go.uber.org/zap"
 )
 
-func TestSentenceComposition_SelectCandidateWords_OrdersByLeastUsed(t *testing.T) {
+func TestSentenceComposition_DiagnosticCrossSetRotation(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	db := testutil.SetupTestDB(t)
 	repo := NewSentenceCompositionRepository(db, logger)
@@ -44,16 +44,19 @@ func TestSentenceComposition_SelectCandidateWords_OrdersByLeastUsed(t *testing.T
 		t.Fatalf("seed usage perro: %v", err)
 	}
 
-	got, err := repo.SelectCandidateWords(user.ID, course, 70, 10)
-	if err != nil {
-		t.Fatalf("SelectCandidateWords: %v", err)
-	}
-	if len(got) != 3 {
-		t.Fatalf("expected 3 candidates, got %d", len(got))
-	}
-	if got[0].Lemma != "casa" || got[1].Lemma != "perro" || got[2].Lemma != "gato" {
-		t.Fatalf("expected order [casa perro gato], got [%s %s %s]", got[0].Lemma, got[1].Lemma, got[2].Lemma)
-	}
+
+ for word, score := range map[string]int{"gato": 100, "perro": 90, "casa": 80} {
+  if _, err := db.Exec(`UPDATE user_word_mastering SET mastering_score = ? WHERE user_id = ? AND word_card_id = ?`, score, user.ID, ids[word]); err != nil { t.Fatal(err) }
+ }
+ for run := 1; run <= 5; run++ {
+  got, err := repo.SelectCandidateWords(user.ID, course, 70, 1)
+  if err != nil { t.Fatal(err) }
+  if len(got) != 1 { t.Fatal(got) }
+  t.Logf("set=%d focus=%s previous_usage=%d", run, got[0].Lemma, got[0].UsedCount)
+  if got[0].Lemma != "gato" { t.Fatalf("diagnostic prediction failed: %+v", got) }
+  _, err = repo.CreateSet(&models.SentenceSet{UserID:user.ID,CourseCode:course,GenerationDate:"2026-09-23"}, []models.SentenceItem{{Position:0,PromptRU:"Кот пьет.",ReferenceES:"El gato bebe.",WordCardIDs:[]int64{ids["gato"]}}}, []int64{ids["gato"]})
+  if err != nil { t.Fatal(err) }
+ }
 }
 
 func TestSentenceComposition_SelectCandidateWords_IncludesExplicitlyKnownWithoutStudy(t *testing.T) {
@@ -270,11 +273,6 @@ func TestSentenceComposition_SupportVerbsOutsideFocusPool(t *testing.T) {
 			}
 		}
 	}
-	// Usage, not mastery, keeps this eligible verb outside the bounded main pool.
-	if _, err := db.Exec(`INSERT INTO sentence_word_usage (user_id, word_card_id, course_code, used_count, last_used_on)
-		SELECT ?, id, 'es_ru', 1, CAST('2026-09-23' AS date) FROM word_cards WHERE word = 'beber' AND course_code = 'es_ru'`, user.ID); err != nil {
-		t.Fatal(err)
-	}
 	focus, err := repo.SelectCandidateWords(user.ID, "es_ru", 70, 2)
 	if err != nil || len(focus) != 2 {
 		t.Fatalf("focus=%+v err=%v", focus, err)
@@ -287,99 +285,5 @@ func TestSentenceComposition_SupportVerbsOutsideFocusPool(t *testing.T) {
 	verbs, err := repo.SelectSupportVerbs(user.ID, "es_ru", 70, 12)
 	if err != nil || len(verbs) != 1 || verbs[0].Lemma != "beber" || verbs[0].Translation != "пить" {
 		t.Fatalf("expected only eligible Spanish verb outside focus pool; verbs=%+v err=%v", verbs, err)
-	}
-}
-
-// Different mastery levels and explicit knowledge must not starve less-used words.
-// Real set persistence also verifies rotation across multiple sets on the same day.
-func TestSentenceComposition_RotatesAcrossMasteryAndKnownStatus(t *testing.T) {
-	db := testutil.SetupTestDB(t)
-	logger := zap.NewNop()
-	repo := NewSentenceCompositionRepository(db, logger)
-	user, err := NewUserRepository(db, logger).GetOrCreateUser(7100)
-	if err != nil {
-		t.Fatal(err)
-	}
-	const course = "es_ru"
-	counts := map[int64]int{}
-	for _, c := range []struct {
-		word          string
-		mastery, used int
-		date          string
-		known         bool
-	}{
-		{"comer", 0, 3, "2026-09-01", true},
-		{"beber", 100, 2, "2026-09-01", false},
-		{"leer", 80, 1, "2026-09-02", false},
-		{"comprar", 70, 1, "2026-09-01", false},
-	} {
-		var wordID, cardID int64
-		if err := db.QueryRow(`INSERT INTO word_cards (word, definition, course_code) VALUES (?, 'd', ?) RETURNING id`, c.word, course).Scan(&wordID); err != nil {
-			t.Fatal(err)
-		}
-		if err := db.QueryRow(`INSERT INTO training_cards (word_card_id, word_en, sense_index, word_ru, meaning_en, pos, course_code) VALUES (?, ?, 0, 'слово', 'meaning', 'verb', ?) RETURNING id`, wordID, c.word, course).Scan(&cardID); err != nil {
-			t.Fatal(err)
-		}
-		if c.known {
-			if _, err := db.Exec(`INSERT INTO user_word_knowledge (user_id, word_card_id, status, course_code) VALUES (?, ?, 'known', ?)`, user.ID, wordID, course); err != nil {
-				t.Fatal(err)
-			}
-		} else {
-			if _, err := db.Exec(`INSERT INTO user_cards (user_id, training_card_id, direction, state, ef, course_code) VALUES (?, ?, 'ru_en', 'review', 2.5, ?)`, user.ID, cardID, course); err != nil {
-				t.Fatal(err)
-			}
-			if _, err := db.Exec(`INSERT INTO user_word_mastering (user_id, word_card_id, mastering_score, course_code) VALUES (?, ?, ?, ?)`, user.ID, wordID, c.mastery, course); err != nil {
-				t.Fatal(err)
-			}
-		}
-		if _, err := db.Exec(`INSERT INTO sentence_word_usage (user_id, word_card_id, course_code, used_count, last_used_on) VALUES (?, ?, ?, ?, CAST(? AS date))`, user.ID, wordID, course, c.used, c.date); err != nil {
-			t.Fatal(err)
-		}
-		counts[wordID] = c.used
-	}
-	// Equal usage is resolved by date, even when that word has lower mastery.
-	for _, selectWords := range []func(int64, string, int, int) ([]models.SentenceWordCandidate, error){repo.SelectCandidateWords, repo.SelectSupportVerbs} {
-		got, err := selectWords(user.ID, course, 70, 4)
-		if err != nil {
-			t.Fatal(err)
-		}
-		want := []string{"comprar", "leer", "beber", "comer"}
-		if len(got) != len(want) {
-			t.Fatalf("candidates=%+v", got)
-		}
-		for i, word := range want {
-			if got[i].Lemma != word {
-				t.Fatalf("position %d: got %s, want %s", i, got[i].Lemma, word)
-			}
-		}
-	}
-	for run := 0; run < 9; run++ {
-		got, err := repo.SelectCandidateWords(user.ID, course, 70, 1)
-		if err != nil {
-			t.Fatal(err)
-		}
-		if len(got) != 1 {
-			t.Fatalf("candidates=%+v", got)
-		}
-		word := got[0]
-		for _, count := range counts {
-			if word.UsedCount > count {
-				t.Fatalf("run %d: selected %+v while less-used word exists: %v", run, word, counts)
-			}
-		}
-		if word.UsedCount != counts[word.WordCardID] {
-			t.Fatalf("run %d: stale usage %+v", run, word)
-		}
-		_, err = repo.CreateSet(&models.SentenceSet{UserID: user.ID, CourseCode: course, GenerationDate: "2026-09-23"}, []models.SentenceItem{{Position: 0, PromptRU: "Учебный пример.", ReferenceES: "Ejemplo.", WordCardIDs: []int64{word.WordCardID}}}, []int64{word.WordCardID})
-		if err != nil {
-			t.Fatal(err)
-		}
-		counts[word.WordCardID]++
-	}
-	// 7 initial participations + 9 new sets = 4 uses for every eligible word.
-	for wordID, count := range counts {
-		if count != 4 {
-			t.Fatalf("word %d was not rotated fairly: %v", wordID, counts)
-		}
 	}
 }

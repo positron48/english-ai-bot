@@ -1,0 +1,167 @@
+[
+  {
+    "prompt_ru": "Ты покупаешь яблоки для сестры?",
+    "clarification_ru": "",
+    "reference_es": "¿Compras manzanas para tu hermana?",
+    "used_words": [
+      "comprar",
+      "manzana",
+      "hermana"
+    ]
+  },
+  {
+    "prompt_ru": "Водитель ждёт у метро.",
+    "clarification_ru": "Вы оба видите водителя, который ждёт у выхода станции, о которой вы говорили.",
+    "reference_es": "El conductor espera junto al metro.",
+    "used_words": [
+      "conductor",
+      "esperar",
+      "metro"
+    ]
+  },
+  {
+    "prompt_ru": "Мы заказываем суп в отеле.",
+    "clarification_ru": "Вы оба уже знаете, в каком отеле остановились.",
+    "reference_es": "Pedimos sopa en el hotel.",
+    "used_words": [
+      "pedir",
+      "sopa",
+      "hotel"
+    ]
+  },
+  {
+    "prompt_ru": "Ты платишь чаевые водителям?",
+    "clarification_ru": "",
+    "reference_es": "¿Pagas propinas a conductores?",
+    "used_words": [
+      "pagar",
+      "propina",
+      "conductor"
+    ]
+  },
+  {
+    "prompt_ru": "Министр работает в отеле.",
+    "clarification_ru": "Вы оба знаете министра, о котором идёт речь, и отель, где проходит встреча.",
+    "reference_es": "El ministro trabaja en el hotel.",
+    "used_words": [
+      "ministro",
+      "trabajar",
+      "hotel"
+    ]
+  },
+  {
+    "prompt_ru": "Они едут на метро к террасе.",
+    "clarification_ru": "Вы оба знаете террасу, куда они направляются.",
+    "reference_es": "Van en metro a la terraza.",
+    "used_words": [
+      "ir",
+      "metro",
+      "terraza"
+    ]
+  },
+  {
+    "prompt_ru": "Мы пьём чай на террасе отеля.",
+    "clarification_ru": "Вы оба знаете отель, где остановились, и его террасу.",
+    "reference_es": "Bebemos té en la terraza del hotel.",
+    "used_words": [
+      "beber",
+      "té",
+      "terraza",
+      "hotel"
+    ]
+  },
+  {
+    "prompt_ru": "Министр платит чаевые водителю.",
+    "clarification_ru": "Вы оба знаете министра и водителя, который его привёз.",
+    "reference_es": "El ministro paga propina al conductor.",
+    "used_words": [
+      "ministro",
+      "pagar",
+      "propina",
+      "conductor"
+    ]
+  },
+  {
+    "prompt_ru": "Мы едим суп в библиотеке?",
+    "clarification_ru": "Вы оба знаете библиотеку, где разрешено есть.",
+    "reference_es": "¿Comemos sopa en la biblioteca?",
+    "used_words": [
+      "comer",
+      "sopa",
+      "biblioteca"
+    ]
+  },
+  {
+    "prompt_ru": "Сестра едет на мотоцикле к отелю.",
+    "clarification_ru": "Вы оба знаете сестру и отель, куда она направляется.",
+    "reference_es": "La hermana va en moto al hotel.",
+    "used_words": [
+      "hermana",
+      "ir",
+      "moto",
+      "hotel"
+    ]
+  },
+  {
+    "prompt_ru": "В отеле продают кофе и чай.",
+    "clarification_ru": "Вы оба знаете отель, где остановились; речь о напитках, которые там предлагают гостям.",
+    "reference_es": "Venden café y té en el hotel.",
+    "used_words": [
+      "vender",
+      "café",
+      "té",
+      "hotel"
+    ]
+  },
+  {
+    "prompt_ru": "Водитель покупает мотоцикл для сестры.",
+    "clarification_ru": "Вы оба знаете водителя и его сестру; он выбирает мотоцикл для неё.",
+    "reference_es": "El conductor compra una moto para su hermana.",
+    "used_words": [
+      "conductor",
+      "comprar",
+      "moto",
+      "hermana"
+    ]
+  },
+  {
+    "prompt_ru": "Кто заказывает суп в библиотеке?",
+    "clarification_ru": "Вы оба знаете библиотеку, где разрешено заказывать еду.",
+    "reference_es": "¿Quién pide sopa en la biblioteca?",
+    "used_words": [
+      "pedir",
+      "sopa",
+      "biblioteca"
+    ]
+  },
+  {
+    "prompt_ru": "Водитель продаёт апельсины?",
+    "clarification_ru": "Вы оба знаете водителя, который продаёт фрукты на рынке.",
+    "reference_es": "¿El conductor vende naranjas?",
+    "used_words": [
+      "conductor",
+      "vender",
+      "naranja"
+    ]
+  },
+  {
+    "prompt_ru": "На террасе пьют кофе?",
+    "clarification_ru": "Вы оба знаете террасу отеля, где можно заказать кофе.",
+    "reference_es": "¿Beben café en la terraza?",
+    "used_words": [
+      "beber",
+      "café",
+      "terraza"
+    ]
+  },
+  {
+    "prompt_ru": "Сколько мотоциклов продают у отеля?",
+    "clarification_ru": "Вы оба знаете отель; рядом с ним проходит продажа транспорта.",
+    "reference_es": "¿Cuántas motos venden junto al hotel?",
+    "used_words": [
+      "moto",
+      "vender",
+      "hotel"
+    ]
+  }
+]

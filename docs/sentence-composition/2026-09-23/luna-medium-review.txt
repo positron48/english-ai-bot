@@ -1,0 +1,27 @@
+=== RUN   TestSentenceReviewRegressionLLM
+    sentence_regression_llm_test.go:201: LLM_RESPONSE model=openai/gpt-6-luna provider=openrouter status=200 input=2643 output=2503 cost=0.186640
+    sentence_review_llm_test.go:73: REVIEW_CASE formal singular valid accepted=true want=true
+    sentence_review_llm_test.go:73: REVIEW_CASE formal singular wrong verb accepted=false want=false
+    sentence_review_llm_test.go:73: REVIEW_CASE Russian vy cannot be tu accepted=false want=false
+    sentence_review_llm_test.go:73: REVIEW_CASE unselected book definite accepted=false want=false
+    sentence_review_llm_test.go:73: REVIEW_CASE missing subject identification accepted=false want=false
+    sentence_review_llm_test.go:73: REVIEW_CASE big is not tall accepted=false want=false
+    sentence_review_llm_test.go:73: REVIEW_CASE identified book indefinite accepted=false want=false
+    sentence_review_llm_test.go:73: REVIEW_CASE identified book valid accepted=true want=true
+    sentence_review_llm_test.go:73: REVIEW_CASE unselected book valid accepted=true want=true
+    sentence_review_llm_test.go:73: REVIEW_CASE Spain informal valid accepted=true want=true
+    sentence_review_llm_test.go:71: artificial clean book: accepted=true want=false
+    sentence_review_llm_test.go:73: REVIEW_CASE artificial clean book accepted=true want=false
+    sentence_review_llm_test.go:73: REVIEW_CASE unknown content verb accepted=false want=false
+    sentence_review_llm_test.go:76: REVIEW_REJECTION Вы пьёте воду?: Vosotros bebéis обращено к нескольким людям на ты, а контекст задаёт одного человека на вы.
+    sentence_review_llm_test.go:76: REVIEW_REJECTION Вы покупаете книги.: Русское «Вы» не соответствует заданному в контексте обращению к одному человеку на ты.
+    sentence_review_llm_test.go:76: REVIEW_REJECTION Я покупаю книгу.: Определённый артикль el противоречит контексту: книга ещё не выбрана и покупается любая подходящая.
+    sentence_review_llm_test.go:76: REVIEW_REJECTION Врач открывает окно.: Контекст опознаёт окно, но ничего не сообщает, позволяющего обоим собеседникам знать, о каком именно враче идёт речь; артикль el médico не обоснован.
+    sentence_review_llm_test.go:76: REVIEW_REJECTION Она ищет большого друга.: Контекст называет друга своим приятелем, то есть уже известным человеком, но эталон вводит его с неопределённым артиклем un.
+    sentence_review_llm_test.go:76: REVIEW_REJECTION Я читаю книгу.: Единственная переданная собеседником книга уже опознана, поэтому неопределённый артикль un не соответствует контексту.
+    sentence_review_llm_test.go:76: REVIEW_REJECTION Я стираю книгу.: Lavo отсутствует в разрешённом словаре, used_words не включает глагол; кроме того, стирать книгу в воде — неестественное действие.
+    sentence_review_llm_test.go:78: REVIEW_SUMMARY model=openai/gpt-6-luna passed=11/12 calls=1 cost=0.186640 seconds=25.3
+--- FAIL: TestSentenceReviewRegressionLLM (25.28s)
+FAIL
+FAIL	tgbot-skeleton/internal/ai	25.572s
+FAIL

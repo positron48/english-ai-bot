@@ -1,0 +1,27 @@
+=== RUN   TestSentenceGenerationContextLLM
+    sentence_regression_llm_test.go:201: LLM_RESPONSE model=openai/gpt-6-luna provider=openrouter status=200 input=2281 output=1937 cost=0.147909
+    sentence_regression_llm_test.go:201: LLM_RESPONSE model=openai/gpt-6-luna provider=openrouter status=200 input=3170 output=2349 cost=0.164363
+    sentence_regression_llm_test.go:291: GENERATION model=openai/gpt-6-luna course=en_ru count=20 calls=2 input=5451 output=4286 provider_cost=0.312272 seconds=47.0
+    sentence_regression_llm_test.go:330: GENERATED 1 {"prompt_ru":"Я читаю книги.","clarification_ru":"Речь о чтении книг вообще, а не о действии в эту минуту.","reference_es":"I read books.","used_words":["read","book"]}
+    sentence_regression_llm_test.go:330: GENERATED 2 {"prompt_ru":"Мой друг помогает мне.","clarification_ru":"Вы оба знаете этого друга.","reference_es":"My friend helps me.","used_words":["friend","help"]}
+    sentence_regression_llm_test.go:330: GENERATED 3 {"prompt_ru":"Мы покупаем яблоки.","clarification_ru":"Вы говорите о привычном выборе яблок, а не о покупке в эту минуту.","reference_es":"We buy apples.","used_words":["buy","apple"]}
+    sentence_regression_llm_test.go:330: GENERATED 4 {"prompt_ru":"Она открывает дверь.","clarification_ru":"Вы оба знаете дверь, о которой идёт речь.","reference_es":"She opens the door.","used_words":["open","door"]}
+    sentence_regression_llm_test.go:330: GENERATED 5 {"prompt_ru":"Они едят яблоки.","clarification_ru":"Речь о яблоках вообще.","reference_es":"They eat apples.","used_words":["eat","apple"]}
+    sentence_regression_llm_test.go:330: GENERATED 6 {"prompt_ru":"Я сейчас читаю книгу.","clarification_ru":"Вы впервые заводите разговор о книге: до этого вы её не выбирали и не обсуждали.","reference_es":"I am reading a book.","used_words":["read","book"]}
+    sentence_regression_llm_test.go:330: GENERATED 7 {"prompt_ru":"Мой друг сейчас помогает мне.","clarification_ru":"Вы оба знаете этого друга; помощь нужна вам в эту минуту.","reference_es":"My friend is helping me.","used_words":["friend","help"]}
+    sentence_regression_llm_test.go:330: GENERATED 8 {"prompt_ru":"Ты покупаешь новый дом?","clarification_ru":"Вы ещё не выбрали дом и впервые заводите о нём разговор.","reference_es":"Are you buying a new house?","used_words":["buy","new","house"]}
+    sentence_regression_llm_test.go:330: GENERATED 9 {"prompt_ru":"Мы закрываем дверь.","clarification_ru":"Вы оба знаете дверь, которую закрываете.","reference_es":"We close the door.","used_words":["close","door"]}
+    sentence_regression_llm_test.go:330: GENERATED 10 {"prompt_ru":"Он читает книгу другу?","clarification_ru":"Вы впервые заводите разговор о книге; вы оба знаете этого друга.","reference_es":"Is he reading a book to his friend?","used_words":["read","book","friend"]}
+    sentence_regression_llm_test.go:330: GENERATED 11 {"prompt_ru":"Сколько яблок ты покупаешь?","clarification_ru":"","reference_es":"How many apples do you buy?","used_words":["apple","buy"]}
+    sentence_regression_llm_test.go:330: GENERATED 12 {"prompt_ru":"Она не ест яблоки.","clarification_ru":"Речь о яблоках вообще, а не о еде в эту минуту.","reference_es":"She does not eat apples.","used_words":["eat","apple"]}
+    sentence_regression_llm_test.go:330: GENERATED 13 {"prompt_ru":"Мой друг не пьёт воду.","clarification_ru":"Вы оба знаете этого друга; речь о его привычке.","reference_es":"My friend does not drink water.","used_words":["friend","drink","water"]}
+    sentence_regression_llm_test.go:330: GENERATED 14 {"prompt_ru":"Ты сейчас закрываешь дверь?","clarification_ru":"Вы оба знаете дверь, которую закрывают в эту минуту.","reference_es":"Are you closing the door?","used_words":["close","door"]}
+    sentence_regression_llm_test.go:330: GENERATED 15 {"prompt_ru":"Я покупаю маленькие яблоки.","clarification_ru":"Речь о привычном выборе яблок такого размера.","reference_es":"I buy small apples.","used_words":["buy","small","apple"]}
+    sentence_regression_llm_test.go:330: GENERATED 16 {"prompt_ru":"Ты помогаешь другу закрыть дверь?","clarification_ru":"Вы оба знаете друга и дверь, о которых идёт речь.","reference_es":"Do you help your friend close the door?","used_words":["help","friend","close","door"]}
+    sentence_regression_llm_test.go:330: GENERATED 17 {"prompt_ru":"Он сейчас ест яблоко.","clarification_ru":"Вы впервые заводите разговор об этом яблоке; до этого его не выбирали и не обсуждали.","reference_es":"He is eating an apple.","used_words":["eat","apple"]}
+    sentence_regression_llm_test.go:330: GENERATED 18 {"prompt_ru":"Какую дверь она закрывает?","clarification_ru":"Вы впервые заводите разговор о двери; в эту минуту она закрывает одну из дверей.","reference_es":"Which door is she closing?","used_words":["door","close"]}
+    sentence_regression_llm_test.go:330: GENERATED 19 {"prompt_ru":"Я не покупаю новую книгу.","clarification_ru":"Вы впервые заводите разговор о книге: до этого её не выбирали и не обсуждали.","reference_es":"I am not buying a new book.","used_words":["buy","new","book"]}
+    sentence_regression_llm_test.go:330: GENERATED 20 {"prompt_ru":"Ты помогаешь мне есть яблоко?","clarification_ru":"Вы впервые заводите разговор об этом яблоке; до этого его не выбирали и не обсуждали.","reference_es":"Are you helping me eat an apple?","used_words":["help","eat","apple"]}
+--- PASS: TestSentenceGenerationContextLLM (47.05s)
+PASS
+ok  	tgbot-skeleton/internal/ai	47.271s
