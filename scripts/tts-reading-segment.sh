@@ -71,7 +71,7 @@ if ! command -v ffmpeg >/dev/null 2>&1; then
 fi
 
 mkdir -p "$(dirname "$OUTPUT")"
-TMP_WAV="$(mktemp "/tmp/reading-tts-XXXXXX.wav")"
+TMP_WAV="$(mktemp "${TMPDIR:-/tmp}/reading-tts-XXXXXXXX")"
 trap 'rm -f "$TMP_WAV"' EXIT
 
 printf '%s' "$TEXT" | ESPEAK_DATA_PATH="$ESPEAK_DATA_PATH" "$PIPER_BIN" \
@@ -79,4 +79,3 @@ printf '%s' "$TEXT" | ESPEAK_DATA_PATH="$ESPEAK_DATA_PATH" "$PIPER_BIN" \
   --output_file "$TMP_WAV" >/dev/null
 
 ffmpeg -y -loglevel error -i "$TMP_WAV" -codec:a libmp3lame -qscale:a 4 "$OUTPUT"
-
