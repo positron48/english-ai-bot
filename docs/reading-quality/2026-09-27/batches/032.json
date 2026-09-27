@@ -1,0 +1,134 @@
+{
+  "scores": [
+    {
+      "id": "free_es_a1_toledo_como_capital_1782924656",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Короткая, понятная сценка с картой; перечисление провинций связано с тем, что Нурия отмечает столицу. Вопросы верны, но почти все проверяют прямое воспроизведение.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_tomatina_de_agosto_1782924784",
+      "content": 2,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Диалог сообщает место, дату и действие праздника, но последняя реплика искусственно растянута и не вполне естественно продолжает разговор. Вопросы проверяют только буквальные детали.",
+      "issues": [
+        "«Apunto Buñol y último miércoles de agosto en mi cuaderno de cultura española para recordarlo bien hoy» звучит перегруженно; естественнее «Apunto en mi cuaderno que la Tomatina es en Buñol y se celebra el último miércoles de agosto»."
+      ]
+    },
+    {
+      "id": "free_es_a1_tr_mite_en_el_pae_1782924558",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Последовательная простая ситуация: Роса ищет онлайн-услугу и сохраняет адрес портала. Вопросы верны, но буквальны.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_trenes_para_viajar_1782924946",
+      "content": 2,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 0,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Есть понятная бытовая ситуация и примеры поездок, хотя объяснение типов поездов упрощено. Русский перевод ключевой фразы о media distancia калькирует испанский термин. Вопросы верны, но буквальны.",
+      "issues": [
+        "«usa media distancia» неестественно без существительного; лучше «viaja en trenes de media distancia».",
+        "«Para visitar a su tía usa media distancia» передано как «использует среднюю дистанцию»; естественно: «едет на поезде средней дальности».",
+        "«hay trenes de cercanías, media y larga distancia» — непараллельное сокращение; естественнее «trenes de cercanías, de media distancia y de larga distancia»."
+      ]
+    },
+    {
+      "id": "free_es_a1_tres_fechas_de_fiesta_1782924779",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Текст почти целиком представляет перечень дат и мест, а переходы между праздниками не образуют мотивированного разговора. Вопросы верны, но буквальны.",
+      "issues": [
+        "«La Romería del Rocío es cerca de mayo» — неестественно; лучше «se celebra en mayo» или «suele celebrarse alrededor de mayo».",
+        "«Y el lugar importante es Almonte» звучит неопределённо и механически; связь с предыдущей репликой не объяснена."
+      ]
+    },
+    {
+      "id": "free_es_a1_tres_fiestas_en_clase_1782924770",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 0,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Это перечень трёх праздников, соединённых только порядковыми словами; последняя реплика заметно сложнее заявленного A1. Вопросы верны, но буквальны.",
+      "issues": [
+        "«Repasamos tres fiestas para ciudadanía» — неестественная формулировка; вероятнее «para el examen de ciudadanía».",
+        "«Puede ser en marzo o abril y destaca en Andalucía, con procesiones muy conocidas en muchas ciudades españolas cada primavera» содержит длинные и сложные для A1 конструкции."
+      ]
+    },
+    {
+      "id": "free_es_a1_tres_hijos_en_casa_1782924833",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Сюжет о получении документов начинается связно, но затем детали о спокойном разговоре дома и детях у двери не складываются в ясную последовательность. Вопросы верны, но буквальны.",
+      "issues": [
+        "«Después todos van juntos a la oficina» — далее семья уже находится «En casa»; переход туда и обратно не объяснён.",
+        "«En casa hablan del trámite con calma» и «Los niños esperan en la puerta con sus mochilas» выглядят добавленными без ясной связи с процедурой."
+      ]
+    },
+    {
+      "id": "free_es_a1_tres_niveles_del_territorio_1782924631",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 0,
+      "reason": "Диалог последовательно перечисляет термины, но не объясняет отношения между ними; вопрос о политической карте лишь повторяет финальную реплику.",
+      "issues": [
+        "«comunidades autónomas», «provincias» и «ciudades autónomas» представлены как три одноуровневых слова, хотя диалог не поясняет их различия или связь."
+      ]
+    },
+    {
+      "id": "free_es_a1_tres_provincias_de_arag_n_1782924639",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Короткий учебный диалог связно отвечает на вопрос о провинциях и затем фиксирует столицу на карте. Все ключи верны; вопросы преимущественно буквальные.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_tres_sistemas_de_monta_a_1782924606",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Диалог устроен как упражнение на перечисление названий, а не как содержательное общение. Формулировки телеграфные; вопросы верны, но буквальны.",
+      "issues": [
+        "«Repaso sistemas de montaña» — неестественно без артикля; лучше «Repaso los sistemas montañosos».",
+        "Связь Сьерра-Невады и Мульасена с предшествующими «Sistemas Bético y Penibético» изложена расплывчато через «Allí»."
+      ]
+    }
+  ]
+}

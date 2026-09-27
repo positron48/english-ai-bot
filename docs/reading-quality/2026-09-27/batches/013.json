@@ -1,0 +1,131 @@
+{
+  "scores": [
+    {
+      "id": "free_es_a1_datos_en_una_maqueta_1782924585",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 0,
+      "questions": 1,
+      "learning_value": 0,
+      "reason": "Связь макета и учёбы задана, но текст в основном перечисляет факты; «En otra escribe altitud media» звучит как подпись к упражнению. Вопросы имеют верные ключи, но почти дословно повторяют текст.",
+      "issues": [
+        "«La cifra es unos 650 metros» неестественно: лучше «La cifra es de unos 650 metros».",
+        "«На другой она пишет средняя высота» — грамматически неверно по-русски; нужно «пишет “средняя высота”»."
+      ]
+    },
+    {
+      "id": "free_es_a1_de_barcelona_a_valencia_1782924669",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 0,
+      "reason": "Поездка служит рамкой для перечисления географических сведений, но связь между городами, которые Ирен повторяет, и маршрутом не объяснена. Ключи верны; вопросы буквальные.",
+      "issues": [
+        "«En el tren repasa Girona y Tarragona. También repasa Alicante y Castellón» выглядит как перечень названий без пояснения, как они связаны с поездкой."
+      ]
+    },
+    {
+      "id": "free_es_a1_delta_del_ebro_1782924595",
+      "content": 2,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Есть простая учебная ситуация: Нико рассматривает фото, делает заметки и сохраняет его для повторения. Вопросы имеют верные ключи, но в основном буквальные.",
+      "issues": [
+        "«Después añade Júcar, Segura y Turia» не поясняет, что именно он добавляет — названия рек или сами реки на фото/лист."
+      ]
+    },
+    {
+      "id": "free_es_a1_dibujo_del_sistema_central_1782924598",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Последовательное описание рисунка вводит Месету и Центральную систему; сведения поддерживают друг друга. Ключи верны, но вопросы буквальные.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_diciembre_festivo_1782924866",
+      "content": 2,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Сведения о праздниках связаны с планированием поездок, хотя дальнейшее объяснение про посещение семьи присоединено слабо. Ключи верны, вопросы буквальные.",
+      "issues": [
+        "«Así no compro billetes para un día festivo» означает «так я не покупаю билеты на праздничный день»; в контексте бронирования естественнее «так я не куплю билеты на праздничный день»."
+      ]
+    },
+    {
+      "id": "free_es_a1_dni_a_los_catorce_1782924800",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Ситуация взросления связывает тему DNI с подготовкой документов. Вопросы имеют верные ключи, но проверяют в основном прямое воспроизведение.",
+      "issues": [
+        "«El DNI es obligatorio para españoles mayores de 14 años» не согласуется с сюжетом: Лукасу только исполняется 14 лет, тогда как «mayores de 14» означает старше 14."
+      ]
+    },
+    {
+      "id": "free_es_a1_documento_en_la_oficina_1782925069",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Понятная последовательность действий при оформлении документа создаёт внятную бытовую ситуацию. Ключи верны, но вопросы буквальные.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_documentos_completos_1782925046",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 0,
+      "learning_value": 1,
+      "reason": "Подготовка папки к завтрашней процедуре задаёт цель и последовательность действий. Первые два ключа верны, но третий вопрос проверяет грамматическую тему, а не понимание текста.",
+      "issues": [
+        "«el formulario está viejo» менее естественно, чем «el formulario es viejo» или «está en mal estado», если речь о старом бланке."
+      ]
+    },
+    {
+      "id": "free_es_a1_documentos_en_la_mesa_1782924804",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Классная сцена связывает слова с объяснением учителя, но большая часть текста — несвязанный перечень сведений о документах. Ключи верны, вопросы буквальные.",
+      "issues": [
+        "Фраза о паспорте упрощает правило: «sirve para viajar fuera de la Unión Europea o Schengen» не означает, что паспорт нужен для любой такой поездки; это также смешивает ЕС и Шенген."
+      ]
+    },
+    {
+      "id": "free_es_a1_don_quijote_y_sancho_1782924700",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Урок и чтение связывают сведения о романе с действиями учеников. Ключи верны, но вопросы проверяют прямое воспроизведение фактов.",
+      "issues": [
+        "«el nombre completo de la novela» упомянуто, но полное название нигде не дано, поэтому указание запомнить его не поддержано текстом."
+      ]
+    }
+  ]
+}

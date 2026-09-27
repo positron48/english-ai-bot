@@ -1,0 +1,130 @@
+{
+  "scores": [
+    {
+      "id": "free_es_a1_balcones_en_espa_a_1782395262",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Связное краткое описание балконов и маркиз, подходящее для A1; вопросы верны, но проверяют в основном прямые факты.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_baleares_en_el_mediterr_neo_1782924650",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Простая ситуация с картой связывает факты и действия; уровень и перевод подходят, вопросы верны, но буквальны.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_biblioteca_p_blica_1782924898",
+      "content": 2,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 0,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Практичная ситуация о библиотеке, но финальная реплика не согласуется с обращением на tú; вопросы верны, но буквальны.",
+      "issues": [
+        "«Solo necesita pedir» требует формального обращения; в контексте «puedo» естественно «Solo necesitas pedir». В переводе «Ему нужно» также появляется отсутствующий в тексте мужчина."
+      ]
+    },
+    {
+      "id": "free_es_a1_buscar_piso_1782924835",
+      "content": 2,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 0,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Поиск жилья задаёт понятную ситуацию, но отдельные реплики звучат неестественно, а перевод последней меняет смысл.",
+      "issues": [
+        "«¿El piso es común en España?» звучит неестественно в вопросе о распространённости жилья; естественнее «¿Es común vivir en un piso en España?». «La comunidad es tranquila» обычно относится к сообществу жильцов, а не к спокойному району; перевод «район спокойный» меняет смысл."
+      ]
+    },
+    {
+      "id": "free_es_a1_calendario_de_navidad_1782924755",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 0,
+      "reason": "Это в основном перечень праздничных дат и обычаев без связанного развития; испанский понятен, вопросы верны, но буквальны.",
+      "issues": [
+        "«En casa hay belén y árbol de Navidad» выглядит как ещё один несвязанный факт после календаря."
+      ]
+    },
+    {
+      "id": "free_es_a1_calendario_laboral_1782924857",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 0,
+      "reason": "Разговор формально объединён рабочим календарём, но реплики слабо связаны, а последняя про календарь на стене не продолжает ситуацию; вопросы верны, но буквальны.",
+      "issues": [
+        "«El calendario está en la pared de la oficina» не связано с обсуждением отметок в личном ежедневнике."
+      ]
+    },
+    {
+      "id": "free_es_a1_calle_con_lluvia_1782925056",
+      "content": 2,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Последовательное описание сцены подходит для A1; вопросы верны, но проверяют главным образом буквальные детали.",
+      "issues": [
+        "«A la derecha está una parada» и «Al fondo están coches» звучат неестественно; здесь уместнее «hay una parada» и «hay coches»."
+      ]
+    },
+    {
+      "id": "free_es_a1_cambio_de_autob_s_1782925015",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 0,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Связное практическое объявление с нужными пассажирам изменениями; ключи верны, вопросы преимущественно буквальные.",
+      "issues": [
+        "В вопросе «Текст сообщает о изменении» нужна форма «об изменении»."
+      ]
+    },
+    {
+      "id": "free_es_a1_camino_al_roc_o_1782924775",
+      "content": 2,
+      "spanish": 1,
+      "level_fit": 0,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Есть сюжет поездки на праздник и полезные культурные названия, но последняя фраза заметно сложнее уровня A1; вопросы верны, но буквальны.",
+      "issues": [
+        "«Ella anota Rocío y Almonte para estudiar esta fiesta española importante con su profesor» перегружено причастными и уточняющими частями для A1 и звучит как учебная вставка."
+      ]
+    },
+    {
+      "id": "free_es_a1_camino_y_capital_1782924681",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 0,
+      "reason": "Ситуация прогулки служит рамкой для набора фактов, но их связь искусственна; ключи верны, хотя в пояснениях перепутано имя.",
+      "issues": [
+        "«Galicia está unida a esta lengua» звучит неестественно; «En Galicia se habla gallego» было бы естественнее. В пояснениях к двум последним вопросам указана Мария, хотя героиню зовут Марта."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,126 @@
+{
+  "scores": [
+    {
+      "id": "free_es_a1_acceso_a_la_universidad_1782924896",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Понятная ситуация с подготовкой к поступлению, хотя развитие минимально; вопросы верны, но буквальны.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_aceite_e_ib_ricos_1782924855",
+      "content": 1,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 0,
+      "reason": "Перечень регионов и продуктов связан ярмаркой, но почти не развивается; вопросы проверяют преимущественно явные детали.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_actividad_del_s_bado_1782924976",
+      "content": 2,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Есть задача выбора занятия, однако рассказ описывает учебное упражнение, а переход от пожеланий к выбору несколько механический.",
+      "issues": [
+        "«Marta prefiere música en un lugar cerrado» сводится к выбору guitarra без объяснения, почему не подходит teatro."
+      ]
+    },
+    {
+      "id": "free_es_a1_afiche_del_cine_1782924969",
+      "content": 2,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Короткая бытовая ситуация полезна для чтения афиш; часть предложений объясняет учебную цель вместо развития сюжета.",
+      "issues": [
+        "«La entrada cuesta cuatro euros los miércoles» не поясняет, сколько стоят билеты в другие дни, хотя София затем покупает два."
+      ]
+    },
+    {
+      "id": "free_es_a1_agenda_de_andaluc_a_1782924638",
+      "content": 1,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 0,
+      "reason": "Текст в основном перечисляет провинции и дни без мотивации маршрута; ключи верны, вопросы буквальны.",
+      "issues": [
+        "«Después añade Jaén y Almería» не уточняет, к каким дням поездки они относятся."
+      ]
+    },
+    {
+      "id": "free_es_a1_al_especialista_1782924903",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Внятно показан путь от семейного врача к специалисту; вопросы верны, но проверяют главным образом прямые факты.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_andaluc_a_natural_1782924617",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 0,
+      "reason": "Диалог сводится к перечислению двух парков и подтверждению; формальные реплики почти не создают развития.",
+      "issues": [
+        "«Entonces los dos están en Andalucía» повторно заключает то, что уже задано буклетом, а «Sí» не добавляет сведений."
+      ]
+    },
+    {
+      "id": "free_es_a1_antes_de_la_prueba_ccse_1782924496",
+      "content": 2,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 0,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Обмен перед экзаменом даёт полезные сведения, но реплики местами звучат как последовательность справочных фактов; вопросы прямые.",
+      "issues": [
+        "Перевод «Para ser apto necesito…» как «Чтобы быть годной» неестественен для говорящей Аны; естественнее «Чтобы сдать экзамен…»."
+      ]
+    },
+    {
+      "id": "free_es_a1_anuncio_de_piscina_1782924962",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Есть полезные данные объявления, но окружающий их текст почти целиком описывает упражнение, а не ситуацию.",
+      "issues": [
+        "«El horario es de diez a dos» не уточняет, что имеется в виду время работы бассейна, хотя это восстанавливается из контекста объявления."
+      ]
+    },
+    {
+      "id": "free_es_a1_anuncio_en_el_tren_1782924998",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Связное и уместное объявление содержит практические сведения; вопросы верны, хотя все три проверяют прямые детали.",
+      "issues": []
+    }
+  ]
+}

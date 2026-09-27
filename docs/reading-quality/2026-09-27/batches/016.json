@@ -1,0 +1,131 @@
+{
+  "scores": [
+    {
+      "id": "free_es_a1_en_la_estaci_n_1782396274",
+      "content": 2,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Понятная ситуация покупки билета развивается последовательно. Большинство вопросов проверяет прямо названные детали; последний ответ звучит неестественно: «Aquí tiene su billete y la puerta de salida».",
+      "issues": [
+        "«Aquí tiene su billete y la puerta de salida» — буквально «вот ваш билет и выход на посадку»; естественнее было бы отдельно сообщить, где находится выход.",
+        "В вопросах говорится о мужчине, хотя пол говорящего в испанском тексте не указан."
+      ]
+    },
+    {
+      "id": "free_es_a1_en_la_farmacia_1782396297",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Связный бытовой диалог с полезной лексикой о симптомах и аптеке. Вопросы верны, но в основном проверяют отдельные факты из текста.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_en_la_oficina_1782924821",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 0,
+      "reason": "Разговор сводится к перечню полей документа без заметного развития ситуации. Испанский понятен, но реплики звучат как механическое перечисление.",
+      "issues": [
+        "«También está mi NIE y mi sexo» и следующие реплики перечисляют данные документа, не создавая естественного обмена репликами."
+      ]
+    },
+    {
+      "id": "free_es_a1_en_la_oficina_de_extranjer_a_1782924542",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 0,
+      "reason": "Сцена с Амиром обрамляет перечень утверждений о полиции, но содержательного развития почти нет. Вопросы верны, однако проверяют только буквальное воспроизведение.",
+      "issues": [
+        "«La Policía Nacional trata asuntos de extranjería. También trabaja en fronteras» — факты перечислены без связи с дальнейшим действием Амира."
+      ]
+    },
+    {
+      "id": "free_es_a1_en_la_oficina_de_idiomas_1782924507",
+      "content": 2,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Диалог связан темой языков и дает полезную информацию. Формулировка «tienen derecho de usarlo» заметно менее естественна, чем «tienen derecho a usarlo»; вопросы в основном буквальные.",
+      "issues": [
+        "«Los ciudadanos tienen derecho de usarlo» — естественнее «tienen derecho a usarlo»."
+      ]
+    },
+    {
+      "id": "free_es_a1_en_la_oficina_nueva_1782923835",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 0,
+      "reason": "Короткая бытовая сцена понятна, но реплики не объясняют, зачем Луису искать комнату, а затем сообщают лишь, что у Марты есть план. Вопросы верны и буквальны.",
+      "issues": [
+        "«Necesito buscar la sala dos» и «Marta tiene el plano» остаются слабо связанными с остальным разговором."
+      ]
+    },
+    {
+      "id": "free_es_a1_enero_en_familia_1782924859",
+      "content": 1,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Испанский естественный, а детали о семейном празднике дают небольшой контекст. Основная часть текста перечисляет даты и общие сведения без сюжетного развития.",
+      "issues": [
+        "Переход от записи дат в календарь к общей фразе о праздниках и особому полднику почти не развивает ситуацию."
+      ]
+    },
+    {
+      "id": "free_es_a1_entrada_con_cl_ve_1782924560",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 0,
+      "learning_value": 1,
+      "reason": "Понятный диалог объясняет, как человек может войти в электронный офис и выполнить процедуру. Один вопрос приписывает говорящему женский пол, которого текст не устанавливает.",
+      "issues": [
+        "Вопрос «У женщины есть Cl@ve в телефоне» не подтвержден: пол говорящего в испанском тексте не обозначен."
+      ]
+    },
+    {
+      "id": "free_es_a1_enviar_una_carta_1782924920",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Последовательная бытовая ситуация объясняет отправку письма; вопросы верны, но преимущественно буквальны.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_espa_a_en_el_mapa_1782924574",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Диалог дает полезные географические сведения, но заметно превращается в перечень фактов: вопрос о границах сменяется дополнительными несвязанными утверждениями. Вопросы верны и просты.",
+      "issues": [
+        "«España ocupa gran parte de la península ibérica» и «también tiene islas» добавлены как отдельные факты, а не как естественное продолжение разговора."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,128 @@
+{
+  "scores": [
+    {
+      "id": "free_es_a0_gazpacho_fr_o_1782924467",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Короткая связная зарисовка о гаспачо в жаркий день; вопросы верны, но проверяют только прямые факты.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a0_hola_todo_el_d_a_1782238178",
+      "content": 2,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Есть понятный переход от объяснения употребления hola к примеру на уроке, но формулировки местами неестественны, а вопросы буквальны.",
+      "issues": [
+        "«La clase entiende bien» звучит неестественно в значении «класс хорошо её понимает»."
+      ]
+    },
+    {
+      "id": "free_es_a0_islas_de_espa_a_1782240917",
+      "content": 2,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Диалог последовательно отвечает на вопросы об островах Испании и завершается выводом; отдельные реплики звучат механически, вопросы буквальны.",
+      "issues": [
+        "«Sí, pero hay viento y mar» — неестественная связка: ветер и море не объясняют оговорку «но»."
+      ]
+    },
+    {
+      "id": "free_es_a0_la_bandera_de_espa_a_1782924459",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Простая последовательная зарисовка с флагом; вопросы верны, но проверяют только буквальные детали.",
+      "issues": [
+        "«Tiene rojo, amarillo y rojo» перечисляет полосы без указания их ширины, поэтому описание флага неполное."
+      ]
+    },
+    {
+      "id": "free_es_a0_la_farmacia_1782238932",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 0,
+      "reason": "Связанные с аптекой факты идут списком без ситуации или объясняющих связей; вопросы правильны, но буквальны.",
+      "issues": [
+        "«La cruz está en la calle» неясно указывает, что именно находится на улице; естественнее сказать, что крест виден на фасаде или аптеке."
+      ]
+    },
+    {
+      "id": "free_es_a0_la_letra_1782238448",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Текст сообщает полезный факт о ñ, но в основном повторяет одну мысль; вопросы верны и почти все буквальны.",
+      "issues": [
+        "«La letra ñ en español.» — незавершённое предложение; «En español, ñ cambia palabras» звучит слишком обобщённо без примера того, как меняется значение."
+      ]
+    },
+    {
+      "id": "free_es_a0_la_muralla_romana_1782240714",
+      "content": 2,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Внятная туристическая ситуация: посетитель спрашивает об истории и входе; вопросы верны, но буквальны. Есть неестественная реплика о городе.",
+      "issues": [
+        "«¿La ciudad está dentro?» звучит неестественно; естественнее спросить, находится ли старый город за стеной."
+      ]
+    },
+    {
+      "id": "free_es_a0_la_paella_1782924464",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Короткая связная зарисовка о еде; вопросы правильны, но проверяют лишь явные факты.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a0_la_tienda_1782240658",
+      "content": 2,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Практичная ситуация с расписанием магазина и покупкой; вопросы верны, но буквальны. Одна реплика нарушает логику времени.",
+      "issues": [
+        "После слов «cerramos a las dos» и «vuelvo a las cinco» реплика «Ahora tiene quince minutos» не согласуется с расписанием: непонятно, откуда берутся пятнадцать минут."
+      ]
+    },
+    {
+      "id": "free_es_a0_madrid_es_capital_1782924461",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Простая связная зарисовка о прогулке по столице; вопросы верны, но буквальны.",
+      "issues": []
+    }
+  ]
+}

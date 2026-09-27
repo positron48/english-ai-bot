@@ -1,0 +1,124 @@
+{
+  "scores": [
+    {
+      "id": "free_es_c1_archivo_compartido_1782413030",
+      "content": 3,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 2,
+      "learning_value": 1,
+      "reason": "Связный разговор: собеседники взвешивают доступность архива, приватность и пользу для сообщества, затем предлагают конкретные меры.",
+      "issues": []
+    },
+    {
+      "id": "free_es_c1_autoconsumo_responsable_1782413017",
+      "content": 3,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 2,
+      "learning_value": 1,
+      "reason": "Обсуждение последовательно переходит от выбора подрядчика к затратам, правилам голосования и условиям поддержки проекта.",
+      "issues": []
+    },
+    {
+      "id": "free_es_c1_coworking_con_garant_as_1782412984",
+      "content": 3,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 2,
+      "learning_value": 1,
+      "reason": "Убедительная ситуация с ясным конфликтом интересов и конкретным компромиссным решением; вопросы охватывают ключевые выводы.",
+      "issues": []
+    },
+    {
+      "id": "free_es_c1_el_agua_heredada_1782412911",
+      "content": 2,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Текст передаёт содержательную связь между ирригацией и местными институтами, но фраза «la modernidad no borra» обрывается без дополнения и делает переход к следующему предложению негладким.",
+      "issues": [
+        "«Ese rito muestra una España donde la modernidad no borra» — предложение не завершено; следующее «A veces, simplemente negocia...» не устраняет обрыв."
+      ]
+    },
+    {
+      "id": "free_es_c1_encuesta_responsable_1782412997",
+      "content": 3,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 2,
+      "learning_value": 1,
+      "reason": "Собеседники последовательно рассматривают риски идентификации, смещения ответов и прозрачности; все ключи согласуются с текстом.",
+      "issues": []
+    },
+    {
+      "id": "free_es_c1_enmienda_razonable_1782412925",
+      "content": 3,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 2,
+      "learning_value": 1,
+      "reason": "Цельная бытовая ситуация развивается к практическому компромиссу; вопросы проверяют и позицию, и мотивы собеседников.",
+      "issues": []
+    },
+    {
+      "id": "free_es_c1_esquinas_de_barcelona_1782412837",
+      "content": 2,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Есть содержательная линия от градостроительного замысла к влиянию спекуляции, но некоторые формулировки чрезмерно абстрактны и искусственны, например «la ciudad heredó una legibilidad excepcional».",
+      "issues": [
+        "«Cerdà imaginó calles anchas, luz y ventilación democrática» — «вентиляция» в единственном числе звучит неестественно; мысль, вероятно, о доступе к свету и воздуху для всех.",
+        "«La ciudad heredó una legibilidad excepcional» — абстрактная, не вполне естественная формулировка."
+      ]
+    },
+    {
+      "id": "free_es_c1_graneros_elevados_1782412774",
+      "content": 2,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Текст даёт полезное объяснение функции оррео, но переходит от практических деталей к ряду метафорических утверждений без достаточного развития.",
+      "issues": [
+        "«La piedra hablaba de clima, propiedad y previsión» и «Cada familia medía allí su seguridad alimentaria» звучат как искусственные обобщения, а не объяснение конкретных особенностей."
+      ]
+    },
+    {
+      "id": "free_es_c1_hierro_del_nervi_n_1782412851",
+      "content": 2,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Намечена логичная линия индустриализации и её социальных последствий, но часть образных формулировок туманна, а развитие остаётся схематичным.",
+      "issues": [
+        "«Las minas vizcaínas alimentaron barcos, bancos y fábricas» — образ «питали корабли и банки» неясен; связь железной руды с ростом банков здесь не объяснена.",
+        "«España industrializó parte de su memoria junto al río» — финальный образ звучит неестественно и затемняет мысль."
+      ]
+    },
+    {
+      "id": "free_es_c1_la_fianza_retenida_1782412935",
+      "content": 3,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 2,
+      "learning_value": 1,
+      "reason": "Практичный, связный разговор о споре вокруг залога; план действий развивается последовательно, а ключи верны.",
+      "issues": []
+    }
+  ]
+}

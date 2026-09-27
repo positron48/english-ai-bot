@@ -1,0 +1,124 @@
+{
+  "scores": [
+    {
+      "id": "free_es_a1_vinos_conocidos_1782924847",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 0,
+      "reason": "Связная тема вина и финальная причина записать названия дают минимальную связь, но разговор в основном перечисляет винные регионы.",
+      "issues": [
+        "«La Rioja es famosa por sus vinos» и «Jerez también es conocido por el vino» естественнее сочетать с формулировкой о регионах/вине, но «Jerez» может обозначать и город, и вино; в тексте это не уточнено."
+      ]
+    },
+    {
+      "id": "free_es_a1_visita_a_domicilio_1782924908",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Понятная жизненная ситуация развивается от болезни к осмотру и совету семье; вопросы верны, но в основном проверяют буквальные детали.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_visita_a_los_reyes_1782924761",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Есть рождественская тема, но собеседники без мотивированной связи перечисляют разные обычаи и даты; вопросы в основном буквальные.",
+      "issues": [
+        "«Las Navidades empezaron el 24 de diciembre» звучит как неестественное обобщение: дата начала праздников зависит от контекста; последующая реплика о Nochebuena не объясняет, почему упоминается Nochevieja."
+      ]
+    },
+    {
+      "id": "free_es_a1_visita_al_ayuntamiento_1782925037",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Последовательная бытовая история с понятной целью и планом продолжения; вопросы верны, но буквальны.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_vivienda_y_trabajo_1782924980",
+      "content": 2,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 0,
+      "reason": "Учебная ситуация имеет цель и итоговое сопоставление, но текст описывает устройство задания вместо самой задачи и выглядит механически.",
+      "issues": [
+        "«Hay anuncios de un piso pequeño y de un bar» не сообщает, какие условия в объявлениях связывают квартиру с Соней, а бар — с Раулем; итоговое сопоставление не обосновано."
+      ]
+    },
+    {
+      "id": "free_es_a1_volcanes_de_canarias_1782924620",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Короткая понятная сцена, подходящая A1, но развитие почти целиком состоит из названий и повторного факта; вопросы верны и буквальны.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_volver_a_estudiar_1782924893",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Диалог раскрывает намерение взрослого вернуться к учёбе и следующий практический шаг; вопросы точны, но преимущественно буквальны.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a2_alquilar_una_bicicleta_1782404991",
+      "content": 3,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 2,
+      "learning_value": 1,
+      "reason": "Цельная практическая ситуация охватывает аренду, маршрут и возможную проблему с батареей; все ключи и переводы корректны, вопросы проверяют разные детали понимания.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a2_beber_agua_1782405137",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Связный короткий текст с практическими советами и тематической лексикой; вопросы верны, но почти все повторяют сказанное напрямую.",
+      "issues": [
+        "«Un hábito pequeño mejora la energía diaria» обещает улучшение энергии без пояснения и звучит как слишком уверенное обобщение."
+      ]
+    },
+    {
+      "id": "free_es_a2_bibliotecas_p_blicas_1782405055",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Текст последовательно рассказывает об услугах библиотек и приводит пример сети в Каталонии; вопросы верны, но буквальны.",
+      "issues": [
+        "«En España, muchas bibliotecas públicas están en barrios pequeños» — сомнительное обобщение: формулировка создаёт впечатление, что речь о небольших районах, но эта деталь не объясняется и не помогает основному рассказу."
+      ]
+    }
+  ]
+}

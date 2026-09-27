@@ -1,0 +1,129 @@
+{
+  "scores": [
+    {
+      "id": "free_es_a1_una_postal_de_navarra_1782924519",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 0,
+      "reason": "Короткие факты о баскском языке связаны темой, но переход от открытки к поездке и книге не образует сюжета.",
+      "issues": [
+        "«Cuenta que allí existe el vasco» звучит неестественно: естественнее «allí se habla euskera/vasco»."
+      ]
+    },
+    {
+      "id": "free_es_a1_una_pregunta_en_la_calle_1782396598",
+      "content": 3,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 2,
+      "learning_value": 1,
+      "reason": "Связная жизненная ситуация с полезными фразами для поиска дороги; вопросы проверяют и детали, и общий смысл.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_urgencias_de_noche_1782924905",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 0,
+      "reason": "Начинается понятная ситуация, но затем рассказ превращается в перечень общих функций больницы, не связанных с ожиданием результата Пабло.",
+      "issues": [
+        "«El hospital también hace cirugía» звучит механически; эта общая справка слабо связана с историей Пабло."
+      ]
+    },
+    {
+      "id": "free_es_a1_vecinos_y_bicicletas_1782396391",
+      "content": 3,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 2,
+      "learning_value": 1,
+      "reason": "Естественный разговор развивает конкретную проблему соседей и предлагает практические решения; ответы верны, вопросы охватывают разные детали.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_velocidad_en_la_ciudad_1782924937",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 0,
+      "reason": "Текст в основном перечисляет ограничения скорости; движение Серхио не связывает эти сведения в полноценную ситуацию.",
+      "issues": [
+        "«En la ciudad puede haber límites de 20, 30 o 50» повторяет предыдущие цифры без развития сюжета."
+      ]
+    },
+    {
+      "id": "free_es_a1_viaje_a_canarias_1782924873",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Есть понятная практическая ситуация и полезное правило о часовом поясе, хотя фраза о том, что Нора ждёт перед звонком, не объясняет, когда именно она собирается позвонить.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_viaje_fuera_de_europa_1782924801",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 0,
+      "learning_value": 0,
+      "reason": "Диалог о документах содержит расплывчатое и не вполне точное объяснение поездок внутри Шенгена; вопросы в основном повторяют сказанное и один расширяет его без достаточной опоры в тексте.",
+      "issues": [
+        "«Para muchos viajes en Schengen no es igual» не объясняет, что именно отличается.",
+        "Вопрос о паспорте для поездок «вне ЕС или Шенгена» шире текста: в нём говорится только о поездке вне ЕС."
+      ]
+    },
+    {
+      "id": "free_es_a1_viaje_por_autopista_1782924933",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 0,
+      "reason": "Поездка служит рамкой для списка правил, но детали не развивают ситуацию; вопросы точны, однако преимущественно буквальны.",
+      "issues": [
+        "«El cinturón es obligatorio para todos los pasajeros» повторяет предыдущую фразу «Todos llevan cinturón» и не развивает рассказ."
+      ]
+    },
+    {
+      "id": "free_es_a1_viaje_por_comunidades_1782924516",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 0,
+      "reason": "Диалог последовательно называет языки регионов, но выглядит как перечень сведений, а не разговор о планируемой поездке.",
+      "issues": [
+        "«¿Qué lenguas vas a ver?» звучит неестественно для вопроса о языках; естественнее «¿Qué lenguas vas a encontrar/escuchar?»."
+      ]
+    },
+    {
+      "id": "free_es_a1_viaje_por_el_pa_s_vasco_1782924690",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 0,
+      "reason": "Перечень городов и провинций тематически полезен, но реплики не создают мотивированного разговора; последняя фраза звучит неестественно.",
+      "issues": [
+        "«durante el viaje por muchas calles» неестественно в этом контексте; непонятно, почему слово euskera можно услышать «по многим улицам»."
+      ]
+    }
+  ]
+}

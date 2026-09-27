@@ -1,0 +1,122 @@
+{
+  "scores": [
+    {
+      "id": "free_es_b2_encuentro_en_la_calle_1782406914",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Связный диалог о заявке на стипендию с понятным развитием; вопросы верны, но в основном проверяют отдельные факты.",
+      "issues": []
+    },
+    {
+      "id": "free_es_b2_estudiar_en_la_universidad_1782406883",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Практичный диалог с последовательными советами и планом действий; вопросы верны, но преимущественно буквальные.",
+      "issues": []
+    },
+    {
+      "id": "free_es_b2_informarse_mejor_1782406867",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Связный разговор о перегрузке новостями и способах её уменьшить; ключи верны, вопросы в основном буквальные.",
+      "issues": []
+    },
+    {
+      "id": "free_es_b2_la_capa_doblada_1782923728",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 0,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Короткая цельная миниатюра с образом скатерти и переосмыслением смелости, но язык и объём заметно проще заявленного B2; все ключи верны.",
+      "issues": [
+        "Для B2 текст очень короткий и лексически простой: «una tela roja», «poner una mesa y escuchar»."
+      ]
+    },
+    {
+      "id": "free_es_b2_la_dehesa_espa_ola_1782407162",
+      "content": 2,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Информативный текст связывает устройство деэсы, выпас и экологический баланс; ключи верны, но вопросы преимущественно буквальные.",
+      "issues": [
+        "«También protege suelo, aves rapaces y biodiversidad» звучит неестественно без артиклей перед «suelo» и «biodiversidad»."
+      ]
+    },
+    {
+      "id": "free_es_b2_la_espa_a_vaciada_1782407187",
+      "content": 2,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Текст последовательно объясняет взаимосвязь депопуляции и услуг, затем называет условия для жизни в селе; вопросы верны, но буквальны.",
+      "issues": [
+        "«Describe pueblos donde perder habitantes cambia cada servicio» — неестественная формулировка; «cambia cada servicio» неясно передаёт последствия потери населения."
+      ]
+    },
+    {
+      "id": "free_es_b2_las_supermanzanas_1782407151",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Доступно изложены цель суперблоков и опасения сторон; ключи верны, вопросы в основном проверяют прямые сведения.",
+      "issues": []
+    },
+    {
+      "id": "free_es_b2_los_paradores_1782407198",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Текст связывает исторические здания, туризм и развитие регионов, упоминая требования к такой модели; ответы верны, но вопросы буквальные.",
+      "issues": []
+    },
+    {
+      "id": "free_es_b2_mondrag_n_cooperativa_1782407176",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Сбалансированный обзор происхождения, устройства и трудностей кооперативной модели; ключи верны, но вопросы в основном буквальные.",
+      "issues": []
+    },
+    {
+      "id": "free_es_b2_organizar_mejor_el_d_a_1782406854",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 0,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Связный диалог приводит от проблемы с задачами к конкретному плану; ключи верны, вопросы преимущественно буквальные.",
+      "issues": [
+        "«cuando alguien me pide algo pequeño, pero constante» передано как «когда кто-то просит что-то маленькое, но постоянно»; по-русски это звучит неестественно и не уточняет, что речь о регулярной небольшой просьбе."
+      ]
+    }
+  ]
+}

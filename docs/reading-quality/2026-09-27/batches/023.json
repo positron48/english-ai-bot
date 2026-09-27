@@ -1,0 +1,118 @@
+{
+  "scores": [
+    {
+      "id": "free_es_a1_mensaje_al_amigo_1782925026",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Понятное сообщение с практической целью: объяснить опоздание и попросить предупредить преподавателя. Вопросы верны, но в основном проверяют буквальные детали.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_mensaje_de_la_escuela_1782925002",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Связное школьное объявление с нужными временем, местом и предметами. Вопросы верны, но однообразны и почти дословно повторяют факты.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_mensaje_de_tel_fono_1782924997",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Практичное сообщение о переносе записи, с понятными инструкциями. Вопросы верны, но в основном буквальные; вопрос о том, чему текст обучает, проверяет скорее тему, чем понимание.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_mensaje_del_portal_1782924971",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 0,
+      "reason": "Объявление о воде связано с бытом, но внезапные комментарии об учебных упражнениях превращают его в набор слабо связанных предложений. Вопросы верны, но буквальны.",
+      "issues": [
+        "«En ejercicios de lectura, estos textos son muy cortos» и «Hay que encontrar el tiempo, el lugar y la condición» выбиваются из ситуации с объявлением."
+      ]
+    },
+    {
+      "id": "free_es_a1_mensaje_despu_s_del_viaje_1782924984",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Короткий, но внятный рассказ о поездке и планах; детали связаны с сообщением другу. Вопросы верны, но все три прямо воспроизводят отдельные факты.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_metro_y_autob_s_1782924942",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Понятная повседневная ситуация с маршрутом на работу и полезной транспортной лексикой. Вопросы верны, но буквальны и однообразны.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_mi_viaje_a_toledo_1782925031",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Связное сообщение о поездке и последующем задании; формы прошедшего, настоящего и будущего времени уместны. Вопросы верны, но проверяют факты напрямую.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_monfrag_e_en_c_ceres_1782924676",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Внятный учебный эпизод связывает географические сведения с заполнением карточки. Вопросы верны, но буквальны; вопрос о столице опирается на то, что Ана пишет, а не на независимое подтверждение.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_monfrag_e_en_extremadura_1782924614",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Короткий связный диалог помогает запомнить, где находится парк. Вопросы верны, но почти дословно повторяют реплики.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_movida_madrile_a_1782924714",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 0,
+      "reason": "Тема заявлена, но диалог в основном повторяет общие утверждения и не дает конкретного развития. Реплики связаны формально, а вопросы буквальны.",
+      "issues": [
+        "«La movida madrileña es un tema importante» и «Es parte de un cambio cultural» остаются общими тезисами без конкретных деталей; «Entonces no es música clásica» не следует из предыдущей реплики."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,126 @@
+{
+  "scores": [
+    {
+      "id": "free_es_a1_cartel_junto_al_hospital_1782924928",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Простая связная ситуация с понятным выводом; вопросы в основном проверяют прямое воспроизведение текста.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_casa_fuera_de_la_ciudad_1782924838",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Сравнение жилья развивается в понятной ситуации выбора, хотя остается поверхностным.",
+      "issues": [
+        "Вопрос «В Испании существуют такие виды жилья…» добавляет географическое утверждение, которого текст не устанавливает; ключ true нельзя подтвердить по тексту."
+      ]
+    },
+    {
+      "id": "free_es_a1_cava_catal_n_1782924852",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Короткий естественный диалог решает конкретную задачу и дает полезную культурную лексику.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_ceder_el_asiento_1782924950",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Связный бытовой эпизод с ясным развитием; вопросы проверяют детали, но остаются буквальными.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_cena_de_nochebuena_1782924757",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 0,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Праздничные факты перечислены без мотивированной связи; формальные реплики не создают настоящего диалога.",
+      "issues": [
+        "«Después viene Nochevieja» и упоминание Reyes Magos выглядят как механическое перечисление дат и праздников.",
+        "В переводе «Reyes Magos» передано как «Волхвы»; здесь естественнее назвать праздник Днём трёх королей."
+      ]
+    },
+    {
+      "id": "free_es_a1_centro_de_salud_1782924806",
+      "content": 2,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 0,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Есть понятная бытовая цель и последовательность действий, но формулировки местами неестественны.",
+      "issues": [
+        "«La tarjeta sanitaria da acceso a la sanidad pública» и «con la solicitud hecha para recibir atención médica pública» звучат тяжеловесно.",
+        "«Санитарная карточка» и «публичная медицинская помощь» — заметные кальки; естественнее «медицинская карта» и «государственная медицинская помощь»."
+      ]
+    },
+    {
+      "id": "free_es_a1_centro_p_blico_1782924886",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 0,
+      "reason": "Диалог сообщает связанные сведения, но большая часть разговора похожа на учебное перечисление; переход к карте и визиту добавлен механически.",
+      "issues": [
+        "Вопрос «Государственные центры финансируются государственной администрацией и бесплатны» обобщает утверждение текста о конкретном центре; ключ true сформулирован шире исходного диалога."
+      ]
+    },
+    {
+      "id": "free_es_a1_centro_privado_1782924890",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Сравнение трех типов школ дает полезный контекст, хотя вопросы проверяют только явно сказанные детали.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_cervantes_en_alcal_1782924698",
+      "content": 2,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Диалог передает полезные сведения о писателе, но финальная реплика искусственно привязывает их к экзаменационному формату.",
+      "issues": [
+        "«En el examen suelen unir autor, ciudad y obra famosa en una pregunta corta» звучит как неестественное пояснение, добавленное ради учебной темы."
+      ]
+    },
+    {
+      "id": "free_es_a1_ceuta_y_melilla_1782924578",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Связный вопрос-ответ дает полезные географические сведения, хотя все вопросы проверяют буквальные факты.",
+      "issues": []
+    }
+  ]
+}

@@ -1,0 +1,130 @@
+{
+  "scores": [
+    {
+      "id": "free_es_a1_relato_de_la_nueva_ciudad_1782924985",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 2,
+      "learning_value": 1,
+      "reason": "Связный короткий рассказ о переезде и повседневных делах; язык и задания подходят A1.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_relieve_en_clase_1782924582",
+      "content": 1,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 0,
+      "reason": "Понятный учебный обмен вопросами и ответами, но он сводится к перечислению географических фактов.",
+      "issues": [
+        "«¿Y la superficie?» звучит как очередной пункт списка; естественнее было бы спросить, например, о площади Испании."
+      ]
+    },
+    {
+      "id": "free_es_a1_reuni_n_de_vecinos_1782924843",
+      "content": 2,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 0,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Тема собрания раскрыта через правила и процедуры, но реплики местами механически нанизаны; вопросы проверяют только буквальные детали.",
+      "issues": [
+        "«¿Hablan…?» получает ответ «Sí. Todos debemos pagar…» — связь понятна, но ответ не вполне естественный.",
+        "«собрание соседского сообщества» — неестественная калька; лучше «собрание жильцов/соседей»."
+      ]
+    },
+    {
+      "id": "free_es_a1_ruta_urbana_de_estudio_1782924570",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 0,
+      "reason": "Диалог формально связан запоминанием городов, но почти целиком представляет собой перечень названий и повторов.",
+      "issues": [
+        "«Di Málaga y Murcia» звучит неестественно в значении «назови Малагу и Мурсию»; естественнее «Di: Málaga y Murcia» или «Nombra Málaga y Murcia»."
+      ]
+    },
+    {
+      "id": "free_es_a1_sabina_y_rosal_a_1782924717",
+      "content": 1,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 0,
+      "reason": "Грамотный, но искусственно сконструированный список исполнителей с малосвязанными действиями; вопросы преимущественно буквальные.",
+      "issues": [
+        "Прослушивание короткой песни и раскрашивание списка появляются без объяснённой связи с перечислением исполнителей."
+      ]
+    },
+    {
+      "id": "free_es_a1_sanfermines_en_pamplona_1782924782",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Короткая понятная ситуация знакомит с несколькими традиционными элементами праздника; вопросы в основном проверяют прямые факты.",
+      "issues": [
+        "«para el examen de cultura española» превращает финал в перечень сведений для запоминания и звучит дидактически."
+      ]
+    },
+    {
+      "id": "free_es_a1_sant_jordi_en_la_calle_1782924773",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Цельная бытовая сценка с книгой, розой и друзьями, подходящая A1; задания точны, но в основном буквальны.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_sardana_y_mu_eira_1782924746",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 0,
+      "reason": "Диалог передаёт два факта о региональных танцах, но в основном механически повторяет их; заключительная реплика звучит искусственно.",
+      "issues": [
+        "«Con dos columnas, cada baile queda unido a su comunidad en la hoja de estudio» — неестественное, чрезмерно формальное продолжение простого диалога."
+      ]
+    },
+    {
+      "id": "free_es_a1_scar_espa_ol_1782924726",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Факты о двух актёрах переходят к конкретному плану посмотреть фильм; вопросы верны, но почти полностью буквальны.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_sede_en_valladolid_1782924661",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 0,
+      "questions": 1,
+      "learning_value": 0,
+      "reason": "Содержание держится на короткой справке, а несколько испанских фраз построены телеграфно; перевод оставляет ключевое слово непереведённым.",
+      "issues": [
+        "«También dice sede administrativa en Valladolid» — телеграфная конструкция; естественнее «También dice que la sede administrativa está en Valladolid».",
+        "«sede» в переводе оставлено без перевода; здесь подходит «административный центр» или «местопребывание администрации»."
+      ]
+    }
+  ]
+}

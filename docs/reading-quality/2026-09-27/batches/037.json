@@ -1,0 +1,122 @@
+{
+  "scores": [
+    {
+      "id": "free_es_a2_la_caja_de_officer_park_1782923706",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Связный короткий диалог о потерянных вещах и личных воспоминаниях; вопросы верны, но проверяют почти только буквальные детали.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a2_mapas_digitales_1782405126",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Практические советы развиваются логично от карт к возможным проблемам с телефоном; вопросы верны, но в основном буквальные.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a2_moverse_en_bici_1782405113",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Понятный набор связанных советов о безопасности на велосипеде; ключи верны, вопросы почти все проверяют прямые факты.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a2_plantas_en_casa_1782405147",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Связный практический текст об уходе за растениями; перевод и ключи в целом точны, вопросы преимущественно буквальные.",
+      "issues": [
+        "«Una ventana con luz» — «Окна со светом»: в оригинале единственное число, в переводе множественное."
+      ]
+    },
+    {
+      "id": "free_es_a2_rafa_y_el_asiento_delantero_1782923722",
+      "content": 2,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 0,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Сюжет о привычке водителя и семейной памяти понятен, но финальная реплика звучит искусственно и переведена калькой; вопросы буквальные.",
+      "issues": [
+        "«Usted también conduce un recuerdo» звучит неестественно в этом контексте; «вы ведёте ещё и воспоминание» — неестественная калька."
+      ]
+    },
+    {
+      "id": "free_es_a2_renovar_la_tarjeta_1782404916",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Правдоподобная последовательность действий при подаче документов; ключи верны, вопросы в основном проверяют отдельные факты.",
+      "issues": [
+        "«Renovar mi tarjeta» переведено как «обновить мою карточку»; в контексте оформления документа естественнее «продлить/переоформить карту»."
+      ]
+    },
+    {
+      "id": "free_es_a2_silencio_p_blico_1782405156",
+      "content": 2,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Текст последовательно призывает беречь тишину в общих местах, но связь наушников с уменьшением разговоров окружающих выражена не вполне естественно; вопросы буквальные.",
+      "issues": [
+        "«Los auriculares… reducen conversaciones» — наушники сами по себе не уменьшают разговоры окружающих; формулировка неясна и звучит неестественно."
+      ]
+    },
+    {
+      "id": "free_es_a2_un_cargo_extra_o_1782405030",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Связный бытовой диалог о подозрительном списании и дальнейших действиях; ответы верны, вопросы преимущественно буквальные.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a2_una_fuga_en_casa_1782404939",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Внятная жизненная ситуация с логичным развитием от протечки к вызову сантехника; вопросы проверяют в основном прямые детали.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a2_una_lista_simple_1782405095",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Практические советы об организации дел образуют цельный текст; ключи верны, вопросы в основном буквальные.",
+      "issues": []
+    }
+  ]
+}

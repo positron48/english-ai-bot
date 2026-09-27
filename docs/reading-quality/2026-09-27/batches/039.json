@@ -1,0 +1,118 @@
+{
+  "scores": [
+    {
+      "id": "free_es_b1_el_silbo_gomero_1782406642",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Связное объяснение истории и современного использования сильбо, но вопросы проверяют в основном прямые факты.",
+      "issues": []
+    },
+    {
+      "id": "free_es_b1_frenos_de_bicicleta_1782406725",
+      "content": 3,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Правдоподобный разговор с понятной проблемой, развитием и практичной лексикой; вопросы преимущественно буквальные.",
+      "issues": []
+    },
+    {
+      "id": "free_es_b1_la_libreta_de_carmen_1782923719",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 0,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 0,
+      "reason": "Короткий обмен репликами не объясняет связь между пропавшей фреской, тетрадью и рассказом о продаже газет; вопросы буквальные.",
+      "issues": [
+        "«Entonces su detective empezó en una esquina normal» — вывод о начале расследования не подготовлен предыдущими репликами."
+      ]
+    },
+    {
+      "id": "free_es_b1_la_llave_del_profesor_1782923710",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 0,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Ключ связывает короткую историю о первом уроке с воспоминанием о страхе, но язык и объём проще заявленного B1; вопросы буквальные.",
+      "issues": []
+    },
+    {
+      "id": "free_es_b1_la_piedra_seca_1782406701",
+      "content": 3,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Последовательно объяснены техника кладки, назначение террас и сохранение стен; вопросы в основном проверяют отдельные факты.",
+      "issues": []
+    },
+    {
+      "id": "free_es_b1_la_trashumancia_1782406599",
+      "content": 3,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Понятное развитие от сезонных перемещений стад к мадридской традиции; вопросы преимущественно буквальные.",
+      "issues": []
+    },
+    {
+      "id": "free_es_b1_las_lenguas_de_espa_a_1782406631",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Даны понятные примеры языкового разнообразия, но развитие неглубокое, а вопросы в основном повторяют формулировки текста.",
+      "issues": []
+    },
+    {
+      "id": "free_es_b1_los_castells_catalanes_1782406678",
+      "content": 3,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Последовательно описаны устройство башни, роли участников и смысл традиции; проверка понимания преимущественно буквальная.",
+      "issues": []
+    },
+    {
+      "id": "free_es_b1_los_h_rreos_gallegos_1782406689",
+      "content": 3,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Связное объяснение назначения конструкции, её устройства и места в современном пейзаже; вопросы в основном буквальные.",
+      "issues": []
+    },
+    {
+      "id": "free_es_b1_los_patios_de_c_rdoba_1782406610",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 0,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Текст связывает устройство патио с жарким климатом и соседской жизнью, но вопросы преимущественно буквальные.",
+      "issues": [
+        "«Это не просто красивая туристическая fiesta» — слово «fiesta» оставлено непереведённым; естественно: «туристический праздник»."
+      ]
+    }
+  ]
+}

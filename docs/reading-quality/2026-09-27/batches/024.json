@@ -1,0 +1,128 @@
+{
+  "scores": [
+    {
+      "id": "free_es_a1_mulhac_n_en_sierra_nevada_1782924602",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 0,
+      "reason": "Факты связаны с темой, но диалог сводится к ответам на вопросы и финальной заметке для экзамена; содержательного развития почти нет.",
+      "issues": [
+        "«Está en los Sistemas Béticos y Penibéticos» звучит как неестественное дублирование названий систем."
+      ]
+    },
+    {
+      "id": "free_es_a1_museo_con_normas_1782924930",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Есть простая цельная ситуация: класс узнаёт правила и следует им. Вопросы верны, но в основном проверяют буквальные факты.",
+      "issues": [
+        "«La clase mira los cuadros durante el horario permitido» звучит неестественно: «durante el horario permitido» здесь избыточно и неясно, о каком разрешённом времени речь."
+      ]
+    },
+    {
+      "id": "free_es_a1_museos_en_ciudades_1782924737",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Планирование поездки связывает музеи, города и учебную цель, хотя текст в основном перечисляет остановки. Ключи верны; вопросы буквальные.",
+      "issues": [
+        "«revisa cada museo con su ciudad» неестественно в значении «повторяет, какой музей в каком городе»; естественнее «repasa qué museo está en cada ciudad»."
+      ]
+    },
+    {
+      "id": "free_es_a1_n_meros_de_poblaci_n_1782924564",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 0,
+      "reason": "Это связанный тематически набор демографических фактов, но разговор не развивается за пределы их перечисления. Ответы в ключах соответствуют тексту.",
+      "issues": [
+        "«Es mucha población» звучит неестественно как реакция на число жителей; лучше «Es mucha gente» или «Es una población muy numerosa»."
+      ]
+    },
+    {
+      "id": "free_es_a1_navarra_foral_1782924646",
+      "content": 1,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Короткий учебный текст прост и понятен; сведения о статусе и столице дают базовый контекст. Вопросы проверяют прямое запоминание фактов.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_no_son_andaluc_a_1782924696",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Категория и географическое положение Сеуты и Мелильи объединены понятной учебной целью. Вопросы верны, но буквальны.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_noche_de_san_juan_1782924777",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Есть ясная праздничная ситуация и базовый культурный контекст. Вопросы верны, но проверяют преимущественно даты и один факт.",
+      "issues": [
+        "«Esta noche es 23 de junio» неестественно для даты; естественнее «Esta noche es la del 23 de junio» или «Hoy es 23 de junio»."
+      ]
+    },
+    {
+      "id": "free_es_a1_normas_del_autob_s_1782924990",
+      "content": 1,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Практичный набор правил объединён автобусной ситуацией, но почти не содержит развития или пояснения. Вопросы верны и в основном буквальны.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_nota_para_el_casero_1782925027",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Понятная бытовая записка с логичной причиной, просьбой и вежливым завершением. Вопросы верны, но преимущественно буквальны.",
+      "issues": [
+        "«Hola, señor Luis» неестественно сочетается с формальным обращением «Le escribo»; лучше «Estimado señor Luis» или обращение на «tú» последовательно."
+      ]
+    },
+    {
+      "id": "free_es_a1_notas_para_el_examen_1782924521",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Диалог оформляет список региональных языков как повторение к экзамену, но реплики почти не взаимодействуют и сводятся к перечислению. Ключи верны.",
+      "issues": [
+        "«Vasco o euskera en Navarra» дано без контекста и звучит как пункт списка, а не реплика; формальное «Muy bien» не создаёт связи с продолжением."
+      ]
+    }
+  ]
+}

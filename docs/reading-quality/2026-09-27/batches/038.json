@@ -1,0 +1,120 @@
+{
+  "scores": [
+    {
+      "id": "free_es_a2_una_palabra_nueva_1782405104",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Связный короткий совет о повторении слов; испанский естественный и подходит для A2. Русский перевод точен, ключи верны, но вопросы почти все проверяют отдельные факты.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a2_visitar_un_piso_1782405002",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Правдоподобный диалог о просмотре квартиры с последовательными вопросами и договорённостью о встрече. Перевод и ключи верны; вопросы буквальные.",
+      "issues": []
+    },
+    {
+      "id": "free_es_b1_actualizar_el_curr_culum_1782406738",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 0,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Практичный диалог о резюме и сопроводительном письме; язык соответствует B1. Ключи верны, вопросы буквальные. В переводе последней реплики местоимение «его» ошибочно отсылает к письму: следует «её».",
+      "issues": [
+        "Последняя реплика: «La prepararé» — «Я подготовлю её» (carta), но в переводе «Я подготовлю его»; далее «её» также относится к письму."
+      ]
+    },
+    {
+      "id": "free_es_b1_cafetera_con_aver_a_1782406749",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Последовательный сервисный диалог, в котором объяснены варианты решения проблемы. Перевод точен, ключи верны; вопросы в основном буквальные.",
+      "issues": []
+    },
+    {
+      "id": "free_es_b1_cambiar_la_tarifa_1782406771",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Связный диалог о подборе мобильного тарифа и его условиях. Перевод точен, ключи верны; вопросы буквальные.",
+      "issues": []
+    },
+    {
+      "id": "free_es_b1_cambio_de_cita_1782406814",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Внятная бытовая ситуация: проверка документов и перенос записи на свободное время. Перевод и ключи верны; вопросы буквальные.",
+      "issues": []
+    },
+    {
+      "id": "free_es_b1_cancelar_una_matr_cula_1782406781",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Последовательный диалог об отмене курса и оформлении возврата. Перевод и ключи верны; вопросы в основном проверяют прямые факты.",
+      "issues": []
+    },
+    {
+      "id": "free_es_b1_cargo_desconocido_1782406760",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Правдоподобная ситуация с незнакомым списанием и дальнейшими действиями. Перевод и ключи верны; вопросы буквальные.",
+      "issues": []
+    },
+    {
+      "id": "free_es_b1_el_camino_de_santiago_1782406620",
+      "content": 2,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Текст сообщает полезные сведения и связывает их с личным смыслом паломничества, но часть предложений выглядит как отдельные факты. Перевод и ключи верны; вопросы буквальные.",
+      "issues": [
+        "«Cada albergue o iglesia puede poner uno» — местоимение uno неясно отсылает к credencial или sello; лучше назвать sellos прямо."
+      ]
+    },
+    {
+      "id": "free_es_b1_el_sello_de_vega_1782923726",
+      "content": 2,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Короткая цельная сцена с небольшой церемонией, соответствующая уровню. Перевод и ключи верны; вопросов мало и они буквальные.",
+      "issues": [
+        "«¿Todavía lo usa para los libros?» — lo грамматически не согласуется с женским sello; ожидалось «¿Todavía la usa…?» либо уточнить предмет."
+      ]
+    }
+  ]
+}

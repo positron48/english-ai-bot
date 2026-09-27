@@ -1,0 +1,121 @@
+{
+  "scores": [
+    {
+      "id": "free_es_a1_puerto_y_aeropuerto_1782924545",
+      "content": 2,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Диалог связан темой и сопоставляет функции двух служб, но развитие поверхностное. В целом испанский понятен, однако «La Policía Nacional hace otros documentos» звучит неестественно.",
+      "issues": [
+        "«hace otros documentos» неестественно; лучше «expide otros documentos»."
+      ]
+    },
+    {
+      "id": "free_es_a1_quedar_con_una_amiga_1782925062",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 2,
+      "learning_value": 1,
+      "reason": "Связная бытовая ситуация: собеседницы согласуют время и место встречи и решают вернуть книгу. Испанский естественный, перевод точный, вопросы проверяют и детали, и цель разговора.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_queja_por_ruido_1782925064",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 2,
+      "learning_value": 1,
+      "reason": "Связный бытовой диалог с понятной проблемой и решением. Испанский и перевод естественны; вопросы проверяют ситуацию и её исход.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_quiosco_y_estanco_1782924921",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Небольшой связный эпизод показывает, где купить прессу и марки. Испанский и перевод естественны; вопросы верны, но в основном проверяют буквальные детали.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_r_os_del_mediterr_neo_1782924592",
+      "content": 1,
+      "spanish": 0,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 0,
+      "reason": "Диалог выглядит как перечень рек без мотивированного учебного контекста. Есть явная ошибка согласования в «una gran río»; перевод передаёт эту ошибку исходника. Вопросы в основном повторяют перечисление.",
+      "issues": [
+        "«una gran río» — неверный род; нужно «un gran río»."
+      ]
+    },
+    {
+      "id": "free_es_a1_r_os_hacia_el_atl_ntico_1782924586",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 0,
+      "reason": "Диалог в основном перечисляет названия рек; формальные реплики не создают заметного развития. Испанский грамматичен, но текст механический, а вопросы преимущественно буквальные.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_radio_del_tiempo_1782925014",
+      "content": 2,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 0,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Короткое объявление связно сообщает прогноз и полезные детали. Испанский в целом понятен, но «en la primera hora» неестественно в этом контексте; перевод «в первый час» сохраняет неудачную формулировку.",
+      "issues": [
+        "«llevar abrigo en la primera hora» звучит неестественно; вероятнее «por la mañana».",
+        "«Radio Barrio» передано как «Радио Район», что неестественно по-русски; лучше оставить название или перевести как «Радио “Район”»."
+      ]
+    },
+    {
+      "id": "free_es_a1_red_de_espacios_protegidos_1782924611",
+      "content": 1,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Испанский и перевод ясны, а вопросы верны, но текст почти целиком перечисляет подписи на стендах и число парков, не развивая ситуацию.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_reglas_del_museo_local_1782924992",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Практичная связная памятка с правилами и полезными деталями для посетителя. Испанский и перевод естественны; вопросы верны, но просты и в основном буквальны.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_reglas_del_tr_mite_1782925074",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Понятная инструкция с последовательностью действий и перечнем нужных вещей. Испанский и перевод точны; вопросы проверяют буквальные детали.",
+      "issues": []
+    }
+  ]
+}

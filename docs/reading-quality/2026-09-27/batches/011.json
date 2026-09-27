@@ -1,0 +1,123 @@
+{
+  "scores": [
+    {
+      "id": "free_es_a1_clase_de_cocina_1782923844",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 2,
+      "learning_value": 1,
+      "reason": "Короткий, связный разговор с понятной целью и планом; вопросы проверяют его основные детали.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_clase_de_instrumentos_1782924752",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 0,
+      "reason": "Реплики перечисляют инструменты без мотивированного развития; связки не превращают список в настоящий разговор.",
+      "issues": [
+        "«La lista tiene gaita y dulzaina» и следующие реплики — перечисление; финальная реплика о словах для экзамена лишь формально связывает список."
+      ]
+    },
+    {
+      "id": "free_es_a1_clase_de_yoga_1782396351",
+      "content": 2,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Практичная ситуация развивается последовательно, но переход между обращением на tú и usted неестественен; несколько вопросов добавляют к тексту неуказанный пол.",
+      "issues": [
+        "«¿Necesito traer…?» обращается на tú, а «traiga» и «Le hago la reserva» — на usted.",
+        "В вопросах «Мужчина» и «Женщина» пол собеседников не указан в испанском тексте."
+      ]
+    },
+    {
+      "id": "free_es_a1_clima_del_centro_1782924658",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 2,
+      "learning_value": 0,
+      "reason": "Текст сводится к короткому перечню сведений; понимание этих сведений проверяется точно.",
+      "issues": [
+        "«Samuel escribe invierno frío» и «También escribe verano caluroso» звучат как заметки, а не как естественные предложения; нужны, например, артикли: «escribe sobre un invierno frío»."
+      ]
+    },
+    {
+      "id": "free_es_a1_colegio_concertado_1782924888",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Есть понятная цель визита и конкретные действия; вопросы верны, но в основном буквальны.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_compra_en_el_mercado_1782924924",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Связная бытовая ситуация объясняет поход на рынок и покупку продуктов; вопросы проверяют детали прямо.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_comprar_un_billete_1782925057",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Естественный короткий диалог с понятной целью; ключи верны, вопросы буквальны.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_comunidad_valenciana_en_clase_1782924668",
+      "content": 1,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Предложения образуют простую сцену урока, но в основном перечисляют названия; вопросы точны и буквальны.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_consulta_en_el_banco_1782925010",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Связный диалог о конкретном затруднении и следующем шаге; вопросы верны, но буквальны.",
+      "issues": [
+        "Вопрос говорит «с номером телефона», тогда как сотрудник просит только принести номер; сам телефон не нужен."
+      ]
+    },
+    {
+      "id": "free_es_a1_control_de_alcoholemia_1782924940",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Короткая последовательная дорожная ситуация с полезной лексикой; вопросы правильно проверяют упомянутые факты.",
+      "issues": []
+    }
+  ]
+}

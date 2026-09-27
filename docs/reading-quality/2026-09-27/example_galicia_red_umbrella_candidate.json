@@ -1,0 +1,79 @@
+{
+  "id": "free_es_a1_provincias_de_galicia_1782924678_story_demo",
+  "title": "El paraguas rojo",
+  "level": "A1",
+  "segments": [
+    {
+      "speaker": "narrator",
+      "es": "Antes del viaje, la tía le dice a Marta:",
+      "ru": "Перед поездкой тётя говорит Марте:"
+    },
+    {
+      "speaker": "speaker_b",
+      "es": "Tengo un paraguas rojo. Nos vemos en la estación de Lugo.",
+      "ru": "У меня красный зонт. Увидимся на вокзале в Луго."
+    },
+    {
+      "speaker": "narrator",
+      "es": "Cuando Marta llega, llueve.",
+      "ru": "Когда Марта приезжает, идёт дождь."
+    },
+    {
+      "speaker": "narrator",
+      "es": "Ve un paraguas rojo y va hacia él.",
+      "ru": "Она замечает красный зонт и спешит к нему."
+    },
+    {
+      "speaker": "narrator",
+      "es": "Pero debajo del paraguas hay otra mujer.",
+      "ru": "Но под зонтом стоит другая женщина."
+    },
+    {
+      "speaker": "narrator",
+      "es": "Marta mira a su alrededor. Entonces alguien grita:",
+      "ru": "Марта оглядывается. И тут кто-то зовёт её:"
+    },
+    {
+      "speaker": "speaker_b",
+      "es": "¡Marta!",
+      "ru": "Марта!"
+    },
+    {
+      "speaker": "narrator",
+      "es": "Su tía está en la puerta de la cafetería con dos tazas de chocolate caliente.",
+      "ru": "Тётя стоит у входа в кафе с двумя чашками горячего шоколада."
+    },
+    {
+      "speaker": "speaker_a",
+      "es": "¿Y tu paraguas?",
+      "ru": "А где твой зонт?"
+    },
+    {
+      "speaker": "speaker_b",
+      "es": "Está en casa.",
+      "ru": "Дома."
+    },
+    {
+      "speaker": "narrator",
+      "es": "Las dos se ríen y entran en la cafetería.",
+      "ru": "Обе смеются и заходят в кафе."
+    }
+  ],
+  "questions": [
+    {
+      "prompt": "Марта подходит к незнакомой женщине, потому что у той красный зонт.",
+      "answer": "true",
+      "explanation": "Марта ищет тётю с красным зонтом, но под замеченным зонтом оказывается другая женщина."
+    },
+    {
+      "prompt": "Тётя встречает Марту с красным зонтом.",
+      "answer": "false",
+      "explanation": "Тётя оставила зонт дома и ждёт Марту у кафе."
+    },
+    {
+      "prompt": "В конце Марта и тётя заходят в кафе вместе.",
+      "answer": "true",
+      "explanation": "Последняя фраза говорит, что они смеются и заходят в кафе."
+    }
+  ]
+}

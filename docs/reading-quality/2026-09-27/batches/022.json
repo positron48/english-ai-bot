@@ -1,0 +1,121 @@
+{
+  "scores": [
+    {
+      "id": "free_es_a1_llamada_de_la_cl_nica_1782925003",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Связное практическое сообщение для пациента; вопросы верны, но проверяют только прямые детали.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_llamar_al_112_1782924910",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Есть простая последовательность действий в экстренной ситуации и полезный контекст; вопросы точны, но буквальны.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_lluvia_en_el_norte_1782924621",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Короткое связное описание поездки и погоды; вопросы проверяют только явно сказанные детали.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_m_s_actores_conocidos_1782924729",
+      "content": 2,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Подготовка презентации связывает перечисление актёров с ситуацией, но текст поверхностный; несколько выражений звучат неестественно.",
+      "issues": [
+        "«pone a Javier Bardem y Penélope Cruz» неестественно в значении включения имён в презентацию; лучше «incluye» или «escribe»",
+        "«Todos son nombres conocidos del cine» звучит неестественно; лучше «Todos son figuras conocidas del cine»"
+      ]
+    },
+    {
+      "id": "free_es_a1_m_sica_en_la_plaza_1782924751",
+      "content": 1,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Культурная лексика полезна, но текст в основном перечисляет инструменты без развития ситуации; вопросы буквальны.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_madrid_y_murcia_1782924644",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Диалог передаёт полезные географические сведения, но выглядит как механическая серия вопросов и ответов.",
+      "issues": [
+        "«Murcia también tiene capital Murcia» звучит неестественно; естественнее «La capital de Murcia también es Murcia»"
+      ]
+    },
+    {
+      "id": "free_es_a1_mapa_de_lenguas_1782924515",
+      "content": 1,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Простое учебное перечисление языков регионов; факты и перевод переданы корректно, вопросы буквальны.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_mapa_gallego_1782924683",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Связная учебная задача помогает запомнить провинции и столицу Галисии; вопросы точны, но буквальны.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_mapa_pol_tico_b_sico_1782924628",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Сведения полезны для знакомства с административным устройством, но диалог почти целиком состоит из несвязанных учебных реплик.",
+      "issues": [
+        "После вопроса о том, что показывает карта, реплика «¿Y ciudades autónomas?» неясно связана с картой; ответ переходит к административному устройству Испании в целом"
+      ]
+    },
+    {
+      "id": "free_es_a1_mensaje_a_la_escuela_1782925022",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Естественное и цельное практическое сообщение; вопросы верны, но в основном проверяют прямые детали.",
+      "issues": []
+    }
+  ]
+}

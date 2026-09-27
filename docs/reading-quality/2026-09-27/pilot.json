@@ -1,0 +1,80 @@
+{
+  "scores": [
+    {
+      "id": "free_es_a1_cena_de_nochebuena_1782924757",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 0,
+      "reason": "Фразы грамматически в основном правильны, но диалог механически перечисляет рождественские обычаи и даты: «Después viene Nochevieja», «Y las Navidades terminan…» не развивают разговор. Вопросы проверяют только буквальные факты.",
+      "issues": [
+        "«Después viene Nochevieja» и затем «Y las Navidades terminan…» — несвязанный перечень праздничных дат.",
+        "«terminan con Reyes Magos» звучит неестественно; естественнее «terminan con el Día de Reyes».",
+        "«заканчиваются Волхвами» — неестественная передача «terminan con Reyes Magos»."
+      ]
+    },
+    {
+      "id": "free_es_a1_cava_catal_n_1782924852",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Короткая бытовая ситуация связно ведёт от выбора напитка к покупке и даёт полезное слово «cava». Испанский естественный, ключи верны, но вопросы в основном буквальные.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_la_tienda_nueva_1782925044",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Связное описание нового магазина с конкретными деталями и причиной интереса соседей. Испанский и перевод точны; вопросы проверяют главным образом прямые факты.",
+      "issues": []
+    },
+    {
+      "id": "free_es_b2_el_tribunal_del_agua_1782407229",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 2,
+      "learning_value": 1,
+      "reason": "Текст последовательно объясняет работу и значение Трибунала вод; вопросы разнообразны и их ключи верны. «Lo hace» относится к Tribunal, «pertenece» — к puerta, поэтому перевод «Она принадлежит собору» допустим по ближайшему антецеденту. Для B2 изложение довольно простое.",
+      "issues": [
+        "«No usaban grandes expedientes» точнее перевести как «Они не вели объёмных письменных дел»; «не использовали большие дела» звучит неточно.",
+        "«решение» в переводе «dictaban sentencia» менее точно, чем «выносили приговор/вердикт» в судебном контексте."
+      ]
+    },
+    {
+      "id": "free_es_a0_mi_nombre_completo_1782924463",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Простой связный текст для A0, вводящий лексику имени и фамилии. Перевод и ключи верны; вопросы буквальные.",
+      "issues": []
+    },
+    {
+      "id": "pilot_intentionally_corrupted_tienda",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 0,
+      "questions": 0,
+      "learning_value": 1,
+      "reason": "Сам испанский текст — связное описание магазина, но в переводе первая фраза меняет «открывается» на «закрывается». Первый ключ true/false также противоречит тексту: открытие пятого июня подтверждено, поэтому ответ должен быть true.",
+      "issues": [
+        "ES «abre» означает «открывается», а в RU стоит «закрывается».",
+        "На вопрос «Магазин открывается пятого июня» дано false, хотя текст прямо это утверждает."
+      ]
+    }
+  ]
+}

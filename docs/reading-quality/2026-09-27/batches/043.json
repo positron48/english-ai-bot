@@ -1,0 +1,113 @@
+{
+  "scores": [
+    {
+      "id": "free_es_c1_licitaci_n_transparente_1782412951",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 2,
+      "learning_value": 1,
+      "reason": "Связный рабочий диалог с понятной проблемой и последовательным поиском решения; вопросы проверяют и детали, и общий смысл.",
+      "issues": []
+    },
+    {
+      "id": "free_es_c1_oro_erosionado_1782412786",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 0,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Есть ясная линия от римской добычи золота к современному восприятию ландшафта, но текст очень сжат и преимущественно состоит из декларативных тезисов.",
+      "issues": [
+        "«España guarda allí una memoria dorada y erosionada» — образная, но малоинформативная заключительная фраза; текст в целом проще заявленного C1 по синтаксису."
+      ]
+    },
+    {
+      "id": "free_es_c1_patios_de_madrid_1782412874",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 0,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Текст последовательно связывает устройство коррал с соседской жизнью и исторической ценностью, хотя изложение афористично и синтаксически проще C1.",
+      "issues": [
+        "«condensan una historia urbana discreta» и «archivo vecinal» звучат метафорично и не раскрываются; текст остаётся набором кратких обобщений."
+      ]
+    },
+    {
+      "id": "free_es_c1_plaza_en_debate_1782413042",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 2,
+      "learning_value": 1,
+      "reason": "Диалог развивает конкретное разногласие и предлагает компромисс; вопросы охватывают детали и цель собеседников.",
+      "issues": []
+    },
+    {
+      "id": "free_es_c1_retraso_negociado_1782412964",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 2,
+      "learning_value": 1,
+      "reason": "Внятная переговорная ситуация развивается от разногласия о причинах задержки к проверяемым условиям продления; вопросы точны и разнообразны.",
+      "issues": []
+    },
+    {
+      "id": "free_es_c1_rutas_de_ganado_1782412899",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 0,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Тезисы выстроены от исторической функции перегонов к праву и современному наследию, но изложение сильно сжато и синтаксически проще C1.",
+      "issues": [
+        "«moldeó caminos antes que carreteras» — эффектное обобщение, но без уточнения, какие именно пути имеются в виду."
+      ]
+    },
+    {
+      "id": "free_es_c1_sal_atl_ntica_1782412863",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 0,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Есть тематическое развитие от соледобычи к экологическому наследию, но изложение преимущественно состоит из коротких поэтических обобщений.",
+      "issues": [
+        "«Cada estero convertía el agua atlántica» — формулировка обобщает процесс слишком широко; «archivos escritos en agua evaporada» остаётся нераскрытой метафорой."
+      ]
+    },
+    {
+      "id": "free_es_c1_teletrabajo_con_evidencia_1782413056",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 2,
+      "learning_value": 1,
+      "reason": "Последовательный диалог о политике удалённой работы, доказательствах и равенстве условий; вопросы проверяют ключевые детали и выводы.",
+      "issues": []
+    },
+    {
+      "id": "free_es_c1_toledo_traducido_1782412799",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 0,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Текст проводит ясную мысль о связи перевода, знания и власти, однако тезисы сжаты и почти не подкреплены конкретными примерами для заявленного C1.",
+      "issues": [
+        "«con nuevas voces» и «el conocimiento cambiaba de dueño» — метафоры, которые не поясняются; текст в основном состоит из общих утверждений."
+      ]
+    }
+  ]
+}

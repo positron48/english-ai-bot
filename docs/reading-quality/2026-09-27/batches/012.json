@@ -1,0 +1,129 @@
+{
+  "scores": [
+    {
+      "id": "free_es_a1_correo_al_vecino_1782925021",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 2,
+      "learning_value": 1,
+      "reason": "Связное практическое сообщение с понятной просьбой и временем доставки; ES/RU и ключи точны.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_correo_de_la_escuela_1782924967",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 0,
+      "reason": "Понятная ситуация с письмом из школы, но фраза про экзамен выбивается из письма и превращает его в учебный перечень; вопросы почти дословно проверяют факты.",
+      "issues": [
+        "«En el examen, estos correos enseñan fecha, lugar y condición» не мотивировано ситуацией и звучит как комментарий к упражнению."
+      ]
+    },
+    {
+      "id": "free_es_a1_correo_para_cambiar_hora_1782925029",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 2,
+      "learning_value": 1,
+      "reason": "Цельное практическое письмо с причиной переноса и предлагаемым временем; перевод и ответы точны.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_correo_sobre_la_escuela_1782924987",
+      "content": 2,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Понятная жизненная ситуация с переездом и поиском места в школе, хотя формулировки письма местами неестественны, а вопросы буквальны.",
+      "issues": [
+        "«Queremos una plaza en un colegio de esta ciudad» звучит неестественно в этом контексте; естественнее «Queremos conseguir una plaza…».",
+        "«espero su mensaje» двусмысленно без ясного основания ждать ответа, хотя понять просьбу можно."
+      ]
+    },
+    {
+      "id": "free_es_a1_cuatro_provincias_catalanas_1782924666",
+      "content": 2,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Короткий учебный диалог последовательно связывает повторение карты с вопросом о столице; испанский в первой реплике неестественен, вопросы буквальны.",
+      "issues": [
+        "«Repaso Cataluña» в значении «повторяю материал о Каталонии» звучит неестественно; лучше «Estoy repasando Cataluña» или «Repaso el tema de Cataluña»."
+      ]
+    },
+    {
+      "id": "free_es_a1_cuidar_el_edificio_1782924845",
+      "content": 2,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Тема правил совместного проживания раскрыта простыми примерами; одна инструкция звучит телеграфно, вопросы буквальны.",
+      "issues": [
+        "«Dice: reciclar basura en los contenedores correctos» — неестественная телеграфная инструкция; лучше «Dice que hay que separar la basura y depositarla en los contenedores adecuados»."
+      ]
+    },
+    {
+      "id": "free_es_a1_curso_de_espa_ol_1782925039",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 2,
+      "learning_value": 1,
+      "reason": "Последовательный рассказ показывает прогресс после курса и дальнейшую цель; перевод и ключи точны.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_curso_escolar_1782924877",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Диалог связывает школьный календарь с подготовкой к учебному году; формулировки естественны, но вопросы преимущественно буквальные.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_cursos_para_tres_personas_1782924973",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 0,
+      "reason": "Текст описывает упражнение на сопоставление, но заявленные три человека и курсы раскрыты лишь частично: для Педро нет явного соответствия, третьего человека нет; вопросы повторяют одну деталь.",
+      "issues": [
+        "Заголовок обещает трёх людей, но упомянуты только Ана и Педро.",
+        "Для Педро указано, что он ищет английский для работы, а предложение — базовый английский утром; не объяснено, почему это подходящий курс.",
+        "Вопросы 1 и 2 оба проверяют желание Аны учиться кулинарии вечером."
+      ]
+    },
+    {
+      "id": "free_es_a1_datos_del_pasaporte_1782924824",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 0,
+      "reason": "Последовательность действий понятна, но текст выглядит перечнем полей анкеты, а паспортная информация представлена как данные заявления для мэрии без пояснения; вопросы буквальны.",
+      "issues": [
+        "«Tiene su pasaporte sobre la mesa» и «Copia su nombre y apellidos…» не объясняют, почему из паспорта заполняется именно эта solicitud для ayuntamiento; сцена остаётся перечнем полей."
+      ]
+    }
+  ]
+}

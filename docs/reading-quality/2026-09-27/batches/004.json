@@ -1,0 +1,125 @@
+{
+  "scores": [
+    {
+      "id": "free_es_a0_soy_marco_1782924477",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 2,
+      "learning_value": 1,
+      "reason": "Короткое связное знакомство с героем, подходящее для A0; все три вопроса проверяют детали текста.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a0_soy_omar_1782924475",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 2,
+      "learning_value": 1,
+      "reason": "Понятное знакомство с героем и его повседневной жизнью; ключи и переводы точны.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a0_soy_sara_1782924478",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 2,
+      "learning_value": 1,
+      "reason": "Короткий, но связный текст-знакомство для A0; вопросы однозначны и проверяют его содержание.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a0_tapas_en_espa_a_1782239093",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 0,
+      "reason": "Текст начинается с объяснения тапас, но затем превращается в механический перечень несвязанных сведений о напитке, стойке и меню.",
+      "issues": [
+        "«Las tapas están en la barra» и «La carta está sobre la mesa» не связаны с предыдущими фразами; формальные утверждения не складываются в ситуацию."
+      ]
+    },
+    {
+      "id": "free_es_a0_tortilla_espa_ola_1782924466",
+      "content": 1,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 0,
+      "reason": "Грамматика и переводы корректны, но перечисление признаков тортильи не развивает ситуацию; вопросы буквальные.",
+      "issues": [
+        "«Tengo una tortilla. Es tortilla española. Tiene huevo. Tiene patata» — набор простых фактов без связанного контекста."
+      ]
+    },
+    {
+      "id": "free_es_a0_tres_colores_1782924460",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 0,
+      "reason": "Текст описывает цвета флага, но формулировки звучат неестественно; вопросы повторяют отдельные факты.",
+      "issues": [
+        "«Arriba hay rojo» и «Abajo hay rojo» звучат неестественно для описания полос флага; естественнее «La franja de arriba es roja» и «La franja de abajo es roja»."
+      ]
+    },
+    {
+      "id": "free_es_a0_un_billete_de_bus_1782239992",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Диалог образует понятную ситуацию покупки билета и содержит полезные фразы для поездки; вопросы верны, но почти все буквальные.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a0_una_cita_hoy_1782240181",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Связная бытовая ситуация ожидания на встречу; русские реплики передают смысл, а ключи верны. Вопросы в основном проверяют отдельные детали.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a0_una_tapa_peque_a_1782924473",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 0,
+      "reason": "Несколько коротких предложений задают место и заказ, но развитие минимально, а последние фразы звучат искусственно.",
+      "issues": [
+        "«También hay una tapa» не уточняет, кто её заказал или принёс; «Es comida de bar» — неестественное и малоинформативное пояснение."
+      ]
+    },
+    {
+      "id": "free_es_a1_academias_de_otras_lenguas_1782924525",
+      "content": 2,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Тема полезна и содержит конкретные названия учреждений; однако диалог в основном перечисляет организации, а реплики не всегда естественно связаны. Вопросы проверяют буквальное воспроизведение фактов.",
+      "issues": [
+        "«Sí, también tiene su academia y normas» отвечает о валенсийском расплывчато и не называет учреждение; «también» отсылает к перечисленным выше языкам, но связь не пояснена.",
+        "«Escribo estos nombres para repasar» выглядит добавленной без реакции собеседника и не развивает разговор."
+      ]
+    }
+  ]
+}

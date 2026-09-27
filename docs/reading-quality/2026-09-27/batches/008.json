@@ -1,0 +1,116 @@
+{
+  "scores": [
+    {
+      "id": "free_es_a1_campeones_y_deporte_1782924795",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Понятная ситуация подготовки к экзамену связывает примеры спортсменов; вопросы проверяют в основном прямые факты.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_canarias_en_el_atl_ntico_1782924651",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Короткий естественный диалог сообщает географический факт и названия столиц; вопросы буквальные.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_capital_de_extremadura_1782924673",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Разговор о подготовке к экзамену последовательно вводит провинции и столицу; вопросы прямые.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_capitales_del_norte_peque_o_1782924643",
+      "content": 1,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 0,
+      "reason": "Текст в основном перечисляет три сообщества и их столицы; грамматика и перевод корректны, вопросы буквальные.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_capitales_en_la_pizarra_1782924630",
+      "content": 1,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 0,
+      "reason": "Это общий перечень действий на уроке без конкретного развития; вопросы проверяют только явные детали.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_carnaval_en_la_radio_1782924764",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Прослушивание радиопередачи и подготовка к экзамену дают связный контекст; один вопрос слегка расширяет сказанное.",
+      "issues": [
+        "Ключ true к вопросу «Карнавалы особенно известны в Тенерифе и Кадисе» не полностью подтвержден: Тенерифе назван очень известным, а Карнавал в Кадисе только упомянут."
+      ]
+    },
+    {
+      "id": "free_es_a1_carretera_entre_ciudades_1782924543",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Короткая поездка связывает упоминания дороги, дорожной службы и безопасного вождения; вопросы буквальные.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_carretera_normal_1782924936",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Семейная поездка и вопрос дочери дают понятную жизненную ситуацию; вопросы в основном проверяют детали текста.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_carta_de_marta_a_su_familia_1782924982",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Письмо естественно объединяет учёбу, работу, поездку и планы; вопросы в основном перечисляют явные сведения.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_cartel_en_el_ayuntamiento_1782924513",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Плакат в мэрии даёт контекст для сведений об официальных языках; вопросы проверяют прямо указанные факты.",
+      "issues": []
+    }
+  ]
+}

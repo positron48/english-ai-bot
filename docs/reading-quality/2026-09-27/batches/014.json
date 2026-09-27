@@ -1,0 +1,125 @@
+{
+  "scores": [
+    {
+      "id": "free_es_a1_dos_archipi_lagos_1782924653",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 0,
+      "reason": "Ситуация с карточкой дает минимальную рамку для сравнения, но фразы почти целиком перечисляют факты. В испанском нужны артикли в «Baleares» и «Canarias»; вопросы верны, но буквальны.",
+      "issues": [
+        "«Baleares están» и «Canarias están» — неестественно без артиклей: «Las Baleares están», «Las Canarias están»."
+      ]
+    },
+    {
+      "id": "free_es_a1_dos_bodas_1782924826",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Есть жизненный пример и полезная общественная лексика, но разговор перескакивает от семейных свадеб к экзамену и общей теме без ясной связи. Вопросы верны, но буквальны.",
+      "issues": [
+        "«La familia aprende estas palabras para la prueba» появляется без подготовки и не связано с семейными примерами; «También es un tema social de la vida diaria» звучит как формальный комментарий."
+      ]
+    },
+    {
+      "id": "free_es_a1_dos_ciudades_1782925042",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Сравнение городов получает личное объяснение: рассказчик возвращается из-за работы рядом с домом. Испанский естественный, перевод точный; вопросы верны, но в основном проверяют прямые факты.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_dos_estilos_para_estudiar_1782924723",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Диалог дает культурные имена, но выглядит как перечень подсказок к экзамену; переход от групп имен к выводу о «городском» звучит искусственно. Вопросы верны, но буквальны.",
+      "issues": [
+        "«Un grupo es urbano» неясно соотносится с перечислением Rosalía и Sabina; диалог не объясняет, почему эти имена образуют именно городскую группу."
+      ]
+    },
+    {
+      "id": "free_es_a1_dos_fiestas_populares_1782924786",
+      "content": 2,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 0,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Две конкретные народные традиции дают полезный культурный контекст, но финальная фраза о Томатине перегружена и неестественна. Вопросы верны, но буквальны. Перевод финала также неестественен.",
+      "issues": [
+        "«con tomates, gente alegre y calles llenas de visitantes en Buñol cada verano español» — перегруженная и неясно построенная фраза; «cada verano español» звучит неестественно.",
+        "Перевод «каждое испанское лето» — калька с «cada verano español»; естественнее: «каждым летом в Испании»."
+      ]
+    },
+    {
+      "id": "free_es_a1_dos_listas_del_este_1782924671",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 0,
+      "questions": 1,
+      "learning_value": 0,
+      "reason": "Это упражнение на запоминание провинций, а не связный текст. Вопросы верны, но буквальны. Перевод первой реплики заметно калькирован.",
+      "issues": [
+        "«Tengo dos listas del este de España» естественнее передать как «У меня два списка провинций восточной Испании»; перевод «списки востока Испании» звучит неестественно."
+      ]
+    },
+    {
+      "id": "free_es_a1_dos_n_meros_importantes_1782924914",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Карточка на уроке дает понятную ситуацию и полезные номера экстренной помощи. Перевод точный, ключи верны; вопросы простые и буквальные.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_dos_parques_manchegos_1782924616",
+      "content": 1,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 0,
+      "reason": "Испанский естественный для A1, но кроме названий парков и места действия развития почти нет; зарисовка воды ничем не объяснена. Вопросы верны, но проверяют только запоминание фактов.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_educaci_n_obligatoria_1782924880",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Понятная семейная ситуация связывает сведения о школе с началом учебного года. Испанский естественный, пары ES/RU точны; вопросы верны, но буквальны.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_el_d_a_del_examen_1782924499",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Последовательная сцена экзамена знакомит с его форматом и лексикой. Перевод точный, ответы верны; вопросы проверяют главным образом прямое понимание деталей.",
+      "issues": []
+    }
+  ]
+}

@@ -1,0 +1,131 @@
+{
+  "scores": [
+    {
+      "id": "free_es_a1_primavera_y_trabajo_1782924861",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Понятный разговор о выходных и закрытии магазина; последняя реплика о сотрудниках немного выпадает из ситуации. Вопросы проверяют главным образом прямое воспроизведение фактов.",
+      "issues": [
+        "«Los empleados leen el aviso por la mañana» появляется без связи с предыдущей репликой."
+      ]
+    },
+    {
+      "id": "free_es_a1_primer_carn_1782924810",
+      "content": 2,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 0,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Есть последовательность подготовки к получению прав, но изложение похоже на перечень шагов, а финальная фраза звучит неестественно. Вопросы имеют верные ключи, но проверяют буквальные факты.",
+      "issues": [
+        "«cuando todo está correcto» звучит неестественно; перевод «когда всё правильно» сохраняет эту кальку."
+      ]
+    },
+    {
+      "id": "free_es_a1_primer_trabajo_1782924955",
+      "content": 2,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 0,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Ситуация поиска первой работы понятна, но изложение поверхностное и содержит неестественную формулировку. Все ключи верны; вопросы в основном буквальные.",
+      "issues": [
+        "«Paula será una persona ocupada» неестественно в значении «будет работать»; перевод «будет занятой, работающей» тоже неестественен."
+      ]
+    },
+    {
+      "id": "free_es_a1_primera_ley_de_parques_1782924608",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 0,
+      "reason": "Диалог сводится к связанному с темой перечислению сведений; вопрос «кто организует?» фактически остается без ответа. Проверяются только прямые факты.",
+      "issues": [
+        "На «¿Quién los organiza?» ответ «Existe la Red de Parques Nacionales» не называет, кто их организует."
+      ]
+    },
+    {
+      "id": "free_es_a1_primera_novela_moderna_1782924702",
+      "content": 2,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Короткий обмен репликами помогает представить произведение и его автора, хотя последняя реплика звучит искусственно. Вопросы имеют верные ключи, но однообразны.",
+      "issues": [
+        "«Don Quijote de la Mancha es considerada» — ошибка согласования: при подлежащем «Don Quijote» нужно «considerado».",
+        "«ayudan a identificar la obra rápidamente» неестественно звучит как ответ на реплику о Санчо Пансе."
+      ]
+    },
+    {
+      "id": "free_es_a1_primero_la_cita_1782925041",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Понятная бытовая ситуация развивается последовательно от звонка до подготовки к приему. Перевод передает смысл; вопросы верны, но проверяют главным образом прямые детали.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_problema_en_la_vivienda_1782925009",
+      "content": 2,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Практичный и понятный обмен репликами с конкретным следующим шагом. В обращениях непоследовательно смешаны вежливая и неформальная формы; вопросы буквальные.",
+      "issues": [
+        "В диалоге смешаны формы обращения: «¿Puede ayudarme?» сменяется на «dime» и «baja»."
+      ]
+    },
+    {
+      "id": "free_es_a1_propiedad_o_alquiler_1782924840",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Статистика связана с личным выбором собеседника, но развитие темы неглубокое. Перевод точный, ключи верны; вопросы в основном проверяют прямое понимание.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_provincias_de_galicia_1782924678",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 0,
+      "questions": 1,
+      "learning_value": 0,
+      "reason": "Это преимущественно перечень географических фактов и учебных действий без мотивированного развития диалога. Вопросы проверяют прямое запоминание.",
+      "issues": [
+        "«Estoy aprendiendo Galicia» неестественно для значения «я изучаю Галисию»; «учу Галисию» звучит калькированно."
+      ]
+    },
+    {
+      "id": "free_es_a1_provincias_manchegas_1782924654",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 0,
+      "questions": 1,
+      "learning_value": 0,
+      "reason": "Текст представляет собой список провинций с минимальной связью между репликами. Ключи верны, но вопросы почти дословно повторяют содержание.",
+      "issues": [
+        "«Repaso Castilla-La Mancha» звучит неполно; естественнее «Repaso las provincias de Castilla-La Mancha». Перевод «повторяю Кастилию-Ла-Манчу» тоже звучит неестественно."
+      ]
+    }
+  ]
+}

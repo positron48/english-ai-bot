@@ -1,0 +1,118 @@
+{
+  "scores": [
+    {
+      "id": "free_es_b1_paquete_no_recibido_1782406791",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Связная практическая ситуация с понятной целью и последовательным решением проблемы; вопросы проверяют главным образом прямые факты.",
+      "issues": []
+    },
+    {
+      "id": "free_es_b1_una_humedad_en_casa_1782406802",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Естественный бытовой диалог с логичным развитием и полезной лексикой; вопросы в основном буквальные.",
+      "issues": []
+    },
+    {
+      "id": "free_es_b2_ajustar_la_planificaci_n_1782406844",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Участники последовательно обсуждают перенос проверки и план действий, хотя диалог в основном служит изложению рабочих пунктов; вопросы буквальные.",
+      "issues": []
+    },
+    {
+      "id": "free_es_b2_antes_de_firmar_1782406832",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Внятные переговоры с конкретными условиями договора; понимание проверяется преимущественно прямыми фактами.",
+      "issues": []
+    },
+    {
+      "id": "free_es_b2_camino_a_la_tutor_a_1782407009",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Разговор естественно переходит от помощи с входом к учебным затруднениям и планам; вопросы преимущественно буквальные.",
+      "issues": []
+    },
+    {
+      "id": "free_es_b2_el_agua_en_el_sureste_1782407140",
+      "content": 2,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Текст связывает засуху с экономикой и мерами управления водой, но подан как цепочка кратких тезисов без примеров и развития; вопросы буквальные.",
+      "issues": [
+        "«España aprendió a discutir el agua con paciencia» звучит неестественно и расплывчато; далее тезис не раскрывается."
+      ]
+    },
+    {
+      "id": "free_es_b2_el_ave_y_el_territorio_1782407129",
+      "content": 2,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Есть связная тема территориальных последствий железнодорожной сети и полезная историческая деталь, но изложение остаётся кратким перечнем тезисов; вопросы буквальные.",
+      "issues": [
+        "«La red ha crecido hacia varias costas» — расплывчатая формулировка, которая не уточняет, о каких направлениях идёт речь."
+      ]
+    },
+    {
+      "id": "free_es_b2_el_tribunal_del_agua_1782407229",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Текст объясняет назначение и значение института, добавляя культурный контекст; вопросы в основном проверяют явно названные детали.",
+      "issues": []
+    },
+    {
+      "id": "free_es_b2_elegir_una_optativa_1782406895",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Связное обсуждение выбора предмета с практическими критериями, сомнениями и следующим шагом; вопросы в основном буквальные.",
+      "issues": []
+    },
+    {
+      "id": "free_es_b2_en_la_parada_1782407051",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Ситуация с изменением сроков естественно приводит к обсуждению проблем групповой работы и способов их решить; вопросы буквальные.",
+      "issues": []
+    }
+  ]
+}

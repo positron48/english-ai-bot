@@ -1,0 +1,124 @@
+{
+  "scores": [
+    {
+      "id": "free_es_a1_cinco_fechas_europeas_1782924537",
+      "content": 1,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 0,
+      "reason": "Короткое перечисление годов и факта о флаге: связка через список есть, но развития сюжета или объяснения почти нет.",
+      "issues": [
+        "«Nora lee los años 1989 y 1995» и следующие даты не объясняют, почему она изучает этот список."
+      ]
+    },
+    {
+      "id": "free_es_a1_cinco_nombres_azules_1782924588",
+      "content": 1,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Простое упражнение с картой связывает названия рек с их направлением стока, но в основном это перечень.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_cita_de_salud_1782925071",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Короткая и понятная бытовая ситуация дает полезные фразы для записи к врачу и сообщения адреса.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_cita_en_el_centro_de_salud_1782924901",
+      "content": 2,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Есть внятная ситуация с кашлем, записью и вопросом о педиатре, но одна фраза заметно неестественна по-испански.",
+      "issues": [
+        "«El centro de salud atiende la ayuda primaria de la familia» — неестественное сочетание; обычно говорят «presta atención primaria»."
+      ]
+    },
+    {
+      "id": "free_es_a1_cita_en_la_cl_nica_1782925061",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Естественный короткий диалог моделирует запись к врачу и дает практические инструкции.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_cita_para_el_dni_1782924539",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Связный бытовой диалог знакомит с оформлением DNI и паспорта, хотя ситуация развивается очень кратко.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_cita_para_el_padr_n_1782396676",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 0,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Ситуация содержательная и последовательная, но длина текста и лексика административной записи заметно сложны для A1.",
+      "issues": [
+        "Объем и слова вроде «contrato de alquiler», «certificado» и «pedir otra cita» существенно выходят за типичный уровень A1."
+      ]
+    },
+    {
+      "id": "free_es_a1_ciudades_aut_nomas_1782924693",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 0,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Полезный факт встроен в учебный диалог, но финальная реплика звучит как искусственно добавленное пояснение и усложняет текст для A1.",
+      "issues": [
+        "«Ese detalle evita confundirlas con ciudades o provincias de Andalucía en una pregunta sencilla del examen» звучит неестественно и не вытекает из разговора."
+      ]
+    },
+    {
+      "id": "free_es_a1_ciudades_de_una_ruta_1782924663",
+      "content": 1,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Планирование маршрута дает простую рамку для списка провинций, но содержательное развитие минимально.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_ciudades_en_tarjetas_1782924572",
+      "content": 1,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Упражнение с карточками обеспечивает простую связность, но список городов и утверждение о населении почти не развиваются.",
+      "issues": [
+        "«Son ciudades grandes de España por población» — расплывчатое утверждение; неясно, что именно значит «крупные» и как это связано с карточками."
+      ]
+    }
+  ]
+}

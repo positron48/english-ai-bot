@@ -1,0 +1,138 @@
+{
+  "scores": [
+    {
+      "id": "free_es_a1_nueve_provincias_castellanas_1782924659",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 0,
+      "reason": "Понятный список провинций с рамкой повторения перед проверкой, но между репликами почти нет содержательного развития.",
+      "issues": [
+        "«Castilla y León tiene muchas provincias» звучит естественно, но диалог сводится к перечислению; формальные реплики не создают связного обмена."
+      ]
+    },
+    {
+      "id": "free_es_a1_nuevo_padr_n_1782924817",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 0,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Ситуация с регистрацией понятна и полезна, но последний сегмент заметно сложнее остального текста уровня A1; вопросы верны, но буквальны.",
+      "issues": [
+        "«le explican el trámite completo paso a paso» заметно сложнее заявленного A1."
+      ]
+    },
+    {
+      "id": "free_es_a1_nuevo_trabajo_1782925036",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 0,
+      "translation": 0,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Есть ясное развитие от начала работы к планам на будущее; некоторые формы и лексика сложнее A1, перевод одной фразы неестественен.",
+      "issues": [
+        "«no conocía los productos» по-русски естественнее «не знал ассортимент», а не «не знал товары».",
+        "«voy a aprender inventario» и прошедшее «empecé» выходят за базовый A1."
+      ]
+    },
+    {
+      "id": "free_es_a1_ocho_provincias_andaluzas_1782924634",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 0,
+      "reason": "Полезный список для повторения, но обмен репликами механический и почти не развивает ситуацию.",
+      "issues": [
+        "«Repaso Andalucía para el examen» — телеграфная конструкция; естественнее «Repaso las provincias de Andalucía para el examen»."
+      ]
+    },
+    {
+      "id": "free_es_a1_oficina_de_empleo_1782924958",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 0,
+      "translation": 0,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Текст даёт понятную ситуацию поиска работы и полезную лексику, но некоторые обороты сложнее A1, а перевод последней фразы неточен.",
+      "issues": [
+        "«Sale con una cita» означает, что он уходит, имея назначенную встречу; «уходит с записью» звучит калькой.",
+        "«está parado» и условное «puede decir desempleado» выходят за базовый A1."
+      ]
+    },
+    {
+      "id": "free_es_a1_oficina_de_tr_mites_1782925054",
+      "content": 2,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 0,
+      "questions": 1,
+      "learning_value": 0,
+      "reason": "Короткое описание сцены соответствует A1, но это почти перечень деталей; русский перевод нескольких предложений звучит неестественно, а один вопрос ссылается на детали, которых текст не сообщает.",
+      "issues": [
+        "«A la izquierda está un hombre» неестественно для описания расположения; лучше «A la izquierda hay un hombre».",
+        "«офис для процедур», «сотрудница носит серую рубашку» и «табло на заднем плане» звучат как кальки.",
+        "Вопрос «Изображение похоже на администрацию» обобщает текст, где сказано лишь, что это похоже на обычное утро в администрации."
+      ]
+    },
+    {
+      "id": "free_es_a1_orden_en_el_municipio_1782924550",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Есть простая цельная ситуация с праздником и работой полиции; вопросы верны, но преимущественно буквальны.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_ordenar_el_trastero_1782396566",
+      "content": 3,
+      "spanish": 2,
+      "level_fit": 0,
+      "translation": 1,
+      "questions": 2,
+      "learning_value": 1,
+      "reason": "Связный бытовой разговор с конкретным планом действий и разнообразными вопросами; условная форма «podemos» и повелительные конструкции сложнее базового A1.",
+      "issues": [
+        "Для A1 несколько форм, включая «podemos separar» и «¿Puedes escribirle?», могут быть выше заявленного уровня."
+      ]
+    },
+    {
+      "id": "free_es_a1_pareja_registrada_1782924829",
+      "content": 2,
+      "spanish": 1,
+      "level_fit": 0,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Ситуация понятна и тема полезна, но изложение похоже на цепочку несвязанных фактов; некоторые конструкции сложны для A1, а вопрос о религиозной свадьбе не подтверждается текстом.",
+      "issues": [
+        "«No quieren boda ahora» звучит неестественно; лучше «No quieren casarse ahora».",
+        "Вопрос «уже имеют религиозную свадьбу» нельзя уверенно отметить как false: текст говорит, что они сейчас не хотят свадьбу, но не сообщает, были ли они женаты раньше."
+      ]
+    },
+    {
+      "id": "free_es_a1_parques_en_el_mapa_norte_1782924613",
+      "content": 1,
+      "spanish": 2,
+      "level_fit": 0,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Испанский естественен, но шаги с картой, отметками и переписыванием названий не образуют содержательного развития; лексика и некоторые формы выше A1.",
+      "issues": [
+        "Текст механически перечисляет действия вокруг карты, не объясняя цель задания или его результат.",
+        "«parques nacionales», «profesora» и глаголы в настоящем с последовательностью действий сложнее базового A1."
+      ]
+    }
+  ]
+}

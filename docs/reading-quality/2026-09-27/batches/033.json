@@ -1,0 +1,127 @@
+{
+  "scores": [
+    {
+      "id": "free_es_a1_tres_tarjetas_vascas_1782924688",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 0,
+      "reason": "Понятный набор фактов о провинциях и языке, но связь между карточками и добавлением слова «эускера» почти не развивается; финальное пояснение звучит тяжеловесно.",
+      "issues": [
+        "«Cada tarjeta une una provincia con su ciudad principal o sede» — неестественная и не вполне ясная формулировка."
+      ]
+    },
+    {
+      "id": "free_es_a1_un_cartel_del_cervantes_1782924528",
+      "content": 1,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Короткий связный эпизод знакомит с двумя языковыми учреждениями, хотя переход от плаката к RAE мотивирован слабо. Вопросы простые и буквальные.",
+      "issues": [
+        "«La RAE cuida y regula el español» чрезмерно упрощает роль академии."
+      ]
+    },
+    {
+      "id": "free_es_a1_un_mensaje_corto_1782923842",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Естественный бытовой диалог с понятной целью и деталями; вопросы проверяют главным образом прямое извлечение информации.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_un_perro_perdido_1782396637",
+      "content": 3,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 2,
+      "learning_value": 1,
+      "reason": "Цельная ситуация поиска собаки развивается последовательно, язык естественный, вопросы охватывают разные детали сюжета.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_un_volc_n_1782395760",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Связное простое объяснение вулканов и возможных рисков, хотя часть сведений подана очень поверхностно. Вопросы в основном буквальные.",
+      "issues": [
+        "«La ceniza sube al cielo como humo» — упрощённое описание, не всегда верное для вулканического пепла."
+      ]
+    },
+    {
+      "id": "free_es_a1_una_cita_en_el_centro_1782923832",
+      "content": 1,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 0,
+      "reason": "Грамматически естественный, но шаблонный диалог: покупка тетради и совместная прогулка не получают содержательного развития; вопросы буквальные.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_una_clase_sobre_castellano_1782924510",
+      "content": 2,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Тема занятия и вопрос ученика образуют связный контекст, но некоторые формулировки преподавателя звучат неестественно; вопросы простые.",
+      "issues": [
+        "«Hay deber de conocer el castellano» звучит неестественно; естественнее «Existe el deber de conocerlo».",
+        "«Hay derecho de usarlo» — неестественное управление; обычно говорят «hay derecho a usarlo»."
+      ]
+    },
+    {
+      "id": "free_es_a1_una_madre_y_dos_hijos_1782924830",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Понятный учебный диалог связывает значение термина с примером из жизни; детали о работе и школе немного добавлены без дальнейшего развития. Вопросы буквальные.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_una_merienda_r_pida_1782923837",
+      "content": 1,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 0,
+      "reason": "Короткий грамматически естественный, но механический диалог: цель покупки и последняя реплика не складываются в заметный сюжет; вопросы буквальные.",
+      "issues": [
+        "«Compramos dos empanadas y una botella de agua» не объясняет, зачем покупка связана с перекусом или занятием."
+      ]
+    },
+    {
+      "id": "free_es_a1_una_planta_para_la_ventana_1782923847",
+      "content": 1,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 0,
+      "reason": "Грамматически естественные реплики, но сведения о походе на рынок и потребности растения в свете стоят рядом без мотивированной связи; вопросы буквальные.",
+      "issues": [
+        "«La planta necesita mucha luz» не связано с планом купить растение и не развивает ситуацию."
+      ]
+    }
+  ]
+}

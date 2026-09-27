@@ -1,0 +1,123 @@
+{
+  "scores": [
+    {
+      "id": "free_es_a2_cambiar_una_cita_m_dica_1782405010",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 2,
+      "learning_value": 1,
+      "reason": "Связный и практичный диалог; вопросы проверяют детали ситуации и её последовательность.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a2_correos_y_cartas_1782405074",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Понятное объяснение почтовой услуги, но текст в основном перечисляет сведения, а вопросы буквальные.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a2_curso_de_fotograf_a_1782405019",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Естественный бытовой диалог с полезными деталями записи на курс; вопросы проверяют главным образом факты.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a2_devolver_unos_auriculares_1782405039",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Внятная ситуация возврата товара, хотя пара деталей в конце слегка не согласована.",
+      "issues": [
+        "«Prefiero cambiarlo» — заменить неисправный наушник, но далее речь идёт о «todos los modelos» и «probarlos», то есть о моделях и наушниках во множественном числе.",
+        "«Se la envío» относится к «una copia del ticket»; «Я отправлю её» переведено верно, но «por correo» может означать обычную почту, а не обязательно электронную."
+      ]
+    },
+    {
+      "id": "free_es_a2_dormir_mejor_1782405085",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Связный короткий текст с понятными советами; вопросы в основном повторяют сказанное напрямую.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a2_el_cuaderno_de_in_s_1782923708",
+      "content": 2,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Есть небольшой образный сюжет, но «sesiones» остаётся без контекста, а переход к рисунку девочки и финальной реплике выглядит резким.",
+      "issues": [
+        "«¿Las escribes durante las sesiones?» — «sesiones» не объяснены, и переход к рассказу о рисунке девочки происходит без связки."
+      ]
+    },
+    {
+      "id": "free_es_a2_en_la_biblioteca_1782404950",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Практичный и в целом связный разговор о библиотеке; вопросы понятные, но преимущественно буквальные.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a2_enviar_un_paquete_1782404928",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Естественная практическая ситуация с последовательными действиями; вопросы в основном проверяют отдельные факты.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a2_farmacias_de_guardia_1782405063",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 0,
+      "reason": "Сведения о дежурных аптеках сменяются отдельным замечанием о чётных и нечётных номерах улиц; связь этого факта с поиском аптеки не объяснена.",
+      "issues": [
+        "Связь между поиском дежурной аптеки и расположением чётных и нечётных номеров не раскрыта; вывод «Así, la búsqueda puede ser mucho más rápida» не обоснован предыдущими фразами."
+      ]
+    },
+    {
+      "id": "free_es_a2_la_bicicleta_del_doctor_1782923715",
+      "content": 2,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Короткий разговор содержит понятную личную деталь, но причинная связь между спешкой врачей, медленной поездкой и умением слушать звучит натянуто.",
+      "issues": [
+        "«Precisamente por eso pedaleo despacio» слабо связывает мысль о том, что врачи всегда спешат, с медленной ездой на велосипеде."
+      ]
+    }
+  ]
+}

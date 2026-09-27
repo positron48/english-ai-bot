@@ -1,0 +1,126 @@
+{
+  "scores": [
+    {
+      "id": "free_es_a1_estudiar_juntos_1782396499",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "План подготовки к экзамену связный и подходит A1. Вопрос о том, что хочет делать «мужчина», не подтверждается текстом: пол speaker_a не указан.",
+      "issues": [
+        "Вопрос «Мужчина хочет практиковать ответы вслух» приписывает speaker_a пол, которого текст не задаёт."
+      ]
+    },
+    {
+      "id": "free_es_a1_etapas_del_colegio_1782924882",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 2,
+      "learning_value": 0,
+      "reason": "Возрастные этапы образования перечислены понятно, но последняя реплика о гражданстве не связана с объяснением и звучит неестественно: «Estas edades son importantes para la ciudadanía».",
+      "issues": [
+        "«Estas edades son importantes para la ciudadanía» — связь возрастов этапов школы с гражданством не объяснена и выглядит случайной."
+      ]
+    },
+    {
+      "id": "free_es_a1_evento_cultural_del_s_bado_1782925017",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Короткое, связное объявление сообщает место, время, стоимость и план на случай дождя. Вопросы в основном проверяют отдельные факты.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_excursi_n_a_ordesa_1782924641",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 0,
+      "reason": "Поездка в Ордесу сменяется перечнем городов и сведением о Сарагосе без связи с планом экскурсии. Отдельные фразы понятны, но в целом текст похож на набор фактов.",
+      "issues": [
+        "«También ve Teruel y Zaragoza» и «Zaragoza aparece como capital autonómica» не связаны с рассказом о поездке в Ордесу."
+      ]
+    },
+    {
+      "id": "free_es_a1_f_tbol_del_domingo_1782924789",
+      "content": 1,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 0,
+      "reason": "Реплики о футболе, баскетболе и экзамене не складываются в мотивированную ситуацию. Испанские предложения сами по себе естественны, но вопросы в основном буквальные; первый также расширяет сказанное, называя Лигу и Кубок популярными соревнованиями.",
+      "issues": [
+        "«Para el examen escribe Liga, Copa del Rey y baloncesto» внезапно вводит экзамен и не объясняет, почему Рауль записывает эти названия."
+      ]
+    },
+    {
+      "id": "free_es_a1_falla_y_el_amor_brujo_1782924705",
+      "content": 2,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Связный учебный диалог знакомит с композитором и произведением, хотя заключительная реплика обобщённая и несколько искусственная. Вопросы проверяют прямые сведения.",
+      "issues": [
+        "«Esa forma de estudiar funciona bien con música clásica española antes del examen» звучит как общее назидательное заключение и не развивает конкретный разговор."
+      ]
+    },
+    {
+      "id": "free_es_a1_fallas_de_marzo_1782924766",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Короткий диалог связно сообщает о празднике и его приметах. Вопросы правильные, но преимущественно повторяют факты из текста.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_familia_en_el_parque_1782925051",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Понятное описание сцены с пространственными ориентирами и осторожным предположением. Вопросы точны, но в основном буквальны.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_favor_para_la_administraci_n_1782925024",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 0,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Письмо связно и уместно для бытовой административной ситуации. Перевод «процедура резиденции» звучит калькой; естественнее «оформление вида на жительство».",
+      "issues": [
+        "«mi trámite de residencia» переведено как «моей процедуры резиденции»; по-русски естественнее «оформления вида на жительство»."
+      ]
+    },
+    {
+      "id": "free_es_a1_ficha_de_la_monarqu_a_1782924533",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Сведения организованы как учебная карточка на одну тему и дают полезную лексику. Вопросы правильные, но проверяют прямое запоминание.",
+      "issues": []
+    }
+  ]
+}

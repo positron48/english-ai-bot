@@ -1,0 +1,127 @@
+{
+  "scores": [
+    {
+      "id": "free_es_a1_historia_de_ana_y_sus_planes_1782924989",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Короткая, понятная биография с переходом от прошлого к настоящему и планам; вопросы в основном проверяют прямые факты.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_hora_en_invierno_1782924870",
+      "content": 2,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Разговор об учебной теме имеет понятную ситуацию, но реплики про экзамен и таблицу связаны механически; вопросы проверяют буквальные факты.",
+      "issues": [
+        "«La tabla del libro muestra el cambio de hora» не связано с предыдущей репликой и не получает продолжения."
+      ]
+    },
+    {
+      "id": "free_es_a1_horario_de_tienda_1782924875",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Практическая ситуация развивается от планов на воскресенье к проверке расписания; вопросы понятны, но в основном буквальные.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_horario_de_tren_1782924964",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 0,
+      "reason": "Сведения о расписании превращаются в объяснение учебного упражнения, но развитие искусственное; вопросы преимущественно буквальные.",
+      "issues": [
+        "«Quién viaja, dónde, cuándo y a qué hora son preguntas importantes» звучит неестественно: перечень вопросов назван важным без ясной связи с действием Лео."
+      ]
+    },
+    {
+      "id": "free_es_a1_horario_del_dele_a2_1782924501",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 0,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Диалог представляет собой перечень параметров экзамена, причём для A1 он содержит сложную экзаменационную лексику и числовые детали; ключи верны, вопросы буквальные.",
+      "issues": [
+        "«Tiene lectura, auditiva, escrita y oral» — неестественно сокращённые названия частей; лучше «prueba de comprensión de lectura, comprensión auditiva, expresión escrita y expresión oral»."
+      ]
+    },
+    {
+      "id": "free_es_a1_imagen_en_la_biblioteca_1782925047",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 0,
+      "reason": "Это короткий перечень деталей воображаемой картинки, без развития ситуации; вопросы прямые.",
+      "issues": [
+        "«A la derecha está una mujer» неестественно для указания расположения объекта; естественнее «A la derecha hay una mujer»."
+      ]
+    },
+    {
+      "id": "free_es_a1_instituciones_en_la_biblioteca_1782924524",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Учебная сцена связывает названия учреждений с краткими сведениями о них, но остаётся перечнем; вопросы буквальные.",
+      "issues": [
+        "«Busca instituciones de lenguas españolas» звучит неестественно; точнее «Busca información sobre instituciones relacionadas con la lengua española».",
+        "«La RAE regula el español» чрезмерно упрощает её роль: академия устанавливает и описывает нормы, а не регулирует язык как единый орган."
+      ]
+    },
+    {
+      "id": "free_es_a1_instrucciones_del_centro_de_salud_1782924995",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Последовательные инструкции образуют цельный практический текст; вопросы проверяют их содержание, хотя остаются прямыми.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_invierno_en_el_centro_1782924624",
+      "content": 1,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Связанный набор простых сведений о климате и одежде, но ситуация почти не развивается; вопросы прямые.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_jota_en_espa_a_1782924741",
+      "content": 2,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Диалог вводит танец через тему фольклора и план сравнить традиции; вопросы в основном буквальные.",
+      "issues": [
+        "«Entonces es una palabra importante» и «aparece en preguntas de folclore» создают искусственный переход от распространённости танца к слову для списка вопросов."
+      ]
+    }
+  ]
+}

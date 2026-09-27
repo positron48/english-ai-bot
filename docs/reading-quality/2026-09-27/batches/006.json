@@ -1,0 +1,131 @@
+{
+  "scores": [
+    {
+      "id": "free_es_a1_aranjuez_en_la_radio_1782924708",
+      "content": 2,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Понятная учебная ситуация с радио и заметками, но действие сводится к повторению двух фактов. В испанском пропущен артикль в «suena guitarra clásica»; вопросы верны, но буквальны.",
+      "issues": [
+        "«En la radio suena guitarra clásica» естественнее: «En la radio suena una guitarra clásica» или «suena música de guitarra clásica»."
+      ]
+    },
+    {
+      "id": "free_es_a1_asiento_del_tren_1782924953",
+      "content": 2,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Ситуация с чужим местом понятна, но не показано, как пассажир реагирует после того, как Надя предъявляет билет; последняя фраза о водителе выглядит несвязанным правилом. Вопросы верны и в основном буквальны.",
+      "issues": [
+        "«Durante el viaje no habla con el conductor sin necesidad» внезапно добавляет тему водителя, не связанную с поиском места."
+      ]
+    },
+    {
+      "id": "free_es_a1_atl_ntico_o_mediterr_neo_1782924590",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 0,
+      "reason": "Короткая игра тематически связана с реками, но диалог почти целиком состоит из названий и повторения ответа; финальная реплика не развивает ситуацию. Вопросы проверяют только прямое воспроизведение.",
+      "issues": [
+        "«Muy bien» не мотивировано: собеседник лишь называет океан, к которому относятся реки.",
+        "«Hay que distinguirlos de los mediterráneos» звучит неясно: не указано, что именно «их» нужно отличать."
+      ]
+    },
+    {
+      "id": "free_es_a1_autoescuela_1782924812",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 0,
+      "translation": 1,
+      "questions": 0,
+      "learning_value": 1,
+      "reason": "Диалог превращается в перечень документов и требований, а финальная реплика звучит как справка, не как естественное продолжение разговора. Для A1 заметно перегружен лексикой и конструкциями. Первый ключ не соответствует формулировке: текст не утверждает, что нужно быть старше 18 лет.",
+      "issues": [
+        "«¿Tienes 18 años?» и «ya puedo» не подтверждают утверждение «нужно быть старше 18 лет».",
+        "«aptitud psicofísica», «expide» и длинное условное предложение заметно сложнее уровня A1.",
+        "Формальный перечень требований не связан с конкретной ситуацией записи в автошколу."
+      ]
+    },
+    {
+      "id": "free_es_a1_aviso_de_la_tienda_1782925000",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Объявление цельно и понятно для бытовой ситуации; все ключи верны. Вопросы в основном проверяют прямые детали.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_aviso_de_seguridad_1782925019",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Связное объявление с уместными инструкциями и полезной лексикой; ключи верны. Вопросы буквальные и однотипные.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_aviso_del_parque_1782924993",
+      "content": 2,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 0,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Полезный и понятный набор правил для парка, ключи верны. Формулировки местами звучат как перечень, а «Los perros van con correa» и русский перевод неестественны.",
+      "issues": [
+        "«Los perros van con correa» естественнее как правило: «Los perros deben ir con correa».",
+        "«El parque municipal abre de ocho a nueve» обычно означает часы открытия с 8 до 9; если речь о времени работы, это лучше выразить яснее."
+      ]
+    },
+    {
+      "id": "free_es_a1_ayuda_en_el_016_1782924912",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Есть понятная ситуация и небольшое развитие — подруга просит поддержку. Все ключи верны. Вопросы проверяют главным образом явно сказанные факты.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_ayuda_en_la_tienda_1782925007",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Естественный короткий диалог с понятной целью и развитием: клиенту нужна куртка другого размера. Ключи верны, вопросы преимущественно буквальные.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_baile_flamenco_1782924722",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Тема культурно полезна, но текст выглядит как механическое перечисление имён и общих формулировок; финальные строки повторяют уже сказанное. Вопросы верны, но буквальны.",
+      "issues": [
+        "«El nombre flamenco queda claro» звучит искусственно и не добавляет смысла после упоминания вечера фламенко.",
+        "«La presentación habla de tradición y escena» и «El programa une baile, música y nombres importantes del escenario» повторяют общие сведения без конкретного развития."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,124 @@
+{
+  "scores": [
+    {
+      "id": "free_es_a1_fiesta_del_barrio_1782925073",
+      "content": 1,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 0,
+      "reason": "Понятный A1-текст, но описание праздника перемежается не связанными с ним сравнением города и правилом о времени окончания.",
+      "issues": [
+        "«Mi ciudad es más pequeña que Madrid» не связано с описанием праздника."
+      ]
+    },
+    {
+      "id": "free_es_a1_fiesta_familiar_1782925034",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Связный короткий рассказ о семейном празднике с понятным продолжением в виде планов на воскресенье. Вопросы проверяют в основном прямые факты.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_fiestas_de_oto_o_1782924864",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Учебная ситуация связывает даты и действия Мигеля, хотя развитие сюжета простое, а вопросы буквальные.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_fila_del_autob_s_1782924949",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Внятная последовательность действий Розы на остановке и в автобусе; вопросы в основном проверяют отдельные явно названные факты.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_firma_desde_casa_1782924562",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Последовательное описание электронной подачи документа, хотя объяснение юридической силы подписи чрезмерно обобщено. Вопросы буквальные.",
+      "issues": [
+        "«Tiene valor como una firma en papel» звучит как общее утверждение о равной юридической силе без уточнения вида электронной подписи."
+      ]
+    },
+    {
+      "id": "free_es_a1_flamenco_andaluz_1782924719",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Диалог связывает фламенко с Андалусией и знакомит с музыкантами, но разговор в основном служит для перечисления имён. Ответы верны.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_flamenco_unesco_1782924744",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Связь урока с темой есть, но текст преимущественно перечисляет сведения и учебные действия; одна испанская фраза построена неестественно.",
+      "issues": [
+        "«También dice Patrimonio Inmaterial de la UNESCO» — неполная и неестественная конструкция; лучше «También dice que el flamenco es Patrimonio…»."
+      ]
+    },
+    {
+      "id": "free_es_a1_foto_del_mercado_1782925049",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Простое, цельное описание сцены соответствует A1; вопросы понятны, но проверяют только прямые детали.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_fronteras_en_la_agenda_1782924580",
+      "content": 1,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 0,
+      "reason": "Учебный план задаёт слабую рамку для перечня стран и фактов о географии; вопросы проверяют только буквальное воспроизведение.",
+      "issues": [
+        "«Son fronteras de España» неточно называет страны границами; естественнее сказать, что эти страны граничат с Испанией."
+      ]
+    },
+    {
+      "id": "free_es_a1_guggenheim_bilbao_1782924738",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Диалог содержит полезные культурные сведения, но переход от Бильбао к музеям Мадрида не мотивирован, а заключительная связь звучит механически.",
+      "issues": [
+        "«Museos y ciudades van juntos» и «Esa relación ayuda mucho…» выглядят как искусственная связка между несвязанными фактами."
+      ]
+    }
+  ]
+}

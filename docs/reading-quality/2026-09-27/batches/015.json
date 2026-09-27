@@ -1,0 +1,117 @@
+{
+  "scores": [
+    {
+      "id": "free_es_a1_el_paraguas_negro_1782923839",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 0,
+      "reason": "Короткий диалог понятен, но связь между поиском зонта, дорогой домой и дождём остаётся неразвитой; вопросы проверяют в основном прямые факты.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_el_paraguas_sin_lluvia_1782923717",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Разговор связан необычной личной историей зонта и бабушки; вопросы понятны, но в основном буквальные.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_el_plan_en_la_mochila_1782924504",
+      "content": 1,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 0,
+      "reason": "Испанский и перевод понятны, но текст представляет собой перечень пунктов экзамена без развития ситуации; вопросы проверяют только буквальные детали.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_el_pulpo_1782395730",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Связное объяснение свойств осьминога с простыми причинными связями; вопросы верны, но преимущественно проверяют факты напрямую.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_el_tren_ave_1782395506",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Текст сочетает краткую историю AVE с полезными сведениями о поездке; вопросы верны, но в основном буквальные.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_el_tren_temprano_1782923845",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 0,
+      "reason": "Диалог понятен, но реплики с планом поездки и покупкой билетов связаны слабо; вопросы проверяют прямые факты.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_en_correos_1782396053",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 2,
+      "learning_value": 1,
+      "reason": "Связный бытовой диалог с выбором тарифа и оформлением отправки; вопросы точно проверяют решение и детали разговора.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_en_el_ayuntamiento_1782924818",
+      "content": 2,
+      "spanish": 1,
+      "level_fit": 0,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Ситуация обращения за справкой понятна и содержательна, но финальная реплика перегружена для A1, а «empadronamiento» и бюрократическая лексика существенно выше уровня; вопросы в основном буквальные.",
+      "issues": [
+        "Финальная реплика «traigo el contrato de casa y vuelvo ... con todos los papeles mañana por la mañana al ayuntamiento local» длинная и тяжёлая для A1.",
+        "«certificado de empadronamiento» — специализированная лексика, не объяснённая в тексте."
+      ]
+    },
+    {
+      "id": "free_es_a1_en_el_bar_de_la_esquina_1782925005",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Естественный короткий диалог в кафе с понятной последовательностью заказа; вопросы верны, но проверяют очевидные детали.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_en_el_centro_de_salud_1782925012",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Естественная бытовая ситуация с ясным следующим шагом; вопросы точны, но в основном буквальные.",
+      "issues": []
+    }
+  ]
+}

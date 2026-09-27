@@ -1,0 +1,125 @@
+{
+  "scores": [
+    {
+      "id": "free_es_a1_sede_en_vitoria_1782924685",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Связный учебный диалог, но он в основном перечисляет географические соответствия. Испанский понятен, хотя финальная реплика звучит неестественно.",
+      "issues": [
+        "«Para el examen, estos pares de nombres son muy útiles y frecuentes» неестественно называет названия «частыми»; по-русски передано буквально."
+      ]
+    },
+    {
+      "id": "free_es_a1_seis_autonom_as_en_una_hoja_1782924647",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Короткое упражнение на перечисление автономий и столиц; связи между репликами почти нет. Вопросы проверяют прямое воспроизведение фактов.",
+      "issues": [
+        "«Leo seis autonomías» звучит так, будто говорящий читает сами автономии, а не их названия; естественнее «Leo los nombres de seis autonomías»."
+      ]
+    },
+    {
+      "id": "free_es_a1_semana_santa_andaluza_1782924769",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Есть простая ситуация поездки и знакомства с традицией. Испанский и перевод в целом естественны и точны; вопросы верны, но буквальны.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_servicios_del_barrio_1782924978",
+      "content": 2,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Понятная бытовая учебная ситуация, хотя текст описывает выполнение задания, а не сам поиск услуг. Вопросы верны и в основном буквальны.",
+      "issues": [
+        "«Otro vecino busca reparar una bicicleta» неестественно: сосед ищет, где или кто отремонтирует велосипед. Русский перевод «ищет ремонт велосипеда» тоже звучит калькой.",
+        "Вопрос о детском саде выводится из сочетания нужды соседки и списка услуг, но текст прямо не говорит, что ей нужен именно детский сад."
+      ]
+    },
+    {
+      "id": "free_es_a1_sevilla_capital_andaluza_1782924636",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Текст сводит географические факты к учебному перечню; заметного развития ситуации почти нет. Вопросы верны, но буквальны.",
+      "issues": [
+        "«En una guía lee Sevilla» выглядит как незавершённая мысль: неясно, что именно Луис читает о Севилье. Русский перевод сохраняет эту неясность."
+      ]
+    },
+    {
+      "id": "free_es_a1_sevillanas_en_andaluc_a_1782924749",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Это преимущественно перечень танцев и регионов; рамка подготовки праздника не связывает факты в сюжет. Вопросы верны, но буквальны.",
+      "issues": [
+        "«Para España en general» звучит неестественно в контексте списка региональных танцев; «para el conjunto de España» было бы естественнее."
+      ]
+    },
+    {
+      "id": "free_es_a1_sidra_en_asturias_1782924850",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Есть простая последовательность поездки, знакомства с сидром и вопросов о напитке. Перевод точный; вопросы верны, но буквальны.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_sol_mediterr_neo_1782924622",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Короткий диалог связывает климат с практическим примером — поливом растений. Вопросы верны, но проверяют главным образом явные детали.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_soluci_n_en_la_tienda_1782925066",
+      "content": 3,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 2,
+      "learning_value": 1,
+      "reason": "Цельный бытовой диалог с понятной проблемой и решением. Испанский естественный, перевод точный, вопросы проверяют ключевые детали разговора.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_sopranos_espa_olas_1782924710",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Естественный разговор развивает тему от запроса имён к желанию послушать певиц. Вопросы верны, но буквальны.",
+      "issues": []
+    }
+  ]
+}

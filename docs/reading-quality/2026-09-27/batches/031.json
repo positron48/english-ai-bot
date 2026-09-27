@@ -1,0 +1,130 @@
+{
+  "scores": [
+    {
+      "id": "free_es_a1_tabla_de_espa_a_1782924567",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 0,
+      "reason": "A1-понятный, но почти механический перечень данных о таблице; связь между населением, площадью и заметками Марины не развивается. Ключи верны, вопросы буквальные.",
+      "issues": [
+        "«Marina escribe habitantes y superficie» звучит неестественно без артиклей или пояснения: лучше «escribe las palabras “habitantes” y “superficie”»."
+      ]
+    },
+    {
+      "id": "free_es_a1_tarde_en_el_parque_1782924926",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Есть простая цельная ситуация: семья соблюдает правила парка. Испанский естественный, ключи верны, но вопросы почти дословно проверяют отдельные факты.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_tarjetas_de_repaso_policial_1782924552",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 0,
+      "reason": "Текст сводится к перечню названий региональных полицейских сил и слабо связанных действий с карточками. Вопросы буквальные, ключи верны.",
+      "issues": [
+        "«Recuerda la policía de Canarias» неестественно в этом контексте: «recuerda» обычно обращено к собеседнику; для рассказа о Матео естественнее «Mateo recuerda…»."
+      ]
+    },
+    {
+      "id": "free_es_a1_tarjetas_de_vila_a_zamora_1782924664",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 0,
+      "reason": "Это короткая учебная перекличка названий провинций без ситуации или содержательного развития. Ключи верны; вопросы в основном повторяют реплики.",
+      "issues": [
+        "«Lee algunas de Castilla y León» неясно и неестественно без существительного вроде «tarjetas»; лучше «Lee algunas tarjetas de Castilla y León»."
+      ]
+    },
+    {
+      "id": "free_es_a1_taxi_libre_1782924944",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Внятная бытовая ситуация объясняет, как Томас понимает, что такси свободно. Испанский и перевод точны; вопросы буквальные.",
+      "issues": [
+        "В вопросе «зелёный свет или есть табличка Libre» объединено условие «или», тогда как текст сообщает, что у этого такси есть оба признака."
+      ]
+    },
+    {
+      "id": "free_es_a1_teatros_nacionales_1782924731",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 0,
+      "reason": "Диалог преимущественно перечисляет названия учреждений; формальные реплики не создают естественного обмена. Ключи верны, вопросы буквальные.",
+      "issues": [
+        "«Recuerda el Teatro de la Zarzuela» неестественно как ответ собеседнику: повелительное «recuerda» означает «помни»; здесь уместнее «Recuerdo el Teatro de la Zarzuela» или «Recuerda también…»."
+      ]
+    },
+    {
+      "id": "free_es_a1_teide_en_tenerife_1782924604",
+      "content": 2,
+      "spanish": 2,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Простой связный учебный эпизод вокруг видео, сравнения вершин и рисунка; полезно закрепляет географические названия. Ключи верны, вопросы буквальные.",
+      "issues": []
+    },
+    {
+      "id": "free_es_a1_tenis_espa_ol_1782924792",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 0,
+      "reason": "Смена темы от теннисистов к футболу и велоспорту выглядит как перечень спортивных фактов; заключительная фраза лишь механически их связывает. Ключи верны, вопросы буквальные.",
+      "issues": [
+        "«También está Carlos Alcaraz» звучит неестественно как продолжение вопроса о теннисистах; естественнее «También conozco a Carlos Alcaraz»."
+      ]
+    },
+    {
+      "id": "free_es_a1_tenores_famosos_1782924712",
+      "content": 1,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 0,
+      "reason": "Текст механически перечисляет певцов и типы голоса, а последняя фраза добавлена без развития сюжета. Ключи верны, вопросы буквальные.",
+      "issues": [
+        "«La lista queda clara» заявляет ясность списка, хотя примеры сопрано вводятся только в следующем предложении и не названы."
+      ]
+    },
+    {
+      "id": "free_es_a1_tiempo_de_canarias_1782924626",
+      "content": 2,
+      "spanish": 1,
+      "level_fit": 1,
+      "translation": 1,
+      "questions": 1,
+      "learning_value": 1,
+      "reason": "Короткая практичная сцена о поездке и выборе одежды даёт контекст для климатической лексики. Ключи верны, вопросы буквальные.",
+      "issues": [
+        "«Sí, normalmente es suave» формально можно отнести к «el tiempo», но после вопроса «¿Hace buen tiempo?» ответ неестественен; естественнее «Sí, suele hacer buen tiempo» или «Sí, el clima suele ser suave»."
+      ]
+    }
+  ]
+}
