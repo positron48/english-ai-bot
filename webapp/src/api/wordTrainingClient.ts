@@ -387,7 +387,7 @@ export const wordTrainingClient = {
         const pack = await requirePack()
         checkScope()
         const source = packQueueItems(pack)
-        const queue = shuffle(source).slice(0, Math.min(30, source.length))
+        const queue = shuffle(source).slice(0, 20)
         if (queue.length === 0) throw new OfflineWordTrainingUnavailableError('No preloaded cards available')
         const session: OfflineWordTrainingSession = { id: Date.now(), started_at: new Date().toISOString(), index: 0, correct_count: 0, queue }
         await setWordTrainingSession(session)

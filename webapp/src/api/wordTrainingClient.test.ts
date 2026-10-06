@@ -16,6 +16,12 @@ beforeEach(async () => {
 })
 afterEach(() => { vi.restoreAllMocks() })
 
+it('limits offline sessions to 20 cards from an older larger pack', async () => {
+  await setWordTrainingPack({ app_code: 'english', native_lang: 'ru', target_lang: 'en', generated_at: '', algo_version: 'v2', total_cards: 30, available_count: 30, downloaded_at: '', cards: [], queue: Array.from({ length: 30 }, (_, i) => ({ type: 'card', user_card_id: i + 1, training_card_id: i + 1, direction: 'ru_en', correct_answer: 'cat', options: ['cat', 'dog'] })) })
+  expect((await wordTrainingClient.start()).total_cards).toBe(20)
+  expect((await getWordTrainingSession())?.queue).toHaveLength(20)
+})
+
 it('keeps the offline session after reconnection through reveal, answer and next card', async () => {
   const first = await wordTrainingClient.start()
   vi.spyOn(navigator, 'onLine', 'get').mockReturnValue(true)
