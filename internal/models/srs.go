@@ -25,7 +25,7 @@ const (
 	OptionsDelayMS = 3000
 
 	// Session limits
-	DefaultMaxCardsPerSession = 30
+	DefaultMaxCardsPerSession = 20
 	DefaultMaxNewPerSession   = 30
 	// MaxDuePoolSize limits how many due cards we fetch when building the session pool (random sample is taken from this)
 	MaxDuePoolSize = 2000

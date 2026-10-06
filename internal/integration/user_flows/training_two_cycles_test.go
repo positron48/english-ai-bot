@@ -145,14 +145,17 @@ func TestTrainingTwoCycles_60Cards_SRSAndReviewEvents(t *testing.T) {
 
 	token := h.AuthAsUser(telegramID)
 
-	// Session 1: 30 cards (MaxCardsPerSession)
+	// Each session uses the default limit even when the deck has more cards.
 	n1 := runTrainingSession(t, h, token, -1)
-	if n1 < 1 {
-		t.Fatalf("session 1: expected at least 1 card, got %d", n1)
+	if n1 != 20 {
+		t.Fatalf("session 1: expected 20 cards, got %d", n1)
 	}
 
 	// Session 2: remaining or another batch
 	n2 := runTrainingSession(t, h, token, -1)
+	if n2 != 20 {
+		t.Fatalf("session 2: expected 20 cards, got %d", n2)
+	}
 	totalAnswered := n1 + n2
 
 	// Assert review_events created
