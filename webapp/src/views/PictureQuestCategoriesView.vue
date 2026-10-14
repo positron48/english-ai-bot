@@ -45,13 +45,12 @@ import { onMounted, ref } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { courseClient, type PictureQuestDistrict } from '../api/courseClient'
-import { grammarClient } from '../api/grammarClient'
 import LgIcon from '../components/linglow/LgIcon.vue'
 import LgLoader from '../components/linglow/LgLoader.vue'
 import LgPageHeader from '../components/linglow/LgPageHeader.vue'
 import { useCourse } from '../composables/useCourse'
 import { useMe } from '../composables/useMe'
-import { buildGrammarLevelAccess, isDistrictUnlocked } from '../utils/districtUnlock'
+import { buildDistrictLevelAccess, isDistrictUnlocked } from '../utils/districtUnlock'
 
 interface CategoryDistrict extends PictureQuestDistrict {
   locked: boolean
@@ -80,11 +79,11 @@ onMounted(async () => {
     if (!isPro.value) return
 
     const courseCode = currentCourseCode.value || undefined
-    const [res, grammarData] = await Promise.all([
+    const [res, progress] = await Promise.all([
       courseClient.listPictureQuestDistricts(courseCode),
-      grammarClient.getCategories().catch(() => ({ categories: [] })),
+      courseClient.getProgress(courseCode),
     ])
-    const access = buildGrammarLevelAccess(grammarData.categories || [])
+    const access = buildDistrictLevelAccess(progress.mastery)
     districts.value = (res.districts || []).map(d => ({
       ...d,
       locked: !isDistrictUnlocked(d.level_code, access),

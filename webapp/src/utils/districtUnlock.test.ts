@@ -1,34 +1,33 @@
 import { describe, expect, it } from 'vitest'
-import { buildGrammarLevelAccess, isDistrictUnlocked } from './districtUnlock'
+import { buildDistrictLevelAccess, isDistrictUnlocked } from './districtUnlock'
+import type { CourseMastery } from '../api/courseClient'
 
-describe('buildGrammarLevelAccess', () => {
-  it('skips categories without level', () => {
-    expect(buildGrammarLevelAccess([{ can_access: true }])).toEqual({})
+describe('district access follows city mastery', () => {
+  it('opens B1 through vocabulary even with zero grammar progress', () => {
+    const mastery: CourseMastery = {
+      current_level_code: 'B1', progress_percent: 0,
+      levels: [
+        {
+          level_code: 'B1', unlocked: true, current: true,
+          mastery_percent: 0, can_open_next: false,
+          metrics: {
+            grammar: { done: 0, total: 10, target: 10, percent: 0, included: true },
+            words: { done: 1500, total: 2000, target: 2000, percent: 75, included: true },
+          },
+        },
+        {
+          level_code: 'B2', unlocked: false, current: false,
+          mastery_percent: 0, can_open_next: false, metrics: {},
+        },
+      ],
+    }
+    const access = buildDistrictLevelAccess(mastery)
+    expect(isDistrictUnlocked('b1', access)).toBe(true)
+    expect(isDistrictUnlocked('B2', access)).toBe(false)
+    expect(isDistrictUnlocked('C1', access)).toBe(false)
   })
 
-  it('normalizes level keys and merges can_access across categories', () => {
-    const map = buildGrammarLevelAccess([
-      { level: 'a1', can_access: false },
-      { level: 'A1', can_access: true },
-      { level: 'b1' },
-    ])
-
-    expect(map).toEqual({
-      A1: { canAccess: true },
-      B1: { canAccess: false },
-    })
-  })
-})
-
-describe('isDistrictUnlocked', () => {
-  it('returns true when grammar access exists for the level', () => {
-    const grammar = buildGrammarLevelAccess([{ level: 'A2', can_access: true }])
-    expect(isDistrictUnlocked('a2', grammar)).toBe(true)
-  })
-
-  it('returns false when level is missing or not accessible', () => {
-    const grammar = buildGrammarLevelAccess([{ level: 'A2', can_access: false }])
-    expect(isDistrictUnlocked('B1', grammar)).toBe(false)
-    expect(isDistrictUnlocked('A2', grammar)).toBe(false)
+  it('keeps materials locked when mastery is unavailable', () => {
+    expect(isDistrictUnlocked('B1', buildDistrictLevelAccess())).toBe(false)
   })
 })

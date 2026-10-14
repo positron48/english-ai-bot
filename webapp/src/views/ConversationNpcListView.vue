@@ -49,7 +49,6 @@ import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { courseClient } from '../api/courseClient'
 import type { CourseMapDistrict } from '../api/courseClient'
-import { grammarClient } from '../api/grammarClient'
 import LgIcon from '../components/linglow/LgIcon.vue'
 import LgLoader from '../components/linglow/LgLoader.vue'
 import LgPageHeader from '../components/linglow/LgPageHeader.vue'
@@ -57,7 +56,7 @@ import { useCourse } from '../composables/useCourse'
 import { useMe } from '../composables/useMe'
 import { buildNpcGroups, scenarioQuestPassed } from '../utils/conversations'
 import type { NpcGroup } from '../utils/conversations'
-import { buildGrammarLevelAccess, isDistrictUnlocked } from '../utils/districtUnlock'
+import { buildDistrictLevelAccess, isDistrictUnlocked } from '../utils/districtUnlock'
 
 interface DistrictNpcGroup {
   district: CourseMapDistrict
@@ -90,13 +89,13 @@ onMounted(async () => {
     if (!isPro.value) return
 
     const courseCode = currentCourseCode.value || undefined
-    const [map, grammarData] = await Promise.all([
+    const [map, progress] = await Promise.all([
       courseClient.getCourseMap(courseCode),
-      grammarClient.getCategories().catch(() => ({ categories: [] })),
+      courseClient.getProgress(courseCode),
     ])
-    const grammarAccess = buildGrammarLevelAccess(grammarData.categories || [])
+    const districtAccess = buildDistrictLevelAccess(progress.mastery)
     const results = await Promise.all((map.districts || []).map(async (district) => {
-      const locked = !isDistrictUnlocked(district.level_code, grammarAccess)
+      const locked = !isDistrictUnlocked(district.level_code, districtAccess)
       const res = await courseClient.listConversationScenarios(district.code, courseCode)
       const scenarios = res.scenarios || []
       const npcs = buildNpcGroups(scenarios, courseCode || '').filter(npc => !npc.locked)

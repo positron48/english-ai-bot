@@ -38,11 +38,12 @@ import { onMounted, ref, computed } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 import { apiClient } from '../api/client'
-import { getGrammarCourseCode, grammarClient } from '../api/grammarClient'
+import { getGrammarCourseCode } from '../api/grammarClient'
+import { courseClient } from '../api/courseClient'
 import LgIcon from '../components/linglow/LgIcon.vue'
 import LgLumiFact from '../components/linglow/LgLumiFact.vue'
 import LgLoader from '../components/linglow/LgLoader.vue'
-import { buildGrammarLevelAccess, isDistrictUnlocked, type GrammarLevelAccess } from '../utils/districtUnlock'
+import { buildDistrictLevelAccess, isDistrictUnlocked, type DistrictLevelAccess } from '../utils/districtUnlock'
 
 const { t } = useI18n()
 const route = useRoute()
@@ -50,7 +51,7 @@ const router = useRouter()
 const loading = ref(true)
 const error = ref<string | null>(null)
 const allCategories = ref<any[]>([])
-const grammarAccess = ref<GrammarLevelAccess>({})
+const districtAccess = ref<DistrictLevelAccess>({})
 
 const districtLevel = computed(() => {
   const lv = route.query.level
@@ -71,7 +72,7 @@ const categoryLabel = (category: { level?: string; category_id: string }) => {
 const isCategoryLocked = (category: { level?: string }) => {
   const level = String(category.level || '').trim()
   if (!level) return false
-  return !isDistrictUnlocked(level, grammarAccess.value)
+  return !isDistrictUnlocked(level, districtAccess.value)
 }
 
 const openCategory = (category: { category_id: string; level?: string }) => {
@@ -84,12 +85,12 @@ onMounted(async () => {
   try {
     const courseCode = getGrammarCourseCode()
     const courseQuery = courseCode ? `?course_code=${encodeURIComponent(courseCode)}` : ''
-    const [data, grammarData] = await Promise.all([
+    const [data, progress] = await Promise.all([
       apiClient.request<{ categories: any[] }>(`/api/learning/reading/categories${courseQuery}`),
-      grammarClient.getCategories().catch(() => ({ categories: [] })),
+      courseClient.getProgress(courseCode),
     ])
     allCategories.value = data.categories || []
-    grammarAccess.value = buildGrammarLevelAccess(grammarData.categories || [])
+    districtAccess.value = buildDistrictLevelAccess(progress.mastery)
 
     // When coming from a district, skip the category list and go directly into the matching category
     if (districtLevel.value) {

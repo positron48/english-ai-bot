@@ -80,10 +80,10 @@ import { ref, computed, onMounted, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import { apiClient } from '../api/client'
-import { grammarClient } from '../api/grammarClient'
+import { courseClient } from '../api/courseClient'
 import Icon from '../components/Icon.vue'
 import { useCourse } from '../composables/useCourse'
-import { buildGrammarLevelAccess, isDistrictUnlocked, type GrammarLevelAccess } from '../utils/districtUnlock'
+import { buildDistrictLevelAccess, isDistrictUnlocked, type DistrictLevelAccess } from '../utils/districtUnlock'
 
 const { t } = useI18n()
 const { currentCourseCode, ensureCourseLoaded } = useCourse()
@@ -127,9 +127,8 @@ const loading = ref(false)
 const error = ref<string | null>(null)
 const categories = ref<Category[]>([])
 const wordSets = ref<WordSet[]>([])
-// Grammar level access, keyed by CEFR level — top-level word-set categories stay locked
-// until the learner has unlocked the matching grammar level (mirrors the city map gating).
-const grammarAccess = ref<GrammarLevelAccess>({})
+// Use the same overall district access as the city map.
+const districtAccess = ref<DistrictLevelAccess>({})
 const selectedCategoryId = ref<number | null>(null)
 const currentParentId = ref<number | null>(null)
 const categoryHistory = ref<number[]>([]) // Track navigation history
@@ -201,25 +200,25 @@ onMounted(async () => {
     }
   }
 
-  await Promise.all([loadCategories(), loadWordSets(), loadGrammarAccess()])
+  await Promise.all([loadCategories(), loadWordSets(), loadDistrictAccess()])
 })
 
-// Loads grammar level access so root categories for not-yet-unlocked levels show as locked.
-const loadGrammarAccess = async () => {
+// Load the overall district unlock status for root categories.
+const loadDistrictAccess = async () => {
   try {
-    const { categories: grammarCategories } = await grammarClient.getCategories()
-    grammarAccess.value = buildGrammarLevelAccess(grammarCategories || [])
+    const progress = await courseClient.getProgress(currentCourseCode.value || undefined)
+    districtAccess.value = buildDistrictLevelAccess(progress.mastery)
   } catch {
-    grammarAccess.value = {}
+    districtAccess.value = {}
   }
 }
 
-// A top-level (root) category is locked when its CEFR level hasn't been unlocked in grammar.
+// A top-level (root) category follows its city district unlock status.
 // Only root categories carry a level_code and only the root list gates access.
 const isCategoryLocked = (category: Category): boolean => {
   if (selectedCategoryId.value !== null) return false
   if (!category.level_code) return false
-  return !isDistrictUnlocked(category.level_code, grammarAccess.value)
+  return !isDistrictUnlocked(category.level_code, districtAccess.value)
 }
 
 // Отслеживаем изменения query параметра category_id
