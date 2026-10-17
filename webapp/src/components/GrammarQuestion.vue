@@ -279,6 +279,7 @@ import { ref, computed, watch, nextTick } from 'vue'
 import { renderMarkdown } from '../utils/markdown'
 import { useI18n } from 'vue-i18n'
 import GrammarTheoryExamples from './GrammarTheoryExamples.vue'
+import { matchesReorderAnswer } from '../utils/grammarReorder'
 import Icon from './Icon.vue'
 
 export interface TheoryChapterContext {
@@ -296,6 +297,7 @@ interface Question {
   translation_ru?: string
   choices?: Array<{ id: string; text: string; feedback?: string }>
   correct_answer?: any
+  accepted_answers?: string[]
   explanation?: string
   theory_block_id?: string
   difficulty?: number
@@ -341,6 +343,7 @@ const shuffledChoices = ref<Array<{ id: string; text: string; feedback?: string 
 
 const isCorrect = computed(() => {
   if (!answered.value || userAnswer.value === null) return false
+  if (props.question.type === 'reorder') return matchesReorderAnswer(userAnswer.value, { ...props.question, correct_answer: correctAnswer.value })
   return compareAnswers(userAnswer.value, correctAnswer.value)
 })
 

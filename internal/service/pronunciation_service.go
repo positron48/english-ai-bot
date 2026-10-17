@@ -1014,7 +1014,12 @@ func (s *PronunciationService) StoreExternalAudio(word, provider, format string,
 	if !isLikelyMP3(audio) {
 		return out, fmt.Errorf("audio does not look like mp3")
 	}
+	// Uploads replace recordings that clients may have cached as immutable.
+	// A content-addressed filename gives each recording a new URL and leaves
+	// the previous ready file intact until MarkReady switches the DB pointer.
+	digest := sha256.Sum256(audio)
 	relPath := s.relativePathForWordWithExt(normalized, ".mp3")
+	relPath = strings.TrimSuffix(relPath, ".mp3") + "-" + hex.EncodeToString(digest[:]) + ".mp3"
 	fullPath := filepath.Join(s.audioDir, relPath)
 	if err := writeFileAtomic(fullPath, audio, 0o644); err != nil {
 		return out, fmt.Errorf("write external audio: %w", err)

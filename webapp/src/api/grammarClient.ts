@@ -2,7 +2,7 @@ import { captureUserScope, currentUserScope } from './sessionScope'
 import { apiClient } from './client'
 import { emitAppDataEvent } from './cacheInvalidation'
 import { patchLearningAfterGrammarSubmit } from './appDataCachePatches'
-import { chapterForQuestionDisplay, chapterQuestionsWithTranslations, grammarQuestionAvailable } from '../utils/grammarReorder'
+import { chapterForQuestionDisplay, chapterQuestionsWithTranslations, grammarQuestionAvailable, matchesReorderAnswer } from '../utils/grammarReorder'
 import {
   OfflineGrammarMeta,
   QueuedGrammarAttempt,
@@ -73,7 +73,8 @@ function normalizeTrueFalse(value: any): string | null {
   return null
 }
 
-function compareAnswers(userAnswer: any, correctAnswer: any, questionType?: string): boolean {
+function compareAnswers(userAnswer: any, correctAnswer: any, questionType?: string, acceptedAnswers?: string[]): boolean {
+  if (questionType === 'reorder') return matchesReorderAnswer(userAnswer, { type: questionType, correct_answer: correctAnswer, accepted_answers: acceptedAnswers })
   if (questionType === 'true_false') {
     const u = normalizeTrueFalse(userAnswer)
     const c = normalizeTrueFalse(correctAnswer)
@@ -317,7 +318,7 @@ async function gradeOfflineTest(scope: 'chapter' | 'category', scopeID: string, 
     const chapterPayload = await getStoredChapter(chapterID, activeCourseCode())
     const question = questionsByID(chapterPayload).get(item.question_id)
     if (!question) continue
-    const isCorrect = item.answer !== null && item.answer !== undefined && compareAnswers(item.answer, question.correct_answer, question.type)
+    const isCorrect = item.answer !== null && item.answer !== undefined && compareAnswers(item.answer, question.correct_answer, question.type, question.accepted_answers)
     if (isCorrect) correct++
     total++
     const resultItem: any = {
@@ -655,7 +656,7 @@ export const grammarClient = {
     checkScope()
     const question = questions.find((q: any) => q?.id === questionID || q?._offline_original_question_id === questionID)
     if (!question) throw new OfflineGrammarUnavailableError('Training question is not available offline')
-    const correct = compareAnswers(answer, question.correct_answer, question.type)
+    const correct = compareAnswers(answer, question.correct_answer, question.type, question.accepted_answers)
     const result = {
       correct,
       correct_answer: question.correct_answer,

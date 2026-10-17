@@ -7,7 +7,7 @@
       :key="exampleKey(example)"
       class="grammar-theory-example-item"
     >
-      <div class="grammar-theory-example-text">{{ example.text }}</div>
+      <div class="grammar-theory-example-text"><ClickableText :text="example.text" subtle-underline :modal-z-index="2100" /></div>
       <button
         v-if="example.translation && !isRevealed(example)"
         type="button"
@@ -27,6 +27,7 @@
 <script setup lang="ts">
 import { ref } from 'vue'
 import { useI18n } from 'vue-i18n'
+import ClickableText from './ClickableText.vue'
 
 export interface GrammarTheoryExample {
   id?: string

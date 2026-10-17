@@ -2,6 +2,15 @@
 // Never use an explanation or a partial sentence match as a translation.
 const normalizeSentence = (text: string): string => text.trim().replace(/\s+/g, ' ')
 
+export function matchesReorderAnswer(answer: unknown, question: any): boolean {
+  if (question?.type !== 'reorder' || typeof answer !== 'string') return false
+  const normalize = (text: string) => normalizeSentence(text).toLowerCase()
+  const alternatives = Array.isArray(question.accepted_answers) ? question.accepted_answers : []
+  return [question.correct_answer, ...alternatives].some(
+    candidate => typeof candidate === 'string' && candidate.trim() !== '' && normalize(answer) === normalize(candidate),
+  )
+}
+
 export function grammarQuestionAvailable(question: any): boolean {
   if (['mcq_single', 'fill_blank', 'error_spotting', 'true_false'].includes(question?.type)) return true
   return question?.type === 'reorder' && (

@@ -1299,7 +1299,7 @@ func (s *GrammarService) SubmitTestWithClientAttemptID(ctx context.Context, user
 				isCorrect = s.compareAnswers(userAnswer, correctAnswer)
 			}
 		} else {
-			isCorrect = s.compareAnswers(userAnswer, correctAnswer)
+			isCorrect = s.compareQuestionAnswer(userAnswer, q)
 		}
 
 		if isCorrect {
@@ -1423,6 +1423,24 @@ func normalizeAnswerString(str string) string {
 	s := strings.TrimSpace(str)
 	s = strings.Join(strings.Fields(s), " ")
 	return strings.ToLower(s)
+}
+
+// compareQuestionAnswer accepts explicitly reviewed reorder variants while keeping
+// correct_answer as the sentence used to build the word tiles and show feedback.
+func (s *GrammarService) compareQuestionAnswer(userAnswer interface{}, question map[string]interface{}) bool {
+	if s.compareAnswers(userAnswer, question["correct_answer"]) {
+		return true
+	}
+	if question["type"] != "reorder" {
+		return false
+	}
+	alternatives, _ := question["accepted_answers"].([]interface{})
+	for _, alternative := range alternatives {
+		if text, ok := alternative.(string); ok && strings.TrimSpace(text) != "" && s.compareAnswers(userAnswer, text) {
+			return true
+		}
+	}
+	return false
 }
 
 // compareAnswers compares user answer with correct answer (case-insensitive, spaces normalized)

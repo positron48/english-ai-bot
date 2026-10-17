@@ -176,6 +176,7 @@ func (r *Router) handleInternalContentReportByID(w http.ResponseWriter, req *htt
 		return
 	}
 	resp := contentReportToMap(report, repo)
+	wordCourse := ""
 	if report.SourceType == "reading_text" {
 		textID := report.GrammarChapterID
 		if payloadID, ok := repo.ParsePayload(report.PayloadJSON)["text_id"].(string); ok && strings.TrimSpace(payloadID) != "" {
@@ -203,10 +204,13 @@ func (r *Router) handleInternalContentReportByID(w http.ResponseWriter, req *htt
 		wordRepo := repository.NewWordRepository(r.db, r.logger)
 		if wc, e := wordRepo.GetWordCardByID(*report.WordCardID); e == nil && wc != nil {
 			resp["word_card"] = wc
+			wordCourse = wc.CourseCode
+			resp["course_code"] = wc.CourseCode
 		}
 	}
-	if report.SourceType == "word_training" && report.Word != "" && r.pronunciationService != nil && r.pronunciationService.IsEnabled() {
-		if status, e := r.pronunciationService.GetStatus(report.Word); e == nil {
+	tts := r.pronunciationServiceForLang(wordCourse)
+	if report.SourceType == "word_training" && report.Word != "" && tts != nil && tts.IsEnabled() {
+		if status, e := tts.GetStatus(report.Word); e == nil {
 			resp["tts_status"] = status
 		}
 	}

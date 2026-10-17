@@ -51,7 +51,7 @@ def main() -> int:
     for word in tts_words:
         for attempt in range(3):
             try:
-                out = http("POST", f"{base}/api/internal/tts/regenerate", token, {"word": word})
+                out = http("POST", f"{base}/api/internal/tts/regenerate?course_code=es_ru", token, {"word": word})
                 print(f"✓ tts regenerate {word}: state={out.get('state', out)}")
                 break
             except RuntimeError as e:

@@ -117,14 +117,13 @@ func (r *Router) applyTrainingCardUpdate(cardID int64, updateData map[string]int
 	if err := trainingCardRepo.UpdateTrainingCard(card); err != nil {
 		return err
 	}
-	if r.pronunciationService != nil {
-		wordRepo := repository.NewWordRepository(r.db, r.logger)
-		canonicalWord := card.WordEN
-		if wc, err := wordRepo.GetWordCardByID(card.WordCardID); err == nil && wc != nil {
-			canonicalWord = wc.Word
+	wordRepo := repository.NewWordRepository(r.db, r.logger)
+	if wc, err := wordRepo.GetWordCardByID(card.WordCardID); err == nil && wc != nil {
+		if tts := r.pronunciationServiceForLang(wc.CourseCode); tts != nil {
+			tts.ScheduleWord(wc.Word)
 		}
-		r.pronunciationService.ScheduleWord(canonicalWord)
 	}
+
 	return nil
 }
 
@@ -141,7 +140,8 @@ func (r *Router) handleInternalTTSRegenerate(w http.ResponseWriter, req *http.Re
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		return
 	}
-	if r.pronunciationService == nil || !r.pronunciationService.IsEnabled() {
+	tts := r.pronunciationServiceForLang(req.URL.Query().Get("course_code"))
+	if tts == nil || !tts.IsEnabled() {
 		http.Error(w, "TTS service is unavailable", http.StatusServiceUnavailable)
 		return
 	}
@@ -155,7 +155,7 @@ func (r *Router) handleInternalTTSRegenerate(w http.ResponseWriter, req *http.Re
 		http.Error(w, "word required", http.StatusBadRequest)
 		return
 	}
-	status, err := r.pronunciationService.ForceRegenerate(word)
+	status, err := tts.ForceRegenerate(word)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return
@@ -172,7 +172,8 @@ func (r *Router) handleInternalTTSStatus(w http.ResponseWriter, req *http.Reques
 		http.Error(w, "Unauthorized", http.StatusUnauthorized)
 		return
 	}
-	if r.pronunciationService == nil || !r.pronunciationService.IsEnabled() {
+	tts := r.pronunciationServiceForLang(req.URL.Query().Get("course_code"))
+	if tts == nil || !tts.IsEnabled() {
 		http.Error(w, "TTS service is unavailable", http.StatusServiceUnavailable)
 		return
 	}
@@ -181,7 +182,7 @@ func (r *Router) handleInternalTTSStatus(w http.ResponseWriter, req *http.Reques
 		http.Error(w, "word query param required", http.StatusBadRequest)
 		return
 	}
-	status, err := r.pronunciationService.GetStatus(word)
+	status, err := tts.GetStatus(word)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusBadRequest)
 		return

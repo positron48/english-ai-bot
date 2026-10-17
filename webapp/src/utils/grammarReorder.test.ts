@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { chapterForQuestionDisplay, chapterQuestionsWithTranslations, grammarQuestionAvailable } from './grammarReorder'
+import { chapterForQuestionDisplay, chapterQuestionsWithTranslations, grammarQuestionAvailable, matchesReorderAnswer } from './grammarReorder'
 
 const reorderChapterFixture = () => ({
   id: 'ch', ui_language: 'ru', blocks: [
@@ -60,4 +60,16 @@ it('filters unsupported formats from cached questions and inline quizzes', () =>
   })
   expect(result.question_bank.questions.map((q: any) => q.id)).toEqual(['good'])
   expect(result.blocks[0].quiz_inline.question_ids).toEqual(['good'])
+})
+
+
+describe('reviewed reorder variants', () => {
+  it('accepts only canonical and reviewed alternatives for reorder', () => {
+    const question = { type: 'reorder', correct_answer: 'Vamos a enviarte los documentos hoy.', accepted_answers: ['Hoy vamos a enviarte los documentos.', '', null] }
+    expect(matchesReorderAnswer('  hoy vamos a enviarte los documentos. ', question)).toBe(true)
+    expect(matchesReorderAnswer('Vamos a enviarte los documentos hoy.', question)).toBe(true)
+    expect(matchesReorderAnswer('Documentos hoy enviarte a vamos los.', question)).toBe(false)
+    expect(matchesReorderAnswer('', question)).toBe(false)
+    expect(matchesReorderAnswer('Hoy vamos a enviarte los documentos.', { ...question, type: 'fill_blank' })).toBe(false)
+  })
 })

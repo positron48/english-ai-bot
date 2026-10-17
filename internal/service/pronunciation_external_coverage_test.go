@@ -369,7 +369,7 @@ func TestPronunciationExternal_StoreExternalAudio_Success(t *testing.T) {
 		t.Fatal("expected audio URL in status")
 	}
 
-	rel := svc.relativePathForWordWithExt("externalword", ".mp3")
+	rel := strings.TrimPrefix(out.AudioURL, "/media/tts/")
 	full := filepath.Join(audioDir, rel)
 	data, err := os.ReadFile(full)
 	if err != nil {
@@ -697,5 +697,41 @@ func TestPronunciationExternal_Start_NoProvidersWaitsForCancel(t *testing.T) {
 	case <-done:
 	case <-time.After(3 * time.Second):
 		t.Fatal("Start did not return after cancel with zero providers")
+	}
+}
+
+func TestPronunciationExternal_ReplacementChangesURLAndPreservesOldRecording(t *testing.T) {
+	db := testutil.SetupTestDB(t)
+	dir := t.TempDir()
+	svc := pronunciationExternalService(t, db, dir)
+	firstAudio := pronunciationExternalSampleMP3()
+	first, err := svc.StoreExternalAudio("chat", "manual:piper", "mp3", firstAudio)
+	if err != nil {
+		t.Fatal(err)
+	}
+	secondAudio := append(append([]byte(nil), firstAudio...), 1, 2, 3)
+	second, err := svc.StoreExternalAudio("chat", "manual:piper", "mp3", secondAudio)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if first.AudioURL == second.AudioURL {
+		t.Fatal("replacement kept an immutable cached URL")
+	}
+	lookup := svc.Lookup("chat")
+	if !lookup.Available || lookup.URL != second.AudioURL {
+		t.Fatalf("lookup did not select replacement: %+v", lookup)
+	}
+	for _, item := range []struct {
+		url   string
+		audio []byte
+	}{{first.AudioURL, firstAudio}, {second.AudioURL, secondAudio}} {
+		got, err := os.ReadFile(filepath.Join(dir, strings.TrimPrefix(item.url, "/media/tts/")))
+		if err != nil || string(got) != string(item.audio) {
+			t.Fatalf("recording changed or missing: %s %v", item.url, err)
+		}
+	}
+	repeat, err := svc.StoreExternalAudio("chat", "manual:piper", "mp3", secondAudio)
+	if err != nil || repeat.AudioURL != second.AudioURL {
+		t.Fatalf("same bytes must keep stable URL: %+v %v", repeat, err)
 	}
 }

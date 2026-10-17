@@ -11,7 +11,7 @@
     </template>
   </span>
   <Teleport to="body">
-    <div v-if="modalVisible" class="ct-modal-overlay" @click.self="closeModal">
+    <div v-if="modalVisible" class="ct-modal-overlay" :style="props.modalZIndex ? { zIndex: props.modalZIndex } : undefined" @click.self="closeModal">
       <div class="ct-modal-panel">
         <LgLumiCardLoading
           v-if="lookupLoading"
@@ -46,7 +46,7 @@ import VocabWordCardsDetail, { type VocabCardsAPIResponse } from './VocabWordCar
 // `exclude` is the word being trained: opening its own card would spoil the answer, so the
 // occurrence closest to it (exact match first, then Levenshtein distance to catch inflected
 // forms) is rendered as plain text.
-const props = defineProps<{ text: string; exclude?: string; subtleUnderline?: boolean }>()
+const props = defineProps<{ text: string; exclude?: string; subtleUnderline?: boolean; modalZIndex?: number }>()
 
 const { t } = useI18n()
 

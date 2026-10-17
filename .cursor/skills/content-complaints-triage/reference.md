@@ -18,8 +18,9 @@ kubectl -n spanish get secret spanish-secrets -o jsonpath='{.data.COMPLAINTS_SER
 | GET | `/api/internal/content-reports/{id}` | Контекст для правки |
 | POST | `/api/internal/content-reports/resolve-bulk` | Закрыть жалобы |
 | PUT | `/api/internal/training/card/{id}` | JSON: word_ru, meaning_en, example_*, hint, pos, … |
-| POST | `/api/internal/tts/regenerate` | `{"word":"..."}` |
-| GET | `/api/internal/tts/status?word=` | Статус TTS |
+| POST | `/api/internal/tts/audio` | Ручная загрузка/замена MP3: JSON `word`, `target_lang` (`es`/`en`), `format=mp3`, `audio_base64`, `provider`, `engine`, `voice`; требует TTS service token |
+| POST | `/api/internal/tts/regenerate?course_code=es_ru` | `{"word":"..."}`; для EN указать `en_ru` |
+| GET | `/api/internal/tts/status?course_code=es_ru&word=` | Статус TTS нужного курса |
 
 Legacy (совместимость): `/api/internal/content-reports/grammar`, `.../grammar/resolve-bulk`.
 
@@ -74,7 +75,7 @@ Legacy (совместимость): `/api/internal/content-reports/grammar`, `.
 ## Word / TTS fixes
 
 - Карточка: internal PUT training card (см. admin поля в `internal/web/admin.go`).
-- Озвучка: `POST /api/internal/tts/regenerate`, затем status pending/ready.
+- Озвучка: `POST /api/internal/tts/regenerate?course_code=es_ru` (или `en_ru`), затем status того же курса pending/ready. Без `course_code` internal API использует язык основного сервиса; это не подтверждает озвучку другого курса. Поддержка параметра требует релиза исправления от 2026-10-17.
 - Массовые однотипные ошибки: grep training_cards / word_cards по word_category, pos.
 
 ## Журнал триажа
