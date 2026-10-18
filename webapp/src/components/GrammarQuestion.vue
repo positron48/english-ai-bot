@@ -151,7 +151,7 @@
           :disabled="answered"
           :class="['fill-input', { 'correct': answered && isCorrect, 'incorrect': answered && !isCorrect }]"
           type="text"
-          :placeholder="question.prompt.includes('___') ? 'Fill in the blank' : 'Your answer'"
+          :placeholder="question.prompt.includes('___') ? t('dailyJourney.question.fill') : t('dailyJourney.question.answer')"
           ref="fillInputRef"
         />
         <button
@@ -160,7 +160,7 @@
           class="check-btn"
           :disabled="answered"
         >
-          {{ showAnswers ? 'Check' : 'Confirm' }}
+          {{ showAnswers ? t('dailyJourney.question.check') : t('dailyJourney.question.confirm') }}
         </button>
       </div>
       <!-- Show correct/incorrect indicator for fill_blank after check -->
@@ -187,7 +187,7 @@
           'incorrect': answered && userAnswer === 'true' && correctAnswer !== 'true'
         }]"
       >
-        Да
+        {{ t('dailyJourney.question.yes') }}
       </button>
       <button
         @click="selectAnswer('false')"
@@ -198,7 +198,7 @@
           'incorrect': answered && userAnswer === 'false' && correctAnswer !== 'false'
         }]"
       >
-        Нет
+        {{ t('dailyJourney.question.no') }}
       </button>
     </div>
     
@@ -275,6 +275,7 @@
 </template>
 
 <script setup lang="ts">
+import { useScopedExerciseDraft } from '../composables/useScopedExerciseDraft'
 import { ref, computed, watch, nextTick } from 'vue'
 import { renderMarkdown } from '../utils/markdown'
 import { useI18n } from 'vue-i18n'
@@ -297,6 +298,8 @@ interface Question {
   translation_ru?: string
   choices?: Array<{ id: string; text: string; feedback?: string }>
   correct_answer?: any
+  reorder_words?: string[]
+  reorder_punctuation?: string
   accepted_answers?: string[]
   explanation?: string
   theory_block_id?: string
@@ -305,6 +308,7 @@ interface Question {
 
 const props = withDefaults(defineProps<{
   question: Question
+  draftKey?: string
   theoryBlock?: any
   /** Ordered theory blocks for the current chapter only (training modal pager). */
   chapterTheoryBlocks?: any[] | null
@@ -487,12 +491,12 @@ const initializeReorder = () => {
     return
   }
   
-  if (typeof props.question.correct_answer === 'string') {
-    const correctAnswerStr = props.question.correct_answer.trim()
+  if (Array.isArray(props.question.reorder_words) || typeof props.question.correct_answer === 'string') {
+    const correctAnswerStr = typeof props.question.correct_answer === 'string' ? props.question.correct_answer.trim() : ''
     
     // Extract punctuation from the end (.!?)
     const punctuationMatch = correctAnswerStr.match(/[.!?]$/)
-    lastPunctuation.value = punctuationMatch ? punctuationMatch[0] : ''
+    lastPunctuation.value = props.question.reorder_punctuation ?? (punctuationMatch ? punctuationMatch[0] : '')
     
     // Remove punctuation for word parsing
     let textForWords = lastPunctuation.value 
@@ -503,7 +507,7 @@ const initializeReorder = () => {
     textForWords = textForWords.replace(/\s*,\s*/g, ' , ')
     
     // Split into words, keeping commas as separate elements
-    const words = textForWords
+    const words = props.question.reorder_words || textForWords
       .split(/\s+/)
       .filter(w => w.trim().length > 0)
     
@@ -681,13 +685,13 @@ const restoreAnswer = () => {
 
 // Restore reorder answer by reconstructing word positions
 const restoreReorderAnswer = (answerStr: string) => {
-  if (!props.question.correct_answer || typeof props.question.correct_answer !== 'string') {
+  if (!Array.isArray(props.question.reorder_words) && typeof props.question.correct_answer !== 'string') {
     return
   }
   
   // Parse the answer string back into words
   const answerTrimmed = answerStr.trim()
-  const correctAnswerStr = props.question.correct_answer.trim()
+  const correctAnswerStr = typeof props.question.correct_answer === 'string' ? props.question.correct_answer.trim() : ''
   
   // Extract punctuation
   const punctuationMatch = answerTrimmed.match(/[.!?]$/)
@@ -705,7 +709,7 @@ const restoreReorderAnswer = (answerStr: string) => {
   
   // Split into words
   const answerWords = answerWithoutPunct.split(/\s+/).filter(w => w.trim().length > 0)
-  const allCorrectWords = correctWithoutPunct.split(/\s+/).filter(w => w.trim().length > 0)
+  const allCorrectWords = props.question.reorder_words || correctWithoutPunct.split(/\s+/).filter(w => w.trim().length > 0)
   
   // Reconstruct selectedWords from answer
   selectedWords.value = [...answerWords]
@@ -791,6 +795,20 @@ watch(() => props.feedbackCorrectAnswer, (value) => {
 watch(() => props.question?.id, () => {
   showTheoryHelp.value = false
 })
+
+useScopedExerciseDraft(computed(() => props.draftKey || ''),
+  () => ({ answer: userAnswer.value, selected: selectedWords.value, available: availableWords.value }),
+  draft => {
+    if (!draft || typeof draft !== 'object') return
+    const saved = draft as { answer?: unknown; selected?: unknown; available?: unknown }
+    if (props.question.type === 'fill_blank' && typeof saved.answer === 'string') userAnswer.value = saved.answer
+    if (props.question.type === 'reorder' && Array.isArray(saved.selected) && Array.isArray(saved.available)) {
+      const all = [...saved.selected, ...saved.available]
+      if (!all.every(word => typeof word === 'string') || JSON.stringify([...all].sort()) !== JSON.stringify([...availableWords.value, ...selectedWords.value].sort())) return
+      selectedWords.value = saved.selected
+      availableWords.value = saved.available
+    }
+  }, () => props.initialAnswer !== undefined && props.initialAnswer !== null)
 
 defineExpose({
   toggleTheoryHelp,

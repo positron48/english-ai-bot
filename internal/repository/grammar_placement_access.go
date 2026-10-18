@@ -7,7 +7,23 @@ import (
 	"errors"
 	"fmt"
 	"strings"
+	"tgbot-skeleton/internal/database"
 )
+
+func (r *GrammarAttemptRepository) placementDB() interface {
+	database.DBTX
+	database.ContextDBTX
+} {
+	if r.placementReader != nil {
+		return r.placementReader
+	}
+	return r.db
+}
+func (r *GrammarAttemptRepository) forTransactionReads(tx *sql.Tx) *GrammarAttemptRepository {
+	clone := *r
+	clone.placementReader = tx
+	return &clone
+}
 
 // ForCourse returns an independent view; services for different languages must
 // never mutate the shared repository's selected course.
@@ -37,7 +53,7 @@ func (r *GrammarAttemptRepository) getCoursePlacement(ctx context.Context, userI
 	var openedJSON string
 	var completedAt sql.NullString
 	var cleared bool
-	err := r.db.QueryRowContext(ctx, `
+	err := r.placementDB().QueryRowContext(ctx, `
 		SELECT uc.user_id, a.user_course_id, a.score, a.total_questions,
 		       a.opened_sections_json, a.completed_at, a.admin_override, a.source, a.cleared
 		FROM grammar_placement_access a

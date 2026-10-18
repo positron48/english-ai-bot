@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"strings"
+	"tgbot-skeleton/internal/database"
 
 	"go.uber.org/zap"
 )
@@ -29,12 +30,12 @@ type WordMasteringStatsRow struct {
 
 // UserWordMasteringRepository handles user_word_mastering table and batch stats from review_events.
 type UserWordMasteringRepository struct {
-	db     *sql.DB
+	db     database.DBTX
 	logger *zap.Logger
 }
 
 // NewUserWordMasteringRepository creates a new repository.
-func NewUserWordMasteringRepository(db *sql.DB, logger *zap.Logger) *UserWordMasteringRepository {
+func NewUserWordMasteringRepository(db database.DBTX, logger *zap.Logger) *UserWordMasteringRepository {
 	return &UserWordMasteringRepository{db: db, logger: logger}
 }
 

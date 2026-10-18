@@ -12,6 +12,7 @@ import (
 	"strings"
 
 	"tgbot-skeleton/internal/config"
+	"tgbot-skeleton/internal/database"
 	"tgbot-skeleton/internal/grammarbundle"
 
 	"go.uber.org/zap"
@@ -20,7 +21,7 @@ import (
 // GrammarContentRepository handles reading grammar course content from embedded filesystem
 type GrammarContentRepository struct {
 	fs       fs.FS
-	db       *sql.DB
+	db       database.DBTX
 	bundleID string
 	logger   *zap.Logger
 }
@@ -263,4 +264,12 @@ func (r *GrammarContentRepository) GetAllChapterIDs() ([]string, error) {
 	}
 
 	return ids, nil
+}
+
+func (r *GrammarContentRepository) WithQueries(q database.DBTX) *GrammarContentRepository {
+	clone := *r
+	if r.db != nil {
+		clone.db = q
+	}
+	return &clone
 }

@@ -6,12 +6,15 @@
       @back="goBack"
     >
       <template #right>
-        <button v-if="session" class="chat-reset" type="button" @click="resetChat">
+        <button v-if="!daily.isJourney.value && session" class="chat-reset" type="button" @click="resetChat">
           {{ t('chat.reset') }}
         </button>
       </template>
     </LgPageHeader>
 
+    <div v-if="daily.isJourney.value && daily.error.value" class="chat-error" role="alert">
+      <span>{{ daily.error.value }}</span><button @click="retryDaily">{{ t('common.retry') }}</button><button @click="daily.back">{{ t('dailyJourney.returnToRoute') }}</button>
+    </div>
     <div v-if="loading" class="chat-loading">{{ t('common.loading') }}</div>
     <template v-else-if="session">
       <div ref="scrollEl" class="chat-thread">
@@ -53,7 +56,7 @@
           >
             <template v-if="m.role !== 'user'">
               <LgLumi pose="teacher" :size="36" class="pq-lumi" />
-              <LgSpeechBubble><ClickableText :text="m.content" subtle-underline /></LgSpeechBubble>
+              <LgSpeechBubble><ClickableText :course-code="daily.context.value?.courseCode" :text="m.content" subtle-underline /></LgSpeechBubble>
             </template>
             <div v-else class="chat-user-bubble">{{ m.content }}</div>
           </div>
@@ -89,11 +92,11 @@
           </div>
           <div v-if="status === 'open' && !allTasksDone" class="chat-banner-hint">{{ t('chat.questOptionalHint') }}</div>
           <div v-else-if="status === 'open'" class="chat-banner-hint">{{ t('chat.questCompleteHint') }}</div>
-          <LgButton @click="goBack">{{ t('pictureQuest.backToList') }}</LgButton>
+          <LgButton @click="goBack">{{ daily.isJourney.value ? t('dailyJourney.returnToRoute') : t('pictureQuest.backToList') }}</LgButton>
         </div>
         <div v-else-if="budgetExhausted" class="chat-banner">
           <div class="chat-banner-text">{{ t('chat.budgetEnded') }}</div>
-          <LgButton @click="goBack">{{ t('pictureQuest.backToList') }}</LgButton>
+          <LgButton @click="goBack">{{ daily.isJourney.value ? t('dailyJourney.returnToRoute') : t('pictureQuest.backToList') }}</LgButton>
         </div>
       </div>
 
@@ -160,11 +163,14 @@ import { getHintSections } from '../constants/pictureHintPhrasebook'
 import { useCourse } from '../composables/useCourse'
 import { showAlert, showConfirm } from '../composables/useDialog'
 import { mediaUrl } from '../utils/mediaUrl'
+import { useDailyJourneyChat } from '../composables/useDailyJourneyChat'
 
 const { t } = useI18n()
 const { currentCourse, currentCourseCode, ensureCourseLoaded } = useCourse()
 const route = useRoute()
 const router = useRouter()
+const journeyChat = useDailyJourneyChat('picture')
+const daily = journeyChat.daily
 
 const questCode = computed(() => String(route.params.questCode || ''))
 
@@ -172,7 +178,7 @@ const loading = ref(true)
 const session = ref<PictureQuestSessionState | null>(null)
 const messages = ref<ConversationMessage[]>([])
 const tasks = ref<ConversationTask[]>([])
-const input = ref('')
+const input = journeyChat.draft
 const sending = ref(false)
 const questPassed = ref(false)
 const budgetExhausted = ref(false)
@@ -196,15 +202,16 @@ function onVoiceTranscript(text: string) {
 const headerTitle = computed(() => session.value?.title || t('pictureQuest.title'))
 // Keep the composer usable after the quest passes so the learner can finish optional tasks;
 // the session only truly ends when status flips to completed or budget runs out.
-const canSend = computed(() => status.value === 'open' && !budgetExhausted.value)
+const canSend = computed(() => status.value === 'open' && !budgetExhausted.value && (!daily.isJourney.value || !daily.hasPendingAction.value))
 const allTasksDone = computed(() => tasks.value.length > 0 && tasks.value.every(t => t.completed))
 
 // Hint sheet is driven by the course languages (target + native), never the UI locale.
-const targetLang = computed(() => currentCourse.value?.target_language || '')
-const nativeLang = computed(() => currentCourse.value?.native_language || 'ru')
+const targetLang = computed(() => daily.context.value?.courseCode.split('_')[0] || currentCourse.value?.target_language || '')
+const nativeLang = computed(() => daily.context.value?.courseCode.split('_')[1] || currentCourse.value?.native_language || 'ru')
 const hasHints = computed(() => getHintSections(targetLang.value, nativeLang.value).length > 0)
 
 function goBack() {
+  if (daily.isJourney.value) { void journeyChat.back().catch(() => {}); return }
   router.push({ name: 'PictureQuestCategories' })
 }
 
@@ -216,6 +223,13 @@ async function scrollToBottom() {
 async function send() {
   const text = input.value.trim()
   if (!text || sending.value || !session.value) return
+  if (daily.isJourney.value) {
+    sending.value = true; sendError.value = false
+    try { applyDailySession(await journeyChat.send(session.value.session_id, text)) }
+    catch { sendError.value = true }
+    finally { sending.value = false; await scrollToBottom(); if (canSend.value) focusComposer() }
+    return
+  }
   input.value = ''
   sendError.value = false
   messages.value.push({ role: 'user', content: text })
@@ -238,6 +252,17 @@ async function send() {
     if (canSend.value) focusComposer()
   }
 }
+
+function applyDailySession(state: any) {
+  session.value = state; messages.value = [...(state.messages || [])]; tasks.value = state.tasks || []
+  status.value = state.status; questPassed.value = state.quest_passed; budgetExhausted.value = state.budget_exhausted
+}
+async function retryDaily() {
+  try { applyDailySession(await journeyChat.retry()); loadError.value = ''; sendError.value = false; await scrollToBottom() }
+  catch { sendError.value = true }
+}
+watch(daily.data, state => { if (daily.isJourney.value && state) applyDailySession(state) })
+watch(daily.finished, finished => { if (daily.isJourney.value && finished) void daily.back() })
 
 async function resetChat() {
   if (!session.value) return
@@ -270,6 +295,7 @@ async function loadForRoute() {
   budgetExhausted.value = false
   status.value = 'open'
   try {
+    if (daily.isJourney.value) { applyDailySession(await journeyChat.session()); await scrollToBottom(); return }
     await ensureCourseLoaded()
     const course = currentCourseCode.value || undefined
     const s = await courseClient.startPictureQuestSession(questCode.value, course)

@@ -50,6 +50,10 @@ func TestHandleDashboardOverview_AggregatesParts(t *testing.T) {
 	if err := json.NewDecoder(w.Body).Decode(&response); err != nil {
 		t.Fatalf("Failed to decode aggregate response: %v", err)
 	}
+	var journey map[string]any
+	if err := json.Unmarshal(response["daily_journey"], &journey); err != nil || journey["enabled"] != false || journey["journey"] != nil {
+		t.Fatalf("disabled journey overview: %s (%v)", response["daily_journey"], err)
+	}
 	// The dashboard part has no external dependencies and must always be present.
 	dash, ok := response["dashboard"]
 	if !ok {

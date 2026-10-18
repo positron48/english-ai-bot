@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"tgbot-skeleton/internal/config"
+	"tgbot-skeleton/internal/database"
 )
 
 // LinglowEventRepository writes dual-write progress data into Linglow v2 tables.
@@ -52,9 +53,9 @@ type GrammarTrainingEventInput struct {
 
 // WordReviewEventInput describes a legacy review_events row that should be mirrored.
 type WordReviewEventInput struct {
-	UserID          int64
-	ReviewEventID   int64
-	UserCardID      int64
+	UserID        int64
+	ReviewEventID int64
+	UserCardID    int64
 	// CourseCode scopes the attempt to the learner's selected course; when empty it falls
 	// back to the instance default (CourseCodeForLearning), preserving single-course behaviour.
 	CourseCode      string
@@ -72,6 +73,15 @@ type WordReviewEventInput struct {
 
 // RecordGrammarTestAttempt mirrors a legacy grammar test attempt into exercise_attempts and learning_events.
 func (r *LinglowEventRepository) RecordGrammarTestAttempt(ctx context.Context, lc config.LearningConfig, input GrammarTestEventInput) (int64, error) {
+	return r.recordGrammarTestAttempt(ctx, nil, lc, input)
+}
+func (r *LinglowEventRepository) RecordGrammarTestAttemptTx(ctx context.Context, tx *sql.Tx, lc config.LearningConfig, input GrammarTestEventInput) (int64, error) {
+	if tx == nil {
+		return 0, fmt.Errorf("grammar event transaction is required")
+	}
+	return r.recordGrammarTestAttempt(ctx, tx, lc, input)
+}
+func (r *LinglowEventRepository) recordGrammarTestAttempt(ctx context.Context, tx *sql.Tx, lc config.LearningConfig, input GrammarTestEventInput) (int64, error) {
 	if input.UserID == 0 {
 		return 0, fmt.Errorf("user id is empty")
 	}
@@ -83,11 +93,15 @@ func (r *LinglowEventRepository) RecordGrammarTestAttempt(ctx context.Context, l
 		return 0, fmt.Errorf("course code is empty")
 	}
 
-	tx, err := r.db.BeginTx(ctx, nil)
-	if err != nil {
-		return 0, fmt.Errorf("begin linglow event write: %w", err)
+	owned := tx == nil
+	var err error
+	if owned {
+		tx, err = r.db.BeginTx(ctx, nil)
+		if err != nil {
+			return 0, fmt.Errorf("begin linglow event write: %w", err)
+		}
+		defer tx.Rollback()
 	}
-	defer tx.Rollback()
 
 	var userCourseID int64
 	if err := tx.QueryRowContext(ctx, `
@@ -110,7 +124,10 @@ func (r *LinglowEventRepository) RecordGrammarTestAttempt(ctx context.Context, l
 		return 0, fmt.Errorf("check existing exercise attempt: %w", err)
 	}
 	if err == nil {
-		return existingID, tx.Commit()
+		if owned {
+			return existingID, tx.Commit()
+		}
+		return existingID, nil
 	}
 
 	var learningItemID interface{}
@@ -177,10 +194,20 @@ func (r *LinglowEventRepository) RecordGrammarTestAttempt(ctx context.Context, l
 		return 0, fmt.Errorf("insert learning event: %w", err)
 	}
 
-	if err := tx.Commit(); err != nil {
-		return 0, fmt.Errorf("commit linglow event write: %w", err)
+	if owned {
+		if err := tx.Commit(); err != nil {
+			return 0, fmt.Errorf("commit linglow event write: %w", err)
+		}
+		r.bumpDaily(ctx, userCourseID, answeredAt, "grammar_test", input.Passed)
+	} else {
+		correct := 0
+		if input.Passed {
+			correct = 1
+		}
+		if err := NewLinglowDailyStatsRepository(tx).Bump(ctx, DailyBump{UserCourseID: userCourseID, Day: LocalDayFromTime(answeredAt), Mode: "grammar_test", Attempts: 1, Correct: correct}); err != nil {
+			return 0, err
+		}
 	}
-	r.bumpDaily(ctx, userCourseID, answeredAt, "grammar_test", input.Passed)
 	return exerciseID, nil
 }
 
@@ -200,6 +227,15 @@ func normalizeJSONArray(raw string) string {
 
 // RecordGrammarTrainingAttempt mirrors a legacy grammar_attempts SRS row into exercise_attempts and learning_events.
 func (r *LinglowEventRepository) RecordGrammarTrainingAttempt(ctx context.Context, lc config.LearningConfig, input GrammarTrainingEventInput) (int64, error) {
+	return r.recordGrammarTrainingAttempt(ctx, nil, lc, input)
+}
+func (r *LinglowEventRepository) RecordGrammarTrainingAttemptTx(ctx context.Context, tx *sql.Tx, lc config.LearningConfig, input GrammarTrainingEventInput) (int64, error) {
+	if tx == nil {
+		return 0, fmt.Errorf("grammar training transaction is required")
+	}
+	return r.recordGrammarTrainingAttempt(ctx, tx, lc, input)
+}
+func (r *LinglowEventRepository) recordGrammarTrainingAttempt(ctx context.Context, tx *sql.Tx, lc config.LearningConfig, input GrammarTrainingEventInput) (int64, error) {
 	if input.UserID == 0 {
 		return 0, fmt.Errorf("user id is empty")
 	}
@@ -211,11 +247,15 @@ func (r *LinglowEventRepository) RecordGrammarTrainingAttempt(ctx context.Contex
 		return 0, fmt.Errorf("course code is empty")
 	}
 
-	tx, err := r.db.BeginTx(ctx, nil)
-	if err != nil {
-		return 0, fmt.Errorf("begin linglow grammar training write: %w", err)
+	owned := tx == nil
+	var err error
+	if owned {
+		tx, err = r.db.BeginTx(ctx, nil)
+		if err != nil {
+			return 0, fmt.Errorf("begin linglow grammar training write: %w", err)
+		}
+		defer tx.Rollback()
 	}
-	defer tx.Rollback()
 
 	var userCourseID int64
 	if err := tx.QueryRowContext(ctx, `
@@ -238,7 +278,10 @@ func (r *LinglowEventRepository) RecordGrammarTrainingAttempt(ctx context.Contex
 		return 0, fmt.Errorf("check existing grammar training exercise attempt: %w", err)
 	}
 	if err == nil {
-		return existingID, tx.Commit()
+		if owned {
+			return existingID, tx.Commit()
+		}
+		return existingID, nil
 	}
 
 	var learningItemID interface{}
@@ -325,15 +368,37 @@ func (r *LinglowEventRepository) RecordGrammarTrainingAttempt(ctx context.Contex
 		return 0, fmt.Errorf("insert grammar training learning event: %w", err)
 	}
 
-	if err := tx.Commit(); err != nil {
-		return 0, fmt.Errorf("commit linglow grammar training write: %w", err)
+	if owned {
+		if err := tx.Commit(); err != nil {
+			return 0, fmt.Errorf("commit linglow grammar training write: %w", err)
+		}
+		r.bumpDaily(ctx, userCourseID, answeredAt, "grammar_training", input.IsCorrect)
+	} else {
+		correct := 0
+		if input.IsCorrect {
+			correct = 1
+		}
+		if err := NewLinglowDailyStatsRepository(tx).Bump(ctx, DailyBump{UserCourseID: userCourseID, Day: LocalDayFromTime(answeredAt), Mode: "grammar_training", Attempts: 1, Correct: correct}); err != nil {
+			return 0, err
+		}
 	}
-	r.bumpDaily(ctx, userCourseID, answeredAt, "grammar_training", input.IsCorrect)
 	return exerciseID, nil
 }
 
 // RecordWordReviewEvent mirrors a legacy word review_events row into exercise_attempts and learning_events.
 func (r *LinglowEventRepository) RecordWordReviewEvent(ctx context.Context, lc config.LearningConfig, input WordReviewEventInput) (int64, error) {
+	return r.recordWordReviewEventTx(ctx, lc, input, nil)
+}
+
+// RecordWordReviewEventTx shares the caller's transaction, including daily statistics.
+func (r *LinglowEventRepository) RecordWordReviewEventTx(ctx context.Context, tx *sql.Tx, lc config.LearningConfig, input WordReviewEventInput) (int64, error) {
+	if tx == nil {
+		return 0, fmt.Errorf("subject transaction is required")
+	}
+	return r.recordWordReviewEventTx(ctx, lc, input, tx)
+}
+
+func (r *LinglowEventRepository) recordWordReviewEventTx(ctx context.Context, lc config.LearningConfig, input WordReviewEventInput, tx *sql.Tx) (int64, error) {
 	if input.UserID == 0 {
 		return 0, fmt.Errorf("user id is empty")
 	}
@@ -351,11 +416,15 @@ func (r *LinglowEventRepository) RecordWordReviewEvent(ctx context.Context, lc c
 		return 0, fmt.Errorf("course code is empty")
 	}
 
-	tx, err := r.db.BeginTx(ctx, nil)
-	if err != nil {
-		return 0, fmt.Errorf("begin linglow word review write: %w", err)
+	ownsTransaction := tx == nil
+	var err error
+	if ownsTransaction {
+		tx, err = r.db.BeginTx(ctx, nil)
+		if err != nil {
+			return 0, fmt.Errorf("begin linglow subject write: %w", err)
+		}
+		defer tx.Rollback()
 	}
-	defer tx.Rollback()
 
 	var userCourseID int64
 	if err := tx.QueryRowContext(ctx, `
@@ -378,7 +447,10 @@ func (r *LinglowEventRepository) RecordWordReviewEvent(ctx context.Context, lc c
 		return 0, fmt.Errorf("check existing word review exercise attempt: %w", err)
 	}
 	if err == nil {
-		return existingID, tx.Commit()
+		if ownsTransaction {
+			return existingID, tx.Commit()
+		}
+		return existingID, nil
 	}
 
 	var wordCardID int64
@@ -464,10 +536,20 @@ func (r *LinglowEventRepository) RecordWordReviewEvent(ctx context.Context, lc c
 		return 0, fmt.Errorf("insert word review learning event: %w", err)
 	}
 
-	if err := tx.Commit(); err != nil {
-		return 0, fmt.Errorf("commit linglow word review write: %w", err)
+	if ownsTransaction {
+		if err := tx.Commit(); err != nil {
+			return 0, fmt.Errorf("commit linglow subject write: %w", err)
+		}
+		r.bumpDaily(ctx, userCourseID, answeredAt, "word_training", input.IsCorrect)
+	} else {
+		correct := 1
+		if !input.IsCorrect {
+			correct = 0
+		}
+		if err := NewLinglowDailyStatsRepository(tx).Bump(ctx, DailyBump{UserCourseID: userCourseID, Day: LocalDayFromTime(answeredAt), Mode: "word_training", Attempts: 1, Correct: correct}); err != nil {
+			return 0, err
+		}
 	}
-	r.bumpDaily(ctx, userCourseID, answeredAt, "word_training", input.IsCorrect)
 	return exerciseID, nil
 }
 
@@ -497,6 +579,18 @@ type ReadingCompletedInput struct {
 // RecordReadingCompleted mirrors a reading completion into exercise_attempts and learning_events.
 // Idempotent per (user, chapter): uses the same source_table/source_pk as the media backfill.
 func (r *LinglowEventRepository) RecordReadingCompleted(ctx context.Context, input ReadingCompletedInput) (int64, error) {
+	return r.recordReadingCompletedTx(ctx, input, nil)
+}
+
+// RecordReadingCompletedTx shares the caller's transaction, including daily statistics.
+func (r *LinglowEventRepository) RecordReadingCompletedTx(ctx context.Context, tx *sql.Tx, input ReadingCompletedInput) (int64, error) {
+	if tx == nil {
+		return 0, fmt.Errorf("subject transaction is required")
+	}
+	return r.recordReadingCompletedTx(ctx, input, tx)
+}
+
+func (r *LinglowEventRepository) recordReadingCompletedTx(ctx context.Context, input ReadingCompletedInput, tx *sql.Tx) (int64, error) {
 	if input.UserID == 0 {
 		return 0, fmt.Errorf("user id is empty")
 	}
@@ -511,11 +605,15 @@ func (r *LinglowEventRepository) RecordReadingCompleted(ctx context.Context, inp
 		readAt = time.Now()
 	}
 
-	tx, err := r.db.BeginTx(ctx, nil)
-	if err != nil {
-		return 0, fmt.Errorf("begin linglow reading write: %w", err)
+	ownsTransaction := tx == nil
+	var err error
+	if ownsTransaction {
+		tx, err = r.db.BeginTx(ctx, nil)
+		if err != nil {
+			return 0, fmt.Errorf("begin linglow subject write: %w", err)
+		}
+		defer tx.Rollback()
 	}
-	defer tx.Rollback()
 
 	var userCourseID int64
 	if err := tx.QueryRowContext(ctx, `
@@ -538,7 +636,10 @@ func (r *LinglowEventRepository) RecordReadingCompleted(ctx context.Context, inp
 		return 0, fmt.Errorf("check existing reading attempt: %w", err)
 	}
 	if err == nil {
-		return existingID, tx.Commit()
+		if ownsTransaction {
+			return existingID, tx.Commit()
+		}
+		return existingID, nil
 	}
 
 	var learningItemID interface{}
@@ -585,10 +686,17 @@ func (r *LinglowEventRepository) RecordReadingCompleted(ctx context.Context, inp
 	`, userCourseID, learningItemID, exerciseID, readAt, sourcePK, input.ChapterID); err != nil {
 		return 0, fmt.Errorf("insert reading learning event: %w", err)
 	}
-	if err := tx.Commit(); err != nil {
-		return 0, fmt.Errorf("commit linglow reading write: %w", err)
+	if ownsTransaction {
+		if err := tx.Commit(); err != nil {
+			return 0, fmt.Errorf("commit linglow subject write: %w", err)
+		}
+		r.bumpDaily(ctx, userCourseID, readAt, "reading_completion", true)
+	} else {
+		correct := 1
+		if err := NewLinglowDailyStatsRepository(tx).Bump(ctx, DailyBump{UserCourseID: userCourseID, Day: LocalDayFromTime(readAt), Mode: "reading_completion", Attempts: 1, Correct: correct}); err != nil {
+			return 0, err
+		}
 	}
-	r.bumpDaily(ctx, userCourseID, readAt, "reading_completion", true)
 	return exerciseID, nil
 }
 
@@ -602,6 +710,15 @@ type ChatMessageInput struct {
 
 // RecordChatMessage writes a learning event for a sent chat message (no exercise attempt).
 func (r *LinglowEventRepository) RecordChatMessage(ctx context.Context, input ChatMessageInput) error {
+	return recordChatMessage(ctx, r.db, input, false)
+}
+func (r *LinglowEventRepository) RecordChatMessageTx(ctx context.Context, tx *sql.Tx, input ChatMessageInput) error {
+	if tx == nil {
+		return fmt.Errorf("chat transaction required")
+	}
+	return recordChatMessage(ctx, tx, input, true)
+}
+func recordChatMessage(ctx context.Context, q database.ContextDBTX, input ChatMessageInput, strict bool) error {
 	if input.UserID == 0 {
 		return fmt.Errorf("user id is empty")
 	}
@@ -614,7 +731,7 @@ func (r *LinglowEventRepository) RecordChatMessage(ctx context.Context, input Ch
 	}
 
 	var userCourseID int64
-	if err := r.db.QueryRowContext(ctx, `
+	if err := q.QueryRowContext(ctx, `
 		SELECT uc.id
 		FROM user_courses uc
 		JOIN courses c ON c.id = uc.course_id
@@ -626,7 +743,7 @@ func (r *LinglowEventRepository) RecordChatMessage(ctx context.Context, input Ch
 	eventJSON, _ := json.Marshal(map[string]interface{}{
 		"message_len": input.MessageLen,
 	})
-	if _, err := r.db.ExecContext(ctx, `
+	if _, err := q.ExecContext(ctx, `
 		INSERT INTO learning_events (
 			user_course_id, event_type, event_time, mode, source_table, event_json
 		)
@@ -634,13 +751,16 @@ func (r *LinglowEventRepository) RecordChatMessage(ctx context.Context, input Ch
 	`, userCourseID, sentAt, string(eventJSON)); err != nil {
 		return fmt.Errorf("insert chat learning event: %w", err)
 	}
-	_ = NewLinglowDailyStatsRepository(r.db).Bump(ctx, DailyBump{
+	statsErr := NewLinglowDailyStatsRepository(q).Bump(ctx, DailyBump{
 		UserCourseID: userCourseID,
 		Day:          LocalDayFromTime(sentAt),
 		Mode:         "chat",
 		Attempts:     1,
 		Correct:      1,
 	})
+	if strict {
+		return statsErr
+	}
 	return nil
 }
 

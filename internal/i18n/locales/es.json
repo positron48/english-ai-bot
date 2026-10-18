@@ -27,5 +27,15 @@
   "training": {
     "translateTo": "Traduce al %s: <strong>%s</strong>",
     "whatMeansWord": "Significado de la palabra: <strong>%s</strong>%s"
+  },
+  "dailyJourney": {
+    "daily_journey_processing": "La respuesta de IA sigue procesándose. Reinténtalo en unos segundos.",
+    "daily_journey_ai_failed": "No se pudo obtener una respuesta de IA. Reinténtalo.",
+    "daily_journey_failed": "No se pudo guardar la acción. Reinténtalo.",
+    "daily_journey_not_found": "Recorrido no encontrado.",
+    "daily_journey_reload": "El recorrido cambió en otra pestaña. Actualiza el estado.",
+    "daily_journey_action_key_reused": "Esta solicitud ya se utilizó con otra respuesta. Actualiza el estado.",
+    "daily_journey_access_denied": "No tienes acceso a este recorrido.",
+    "daily_journey_invalid_action": "Esta acción no está disponible en la parada actual."
   }
 }

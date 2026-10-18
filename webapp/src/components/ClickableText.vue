@@ -46,7 +46,7 @@ import VocabWordCardsDetail, { type VocabCardsAPIResponse } from './VocabWordCar
 // `exclude` is the word being trained: opening its own card would spoil the answer, so the
 // occurrence closest to it (exact match first, then Levenshtein distance to catch inflected
 // forms) is rendered as plain text.
-const props = defineProps<{ text: string; exclude?: string; subtleUnderline?: boolean; modalZIndex?: number }>()
+const props = defineProps<{ text: string; exclude?: string; subtleUnderline?: boolean; modalZIndex?: number; courseCode?: string }>()
 
 const { t } = useI18n()
 
@@ -142,7 +142,7 @@ const onWordClick = async (word: string, idx: number) => {
 
   try {
     const data: VocabCardsAPIResponse = await apiClient.request(
-      withCourseCode(`/api/reading/word-lookup?lemma=${encodeURIComponent(word)}`),
+      props.courseCode ? `/api/reading/word-lookup?lemma=${encodeURIComponent(word)}&course_code=${encodeURIComponent(props.courseCode)}` : withCourseCode(`/api/reading/word-lookup?lemma=${encodeURIComponent(word)}`),
     )
     modalLemma.value = data.lemma || word
     modalPreloaded.value = data

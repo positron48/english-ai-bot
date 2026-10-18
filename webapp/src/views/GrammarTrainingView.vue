@@ -3,14 +3,15 @@
     <LgPageHeader
       :title="t('grammar.trainingTitle')"
       :show-back="true"
-      @back="router.push('/learning/grammar')"
+      @back="daily.isJourney.value ? daily.back() : router.push('/learning/grammar')"
     />
 
     <div v-if="loading" class="gt-state">{{ t('common.loading') }}</div>
 
-    <div v-else-if="error" class="gt-state">
-      <p class="gt-state-text">{{ error }}</p>
-      <button class="btn btn-primary" @click="init">{{ t('common.retry') }}</button>
+    <div v-else-if="error || daily.error.value" class="gt-state">
+      <p class="gt-state-text">{{ error || daily.error.value }}</p>
+      <button v-if="daily.isJourney.value" class="btn btn-secondary" @click="daily.back">{{ t('dailyJourney.returnToRoute') }}</button>
+      <button class="btn btn-primary" @click="retryJourneyTraining">{{ t('common.retry') }}</button>
     </div>
 
     <div v-else-if="!available" class="gt-state">
@@ -41,11 +42,13 @@
         ref="grammarQuestionRef"
         :key="`${currentQuestion.id}-${currentIndex}`"
         :question="currentQuestion"
+          :draft-key="daily.isJourney.value ? daily.draftKey?.('grammar:' + currentQuestion.id + ':' + currentIndex) : ''"
         :theory-block="currentTheoryBlock"
         :chapter-theory-blocks="currentChapterTheoryBlocksOrdered"
         :theory-chapter-context="currentChapterContext"
         :show-answers="!!result"
-        :feedback-correct-answer="result?.correct_answer"
+        :initial-answer="daily.isJourney.value ? daily.data.value?.answers[currentIndex] : undefined"
+        :feedback-correct-answer="daily.isJourney.value && result?.correct ? daily.data.value?.answers[currentIndex] : result?.correct_answer"
         :show-explanation="false"
         :show-theory-help-button="false"
         @answer="onAnswer"
@@ -94,7 +97,7 @@
       </div>
 
         <div class="actions footer-actions">
-          <button class="btn btn-primary" :disabled="!result" @click="nextQuestion">
+          <button class="btn btn-primary" :disabled="!result || daily.busy.value" @click="nextQuestion">
             {{ currentIndex + 1 >= totalCount ? t('common.finish') : t('common.next') }}
           </button>
           <button
@@ -154,10 +157,12 @@ import {
   buildReportComment
 } from '../constants/contentReportCategories'
 import { useSettings } from '../composables/useSettings'
+import { useDailyJourneyGrammar } from '../composables/useDailyJourneyGrammar'
 
 const { settings } = useSettings()
 
 const router = useRouter()
+const daily = useDailyJourneyGrammar('grammar_srs')
 const { t, tm } = useI18n()
 
 function phraseList(key: string): string[] {
@@ -359,10 +364,25 @@ const loadTrainingDelaySetting = async () => {
   }
 }
 
+const restoreJourneyTraining = async () => {
+  clearCorrectAdvanceTimer()
+  const state = await daily.ready()
+  sessionQuestions.value = state.questions
+  currentIndex.value = state.index
+  available.value = true
+  result.value = state.feedback ? state.results[state.index] : null
+  correctCount.value = state.results.filter(item => item.correct).length
+  feedbackHeadline.value = result.value?.correct ? getRandomEncouragingPhrase() : getRandomDisappointingPhrase()
+  await hydrateTheoryBlocksForSession()
+}
+const retryJourneyTraining = async () => { if (daily.isJourney.value) await daily.retry(); await init() }
+watch(daily.finished, finished => { if (daily.isJourney.value && finished) void daily.back() })
+
 const init = async () => {
   loading.value = true
   error.value = null
   try {
+    if (daily.isJourney.value) { await restoreJourneyTraining(); return }
     await loadTrainingDelaySetting()
     const data: any = await grammarClient.getTrainingAvailability()
     available.value = !!data?.grammar_training?.available
@@ -399,7 +419,9 @@ const hydrateTheoryBlocksForSession = async () => {
 
   for (const chapterId of chapterIds) {
     try {
-      const data: any = await grammarClient.getChapterForTheory(chapterId)
+      const data: any = daily.isJourney.value
+        ? { chapter: daily.data.value?.chapters?.[chapterId] }
+        : await grammarClient.getChapterForTheory(chapterId)
       cacheChapterContextFromApi(chapterId, data)
       const blocks = data?.chapter?.blocks
       if (!Array.isArray(blocks)) continue
@@ -423,8 +445,9 @@ const hydrateTheoryBlocksForSession = async () => {
 }
 
 const onAnswer = async (answer: any) => {
-  if (!currentQuestion.value || result.value) return
+  if (!currentQuestion.value || result.value || daily.busy.value) return
   try {
+    if (daily.isJourney.value) { await daily.answer(answer); await restoreJourneyTraining(); return }
     const data = await grammarClient.submitTrainingAnswer(currentQuestion.value.id, answer)
     result.value = data
     if (data?.correct) correctCount.value++
@@ -478,7 +501,8 @@ const advanceAfterCorrect = () => {
   currentIndex.value++
 }
 
-const nextQuestion = () => {
+const nextQuestion = async () => {
+  if (daily.isJourney.value) { await daily.acknowledge(); if (!daily.finished.value) await restoreJourneyTraining(); return }
   clearCorrectAdvanceTimer()
   result.value = null
   currentIndex.value++

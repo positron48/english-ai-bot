@@ -1,6 +1,7 @@
 package database
 
 import (
+	"context"
 	"database/sql"
 	"fmt"
 	"strings"
@@ -37,6 +38,13 @@ type DBTX interface {
 	Exec(string, ...interface{}) (sql.Result, error)
 	Query(string, ...interface{}) (*sql.Rows, error)
 	QueryRow(string, ...interface{}) *sql.Row
+}
+
+// ContextDBTX is the context-aware common surface of a pool and transaction.
+type ContextDBTX interface {
+	ExecContext(context.Context, string, ...any) (sql.Result, error)
+	QueryContext(context.Context, string, ...any) (*sql.Rows, error)
+	QueryRowContext(context.Context, string, ...any) *sql.Row
 }
 
 func InsertAndReturnID(db DBTX, query string, args ...interface{}) (int64, error) {

@@ -11,12 +11,10 @@ import (
 	"sync"
 
 	"tgbot-skeleton/internal/config"
-	"tgbot-skeleton/internal/grammartrainingpack"
 	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
 	"tgbot-skeleton/internal/service"
 	"tgbot-skeleton/internal/spanishverbs"
-	"tgbot-skeleton/internal/verbtraining"
 
 	"go.uber.org/zap"
 )
@@ -133,28 +131,12 @@ func (r *Router) getUserVerbScopes(ctx context.Context, userID int64) []string {
 	if strings.ToLower(strings.TrimSpace(lc.TargetLang)) != "es" {
 		return nil
 	}
-	if fsys, err := grammartrainingpack.PackFS(lc.GrammarBundleID); err == nil {
-		if gates, err := verbtraining.LoadUnlockGates(fsys); err == nil && gates != nil {
-			allowed := map[string]bool{}
-			if r.grammarService != nil && r.grammarService.AttemptRepo != nil && userID > 0 {
-				for chapterID := range gates.Chapters {
-					progress, err := r.grammarService.AttemptRepo.GetChapterProgress(userID, chapterID)
-					if err != nil {
-						continue
-					}
-					if progress != nil && progress.Passed {
-						allowed[chapterID] = true
-					}
-				}
-			}
-			scopes := gates.EnabledScopes(allowed)
-			if len(scopes) > 0 {
-				return verbtraining.ExpandScopes(scopes)
-			}
-		}
+	scopes, err := service.UnlockedVerbScopes(r.db, userID, lc)
+	if err != nil {
+		r.logger.Warn("failed to read verb scopes", zap.Error(err))
+		return models.DefaultSpanishVerbScopes()
 	}
-	// Missing curriculum data must never unlock unstudied tenses from legacy settings.
-	return models.DefaultSpanishVerbScopes()
+	return scopes
 }
 
 func (r *Router) newVerbTrainingServiceForUser(ctx context.Context, userID int64) *service.VerbTrainingService {

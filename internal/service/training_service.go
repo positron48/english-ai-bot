@@ -886,3 +886,30 @@ func (s *TrainingService) RestoreQueue(userID int64, userCardIDs []int64) ([]*mo
 
 	return queue, nil
 }
+
+// GenerateJourneyQueue reuses the normal card/challenge formats without starting
+// or finishing a training_session. Input is priority ordered (new additions first).
+// One card per word caps the daily exercise at twenty DISTINCT words.
+func (s *TrainingService) GenerateJourneyQueue(user int64, cards []*models.UserCard, cfg SessionConfig) ([]*models.TrainingQueueItem, error) {
+	queue := []*models.TrainingQueueItem{}
+	seen := map[int64]bool{}
+	for _, card := range cards {
+		tc, err := s.trainingCardRepo.GetTrainingCard(card.TrainingCardID)
+		if err != nil {
+			return nil, err
+		}
+		if tc == nil {
+			continue
+		}
+		if seen[tc.WordCardID] {
+			continue
+		}
+		seen[tc.WordCardID] = true
+		queue = append(queue, &models.TrainingQueueItem{Type: "card", Card: &models.UserCardWithTraining{UserCard: *card, TrainingCard: *tc}})
+		if len(queue) >= 20 {
+			break
+		}
+	}
+	s.applySpellTypeChallenges(queue, user, cfg)
+	return queue, nil
+}

@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import {
+  EVENT_DIRTY_TAGS,
   buildScreenStorageKey,
   computeStaleAt,
   entryNeedsRefresh,
@@ -68,4 +69,10 @@ describe('appDataCacheLogic', () => {
     expect(hashTokenScope('abc')).toBe(hashTokenScope('abc'))
     expect(hashTokenScope('abc')).not.toBe(hashTokenScope('abcd'))
   })
+})
+
+it('invalidates dashboard and route after confirmed journey progress', () => {
+ const screens = screensForTags(EVENT_DIRTY_TAGS['daily-journey-progressed'])
+ expect(screens).toContain('dashboard')
+ expect(screens).toContain('daily-route')
 })

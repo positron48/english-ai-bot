@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"strings"
 
+	"tgbot-skeleton/internal/database"
 	"tgbot-skeleton/internal/models"
 )
 
@@ -257,6 +258,21 @@ func unlockProgressPercent(grammarDone, grammarTarget, wordMastered, wordTarget 
 	return w
 }
 
+func (r *CourseRepository) masteryDB() database.ContextDBTX {
+	if r.masteryQueries != nil {
+		return r.masteryQueries
+	}
+	return r.db
+}
+
+// BuildCourseMasteryTx shares the daily action's read/write transaction without
+// acquiring another pool connection or changing the canonical mastery rules.
+func (r *CourseRepository) BuildCourseMasteryTx(ctx context.Context, tx *sql.Tx, userID, courseID, userCourseID int64, courseCode, targetLang string, tier models.UserTier) (*CourseMastery, error) {
+	clone := *r
+	clone.masteryQueries = tx
+	return clone.BuildCourseMastery(ctx, userID, courseID, userCourseID, courseCode, targetLang, tier)
+}
+
 // BuildCourseMastery aggregates deterministic mastery for a user/course pair.
 func (r *CourseRepository) BuildCourseMastery(ctx context.Context, userID, courseID, userCourseID int64, courseCode, targetLang string, tier models.UserTier) (*CourseMastery, error) {
 	if userID == 0 || courseID == 0 {
@@ -411,7 +427,7 @@ func sumMap(m map[string]int) int {
 }
 
 func (r *CourseRepository) scanLevelCounts(ctx context.Context, query string, args []interface{}, dest map[string]int) error {
-	rows, err := r.db.QueryContext(ctx, query, args...)
+	rows, err := r.masteryDB().QueryContext(ctx, query, args...)
 	if err != nil {
 		return err
 	}
@@ -435,7 +451,11 @@ func (r *CourseRepository) scanLevelCounts(ctx context.Context, query string, ar
 }
 
 func (r *CourseRepository) loadPlacementMaxOrder(ctx context.Context, userID int64, courseCode, bundleID string, out *masteryRawData) error {
-	placement, err := NewGrammarAttemptRepository(r.db, nil).ForCourse(courseCode).getCoursePlacement(ctx, userID)
+	attempts := NewGrammarAttemptRepository(r.db, nil).ForCourse(courseCode)
+	if tx, ok := r.masteryQueries.(*sql.Tx); ok {
+		attempts = attempts.forTransactionReads(tx)
+	}
+	placement, err := attempts.getCoursePlacement(ctx, userID)
 	if err != nil {
 		return fmt.Errorf("placement test: %w", err)
 	}
@@ -457,7 +477,7 @@ func (r *CourseRepository) loadPlacementMaxOrder(ctx context.Context, userID int
 		SELECT upper(level)
 		FROM grammar_content_sections
 		WHERE bundle_id = ? AND section_id IN (%s)`, strings.Join(placeholders, ","))
-	rows, err := r.db.QueryContext(ctx, q, args...)
+	rows, err := r.masteryDB().QueryContext(ctx, q, args...)
 	if err != nil {
 		return fmt.Errorf("placement section levels: %w", err)
 	}
@@ -630,7 +650,7 @@ SELECT COUNT(DISTINCT word_card_id) FROM (
     WHERE uwm.user_id = ? AND COALESCE(uwm.mastering_score, 0) >= 80
       AND LOWER(COALESCE(uwm.course_code, '')) = ?
 ) mastered_words`
-	if err := r.db.QueryRowContext(ctx, q, userID, courseCode, userID, courseCode).Scan(&out.wordMasteredTotal); err != nil {
+	if err := r.masteryDB().QueryRowContext(ctx, q, userID, courseCode, userID, courseCode).Scan(&out.wordMasteredTotal); err != nil {
 		return fmt.Errorf("total mastered words: %w", err)
 	}
 	return nil
@@ -642,7 +662,7 @@ func (r *CourseRepository) GetUserTier(ctx context.Context, userID int64) models
 		return models.TierFree
 	}
 	var tier sql.NullString
-	if err := r.db.QueryRowContext(ctx, `
+	if err := r.masteryDB().QueryRowContext(ctx, `
 		SELECT COALESCE(subscription_tier, 'free') FROM users WHERE id = ?`, userID).Scan(&tier); err != nil {
 		return models.TierFree
 	}

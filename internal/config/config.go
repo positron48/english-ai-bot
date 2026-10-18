@@ -86,9 +86,10 @@ type LearningConfig struct {
 
 // LinglowConfig holds migration flags for the Linglow v2 architecture.
 type LinglowConfig struct {
-	EventsWriteEnabled bool `mapstructure:"events_write_enabled"`
-	SRSReadEnabled     bool `mapstructure:"srs_read_enabled"`
-	SRSWriteEnabled    bool `mapstructure:"srs_write_enabled"`
+	DailyJourneyEnabled bool `mapstructure:"daily_journey_enabled"`
+	EventsWriteEnabled  bool `mapstructure:"events_write_enabled"`
+	SRSReadEnabled      bool `mapstructure:"srs_read_enabled"`
+	SRSWriteEnabled     bool `mapstructure:"srs_write_enabled"`
 }
 
 // DefaultLearningConfig returns the canonical RU→EN English instance defaults (matches viper defaults in Load).
@@ -592,6 +593,8 @@ func Load() (*Config, error) {
 	_ = viper.BindEnv("learning.grammar_bundle_id", "GRAMMAR_BUNDLE_ID")
 	_ = viper.BindEnv("learning.grammar_bundle_dir", "GRAMMAR_BUNDLE_DIR")
 	_ = viper.BindEnv("learning.content_source", "CONTENT_SOURCE")
+	viper.SetDefault("linglow.daily_journey_enabled", true)
+	_ = viper.BindEnv("linglow.daily_journey_enabled", "LINGLOW_DAILY_JOURNEY_ENABLED")
 	_ = viper.BindEnv("linglow.events_write_enabled", "LINGLOW_EVENTS_WRITE_ENABLED")
 	_ = viper.BindEnv("linglow.srs_read_enabled", "LINGLOW_SRS_READ_ENABLED")
 	_ = viper.BindEnv("linglow.srs_write_enabled", "LINGLOW_SRS_WRITE_ENABLED")

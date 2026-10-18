@@ -1,3 +1,4 @@
+import { ref } from 'vue'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { flushPromises, mount } from '@vue/test-utils'
 import { createI18n } from 'vue-i18n'
@@ -62,3 +63,13 @@ describe('verb conjugation practice',()=>{
  })
 
 })
+
+// These tests exercise standalone sessions; journey sessions have separate coverage.
+vi.mock('../composables/useDailyJourneyExercise', () => ({
+  useDailyJourneyExercise: () => ({
+    isJourney: ref(false), context: ref(null), data: ref(null),
+    finished: ref(false), busy: ref(false), error: ref(''),
+    hasPendingAction: ref(false), ready: vi.fn(), act: vi.fn(),
+    retry: vi.fn(), back: vi.fn(), draftKey: () => '',
+  }),
+}))

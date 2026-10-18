@@ -274,6 +274,22 @@ func (r *GrammarSRSRepository) RecordAnswer(userID int64, language, courseID, ch
 		return 0, err
 	}
 	defer tx.Rollback()
+	id, err := r.RecordAnswerTx(tx, userID, language, courseID, chapterID, theoryBlockID, conceptID, questionID, answer, correct, isCorrect, clientID, at)
+	if err != nil {
+		return 0, err
+	}
+	if err := tx.Commit(); err != nil {
+		return 0, err
+	}
+	return id, nil
+}
+
+// RecordAnswerTx joins the caller's atomic subject/cursor transaction.
+func (r *GrammarSRSRepository) RecordAnswerTx(tx *sql.Tx, userID int64, language, courseID, chapterID, theoryBlockID, conceptID, questionID string, answer, correct interface{}, isCorrect bool, clientID string, at time.Time) (int64, error) {
+	if tx == nil {
+		return 0, fmt.Errorf("grammar answer transaction is required")
+	}
+	var err error
 	var locked int64
 	if err = tx.QueryRow(`SELECT id FROM users WHERE id = ? FOR UPDATE`, userID).Scan(&locked); err != nil {
 		return 0, err
@@ -283,7 +299,7 @@ func (r *GrammarSRSRepository) RecordAnswer(userID int64, language, courseID, ch
 		var id int64
 		err = tx.QueryRow(`SELECT id FROM grammar_attempts WHERE user_id = ? AND client_attempt_id = ?`, userID, strings.TrimSpace(clientID)).Scan(&id)
 		if err == nil {
-			return id, tx.Commit()
+			return id, nil
 		}
 		if err != sql.ErrNoRows {
 			return 0, err
@@ -306,8 +322,28 @@ func (r *GrammarSRSRepository) RecordAnswer(userID int64, language, courseID, ch
 	if err != nil {
 		return 0, err
 	}
-	if err = tx.Commit(); err != nil {
-		return 0, err
-	}
 	return id, nil
+}
+
+func (r *GrammarSRSRepository) WithQueries(q database.DBTX) *GrammarSRSRepository {
+	clone := *r
+	clone.db = q
+	return &clone
+}
+
+// UpdateTheoryMemoryTx reuses the canonical SRS formula on the exact locked row.
+// The caller owns the result/cursor transaction; no independent commit is made.
+func (r *GrammarSRSRepository) UpdateTheoryMemoryTx(tx *sql.Tx, userID int64, language, courseID, chapterID, blockID, conceptID string, correct bool, at time.Time) error {
+	if blockID == "" {
+		return nil
+	}
+	scoped := r.WithQueries(tx)
+	if err := scoped.EnsureTheoryMemory(userID, language, courseID, chapterID, blockID, conceptID); err != nil {
+		return err
+	}
+	m := &GrammarTheoryMemory{}
+	if err := tx.QueryRow(`SELECT id, review_count, correct_count, wrong_count, lapse_count, correct_streak, wrong_streak, interval_days, mastery_score FROM grammar_theory_memory WHERE user_id=? AND language=? AND course_id=? AND theory_block_id=? FOR UPDATE`, userID, language, courseID, blockID).Scan(&m.ID, &m.ReviewCount, &m.CorrectCount, &m.WrongCount, &m.LapseCount, &m.CorrectStreak, &m.WrongStreak, &m.IntervalDays, &m.MasteryScore); err != nil {
+		return err
+	}
+	return scoped.UpdateAfterAnswerAt(m, correct, at)
 }

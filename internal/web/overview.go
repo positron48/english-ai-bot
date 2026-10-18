@@ -86,6 +86,7 @@ func (r *Router) handleDashboardOverview(w http.ResponseWriter, req *http.Reques
 	r.runOverviewParts(w, req, []overviewPart{
 		{key: "dashboard", handler: r.handleDashboard, query: map[string]string{"sections": "counts"}},
 		{key: "progress", handler: r.handleLinglowProgress, query: map[string]string{"summary_only": "1"}},
+		{key: "daily_journey", handler: r.handleDailyJourney, query: map[string]string{"summary_only": "1"}},
 		{key: "daily_route", handler: r.handleLinglowDailyRoute, query: map[string]string{"limit": "8"}},
 		{key: "continue_chapter", handler: r.handleLearningGrammarContinueChapter},
 		{key: "sentence_today", handler: r.handleSentenceTrainingToday},

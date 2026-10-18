@@ -409,7 +409,7 @@ func TestGrammarAttemptRepository_GetChapterProgress_NoRow(t *testing.T) {
 	}
 }
 
-// TestGrammarAttemptRepository_UpdateProgress_NotPassed covers UpdateProgress when passed=false or score <= 50 (passedAt nil).
+// TestGrammarAttemptRepository_UpdateProgress_NotPassed covers UpdateProgress at the inclusive 50 percent pass threshold.
 func TestGrammarAttemptRepository_UpdateProgress_NotPassed(t *testing.T) {
 	repo := setupGrammarAttemptRepo(t)
 	logger, _ := zap.NewDevelopment()
@@ -428,6 +428,9 @@ func TestGrammarAttemptRepository_UpdateProgress_NotPassed(t *testing.T) {
 	}
 	if progress.BestScore != 50 {
 		t.Errorf("expected best score 50, got %d", progress.BestScore)
+	}
+	if !progress.Passed {
+		t.Error("a first attempt at exactly 50 percent must pass")
 	}
 }
 

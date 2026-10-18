@@ -11,6 +11,7 @@ import (
 
 	"tgbot-skeleton/internal/cache"
 	"tgbot-skeleton/internal/config"
+	"tgbot-skeleton/internal/dailyjourney"
 	"tgbot-skeleton/internal/learning"
 	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
@@ -90,6 +91,7 @@ type optionsServiceInterface interface {
 
 // Router handles web routes
 type Router struct {
+	dailyJourneyService               *service.DailyJourneyService
 	trainingLocks                     trainingUserLocks
 	trainingInit                      sync.Once
 	mux                               *http.ServeMux
@@ -171,6 +173,24 @@ func NewRouter(
 		internalServiceTokens:      parseInternalServiceTokens(cfg, logger),
 	}
 	if db != nil {
+		words := service.NewDailyJourneyWordsAdapter(db, logger, cfg.Learning)
+		words.MirrorSRS = cfg.Linglow.SRSReadEnabled
+		words.OptionsDelayMS = cfg.Training.OptionsDelayMS
+		resolveGrammar := func(course string) *service.GrammarService {
+			bundle := grammarBundleForCourse(course)
+			if svc := r.grammarServices[bundle]; svc != nil {
+				return svc
+			}
+			if r.grammarService != nil && r.grammarService.AttemptRepo.CourseCode() == course {
+				return r.grammarService
+			}
+			return nil
+		}
+		grammar := service.NewDailyJourneyGrammarAdapter(db, resolveGrammar)
+		grammar.MirrorSRS = cfg.Linglow.SRSReadEnabled
+		grammarSRS := service.NewDailyJourneyGrammarSRSAdapter(db, resolveGrammar)
+		grammarSRS.MirrorSRS = cfg.Linglow.SRSReadEnabled
+		r.dailyJourneyService = service.NewDailyJourneyService(db, map[dailyjourney.Mode]service.DailyJourneyAdapter{dailyjourney.Reading: service.NewDailyJourneyReadingAdapter(db), dailyjourney.Words: words, dailyjourney.Grammar: grammar, dailyjourney.GrammarSRS: grammarSRS, dailyjourney.VerbForms: service.NewDailyJourneyVerbsAdapter(db, cfg.Training, cfg.Learning, logger), dailyjourney.Picture: &dailyJourneyChatAdapter{router: r, mode: dailyjourney.Picture}, dailyjourney.Conversation: &dailyJourneyChatAdapter{router: r, mode: dailyjourney.Conversation}})
 		r.courseRepo = repository.NewCourseRepository(db, logger)
 		r.linglowEventRepo = repository.NewLinglowEventRepository(db)
 		r.linglowSRSMirrorRepo = repository.NewLinglowSRSMirrorRepository(db)
@@ -519,6 +539,9 @@ func (r *Router) setupProtectedRoutes() {
 	r.mux.HandleFunc("/api/learning/course", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLearningCourse)))
 	r.mux.HandleFunc("/api/linglow/city", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLinglowCity)))
 	r.mux.HandleFunc("/api/linglow/daily-route", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLinglowDailyRoute)))
+	r.mux.HandleFunc("/api/linglow/daily-journey", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleDailyJourney)))
+	r.mux.HandleFunc("/api/linglow/daily-journeys", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleDailyJourneys)))
+	r.mux.HandleFunc("/api/linglow/daily-journeys/", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleDailyJourneys)))
 	r.mux.HandleFunc("/api/linglow/review", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLinglowReview)))
 	r.mux.HandleFunc("/api/linglow/progress", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLinglowProgress)))
 	r.mux.HandleFunc("/api/linglow/srs-shadow", appAPIMiddleware.Wrap(auth.RequireAuth(r.handleLinglowSRSShadow)))

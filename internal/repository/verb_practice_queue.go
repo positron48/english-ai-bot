@@ -21,6 +21,15 @@ type practiceCandidate struct {
 // GetPracticeQueue prioritizes due work and representative rules over collecting
 // every regular lemma. A rule transfers only after success on three different verbs.
 func (r *VerbFormsRepository) GetPracticeQueue(userID int64, scopes []string, maxCards, maxNew int) ([]VerbQueueCard, error) {
+	return r.getPracticeQueue(userID, scopes, maxCards, maxNew, "")
+}
+
+// GetJourneyPracticeQueue is read-only and can select ready cards not yet enrolled.
+// Negative IDs are temporary references to training cards, never global sessions.
+func (r *VerbFormsRepository) GetJourneyPracticeQueue(userID int64, scopes []string, maxCards, maxNew int, course string) ([]VerbQueueCard, error) {
+	return r.getPracticeQueue(userID, scopes, maxCards, maxNew, course)
+}
+func (r *VerbFormsRepository) getPracticeQueue(userID int64, scopes []string, maxCards, maxNew int, course string) ([]VerbQueueCard, error) {
 	scopes = verbtraining.ExpandScopes(scopes)
 	if len(scopes) == 0 || maxCards <= 0 {
 		return nil, nil
@@ -32,8 +41,18 @@ func (r *VerbFormsRepository) GetPracticeQueue(userID int64, scopes []string, ma
 	}
 	args = append(args, userID, userID, time.Now())
 	freqSQL := "'" + strings.Join(spanishverbs.OrderedVerbLemmas, "','") + "'"
-	rows, err := r.db.Query(`SELECT u.id,c.word_card_id,c.card_type,c.prompt_json,c.answer_json,COALESCE(c.distractors_json,''),u.state
- FROM user_verb_cards u JOIN verb_training_cards c ON c.id=u.verb_training_card_id
+	prefix := ""
+	courseFilter := ""
+	table := "user_verb_cards"
+	if course != "" {
+		prefix = `WITH journey_verb_cards AS (SELECT COALESCE(u.id,-c.id) AS id,?::bigint AS user_id,c.id AS verb_training_card_id,COALESCE(u.state,'new') AS state,u.next_due_at FROM verb_training_cards c LEFT JOIN user_verb_cards u ON u.verb_training_card_id=c.id AND u.user_id=?) `
+		table = "journey_verb_cards"
+		args = append([]interface{}{userID, userID}, args...)
+		courseFilter = " AND w.course_code=? AND NULLIF(TRIM(c.answer_json::jsonb->>'surface_form'),'') IS NOT NULL AND NULLIF(TRIM(c.prompt_json::jsonb->>'question'),'') IS NOT NULL "
+		args = append(args, course)
+	}
+	rows, err := r.queryDB().Query(prefix+`SELECT u.id,c.id,c.word_card_id,c.card_type,c.prompt_json,c.answer_json,COALESCE(c.distractors_json,''),u.state
+ FROM `+table+` u JOIN verb_training_cards c ON c.id=u.verb_training_card_id
  JOIN verb_forms_dict d ON d.id=c.verb_form_dict_id JOIN word_cards w ON w.id=c.word_card_id
  WHERE u.user_id=? AND ('es.'||d.tense||'.'||d.mood) IN (`+marks+`)
  AND (LOWER(w.word) IN (`+verbCoreSQL()+`) OR w.id IN (
@@ -41,7 +60,7 @@ func (r *VerbFormsRepository) GetPracticeQueue(userID int64, scopes []string, ma
  UNION SELECT word_card_id FROM user_word_knowledge WHERE user_id=? AND status='known'))
  AND (u.state='new' OR u.next_due_at IS NULL OR u.next_due_at<=?)
  AND c.prompt_json::jsonb->>'content_version'='4'
- AND c.prompt_json::jsonb->>'practice_eligible'='true'
+ AND c.prompt_json::jsonb->>'practice_eligible'='true'`+courseFilter+`
  ORDER BY CASE WHEN u.state='learning' THEN 0 WHEN u.state='review' THEN 1 ELSE 2 END,
  COALESCE(array_position(ARRAY[`+freqSQL+`]::text[],LOWER(w.word)),1000),u.next_due_at NULLS FIRST,u.id LIMIT 3000`, args...)
 	if err != nil {
@@ -50,7 +69,7 @@ func (r *VerbFormsRepository) GetPracticeQueue(userID int64, scopes []string, ma
 	candidates := []practiceCandidate{}
 	for rows.Next() {
 		var c practiceCandidate
-		if err = rows.Scan(&c.card.UserVerbCardID, &c.card.WordCardID, &c.card.CardType, &c.card.PromptJSON, &c.card.AnswerJSON, &c.card.DistractorsJSON, &c.state); err != nil {
+		if err = rows.Scan(&c.card.UserVerbCardID, &c.card.TrainingCardID, &c.card.WordCardID, &c.card.CardType, &c.card.PromptJSON, &c.card.AnswerJSON, &c.card.DistractorsJSON, &c.state); err != nil {
 			rows.Close()
 			return nil, err
 		}
@@ -145,7 +164,7 @@ func (r *VerbFormsRepository) GetPracticeQueue(userID int64, scopes []string, ma
 }
 
 func (r *VerbFormsRepository) MasteredVerbRules(userID int64) (map[string]bool, error) {
-	rows, err := r.db.Query(`WITH attempts AS (
+	rows, err := r.queryDB().Query(`WITH attempts AS (
  SELECT answered_at,metrics_json::jsonb->'feedback' AS f FROM verb_review_events
  WHERE user_id=? AND metrics_json IS NOT NULL AND metrics_json::jsonb->>'version'='2' AND metrics_json::jsonb->>'retry'='false'
  ), failures AS (SELECT f->'rule'->>'id' AS rule,MAX(answered_at) AS last_failure FROM attempts WHERE f->>'outcome'!='correct' OR f->>'assisted'='true' GROUP BY 1)

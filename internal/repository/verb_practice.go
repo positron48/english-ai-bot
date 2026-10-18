@@ -150,19 +150,26 @@ func ReadVerbSRSTx(tx *sql.Tx, userID, cardID int64) (*VerbUserCardSRS, error) {
 }
 
 func SaveVerbAttemptTx(tx *sql.Tx, userID int64, state *VerbPractice, c *VerbUserCardSRS, next time.Time, quality int, feedback VerbPracticeFeedback) error {
-	if !state.Retry {
+	_, err := SaveVerbReviewTx(tx, userID, &state.ID, state.Retry, c, next, quality, feedback)
+	return err
+}
+
+// SaveVerbReviewTx supports an independent attempt without a global session.
+func SaveVerbReviewTx(tx *sql.Tx, userID int64, sessionID *int64, retry bool, c *VerbUserCardSRS, next time.Time, quality int, feedback VerbPracticeFeedback) (int64, error) {
+	if !retry {
 		if _, err := tx.Exec(`UPDATE user_verb_cards SET state=$1,ef=$2,reps=$3,interval_days=$4,learning_step=$5,lapse_count=$6,next_due_at=$7,last_review_at=CURRENT_TIMESTAMP,last_quality=$8,updated_at=CURRENT_TIMESTAMP WHERE id=$9 AND user_id=$10`, c.State, c.EF, c.Reps, c.IntervalDays, c.LearningStep, c.LapseCount, next, quality, c.ID, userID); err != nil {
-			return err
+			return 0, err
 		}
 	}
-	metrics, err := json.Marshal(map[string]interface{}{"version": 2, "retry": state.Retry, "feedback": feedback})
+	metrics, err := json.Marshal(map[string]interface{}{"version": 2, "retry": retry, "feedback": feedback})
 	if err != nil {
-		return err
+		return 0, err
 	}
 	correct := 0
 	if feedback.Outcome == "correct" && !feedback.Assisted {
 		correct = 1
 	}
-	_, err = tx.Exec(`INSERT INTO verb_review_events(session_id,user_id,user_verb_card_id,answered_at,is_correct,quality,metrics_json) VALUES($1,$2,$3,CURRENT_TIMESTAMP,$4,$5,$6)`, state.ID, userID, feedback.CardID, correct, quality, string(metrics))
-	return err
+	var id int64
+	err = tx.QueryRow(`INSERT INTO verb_review_events(session_id,user_id,user_verb_card_id,answered_at,is_correct,quality,metrics_json) VALUES($1,$2,$3,CURRENT_TIMESTAMP,$4,$5,$6) RETURNING id`, sessionID, userID, feedback.CardID, correct, quality, string(metrics)).Scan(&id)
+	return id, err
 }

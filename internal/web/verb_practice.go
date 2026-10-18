@@ -7,26 +7,12 @@ import (
 	"net/http"
 	"strings"
 
-	"golang.org/x/text/unicode/norm"
 	"tgbot-skeleton/internal/repository"
 	"tgbot-skeleton/internal/service"
-	"tgbot-skeleton/internal/spanishverbs"
-	"tgbot-skeleton/internal/verbtraining"
 )
 
 func verbScopeAllowed(item repository.VerbQueueCard, scopes []string) bool {
-	var p map[string]interface{}
-	_ = json.Unmarshal([]byte(item.PromptJSON), &p)
-	if p["content_version"] != float64(4) || p["practice_eligible"] != true {
-		return false
-	}
-	scope := verbtraining.CanonicalScope("es." + promptString(p, "tense") + "." + promptString(p, "mood"))
-	for _, s := range scopes {
-		if scope == verbtraining.CanonicalScope(s) {
-			return true
-		}
-	}
-	return false
+	return service.VerbScopeAllowed(item, scopes)
 }
 
 func (r *Router) handleVerbPractice(w http.ResponseWriter, req *http.Request) {
@@ -180,25 +166,8 @@ func (r *Router) handleVerbPractice(w http.ResponseWriter, req *http.Request) {
 			state.Completed = state.Index >= len(state.Queue)
 			return nil
 		}
-		var p map[string]interface{}
-		_ = json.Unmarshal([]byte(item.PromptJSON), &p)
-		var answer map[string]string
-		_ = json.Unmarshal([]byte(item.AnswerJSON), &answer)
-		expected := strings.TrimSpace(answer["surface_form"])
-		got := strings.TrimSpace(body.Answer)
-		outcome := "incorrect"
-		if body.Skip {
-			outcome = "unknown"
-			got = ""
-		} else if spanishverbs.AcceptedVerbAnswer(expected, got, promptString(p, "mood"), promptString(p, "tense")) {
-			outcome = "correct"
-		}
-		rule, _ := json.Marshal(p["rule"])
-		sentence := promptString(p, "question")
-		sentence = strings.ReplaceAll(sentence, "____", expected)
-		sentence = strings.ReplaceAll(sentence, "…", expected)
-		sentence = strings.ReplaceAll(sentence, "...", expected)
-		feedback := repository.VerbPracticeFeedback{CardID: item.UserVerbCardID, Outcome: outcome, Assisted: state.Assisted, Chosen: got, Correct: expected, Sentence: sentence, Translation: promptString(p, "example_translation"), Lemma: promptString(p, "lemma"), Tense: promptString(p, "tense"), Mood: promptString(p, "mood"), Person: promptString(p, "person"), Number: promptString(p, "number"), Rule: rule, AccentOnly: outcome == "incorrect" && stripVerbAccents(got) == stripVerbAccents(expected)}
+		feedback := service.GradeVerbPractice(item, body.Answer, body.Skip, state.Assisted)
+		outcome := feedback.Outcome
 		card, err := repository.ReadVerbSRSTx(tx, userID, item.UserVerbCardID)
 		if err != nil {
 			return err
@@ -220,47 +189,11 @@ func (r *Router) handleVerbPractice(w http.ResponseWriter, req *http.Request) {
 	r.writeVerbPractice(w, state)
 }
 
-func stripVerbAccents(s string) string {
-	// Only the stress accent; ñ and ü are different letters/sounds, not missing stress.
-	return norm.NFC.String(strings.ReplaceAll(norm.NFD.String(strings.ToLower(strings.TrimSpace(s))), "\u0301", ""))
-}
-
 func writeJSONVerb(w http.ResponseWriter, value interface{}) {
 	w.Header().Set("Content-Type", "application/json")
 	_ = json.NewEncoder(w).Encode(value)
 }
 
 func (r *Router) writeVerbPractice(w http.ResponseWriter, state *repository.VerbPractice) {
-	result := map[string]interface{}{"session_id": state.ID, "card_index": state.Index + 1, "total_cards": len(state.Queue), "completed": state.Completed, "retry": state.Retry, "assisted": state.Assisted, "feedback": state.Feedback, "results": state.Results}
-	if !state.Completed && state.Index < len(state.Queue) {
-		item := state.Queue[state.Index]
-		var p map[string]interface{}
-		_ = json.Unmarshal([]byte(item.PromptJSON), &p)
-		// Whitelist task data; translation is part of the task; the Spanish answer remains private.
-		prompt := map[string]interface{}{}
-		for _, key := range []string{"question", "lemma", "ru_gloss", "example_translation", "person", "number"} {
-			prompt[key] = p[key]
-		}
-		if state.Assisted || state.Feedback != nil {
-			prompt["rule"] = p["rule"]
-			prompt["tense"] = p["tense"]
-			prompt["mood"] = p["mood"]
-		}
-		options := service.ParseStringJSONArray(item.DistractorsJSON)
-		mode := item.InputMode
-		if mode == "" {
-			mode = "choice"
-		}
-		if len(options) < 2 {
-			mode = "typed"
-		}
-		if mode == "typed" {
-			options = nil
-		}
-		result["card_id"] = item.UserVerbCardID
-		result["prompt"] = prompt
-		result["options"] = options
-		result["input_mode"] = mode
-	}
-	writeJSONVerb(w, result)
+	writeJSONVerb(w, service.PublicVerbPractice(state))
 }

@@ -17,8 +17,9 @@ import (
 )
 
 type VerbFormsRepository struct {
-	db     *sql.DB
-	logger *zap.Logger
+	db      *sql.DB
+	queries database.DBTX
+	logger  *zap.Logger
 }
 
 func NewVerbFormsRepository(db *sql.DB, logger *zap.Logger) *VerbFormsRepository {
@@ -55,11 +56,11 @@ func (r *VerbFormsRepository) UpsertVerbLemma(lemma, language, source, sourceVer
 	          ELSE excluded.metadata_json
 	        END,
 	        updated_at=CURRENT_TIMESTAMP`
-	if _, err := r.db.Exec(q, strings.ToLower(strings.TrimSpace(lemma)), strings.ToLower(strings.TrimSpace(language)), source, sourceVersion, checksum, metadataJSON); err != nil {
+	if _, err := r.queryDB().Exec(q, strings.ToLower(strings.TrimSpace(lemma)), strings.ToLower(strings.TrimSpace(language)), source, sourceVersion, checksum, metadataJSON); err != nil {
 		return 0, fmt.Errorf("upsert verb lemma: %w", err)
 	}
 	var id int64
-	if err := r.db.QueryRow(`SELECT id FROM verb_lemmas WHERE lemma = ? AND language = ?`, strings.ToLower(strings.TrimSpace(lemma)), strings.ToLower(strings.TrimSpace(language))).Scan(&id); err != nil {
+	if err := r.queryDB().QueryRow(`SELECT id FROM verb_lemmas WHERE lemma = ? AND language = ?`, strings.ToLower(strings.TrimSpace(lemma)), strings.ToLower(strings.TrimSpace(language))).Scan(&id); err != nil {
 		return 0, fmt.Errorf("select verb lemma id: %w", err)
 	}
 	return id, nil
@@ -80,11 +81,11 @@ func (r *VerbFormsRepository) UpsertVerbForm(form *models.VerbFormDict) (int64, 
 	        is_irregular=excluded.is_irregular,
 	        tags_json=excluded.tags_json,
 	        updated_at=CURRENT_TIMESTAMP`
-	if _, err := r.db.Exec(q, form.VerbLemmaID, strings.ToLower(form.Mood), strings.ToLower(form.Tense), strings.ToLower(form.Person), strings.ToLower(form.Number), strings.ToLower(form.SurfaceForm), irregularInt(form.IsIrregular), form.TagsJSON); err != nil {
+	if _, err := r.queryDB().Exec(q, form.VerbLemmaID, strings.ToLower(form.Mood), strings.ToLower(form.Tense), strings.ToLower(form.Person), strings.ToLower(form.Number), strings.ToLower(form.SurfaceForm), irregularInt(form.IsIrregular), form.TagsJSON); err != nil {
 		return 0, fmt.Errorf("upsert verb form: %w", err)
 	}
 	var id int64
-	if err := r.db.QueryRow(`SELECT id FROM verb_forms_dict WHERE verb_lemma_id=? AND mood=? AND tense=? AND person=? AND number=?`,
+	if err := r.queryDB().QueryRow(`SELECT id FROM verb_forms_dict WHERE verb_lemma_id=? AND mood=? AND tense=? AND person=? AND number=?`,
 		form.VerbLemmaID, strings.ToLower(form.Mood), strings.ToLower(form.Tense), strings.ToLower(form.Person), strings.ToLower(form.Number)).Scan(&id); err != nil {
 		return 0, fmt.Errorf("select verb form id: %w", err)
 	}
@@ -99,7 +100,7 @@ func (r *VerbFormsRepository) LinkWordCardToLemma(wordCardID, verbLemmaID int64,
 	        confidence=excluded.confidence,
 	        source=excluded.source,
 	        updated_at=CURRENT_TIMESTAMP`
-	_, err := r.db.Exec(q, wordCardID, verbLemmaID, confidence, source)
+	_, err := r.queryDB().Exec(q, wordCardID, verbLemmaID, confidence, source)
 	if err != nil {
 		return fmt.Errorf("link word card to lemma: %w", err)
 	}
@@ -108,7 +109,7 @@ func (r *VerbFormsRepository) LinkWordCardToLemma(wordCardID, verbLemmaID int64,
 
 func (r *VerbFormsRepository) LinkWordCardByLemma(wordCardID int64, lemma, language, source string) (bool, error) {
 	var verbLemmaID int64
-	err := r.db.QueryRow(`SELECT id FROM verb_lemmas WHERE lemma = ? AND language = ?`, strings.ToLower(strings.TrimSpace(lemma)), strings.ToLower(strings.TrimSpace(language))).Scan(&verbLemmaID)
+	err := r.queryDB().QueryRow(`SELECT id FROM verb_lemmas WHERE lemma = ? AND language = ?`, strings.ToLower(strings.TrimSpace(lemma)), strings.ToLower(strings.TrimSpace(language))).Scan(&verbLemmaID)
 	if err == sql.ErrNoRows {
 		return false, nil
 	}
@@ -136,7 +137,7 @@ func (r *VerbFormsRepository) LinkMissingSpanishVerbLemmasForUser(userID int64) 
 	        SELECT uwk.word_card_id FROM user_word_knowledge uwk
 	          WHERE uwk.user_id = ? AND uwk.status = 'known'
 	      )`
-	rows, err := r.db.Query(q, userID, userID)
+	rows, err := r.queryDB().Query(q, userID, userID)
 	if err != nil {
 		return fmt.Errorf("list vocab word cards for verb lemma link: %w", err)
 	}
@@ -176,11 +177,11 @@ func (r *VerbFormsRepository) UpsertVerbFormExample(example *models.VerbFormExam
 	        source=excluded.source,
 	        quality_score=excluded.quality_score,
 	        updated_at=CURRENT_TIMESTAMP`
-	if _, err := r.db.Exec(q, example.VerbFormDictID, example.ExampleTarget, example.GlossNative, example.Source, example.QualityScore); err != nil {
+	if _, err := r.queryDB().Exec(q, example.VerbFormDictID, example.ExampleTarget, example.GlossNative, example.Source, example.QualityScore); err != nil {
 		return 0, fmt.Errorf("upsert verb form example: %w", err)
 	}
 	var id int64
-	if err := r.db.QueryRow(`SELECT id FROM verb_form_examples WHERE verb_form_dict_id=? AND example_target=?`, example.VerbFormDictID, example.ExampleTarget).Scan(&id); err != nil {
+	if err := r.queryDB().QueryRow(`SELECT id FROM verb_form_examples WHERE verb_form_dict_id=? AND example_target=?`, example.VerbFormDictID, example.ExampleTarget).Scan(&id); err != nil {
 		return 0, fmt.Errorf("select verb form example id: %w", err)
 	}
 	return id, nil
@@ -237,7 +238,7 @@ func (r *VerbFormsRepository) ListVerbFormsForLemma(lemma, language string) ([]V
 	      FROM verb_forms_dict d
 	      JOIN verb_lemmas l ON l.id = d.verb_lemma_id
 	      WHERE l.lemma = ? AND l.language = ?`
-	rows, err := r.db.Query(q, lemma, lang)
+	rows, err := r.queryDB().Query(q, lemma, lang)
 	if err != nil {
 		return nil, fmt.Errorf("list verb forms for lemma: %w", err)
 	}
@@ -267,7 +268,7 @@ func (r *VerbFormsRepository) ListVerbFormViewRowsForLemma(lemma, language strin
 	if lang == "" {
 		lang = "es"
 	}
-	rows, err := r.db.Query(`SELECT 0, l.lemma, d.mood, d.tense, d.person, d.number, d.surface_form, d.is_irregular
+	rows, err := r.queryDB().Query(`SELECT 0, l.lemma, d.mood, d.tense, d.person, d.number, d.surface_form, d.is_irregular
 		FROM verb_lemmas l
 		JOIN verb_forms_dict d ON d.verb_lemma_id = l.id
 		WHERE l.lemma = ? AND l.language = ?`, lemma, lang)
@@ -308,7 +309,7 @@ func (r *VerbFormsRepository) GetUserVerbForms(userID, wordCardID int64) ([]Verb
 	          WHERE x.word_card_id = w.id
 	        )
 	      ORDER BY d.mood, d.tense, d.person, d.number`
-	rows, err := r.db.Query(q, wordCardID, userID, userID)
+	rows, err := r.queryDB().Query(q, wordCardID, userID, userID)
 	if err != nil {
 		return nil, fmt.Errorf("get user verb forms: %w", err)
 	}
@@ -367,7 +368,7 @@ func (r *VerbFormsRepository) getLinkedVerbForms(userID, wordCardID int64, scope
 		args = append(args, wordCardID)
 	}
 	q += ` ORDER BY w.id, d.mood, d.tense, d.person, d.number`
-	rows, err := r.db.Query(q, args...)
+	rows, err := r.queryDB().Query(q, args...)
 	if err != nil {
 		return nil, fmt.Errorf("get linked verb forms for user: %w", err)
 	}
@@ -384,7 +385,7 @@ func (r *VerbFormsRepository) getLinkedVerbForms(userID, wordCardID int64, scope
 }
 
 func (r *VerbFormsRepository) GetVerbFormExamples(verbFormDictID int64, limit int) ([]models.VerbFormExample, error) {
-	rows, err := r.db.Query(`SELECT id, verb_form_dict_id, example_target, COALESCE(gloss_native,''), COALESCE(source,''), quality_score
+	rows, err := r.queryDB().Query(`SELECT id, verb_form_dict_id, example_target, COALESCE(gloss_native,''), COALESCE(source,''), quality_score
 		FROM verb_form_examples WHERE verb_form_dict_id=? ORDER BY quality_score DESC, id ASC LIMIT ?`, verbFormDictID, limit)
 	if err != nil {
 		return nil, fmt.Errorf("get verb form examples: %w", err)
@@ -402,6 +403,7 @@ func (r *VerbFormsRepository) GetVerbFormExamples(verbFormDictID int64, limit in
 }
 
 type VerbQueueCard struct {
+	TrainingCardID  int64  `json:"training_card_id,omitempty"`
 	InputMode       string `json:"input_mode,omitempty"`
 	UserVerbCardID  int64
 	WordCardID      int64
@@ -413,7 +415,7 @@ type VerbQueueCard struct {
 
 func (r *VerbFormsRepository) GetOrCreateUserVerbCard(userID, verbTrainingCardID int64) (int64, error) {
 	var id int64
-	err := r.db.QueryRow(`SELECT id FROM user_verb_cards WHERE user_id=? AND verb_training_card_id=?`, userID, verbTrainingCardID).Scan(&id)
+	err := r.queryDB().QueryRow(`SELECT id FROM user_verb_cards WHERE user_id=? AND verb_training_card_id=?`, userID, verbTrainingCardID).Scan(&id)
 	if err == nil {
 		return id, nil
 	}
@@ -424,7 +426,7 @@ func (r *VerbFormsRepository) GetOrCreateUserVerbCard(userID, verbTrainingCardID
 		user_id, verb_training_card_id, state, ef, reps, interval_days, learning_step, lapse_count, next_due_at, created_at, updated_at
 	) VALUES (?, ?, 'new', 2.5, 0, 0, 0, 0, NULL, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP)
  ON CONFLICT(user_id,verb_training_card_id) DO UPDATE SET user_id=excluded.user_id`
-	newID, err := database.InsertAndReturnID(r.db, q, userID, verbTrainingCardID)
+	newID, err := database.InsertAndReturnID(r.queryDB(), q, userID, verbTrainingCardID)
 	if err != nil {
 		return 0, fmt.Errorf("create user verb card: %w", err)
 	}
@@ -445,11 +447,11 @@ func (r *VerbFormsRepository) UpsertVerbTrainingCard(card *models.VerbTrainingCa
         verb_training_cards.distractors_json, verb_training_cards.example_id)
  IS DISTINCT FROM (excluded.prompt_json, excluded.answer_json,
                    excluded.distractors_json, excluded.example_id)`
-	if _, err := r.db.Exec(q, card.WordCardID, card.VerbFormDictID, card.CardType, card.PromptJSON, card.AnswerJSON, card.DistractorsJSON, card.ExampleID); err != nil {
+	if _, err := r.queryDB().Exec(q, card.WordCardID, card.VerbFormDictID, card.CardType, card.PromptJSON, card.AnswerJSON, card.DistractorsJSON, card.ExampleID); err != nil {
 		return 0, fmt.Errorf("upsert verb training card: %w", err)
 	}
 	var id int64
-	if err := r.db.QueryRow(`SELECT id FROM verb_training_cards WHERE word_card_id=? AND verb_form_dict_id=? AND card_type=?`,
+	if err := r.queryDB().QueryRow(`SELECT id FROM verb_training_cards WHERE word_card_id=? AND verb_form_dict_id=? AND card_type=?`,
 		card.WordCardID, card.VerbFormDictID, card.CardType).Scan(&id); err != nil {
 		return 0, fmt.Errorf("select verb training card id: %w", err)
 	}
@@ -480,7 +482,7 @@ func (r *VerbFormsRepository) EnsureUserCardsForUserWords(userID int64, scopes [
 	          UNION
 	          SELECT word_card_id FROM user_word_knowledge WHERE user_id=? AND status='known'
 	        ))` + verbTrainingEligibleByWordCardSQL("c") + verbTrainingPromptHasExampleTranslationSQL("c")
-	rows, err := r.db.Query(q, args...)
+	rows, err := r.queryDB().Query(q, args...)
 	if err != nil {
 		return fmt.Errorf("load candidate verb training cards: %w", err)
 	}
@@ -559,7 +561,7 @@ func (r *VerbFormsRepository) GetVerbQueue(userID int64, now time.Time, maxCards
 	        AND uvc.state != 'new' AND (uvc.next_due_at IS NULL OR uvc.next_due_at <= ?)` + scopeFilter + verbTrainingEligibleByWordCardSQL("vtc") + verbTrainingPromptHasExampleTranslationSQL("vtc") + `
 	      ORDER BY CASE WHEN uvc.state='learning' THEN 0 ELSE 1 END, uvc.next_due_at NULLS FIRST
 	      LIMIT ?`
-	rows, err := r.db.Query(q, userID, models.VerbCardTypeCloze, now, dueLimit)
+	rows, err := r.queryDB().Query(q, userID, models.VerbCardTypeCloze, now, dueLimit)
 	if err != nil {
 		return nil, fmt.Errorf("get due verb queue: %w", err)
 	}
@@ -589,7 +591,7 @@ func (r *VerbFormsRepository) GetVerbQueue(userID int64, now time.Time, maxCards
 		      WHERE uvc.user_id = ? AND uvc.state='new' AND vtc.card_type = ?` + scopeFilter + verbTrainingEligibleByWordCardSQL("vtc") + verbTrainingPromptHasExampleTranslationSQL("vtc") + `
 		      ORDER BY random()
 		      LIMIT ?`
-		rowsNew, err := r.db.Query(nq, userID, models.VerbCardTypeCloze, poolCap)
+		rowsNew, err := r.queryDB().Query(nq, userID, models.VerbCardTypeCloze, poolCap)
 		if err != nil {
 			return nil, fmt.Errorf("get new verb queue: %w", err)
 		}
@@ -623,7 +625,7 @@ func (r *VerbFormsRepository) CountUserVerbClozeCards(userID int64, allowedScope
 		INNER JOIN verb_forms_dict d ON d.id = vtc.verb_form_dict_id
 		WHERE uvc.user_id = ? AND vtc.card_type = ?` + verbAllowedScopeSQL(allowedScopes) + verbTrainingEligibleByWordCardSQL("vtc") + verbTrainingPromptHasExampleTranslationSQL("vtc")
 	var n int64
-	if err := r.db.QueryRow(q, userID, models.VerbCardTypeCloze).Scan(&n); err != nil {
+	if err := r.queryDB().QueryRow(q, userID, models.VerbCardTypeCloze).Scan(&n); err != nil {
 		return 0, fmt.Errorf("count user verb cloze cards: %w", err)
 	}
 	return n, nil
@@ -641,7 +643,7 @@ type VerbUserCardSRS struct {
 
 func (r *VerbFormsRepository) GetVerbUserCardSRS(userVerbCardID int64) (*VerbUserCardSRS, error) {
 	var c VerbUserCardSRS
-	err := r.db.QueryRow(`SELECT id, state, ef, reps, interval_days, learning_step, lapse_count FROM user_verb_cards WHERE id=?`, userVerbCardID).
+	err := r.queryDB().QueryRow(`SELECT id, state, ef, reps, interval_days, learning_step, lapse_count FROM user_verb_cards WHERE id=?`, userVerbCardID).
 		Scan(&c.ID, &c.State, &c.EF, &c.Reps, &c.IntervalDays, &c.LearningStep, &c.LapseCount)
 	if err == sql.ErrNoRows {
 		return nil, nil
@@ -653,7 +655,7 @@ func (r *VerbFormsRepository) GetVerbUserCardSRS(userVerbCardID int64) (*VerbUse
 }
 
 func (r *VerbFormsRepository) UpdateVerbUserCardSRS(c *VerbUserCardSRS, nextDueAt time.Time, lastQuality int) error {
-	_, err := r.db.Exec(`UPDATE user_verb_cards
+	_, err := r.queryDB().Exec(`UPDATE user_verb_cards
 		SET state=?, ef=?, reps=?, interval_days=?, learning_step=?, lapse_count=?, next_due_at=?, last_review_at=CURRENT_TIMESTAMP, last_quality=?, updated_at=CURRENT_TIMESTAMP
 		WHERE id=?`,
 		c.State, c.EF, c.Reps, c.IntervalDays, c.LearningStep, c.LapseCount, nextDueAt, lastQuality, c.ID)
@@ -668,7 +670,7 @@ func (r *VerbFormsRepository) CreateVerbReviewEvent(sessionID, userID, userVerbC
 	if isCorrect {
 		correctInt = 1
 	}
-	_, err := r.db.Exec(`INSERT INTO verb_review_events
+	_, err := r.queryDB().Exec(`INSERT INTO verb_review_events
 		(session_id, user_id, user_verb_card_id, shown_at, answered_at, is_correct, quality)
 		VALUES (?, ?, ?, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, ?, ?)`,
 		sessionID, userID, userVerbCardID, correctInt, quality)
@@ -679,7 +681,7 @@ func (r *VerbFormsRepository) CreateVerbReviewEvent(sessionID, userID, userVerbC
 }
 
 func (r *VerbFormsRepository) StartVerbSession(userID int64, planned int, sessionJSON string) (int64, error) {
-	id, err := database.InsertAndReturnID(r.db, `INSERT INTO verb_training_sessions (user_id, planned_count, done_count, session_json, started_at) VALUES (?, ?, 0, ?, CURRENT_TIMESTAMP)`,
+	id, err := database.InsertAndReturnID(r.queryDB(), `INSERT INTO verb_training_sessions (user_id, planned_count, done_count, session_json, started_at) VALUES (?, ?, 0, ?, CURRENT_TIMESTAMP)`,
 		userID, planned, sessionJSON)
 	if err != nil {
 		return 0, fmt.Errorf("start verb session: %w", err)
@@ -688,7 +690,7 @@ func (r *VerbFormsRepository) StartVerbSession(userID int64, planned int, sessio
 }
 
 func (r *VerbFormsRepository) FinishVerbSession(sessionID int64, done int) error {
-	_, err := r.db.Exec(`UPDATE verb_training_sessions SET done_count=?, ended_at=CURRENT_TIMESTAMP WHERE id=?`, done, sessionID)
+	_, err := r.queryDB().Exec(`UPDATE verb_training_sessions SET done_count=?, ended_at=CURRENT_TIMESTAMP WHERE id=?`, done, sessionID)
 	if err != nil {
 		return fmt.Errorf("finish verb session: %w", err)
 	}
@@ -701,7 +703,7 @@ func (r *VerbFormsRepository) GetVerbSessionStats(sessionID int64) (totalCards i
 		COALESCE(SUM(CASE WHEN is_correct = 1 THEN 1 ELSE 0 END), 0) AS correct
 	FROM verb_review_events
 	WHERE session_id = ? AND answered_at IS NOT NULL`
-	err = r.db.QueryRow(query, sessionID).Scan(&totalCards, &correctCards)
+	err = r.queryDB().QueryRow(query, sessionID).Scan(&totalCards, &correctCards)
 	if err != nil {
 		return 0, 0, fmt.Errorf("get verb session stats: %w", err)
 	}
@@ -737,7 +739,7 @@ func (r *VerbFormsRepository) GetVerbLemmaMetadataJSONBatch(lemmas []string) (ma
 		args = append(args, l)
 	}
 	q := `SELECT lemma, COALESCE(metadata_json,'') FROM verb_lemmas WHERE language='es' AND lemma IN (` + ph + `)`
-	rows, err := r.db.Query(q, args...)
+	rows, err := r.queryDB().Query(q, args...)
 	if err != nil {
 		return nil, fmt.Errorf("get verb lemma metadata batch: %w", err)
 	}
@@ -761,7 +763,7 @@ func (r *VerbFormsRepository) UpdateVerbLemmaMetadataJSON(lemma, metadataJSON st
 	if lemma == "" {
 		return fmt.Errorf("empty lemma")
 	}
-	_, err := r.db.Exec(`UPDATE verb_lemmas SET metadata_json=?, updated_at=CURRENT_TIMESTAMP WHERE lemma=? AND language='es'`,
+	_, err := r.queryDB().Exec(`UPDATE verb_lemmas SET metadata_json=?, updated_at=CURRENT_TIMESTAMP WHERE lemma=? AND language='es'`,
 		metadataJSON, lemma)
 	if err != nil {
 		return fmt.Errorf("update verb lemma metadata: %w", err)
@@ -771,7 +773,7 @@ func (r *VerbFormsRepository) UpdateVerbLemmaMetadataJSON(lemma, metadataJSON st
 
 // ListSpanishVerbLemmas returns all Spanish lemmas ordered lexicographically (for batch jobs).
 func (r *VerbFormsRepository) ListSpanishVerbLemmas() ([]string, error) {
-	rows, err := r.db.Query(`SELECT lemma FROM verb_lemmas WHERE language='es' ORDER BY lemma`)
+	rows, err := r.queryDB().Query(`SELECT lemma FROM verb_lemmas WHERE language='es' ORDER BY lemma`)
 	if err != nil {
 		return nil, fmt.Errorf("list spanish verb lemmas: %w", err)
 	}
@@ -840,9 +842,9 @@ func (r *VerbFormsRepository) ListPendingVerbTrainingLemmas(limit int, cursorWor
 	          SELECT COUNT(*) FROM verb_training_cards vtc
 	          WHERE vtc.word_card_id = w.id AND vtc.card_type = ?
 	        ) < ?`
-		rows, err = r.db.Query(base+gap+tail, cursorWordCardID, models.VerbCardTypeCloze, full, limit)
+		rows, err = r.queryDB().Query(base+gap+tail, cursorWordCardID, models.VerbCardTypeCloze, full, limit)
 	} else {
-		rows, err = r.db.Query(base+tail, cursorWordCardID, limit)
+		rows, err = r.queryDB().Query(base+tail, cursorWordCardID, limit)
 	}
 	if err != nil {
 		return nil, fmt.Errorf("list pending verb training lemmas: %w", err)
@@ -901,7 +903,7 @@ ORDER BY w.id ASC
 LIMIT ?`
 	args = append(args, limit)
 
-	rows, err := r.db.Query(q, args...)
+	rows, err := r.queryDB().Query(q, args...)
 	if err != nil {
 		return nil, fmt.Errorf("list admin verb training lemmas: %w", err)
 	}
@@ -948,7 +950,7 @@ func (r *VerbFormsRepository) ListAdminVerbTrainingCardsByWordCard(wordCardID in
 	INNER JOIN verb_forms_dict d ON d.id = vtc.verb_form_dict_id
 	WHERE vtc.word_card_id = ?
 	ORDER BY d.mood, d.tense, d.person, d.number, vtc.id`
-	rows, err := r.db.Query(q, wordCardID)
+	rows, err := r.queryDB().Query(q, wordCardID)
 	if err != nil {
 		return nil, fmt.Errorf("list admin verb training cards: %w", err)
 	}
@@ -986,7 +988,7 @@ func (r *VerbFormsRepository) AdminVerbLemmaLookup(wordCardID int64) (lemma stri
 	if wordCardID <= 0 {
 		return "", false, nil
 	}
-	err = r.db.QueryRow(`
+	err = r.queryDB().QueryRow(`
 SELECT LOWER(TRIM(w.word))
 FROM word_cards w
 INNER JOIN word_verb_lemmas wvl ON wvl.word_card_id = w.id
@@ -1032,7 +1034,7 @@ func (r *VerbFormsRepository) ListVerbExampleCatalogTemplatesCached() ([]spanish
 }
 
 func (r *VerbFormsRepository) listVerbExampleCatalogTemplatesUncached() ([]spanishverbs.CatalogTemplate, error) {
-	rows, err := r.db.Query(`SELECT code, lemma_match, COALESCE(verb_class,''), COALESCE(mood,''), COALESCE(tense,''), es_suffix, ru_pattern
+	rows, err := r.queryDB().Query(`SELECT code, lemma_match, COALESCE(verb_class,''), COALESCE(mood,''), COALESCE(tense,''), es_suffix, ru_pattern
 		FROM verb_example_templates WHERE active = true ORDER BY sort_order ASC, id ASC`)
 	if err != nil {
 		return nil, fmt.Errorf("list verb example templates: %w", err)
@@ -1083,4 +1085,31 @@ func verbAllowedScopeSQL(allowedScopes []string) string {
 		scopeFilter = " AND ('es.' || d.tense || '.' || d.mood) IN (" + strings.Join(quoted, ",") + ")"
 	}
 	return scopeFilter
+}
+
+func (r *VerbFormsRepository) WithQueries(q database.DBTX) *VerbFormsRepository {
+	clone := *r
+	clone.queries = q
+	return &clone
+}
+func (r *VerbFormsRepository) queryDB() database.DBTX {
+	if r.queries != nil {
+		return r.queries
+	}
+	return r.db
+}
+
+// GetJourneyVerbCard rechecks the concrete content and vocabulary independently
+// of its next_due date: a route already bound to a card may resume after practice elsewhere.
+func (r *VerbFormsRepository) GetJourneyVerbCard(user, trainingID int64, course string) (*VerbQueueCard, error) {
+	c := &VerbQueueCard{}
+	err := r.queryDB().QueryRow(`SELECT COALESCE(u.id,0),c.id,c.word_card_id,c.card_type,c.prompt_json,c.answer_json,COALESCE(c.distractors_json,'')
+ FROM verb_training_cards c JOIN word_cards w ON w.id=c.word_card_id
+ LEFT JOIN user_verb_cards u ON u.verb_training_card_id=c.id AND u.user_id=?
+ WHERE c.id=? AND w.course_code=? AND c.prompt_json::jsonb->>'content_version'='4' AND c.prompt_json::jsonb->>'practice_eligible'='true' AND NULLIF(TRIM(c.answer_json::jsonb->>'surface_form'),'') IS NOT NULL AND NULLIF(TRIM(c.prompt_json::jsonb->>'question'),'') IS NOT NULL
+ AND (LOWER(w.word) IN (`+verbCoreSQL()+`) OR w.id IN (SELECT tc.word_card_id FROM user_cards uc JOIN training_cards tc ON tc.id=uc.training_card_id WHERE uc.user_id=? UNION SELECT word_card_id FROM user_word_knowledge WHERE user_id=? AND status='known'))`, user, trainingID, course, user, user).Scan(&c.UserVerbCardID, &c.TrainingCardID, &c.WordCardID, &c.CardType, &c.PromptJSON, &c.AnswerJSON, &c.DistractorsJSON)
+	if err != nil {
+		return nil, err
+	}
+	return c, nil
 }

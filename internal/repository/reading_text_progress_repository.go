@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"strings"
+	"tgbot-skeleton/internal/database"
 	"time"
 )
 
@@ -14,10 +15,10 @@ type ReadingTextProgress struct {
 }
 
 type ReadingTextProgressRepository struct {
-	db *sql.DB
+	db database.DBTX
 }
 
-func NewReadingTextProgressRepository(db *sql.DB) *ReadingTextProgressRepository {
+func NewReadingTextProgressRepository(db database.DBTX) *ReadingTextProgressRepository {
 	return &ReadingTextProgressRepository{db: db}
 }
 

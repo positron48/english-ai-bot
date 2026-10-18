@@ -1,8 +1,9 @@
 <template>
   <section id="verb-forms-training" class="verb-practice" :aria-busy="busy">
-    <p v-if="error" class="practice-error" role="alert">{{ error }} <button type="button" @click="recover">{{ t('verbPractice.reload') }}</button></p>
+    <p v-if="error || daily.error.value" class="practice-error" role="alert">{{ error || daily.error.value }} <button type="button" @click="recover">{{ t('verbPractice.reload') }}</button></p>
+    <button v-if="daily.isJourney.value" class="practice-tool" type="button" @click="daily.back">{{ t('dailyJourney.returnToRoute') }}</button>
     <p v-if="loading" role="status">{{ t('common.loading') }}</p>
-    <template v-else-if="session?.completed">
+    <template v-else-if="!daily.isJourney.value && session?.completed">
       <h2>{{ t('verbPractice.finished') }}</h2>
       <p v-if="session.retry">{{ t('verbPractice.retryNotice') }}</p>
       <dl class="result-grid">
@@ -26,8 +27,8 @@
         <span v-if="session.retry">{{ t('verbPractice.repeat') }}</span>
         <progress :value="session.card_index - 1 + (session.feedback ? 1 : 0)" :max="session.total_cards" :aria-label="t('verbPractice.progress')" />
       </div>
-      <p class="practice-lemma"><strong><ClickableText :text="session.prompt.lemma" subtle-underline /></strong><span v-if="session.prompt.ru_gloss"> — {{ session.prompt.ru_gloss }}</span></p>
-      <h2 ref="questionHeading" tabindex="-1" class="practice-question"><ClickableText :text="session.prompt.question" subtle-underline /></h2>
+      <p class="practice-lemma"><strong><ClickableText :text="session.prompt.lemma" :course-code="daily.context.value?.courseCode" subtle-underline /></strong><span v-if="session.prompt.ru_gloss"> — {{ session.prompt.ru_gloss }}</span></p>
+      <h2 ref="questionHeading" tabindex="-1" class="practice-question"><ClickableText :text="session.prompt.question" :course-code="daily.context.value?.courseCode" subtle-underline /></h2>
       <div v-if="currentTranslation" class="practice-translation-wrap">
         <button type="button" class="practice-translation-toggle" :aria-expanded="showTranslation" aria-controls="verb-practice-translation" @click="showTranslation = !showTranslation">
           {{ t(showTranslation ? 'verbPractice.hideTranslation' : 'verbPractice.showTranslation') }}
@@ -70,13 +71,13 @@
         <p v-if="session.feedback.accent_only">{{ t('verbPractice.accent') }}</p>
         <p class="practice-tense">{{ tenseLabel(session.prompt.tense) }} · {{ moodLabel(session.prompt.mood) }}</p>
         <p>{{ ruleText(session.feedback.rule) }}</p>
-        <p v-if="session.feedback.sentence" class="practice-completed-sentence"><strong><ClickableText :text="session.feedback.sentence" subtle-underline /></strong></p>
+        <p v-if="session.feedback.sentence" class="practice-completed-sentence"><strong><ClickableText :text="session.feedback.sentence" :course-code="daily.context.value?.courseCode" subtle-underline /></strong></p>
         <p v-if="session.feedback.assisted">{{ t('verbPractice.helpUsed') }}</p>
         <button class="practice-tool feedback-forms" type="button" :disabled="busy" aria-haspopup="dialog" @click="openForms"><LgIcon name="book-open" :s="20" aria-hidden="true" /><span>{{ t('verbPractice.allForms') }}</span></button>
         <div class="practice-next"><button ref="nextButton" class="btn btn-primary" :disabled="busy" @click="advance">{{ t('verbPractice.next') }}</button></div>
       </div>
     </template>
-    <template v-else>
+    <template v-else-if="!daily.isJourney.value">
       <h2 v-if="!hidePageTitle">{{ t('verbTraining.title') }}</h2>
       <p>{{ t(session?.empty ? 'verbPractice.empty' : 'verbPractice.intro') }}</p>
       <button type="button" class="btn btn-primary" :disabled="busy" @click="act('start')">{{ t('verbTraining.start') }}</button>
@@ -95,9 +96,10 @@
 </template>
 
 <script setup lang="ts">
-import { computed, nextTick, onMounted, ref } from 'vue'
+import { computed, nextTick, onMounted, ref, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
-import { apiClient } from '../api/client'
+import { currentUserScope } from '../api/sessionScope'
+import { useDailyJourneyVerbClient } from '../composables/useDailyJourneyVerbClient'
 import ClickableText from './ClickableText.vue'
 import LgIcon from './linglow/LgIcon.vue'
 
@@ -107,12 +109,28 @@ interface Rule { id: string; regular: boolean; ending?: string; stem?: string; p
 interface Feedback { card_id: number; outcome: string; assisted: boolean; chosen_option: string; correct_answer: string; sentence: string; translation: string; lemma: string; tense: string; mood: string; person: string; number: string; rule: Rule | null; accent_only: boolean }
 interface Prompt { question: string; example_translation?: string; lemma: string; ru_gloss?: string; mood: string; tense: string; person: string; number: string; rule?: Rule }
 interface Session { session_id: number; card_id?: number; card_index: number; total_cards: number; input_mode: string; options?: string[]; prompt?: Prompt; completed?: boolean; idle?: boolean; empty?: boolean; retry?: boolean; assisted?: boolean; feedback?: Feedback; results?: Feedback[] }
+const client = useDailyJourneyVerbClient<Session>()
+const daily = client.daily
+watch(daily.finished, finished => { if (daily.isJourney.value && finished) void daily.back() })
 interface Form { mood: string; tense: string; person: string; number: string; surface_form: string }
 const session = ref<Session | null>(null)
 const loading = ref(true), busy = ref(false), error = ref(''), typedAnswer = ref(''), showHint = ref(false), showTranslation = ref(false)
 const showForms = ref(false), formsLoading = ref(false), formsError = ref(false), forms = ref<Form[]>([]), selectedScope = ref('')
 const nextButton = ref<HTMLButtonElement>(), questionHeading = ref<HTMLElement>(), formsDialog = ref<HTMLElement>()
 let previousFocus: HTMLElement | null = null
+const draftKey = computed(() => {
+  const context = daily.context.value
+  return daily.isJourney.value && context && session.value?.card_id
+    ? `daily-journey:verb-draft:${currentUserScope()}:${context.courseCode}:${context.journeyId}:${context.stepId}:${session.value.card_id}` : ''
+})
+watch([draftKey, () => !!session.value?.feedback], ([key, feedback]) => {
+  if (!key) return
+  try { if (feedback) { sessionStorage.removeItem(key); typedAnswer.value = '' } else typedAnswer.value = sessionStorage.getItem(key) || '' } catch { /* storage is optional */ }
+})
+watch(typedAnswer, answer => {
+  if (!draftKey.value || session.value?.feedback) return
+  try { if (answer) sessionStorage.setItem(draftKey.value, answer); else sessionStorage.removeItem(draftKey.value) } catch { /* storage is optional */ }
+})
 const mistakes = computed(() => session.value?.results?.filter(r => r.outcome !== 'correct') || [])
 const currentTranslation = computed(() => session.value?.feedback?.translation || session.value?.prompt?.example_translation || '')
 const formGroups = computed(() => Array.from(new Map(forms.value.map(row => [scopeKey(row.mood, row.tense), { key: scopeKey(row.mood, row.tense), mood: row.mood, tense: row.tense }])).values()))
@@ -144,7 +162,7 @@ async function act(action: string, extra: Record<string,unknown> = {}) {
   if (busy.value) return
   busy.value = true; error.value = ''
   try {
-    session.value = await apiClient.request<Session>('/api/verb-training/v2/' + action, { method: 'POST', body: { session_id: session.value?.session_id, card_id: session.value?.card_id, ...extra } })
+    session.value = await client.act(action, { session_id: session.value?.session_id, card_id: session.value?.card_id, ...extra })
     if (action === 'start' || action === 'repeat' || action === 'advance') { typedAnswer.value = ''; showHint.value = false; showTranslation.value = false }
 
   } catch { error.value = t('verbPractice.networkError') }
@@ -155,7 +173,7 @@ async function advance() { await act('advance'); await nextTick(); questionHeadi
 async function help() { await act('help'); if (!error.value) showHint.value = true }
 async function recover() {
   error.value = ''
-  try { session.value = await apiClient.request<Session>('/api/verb-training/v2/current') }
+  try { if (daily.isJourney.value) await daily.retry(); session.value = await client.current(); if (daily.isJourney.value) showHint.value = !!session.value?.assisted && !session.value?.feedback }
   catch { error.value = t('verbPractice.networkError') }
 }
 async function openForms() {
@@ -164,7 +182,7 @@ async function openForms() {
   showForms.value = true; formsLoading.value = true; formsError.value = false
   await nextTick(); formsDialog.value?.focus()
   try {
-    const response = await apiClient.request<{ forms: Form[] }>('/api/verb-training/forms-by-lemma?lemma=' + encodeURIComponent(session.value?.prompt?.lemma || ''))
+    const response = await client.forms(session.value?.prompt?.lemma || '')
     forms.value = response.forms || []
     const current = scopeKey(session.value?.prompt?.mood || '', session.value?.prompt?.tense || '')
     selectedScope.value = formGroups.value.some(g => g.key === current) ? current : (formGroups.value[0]?.key || '')

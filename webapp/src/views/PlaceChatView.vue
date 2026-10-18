@@ -6,7 +6,7 @@
       @back="goBack"
     >
       <template #right>
-        <button v-if="scenarioCode && session" class="chat-reset" type="button" @click="resetChat">
+        <button v-if="!daily.isJourney.value && scenarioCode && session" class="chat-reset" type="button" @click="resetChat">
           {{ t('chat.reset') }}
         </button>
       </template>
@@ -14,7 +14,10 @@
 
     <!-- NPC LIST -->
     <template v-if="!scenarioCode">
-      <div v-if="loading" class="chat-loading">{{ t('common.loading') }}</div>
+      <div v-if="daily.isJourney.value && daily.error.value" class="chat-error" role="alert">
+      <span>{{ daily.error.value }}</span><button @click="retryDaily">{{ t('common.retry') }}</button><button @click="daily.back">{{ t('dailyJourney.returnToRoute') }}</button>
+    </div>
+    <div v-if="loading" class="chat-loading">{{ t('common.loading') }}</div>
       <div v-else-if="!npcGroups.length" class="chat-loading">{{ t('chat.noPlaces') }}</div>
       <div v-else class="chat-list">
         <div v-for="g in npcGroups" :key="g.key" class="npc-block">
@@ -109,7 +112,10 @@
 
     <!-- CHAT -->
     <template v-else>
-      <div v-if="loading" class="chat-loading">{{ t('common.loading') }}</div>
+      <div v-if="daily.isJourney.value && daily.error.value" class="chat-error" role="alert">
+      <span>{{ daily.error.value }}</span><button @click="retryDaily">{{ t('common.retry') }}</button><button @click="daily.back">{{ t('dailyJourney.returnToRoute') }}</button>
+    </div>
+    <div v-if="loading" class="chat-loading">{{ t('common.loading') }}</div>
       <template v-else-if="session">
         <!-- messages (task checklist, quest image and completion banners scroll along with the
              conversation instead of pinning to the top/bottom, so the thread keeps usable height
@@ -163,7 +169,7 @@
                   alt=""
                 />
                 <span v-else class="chat-npc-avatar chat-npc-avatar--fallback">{{ npcInitial }}</span>
-                <LgSpeechBubble><ClickableText :text="m.content" subtle-underline /></LgSpeechBubble>
+                <LgSpeechBubble><ClickableText :course-code="daily.context.value?.courseCode" :text="m.content" subtle-underline /></LgSpeechBubble>
               </template>
               <div v-else class="chat-user-bubble">{{ m.content }}</div>
             </div>
@@ -205,11 +211,11 @@
             </div>
             <div v-if="status === 'open' && !allTasksDone" class="chat-banner-hint">{{ t('chat.questOptionalHint') }}</div>
             <div v-else-if="status === 'open'" class="chat-banner-hint">{{ t('chat.questCompleteHint') }}</div>
-            <LgButton @click="goBack">{{ t('chat.backToDistrict') }}</LgButton>
+            <LgButton @click="goBack">{{ daily.isJourney.value ? t('dailyJourney.returnToRoute') : t('chat.backToDistrict') }}</LgButton>
           </div>
           <div v-else-if="budgetExhausted" class="chat-banner">
             <div class="chat-banner-text">{{ t('chat.budgetEnded') }}</div>
-            <LgButton @click="goBack">{{ t('chat.backToDistrict') }}</LgButton>
+            <LgButton @click="goBack">{{ daily.isJourney.value ? t('dailyJourney.returnToRoute') : t('chat.backToDistrict') }}</LgButton>
           </div>
         </div>
 
@@ -224,7 +230,7 @@
             @keyup.enter="send"
           />
           <VoiceMicButton
-            :lang="learning?.target_lang ?? 'en'"
+            :lang="daily.context.value?.courseCode.split('_')[0] || learning?.target_lang || 'en'"
             :disabled="sending"
             :label="t('sentence.voiceInput')"
             @transcript="onVoiceTranscript"
@@ -255,6 +261,7 @@ import {
 import { buildNpcGroups, scenarioQuestPassed, scenarioQuestPerfect } from '../utils/conversations'
 import type { NpcGroup } from '../utils/conversations'
 import { mediaUrl } from '../utils/mediaUrl'
+import { useDailyJourneyChat } from '../composables/useDailyJourneyChat'
 import LgPageHeader from '../components/linglow/LgPageHeader.vue'
 import LgIcon from '../components/linglow/LgIcon.vue'
 import LgActivityIcon from '../components/linglow/LgActivityIcon.vue'
@@ -270,7 +277,6 @@ import { showAlert, showConfirm } from '../composables/useDialog'
 const { t } = useI18n()
 const { currentCourseCode, ensureCourseLoaded } = useCourse()
 const { learning, ensureLearningLoaded } = useLearningConfig()
-ensureLearningLoaded()
 
 // Voice input: dictate a chat reply in the target language.
 const onVoiceTranscript = (text: string) => {
@@ -279,6 +285,9 @@ const onVoiceTranscript = (text: string) => {
 }
 const route = useRoute()
 const router = useRouter()
+const journeyChat = useDailyJourneyChat('conversation')
+const daily = journeyChat.daily
+if (!daily.isJourney.value) void ensureLearningLoaded()
 
 const districtCode = computed(() => String(route.params.districtCode || ''))
 const scenarioCode = computed(() => String(route.params.scenarioCode || ''))
@@ -315,7 +324,7 @@ function onNpcClick(g: NpcGroup) {
 const session = ref<ConversationSessionState | null>(null)
 const messages = ref<ConversationMessage[]>([])
 const tasks = ref<ConversationTask[]>([])
-const input = ref('')
+const input = journeyChat.draft
 const sending = ref(false)
 const questPassed = ref(false)
 const budgetExhausted = ref(false)
@@ -336,11 +345,12 @@ const headerTitle = computed(() => {
 })
 // Keep the composer usable after the quest passes so the learner can say goodbye / finish
 // optional tasks; the session only truly ends when status flips to completed or budget runs out.
-const canSend = computed(() => status.value === 'open' && !budgetExhausted.value)
+const canSend = computed(() => status.value === 'open' && !budgetExhausted.value && (!daily.isJourney.value || !daily.hasPendingAction.value))
 const allTasksDone = computed(() => tasks.value.length > 0 && tasks.value.every(t => t.completed))
 const npcInitial = computed(() => (session.value?.npc_name || '?').trim().slice(0, 1).toUpperCase())
 
 function goBack() {
+  if (daily.isJourney.value) { void journeyChat.back().catch(() => {}); return }
   router.push({ name: 'CityDistrict', params: { districtCode: districtCode.value } })
 }
 
@@ -356,6 +366,13 @@ async function scrollToBottom() {
 async function send() {
   const text = input.value.trim()
   if (!text || sending.value || !session.value) return
+  if (daily.isJourney.value) {
+    sending.value = true; sendError.value = false
+    try { applyDailySession(await journeyChat.send(session.value.session_id, text)) }
+    catch { sendError.value = true }
+    finally { sending.value = false; await scrollToBottom(); if (canSend.value) focusComposer() }
+    return
+  }
   input.value = ''
   sendError.value = false
   messages.value.push({ role: 'user', content: text })
@@ -379,6 +396,17 @@ async function send() {
     if (canSend.value) focusComposer()
   }
 }
+
+function applyDailySession(state: any) {
+  session.value = state; messages.value = [...(state.messages || [])]; tasks.value = state.tasks || []
+  status.value = state.status; questPassed.value = state.quest_passed; budgetExhausted.value = state.budget_exhausted
+}
+async function retryDaily() {
+  try { applyDailySession(await journeyChat.retry()); loadError.value = ''; sendError.value = false; await scrollToBottom() }
+  catch { sendError.value = true }
+}
+watch(daily.data, state => { if (daily.isJourney.value && state) applyDailySession(state) })
+watch(daily.finished, finished => { if (daily.isJourney.value && finished) void daily.back() })
 
 async function resetChat() {
   if (!session.value) return
@@ -414,6 +442,7 @@ async function loadForRoute() {
   budgetExhausted.value = false
   status.value = 'open'
   try {
+    if (daily.isJourney.value) { applyDailySession(await journeyChat.session()); await scrollToBottom(); return }
     await ensureCourseLoaded()
     const course = currentCourseCode.value || undefined
     if (scenarioCode.value) {

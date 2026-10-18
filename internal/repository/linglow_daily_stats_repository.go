@@ -7,12 +7,17 @@ import (
 	"time"
 )
 
-// LinglowDailyStatsRepository maintains daily_course_stats and mode_daily_stats aggregates.
-type LinglowDailyStatsRepository struct {
-	db *sql.DB
+type dailyStatsDB interface {
+	ExecContext(context.Context, string, ...any) (sql.Result, error)
+	QueryRowContext(context.Context, string, ...any) *sql.Row
 }
 
-func NewLinglowDailyStatsRepository(db *sql.DB) *LinglowDailyStatsRepository {
+// LinglowDailyStatsRepository maintains daily_course_stats and mode_daily_stats aggregates.
+type LinglowDailyStatsRepository struct {
+	db dailyStatsDB
+}
+
+func NewLinglowDailyStatsRepository(db dailyStatsDB) *LinglowDailyStatsRepository {
 	return &LinglowDailyStatsRepository{db: db}
 }
 

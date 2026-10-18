@@ -15,6 +15,11 @@ import (
 
 // GrammarAttemptRepository handles database operations for grammar test attempts
 type GrammarAttemptRepository struct {
+	placementReader interface {
+		database.DBTX
+		database.ContextDBTX
+	}
+	queries    database.DBTX
 	db         *sql.DB
 	logger     *zap.Logger
 	courseCode string
@@ -61,7 +66,7 @@ func (r *GrammarAttemptRepository) CreateAttempt(attempt *TestAttempt) (int64, e
 		passed = 1
 	}
 
-	id, err := database.InsertAndReturnID(r.db, query,
+	id, err := database.InsertAndReturnID(r.queryDB(), query,
 		attempt.UserID,
 		attempt.ScopeType,
 		attempt.ScopeID,
@@ -91,7 +96,7 @@ func (r *GrammarAttemptRepository) HasClientAttempt(userID int64, clientAttemptI
 	query := `SELECT COUNT(*) > 0 FROM grammar_test_attempts
 			  WHERE user_id = ? AND client_attempt_id = ?`
 	var exists bool
-	if err := r.db.QueryRow(query, userID, clientAttemptID).Scan(&exists); err != nil {
+	if err := r.queryDB().QueryRow(query, userID, clientAttemptID).Scan(&exists); err != nil {
 		return false, fmt.Errorf("failed to check client attempt: %w", err)
 	}
 	return exists, nil
@@ -110,11 +115,11 @@ func (r *GrammarAttemptRepository) UpdateProgress(userID int64, chapterID string
 			  	last_attempt_at = CURRENT_TIMESTAMP`
 
 	var passedAt interface{}
-	if passed && score > 50 {
+	if passed && score >= 50 {
 		passedAt = time.Now().Format("2006-01-02 15:04:05")
 	}
 
-	_, err := r.db.Exec(query, userID, chapterID, score, passedAt)
+	_, err := r.queryDB().Exec(query, userID, chapterID, score, passedAt)
 	if err != nil {
 		return fmt.Errorf("failed to update progress: %w", err)
 	}
@@ -137,7 +142,7 @@ func (r *GrammarAttemptRepository) GetCategoryTestProgress(userID int64, section
 			  WHERE user_id = ? AND scope_type = 'category' AND scope_id = ? AND score >= 50 AND passed = 1`
 
 	var hasPassed bool
-	err := r.db.QueryRow(query, userID, sectionID).Scan(&hasPassed)
+	err := r.queryDB().QueryRow(query, userID, sectionID).Scan(&hasPassed)
 	if err != nil {
 		return false, fmt.Errorf("failed to get category test progress: %w", err)
 	}
@@ -151,7 +156,7 @@ func (r *GrammarAttemptRepository) HasCategoryTestAttempt(userID int64, sectionI
 			  WHERE user_id = ? AND scope_type = 'category' AND scope_id = ?`
 
 	var hasAttempt bool
-	err := r.db.QueryRow(query, userID, sectionID).Scan(&hasAttempt)
+	err := r.queryDB().QueryRow(query, userID, sectionID).Scan(&hasAttempt)
 	if err != nil {
 		return false, fmt.Errorf("failed to check category test attempt: %w", err)
 	}
@@ -165,7 +170,7 @@ func (r *GrammarAttemptRepository) GetCategoryTestBestScore(userID int64, sectio
 			  WHERE user_id = ? AND scope_type = 'category' AND scope_id = ?`
 
 	var bestScore sql.NullInt64
-	err := r.db.QueryRow(query, userID, sectionID).Scan(&bestScore)
+	err := r.queryDB().QueryRow(query, userID, sectionID).Scan(&bestScore)
 	if err != nil {
 		return 0, fmt.Errorf("failed to get category test best score: %w", err)
 	}
@@ -184,7 +189,7 @@ func (r *GrammarAttemptRepository) GetCategoryTestBestScores(userID int64) (map[
 			  WHERE user_id = ? AND scope_type = 'category'
 			  GROUP BY scope_id`
 
-	rows, err := r.db.Query(query, userID)
+	rows, err := r.queryDB().Query(query, userID)
 	if err != nil {
 		return nil, fmt.Errorf("failed to query category test best scores: %w", err)
 	}
@@ -214,7 +219,7 @@ func (r *GrammarAttemptRepository) GetChapterProgress(userID int64, chapterID st
 	var passedAt sql.NullString
 	var lastAttemptAt sql.NullString
 
-	err := r.db.QueryRow(query, userID, chapterID).Scan(
+	err := r.queryDB().QueryRow(query, userID, chapterID).Scan(
 		&progress.BestScore,
 		&passedAt,
 		&lastAttemptAt,
@@ -249,7 +254,7 @@ func (r *GrammarAttemptRepository) GetAllChapterProgress(userID int64) (map[stri
 			  FROM grammar_progress
 			  WHERE user_id = ?`
 
-	rows, err := r.db.Query(query, userID)
+	rows, err := r.queryDB().Query(query, userID)
 	if err != nil {
 		return nil, fmt.Errorf("failed to query chapter progress: %w", err)
 	}
@@ -309,7 +314,7 @@ func (r *GrammarAttemptRepository) GetUserAttempts(userID int64, scopeType, scop
 			  ORDER BY started_at DESC
 			  LIMIT ?`
 
-	rows, err := r.db.Query(query, userID, scopeType, scopeID, limit)
+	rows, err := r.queryDB().Query(query, userID, scopeType, scopeID, limit)
 	if err != nil {
 		return nil, fmt.Errorf("failed to query attempts: %w", err)
 	}
@@ -364,7 +369,7 @@ func (r *GrammarAttemptRepository) GetBestScore(userID int64, scopeType, scopeID
 			  WHERE user_id = ? AND scope_type = ? AND scope_id = ?`
 
 	var bestScore sql.NullInt64
-	err := r.db.QueryRow(query, userID, scopeType, scopeID).Scan(&bestScore)
+	err := r.queryDB().QueryRow(query, userID, scopeType, scopeID).Scan(&bestScore)
 	if err != nil {
 		return 0, fmt.Errorf("failed to get best score: %w", err)
 	}
@@ -393,7 +398,7 @@ func (r *GrammarAttemptRepository) GetAverageTestScore(userID int64) (int, error
 		query = strings.Replace(query, "AND scope_type = 'chapter' AND finished_at IS NOT NULL", "AND scope_type = 'chapter' AND finished_at IS NOT NULL AND scope_id LIKE ?", 1)
 		args = append(args, strings.SplitN(r.courseCode, "_", 2)[0]+".grammar.%")
 	}
-	rows, err := r.db.Query(query, args...)
+	rows, err := r.queryDB().Query(query, args...)
 	if err != nil {
 		return 0, fmt.Errorf("failed to query test scores: %w", err)
 	}
@@ -477,13 +482,13 @@ func (r *GrammarAttemptRepository) SavePlacementTestResult(userID int64, score i
 	var existingOpenedSectionsJSON sql.NullString
 	var existingAdminOverride bool
 	checkQuery := `SELECT score, opened_sections_json, COALESCE(admin_override, false) FROM grammar_placement_test WHERE user_id = ?`
-	err := r.db.QueryRow(checkQuery, userID).Scan(&existingScore, &existingOpenedSectionsJSON, &existingAdminOverride)
+	err := r.queryDB().QueryRow(checkQuery, userID).Scan(&existingScore, &existingOpenedSectionsJSON, &existingAdminOverride)
 
 	if err == sql.ErrNoRows {
 		// No existing result, insert new
 		query := `INSERT INTO grammar_placement_test (user_id, score, total_questions, opened_sections_json, completed_at, admin_override)
 				  VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP, false)`
-		_, err = r.db.Exec(query, userID, score, totalQuestions, string(openedSectionsJSON))
+		_, err = r.queryDB().Exec(query, userID, score, totalQuestions, string(openedSectionsJSON))
 		if err != nil {
 			return fmt.Errorf("failed to save placement test result: %w", err)
 		}
@@ -501,7 +506,7 @@ func (r *GrammarAttemptRepository) SavePlacementTestResult(userID int64, score i
 	query := `UPDATE grammar_placement_test 
 			  SET score = ?, total_questions = ?, opened_sections_json = ?, completed_at = CURRENT_TIMESTAMP, admin_override = false
 			  WHERE user_id = ?`
-	_, err = r.db.Exec(query, score, totalQuestions, string(openedSectionsJSON), userID)
+	_, err = r.queryDB().Exec(query, score, totalQuestions, string(openedSectionsJSON), userID)
 	if err != nil {
 		return fmt.Errorf("failed to update placement test result: %w", err)
 	}
@@ -526,7 +531,7 @@ func (r *GrammarAttemptRepository) UpsertPlacementByAdmin(userID int64, score in
 			opened_sections_json = EXCLUDED.opened_sections_json,
 			completed_at = CURRENT_TIMESTAMP,
 			admin_override = true`
-	_, err = r.db.Exec(q, userID, score, totalQuestions, string(openedSectionsJSON))
+	_, err = r.queryDB().Exec(q, userID, score, totalQuestions, string(openedSectionsJSON))
 	if err != nil {
 		return fmt.Errorf("failed to upsert admin placement: %w", err)
 	}
@@ -538,7 +543,7 @@ func (r *GrammarAttemptRepository) DeletePlacementTestResult(userID int64) error
 	if r.courseCode != "" {
 		return r.saveCoursePlacement(userID, 0, 0, nil, "admin", true)
 	}
-	_, err := r.db.Exec(`DELETE FROM grammar_placement_test WHERE user_id = ?`, userID)
+	_, err := r.queryDB().Exec(`DELETE FROM grammar_placement_test WHERE user_id = ?`, userID)
 	if err != nil {
 		return fmt.Errorf("failed to delete placement test result: %w", err)
 	}
@@ -558,7 +563,7 @@ func (r *GrammarAttemptRepository) GetPlacementTestResult(userID int64) (*Placem
 	var openedSectionsJSON sql.NullString
 	var completedAt sql.NullString
 
-	err := r.db.QueryRow(query, userID).Scan(
+	err := r.placementDB().QueryRow(query, userID).Scan(
 		&result.UserID,
 		&result.Score,
 		&result.TotalQuestions,
@@ -587,4 +592,20 @@ func (r *GrammarAttemptRepository) GetPlacementTestResult(userID int64) (*Placem
 	result.Source = "legacy"
 
 	return &result, nil
+}
+
+func (r *GrammarAttemptRepository) WithQueries(q interface {
+	database.DBTX
+	database.ContextDBTX
+}) *GrammarAttemptRepository {
+	clone := *r
+	clone.queries = q
+	clone.placementReader = q
+	return &clone
+}
+func (r *GrammarAttemptRepository) queryDB() database.DBTX {
+	if r.queries != nil {
+		return r.queries
+	}
+	return r.db
 }

@@ -30,6 +30,7 @@ import lumiWithBookPointer from '../../assets/linglow/art/lumi-with-book-and-poi
 import lumiWithWordCard from '../../assets/linglow/art/lumi-with-word-card-casa.png'
 
 const props = withDefaults(defineProps<{
+  contained?: boolean
   size?: number
   pose?: 'happy' | 'default' | 'welcome' | 'book' | 'pencil' | 'writes' | 'map' | 'teacher'
     | 'thumbs-up' | 'clapping' | 'hugging' | 'proud' | 'dreaming' | 'quizzical'
@@ -39,6 +40,7 @@ const props = withDefaults(defineProps<{
 
 // PNG files have ~20% whitespace on each side; render 1.6x larger and pull in with negative margin
 const imgStyle = computed<CSSProperties>(() => {
+  if (props.contained) return { width: `${props.size}px`, height: 'auto', display: 'block', objectFit: 'contain', flexShrink: '0' }
   const rendered = Math.round(props.size * 1.6)
   const offset = Math.round((rendered - props.size) / 2)
   return {

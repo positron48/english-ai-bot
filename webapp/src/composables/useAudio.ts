@@ -413,11 +413,11 @@ export function useAudio() {
     }
   }
 
-  const getWordPronunciationURL = async (word: string): Promise<string | null> => {
+  const getWordPronunciationURL = async (word: string, explicitCourseCode?: string): Promise<string | null> => {
     const normalized = normalizePronunciationWord(word)
     if (!normalized) return null
 
-    const courseCode = getGrammarCourseCode()
+    const courseCode = explicitCourseCode || getGrammarCourseCode()
     const cacheKey = `${courseCode}:${normalized}`
 
     const cached = pronunciationCache.get(cacheKey)
@@ -468,8 +468,8 @@ export function useAudio() {
     return request
   }
 
-  const playWordPronunciation = async (word: string): Promise<boolean> => {
-    const url = await getWordPronunciationURL(word)
+  const playWordPronunciation = async (word: string, explicitCourseCode?: string): Promise<boolean> => {
+    const url = await getWordPronunciationURL(word, explicitCourseCode)
     if (!url) return false
 
     try {

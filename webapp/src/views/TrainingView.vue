@@ -1,9 +1,10 @@
 <template>
   <div class="training">
-    <h1 v-if="!sessionActive && !loading && !sessionComplete" class="training-title">{{ t('training.title') }}</h1>
+    <div v-if="daily.isJourney.value && daily.error.value" role="alert"><p>{{ daily.error.value }}</p><button @click="retryJourney">{{ t('common.retry') }}</button><button @click="daily.back">{{ t('dailyJourney.returnToRoute') }}</button></div>
+    <h1 v-if="!daily.isJourney.value && !sessionActive && !loading && !sessionComplete" class="training-title">{{ t('training.title') }}</h1>
     
     <TrainingSessionCompletion
-      v-if="sessionComplete && !sessionActive"
+      v-if="!daily.isJourney.value && sessionComplete && !sessionActive"
       :total-cards="trainingStats.totalCards"
       :correct-cards="trainingStats.correctCards"
       :stats-loaded="statsLoaded"
@@ -15,7 +16,7 @@
     />
 
     <div
-      v-if="sessionComplete && !sessionActive && !loading && showSpanishVerbFormsTraining"
+      v-if="!daily.isJourney.value && sessionComplete && !sessionActive && !loading && showSpanishVerbFormsTraining"
       class="card training-verb-forms-cta training-verb-forms-cta--compact"
     >
       <p
@@ -33,7 +34,7 @@
       </button>
     </div>
 
-    <div v-if="!sessionActive && !loading && !sessionComplete" class="training-idle-stack">
+    <div v-if="!daily.isJourney.value && !sessionActive && !loading && !sessionComplete" class="training-idle-stack">
       <div class="card start-screen">
         <div class="start-screen-content">
         <div class="start-screen-stats" v-if="statsLoaded">
@@ -189,7 +190,7 @@
                 <Icon name="check" class="type-submit-icon" />
               </button>
               <VoiceMicButton
-                :lang="learning?.target_lang ?? 'en'"
+                :lang="daily.context.value?.courseCode.split('_')[0] || learning?.target_lang || 'en'"
                 :disabled="!!feedback || answering"
                 :label="t('sentence.voiceInput')"
                 @transcript="onTrainingVoiceTranscript"
@@ -298,7 +299,7 @@
           >{{ t('training.skip') || 'Пропустить' }}</button>
           <VoiceMicButton
             v-if="!feedback && !answering"
-            :lang="learning?.target_lang ?? 'en'"
+            :lang="daily.context.value?.courseCode.split('_')[0] || learning?.target_lang || 'en'"
             :label="t('sentence.voiceInput')"
             @transcript="onTrainingVoiceTranscript"
           />
@@ -365,11 +366,12 @@
           <Icon name="lightbulb" class="example-icon" />
         </button>
         <div v-else-if="exampleUsageShown" class="example example-usage">
-          <ClickableText :text="currentCard?.example_target || currentCard?.example_en || feedback?.example_target || feedback?.example || ''" :exclude="hintExcludedWord" subtle-underline />
+          <ClickableText :course-code="daily.context.value?.courseCode" :text="currentCard?.example_target || currentCard?.example_en || feedback?.example_target || feedback?.example || ''" :exclude="hintExcludedWord" subtle-underline />
         </div>
       </div>
 
       <div v-if="feedback" class="feedback-section">
+        <button v-if="daily.isJourney.value" type="button" class="btn btn-primary" :disabled="daily.busy.value || daily.hasPendingAction.value" @click="nextCard">{{ t('dailyJourney.continue') }}</button>
         <div v-if="feedback.is_correct" class="feedback-badge feedback-success">
           <!-- Success particles -->
           <div class="success-particles">
@@ -381,8 +383,8 @@
         
         <!-- For incorrect answers: spell = letters reorder in block above; type/cards = hint/example -->
         <template v-if="!feedback.is_correct">
-          <div v-if="feedback.hint" class="hint"><ClickableText :text="feedback.hint" :exclude="hintExcludedWord" /></div>
-          <div v-if="feedback.example" class="example"><ClickableText :text="feedback.example" :exclude="hintExcludedWord" subtle-underline /></div>
+          <div v-if="feedback.hint" class="hint"><ClickableText :course-code="daily.context.value?.courseCode" :text="feedback.hint" :exclude="hintExcludedWord" /></div>
+          <div v-if="feedback.example" class="example"><ClickableText :course-code="daily.context.value?.courseCode" :text="feedback.example" :exclude="hintExcludedWord" subtle-underline /></div>
           <div class="feedback-badge feedback-error">
             <div 
               v-if="waitingDelay" 
@@ -433,7 +435,7 @@
         </template>
         
         <!-- For correct answers: show example after notification -->
-        <div v-if="feedback.is_correct && feedback.example" class="example"><ClickableText :text="feedback.example" :exclude="hintExcludedWord" subtle-underline /></div>
+        <div v-if="feedback.is_correct && feedback.example" class="example"><ClickableText :course-code="daily.context.value?.courseCode" :text="feedback.example" :exclude="hintExcludedWord" subtle-underline /></div>
         
         <!-- Circular progress for correct answers delay (if any) -->
         <div 
@@ -501,13 +503,14 @@
 </template>
 
 <script setup lang="ts">
+import { useScopedExerciseDraft } from '../composables/useScopedExerciseDraft'
 import DOMPurify from 'dompurify'
 import type { Card, OptionsResponse, Feedback } from '../api/trainingTypes'
 import { ref, computed, onMounted, onUnmounted, watch, nextTick, TransitionGroup } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { apiClient } from '../api/client'
 import { contentReportClient } from '../api/contentReportClient'
-import { wordTrainingClient } from '../api/wordTrainingClient'
+import { useDailyJourneyWordClient } from '../composables/useDailyJourneyWordClient'
 import { showAlert } from '../composables/useDialog'
 import { useSettings } from '../composables/useSettings'
 import { useAudio } from '../composables/useAudio'
@@ -525,6 +528,8 @@ import {
 import { useLearningConfig } from '../composables/useLearningConfig'
 import { useCourse } from '../composables/useCourse'
 import { useSpanishVerbFormsPractice } from '../composables/useSpanishVerbFormsPractice'
+
+const { daily, client: wordTrainingClient } = useDailyJourneyWordClient()
 
 const { t, tm, locale } = useI18n()
 const { ensureLearningLoaded, learning } = useLearningConfig()
@@ -679,6 +684,19 @@ let typeHintButtonTimer: ReturnType<typeof setTimeout> | null = null
 const typeRevealDisplayText = ref('')
 let typeRevealTimeouts: ReturnType<typeof setTimeout>[] = []
 const typeInputRef = ref<HTMLInputElement | null>(null)
+const journeyDraftKey = computed(() => currentCard.value ? daily.draftKey?.('word:' + cardReportKey(currentCard.value) + ':' + (daily.data.value as any)?.card?.card_index) || '' : '')
+useScopedExerciseDraft(journeyDraftKey,
+  () => ({ text: typeAnswerText.value, used: spellUsedIndices.value, hint: typeHintShown.value || spellHintShown.value }),
+  draft => {
+    if (!draft || typeof draft !== 'object') return
+    const saved = draft as { text?: unknown; used?: unknown; hint?: boolean }
+    if (typeof saved.text === 'string') typeAnswerText.value = saved.text
+    if (Array.isArray(saved.used) && saved.used.every(i => Number.isInteger(i) && i >= 0 && i < (currentCard.value?.letters?.length || 0)) && new Set(saved.used).size === saved.used.length) {
+      spellUsedIndices.value = saved.used
+      spellAnswerLetters.value = saved.used.map(i => currentCard.value!.letters![i])
+    }
+    if (saved.hint) { typeHintShown.value = true; spellHintShown.value = true }
+  }, () => !!(daily.data.value as any)?.feedback)
 const playingPronunciation = ref(false)
 const currentPronunciationURL = ref<string | null>(null)
 let pronunciationLoadRequestId = 0
@@ -792,13 +810,13 @@ watch(currentCard, async (card) => {
     currentPronunciationURL.value = null
     return
   }
-  const url = await getWordPronunciationURL(word)
+  const url = await getWordPronunciationURL(word, daily.context.value?.courseCode)
   if (reqId !== pronunciationLoadRequestId || card !== currentCard.value) return
   currentPronunciationURL.value = url
   if (!url || !shouldAutoplayPronunciationOnCardShown.value || playingPronunciation.value) return
   playingPronunciation.value = true
   try {
-    await playWordPronunciation(word)
+    await playWordPronunciation(word, daily.context.value?.courseCode)
   } finally {
     playingPronunciation.value = false
   }
@@ -831,7 +849,7 @@ const autoplayPronunciationAfterAnswer = async (resp?: Feedback) => {
   if (!word || playingPronunciation.value) return
   playingPronunciation.value = true
   try {
-    await playWordPronunciation(word)
+    await playWordPronunciation(word, daily.context.value?.courseCode)
   } finally {
     playingPronunciation.value = false
   }
@@ -842,7 +860,7 @@ const playCurrentPronunciation = async () => {
   if (!word || playingPronunciation.value) return
   playingPronunciation.value = true
   try {
-    await playWordPronunciation(word)
+    await playWordPronunciation(word, daily.context.value?.courseCode)
   } finally {
     playingPronunciation.value = false
   }
@@ -1363,7 +1381,14 @@ onUnmounted(() => {
 
 })
 
+watch(daily.finished, (finished) => {
+  if (daily.isJourney.value && finished) void daily.back()
+})
+
+const retryJourney = async () => { await daily.retry(); await checkCurrentSession() }
 const checkCurrentSession = async () => {
+  if (daily.isJourney.value && daily.finished.value) { await daily.back(); return }
+
   try {
     const response = await wordTrainingClient.current()
     
@@ -1384,6 +1409,16 @@ const checkCurrentSession = async () => {
     const card = response as Card
     sessionActive.value = true
     setupCard(card)
+    if (daily.isJourney.value && (card as any).journey_feedback) {
+      if (autoRevealTimer) { clearTimeout(autoRevealTimer); autoRevealTimer = null }
+      options.value = (card as any).journey_options || []
+      optionsShown.value = true
+      feedback.value = (card as any).journey_feedback
+      currentEncouragingPhrase.value = getRandomEncouragingPhrase()
+      currentDisappointingPhrase.value = getRandomDisappointingPhrase()
+      if (card.type === 'type') typeRevealDisplayText.value = feedback.value?.correct_answer || ''
+      if (card.type === 'spell' && feedback.value?.correct_answer) spellRevealLetters.value = Array.from(feedback.value.correct_answer.slice(card.prefix?.length || 0)).map((letter, key) => ({ letter, key }))
+    }
     void prefetchNextTrainingCard()
   } catch (error: any) {
     console.error('Failed to check session:', error)
@@ -1937,6 +1972,7 @@ const submitSpellAnswerAs = async (answerText: string, isSkip = false) => {
       currentDisappointingPhrase.value = getRandomDisappointingPhrase()
     }
     void autoplayPronunciationAfterAnswer(data)
+    if (daily.isJourney.value) return
     const nextDelayMs = data.is_correct ? 1000 : (data.delay_seconds ?? 0) * 1000
     const isCorrectSpell = data.is_correct && currentCard.value?.type === 'spell'
     if (isCorrectSpell) {
@@ -2040,6 +2076,10 @@ const submitTypeAnswerAs = async (answerText: string) => {
       currentDisappointingPhrase.value = getRandomDisappointingPhrase()
     }
     void autoplayPronunciationAfterAnswer(data)
+    if (daily.isJourney.value) {
+      if (!data.is_correct && data.correct_answer) nextTick(() => startTypeRevealAnimation(data.chosen_option ?? '', data.correct_answer))
+      return
+    }
     const nextDelayMs = data.is_correct ? 1000 : (data.delay_seconds ?? 0) * 1000
     const startCountdownOrNext = () => {
       if (nextDelayMs > 0) {
@@ -2218,6 +2258,7 @@ const submitAnswer = async (optionIndex: number) => {
       currentDisappointingPhrase.value = getRandomDisappointingPhrase()
     }
     
+    if (daily.isJourney.value) return
     // Schedule automatic transition to next card
     const delayMs = data.delay_seconds ? data.delay_seconds * 1000 : 0
     
@@ -2308,6 +2349,7 @@ const submitAnswer = async (optionIndex: number) => {
       // No delay from server: correct answer — ~1s to see success; wrong + delay 0 — minimal pause
       const delayWhenCorrectMs = 1000
       const delayWhenWrongMs = 150
+      if (daily.isJourney.value) return
       const nextDelayMs = data.is_correct ? delayWhenCorrectMs : delayWhenWrongMs
       autoNextCardTimerStartTime = Date.now()
       autoNextCardTimerDelayMs = nextDelayMs
@@ -2396,7 +2438,7 @@ const nextCard = async () => {
       return
     }
 
-    const response = await wordTrainingClient.current()
+    const response = await wordTrainingClient.next()
     await applyTrainingSessionResponse(response)
   } catch (error: any) {
     console.error('Failed to get next card:', error)

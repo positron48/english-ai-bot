@@ -1,5 +1,8 @@
 <template>
   <div class="word-set-study">
+    <p v-if="daily.data.value?.phase === 'add'">{{ t('dailyJourney.addWords', { done: daily.data.value.added_count, total: daily.data.value.add_target }) }}</p>
+    <div v-if="daily.isJourney.value && daily.error.value" role="alert">{{ daily.error.value }} <button @click="daily.retry">{{ t('common.retry') }}</button><button @click="daily.back">{{ t('dailyJourney.returnToRoute') }}</button></div>
+    <button v-if="daily.isJourney.value" @click="daily.back">{{ t('dailyJourney.returnToRoute') }}</button>
     <div class="study-header">
       <button @click="exitStudy" class="btn-exit">
         <Icon name="close" />
@@ -52,13 +55,13 @@
       </div>
       
       <div class="study-actions">
-        <button @click="markKnown" class="btn btn-know" :disabled="processing">
+        <button @click="markKnown" class="btn btn-know" :disabled="processing || (daily.isJourney.value && (daily.busy.value || daily.hasPendingAction.value))">
           {{ t('wordSets.know') }}
         </button>
-        <button @click="markLearn" class="btn btn-learn" :disabled="processing">
+        <button @click="markLearn" class="btn btn-learn" :disabled="processing || (daily.isJourney.value && (daily.busy.value || daily.hasPendingAction.value))">
           {{ t('wordSets.learn') }}
         </button>
-        <button @click="skipWord" class="btn btn-skip" :disabled="processing">
+        <button @click="skipWord" class="btn btn-skip" :disabled="processing || (daily.isJourney.value && (daily.busy.value || daily.hasPendingAction.value))">
           {{ t('wordSets.skip') }}
         </button>
       </div>
@@ -72,6 +75,8 @@
 </template>
 
 <script setup lang="ts">
+import { useDailyJourneyExercise } from '../composables/useDailyJourneyExercise'
+import type { WordsJourneyExercise } from '../api/dailyJourneyClient'
 import { ref, computed, onMounted, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
@@ -130,6 +135,7 @@ interface MorphInfo {
 }
 
 const route = useRoute()
+const daily = useDailyJourneyExercise<WordsJourneyExercise>('words')
 const router = useRouter()
 const { t } = useI18n()
 const setId = route.params.setId as string
@@ -193,8 +199,8 @@ const loadWords = async () => {
   try {
     const data: { word_set: any; words: WordInfo[] } = 
       await apiClient.request(`/api/learning/words/sets/${setId}`)
-    // Filter to only unknown words for study
-    words.value = (data.words || []).filter(w => w.status === 'unknown')
+    const state = daily.isJourney.value ? await daily.ready() : null
+    words.value = (data.words || []).filter(w => w.status === 'unknown' && (!state || state.addable?.[Number(setId)]?.includes(w.word_card_id)))
     currentIndex.value = 0
   } catch (error: any) {
     console.error('Failed to load words:', error)
@@ -229,7 +235,7 @@ const loadTrainingCard = async (wordCardId: number) => {
         currentTrainingCard.value.word_en ||
         currentWord.value?.word ||
         ''
-      const url = pronunciationWord ? await getWordPronunciationURL(pronunciationWord) : null
+      const url = pronunciationWord ? await getWordPronunciationURL(pronunciationWord, daily.context.value?.courseCode) : null
       if (gen !== loadTrainingCardGen || currentWord.value?.word_card_id !== wordCardId) {
         return
       }
@@ -240,7 +246,7 @@ const loadTrainingCard = async (wordCardId: number) => {
       if (url && pronunciationWord) {
         playingPronunciation.value = true
         try {
-          await playWordPronunciation(pronunciationWord)
+          await playWordPronunciation(pronunciationWord, daily.context.value?.courseCode)
         } catch { /* autoplay may be blocked; the manual play button stays available */ }
         finally {
           playingPronunciation.value = false
@@ -275,7 +281,7 @@ const playCurrentPronunciation = async () => {
   if (!pronunciationWord) return
   playingPronunciation.value = true
   try {
-    await playWordPronunciation(pronunciationWord)
+    await playWordPronunciation(pronunciationWord, daily.context.value?.courseCode)
   } finally {
     playingPronunciation.value = false
   }
@@ -286,12 +292,15 @@ const markKnown = async () => {
   
   processing.value = true
   try {
-    await apiClient.request(`/api/learning/words/sets/${setId}/study/know`, {
+    if (daily.isJourney.value) {
+      await daily.act('add_word', { set_id: Number(setId), word_card_id: currentWord.value.word_card_id, known: true })
+      if (daily.error.value) throw new Error(daily.error.value)
+    } else await apiClient.request(`/api/learning/words/sets/${setId}/study/know`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ word_card_id: currentWord.value.word_card_id })
     })
-    const code = getGrammarCourseCode()
+    const code = daily.context.value?.courseCode || getGrammarCourseCode()
     if (code) emitAppDataEvent('word-set-updated', code)
     
     // Remove word from list (it's now known, so not in unknown list)
@@ -314,12 +323,15 @@ const markLearn = async () => {
   
   processing.value = true
   try {
-    await apiClient.request(`/api/learning/words/sets/${setId}/study/learn`, {
+    if (daily.isJourney.value) {
+      await daily.act('add_word', { set_id: Number(setId), word_card_id: currentWord.value.word_card_id })
+      if (daily.error.value) throw new Error(daily.error.value)
+    } else await apiClient.request(`/api/learning/words/sets/${setId}/study/learn`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ word_card_id: currentWord.value.word_card_id })
     })
-    const code = getGrammarCourseCode()
+    const code = daily.context.value?.courseCode || getGrammarCourseCode()
     if (code) emitAppDataEvent('word-set-updated', code)
     
     // Remove word from list (it's now in vocab, so not in unknown list)
@@ -355,7 +367,7 @@ const exitStudy = () => {
 }
 
 const goBack = () => {
-  router.push(`/learning/words/${setId}`)
+  router.push({ path: `/learning/words/${setId}`, query: daily.context.value ? { journey_id: daily.context.value.journeyId, journey_step_id: daily.context.value.stepId, course_code: daily.context.value.courseCode } : undefined })
 }
 </script>
 

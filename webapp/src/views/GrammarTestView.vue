@@ -4,9 +4,10 @@
       <p>{{ t('grammar.loadingTest') }}</p>
     </div>
     
-    <div v-else-if="error" class="error">
-      <p>{{ error }}</p>
-      <button @click="loadTest" class="btn btn-primary">{{ t('common.retry') }}</button>
+    <div v-else-if="error || daily.error.value" class="error">
+      <p>{{ error || daily.error.value }}</p>
+      <button v-if="daily.isJourney.value" @click="daily.back" class="btn btn-secondary">{{ t('dailyJourney.returnToRoute') }}</button>
+      <button @click="retryJourneyTest" class="btn btn-primary">{{ t('common.retry') }}</button>
     </div>
     
     <div v-else-if="testSubmitted && result" class="test-results">
@@ -121,9 +122,9 @@
       </div>
       
       <div class="results-actions">
-        <button @click="goBack" class="btn btn-secondary">{{ t('grammar.backToChapter') }}</button>
+        <button @click="goBack" class="btn btn-secondary">{{ daily.isJourney.value ? t('dailyJourney.returnToRoute') : t('grammar.backToChapter') }}</button>
         <button
-          v-if="showNextActionButton"
+          v-if="!daily.isJourney.value && showNextActionButton"
           @click.stop.prevent="handleNextActionClick"
           @mousedown.stop
           @mouseup.stop
@@ -135,7 +136,7 @@
         >
           {{ nextActionLoading ? t('common.loading') : nextActionLabel }}
         </button>
-        <button v-if="!result.passed" @click="retryTest" class="btn btn-primary">{{ t('grammar.retryTest') }}</button>
+        <button v-if="!daily.isJourney.value && !result.passed" @click="retryTest" class="btn btn-primary">{{ t('grammar.retryTest') }}</button>
       </div>
     </div>
     
@@ -154,6 +155,7 @@
           :key="currentQuestion.id || currentQuestionIndex"
           :ref="el => setQuestionRef(currentQuestionIndex, el)"
           :question="currentQuestion"
+          :draft-key="daily.isJourney.value ? daily.draftKey?.('grammar:' + currentQuestion.id + ':' + currentQuestionIndex) : ''"
           :show-answers="false"
           :show-theory-help-button="false"
           :initial-answer="currentQuestion ? answers.get(getQuestionKey(currentQuestion)) : undefined"
@@ -163,7 +165,7 @@
       
       <div class="test-navigation">
         <button 
-          v-if="currentQuestionIndex > 0"
+          v-if="!daily.isJourney.value && currentQuestionIndex > 0"
           @click="previousQuestion"
           class="btn btn-secondary"
         >
@@ -172,7 +174,7 @@
         <button 
           v-if="currentQuestionIndex < questions.length - 1"
           @click="nextQuestion"
-          :disabled="!hasAnswer(currentQuestionIndex)"
+          :disabled="daily.busy.value || !hasAnswer(currentQuestionIndex)"
           class="btn btn-primary"
         >
           {{ t('grammar.next') }}
@@ -180,7 +182,7 @@
         <button 
           v-else
           @click="submitTest"
-          :disabled="submitting || !hasAnswer(currentQuestionIndex)"
+          :disabled="submitting || daily.busy.value || !hasAnswer(currentQuestionIndex)"
           class="btn btn-primary"
         >
           {{ submitting ? t('grammar.submitting') : t('grammar.submitTest') }}
@@ -216,6 +218,7 @@ import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter, onBeforeRouteUpdate } from 'vue-router'
 import { renderMarkdown } from '../utils/markdown'
 import { grammarClient } from '../api/grammarClient'
+import { useDailyJourneyGrammar } from '../composables/useDailyJourneyGrammar'
 import GrammarQuestion from '../components/GrammarQuestion.vue'
 import ConfirmModal from '../components/ConfirmModal.vue'
 import ContentReportDialog from '../components/ContentReportDialog.vue'
@@ -231,6 +234,7 @@ import { useAudio } from '../composables/useAudio'
 const { t } = useI18n()
 const route = useRoute()
 const router = useRouter()
+const daily = useDailyJourneyGrammar()
 
 const { settings } = useSettings()
 const { playVictory, playDefeat } = useAudio()
@@ -431,7 +435,15 @@ const loadTest = async () => {
   loading.value = true
   error.value = null
   try {
-    if (scope.value === 'chapter') {
+    if (daily.isJourney.value) {
+      const state = await daily.ready()
+      questions.value = state.questions
+      currentQuestionIndex.value = state.index
+      answers.value = new Map(state.questions.flatMap((q, index) => state.answers[index] === undefined ? [] : [[getQuestionKey(q), state.answers[index]]]))
+      result.value = state.result || null
+      testSubmitted.value = !!state.result
+      if (state.result) nextTick(() => animateScore(state.result!.score))
+    } else if (scope.value === 'chapter') {
       const data: { questions: any[]; total: number } = await grammarClient.getChapterTest(scopeId.value)
       questions.value = data.questions || []
     } else {
@@ -446,6 +458,14 @@ const loadTest = async () => {
   }
 }
 
+const retryJourneyTest = async () => { if (daily.isJourney.value) await daily.retry(); await loadTest() }
+const saveJourneyAnswer = async () => {
+  if (daily.busy.value || !currentQuestion.value) return
+  try { await daily.answer(answers.value.get(getQuestionKey(currentQuestion.value))); await loadTest() }
+  catch (cause: any) { error.value = cause.message }
+}
+watch(daily.finished, finished => { if (daily.isJourney.value && finished) void daily.back() })
+
 const handleAnswerWithAutoNext = (index: number, answer: any) => {
   const question = questions.value[index]
   if (!question) {
@@ -454,6 +474,7 @@ const handleAnswerWithAutoNext = (index: number, answer: any) => {
   const questionKey = getQuestionKey(question)
   answers.value.set(questionKey, answer)
   
+  if (daily.isJourney.value) return
   if (hasAnswer(index)) {
     const isLast = index === questions.value.length - 1
     const isFillBlank = questions.value[index]?.type === 'fill_blank'
@@ -467,7 +488,8 @@ const handleAnswerWithAutoNext = (index: number, answer: any) => {
   }
 }
 
-const nextQuestion = () => {
+const nextQuestion = async () => {
+  if (daily.isJourney.value) { await saveJourneyAnswer(); return }
   if (currentQuestionIndex.value < questions.value.length - 1 && hasAnswer(currentQuestionIndex.value)) {
     currentQuestionIndex.value++
   }
@@ -484,6 +506,7 @@ const exitTest = () => {
 }
 
 const handleExitConfirm = () => {
+  if (daily.isJourney.value) { showExitConfirm.value = false; void daily.back(); return }
   showExitConfirm.value = false
   goBack()
 }
@@ -513,6 +536,7 @@ const animateScore = (targetScore: number) => {
 }
 
 const submitTest = async () => {
+  if (daily.isJourney.value) { await saveJourneyAnswer(); return }
   // Build array of answer objects with explicit question identification
   // Each answer is explicitly linked to its question via question_id and chapter_id (for category tests)
   // This ensures correct matching even if questions are reordered or some are skipped
@@ -684,6 +708,7 @@ watch([() => percentageAnimationComplete.value, () => accuracyPercentage.value],
 })
 
 const goBack = () => {
+  if (daily.isJourney.value) { void (daily.data.value?.result ? daily.acknowledge() : daily.back()); return }
   if (scope.value === 'chapter') {
     router.push(`/learning/grammar/chapter/${scopeId.value}`)
   } else {

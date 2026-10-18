@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"go.uber.org/zap"
+	"tgbot-skeleton/internal/database"
 )
 
 // PictureQuest is an authored "describe the picture" quest tied to a district by CEFR level.
@@ -66,8 +67,9 @@ type PictureQuestMessage struct {
 
 // PictureQuestRepository handles picture quests, sessions, messages and task progress.
 type PictureQuestRepository struct {
-	db     *sql.DB
-	logger *zap.Logger
+	db      *sql.DB
+	queries database.ContextDBTX
+	logger  *zap.Logger
 }
 
 // NewPictureQuestRepository creates a PictureQuestRepository.
@@ -92,7 +94,7 @@ func scanPictureQuest(row interface{ Scan(...interface{}) error }) (*PictureQues
 
 // ListQuestsByDistrict returns the active picture quests of a district, ordered by sort_order.
 func (r *PictureQuestRepository) ListQuestsByDistrict(ctx context.Context, courseID, districtID int64) ([]PictureQuest, error) {
-	rows, err := r.db.QueryContext(ctx, `
+	rows, err := r.queryDB().QueryContext(ctx, `
 		SELECT `+pictureQuestColumns+`
 		FROM picture_quests
 		WHERE course_id = ? AND district_id = ? AND status = 'active'
@@ -115,7 +117,7 @@ func (r *PictureQuestRepository) ListQuestsByDistrict(ctx context.Context, cours
 
 // GetQuestByID returns one quest by its primary key (any status).
 func (r *PictureQuestRepository) GetQuestByID(ctx context.Context, id int64) (*PictureQuest, error) {
-	row := r.db.QueryRowContext(ctx, `
+	row := r.queryDB().QueryRowContext(ctx, `
 		SELECT `+pictureQuestColumns+`
 		FROM picture_quests
 		WHERE id = ?`, id)
@@ -131,7 +133,7 @@ func (r *PictureQuestRepository) GetQuestByID(ctx context.Context, id int64) (*P
 
 // GetQuestByCode returns one active quest by its code within a course.
 func (r *PictureQuestRepository) GetQuestByCode(ctx context.Context, courseID int64, code string) (*PictureQuest, error) {
-	row := r.db.QueryRowContext(ctx, `
+	row := r.queryDB().QueryRowContext(ctx, `
 		SELECT `+pictureQuestColumns+`
 		FROM picture_quests
 		WHERE course_id = ? AND code = ? AND status = 'active'`, courseID, code)
@@ -147,7 +149,7 @@ func (r *PictureQuestRepository) GetQuestByCode(ctx context.Context, courseID in
 
 // ListTasks returns the ordered tasks of a quest.
 func (r *PictureQuestRepository) ListTasks(ctx context.Context, questID int64) ([]PictureQuestTask, error) {
-	rows, err := r.db.QueryContext(ctx, `
+	rows, err := r.queryDB().QueryContext(ctx, `
 		SELECT id, quest_id, code, sort_order, is_required, title, completion_criteria
 		FROM picture_quest_tasks
 		WHERE quest_id = ?
@@ -180,10 +182,10 @@ func scanPictureQuestSession(row interface{ Scan(...interface{}) error }) (*Pict
 
 // GetOpenSession returns the open session for (user_course, quest) if one exists.
 func (r *PictureQuestRepository) GetOpenSession(ctx context.Context, userCourseID, questID int64) (*PictureQuestSession, error) {
-	row := r.db.QueryRowContext(ctx, `
+	row := r.queryDB().QueryRowContext(ctx, `
 		SELECT `+pictureQuestSessionColumns+`
 		FROM picture_quest_sessions
-		WHERE user_course_id = ? AND quest_id = ? AND status = 'open'`, userCourseID, questID)
+		WHERE user_course_id = ? AND quest_id = ? AND status = 'open' AND daily_journey_step_id IS NULL`, userCourseID, questID)
 	s, err := scanPictureQuestSession(row)
 	if errors.Is(err, sql.ErrNoRows) {
 		return nil, nil
@@ -196,10 +198,10 @@ func (r *PictureQuestRepository) GetOpenSession(ctx context.Context, userCourseI
 
 // GetSession returns a session owned by the given user_course.
 func (r *PictureQuestRepository) GetSession(ctx context.Context, sessionID, userCourseID int64) (*PictureQuestSession, error) {
-	row := r.db.QueryRowContext(ctx, `
+	row := r.queryDB().QueryRowContext(ctx, `
 		SELECT `+pictureQuestSessionColumns+`
 		FROM picture_quest_sessions
-		WHERE id = ? AND user_course_id = ?`, sessionID, userCourseID)
+		WHERE id = ? AND user_course_id = ? AND daily_journey_step_id IS NULL`, sessionID, userCourseID)
 	s, err := scanPictureQuestSession(row)
 	if errors.Is(err, sql.ErrNoRows) {
 		return nil, nil
@@ -220,7 +222,7 @@ func (r *PictureQuestRepository) StartSession(ctx context.Context, userCourseID,
 	}
 
 	var id int64
-	if err := r.db.QueryRowContext(ctx, `
+	if err := r.queryDB().QueryRowContext(ctx, `
 		INSERT INTO picture_quest_sessions (user_course_id, quest_id, status)
 		VALUES (?, ?, 'open')
 		RETURNING id`, userCourseID, questID).Scan(&id); err != nil {
@@ -236,7 +238,7 @@ func (r *PictureQuestRepository) StartSession(ctx context.Context, userCourseID,
 // NextSeq returns the next 1-based message sequence number for a session.
 func (r *PictureQuestRepository) NextSeq(ctx context.Context, sessionID int64) (int, error) {
 	var maxSeq sql.NullInt64
-	if err := r.db.QueryRowContext(ctx, `
+	if err := r.queryDB().QueryRowContext(ctx, `
 		SELECT MAX(seq) FROM picture_quest_messages WHERE session_id = ?`, sessionID).Scan(&maxSeq); err != nil {
 		return 0, fmt.Errorf("next seq: %w", err)
 	}
@@ -261,7 +263,7 @@ func (r *PictureQuestRepository) AppendMessageWithCorrections(ctx context.Contex
 	if strings.TrimSpace(correctionsJSON) == "" {
 		correctionsJSON = "[]"
 	}
-	if _, err := r.db.ExecContext(ctx, `
+	if _, err := r.queryDB().ExecContext(ctx, `
 		INSERT INTO picture_quest_messages (session_id, seq, role, content, prompt_tokens, completion_tokens, corrections)
 		VALUES (?, ?, ?, ?, ?, ?, ?)`, sessionID, seq, role, content, pt, ct, correctionsJSON); err != nil {
 		return fmt.Errorf("append picture quest message: %w", err)
@@ -271,7 +273,7 @@ func (r *PictureQuestRepository) AppendMessageWithCorrections(ctx context.Contex
 
 // ListMessages returns all visible messages of a session ordered by seq.
 func (r *PictureQuestRepository) ListMessages(ctx context.Context, sessionID int64) ([]PictureQuestMessage, error) {
-	rows, err := r.db.QueryContext(ctx, `
+	rows, err := r.queryDB().QueryContext(ctx, `
 		SELECT id, seq, role, content, COALESCE(corrections, '[]'::jsonb), created_at
 		FROM picture_quest_messages
 		WHERE session_id = ?
@@ -294,7 +296,7 @@ func (r *PictureQuestRepository) ListMessages(ctx context.Context, sessionID int
 
 // BumpSessionCounters increments turn and token counters for a session.
 func (r *PictureQuestRepository) BumpSessionCounters(ctx context.Context, sessionID int64, addTurns, addTokens int) error {
-	if _, err := r.db.ExecContext(ctx, `
+	if _, err := r.queryDB().ExecContext(ctx, `
 		UPDATE picture_quest_sessions
 		SET turn_count = turn_count + ?, tokens_used = tokens_used + ?
 		WHERE id = ?`, addTurns, addTokens, sessionID); err != nil {
@@ -312,7 +314,7 @@ func (r *PictureQuestRepository) MarkTasksCompleted(ctx context.Context, session
 		if !ok {
 			continue
 		}
-		if _, err := r.db.ExecContext(ctx, `
+		if _, err := r.queryDB().ExecContext(ctx, `
 			INSERT INTO picture_quest_task_progress (session_id, task_id, completed, completed_at, completed_in_seq)
 			VALUES (?, ?, true, CURRENT_TIMESTAMP, ?)
 			ON CONFLICT (session_id, task_id) DO UPDATE SET
@@ -328,7 +330,7 @@ func (r *PictureQuestRepository) MarkTasksCompleted(ctx context.Context, session
 
 // GetCompletedTaskIDs returns the set of completed task ids for a session.
 func (r *PictureQuestRepository) GetCompletedTaskIDs(ctx context.Context, sessionID int64) (map[int64]bool, error) {
-	rows, err := r.db.QueryContext(ctx, `
+	rows, err := r.queryDB().QueryContext(ctx, `
 		SELECT task_id FROM picture_quest_task_progress
 		WHERE session_id = ? AND completed = true`, sessionID)
 	if err != nil {
@@ -358,7 +360,7 @@ func (r *PictureQuestRepository) RecordQuestCompletion(ctx context.Context, user
 	}
 	resultJSON := fmt.Sprintf(`{"picture_quest_code":%q}`, questCode)
 
-	if _, err := r.db.ExecContext(ctx, `
+	if _, err := r.queryDB().ExecContext(ctx, `
 		INSERT INTO exercise_attempts
 			(user_course_id, learning_item_id, mode, client_attempt_id, answered_at, is_correct, score, result_json)
 		VALUES (?, ?, 'chat', ?, CURRENT_TIMESTAMP, true, 100, CAST(? AS jsonb))
@@ -367,27 +369,30 @@ func (r *PictureQuestRepository) RecordQuestCompletion(ctx context.Context, user
 		return fmt.Errorf("record picture quest exercise attempt: %w", err)
 	}
 
-	if _, err := r.db.ExecContext(ctx, `
+	if _, err := r.queryDB().ExecContext(ctx, `
 		INSERT INTO learning_events (user_course_id, event_type, event_time, mode, source_table, event_json)
 		VALUES (?, 'picture_quest_completed', CURRENT_TIMESTAMP, 'chat', 'picture_quest_sessions', CAST(? AS jsonb))`,
 		userCourseID, resultJSON); err != nil {
 		return fmt.Errorf("record picture quest event: %w", err)
 	}
 
-	_ = NewLinglowDailyStatsRepository(r.db).Bump(ctx, DailyBump{
+	statsErr := NewLinglowDailyStatsRepository(r.queryDB()).Bump(ctx, DailyBump{
 		UserCourseID: userCourseID,
 		Day:          LocalDayFromTime(time.Now()),
 		Mode:         "chat",
 		Attempts:     1,
 		Correct:      1,
 	})
+	if _, inTx := r.queries.(*sql.Tx); inTx && statsErr != nil {
+		return statsErr
+	}
 	return nil
 }
 
 // QuestEverPassed reports whether mandatory tasks were completed for a quest.
 func (r *PictureQuestRepository) QuestEverPassed(ctx context.Context, userCourseID int64, questCode string) (bool, error) {
 	var exists bool
-	err := r.db.QueryRowContext(ctx, `
+	err := r.queryDB().QueryRowContext(ctx, `
 		SELECT EXISTS(
 			SELECT 1 FROM exercise_attempts
 			WHERE user_course_id = ? AND mode = 'chat'
@@ -399,7 +404,7 @@ func (r *PictureQuestRepository) QuestEverPassed(ctx context.Context, userCourse
 // PassedQuestCodes returns quest codes where the learner finished mandatory tasks
 // (exercise_attempts from RecordQuestCompletion) or fully completed the session.
 func (r *PictureQuestRepository) PassedQuestCodes(ctx context.Context, userCourseID, courseID int64) (map[string]bool, error) {
-	rows, err := r.db.QueryContext(ctx, `
+	rows, err := r.queryDB().QueryContext(ctx, `
 		SELECT DISTINCT q.code
 		FROM picture_quests q
 		WHERE q.course_id = ?
@@ -435,7 +440,7 @@ func (r *PictureQuestRepository) PassedQuestCodes(ctx context.Context, userCours
 // CompletedQuestCodes returns the set of quest codes the user_course has at least one
 // 'completed' session for (all tasks incl. optional — the ★ state), within a course.
 func (r *PictureQuestRepository) CompletedQuestCodes(ctx context.Context, userCourseID, courseID int64) (map[string]bool, error) {
-	rows, err := r.db.QueryContext(ctx, `
+	rows, err := r.queryDB().QueryContext(ctx, `
 		SELECT DISTINCT q.code
 		FROM picture_quest_sessions sess
 		JOIN picture_quests q ON q.id = sess.quest_id
@@ -458,10 +463,10 @@ func (r *PictureQuestRepository) CompletedQuestCodes(ctx context.Context, userCo
 
 // CloseSession sets a terminal status ('completed' or 'abandoned') on a session.
 func (r *PictureQuestRepository) CloseSession(ctx context.Context, sessionID, userCourseID int64, status string) error {
-	if _, err := r.db.ExecContext(ctx, `
+	if _, err := r.queryDB().ExecContext(ctx, `
 		UPDATE picture_quest_sessions
 		SET status = ?, completed_at = CURRENT_TIMESTAMP
-		WHERE id = ? AND user_course_id = ? AND status = 'open'`, status, sessionID, userCourseID); err != nil {
+		WHERE id = ? AND user_course_id = ? AND status = 'open' AND daily_journey_step_id IS NULL`, status, sessionID, userCourseID); err != nil {
 		return fmt.Errorf("close picture quest session: %w", err)
 	}
 	return nil
@@ -474,7 +479,7 @@ func (r *PictureQuestRepository) ListTasksForList(ctx context.Context, ids []int
 		return out, nil
 	}
 	placeholders, args := questIDArgs(ids)
-	rows, err := r.db.QueryContext(ctx, `SELECT id, quest_id, code, sort_order, is_required, title, completion_criteria FROM picture_quest_tasks WHERE quest_id IN (`+placeholders+`) ORDER BY quest_id, sort_order, id`, args...)
+	rows, err := r.queryDB().QueryContext(ctx, `SELECT id, quest_id, code, sort_order, is_required, title, completion_criteria FROM picture_quest_tasks WHERE quest_id IN (`+placeholders+`) ORDER BY quest_id, sort_order, id`, args...)
 	if err != nil {
 		return nil, err
 	}
@@ -487,4 +492,16 @@ func (r *PictureQuestRepository) ListTasksForList(ctx context.Context, ids []int
 		out[task.QuestID] = append(out[task.QuestID], task)
 	}
 	return out, rows.Err()
+}
+
+func (r *PictureQuestRepository) WithQueries(q database.ContextDBTX) *PictureQuestRepository {
+	clone := *r
+	clone.queries = q
+	return &clone
+}
+func (r *PictureQuestRepository) queryDB() database.ContextDBTX {
+	if r.queries != nil {
+		return r.queries
+	}
+	return r.db
 }

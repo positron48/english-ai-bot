@@ -46,9 +46,11 @@ export const SCREEN_DIRTY_TAGS: Record<AppDataScreenKey, AppDataDirtyTag[]> = {
 }
 
 export const EVENT_DIRTY_TAGS: Record<string, AppDataDirtyTag[]> = {
+  'daily-journey-progressed': ['daily-route', 'stats', 'progress'],
   'word-review-recorded': ['words', 'srs', 'stats', 'progress', 'daily-route'],
   'word-review-session-completed': ['words', 'srs', 'stats', 'progress', 'daily-route'],
   'grammar-test-submitted': ['grammar', 'stats', 'progress', 'city'],
+  'verb-training-recorded': ['srs', 'stats', 'progress', 'daily-route'],
   'grammar-training-recorded': ['grammar', 'srs', 'stats', 'progress', 'daily-route'],
   'reading-marked-read': ['reading', 'stats', 'progress', 'city', 'daily-route'],
   'speaking-attempt-submitted': ['speaking', 'stats', 'progress', 'city', 'daily-route'],

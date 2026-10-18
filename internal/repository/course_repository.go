@@ -11,15 +11,17 @@ import (
 
 	"tgbot-skeleton/internal/cache"
 	"tgbot-skeleton/internal/config"
+	"tgbot-skeleton/internal/database"
 
 	"go.uber.org/zap"
 )
 
 // CourseRepository handles Linglow v2 course and user-course data.
 type CourseRepository struct {
-	db       *sql.DB
-	logger   *zap.Logger
-	mapCache cache.Cache
+	masteryQueries database.ContextDBTX
+	db             *sql.DB
+	logger         *zap.Logger
+	mapCache       cache.Cache
 }
 
 // courseMapCacheTTL is a safety-net expiry on top of explicit invalidation in MapLegacyContent,

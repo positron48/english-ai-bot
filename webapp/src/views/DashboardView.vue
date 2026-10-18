@@ -42,7 +42,8 @@
       </router-link>
 
       <!-- Твой путь сегодня -->
-      <div class="lg-path-wrap">
+      <DailyJourneyCard v-if="dailyJourneyEnabled" :journey="dailyJourney" :busy="offlineDashboard" @open="openDailyJourney" />
+      <div v-else class="lg-path-wrap">
         <div class="lg-path-lumi"><LgLumi :size="68" pose="point" /></div>
         <div class="lg-path-card">
           <div class="lg-path-head">
@@ -215,6 +216,9 @@
 
 <script setup lang="ts">
 import { ref, computed, onMounted, watch } from 'vue'
+import { useRouter } from 'vue-router'
+import DailyJourneyCard from '../components/DailyJourneyCard.vue'
+import type { JourneyCardData } from '../components/dailyJourney/types'
 import { useI18n } from 'vue-i18n'
 import { useAuth } from '../composables/useAuth'
 import { apiClient } from '../api/client'
@@ -238,6 +242,15 @@ import { maybeRunOfflineAutoDownload } from '../composables/useOfflineAutoDownlo
 import { useLocale } from '../composables/useLocale'
 import { masteryStudyingPath } from '../utils/masteryDisplay'
 
+const router = useRouter()
+const dailyJourneyAvailability = ref(false)
+const dailyJourneyCourse = ref('')
+const dailyJourneyEnabled = computed(() => isAuthenticated.value && dailyJourneyAvailability.value && dailyJourneyCourse.value === currentCourseCode.value)
+const dailyJourney = ref<JourneyCardData | null>(null)
+function openDailyJourney() {
+  if (offlineDashboard.value) return
+  void router.push({ name: 'CityDailyRoute', query: { course_code: currentCourseCode.value, ...(dailyJourney.value ? { journey_id: dailyJourney.value.id } : {}) } })
+}
 const { t } = useI18n()
 const { streakDays, ensureStatsLoaded, refreshStats } = useStats()
 ensureStatsLoaded()
@@ -343,6 +356,9 @@ const offlineDashboard = ref(false)
 
 function applyDashboardOverview(ov: any) {
   const data = ov?.dashboard || ov || {}
+  dailyJourneyAvailability.value = ov?.daily_journey?.enabled === true
+  dailyJourneyCourse.value = ov?.daily_journey?.courseCode || ''
+  dailyJourney.value = dailyJourneyEnabled.value ? ov.daily_journey.journey || null : null
   if (ov?.progress) linglowProgress.value = ov.progress
   if (ov?.daily_route) dailyToday.value = ov.daily_route.today || null
   if ('continue_chapter' in (ov || {})) applyContinueChapter(ov.continue_chapter)
@@ -468,6 +484,8 @@ watch(currentCourseCode, () => {
 
 // Watch for authentication state and load data when authenticated
 watch(isAuthenticated, (authenticated) => {
+  dailyJourneyAvailability.value = false
+  dailyJourney.value = null
   if (authenticated) {
     loadData()
   }

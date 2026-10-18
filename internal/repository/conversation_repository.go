@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"go.uber.org/zap"
+	"tgbot-skeleton/internal/database"
 )
 
 // ConversationScenario is an authored NPC role-play scenario tied to a district/location.
@@ -74,8 +75,9 @@ type ConversationMessage struct {
 
 // ConversationRepository handles conversation scenarios, sessions, messages and task progress.
 type ConversationRepository struct {
-	db     *sql.DB
-	logger *zap.Logger
+	db      *sql.DB
+	queries database.ContextDBTX
+	logger  *zap.Logger
 }
 
 // NewConversationRepository creates a ConversationRepository.
@@ -102,7 +104,7 @@ func scanScenario(row interface{ Scan(...interface{}) error }) (*ConversationSce
 // ListScenariosForDistrict returns the active scenarios available in a district (its conversation
 // location), ordered by sort_order.
 func (r *ConversationRepository) ListScenariosForDistrict(ctx context.Context, courseID, districtID int64) ([]ConversationScenario, error) {
-	rows, err := r.db.QueryContext(ctx, `
+	rows, err := r.queryDB().QueryContext(ctx, `
 		SELECT `+conversationScenarioColumns+`
 		FROM conversation_scenarios
 		WHERE course_id = ? AND district_id = ? AND status = 'active'
@@ -125,7 +127,7 @@ func (r *ConversationRepository) ListScenariosForDistrict(ctx context.Context, c
 
 // GetScenarioByID returns one scenario by its primary key (any status).
 func (r *ConversationRepository) GetScenarioByID(ctx context.Context, id int64) (*ConversationScenario, error) {
-	row := r.db.QueryRowContext(ctx, `
+	row := r.queryDB().QueryRowContext(ctx, `
 		SELECT `+conversationScenarioColumns+`
 		FROM conversation_scenarios
 		WHERE id = ?`, id)
@@ -141,7 +143,7 @@ func (r *ConversationRepository) GetScenarioByID(ctx context.Context, id int64) 
 
 // GetScenarioByCode returns one active scenario by its code within a course.
 func (r *ConversationRepository) GetScenarioByCode(ctx context.Context, courseID int64, code string) (*ConversationScenario, error) {
-	row := r.db.QueryRowContext(ctx, `
+	row := r.queryDB().QueryRowContext(ctx, `
 		SELECT `+conversationScenarioColumns+`
 		FROM conversation_scenarios
 		WHERE course_id = ? AND code = ? AND status = 'active'`, courseID, code)
@@ -157,7 +159,7 @@ func (r *ConversationRepository) GetScenarioByCode(ctx context.Context, courseID
 
 // ListTasks returns the ordered tasks of a scenario.
 func (r *ConversationRepository) ListTasks(ctx context.Context, scenarioID int64) ([]ConversationTask, error) {
-	rows, err := r.db.QueryContext(ctx, `
+	rows, err := r.queryDB().QueryContext(ctx, `
 		SELECT id, scenario_id, code, sort_order, is_required, title, completion_criteria
 		FROM conversation_tasks
 		WHERE scenario_id = ?
@@ -190,10 +192,10 @@ func scanSession(row interface{ Scan(...interface{}) error }) (*ConversationSess
 
 // GetOpenSession returns the open session for (user_course, scenario) if one exists.
 func (r *ConversationRepository) GetOpenSession(ctx context.Context, userCourseID, scenarioID int64) (*ConversationSession, error) {
-	row := r.db.QueryRowContext(ctx, `
+	row := r.queryDB().QueryRowContext(ctx, `
 		SELECT `+conversationSessionColumns+`
 		FROM conversation_sessions
-		WHERE user_course_id = ? AND scenario_id = ? AND status = 'open'`, userCourseID, scenarioID)
+		WHERE user_course_id = ? AND scenario_id = ? AND status = 'open' AND daily_journey_step_id IS NULL`, userCourseID, scenarioID)
 	s, err := scanSession(row)
 	if errors.Is(err, sql.ErrNoRows) {
 		return nil, nil
@@ -206,10 +208,10 @@ func (r *ConversationRepository) GetOpenSession(ctx context.Context, userCourseI
 
 // GetSession returns a session owned by the given user_course.
 func (r *ConversationRepository) GetSession(ctx context.Context, sessionID, userCourseID int64) (*ConversationSession, error) {
-	row := r.db.QueryRowContext(ctx, `
+	row := r.queryDB().QueryRowContext(ctx, `
 		SELECT `+conversationSessionColumns+`
 		FROM conversation_sessions
-		WHERE id = ? AND user_course_id = ?`, sessionID, userCourseID)
+		WHERE id = ? AND user_course_id = ? AND daily_journey_step_id IS NULL`, sessionID, userCourseID)
 	s, err := scanSession(row)
 	if errors.Is(err, sql.ErrNoRows) {
 		return nil, nil
@@ -222,11 +224,11 @@ func (r *ConversationRepository) GetSession(ctx context.Context, sessionID, user
 
 // GetSessionForUser returns a session owned by the given user (via any of their user_courses).
 func (r *ConversationRepository) GetSessionForUser(ctx context.Context, sessionID, userID int64) (*ConversationSession, error) {
-	row := r.db.QueryRowContext(ctx, `
+	row := r.queryDB().QueryRowContext(ctx, `
 		SELECT cs.id, cs.user_course_id, cs.scenario_id, cs.status, cs.turn_count, cs.tokens_used, cs.started_at, cs.completed_at
 		FROM conversation_sessions cs
 		JOIN user_courses uc ON uc.id = cs.user_course_id
-		WHERE cs.id = ? AND uc.user_id = ?`, sessionID, userID)
+		WHERE cs.id = ? AND uc.user_id = ? AND cs.daily_journey_step_id IS NULL`, sessionID, userID)
 	s, err := scanSession(row)
 	if errors.Is(err, sql.ErrNoRows) {
 		return nil, nil
@@ -247,7 +249,7 @@ func (r *ConversationRepository) StartSession(ctx context.Context, userCourseID,
 	}
 
 	var id int64
-	if err := r.db.QueryRowContext(ctx, `
+	if err := r.queryDB().QueryRowContext(ctx, `
 		INSERT INTO conversation_sessions (user_course_id, scenario_id, status)
 		VALUES (?, ?, 'open')
 		RETURNING id`, userCourseID, scenarioID).Scan(&id); err != nil {
@@ -263,7 +265,7 @@ func (r *ConversationRepository) StartSession(ctx context.Context, userCourseID,
 // NextSeq returns the next 1-based message sequence number for a session.
 func (r *ConversationRepository) NextSeq(ctx context.Context, sessionID int64) (int, error) {
 	var maxSeq sql.NullInt64
-	if err := r.db.QueryRowContext(ctx, `
+	if err := r.queryDB().QueryRowContext(ctx, `
 		SELECT MAX(seq) FROM conversation_messages WHERE session_id = ?`, sessionID).Scan(&maxSeq); err != nil {
 		return 0, fmt.Errorf("next seq: %w", err)
 	}
@@ -288,7 +290,7 @@ func (r *ConversationRepository) AppendMessageWithCorrections(ctx context.Contex
 	if strings.TrimSpace(correctionsJSON) == "" {
 		correctionsJSON = "[]"
 	}
-	if _, err := r.db.ExecContext(ctx, `
+	if _, err := r.queryDB().ExecContext(ctx, `
 		INSERT INTO conversation_messages (session_id, seq, role, content, prompt_tokens, completion_tokens, corrections)
 		VALUES (?, ?, ?, ?, ?, ?, ?)`, sessionID, seq, role, content, pt, ct, correctionsJSON); err != nil {
 		return fmt.Errorf("append message: %w", err)
@@ -298,7 +300,7 @@ func (r *ConversationRepository) AppendMessageWithCorrections(ctx context.Contex
 
 // ListMessages returns all visible messages of a session ordered by seq.
 func (r *ConversationRepository) ListMessages(ctx context.Context, sessionID int64) ([]ConversationMessage, error) {
-	rows, err := r.db.QueryContext(ctx, `
+	rows, err := r.queryDB().QueryContext(ctx, `
 		SELECT id, seq, role, content, COALESCE(corrections, '[]'::jsonb), created_at
 		FROM conversation_messages
 		WHERE session_id = ?
@@ -321,7 +323,7 @@ func (r *ConversationRepository) ListMessages(ctx context.Context, sessionID int
 
 // BumpSessionCounters increments turn and token counters for a session.
 func (r *ConversationRepository) BumpSessionCounters(ctx context.Context, sessionID int64, addTurns, addTokens int) error {
-	if _, err := r.db.ExecContext(ctx, `
+	if _, err := r.queryDB().ExecContext(ctx, `
 		UPDATE conversation_sessions
 		SET turn_count = turn_count + ?, tokens_used = tokens_used + ?
 		WHERE id = ?`, addTurns, addTokens, sessionID); err != nil {
@@ -339,7 +341,7 @@ func (r *ConversationRepository) MarkTasksCompleted(ctx context.Context, session
 		if !ok {
 			continue
 		}
-		if _, err := r.db.ExecContext(ctx, `
+		if _, err := r.queryDB().ExecContext(ctx, `
 			INSERT INTO conversation_task_progress (session_id, task_id, completed, completed_at, completed_in_seq)
 			VALUES (?, ?, true, CURRENT_TIMESTAMP, ?)
 			ON CONFLICT (session_id, task_id) DO UPDATE SET
@@ -355,7 +357,7 @@ func (r *ConversationRepository) MarkTasksCompleted(ctx context.Context, session
 
 // GetCompletedTaskIDs returns the set of completed task ids for a session.
 func (r *ConversationRepository) GetCompletedTaskIDs(ctx context.Context, sessionID int64) (map[int64]bool, error) {
-	rows, err := r.db.QueryContext(ctx, `
+	rows, err := r.queryDB().QueryContext(ctx, `
 		SELECT task_id FROM conversation_task_progress
 		WHERE session_id = ? AND completed = true`, sessionID)
 	if err != nil {
@@ -385,7 +387,7 @@ func (r *ConversationRepository) RecordQuestCompletion(ctx context.Context, user
 	}
 	resultJSON := fmt.Sprintf(`{"scenario_code":%q}`, scenarioCode)
 
-	if _, err := r.db.ExecContext(ctx, `
+	if _, err := r.queryDB().ExecContext(ctx, `
 		INSERT INTO exercise_attempts
 			(user_course_id, learning_item_id, mode, client_attempt_id, answered_at, is_correct, score, result_json)
 		VALUES (?, ?, 'chat', ?, CURRENT_TIMESTAMP, true, 100, CAST(? AS jsonb))
@@ -394,27 +396,30 @@ func (r *ConversationRepository) RecordQuestCompletion(ctx context.Context, user
 		return fmt.Errorf("record quest exercise attempt: %w", err)
 	}
 
-	if _, err := r.db.ExecContext(ctx, `
+	if _, err := r.queryDB().ExecContext(ctx, `
 		INSERT INTO learning_events (user_course_id, event_type, event_time, mode, source_table, event_json)
 		VALUES (?, 'conversation_quest_completed', CURRENT_TIMESTAMP, 'chat', 'conversation_sessions', CAST(? AS jsonb))`,
 		userCourseID, resultJSON); err != nil {
 		return fmt.Errorf("record quest event: %w", err)
 	}
 
-	_ = NewLinglowDailyStatsRepository(r.db).Bump(ctx, DailyBump{
+	statsErr := NewLinglowDailyStatsRepository(r.queryDB()).Bump(ctx, DailyBump{
 		UserCourseID: userCourseID,
 		Day:          LocalDayFromTime(time.Now()),
 		Mode:         "chat",
 		Attempts:     1,
 		Correct:      1,
 	})
+	if _, inTx := r.queries.(*sql.Tx); inTx && statsErr != nil {
+		return statsErr
+	}
 	return nil
 }
 
 // LatestPassedScenarioCodes returns scenario codes where the learner finished mandatory tasks
 // (exercise_attempts from RecordQuestCompletion) or fully completed the session.
 func (r *ConversationRepository) LatestPassedScenarioCodes(ctx context.Context, userCourseID, courseID int64) (map[string]bool, error) {
-	rows, err := r.db.QueryContext(ctx, `
+	rows, err := r.queryDB().QueryContext(ctx, `
 		SELECT DISTINCT sc.code
 		FROM conversation_scenarios sc
 		WHERE sc.course_id = ?
@@ -450,7 +455,7 @@ func (r *ConversationRepository) LatestPassedScenarioCodes(ctx context.Context, 
 // PassedAtByScenarioCode returns the first pass/completion time per scenario code.
 // Cooldown windows start when mandatory tasks are done, not only after optional farewell.
 func (r *ConversationRepository) PassedAtByScenarioCode(ctx context.Context, userCourseID, courseID int64) (map[string]time.Time, error) {
-	rows, err := r.db.QueryContext(ctx, `
+	rows, err := r.queryDB().QueryContext(ctx, `
 		SELECT code, MIN(ts) FROM (
 			SELECT sc.code AS code, sess.completed_at AS ts
 			FROM conversation_sessions sess
@@ -483,7 +488,7 @@ func (r *ConversationRepository) PassedAtByScenarioCode(ctx context.Context, use
 // ScenarioEverPassed reports whether mandatory tasks were completed for a scenario.
 func (r *ConversationRepository) ScenarioEverPassed(ctx context.Context, userCourseID int64, scenarioCode string) (bool, error) {
 	var exists bool
-	err := r.db.QueryRowContext(ctx, `
+	err := r.queryDB().QueryRowContext(ctx, `
 		SELECT EXISTS(
 			SELECT 1 FROM exercise_attempts
 			WHERE user_course_id = ? AND mode = 'chat'
@@ -495,7 +500,7 @@ func (r *ConversationRepository) ScenarioEverPassed(ctx context.Context, userCou
 // LatestCompletedScenarioCodes returns the set of scenario codes the user_course has at least one
 // 'completed' session for, within a course. Used to resolve prerequisite/unlock state.
 func (r *ConversationRepository) LatestCompletedScenarioCodes(ctx context.Context, userCourseID, courseID int64) (map[string]bool, error) {
-	rows, err := r.db.QueryContext(ctx, `
+	rows, err := r.queryDB().QueryContext(ctx, `
 		SELECT DISTINCT sc.code
 		FROM conversation_sessions sess
 		JOIN conversation_scenarios sc ON sc.id = sess.scenario_id
@@ -518,10 +523,10 @@ func (r *ConversationRepository) LatestCompletedScenarioCodes(ctx context.Contex
 
 // CloseSession sets a terminal status ('completed' or 'abandoned') on a session.
 func (r *ConversationRepository) CloseSession(ctx context.Context, sessionID, userCourseID int64, status string) error {
-	if _, err := r.db.ExecContext(ctx, `
+	if _, err := r.queryDB().ExecContext(ctx, `
 		UPDATE conversation_sessions
 		SET status = ?, completed_at = CURRENT_TIMESTAMP
-		WHERE id = ? AND user_course_id = ? AND status = 'open'`, status, sessionID, userCourseID); err != nil {
+		WHERE id = ? AND user_course_id = ? AND status = 'open' AND daily_journey_step_id IS NULL`, status, sessionID, userCourseID); err != nil {
 		return fmt.Errorf("close session: %w", err)
 	}
 	return nil
@@ -529,7 +534,7 @@ func (r *ConversationRepository) CloseSession(ctx context.Context, sessionID, us
 
 // GetNPCImages returns a map of npc_code → image_url for NPCs that have an image set in the course.
 func (r *ConversationRepository) GetNPCImages(ctx context.Context, courseID int64) (map[string]string, error) {
-	rows, err := r.db.QueryContext(ctx, `
+	rows, err := r.queryDB().QueryContext(ctx, `
 		SELECT npc_code, image_url FROM conversation_npcs
 		WHERE course_id = ? AND image_url <> ''`, courseID)
 	if err != nil {
@@ -550,7 +555,7 @@ func (r *ConversationRepository) GetNPCImages(ctx context.Context, courseID int6
 // CompletedAtByScenarioCode returns a map of scenario_code → latest completed_at for all
 // scenarios this user_course has finished. Used to compute cooldown windows.
 func (r *ConversationRepository) CompletedAtByScenarioCode(ctx context.Context, userCourseID, courseID int64) (map[string]time.Time, error) {
-	rows, err := r.db.QueryContext(ctx, `
+	rows, err := r.queryDB().QueryContext(ctx, `
 		SELECT sc.code, MAX(sess.completed_at)
 		FROM conversation_sessions sess
 		JOIN conversation_scenarios sc ON sc.id = sess.scenario_id
@@ -574,7 +579,7 @@ func (r *ConversationRepository) CompletedAtByScenarioCode(ctx context.Context, 
 
 // UpsertNPCImage sets (or clears, when imageURL == "") the avatar image for an NPC in a course.
 func (r *ConversationRepository) UpsertNPCImage(ctx context.Context, courseID int64, npcCode, imageURL string) error {
-	if _, err := r.db.ExecContext(ctx, `
+	if _, err := r.queryDB().ExecContext(ctx, `
 		INSERT INTO conversation_npcs (course_id, npc_code, image_url, updated_at)
 		VALUES (?, ?, ?, CURRENT_TIMESTAMP)
 		ON CONFLICT (course_id, npc_code) DO UPDATE SET
@@ -593,7 +598,7 @@ func (r *ConversationRepository) ListTasksForList(ctx context.Context, ids []int
 		return out, nil
 	}
 	placeholders, args := questIDArgs(ids)
-	rows, err := r.db.QueryContext(ctx, `SELECT id, scenario_id, code, sort_order, is_required, title, completion_criteria FROM conversation_tasks WHERE scenario_id IN (`+placeholders+`) ORDER BY scenario_id, sort_order, id`, args...)
+	rows, err := r.queryDB().QueryContext(ctx, `SELECT id, scenario_id, code, sort_order, is_required, title, completion_criteria FROM conversation_tasks WHERE scenario_id IN (`+placeholders+`) ORDER BY scenario_id, sort_order, id`, args...)
 	if err != nil {
 		return nil, err
 	}
@@ -606,4 +611,16 @@ func (r *ConversationRepository) ListTasksForList(ctx context.Context, ids []int
 		out[task.ScenarioID] = append(out[task.ScenarioID], task)
 	}
 	return out, rows.Err()
+}
+
+func (r *ConversationRepository) WithQueries(q database.ContextDBTX) *ConversationRepository {
+	clone := *r
+	clone.queries = q
+	return &clone
+}
+func (r *ConversationRepository) queryDB() database.ContextDBTX {
+	if r.queries != nil {
+		return r.queries
+	}
+	return r.db
 }

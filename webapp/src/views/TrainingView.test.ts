@@ -149,3 +149,13 @@ it('sanitizes training question HTML while preserving word formatting', async ()
   expect(w.find('.question script').exists()).toBe(false)
   expect(w.get('.question img').attributes('onerror')).toBeUndefined()
 })
+
+// These tests exercise standalone sessions; journey sessions have separate coverage.
+vi.mock('../composables/useDailyJourneyExercise', () => ({
+  useDailyJourneyExercise: () => ({
+    isJourney: ref(false), context: ref(null), data: ref(null),
+    finished: ref(false), busy: ref(false), error: ref(''),
+    hasPendingAction: ref(false), ready: vi.fn(), act: vi.fn(),
+    retry: vi.fn(), back: vi.fn(), draftKey: () => '',
+  }),
+}))

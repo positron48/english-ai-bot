@@ -1,5 +1,5 @@
 <template>
-  <div v-if="ready && allowed" class="verb-training lg-page">
+  <div v-if="ready && (isJourney || allowed)" class="verb-training lg-page">
     <LgPageHeader
       :title="t('verbTraining.title')"
       :show-back="true"
@@ -22,6 +22,7 @@ const route = useRoute()
 const { t } = useI18n()
 const { learning } = useLearningConfig()
 const ready = ref(false)
+const isJourney = computed(() => route.query.journey_id !== undefined || route.query.journey_step_id !== undefined)
 
 const autoStart = computed(() => {
   const v = route.query.start
@@ -36,6 +37,7 @@ const allowed = computed(
 )
 
 function goBack() {
+  if (isJourney.value) { router.push({ name: 'CityDailyRoute', query: typeof route.query.course_code === 'string' ? { course_code: route.query.course_code, journey_id: route.query.journey_id } : {} }); return }
   if (typeof window !== 'undefined' && window.history.length > 1) {
     router.back()
     return
@@ -44,6 +46,7 @@ function goBack() {
 }
 
 onMounted(async () => {
+  if (isJourney.value) { ready.value = true; return }
   await ensureLearningLoaded()
   ready.value = true
   if (!allowed.value) {

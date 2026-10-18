@@ -103,14 +103,14 @@
           <button
             type="button"
             class="mark-read-button"
-            :disabled="isRead || markingRead"
+            :disabled="(!journeyQuiz && isRead) || markingRead || journeyBusy"
             @click="markRead"
           >
             <Icon name="check" />
-            <span>{{ isRead ? t('reading.alreadyRead') : t('reading.markRead') }}</span>
+            <span>{{ journeyQuiz ? t('dailyJourney.checkUnderstanding') : isRead ? t('reading.alreadyRead') : t('reading.markRead') }}</span>
           </button>
           <button
-            v-if="categoryId && otherUnreadInCategoryCount > 0"
+            v-if="!journeyQuiz && categoryId && otherUnreadInCategoryCount > 0"
             type="button"
             class="random-unread-footer-button"
             :disabled="randomUnreadNavigating"
@@ -140,8 +140,9 @@
         <h3 style="margin-top:0">{{ t('reading.markRead') }}</h3>
         <p class="translation" style="margin-top:0">{{ t('reading.quizNeedCorrect', { need: passThreshold, total: quizQuestions.length }) }}</p>
         <div v-if="quizQuestions.length" style="margin:12px 0">
-          <div class="translation" style="margin-bottom:10px">Вопрос {{ quizIndex + 1 }} из {{ quizQuestions.length }}</div>
+          <div class="translation" style="margin-bottom:10px">{{ t('grammar.questionOf', { current: quizIndex + 1, total: quizQuestions.length }) }}</div>
           <GrammarQuestion
+            v-if="!journeyBusy"
             :key="`q-${quizIndex}`"
             :question="quizQuestionCurrent"
             :show-answers="quizAnswered[quizIndex] === true"
@@ -157,9 +158,13 @@
             <span class="feedback-text">{{ t('reading.quizResult', { percent: quizPercent, correct: quizCorrectCount, total: quizQuestions.length }) }}</span>
           </div>
         </div>
-        <div v-if="!quizDone && currentWrongExplanation" class="translation" style="margin-top:10px">{{ currentWrongExplanation }}</div>
+        <div v-if="(journeyQuiz || !quizDone) && currentWrongExplanation" class="translation" style="margin-top:10px">{{ currentWrongExplanation }}</div>
         <div style="display:flex; gap:8px; margin-top:14px">
-          <template v-if="quizDone">
+          <template v-if="journeyQuiz">
+            <button v-if="journeyQuiz.feedback" type="button" class="word-modal-close-btn" :disabled="journeyBusy" @click="emit('journey-next')">{{ journeyQuiz.done ? t('dailyJourney.returnToRoute') : t('dailyJourney.continue') }}</button>
+            <button type="button" class="word-modal-close-btn" :disabled="journeyBusy" @click="closeQuiz">{{ t('common.close') }}</button>
+          </template>
+          <template v-else-if="quizDone">
             <button
               v-if="quizCorrectCount >= passThreshold"
               type="button"
@@ -221,6 +226,7 @@ import { useI18n } from 'vue-i18n'
 import { useRouter } from 'vue-router'
 import { apiClient } from '../api/client'
 import { contentReportClient } from '../api/contentReportClient'
+import type { ReadingJourneyExercise } from '../api/dailyJourneyClient'
 import { getGrammarCourseCode, withCourseCode } from '../api/grammarClient'
 import { emitAppDataEvent } from '../api/cacheInvalidation'
 import { patchDailyRouteAfterReadingDone, patchProgressStatsAfterReadingDone } from '../api/appDataCachePatches'
@@ -238,6 +244,9 @@ import {
 } from '../constants/contentReportCategories'
 
 const props = defineProps<{
+  journeyQuiz?: ReadingJourneyExercise | null
+  journeyBusy?: boolean
+  journeyCourseCode?: string
   block: any
   chapterId?: string
   textId?: string
@@ -249,6 +258,10 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
+  (e: 'journey-answer', answer: string): void
+  (e: 'journey-open-quiz'): void
+  (e: 'journey-next'): void
+  (e: 'journey-back'): void
   (e: 'marked-read'): void
   (e: 'delete-request'): void
 }>()
@@ -371,6 +384,17 @@ const quizQuestionCurrent = computed(() => {
   return { ...q, type: 'mcq_single' as const }
 })
 const quizCorrectCount = computed(() => Object.values(quizCorrectMap.value).filter(Boolean).length)
+watch(() => props.journeyQuiz, (state) => {
+  if (!state) return
+  quizQuestions.value = state.questions
+  quizAnswers.value = state.answers || {}
+  quizIndex.value = state.index
+  quizCorrectMap.value = state.correct || {}
+  quizAnswered.value = Object.fromEntries(Object.keys(state.answers || {}).map(index => [index, true]))
+  quizDone.value = state.done
+  quizPercent.value = state.questions.length ? Math.round(Object.values(state.correct || {}).filter(Boolean).length * 100 / state.questions.length) : 0
+  quizOpen.value = state.quiz_open
+}, { immediate: true })
 const currentWrongExplanation = computed(() => {
   const idx = quizIndex.value
   if (!quizAnswered.value[idx]) return ''
@@ -438,6 +462,7 @@ const tokenText = (tokens: any[], index: number) => {
 const waitMs = (ms: number) => new Promise<void>((resolve) => setTimeout(resolve, ms))
 
 const goBack = async () => {
+  if (props.journeyQuiz) { emit('journey-back'); return }
   const cid = String(props.categoryId || '').trim()
   if (cid) {
     await router.push({ name: 'ReadingChapters', params: { categoryId: cid } })
@@ -449,7 +474,7 @@ const goBack = async () => {
 const tokenKey = (segmentId: string, tokenIdx: number) => `${segmentId}-${tokenIdx}`
 
 const readingImageUrl = (relPath: string) => {
-  const courseCode = getGrammarCourseCode()
+  const courseCode = (props.journeyCourseCode || getGrammarCourseCode())
   const courseParam = courseCode ? `&course_code=${encodeURIComponent(courseCode)}` : ''
   return `/api/learning/reading/image?path=${encodeURIComponent(relPath)}${courseParam}`
 }
@@ -478,7 +503,7 @@ const stopPlayback = () => {
 }
 
 const playSegmentAudio = async (audioRelPath: string) => {
-  const courseCode = getGrammarCourseCode()
+  const courseCode = (props.journeyCourseCode || getGrammarCourseCode())
   const courseParam = courseCode ? `&course_code=${encodeURIComponent(courseCode)}` : ''
   const url = `/api/learning/reading/audio?path=${encodeURIComponent(audioRelPath)}${courseParam}`
   stopCurrentAudio(false)
@@ -583,7 +608,7 @@ const onTokenClick = async (_event: MouseEvent, token: any, segment: any) => {
 
   try {
     const data: VocabCardsAPIResponse = await apiClient.request(
-      withCourseCode(`/api/reading/word-lookup?lemma=${encodeURIComponent(token.lemma)}`, currentCourseCode.value),
+      withCourseCode(`/api/reading/word-lookup?lemma=${encodeURIComponent(token.lemma)}`, (props.journeyCourseCode || currentCourseCode.value)),
     )
     modalLemma.value = data.lemma || token.lemma
     modalPreloaded.value = data
@@ -637,6 +662,7 @@ onBeforeUnmount(() => {
 })
 
 const markRead = async () => {
+  if (props.journeyQuiz) { emit('journey-open-quiz'); return }
   if (!isReadQuestionGateEnabled()) {
     await markReadDirect()
     return
@@ -674,6 +700,7 @@ function normalizeAnswer(v: unknown): string {
   return String(v ?? '').trim().toLowerCase()
 }
 function onQuizAnswer(answer: any) {
+  if (props.journeyQuiz) { if (!props.journeyBusy) emit('journey-answer', normalizeAnswer(answer)); return }
   const idx = quizIndex.value
   const got = normalizeAnswer(answer)
   const want = normalizeAnswer(quizQuestions.value[idx]?.correct_answer)
@@ -737,7 +764,7 @@ const markReadDirect = async () => {
     const resourceId = props.textId || props.chapterId
     if (!resourceId) throw new Error('text id is required')
     await apiClient.request(`/api/learning/reading/texts/${resourceId}/mark-read`, { method: 'POST' })
-    const code = getGrammarCourseCode()
+    const code = (props.journeyCourseCode || getGrammarCourseCode())
     if (code) {
       emitAppDataEvent('reading-marked-read', code)
       void patchDailyRouteAfterReadingDone(code)
@@ -755,7 +782,7 @@ async function refreshOtherUnreadInCategory() {
   const cat = String(props.categoryId || '').trim()
   const tid = currentTextId.value
   otherUnreadInCategoryCount.value = 0
-  if (!cat || !tid) return
+  if (props.journeyQuiz || !cat || !tid) return
   try {
     const data: { texts?: { text_id: string; is_read: boolean }[] } = await apiClient.request(
       `/api/learning/reading/categories/${encodeURIComponent(cat)}/texts`

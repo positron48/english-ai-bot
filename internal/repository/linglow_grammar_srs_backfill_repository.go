@@ -7,10 +7,11 @@ import (
 	"strings"
 
 	"tgbot-skeleton/internal/config"
+	"tgbot-skeleton/internal/database"
 )
 
 type LinglowGrammarSRSBackfillRepository struct {
-	db *sql.DB
+	db database.ContextDBTX
 }
 
 type LinglowGrammarSRSBackfillOptions struct {
@@ -32,7 +33,7 @@ type LinglowGrammarSRSBackfillSummary struct {
 	UnmappedTotal int64
 }
 
-func NewLinglowGrammarSRSBackfillRepository(db *sql.DB) *LinglowGrammarSRSBackfillRepository {
+func NewLinglowGrammarSRSBackfillRepository(db database.ContextDBTX) *LinglowGrammarSRSBackfillRepository {
 	return &LinglowGrammarSRSBackfillRepository{db: db}
 }
 

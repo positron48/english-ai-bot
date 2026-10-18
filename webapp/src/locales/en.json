@@ -1161,5 +1161,97 @@
       "spelling_z_c": "Before e, z changes to c, as in empecé.",
       "spelling_g_j": "Here g changes to j to preserve the sound, as in dirijo."
     }
+  },
+  "dailyJourney": {
+    "card": {
+      "kicker": "A LITTLE EVERY DAY",
+      "title": "Discover something new",
+      "completed": "Journey complete. See what you achieved today.",
+      "unavailable": "No activities are available right now.",
+      "description": "Words, reading and new activities with Lumi.",
+      "start": "Start",
+      "results": "View results",
+      "view": "View journey",
+      "resume": "Continue — stop {position} of {total}"
+    },
+    "addWords": "Added {done} of {total} new words",
+    "checkUnderstanding": "Check understanding",
+    "returnToRoute": "Return to the route",
+    "continue": "Continue",
+    "title": "Daily journey",
+    "stops": "Journey stops",
+    "today": "TODAY’S PATH",
+    "progress": "{done} / {total} stops",
+    "here": "You are here",
+    "stop": "Stop {position} of {total}",
+    "introTitle": "Your daily journey",
+    "intro": "Words, reading and up to three new stops. You can pause and continue later.",
+    "start": "Start journey",
+    "resume": "Activity started. Continue where you left off.",
+    "open": "Open activity",
+    "resumeTask": "Continue activity",
+    "required": "Required stop",
+    "skipAvailable": "1 skip remaining",
+    "skipUsed": "Skip used",
+    "skip": "Skip stop",
+    "reload": "Reload state",
+    "finished": "Journey complete",
+    "unavailable": "Journey unavailable",
+    "completedStops": "{done} of {total} stops completed",
+    "current": "Current stop: {title}",
+    "statuses": {
+      "pending": "Ahead",
+      "active": "Now",
+      "completed": "Done",
+      "skipped": "Skipped",
+      "unavailable": "Unavailable"
+    },
+    "results": {
+      "skipped": "Skipped — no learning credit",
+      "unavailable": "Content unavailable",
+      "words": "Reviewed {reviewed} words, added {added}",
+      "reading": "Reading: {correct} of {total}",
+      "block": "Block studied, questions answered: {answered}",
+      "testPassed": "Test passed: {score}%",
+      "testFailed": "Attempt finished: {score}%, test not passed",
+      "questPassed": "Goal reached · turns: {turns}",
+      "questFailed": "Attempt finished, goal not reached · turns: {turns}",
+      "practice": "Correct: {correct} of {total}",
+      "completed": "Activity completed",
+      "unfinished": "Unfinished"
+    },
+    "modes": {
+      "words": "Words",
+      "reading": "Reading",
+      "grammar": "Grammar",
+      "grammar_srs": "Grammar practice",
+      "verb_forms": "Verb forms",
+      "picture": "Picture description",
+      "conversation": "Conversation"
+    },
+    "goals": {
+      "words": "Add new words and review familiar ones",
+      "grammar": "Study the next block and answer its questions",
+      "categoryTest": "Take the full category test",
+      "chapterTest": "Take the full chapter test",
+      "grammar_srs": "Review available rules",
+      "verb_forms": "Complete a short verb practice",
+      "chat": "Finish an attempt: up to {count} turns"
+    },
+    "question": {
+      "fill": "Fill in the blank",
+      "answer": "Your answer",
+      "check": "Check",
+      "confirm": "Confirm",
+      "yes": "Yes",
+      "no": "No"
+    },
+    "messages": {
+      "offline": "Continuing the journey requires an internet connection.",
+      "disabled": "The daily journey is currently unavailable.",
+      "invalidContext": "Invalid journey context.",
+      "pending": "The previous action is awaiting confirmation. Please retry.",
+      "staleChat": "The conversation changed. Retry the previous request or reload the activity."
+    }
   }
 }

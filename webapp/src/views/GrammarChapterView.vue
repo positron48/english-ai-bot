@@ -4,16 +4,17 @@
       <p>{{ t('grammar.loadingChapter') }}</p>
     </div>
     
-    <div v-else-if="error" class="error">
-      <p>{{ error }}</p>
-      <button @click="loadChapter" class="btn btn-primary">{{ t('common.retry') }}</button>
+    <div v-else-if="error || daily.error.value" class="error">
+      <p>{{ error || daily.error.value }}</p>
+      <button @click="retryChapter" class="btn btn-primary">{{ t('common.retry') }}</button>
+      <button v-if="daily.isJourney.value" @click="daily.back" class="btn btn-secondary">{{ t('dailyJourney.returnToRoute') }}</button>
     </div>
     
     <div v-else-if="chapter">
       <LgPageHeader
         :title="chapterTitle"
         :show-back="true"
-        @back="router.back()"
+        @back="daily.isJourney.value ? daily.back() : router.back()"
       />
       <div class="chapter-header">
         <div class="chapter-meta">
@@ -91,7 +92,7 @@
           </div>
           
           <!-- Inline Quiz Block -->
-          <div v-if="block.type === 'quiz_inline' && hasQuizQuestions(block)" class="quiz-block">
+          <div v-if="!daily.isJourney.value && block.type === 'quiz_inline' && hasQuizQuestions(block)" class="quiz-block">
             <h2 v-if="block.title" class="block-title">{{ block.title }}</h2>
             <GrammarQuestion
               v-for="questionId in block.quiz_inline?.question_ids || []"
@@ -107,7 +108,18 @@
         </div>
       </div>
       
-      <div class="chapter-footer">
+      <div v-if="daily.isJourney.value" class="quiz-block">
+        <GrammarQuestion v-if="daily.question.value" :key="daily.question.value.id + ':' + daily.data.value?.index"
+          :question="daily.question.value"
+          :draft-key="daily.draftKey?.('grammar:' + daily.question.value.id + ':' + daily.data.value?.index)" :show-answers="daily.data.value?.feedback"
+          :initial-answer="daily.data.value?.answers[daily.data.value.index]"
+          :show-theory-help-button="false" @answer="answerJourneyQuestion" />
+        <button v-if="daily.data.value?.feedback || !daily.question.value" class="btn btn-primary" :disabled="daily.busy.value" @click="daily.acknowledge">
+          {{ t('dailyJourney.continue') }}
+        </button>
+        <button class="btn btn-secondary" @click="daily.back">{{ t('dailyJourney.returnToRoute') }}</button>
+      </div>
+      <div v-else class="chapter-footer">
         <button @click="startTest" class="btn btn-primary btn-large">
           {{ t('grammar.startChapterTest') }}
         </button>
@@ -129,7 +141,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
+import { ref, computed, onMounted, watch } from 'vue'
 import { useI18n } from 'vue-i18n'
 import { useRoute, useRouter } from 'vue-router'
 import { renderMarkdown } from '../utils/markdown'
@@ -146,10 +158,12 @@ import {
 } from '../constants/contentReportCategories'
 import { useSettings } from '../composables/useSettings'
 import { useAudio } from '../composables/useAudio'
+import { useDailyJourneyGrammar } from '../composables/useDailyJourneyGrammar'
 
 const { t, locale } = useI18n()
 const route = useRoute()
 const router = useRouter()
+const daily = useDailyJourneyGrammar()
 const chapterId = computed(() => route.params.chapterId as string)
 
 const { settings } = useSettings()
@@ -205,7 +219,9 @@ const loadChapter = async () => {
       title: string
       title_translations?: Record<string, string>
       section?: { title?: string; title_translations?: Record<string, string>; level?: string }
-    } = await grammarClient.getChapter(chapterId.value)
+    } = daily.isJourney.value
+      ? { chapter: (await daily.ready()).chapter, title: '' }
+      : await grammarClient.getChapter(chapterId.value)
     sectionMeta.value = data.section ?? null
     chapter.value = data.chapter
     chapterTitleOverride.value = data.title || null
@@ -213,7 +229,7 @@ const loadChapter = async () => {
       chapter.value.title_translations = data.title_translations
     }
     // Track last opened grammar chapter (course-scoped cache for offline fallback)
-    try {
+    if (!daily.isJourney.value) try {
       const baseTitle = data.title || data.chapter?.title || chapterId.value
       const title = getLocalizedTitle(baseTitle, data.title_translations || data.chapter?.title_translations)
       writeStoredGrammarContinueChapter({
@@ -236,6 +252,10 @@ const loadChapter = async () => {
     loading.value = false
   }
 }
+
+const answerJourneyQuestion = async (answer: unknown) => { try { await daily.answer(answer) } catch (cause: any) { error.value = cause.message } }
+const retryChapter = async () => { if (daily.isJourney.value) await daily.retry(); await loadChapter() }
+watch(daily.finished, finished => { if (daily.isJourney.value && finished) void daily.back() })
 
 const getQuestionById = (questionId: string) => {
   return questionMap.value.get(questionId) || null

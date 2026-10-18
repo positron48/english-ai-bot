@@ -1,11 +1,13 @@
 package repository
 
 import (
+	"context"
 	"database/sql"
 	"encoding/json"
 	"errors"
 	"fmt"
 	"strings"
+	"tgbot-skeleton/internal/database"
 )
 
 // ReadingCatalogSnapshot is the reading catalog loaded from DB (mirrors bundle index + text rows).
@@ -120,6 +122,11 @@ func (r *ReadingCatalogRepository) GetTextDocument(textID string) (*ReadingTextD
 	if r == nil || r.db == nil {
 		return nil, false, nil
 	}
+	return ReadReadingTextDocument(context.Background(), r.db, textID)
+}
+
+// ReadReadingTextDocument works inside a subject transaction as well as on a pool.
+func ReadReadingTextDocument(ctx context.Context, qdb database.ContextDBTX, textID string) (*ReadingTextDocument, bool, error) {
 	const q = `
 SELECT text_id, category_id, title, COALESCE(title_translations, ''), level, target_language,
        COALESCE(cover_thumb_rel_path, ''), COALESCE(cover_hero_rel_path, ''), COALESCE(cover_image_prompt, ''),
@@ -127,7 +134,7 @@ SELECT text_id, category_id, title, COALESCE(title_translations, ''), level, tar
 FROM reading_texts
 WHERE text_id = ?`
 	var tid, catID, title, titleJSON, level, targetLang, thumb, hero, prompt, passageJSON string
-	err := r.db.QueryRow(q, textID).Scan(&tid, &catID, &title, &titleJSON, &level, &targetLang, &thumb, &hero, &prompt, &passageJSON)
+	err := qdb.QueryRowContext(ctx, q, textID).Scan(&tid, &catID, &title, &titleJSON, &level, &targetLang, &thumb, &hero, &prompt, &passageJSON)
 	if errors.Is(err, sql.ErrNoRows) {
 		return nil, false, nil
 	}

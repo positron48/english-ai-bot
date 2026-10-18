@@ -1,11 +1,12 @@
+import { ref } from 'vue'
 import { expect, it, vi } from 'vitest'
 import { flushPromises, mount } from '@vue/test-utils'
 import WordSetDetailView from './WordSetDetailView.vue'
 import { apiClient } from '../api/client'
 
 vi.mock('../api/client', () => ({ apiClient: { request: vi.fn() } }))
-vi.mock('vue-router', () => ({ useRoute: () => ({ params: { setId: '1' } }), useRouter: () => ({ push: vi.fn() }) }))
-vi.mock('vue-i18n', () => ({ useI18n: () => ({ t: (key: string) => key }) }))
+vi.mock('vue-router', () => ({ useRoute: () => ({ params: { setId: '1' }, query: {} }), useRouter: () => ({ push: vi.fn() }) }))
+vi.mock('vue-i18n', async importOriginal => ({ ...await importOriginal<typeof import('vue-i18n')>(), useI18n: () => ({ t: (key: string) => key }) }))
 vi.mock('../composables/useAudio', () => ({ useAudio: () => ({ getWordPronunciationURL: vi.fn().mockResolvedValue(null), playWordPronunciation: vi.fn() }) }))
 vi.mock('../composables/useDialog', () => ({ showAlert: vi.fn() }))
 
@@ -30,3 +31,13 @@ it('closes the added word before the background refresh completes, without hidin
   await flushPromises()
   wrapper.unmount()
 })
+
+// These tests exercise standalone sessions; journey sessions have separate coverage.
+vi.mock('../composables/useDailyJourneyExercise', () => ({
+  useDailyJourneyExercise: () => ({
+    isJourney: ref(false), context: ref(null), data: ref(null),
+    finished: ref(false), busy: ref(false), error: ref(''),
+    hasPendingAction: ref(false), ready: vi.fn(), act: vi.fn(),
+    retry: vi.fn(), back: vi.fn(), draftKey: () => '',
+  }),
+}))

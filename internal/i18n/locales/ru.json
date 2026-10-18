@@ -27,5 +27,15 @@
   "training": {
     "translateTo": "Переведите на %s: <strong>%s</strong>",
     "whatMeansWord": "Что означает слово: <strong>%s</strong>%s"
+  },
+  "dailyJourney": {
+    "daily_journey_processing": "Ответ ИИ ещё обрабатывается. Повторите запрос через несколько секунд.",
+    "daily_journey_ai_failed": "Не удалось получить ответ ИИ. Повторите запрос.",
+    "daily_journey_failed": "Не удалось сохранить действие. Повторите попытку.",
+    "daily_journey_not_found": "Маршрут не найден.",
+    "daily_journey_reload": "Маршрут изменился в другой вкладке. Обновите состояние.",
+    "daily_journey_action_key_reused": "Этот запрос уже использован с другим ответом. Обновите состояние.",
+    "daily_journey_access_denied": "Нет доступа к этому маршруту.",
+    "daily_journey_invalid_action": "Действие недоступно на текущей остановке."
   }
 }

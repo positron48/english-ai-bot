@@ -3,6 +3,9 @@
     class="word-sets-view lg-section-page"
     style="--lg-section-bg-image: url('/app/linglow/art/bg-word-cards.jpg')"
   >
+    <p v-if="daily.data.value?.phase === 'add'">{{ t('dailyJourney.addWords', { done: daily.data.value.added_count, total: daily.data.value.add_target }) }}</p>
+    <div v-if="daily.isJourney.value && daily.error.value" role="alert">{{ daily.error.value }} <button @click="daily.retry">{{ t('common.retry') }}</button><button @click="daily.back">{{ t('dailyJourney.returnToRoute') }}</button></div>
+    <button v-if="daily.isJourney.value" @click="daily.back">{{ t('dailyJourney.returnToRoute') }}</button>
     <h1>{{ pageTitle }}</h1>
     
     <div class="content-section">
@@ -76,6 +79,8 @@
 </template>
 
 <script setup lang="ts">
+import { useDailyJourneyExercise } from '../composables/useDailyJourneyExercise'
+import type { WordsJourneyExercise } from '../api/dailyJourneyClient'
 import { ref, computed, onMounted, watch } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
@@ -90,7 +95,8 @@ const { currentCourseCode, ensureCourseLoaded } = useCourse()
 
 // Append the selected course so word sets always match the UI's chosen course.
 const withCourse = (params: URLSearchParams): string => {
-  if (currentCourseCode.value) params.append('course_code', currentCourseCode.value)
+  const code = daily.context.value?.courseCode || currentCourseCode.value
+  if (code) params.append('course_code', code)
   return params.toString()
 }
 
@@ -122,6 +128,8 @@ interface WordSet {
 
 const router = useRouter()
 const route = useRoute()
+const daily = useDailyJourneyExercise<WordsJourneyExercise>('words')
+const journeyQuery = computed(() => daily.context.value ? { journey_id: daily.context.value.journeyId, journey_step_id: daily.context.value.stepId, course_code: daily.context.value.courseCode } : {})
 
 const loading = ref(false)
 const error = ref<string | null>(null)
@@ -206,7 +214,7 @@ onMounted(async () => {
 // Load the overall district unlock status for root categories.
 const loadDistrictAccess = async () => {
   try {
-    const progress = await courseClient.getProgress(currentCourseCode.value || undefined)
+    const progress = await courseClient.getProgress(daily.context.value?.courseCode || currentCourseCode.value || undefined)
     districtAccess.value = buildDistrictLevelAccess(progress.mastery)
   } catch {
     districtAccess.value = {}
@@ -282,7 +290,10 @@ const loadWordSets = async () => {
     }
     
     const data: { sets: WordSet[] } = await apiClient.request(`/api/learning/words/sets?${withCourse(params)}`)
-    wordSets.value = data.sets || []
+    if (daily.isJourney.value) {
+      const state = await daily.ready()
+      wordSets.value = (data.sets || []).filter(set => !!state.addable?.[set.id]?.length)
+    } else wordSets.value = data.sets || []
   } catch (error: any) {
     console.error('Failed to load word sets:', error)
     error.value = error.message || 'Failed to load word sets'
@@ -296,10 +307,10 @@ const selectCategory = (categoryId: number | null) => {
     // Add to history
     categoryHistory.value.push(categoryId)
     // Update URL with category_id query parameter
-    router.push({ path: '/learning/words', query: { category_id: categoryId.toString() } })
+    router.push({ path: '/learning/words', query: { ...journeyQuery.value, category_id: categoryId.toString() } })
   } else {
     // Go to root
-    router.push({ path: '/learning/words' })
+    router.push({ path: '/learning/words', query: journeyQuery.value })
   }
   // Note: watch on route.query.category_id will handle the actual loading
 }
@@ -313,14 +324,14 @@ const goBack = () => {
       : null
     
     if (prevCategoryId !== null) {
-      router.push({ path: '/learning/words', query: { category_id: prevCategoryId.toString() } })
+      router.push({ path: '/learning/words', query: { ...journeyQuery.value, category_id: prevCategoryId.toString() } })
     } else {
-      router.push({ path: '/learning/words' })
+      router.push({ path: '/learning/words', query: journeyQuery.value })
     }
     // Note: watch on route.query.category_id will handle the actual loading
   } else {
     // Go to root
-    router.push({ path: '/learning/words' })
+    router.push({ path: '/learning/words', query: journeyQuery.value })
     // Note: watch on route.query.category_id will handle the actual loading
   }
 }
@@ -330,10 +341,10 @@ const viewWordSet = (setId: number) => {
   if (selectedCategoryId.value !== null) {
     router.push({ 
       path: `/learning/words/${setId}`, 
-      query: { category_id: selectedCategoryId.value.toString() } 
+      query: { ...journeyQuery.value, category_id: selectedCategoryId.value.toString() }
     })
   } else {
-    router.push(`/learning/words/${setId}`)
+    router.push({ path: `/learning/words/${setId}`, query: journeyQuery.value })
   }
 }
 

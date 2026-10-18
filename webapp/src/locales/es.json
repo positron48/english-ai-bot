@@ -1122,5 +1122,97 @@
       "spelling_z_c": "Ante e, z cambia a c, como en empecé.",
       "spelling_g_j": "Aquí g cambia a j para conservar el sonido, como en dirijo."
     }
+  },
+  "dailyJourney": {
+    "card": {
+      "kicker": "UN POCO CADA DÍA",
+      "title": "Descubre algo nuevo",
+      "completed": "Recorrido completado. Mira lo que has logrado hoy.",
+      "unavailable": "Ahora no hay actividades disponibles.",
+      "description": "Palabras, lectura y nuevas actividades con Lumi.",
+      "start": "Empezar",
+      "results": "Ver resultados",
+      "view": "Ver recorrido",
+      "resume": "Continuar — parada {position} de {total}"
+    },
+    "addWords": "Añadidas {done} de {total} palabras nuevas",
+    "checkUnderstanding": "Comprobar la comprensión",
+    "returnToRoute": "Volver al recorrido",
+    "continue": "Continuar",
+    "title": "Recorrido diario",
+    "stops": "Paradas del recorrido",
+    "today": "TU CAMINO DE HOY",
+    "progress": "{done} / {total} paradas",
+    "here": "Estás aquí",
+    "stop": "Parada {position} de {total}",
+    "introTitle": "Tu recorrido diario",
+    "intro": "Palabras, lectura y hasta tres nuevas paradas. Puedes pausar y continuar más tarde.",
+    "start": "Empezar recorrido",
+    "resume": "Actividad iniciada. Continúa donde lo dejaste.",
+    "open": "Abrir actividad",
+    "resumeTask": "Continuar actividad",
+    "required": "Parada obligatoria",
+    "skipAvailable": "Queda 1 salto",
+    "skipUsed": "Salto utilizado",
+    "skip": "Saltar parada",
+    "reload": "Actualizar estado",
+    "finished": "Recorrido completado",
+    "unavailable": "Recorrido no disponible",
+    "completedStops": "{done} de {total} paradas completadas",
+    "current": "Parada actual: {title}",
+    "statuses": {
+      "pending": "Por delante",
+      "active": "Ahora",
+      "completed": "Hecho",
+      "skipped": "Saltado",
+      "unavailable": "No disponible"
+    },
+    "results": {
+      "skipped": "Saltado — sin crédito de aprendizaje",
+      "unavailable": "Contenido no disponible",
+      "words": "Repasadas {reviewed} palabras, añadidas {added}",
+      "reading": "Lectura: {correct} de {total}",
+      "block": "Bloque estudiado, preguntas respondidas: {answered}",
+      "testPassed": "Prueba superada: {score}%",
+      "testFailed": "Intento finalizado: {score}%, prueba no superada",
+      "questPassed": "Objetivo alcanzado · turnos: {turns}",
+      "questFailed": "Intento finalizado, objetivo no alcanzado · turnos: {turns}",
+      "practice": "Correctas: {correct} de {total}",
+      "completed": "Actividad completada",
+      "unfinished": "Sin finalizar"
+    },
+    "modes": {
+      "words": "Palabras",
+      "reading": "Lectura",
+      "grammar": "Gramática",
+      "grammar_srs": "Práctica de gramática",
+      "verb_forms": "Formas verbales",
+      "picture": "Descripción de imagen",
+      "conversation": "Conversación"
+    },
+    "goals": {
+      "words": "Añade palabras nuevas y repasa las conocidas",
+      "grammar": "Estudia el siguiente bloque y responde a sus preguntas",
+      "categoryTest": "Completa la prueba de categoría",
+      "chapterTest": "Completa la prueba del capítulo",
+      "grammar_srs": "Repasa las reglas disponibles",
+      "verb_forms": "Completa una práctica breve de verbos",
+      "chat": "Completa un intento: hasta {count} turnos"
+    },
+    "question": {
+      "fill": "Completa el hueco",
+      "answer": "Tu respuesta",
+      "check": "Comprobar",
+      "confirm": "Confirmar",
+      "yes": "Sí",
+      "no": "No"
+    },
+    "messages": {
+      "offline": "Necesitas conexión para continuar el recorrido.",
+      "disabled": "El recorrido diario no está disponible ahora.",
+      "invalidContext": "Contexto del recorrido no válido.",
+      "pending": "La acción anterior espera confirmación. Reinténtalo.",
+      "staleChat": "La conversación cambió. Reintenta la solicitud anterior o actualiza la actividad."
+    }
   }
 }

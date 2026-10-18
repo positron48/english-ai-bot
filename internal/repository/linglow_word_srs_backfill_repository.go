@@ -8,10 +8,11 @@ import (
 	"time"
 
 	"tgbot-skeleton/internal/config"
+	"tgbot-skeleton/internal/database"
 )
 
 type LinglowWordSRSBackfillRepository struct {
-	db *sql.DB
+	db database.ContextDBTX
 }
 
 type LinglowWordSRSBackfillOptions struct {
@@ -33,7 +34,7 @@ type LinglowWordSRSBackfillSummary struct {
 	UnmappedTotal int64
 }
 
-func NewLinglowWordSRSBackfillRepository(db *sql.DB) *LinglowWordSRSBackfillRepository {
+func NewLinglowWordSRSBackfillRepository(db database.ContextDBTX) *LinglowWordSRSBackfillRepository {
 	return &LinglowWordSRSBackfillRepository{db: db}
 }
 
@@ -122,7 +123,7 @@ func (r *LinglowWordSRSBackfillRepository) SyncWordLearningItemForUser(ctx conte
 		return fmt.Errorf("query word srs mirror row: %w", err)
 	}
 	defer rows.Close()
-	var synced bool
+	buffered := []wordSRSBackfillRow{}
 	for rows.Next() {
 		var row wordSRSBackfillRow
 		if err := rows.Scan(
@@ -145,16 +146,19 @@ func (r *LinglowWordSRSBackfillRepository) SyncWordLearningItemForUser(ctx conte
 		); err != nil {
 			return fmt.Errorf("scan word srs mirror row: %w", err)
 		}
-		if err := r.upsertWordSRSRow(ctx, row); err != nil {
-			return err
-		}
-		synced = true
+		buffered = append(buffered, row)
 	}
 	if err := rows.Err(); err != nil {
 		return fmt.Errorf("iterate word srs mirror rows: %w", err)
 	}
-	if !synced {
-		return nil
+	if err := rows.Close(); err != nil {
+		return err
+	}
+	// A transaction has one connection: finish reading before issuing writes.
+	for _, row := range buffered {
+		if err := r.upsertWordSRSRow(ctx, row); err != nil {
+			return err
+		}
 	}
 	return nil
 }

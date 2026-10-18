@@ -10,6 +10,12 @@ import { useCourse } from '../composables/useCourse'
 const router = createRouter({
   history: createWebHistory('/app'),
   routes: [
+    ...(import.meta.env.DEV ? [{
+      path: '/dev/daily-journey',
+      name: 'DailyJourneyPreview',
+      component: () => import('../dev/DailyJourneyPreview.vue'),
+      meta: { requiresAuth: false },
+    }] : []),
     {
       path: '/',
       redirect: '/login'  // Start with login, let auth handle redirect

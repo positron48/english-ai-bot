@@ -24,13 +24,15 @@ export function useCachedOverviewScreen<T>(options: CachedOverviewOptions<T>) {
   const lastFetchedAt = ref<string | null>(null)
   let loadToken = 0
   const loads = new Map<string, Promise<void>>()
+  const currentScope = () => JSON.stringify([resolveUserScopeFromStorage(), options.courseCode.value, options.locale?.value || 'ru'])
 
   async function hydrateFromCache(): Promise<boolean> {
+    const scope = currentScope()
     const code = options.courseCode.value
     if (!code) return false
     const locale = options.locale?.value || 'ru'
     const cached = await getCachedScreen<T>(options.screenKey, code, resolveUserScopeFromStorage(), locale)
-    if (!cached) return false
+    if (!cached || scope !== currentScope()) return false
     options.applyPayload(cached.payload, { fromCache: true })
     hasCache.value = true
     loadingInitial.value = false
@@ -39,11 +41,14 @@ export function useCachedOverviewScreen<T>(options: CachedOverviewOptions<T>) {
   }
 
   async function refresh(force = false): Promise<void> {
+    const scope = currentScope()
+    const userScope = resolveUserScopeFromStorage()
     const code = options.courseCode.value
     if (!code) return
     const token = ++loadToken
     const locale = options.locale?.value || 'ru'
     const cached = await getCachedScreen<T>(options.screenKey, code, resolveUserScopeFromStorage(), locale)
+    if (token !== loadToken || scope !== currentScope()) return
     const shouldFetch = force || entryNeedsRefresh(cached)
     if (!shouldFetch) {
       if (!hasCache.value && cached) {
@@ -60,7 +65,7 @@ export function useCachedOverviewScreen<T>(options: CachedOverviewOptions<T>) {
       if (options.offlineFetcher) {
         try {
           const offlinePayload = await options.offlineFetcher()
-          if (offlinePayload && token === loadToken) {
+          if (offlinePayload && token === loadToken && scope === currentScope()) {
             options.applyPayload(offlinePayload, { fromCache: true })
             hasCache.value = true
           }
@@ -76,23 +81,25 @@ export function useCachedOverviewScreen<T>(options: CachedOverviewOptions<T>) {
 
     try {
       const payload = await options.fetcher()
-      if (token !== loadToken) return
+      if (token !== loadToken || scope !== currentScope()) return
       options.applyPayload(payload, { fromCache: false })
       const saved = await setCachedScreen(options.screenKey, code, payload, {
         locale,
+        userScope,
         preserveDirtyTags: false,
       })
+      if (token !== loadToken || scope !== currentScope()) return
       hasCache.value = true
       lastFetchedAt.value = saved.fetchedAt
     } catch (err: any) {
-      if (token !== loadToken) return
+      if (token !== loadToken || scope !== currentScope()) return
       error.value = err?.message || 'network error'
       if (!hasCache.value && cached) {
         options.applyPayload(cached.payload, { fromCache: true })
         hasCache.value = true
       }
     } finally {
-      if (token === loadToken) {
+      if (token === loadToken && scope === currentScope()) {
         loadingInitial.value = false
         refreshing.value = false
       }
@@ -103,8 +110,10 @@ export function useCachedOverviewScreen<T>(options: CachedOverviewOptions<T>) {
     const key = `${resolveUserScopeFromStorage()}:${options.courseCode.value}:${options.locale?.value || 'ru'}:${force}`
     const existing = loads.get(key)
     if (existing) return existing
+    const scope = currentScope()
     const job = (async () => {
       if (!force) await hydrateFromCache()
+      if (scope !== currentScope()) return
       await refresh(force)
     })().finally(() => loads.delete(key))
     loads.set(key, job)

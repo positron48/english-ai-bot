@@ -3,6 +3,7 @@ package repository
 import (
 	"database/sql"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"io/fs"
 	"path/filepath"
@@ -11,17 +12,20 @@ import (
 	"sync"
 
 	"tgbot-skeleton/internal/config"
+	"tgbot-skeleton/internal/database"
 	"tgbot-skeleton/internal/grammartrainingpack"
 
 	"go.uber.org/zap"
 )
+
+var ErrGrammarTrainingEmpty = errors.New("no db grammar training questions found")
 
 type GrammarTrainingPackRepository struct {
 	questionIndexOnce sync.Once
 	questionIndex     map[string]map[string]interface{}
 	questionIndexErr  error
 	fs                fs.FS
-	db                *sql.DB
+	db                database.DBTX
 	bundleID          string
 	logger            *zap.Logger
 }
@@ -346,7 +350,7 @@ func (r *GrammarTrainingPackRepository) getDBQuestions(query string, args ...int
 		return nil, err
 	}
 	if len(out) == 0 {
-		return nil, fmt.Errorf("no db grammar training questions found")
+		return nil, ErrGrammarTrainingEmpty
 	}
 	return out, nil
 }
@@ -410,4 +414,13 @@ func (r *GrammarTrainingPackRepository) GetQuestion(id string) (map[string]inter
 	var copy map[string]interface{}
 	err = json.Unmarshal(raw, &copy)
 	return copy, err
+}
+
+// A fresh view avoids copying the index sync.Once and binds DB reads to the transaction.
+func (r *GrammarTrainingPackRepository) WithQueries(q database.DBTX) *GrammarTrainingPackRepository {
+	db := r.db
+	if db != nil {
+		db = q
+	}
+	return &GrammarTrainingPackRepository{fs: r.fs, db: db, bundleID: r.bundleID, logger: r.logger}
 }

@@ -3,6 +3,7 @@ package repository
 import (
 	"database/sql"
 	"fmt"
+	"tgbot-skeleton/internal/database"
 	"time"
 
 	"go.uber.org/zap"
@@ -10,8 +11,9 @@ import (
 
 // GrammarPublishRepository handles database operations for grammar course publishing
 type GrammarPublishRepository struct {
-	db     *sql.DB
-	logger *zap.Logger
+	db      *sql.DB
+	queries database.DBTX
+	logger  *zap.Logger
 }
 
 // NewGrammarPublishRepository creates a new grammar publish repository
@@ -47,7 +49,7 @@ func (r *GrammarPublishRepository) SetPublished(itemType, itemID string, isPubli
 			  	updated_at = CURRENT_TIMESTAMP,
 			  	updated_by_user_id = excluded.updated_by_user_id`
 
-	_, err := r.db.Exec(query, itemType, itemID, publishedInt, userID)
+	_, err := r.queryDB().Exec(query, itemType, itemID, publishedInt, userID)
 	if err != nil {
 		return fmt.Errorf("failed to set published status: %w", err)
 	}
@@ -64,7 +66,7 @@ func (r *GrammarPublishRepository) SetName(itemType, itemID string, name *string
 			  	updated_at = CURRENT_TIMESTAMP,
 			  	updated_by_user_id = excluded.updated_by_user_id`
 
-	_, err := r.db.Exec(query, itemType, itemID, name, userID)
+	_, err := r.queryDB().Exec(query, itemType, itemID, name, userID)
 	if err != nil {
 		return fmt.Errorf("failed to set name: %w", err)
 	}
@@ -82,7 +84,7 @@ func (r *GrammarPublishRepository) GetPublishedItem(itemType, itemID string) (*P
 	var updatedAt string
 	var updatedByUserID sql.NullInt64
 
-	err := r.db.QueryRow(query, itemType, itemID).Scan(
+	err := r.queryDB().QueryRow(query, itemType, itemID).Scan(
 		&item.ID,
 		&item.ItemType,
 		&item.ItemID,
@@ -128,7 +130,7 @@ func (r *GrammarPublishRepository) GetPublishedItemsByType(itemType string) (map
 			  FROM grammar_published_items
 			  WHERE item_type = ?`
 
-	rows, err := r.db.Query(query, itemType)
+	rows, err := r.queryDB().Query(query, itemType)
 	if err != nil {
 		return nil, fmt.Errorf("failed to query published items: %w", err)
 	}
@@ -205,4 +207,17 @@ func (r *GrammarPublishRepository) BulkSetPublished(itemType string, itemIDs []s
 	}
 
 	return nil
+}
+
+// WithQueries returns an isolated view bound to the caller's transaction.
+func (r *GrammarPublishRepository) WithQueries(q database.DBTX) *GrammarPublishRepository {
+	clone := *r
+	clone.queries = q
+	return &clone
+}
+func (r *GrammarPublishRepository) queryDB() database.DBTX {
+	if r.queries != nil {
+		return r.queries
+	}
+	return r.db
 }
