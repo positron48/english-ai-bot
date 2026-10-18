@@ -76,19 +76,38 @@ export function useDailyJourneyExercise<T>(mode: JourneyMode) {
   async function act(action: JourneyActionType, payload: Record<string, unknown> = {}) {
     contextError.value = ''
     await controller.act(action, payload)
-    await nextTick()
-    await loadPromise
+    await waitForLoad()
   }
   async function back() {
     if (context.value) await router.push(dailyJourneyReturnRoute(context.value))
     else await router.push({ name: 'CityDailyRoute', query: typeof route.query.course_code === 'string' ? { course_code: route.query.course_code } : {} })
   }
-  async function ready(): Promise<T> {
+  // A response can advance the journey revision and schedule another exercise
+  // read. Wait for the latest read, not just the promise captured before it.
+  async function waitForLoad() {
+    let pendingLoad: Promise<void>
+    do {
+      await nextTick()
+      if (controller.busy.value || loading.value) await new Promise<void>(resolve => {
+        const stop = watch([controller.busy, loading], ([busy, pending]) => { if (!busy && !pending) { stop(); resolve() } })
+      })
+      pendingLoad = loadPromise
+      await pendingLoad
+      await nextTick()
+    } while (controller.busy.value || loading.value || pendingLoad !== loadPromise)
+  }
+  async function retry() {
+    contextError.value = ''
+    const previousLoad = loadPromise
+    await controller.retry()
     await nextTick()
-    if (controller.busy.value || loading.value) await new Promise<void>(resolve => {
-      const stop = watch([controller.busy, loading], ([busy, pending]) => { if (!busy && !pending) { stop(); resolve() } })
-    })
-    await loadPromise
+    // A revision change already scheduled a read; otherwise retry the failed
+    // exercise read explicitly. Never send both reads at the same time.
+    if (loadPromise === previousLoad) loadPromise = load()
+    await waitForLoad()
+  }
+  async function ready(): Promise<T> {
+    await waitForLoad()
     if (controller.error.value || contextError.value || !data.value) throw new Error(controller.error.value || contextError.value || 'Не удалось загрузить задание маршрута.')
     return data.value
   }
@@ -101,7 +120,7 @@ export function useDailyJourneyExercise<T>(mode: JourneyMode) {
     },
     busy: computed(() => controller.busy.value || loading.value),
     error: computed(() => controller.error.value || contextError.value || (isJourney.value && !context.value ? journeyMessage('invalidContext') : controller.hasPendingAction.value && !controller.busy.value && !loading.value ? journeyMessage('pending') : '')),
-    retry: async () => { await controller.retry(); await load() },
+    retry,
     hasPendingAction: controller.hasPendingAction,
   }
 }
