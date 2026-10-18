@@ -100,7 +100,7 @@ export function useDailyJourneyExercise<T>(mode: JourneyMode) {
       return isJourney.value && isAuthenticated.value && ctx ? `daily-journey:draft:${currentUserScope()}:${ctx.courseCode}:${ctx.journeyId}:${ctx.stepId}:${identity}` : ''
     },
     busy: computed(() => controller.busy.value || loading.value),
-    error: computed(() => controller.error.value || contextError.value || (isJourney.value && !context.value ? journeyMessage('invalidContext') : controller.hasPendingAction.value ? journeyMessage('pending') : '')),
+    error: computed(() => controller.error.value || contextError.value || (isJourney.value && !context.value ? journeyMessage('invalidContext') : controller.hasPendingAction.value && !controller.busy.value && !loading.value ? journeyMessage('pending') : '')),
     retry: async () => { await controller.retry(); await load() },
     hasPendingAction: controller.hasPendingAction,
   }

@@ -62,3 +62,26 @@ describe('dailyJourney confirmed exercise state', () => {
   scope.stop()
  })
 })
+
+it('shows loading rather than a pending-action error while an answer is in flight', async () => {
+ const j = readingJourney()
+ route.query = { course_code: j.courseCode, journey_id: j.id, journey_step_id: j.steps[1].id }
+ client.get.mockResolvedValue(j)
+ client.exercise.mockResolvedValue({ journey: j, step_id: j.steps[1].id, mode: 'reading', data: { answer: true } })
+ let reject!: (cause: Error) => void
+ client.act.mockImplementationOnce(() => new Promise((_, fail) => { reject = fail }))
+ const scope = effectScope()
+ const daily = scope.run(() => useDailyJourneyExercise('reading'))!
+ await flushPromises()
+ const request = daily.act('answer', { answer: 'true' })
+ await flushPromises()
+ expect(daily.hasPendingAction.value).toBe(true)
+ expect(daily.busy.value).toBe(true)
+ expect(daily.error.value).toBe('')
+ reject(new Error('Network failure'))
+ await request
+ expect(daily.busy.value).toBe(false)
+ expect(daily.hasPendingAction.value).toBe(true)
+ expect(daily.error.value).toBe('Network failure')
+ scope.stop()
+})
