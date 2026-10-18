@@ -307,7 +307,7 @@ func TestDailyJourneyGrammarSRSQueueAndAtomicity(t *testing.T) {
 	if _, err := db.Exec(`UPDATE grammar_content_chapters SET level='A0' WHERE bundle_id='en' AND chapter_id=?`, chapter); err != nil {
 		t.Fatal(err)
 	}
-	for i := 1; i <= 6; i++ {
+	for i := 1; i <= 26; i++ {
 		block := fmt.Sprint("srs-b", i)
 		id := fmt.Sprint("journey-srs-q", i)
 		raw, _ := json.Marshal(map[string]interface{}{"id": id, "chapter_id": chapter, "theory_block_id": block, "type": "mcq_single", "prompt": "Choose A", "choices": []interface{}{map[string]interface{}{"id": "a", "text": "A", "feedback": "Answer leak"}, map[string]interface{}{"id": "b", "text": "B"}}, "correct_answer": "a", "explanation": "Saved SRS explanation"})
@@ -341,7 +341,7 @@ func TestDailyJourneyGrammarSRSQueueAndAtomicity(t *testing.T) {
 	db.SetMaxOpenConns(1)
 	t.Cleanup(func() { db.SetMaxOpenConns(oldMax) })
 	candidates, err = adapter.Candidates(context.Background(), db, user, "en_ru")
-	if err != nil || len(candidates) != 1 || candidates[0].TargetCount != 5 {
+	if err != nil || len(candidates) != 1 || candidates[0].TargetCount != 20 {
 		t.Fatalf("queue candidate %v %v", candidates, err)
 	}
 	svc := NewDailyJourneyService(db, map[dailyjourney.Mode]DailyJourneyAdapter{dailyjourney.GrammarSRS: adapter})
@@ -349,11 +349,70 @@ func TestDailyJourneyGrammarSRSQueueAndAtomicity(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	// A pending stop created before this release can still carry the old limit.
+	if _, err := db.Exec(`UPDATE daily_journey_steps SET target_count=5 WHERE id=?`, j.Current().ID); err != nil {
+		t.Fatal(err)
+	}
 	journeySubjectAct(t, svc, user, &j, "start", "start", map[string]interface{}{})
 	var state journeyGrammarState
 	_ = json.Unmarshal(j.Current().State, &state)
-	if len(state.Questions) != 5 || state.Questions[0]["theory_block_id"] != "srs-b6" {
+	if len(state.Questions) != 20 || state.Questions[0]["theory_block_id"] != "srs-b6" {
 		t.Fatalf("due priority %+v", state.Questions)
+	}
+	// An unrelated broken row must not force a reload of the whole training pack.
+	selected := map[string]bool{}
+	for _, question := range state.Questions {
+		selected[question["id"].(string)] = true
+	}
+	for i := 1; i <= 26; i++ {
+		id := fmt.Sprint("journey-srs-q", i)
+		if selected[id] {
+			continue
+		}
+		var original string
+		if err := db.QueryRow(`SELECT raw_json FROM grammar_training_content_questions WHERE bundle_id='en' AND question_id=?`, id).Scan(&original); err != nil {
+			t.Fatal(err)
+		}
+		if _, err := db.Exec(`UPDATE grammar_training_content_questions SET raw_json='not-json' WHERE bundle_id='en' AND question_id=?`, id); err != nil {
+			t.Fatal(err)
+		}
+		if err := adapter.Validate(context.Background(), db, user, "en_ru", j.Current()); err != nil {
+			t.Fatalf("active queue reloaded unrelated content: %v", err)
+		}
+		if _, err := db.Exec(`UPDATE grammar_training_content_questions SET raw_json=? WHERE bundle_id='en' AND question_id=?`, original, id); err != nil {
+			t.Fatal(err)
+		}
+		break
+	}
+	// Selected content and access are still checked after the optimization.
+	selectedID := state.Questions[0]["id"].(string)
+	var original string
+	if err := db.QueryRow(`SELECT raw_json FROM grammar_training_content_questions WHERE bundle_id='en' AND question_id=?`, selectedID).Scan(&original); err != nil {
+		t.Fatal(err)
+	}
+	changed := map[string]interface{}{}
+	if err := json.Unmarshal([]byte(original), &changed); err != nil {
+		t.Fatal(err)
+	}
+	changed["correct_answer"] = "changed"
+	rawChanged, _ := json.Marshal(changed)
+	if _, err := db.Exec(`UPDATE grammar_training_content_questions SET raw_json=? WHERE bundle_id='en' AND question_id=?`, string(rawChanged), selectedID); err != nil {
+		t.Fatal(err)
+	}
+	if err := adapter.Validate(context.Background(), db, user, "en_ru", j.Current()); !errors.Is(err, ErrDailyJourneyContentUnavailable) {
+		t.Fatalf("changed selected answer accepted: %v", err)
+	}
+	if _, err := db.Exec(`UPDATE grammar_training_content_questions SET raw_json=? WHERE bundle_id='en' AND question_id=?`, original, selectedID); err != nil {
+		t.Fatal(err)
+	}
+	if err := engine.PublishRepo.SetPublished("chapter", chapter, false, nil); err != nil {
+		t.Fatal(err)
+	}
+	if err := adapter.Validate(context.Background(), db, user, "en_ru", j.Current()); !errors.Is(err, ErrDailyJourneyContentUnavailable) {
+		t.Fatalf("withdrawn selected chapter accepted: %v", err)
+	}
+	if err := engine.PublishRepo.SetPublished("chapter", chapter, true, nil); err != nil {
+		t.Fatal(err)
 	}
 	step := j.Current()
 	action := dailyjourney.Action{ClientActionID: "answer0", ExpectedRevision: j.Revision, Type: "answer", Payload: json.RawMessage(`{"index":0,"answer":"b"}`)}
@@ -374,7 +433,7 @@ func TestDailyJourneyGrammarSRSQueueAndAtomicity(t *testing.T) {
 	if err := db.QueryRow(`SELECT review_count FROM grammar_theory_memory WHERE user_id=?`, user).Scan(&n); err != nil || n != 0 {
 		t.Fatalf("memory rollback %d %v", n, err)
 	}
-	for i := 0; i < 5; i++ {
+	for i := 0; i < 20; i++ {
 		journeySubjectAct(t, svc, user, &j, fmt.Sprint("answer", i), "answer", map[string]interface{}{"index": i, "answer": "b"})
 		view, err := adapter.Exercise(context.Background(), user, j, j.Current())
 		if err != nil {
@@ -399,11 +458,11 @@ func TestDailyJourneyGrammarSRSQueueAndAtomicity(t *testing.T) {
 		if table == "grammar_attempts" {
 			query = "SELECT COUNT(*) FROM grammar_attempts WHERE user_id=?"
 		}
-		if err := db.QueryRow(query, user).Scan(&n); err != nil || n != 5 {
+		if err := db.QueryRow(query, user).Scan(&n); err != nil || n != 20 {
 			t.Fatalf("%s %d %v", table, n, err)
 		}
 	}
-	if err := db.QueryRow(`SELECT attempt_count FROM mode_daily_stats WHERE user_course_id IN (SELECT id FROM user_courses WHERE user_id=?) AND mode='grammar_training'`, user).Scan(&n); err != nil || n != 5 {
+	if err := db.QueryRow(`SELECT attempt_count FROM mode_daily_stats WHERE user_course_id IN (SELECT id FROM user_courses WHERE user_id=?) AND mode='grammar_training'`, user).Scan(&n); err != nil || n != 20 {
 		t.Fatalf("stats %d %v", n, err)
 	}
 }

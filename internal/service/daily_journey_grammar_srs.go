@@ -1,6 +1,7 @@
 package service
 
 import (
+	"bytes"
 	"context"
 	"crypto/sha256"
 	"database/sql"
@@ -48,6 +49,9 @@ func (a *DailyJourneyGrammarSRSAdapter) pool(ctx context.Context, q database.Con
 	if err != nil {
 		return nil, nil, "", err
 	}
+	chapters := map[string]*repository.Chapter{}
+	sectionPublished := map[string]bool{}
+	sectionPlacement := map[string]bool{}
 	for id := range allowed {
 		c, err := s.ContentRepo.GetChapter(id)
 		if err != nil {
@@ -57,28 +61,37 @@ func (a *DailyJourneyGrammarSRSAdapter) pool(ctx context.Context, q database.Con
 		if err != nil {
 			return nil, nil, "", err
 		}
-		sectionPub, err := s.PublishRepo.IsPublished("section", c.SectionID)
-		if err != nil {
-			return nil, nil, "", err
+		sectionPub, checked := sectionPublished[c.SectionID]
+		if !checked {
+			sectionPub, err = s.PublishRepo.IsPublished("section", c.SectionID)
+			if err != nil {
+				return nil, nil, "", err
+			}
+			sectionPublished[c.SectionID] = sectionPub
 		}
-		access, err := s.CanAccessChapter(ctx, user, id)
+		placed, checked := sectionPlacement[c.SectionID]
+		if !checked {
+			placed, err = s.isSectionOpenedByPlacement(ctx, user, c.SectionID)
+			if err != nil {
+				return nil, nil, "", err
+			}
+			sectionPlacement[c.SectionID] = placed
+		}
+		access := placed
+		if !placed {
+			access, err = s.CanAccessChapter(ctx, user, id)
+		}
 		if err != nil {
 			return nil, nil, "", err
 		}
 		if !pub || !sectionPub || !access {
 			delete(allowed, id)
+		} else {
+			chapters[id] = c
 		}
 	}
 	filtered := s.filterBlocksByAllowedChapters(byBlock, allowed)
 	// Include theory in the content version; saved help must match the bound questions.
-	chapters := map[string]*repository.Chapter{}
-	for id := range allowed {
-		c, err := s.ContentRepo.GetChapter(id)
-		if err != nil {
-			return nil, nil, "", err
-		}
-		chapters[id] = c
-	}
 	raw, _ := json.Marshal([]interface{}{filtered, chapters})
 	sum := sha256.Sum256(raw)
 	return s, filtered, hex.EncodeToString(sum[:]), nil
@@ -92,13 +105,22 @@ func (a *DailyJourneyGrammarSRSAdapter) Candidates(ctx context.Context, q databa
 	if count == 0 {
 		return nil, nil
 	}
-	if count > 5 {
-		count = 5
+	if count > 20 {
+		count = 20
 	}
 	ref, _ := json.Marshal(journeyGrammarRef{Kind: "srs"})
 	return []dailyjourney.Step{{Mode: dailyjourney.GrammarSRS, Title: "Тренировка грамматики", Goal: "Повторить доступные правила", TargetCount: count, ContentRef: ref, ContentVersion: version, Launch: &dailyjourney.Launch{RouteName: "GrammarTraining"}}}, nil
 }
 func (a *DailyJourneyGrammarSRSAdapter) Validate(ctx context.Context, q database.ContextDBTX, user int64, course string, step *dailyjourney.Step) error {
+	var state journeyGrammarState
+	if len(step.State) > 0 {
+		if err := json.Unmarshal(step.State, &state); err != nil {
+			return err
+		}
+	}
+	if len(state.Questions) > 0 {
+		return a.validatePinned(ctx, q, user, course, &state)
+	}
 	_, pool, version, err := a.pool(ctx, q, user, course)
 	if err != nil {
 		return err
@@ -109,17 +131,25 @@ func (a *DailyJourneyGrammarSRSAdapter) Validate(ctx context.Context, q database
 	return nil
 }
 func (a *DailyJourneyGrammarSRSAdapter) Apply(ctx context.Context, tx *sql.Tx, user int64, j *dailyjourney.Journey, step *dailyjourney.Step, action dailyjourney.Action) error {
-	s, pool, version, err := a.pool(ctx, tx, user, j.CourseCode)
-	if err != nil {
-		return err
-	}
-	if version != step.ContentVersion {
-		return ErrDailyJourneyContentUnavailable
-	}
 	var state journeyGrammarState
 	if len(step.State) > 0 {
 		if err := json.Unmarshal(step.State, &state); err != nil {
 			return err
+		}
+	}
+	s, err := a.engine(tx, j.CourseCode)
+	if err != nil {
+		return err
+	}
+	var pool map[string][]map[string]interface{}
+	if state.Questions == nil {
+		var version string
+		s, pool, version, err = a.pool(ctx, tx, user, j.CourseCode)
+		if err != nil {
+			return err
+		}
+		if version != step.ContentVersion {
+			return ErrDailyJourneyContentUnavailable
 		}
 	}
 	switch action.Type {
@@ -167,9 +197,10 @@ func (a *DailyJourneyGrammarSRSAdapter) Apply(ctx context.Context, tx *sql.Tx, u
 		sort.Strings(rest)
 		rand.Shuffle(len(rest), func(i, k int) { rest[i], rest[k] = rest[k], rest[i] })
 		blocks = append(blocks, rest...)
-		if len(blocks) > step.TargetCount {
-			blocks = blocks[:step.TargetCount]
+		if len(blocks) > 20 {
+			blocks = blocks[:20]
 		}
+		step.TargetCount = len(blocks)
 		state.Answers = map[int]interface{}{}
 		state.Results = []map[string]interface{}{}
 		state.Questions = []map[string]interface{}{}
@@ -183,16 +214,7 @@ func (a *DailyJourneyGrammarSRSAdapter) Apply(ctx context.Context, tx *sql.Tx, u
 			if err != nil {
 				return err
 			}
-			clone := *chapter
-			clone.QuestionBank = nil
-			clone.ChapterTest = nil
-			clone.Blocks = []interface{}{}
-			for _, item := range chapter.Blocks {
-				if b, ok := item.(map[string]interface{}); ok && b["type"] == "theory" {
-					clone.Blocks = append(clone.Blocks, b)
-				}
-			}
-			state.Chapters[id] = &clone
+			state.Chapters[id] = journeySRSTrainingChapter(chapter)
 		}
 		if len(state.Questions) == 0 {
 			return ErrDailyJourneyContentUnavailable
@@ -270,4 +292,95 @@ func (a *DailyJourneyGrammarSRSAdapter) Apply(ctx context.Context, tx *sql.Tx, u
 	}
 	step.State, err = json.Marshal(state)
 	return err
+}
+
+// Keep theory for the selected chapters, without unrelated question banks.
+func journeySRSTrainingChapter(chapter *repository.Chapter) *repository.Chapter {
+	clone := *chapter
+	clone.QuestionBank = nil
+	clone.ChapterTest = nil
+	clone.Blocks = []interface{}{}
+	for _, item := range chapter.Blocks {
+		if block, ok := item.(map[string]interface{}); ok && block["type"] == "theory" {
+			clone.Blocks = append(clone.Blocks, block)
+		}
+	}
+	return &clone
+}
+
+// An active attempt is pinned to its selected questions and theory. Rechecking
+// the whole course on every answer is unnecessary; access and content changes
+// to any selected chapter/question still invalidate the attempt immediately.
+func (a *DailyJourneyGrammarSRSAdapter) validatePinned(ctx context.Context, q database.ContextDBTX, user int64, course string, state *journeyGrammarState) error {
+	if _, err := dailyJourneyOpenLevels(ctx, a.db, q, user, course); err != nil {
+		return err
+	}
+	s, err := a.engine(q, course)
+	if err != nil {
+		return err
+	}
+	if s.TrainingPackRepo == nil || len(state.Chapters) == 0 {
+		return ErrDailyJourneyContentUnavailable
+	}
+	for id, pinned := range state.Chapters {
+		chapter, err := s.ContentRepo.GetChapter(id)
+		if err != nil {
+			return err
+		}
+		if chapter == nil || pinned == nil || grammarJourneyVersion(journeySRSTrainingChapter(chapter)) != grammarJourneyVersion(pinned) {
+			return ErrDailyJourneyContentUnavailable
+		}
+		for _, item := range []struct{ kind, id string }{{"chapter", id}, {"section", chapter.SectionID}} {
+			published, err := s.PublishRepo.IsPublished(item.kind, item.id)
+			if err != nil {
+				return err
+			}
+			if !published {
+				return ErrDailyJourneyContentUnavailable
+			}
+		}
+		allowed, err := s.CanAccessChapter(ctx, user, id)
+		if err != nil {
+			return err
+		}
+		if !allowed {
+			return ErrDailyJourneyContentUnavailable
+		}
+		placed, err := s.isSectionOpenedByPlacement(ctx, user, chapter.SectionID)
+		if err != nil {
+			return err
+		}
+		if !placed {
+			progress, err := s.AttemptRepo.GetChapterProgress(user, id)
+			if err != nil {
+				return err
+			}
+			if progress == nil || !progress.Passed {
+				return ErrDailyJourneyContentUnavailable
+			}
+		}
+	}
+	for _, pinned := range state.Questions {
+		id, _ := pinned["id"].(string)
+		chapter, _ := pinned["chapter_id"].(string)
+		if id == "" || state.Chapters[chapter] == nil {
+			return ErrDailyJourneyContentUnavailable
+		}
+		current, err := s.TrainingPackRepo.GetQuestion(id)
+		if err != nil {
+			return err
+		}
+		actual, err := json.Marshal(current)
+		if err != nil {
+			return err
+		}
+		expected, err := json.Marshal(pinned)
+		if err != nil {
+			return err
+		}
+		if current == nil || !bytes.Equal(actual, expected) {
+			return ErrDailyJourneyContentUnavailable
+		}
+	}
+	return nil
 }
