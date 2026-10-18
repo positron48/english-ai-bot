@@ -371,7 +371,6 @@
       </div>
 
       <div v-if="feedback" class="feedback-section">
-        <button v-if="daily.isJourney.value" type="button" class="btn btn-primary" :disabled="daily.busy.value || daily.hasPendingAction.value" @click="nextCard">{{ t('dailyJourney.continue') }}</button>
         <div v-if="feedback.is_correct" class="feedback-badge feedback-success">
           <!-- Success particles -->
           <div class="success-particles">
@@ -1418,6 +1417,8 @@ const checkCurrentSession = async () => {
       currentDisappointingPhrase.value = getRandomDisappointingPhrase()
       if (card.type === 'type') typeRevealDisplayText.value = feedback.value?.correct_answer || ''
       if (card.type === 'spell' && feedback.value?.correct_answer) spellRevealLetters.value = Array.from(feedback.value.correct_answer.slice(card.prefix?.length || 0)).map((letter, key) => ({ letter, key }))
+      // A reload restores feedback, then resumes the usual automatic transition.
+      autoNextCardTimer = setTimeout(() => nextCard(), feedback.value?.is_correct ? 1000 : Math.max(150, (feedback.value?.delay_seconds || 0) * 1000))
     }
     void prefetchNextTrainingCard()
   } catch (error: any) {
@@ -1972,7 +1973,6 @@ const submitSpellAnswerAs = async (answerText: string, isSkip = false) => {
       currentDisappointingPhrase.value = getRandomDisappointingPhrase()
     }
     void autoplayPronunciationAfterAnswer(data)
-    if (daily.isJourney.value) return
     const nextDelayMs = data.is_correct ? 1000 : (data.delay_seconds ?? 0) * 1000
     const isCorrectSpell = data.is_correct && currentCard.value?.type === 'spell'
     if (isCorrectSpell) {
@@ -2076,10 +2076,6 @@ const submitTypeAnswerAs = async (answerText: string) => {
       currentDisappointingPhrase.value = getRandomDisappointingPhrase()
     }
     void autoplayPronunciationAfterAnswer(data)
-    if (daily.isJourney.value) {
-      if (!data.is_correct && data.correct_answer) nextTick(() => startTypeRevealAnimation(data.chosen_option ?? '', data.correct_answer))
-      return
-    }
     const nextDelayMs = data.is_correct ? 1000 : (data.delay_seconds ?? 0) * 1000
     const startCountdownOrNext = () => {
       if (nextDelayMs > 0) {
@@ -2258,7 +2254,6 @@ const submitAnswer = async (optionIndex: number) => {
       currentDisappointingPhrase.value = getRandomDisappointingPhrase()
     }
     
-    if (daily.isJourney.value) return
     // Schedule automatic transition to next card
     const delayMs = data.delay_seconds ? data.delay_seconds * 1000 : 0
     
@@ -2349,7 +2344,6 @@ const submitAnswer = async (optionIndex: number) => {
       // No delay from server: correct answer — ~1s to see success; wrong + delay 0 — minimal pause
       const delayWhenCorrectMs = 1000
       const delayWhenWrongMs = 150
-      if (daily.isJourney.value) return
       const nextDelayMs = data.is_correct ? delayWhenCorrectMs : delayWhenWrongMs
       autoNextCardTimerStartTime = Date.now()
       autoNextCardTimerDelayMs = nextDelayMs
@@ -2402,29 +2396,8 @@ const nextCard = async () => {
   autoNextCardTimerStartTime = null
   autoNextCardTimerDelayMs = null
 
-  feedback.value = null
-  chosenOptionIndex.value = null
-  optionsShown.value = false
-  options.value = []
-  waitingDelay.value = false
-  delaySeconds.value = 0
-  initialDelaySeconds.value = 0
-  remainingMs.value = 0
-  initialDelayMs.value = 0
-  initialDelaySeconds.value = 0
-  cardShownAt.value = null
-  timerPaused.value = false
-  timerPauseStartTime = null
-  timerPausedRemainingMs = null
-  showExampleButton.value = false
-  showExampleButtonVisible.value = false
-  exampleUsageShown.value = false
-  spellAnswerLetters.value = []
-  spellUsedIndices.value = []
-  spellRevealLetters.value = []
-  spellSkipAutoPickInProgress.value = false
-  spellSkipResultActive.value = false
-  typeAnswerText.value = ''
+  // Keep the answered card intact until the next response is ready. setupCard
+  // resets the view atomically; clearing it here exposes an empty card on slow networks.
 
   try {
     const cached = prefetchedCardResponse.value

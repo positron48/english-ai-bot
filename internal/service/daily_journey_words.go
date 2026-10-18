@@ -21,11 +21,12 @@ import (
 )
 
 type DailyJourneyWordsAdapter struct {
-	db             *sql.DB
-	logger         *zap.Logger
-	learning       config.LearningConfig
-	MirrorSRS      bool
-	OptionsDelayMS int
+	db                      *sql.DB
+	logger                  *zap.Logger
+	learning                config.LearningConfig
+	MirrorSRS               bool
+	OptionsDelayMS          int
+	WrongAnswerDelaySeconds int
 }
 
 func NewDailyJourneyWordsAdapter(db *sql.DB, logger *zap.Logger, learning config.LearningConfig) *DailyJourneyWordsAdapter {
@@ -36,20 +37,21 @@ func NewDailyJourneyWordsAdapter(db *sql.DB, logger *zap.Logger, learning config
 }
 
 type journeyWordsState struct {
-	DelayMS        int                         `json:"delay_ms"`
-	Phase          string                      `json:"phase"`
-	DueWords       int                         `json:"due_words"`
-	AddTarget      int                         `json:"add_target"`
-	Added          []int64                     `json:"added"`
-	Queue          []*models.TrainingQueueItem `json:"queue"`
-	Index          int                         `json:"index"`
-	Correct        int                         `json:"correct"`
-	Card           map[string]any              `json:"card"`
-	Options        []string                    `json:"options"`
-	CorrectAnswer  string                      `json:"correct_answer"`
-	ShownAt        time.Time                   `json:"shown_at"`
-	OptionsShownAt *time.Time                  `json:"options_shown_at"`
-	Feedback       map[string]any              `json:"feedback"`
+	WrongAnswerDelaySeconds int                         `json:"wrong_answer_delay_seconds"`
+	DelayMS                 int                         `json:"delay_ms"`
+	Phase                   string                      `json:"phase"`
+	DueWords                int                         `json:"due_words"`
+	AddTarget               int                         `json:"add_target"`
+	Added                   []int64                     `json:"added"`
+	Queue                   []*models.TrainingQueueItem `json:"queue"`
+	Index                   int                         `json:"index"`
+	Correct                 int                         `json:"correct"`
+	Card                    map[string]any              `json:"card"`
+	Options                 []string                    `json:"options"`
+	CorrectAnswer           string                      `json:"correct_answer"`
+	ShownAt                 time.Time                   `json:"shown_at"`
+	OptionsShownAt          *time.Time                  `json:"options_shown_at"`
+	Feedback                map[string]any              `json:"feedback"`
 }
 type JourneyWordsExercise struct {
 	Phase      string            `json:"phase"`
@@ -493,6 +495,7 @@ func (a *DailyJourneyWordsAdapter) card(ctx context.Context, tx *sql.Tx, user in
 	state.Options = nil
 	state.CorrectAnswer = ""
 	state.DelayMS = a.OptionsDelayMS
+	state.WrongAnswerDelaySeconds = a.WrongAnswerDelaySeconds
 	var raw string
 	if err := tx.QueryRowContext(ctx, `SELECT COALESCE(settings_json,'') FROM users WHERE id=?`, user).Scan(&raw); err != nil {
 		return err
@@ -506,6 +509,10 @@ func (a *DailyJourneyWordsAdapter) card(ctx context.Context, tx *sql.Tx, user in
 	if settings.OptionsDelaySeconds != nil {
 		state.DelayMS = *settings.OptionsDelaySeconds * 1000
 	}
+	if settings.WrongAnswerDelaySeconds != nil {
+		state.WrongAnswerDelaySeconds = *settings.WrongAnswerDelaySeconds
+	}
+	state.WrongAnswerDelaySeconds = max(0, state.WrongAnswerDelaySeconds)
 	state.DelayMS = max(0, state.DelayMS)
 	response := map[string]any{"type": item.Type, "session_id": journeySessionID(step.ID), "card_index": state.Index + 1, "total_cards": len(state.Queue), "delay_ms": state.DelayMS}
 	switch item.Type {
@@ -715,7 +722,10 @@ func (a *DailyJourneyWordsAdapter) answer(ctx context.Context, tx *sql.Tx, user 
 		state.Correct++
 	}
 	step.CompletedCount++
-	state.Feedback = map[string]any{"is_correct": correct, "chosen_option": chosen, "correct_answer": state.CorrectAnswer, "delay_seconds": 0}
+	state.Feedback = map[string]any{"is_correct": correct, "chosen_option": chosen, "correct_answer": state.CorrectAnswer}
+	if !correct {
+		state.Feedback["delay_seconds"] = state.WrongAnswerDelaySeconds
+	}
 	if item.Type == "card" {
 		state.Feedback["hint"] = item.Card.TrainingCard.Hint
 		state.Feedback["example"] = item.Card.TrainingCard.ExampleEN

@@ -144,7 +144,7 @@ func (a *DailyJourneyReadingAdapter) Candidates(ctx context.Context, q database.
 		return nil, err
 	}
 	language := strings.SplitN(course, "_", 2)[0]
-	rows, err := q.QueryContext(ctx, `SELECT t.text_id, EXISTS(SELECT 1 FROM reading_text_progress p WHERE p.user_id=? AND p.chapter_id=t.text_id),c.level FROM reading_texts t JOIN reading_categories c ON c.category_id=t.category_id WHERE LOWER(t.target_language)=? AND c.text_ids::jsonb @> jsonb_build_array(t.text_id) ORDER BY t.text_id`, user, language)
+	rows, err := q.QueryContext(ctx, `SELECT t.text_id, EXISTS(SELECT 1 FROM reading_text_progress p WHERE p.user_id=? AND p.chapter_id=t.text_id),c.level FROM reading_texts t JOIN reading_categories c ON c.category_id=t.category_id WHERE LOWER(t.target_language)=? AND c.text_ids::jsonb @> jsonb_build_array(t.text_id) ORDER BY 2, RANDOM()`, user, language)
 	if err != nil {
 		return nil, err
 	}
@@ -167,8 +167,12 @@ func (a *DailyJourneyReadingAdapter) Candidates(ctx context.Context, q database.
 	if err != nil {
 		return nil, err
 	}
-	fresh, repeat := []dailyjourney.Step{}, []dailyjourney.Step{}
+	// IDs are randomized within unread/read groups; load only the first usable
+	// document instead of decoding and hashing the entire reading catalog.
 	for _, entry := range entries {
+		if !levels[strings.ToUpper(entry.level)] {
+			continue
+		}
 		doc, exists, err := repository.ReadReadingTextDocument(ctx, q, entry.id)
 		if err != nil {
 			return nil, err
@@ -185,16 +189,9 @@ func (a *DailyJourneyReadingAdapter) Candidates(ctx context.Context, q database.
 		}
 		ref, _ := json.Marshal(journeyReadingRef{TextID: doc.ID})
 		step := dailyjourney.Step{Mode: dailyjourney.Reading, Title: "Чтение", Goal: doc.Title, ContentRef: ref, ContentVersion: readingVersion(doc), TargetCount: min(3, len(qs)), Launch: &dailyjourney.Launch{RouteName: "ReadingText", Params: map[string]string{"textId": doc.ID}}}
-		if entry.read {
-			repeat = append(repeat, step)
-		} else {
-			fresh = append(fresh, step)
-		}
+		return []dailyjourney.Step{step}, nil
 	}
-	if len(fresh) > 0 {
-		return fresh, nil
-	}
-	return repeat, nil
+	return nil, nil
 }
 func (a *DailyJourneyReadingAdapter) Validate(ctx context.Context, q database.ContextDBTX, user int64, course string, step *dailyjourney.Step) error {
 	var ref journeyReadingRef

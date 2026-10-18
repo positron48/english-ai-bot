@@ -68,6 +68,9 @@ func TestDailyJourneyWordsRealSRSAtomicity(t *testing.T) {
 	ctx, cancel := context.WithTimeout(context.Background(), 15*time.Second)
 	defer cancel()
 	user := journeySubjectUser(t, db, 808301)
+	if _, err := db.Exec(`UPDATE users SET settings_json='{"spell_mode_enabled":false,"type_mode_enabled":false,"options_delay_seconds":0,"wrong_answer_delay_seconds":7}' WHERE id=?`, user); err != nil {
+		t.Fatal(err)
+	}
 	userCards := repository.NewUserCardRepository(db, zap.NewNop())
 	for i := 0; i < 20; i++ {
 		_, tc := journeySubjectWord(t, db, i)
@@ -90,6 +93,7 @@ func TestDailyJourneyWordsRealSRSAtomicity(t *testing.T) {
 	t.Cleanup(func() { db.SetMaxOpenConns(oldMax) })
 	adapter := NewDailyJourneyWordsAdapter(db, zap.NewNop(), config.DefaultLearningConfig())
 	adapter.MirrorSRS = true
+	adapter.WrongAnswerDelaySeconds = 3
 	svc := NewDailyJourneyService(db, map[dailyjourney.Mode]DailyJourneyAdapter{dailyjourney.Words: adapter})
 	j, err := svc.Start(ctx, user, "en_ru")
 	if err != nil {
@@ -99,6 +103,9 @@ func TestDailyJourneyWordsRealSRSAtomicity(t *testing.T) {
 	var state journeyWordsState
 	if err := json.Unmarshal(j.Steps[0].State, &state); err != nil {
 		t.Fatal(err)
+	}
+	if state.WrongAnswerDelaySeconds != 7 {
+		t.Fatalf("user wrong-answer delay ignored: %d", state.WrongAnswerDelaySeconds)
 	}
 	if state.DueWords != 20 || state.AddTarget != 0 || len(state.Queue) != 20 {
 		t.Fatalf("directional cards counted as words: %+v", state)

@@ -176,6 +176,7 @@ func NewRouter(
 		words := service.NewDailyJourneyWordsAdapter(db, logger, cfg.Learning)
 		words.MirrorSRS = cfg.Linglow.SRSReadEnabled
 		words.OptionsDelayMS = cfg.Training.OptionsDelayMS
+		words.WrongAnswerDelaySeconds = cfg.Training.WrongAnswerDelaySeconds
 		resolveGrammar := func(course string) *service.GrammarService {
 			bundle := grammarBundleForCourse(course)
 			if svc := r.grammarServices[bundle]; svc != nil {

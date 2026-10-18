@@ -3,6 +3,9 @@ import { flushPromises, shallowMount } from '@vue/test-utils'
 import { ref } from 'vue'
 import TrainingView from './TrainingView.vue'
 import { wordTrainingClient } from '../api/wordTrainingClient'
+const journeyMode = ref(false)
+const journeyData = ref<any>(null)
+const journeyAction = vi.fn()
 
 vi.mock('../api/wordTrainingClient', () => ({ wordTrainingClient: {
   current: vi.fn(), prefetchNext: vi.fn(), reveal: vi.fn(), answer: vi.fn(),
@@ -42,6 +45,9 @@ async function mountTraining() {
   return wrapper
 }
 beforeEach(() => {
+  journeyMode.value = false
+  journeyData.value = null
+  journeyAction.mockReset()
   vi.useFakeTimers()
   vi.clearAllMocks()
   vi.mocked(wordTrainingClient.current).mockResolvedValue(card(1))
@@ -153,9 +159,37 @@ it('sanitizes training question HTML while preserving word formatting', async ()
 // These tests exercise standalone sessions; journey sessions have separate coverage.
 vi.mock('../composables/useDailyJourneyExercise', () => ({
   useDailyJourneyExercise: () => ({
-    isJourney: ref(false), context: ref(null), data: ref(null),
+    isJourney: journeyMode, context: ref({ courseCode: 'es_ru' }), data: journeyData,
     finished: ref(false), busy: ref(false), error: ref(''),
-    hasPendingAction: ref(false), ready: vi.fn(), act: vi.fn(),
+    hasPendingAction: ref(false), ready: async () => journeyData.value, act: journeyAction,
     retry: vi.fn(), back: vi.fn(), draftKey: () => '',
   }),
 }))
+
+it('automatically advances journey words and keeps feedback intact while the next card loads', async () => {
+  journeyMode.value = true
+  journeyData.value = { phase: 'train', card: card(1), options: ['дом', 'книга'] }
+  const ack = deferred<void>()
+  journeyAction.mockImplementation(async (action: string) => {
+    if (action === 'answer') journeyData.value = { ...journeyData.value, feedback: { is_correct: true, correct_answer: 'дом' } }
+    if (action === 'ack_feedback') {
+      await ack.promise
+      journeyData.value = { phase: 'train', card: card(2), options: ['árbol', 'flor'] }
+    }
+  })
+  const w = await mountTraining()
+  await vi.advanceTimersByTimeAsync(1000)
+  const state = (w.vm as any).$.setupState
+  await state.submitAnswer(0)
+  await flushPromises()
+  expect(w.text()).not.toContain('dailyJourney.continue')
+  await vi.advanceTimersByTimeAsync(1000)
+  expect(journeyAction).toHaveBeenCalledWith('ack_feedback')
+  expect(w.get('.question').text()).toBe('casa')
+  expect(w.find('.feedback-section').exists()).toBe(true)
+  expect(w.findAll('.option-text')).toHaveLength(2)
+  ack.resolve()
+  await flushPromises()
+  expect(w.get('.question').text()).toBe('дерево')
+  expect(w.find('.feedback-section').exists()).toBe(false)
+})

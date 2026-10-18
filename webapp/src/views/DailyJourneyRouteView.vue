@@ -15,19 +15,23 @@ import { createDailyJourneyTransport, dailyJourneyClient } from '../api/dailyJou
 import { useDailyJourney } from '../composables/useDailyJourney'
 import { dailyJourneyExerciseRoute } from '../composables/useDailyJourneyContext'
 import DailyJourneyShell from '../components/DailyJourneyShell.vue'
-import type { JourneyStep } from '../components/dailyJourney/types'
-const props = defineProps<{ courseCode: string }>()
+import type { DailyJourney, JourneyStep } from '../components/dailyJourney/types'
+const props = defineProps<{ courseCode: string; initialJourney?: DailyJourney | null }>()
 const route = useRoute()
 const router = useRouter()
 const { t } = useI18n()
 const { isAuthenticated } = useAuth()
 const navigationError = ref('')
 const scope = computed(() => `${isAuthenticated.value ? currentUserScope() : 'anon'}:${props.courseCode}:${typeof route.query.journey_id === 'string' ? route.query.journey_id : 'today'}`)
+let initialJourney = props.initialJourney
 const { journey, busy, error, currentStep, hasPendingAction, start, retry, reload, act } = useDailyJourney(scope, () => {
   const course = props.courseCode
   const id = typeof route.query.journey_id === 'string' ? route.query.journey_id : ''
   const transport = createDailyJourneyTransport(course)
-  return { ...transport, get: () => id ? dailyJourneyClient.get(course, id) : transport.get() }
+  return { ...transport, get: () => {
+    if (initialJourney) { const initial = initialJourney; initialJourney = null; return Promise.resolve(initial) }
+    return id ? dailyJourneyClient.get(course, id) : transport.get()
+  } }
 }, sessionStorage, journey => emitAppDataEvent('daily-journey-progressed', journey.courseCode))
 async function openStep(step: JourneyStep) {
   navigationError.value = ''
