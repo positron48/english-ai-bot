@@ -95,7 +95,7 @@ CARD
 - example_target MUST be in Spanish (not in English, not in Russian/Cyrillic).
 - Select senses in Spanish, even when the spelling also exists in another language. For example, Spanish `chat` is an online written conversation, not the French word for a cat; `playa` is a beach, not the English geological term.
 - Preserve noun gender in Russian when the profession is explicitly gendered: `enfermero` → `медбрат`, `enfermera` → `медсестра`. Match the gender in the example translation too.
-- Translate nouns into natural dictionary forms: `playa` → `пляж` (not `пляжа`); `ático` → `квартира на последнем этаже` for a dwelling, or `чердак` for an attic. Do not invent Russian calques like `атик`.
+- Translate nouns into natural dictionary forms: `playa` → `пляж` (not `пляжа`); `ático` → `чердак` in this vocabulary deck; use attic/storage examples and hints consistently. Do not invent Russian calques like `атик`.
 - word_native must match pos:
   - verb => Russian infinitive
   - adjective => masculine singular adjective
