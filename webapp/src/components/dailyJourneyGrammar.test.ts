@@ -15,7 +15,7 @@ vi.mock('../composables/useAudio', () => ({ useAudio: () => ({ playSuccess: vi.f
 let daily: any
 beforeEach(() => {
  vi.clearAllMocks()
- daily = { isJourney: ref(true), data: ref({ kind: 'block', chapter: { id: 'ch1', title: 'Bound chapter', blocks: [{ id: 'b1', type: 'theory', theory: { content_md: 'Bound theory' } }] }, questions: [{ id: 'q1', prompt: 'Bound question', type: 'true_false' }], index: 0, answers: {}, results: [], feedback: false }), context: ref({ courseCode: 'es_ru' }), error: ref(''), busy: ref(false), finished: ref(false), ready: vi.fn(async () => daily.data.value), answer: vi.fn(), acknowledge: vi.fn(), back: vi.fn(), retry: vi.fn() }
+ daily = { isJourney: ref(true), data: ref({ kind: 'block', chapter: { id: 'ch1', title: 'Bound chapter', blocks: [{ id: 'b1', type: 'theory', theory: { content_md: 'Bound theory' } }] }, questions: [{ id: 'q1', prompt: 'Bound question', type: 'true_false' }], index: 0, answers: {}, results: [], feedback: false }), context: ref({ courseCode: 'es_ru' }), error: ref(''), busy: ref(false), finished: ref(false), resultDetails: ref(null), ready: vi.fn(async () => daily.data.value), answer: vi.fn(), acknowledge: vi.fn(), back: vi.fn(), retry: vi.fn() }
  daily.question = computed(() => daily.data.value.questions[daily.data.value.index])
  useSource.mockReturnValue(daily)
 })
@@ -151,5 +151,39 @@ it('marks the incorrect daily SRS choice red and the correct choice green after 
   expect(wrong.classes()).not.toContain('correct')
   expect(wrong.classes()).not.toContain('selected')
   expect(choices.find(choice => choice.text().includes('Right'))!.classes()).toContain('correct')
+ } finally { view.unmount() }
+})
+
+
+it('shows ordinary grammar statistics after the last acknowledgment and returns only on the result button', async () => {
+ daily.data.value = { ...daily.data.value, kind: 'srs', chapters: {}, feedback: true, answers: { 0: 'false' }, results: [{ correct: false, correct_answer: 'true' }] }
+ daily.acknowledge.mockImplementation(async () => { daily.resultDetails.value = { answered: 20, correct: 17 }; daily.finished.value = true })
+ const view = mount(GrammarTrainingView, { global: { stubs: { ...global.stubs, TrainingSessionCompletion: true } } })
+ try {
+  await flushPromises()
+  await view.findAll('button').find(button => button.text() === 'common.finish')!.trigger('click')
+  await flushPromises()
+  const completion = view.getComponent({ name: 'TrainingSessionCompletion' })
+  expect(completion.props()).toMatchObject({ totalCards: 20, correctCards: 17, continueLabel: 'dailyJourney.returnToRoute' })
+  expect(daily.back).not.toHaveBeenCalled()
+  expect(startTrainingSession).not.toHaveBeenCalled()
+  completion.vm.$emit('continue')
+  expect(daily.back).toHaveBeenCalledOnce()
+ } finally { view.unmount() }
+})
+
+it('restores completed grammar statistics after reload without an active exercise', async () => {
+ daily.data.value = null
+ daily.ready.mockImplementation(async () => {
+  daily.resultDetails.value = { answered: 20, correct: 12 }
+  daily.finished.value = true
+  throw new Error('No active exercise')
+ })
+ const view = mount(GrammarTrainingView, { global: { stubs: { ...global.stubs, TrainingSessionCompletion: true } } })
+ try {
+  await flushPromises()
+  expect(view.getComponent({ name: 'TrainingSessionCompletion' }).props()).toMatchObject({ totalCards: 20, correctCards: 12 })
+  expect(daily.back).not.toHaveBeenCalled()
+  expect(startTrainingSession).not.toHaveBeenCalled()
  } finally { view.unmount() }
 })

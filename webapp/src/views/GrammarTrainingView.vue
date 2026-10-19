@@ -25,12 +25,12 @@
         :stats-loaded="true"
         :available-for-training="0"
         :estimated-time-for-remaining="null"
-        :continue-label="t('training.startTraining')"
+        :continue-label="daily.isJourney.value ? t('dailyJourney.returnToRoute') : t('training.startTraining')"
         :show-continue-button="true"
         :show-continue-without-due-cards="true"
         :sounds-enabled="settings.soundsEnabled"
         :sound-theme="settings.soundTheme"
-        @continue="startSession"
+        @continue="daily.isJourney.value ? daily.back() : startSession()"
       />
     </div>
 
@@ -291,8 +291,9 @@ function cacheChapterContextFromApi(chapterId: string, data: any) {
     }
   }
 }
-const totalCount = computed(() => sessionQuestions.value.length)
-const sessionDone = computed(() => !loading.value && available.value && totalCount.value > 0 && currentIndex.value >= totalCount.value)
+const journeyCompletion = ref<{ total: number } | null>(null)
+const totalCount = computed(() => journeyCompletion.value?.total ?? sessionQuestions.value.length)
+const sessionDone = computed(() => !loading.value && available.value && (journeyCompletion.value !== null || (totalCount.value > 0 && currentIndex.value >= totalCount.value)))
 
 /** Same setting as word training: pause before answer options; used here as delay before auto-advance after a correct answer */
 const optionsDelaySeconds = ref(5)
@@ -366,7 +367,20 @@ const loadTrainingDelaySetting = async () => {
 
 const restoreJourneyTraining = async () => {
   clearCorrectAdvanceTimer()
-  const state = await daily.ready()
+  let state
+  try { state = await daily.ready() }
+  catch (cause) { if (!daily.finished.value) throw cause }
+  if (daily.finished.value) {
+    const details = daily.resultDetails.value
+    journeyCompletion.value = { total: Number(details?.answered || 0) }
+    correctCount.value = Number(details?.correct || 0)
+    currentIndex.value = journeyCompletion.value.total
+    available.value = true
+    result.value = null
+    return
+  }
+  if (!state) return
+  journeyCompletion.value = null
   sessionQuestions.value = state.questions
   currentIndex.value = state.index
   available.value = true
@@ -376,7 +390,6 @@ const restoreJourneyTraining = async () => {
   await hydrateTheoryBlocksForSession()
 }
 const retryJourneyTraining = async () => { if (daily.isJourney.value) await daily.retry(); await init() }
-watch(daily.finished, finished => { if (daily.isJourney.value && finished) void daily.back() })
 
 const init = async () => {
   loading.value = true
@@ -502,7 +515,7 @@ const advanceAfterCorrect = () => {
 }
 
 const nextQuestion = async () => {
-  if (daily.isJourney.value) { await daily.acknowledge(); if (!daily.finished.value) await restoreJourneyTraining(); return }
+  if (daily.isJourney.value) { await daily.acknowledge(); if (!daily.error.value) await restoreJourneyTraining(); return }
   clearCorrectAdvanceTimer()
   result.value = null
   currentIndex.value++
