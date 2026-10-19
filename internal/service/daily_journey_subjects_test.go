@@ -57,7 +57,7 @@ func journeySubjectAct(t *testing.T, s *DailyJourneyService, user int64, j **dai
 	}
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	result, err := s.Act(ctx, user, "en_ru", (*j).ID, current.ID, dailyjourney.Action{ClientActionID: key, Type: kind, ExpectedRevision: (*j).Revision, Payload: raw})
+	result, err := s.Act(ctx, user, (*j).CourseCode, (*j).ID, current.ID, dailyjourney.Action{ClientActionID: key, Type: kind, ExpectedRevision: (*j).Revision, Payload: raw})
 	if err != nil {
 		t.Fatalf("%s %s: %v", key, kind, err)
 	}

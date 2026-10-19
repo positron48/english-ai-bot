@@ -92,7 +92,7 @@
           </div>
           
           <!-- Inline Quiz Block -->
-          <div v-if="!daily.isJourney.value && block.type === 'quiz_inline' && hasQuizQuestions(block)" class="quiz-block">
+          <div v-if="block.type === 'quiz_inline' && hasQuizQuestions(block)" class="quiz-block">
             <h2 v-if="block.title" class="block-title">{{ block.title }}</h2>
             <GrammarQuestion
               v-for="questionId in block.quiz_inline?.question_ids || []"
@@ -108,19 +108,8 @@
         </div>
       </div>
       
-      <div v-if="daily.isJourney.value" class="quiz-block">
-        <GrammarQuestion v-if="daily.question.value" :key="daily.question.value.id + ':' + daily.data.value?.index"
-          :question="daily.question.value"
-          :draft-key="daily.draftKey?.('grammar:' + daily.question.value.id + ':' + daily.data.value?.index)" :show-answers="daily.data.value?.feedback"
-          :initial-answer="daily.data.value?.answers[daily.data.value.index]"
-          :show-theory-help-button="false" @answer="answerJourneyQuestion" />
-        <button v-if="daily.data.value?.feedback || !daily.question.value" class="btn btn-primary" :disabled="daily.busy.value" @click="daily.acknowledge">
-          {{ t('dailyJourney.continue') }}
-        </button>
-        <button class="btn btn-secondary" @click="daily.back">{{ t('dailyJourney.returnToRoute') }}</button>
-      </div>
-      <div v-else class="chapter-footer">
-        <button @click="startTest" class="btn btn-primary btn-large">
+      <div class="chapter-footer">
+        <button @click="startTest" :disabled="daily.busy.value" class="btn btn-primary btn-large">
           {{ t('grammar.startChapterTest') }}
         </button>
       </div>
@@ -253,7 +242,6 @@ const loadChapter = async () => {
   }
 }
 
-const answerJourneyQuestion = async (answer: unknown) => { try { await daily.answer(answer) } catch (cause: any) { error.value = cause.message } }
 const retryChapter = async () => { if (daily.isJourney.value) await daily.retry(); await loadChapter() }
 watch(daily.finished, finished => { if (daily.isJourney.value && finished) void daily.back() })
 
@@ -422,7 +410,12 @@ const submitChapterReport = async () => {
   }
 }
 
-const startTest = () => {
+const startTest = async () => {
+  if (daily.isJourney.value) {
+    try { await daily.act('start', { begin_test: true }) }
+    catch (cause: any) { error.value = cause.message }
+    return
+  }
   router.push(`/learning/grammar/chapter/${chapterId.value}/test`)
 }
 

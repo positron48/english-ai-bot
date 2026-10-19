@@ -136,7 +136,7 @@
         >
           {{ nextActionLoading ? t('common.loading') : nextActionLabel }}
         </button>
-        <button v-if="!daily.isJourney.value && !result.passed" @click="retryTest" class="btn btn-primary">{{ t('grammar.retryTest') }}</button>
+        <button v-if="!result.passed" @click="retryTest" class="btn btn-primary">{{ t('grammar.retryTest') }}</button>
       </div>
     </div>
     
@@ -155,6 +155,7 @@
           :key="currentQuestion.id || currentQuestionIndex"
           :ref="el => setQuestionRef(currentQuestionIndex, el)"
           :question="currentQuestion"
+          :inert="daily.busy.value ? true : undefined"
           :draft-key="daily.isJourney.value ? daily.draftKey?.('grammar:' + currentQuestion.id + ':' + currentQuestionIndex) : ''"
           :show-answers="false"
           :show-theory-help-button="false"
@@ -428,6 +429,15 @@ const hasAnswer = (index: number): boolean => {
   return true
 }
 
+const applyJourneyTestState = (state: Awaited<ReturnType<typeof daily.ready>>) => {
+  questions.value = state.questions
+  currentQuestionIndex.value = state.index
+  answers.value = new Map(state.questions.flatMap((q, index) => state.answers[index] === undefined ? [] : [[getQuestionKey(q), state.answers[index]]]))
+  result.value = state.result || null
+  testSubmitted.value = !!state.result
+  if (state.result) nextTick(() => animateScore(state.result!.score))
+}
+
 const loadTest = async () => {
   // CRITICAL: Reset testSubmitted FIRST to ensure Vue switches to loading block
   testSubmitted.value = false
@@ -437,12 +447,7 @@ const loadTest = async () => {
   try {
     if (daily.isJourney.value) {
       const state = await daily.ready()
-      questions.value = state.questions
-      currentQuestionIndex.value = state.index
-      answers.value = new Map(state.questions.flatMap((q, index) => state.answers[index] === undefined ? [] : [[getQuestionKey(q), state.answers[index]]]))
-      result.value = state.result || null
-      testSubmitted.value = !!state.result
-      if (state.result) nextTick(() => animateScore(state.result!.score))
+      applyJourneyTestState(state)
     } else if (scope.value === 'chapter') {
       const data: { questions: any[]; total: number } = await grammarClient.getChapterTest(scopeId.value)
       questions.value = data.questions || []
@@ -460,8 +465,11 @@ const loadTest = async () => {
 
 const retryJourneyTest = async () => { if (daily.isJourney.value) await daily.retry(); await loadTest() }
 const saveJourneyAnswer = async () => {
-  if (daily.busy.value || !currentQuestion.value) return
-  try { await daily.answer(answers.value.get(getQuestionKey(currentQuestion.value))); await loadTest() }
+  if (daily.busy.value || !currentQuestion.value || !hasAnswer(currentQuestionIndex.value)) return
+  try {
+    await daily.answer(answers.value.get(getQuestionKey(currentQuestion.value)))
+    if (!daily.error.value) applyJourneyTestState(await daily.ready())
+  }
   catch (cause: any) { error.value = cause.message }
 }
 watch(daily.finished, finished => { if (daily.isJourney.value && finished) void daily.back() })
@@ -474,7 +482,6 @@ const handleAnswerWithAutoNext = (index: number, answer: any) => {
   const questionKey = getQuestionKey(question)
   answers.value.set(questionKey, answer)
   
-  if (daily.isJourney.value) return
   if (hasAnswer(index)) {
     const isLast = index === questions.value.length - 1
     const isFillBlank = questions.value[index]?.type === 'fill_blank'
@@ -482,6 +489,7 @@ const handleAnswerWithAutoNext = (index: number, answer: any) => {
       submitTest()
     } else {
       setTimeout(() => {
+        if (index !== currentQuestionIndex.value) return
         if (index < questions.value.length - 1) nextQuestion()
       }, 300)
     }
@@ -708,7 +716,7 @@ watch([() => percentageAnimationComplete.value, () => accuracyPercentage.value],
 })
 
 const goBack = () => {
-  if (daily.isJourney.value) { void (daily.data.value?.result ? daily.acknowledge() : daily.back()); return }
+  if (daily.isJourney.value) { void (daily.data.value?.result?.passed ? daily.acknowledge() : daily.back()); return }
   if (scope.value === 'chapter') {
     router.push(`/learning/grammar/chapter/${scopeId.value}`)
   } else {
@@ -716,7 +724,15 @@ const goBack = () => {
   }
 }
 
-const retryTest = () => {
+const retryTest = async () => {
+  if (daily.isJourney.value) {
+    animatedScore.value = 0
+    percentageAnimationComplete.value = false
+    expandedCorrectResults.value = {}
+    await daily.act('start', { retry_test: true })
+    if (!daily.error.value) await loadTest()
+    return
+  }
   testSubmitted.value = false
   answers.value.clear()
   currentQuestionIndex.value = 0

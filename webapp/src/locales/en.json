@@ -1231,7 +1231,7 @@
     },
     "goals": {
       "words": "Add new words and review familiar ones",
-      "grammar": "Study the next block and answer its questions",
+      "grammar": "Study a chapter and take its test",
       "categoryTest": "Take the full category test",
       "chapterTest": "Take the full chapter test",
       "grammar_srs": "Review available rules",

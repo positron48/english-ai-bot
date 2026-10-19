@@ -58,6 +58,10 @@ export function useDailyJourneyExercise<T>(mode: JourneyMode) {
         }
       }
 
+      if (mode === 'grammar' && current?.mode === 'grammar' && current.id === ctx.stepId && journey.id === ctx.journeyId && journey.courseCode === ctx.courseCode && current.launch && ['GrammarChapter', 'GrammarChapterTest'].includes(String(route.name)) && current.launch.routeName !== route.name && current.launch.params?.chapterId === route.params.chapterId) {
+        await router.replace(dailyJourneyExerciseRoute(journey, current)); return
+      }
+
       const step = verifyDailyJourneyContext(ctx, journey, String(route.name || ''), route.params)
       if (step.mode !== mode) throw new Error('Неверный режим задания.')
       const view = await dailyJourneyClient.exercise<T>(ctx.courseCode, ctx.journeyId, ctx.stepId)

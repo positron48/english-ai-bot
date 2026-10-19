@@ -143,3 +143,22 @@ it('waits for a follow-up exercise read when another tab advanced the revision',
  expect(client.exercise).toHaveBeenCalledTimes(2)
  scope.stop()
 })
+
+it('follows the confirmed chapter-to-test launch without a context error or stale exercise read', async () => {
+ const j = createJourneyFixture('es_ru', 'short')
+ j.steps = [{ ...j.steps[0], mode: 'grammar', status: 'active', launch: { routeName: 'GrammarChapter', params: { chapterId: 'ch1' } } }]
+ route.name = 'GrammarChapter'; route.params = { chapterId: 'ch1' }
+ route.query = { course_code: j.courseCode, journey_id: j.id, journey_step_id: j.steps[0].id }
+ client.get.mockResolvedValue(j)
+ client.exercise.mockResolvedValue({ journey: j, step_id: j.steps[0].id, mode: 'grammar', data: { phase: 'read' } })
+ const scope = effectScope(); const daily = scope.run(() => useDailyJourneyExercise('grammar'))!
+ try {
+  await flushPromises()
+  client.exercise.mockClear()
+  client.act.mockImplementationOnce(async () => { j.revision++; j.steps[0].launch = { routeName: 'GrammarChapterTest', params: { chapterId: 'ch1' } }; return { ...j } })
+  await daily.act('start', { begin_test: true })
+  expect(replace).toHaveBeenCalledWith({ name: 'GrammarChapterTest', params: { chapterId: 'ch1' }, query: route.query })
+  expect(daily.error.value).toBe('')
+  expect(client.exercise).not.toHaveBeenCalled()
+ } finally { scope.stop() }
+})

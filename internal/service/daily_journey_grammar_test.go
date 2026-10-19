@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"strings"
 	"sync"
 	"testing"
 	"time"
@@ -53,6 +54,21 @@ func journeyGrammarStart(t *testing.T, db *sql.DB, adapter *DailyJourneyGrammarA
 		}
 		if len(candidates) != 1 {
 			return nil, fmt.Errorf("expected one candidate, got %d", len(candidates))
+		}
+		if kind == "block" {
+			// Preserve coverage of persisted pre-full-chapter routes.
+			engine, err := adapter.engine(tx, course)
+			if err != nil {
+				return nil, err
+			}
+			chapter, err := engine.ContentRepo.GetChapter(strings.SplitN(course, "_", 2)[0] + ".grammar.journey.one")
+			if err != nil {
+				return nil, err
+			}
+			candidates, err = adapter.candidate(engine, context.Background(), journeyGrammarRef{Kind: "block", ChapterID: chapter.ID, SectionID: chapter.SectionID, BlockID: "b1"}, []*repository.Chapter{chapter})
+			if err != nil {
+				return nil, err
+			}
 		}
 		var ref journeyGrammarRef
 		_ = json.Unmarshal(candidates[0].ContentRef, &ref)
@@ -203,6 +219,9 @@ func TestDailyJourneyGrammarFullTestsAndAvailability(t *testing.T) {
 			svc := NewDailyJourneyService(db, map[dailyjourney.Mode]DailyJourneyAdapter{dailyjourney.Grammar: adapter})
 			j := journeyGrammarStart(t, db, adapter, user, "en_ru", kind)
 			journeySubjectAct(t, svc, user, &j, "start", "start", map[string]interface{}{})
+			if kind == "chapter" {
+				journeySubjectAct(t, svc, user, &j, "begin-test", "start", map[string]interface{}{"begin_test": true})
+			}
 			var state journeyGrammarState
 			_ = json.Unmarshal(j.Current().State, &state)
 			if len(state.Questions) != 2 {
@@ -510,5 +529,111 @@ func TestDailyJourneyGrammarRespectsPlacementContinueAndWithdrawal(t *testing.T)
 	}
 	if err := adapter.Validate(context.Background(), db, user, "en_ru", &candidates[0]); !errors.Is(err, ErrDailyJourneyContentUnavailable) {
 		t.Fatalf("revoked placement access: %v", err)
+	}
+}
+
+func TestDailyJourneyGrammarFullChapterThenCategoryAndRetry(t *testing.T) {
+	for i, lang := range []string{"en", "es"} {
+		t.Run(lang, func(t *testing.T) {
+			db := testutil.SetupTestDB(t)
+			engine := journeyGrammarFixture(t, db, lang)
+			chapterID := lang + ".grammar.journey.one"
+			c, err := engine.ContentRepo.GetChapter(chapterID)
+			if err != nil {
+				t.Fatal(err)
+			}
+			bank := c.QuestionBank["questions"].([]interface{})
+			ids := []interface{}{"q1", "q2"}
+			for n := 3; n <= 10; n++ {
+				id := fmt.Sprintf("q%d", n)
+				ids = append(ids, id)
+				bank = append(bank, map[string]interface{}{"id": id, "type": "true_false", "prompt": id, "correct_answer": true, "chapter_id": chapterID, "theory_block_id": "b1"})
+			}
+			c.QuestionBank["questions"] = bank
+			c.ChapterTest["pool_question_ids"] = ids
+			c.ChapterTest["num_questions"] = 10
+			c.Blocks = append(c.Blocks, map[string]interface{}{"id": "b2", "type": "theory", "theory": map[string]interface{}{"content_md": "Whole chapter second block"}})
+			raw, _ := json.Marshal(c)
+			if _, err = db.Exec(`UPDATE grammar_content_chapters SET raw_json=? WHERE bundle_id=? AND chapter_id=?`, string(raw), lang, chapterID); err != nil {
+				t.Fatal(err)
+			}
+			user := journeySubjectUser(t, db, int64(809100+i))
+			course := lang + "_ru"
+			if lang != "en" {
+				if _, err := repository.NewCourseRepository(db, zap.NewNop()).EnsureUserCourse(context.Background(), user, course); err != nil {
+					t.Fatal(err)
+				}
+			}
+			adapter := NewDailyJourneyGrammarAdapter(db, func(code string) *GrammarService {
+				if code == course {
+					return engine
+				}
+				return nil
+			})
+			svc := NewDailyJourneyService(db, map[dailyjourney.Mode]DailyJourneyAdapter{dailyjourney.Grammar: adapter})
+			j := journeyGrammarStart(t, db, adapter, user, course, "chapter")
+			if j.Current().Launch.RouteName != "GrammarChapter" || j.Current().TargetCount != 10 {
+				t.Fatalf("expected full chapter and 10 questions: %+v", j.Current())
+			}
+			journeySubjectAct(t, svc, user, &j, "read", "start", map[string]interface{}{})
+			view, err := adapter.Exercise(context.Background(), user, j, j.Current())
+			if err != nil {
+				t.Fatal(err)
+			}
+			public := view.(map[string]interface{})
+			chapter := public["chapter"].(*repository.Chapter)
+			if len(chapter.Blocks) != 3 || len(grammarQuestionBank(chapter)) != 2 || chapter.ChapterTest != nil || public["phase"] != "read" {
+				t.Fatalf("incomplete chapter or exposed test bank: %+v", public)
+			}
+			journeySubjectAct(t, svc, user, &j, "begin", "start", map[string]interface{}{"begin_test": true})
+			if j.Current().Launch.RouteName != "GrammarChapterTest" {
+				t.Fatal("test route missing")
+			}
+			// A failed full test must not finish the stop. Retrying creates a separate attempt.
+			var state journeyGrammarState
+			_ = json.Unmarshal(j.Current().State, &state)
+			for n := range state.Questions {
+				journeySubjectAct(t, svc, user, &j, fmt.Sprintf("wrong-%d", n), "answer", map[string]interface{}{"index": n, "answer": "wrong"})
+			}
+			payload := dailyjourney.Action{ClientActionID: "must-not-finish", ExpectedRevision: j.Revision, Type: "ack_feedback", Payload: json.RawMessage(`{}`)}
+			if _, err := svc.Act(context.Background(), user, course, j.ID, j.Current().ID, payload); !errors.Is(err, dailyjourney.ErrInvalidAction) {
+				t.Fatalf("failed test completed: %v", err)
+			}
+			journeySubjectAct(t, svc, user, &j, "retry", "start", map[string]interface{}{"retry_test": true})
+			_ = json.Unmarshal(j.Current().State, &state)
+			for n, q := range state.Questions {
+				journeySubjectAct(t, svc, user, &j, fmt.Sprintf("right-%d", n), "answer", map[string]interface{}{"index": n, "answer": q["correct_answer"]})
+			}
+			journeySubjectAct(t, svc, user, &j, "finish", "ack_feedback", map[string]interface{}{})
+			if j.Status != "completed" {
+				t.Fatal("successful chapter did not complete")
+			}
+			var count int
+			if err := db.QueryRow(`SELECT COUNT(*) FROM grammar_test_attempts WHERE user_id=?`, user).Scan(&count); err != nil || count != 2 {
+				t.Fatalf("retry attempt count %d: %v", count, err)
+			}
+			candidates, err := adapter.Candidates(context.Background(), db, user, course)
+			if err != nil || len(candidates) != 1 || candidates[0].Launch.RouteName != "GrammarCategoryTest" {
+				t.Fatalf("expected direct category test: %+v %v", candidates, err)
+			}
+		})
+	}
+}
+
+func TestDailyJourneyGrammarUpgradesUnfinishedLegacyBlockToChapterTest(t *testing.T) {
+	db := testutil.SetupTestDB(t)
+	engine := journeyGrammarFixture(t, db, "en")
+	user := journeySubjectUser(t, db, 809120)
+	adapter := NewDailyJourneyGrammarAdapter(db, func(string) *GrammarService { return engine })
+	svc := NewDailyJourneyService(db, map[dailyjourney.Mode]DailyJourneyAdapter{dailyjourney.Grammar: adapter})
+	j := journeyGrammarStart(t, db, adapter, user, "en_ru", "block")
+	journeySubjectAct(t, svc, user, &j, "read-old", "start", map[string]interface{}{})
+	journeySubjectAct(t, svc, user, &j, "begin-full-test", "start", map[string]interface{}{"begin_test": true})
+	var ref journeyGrammarRef
+	var state journeyGrammarState
+	_ = json.Unmarshal(j.Current().ContentRef, &ref)
+	_ = json.Unmarshal(j.Current().State, &state)
+	if ref.Kind != "chapter" || ref.BlockID != "" || state.Phase != "test" || j.Current().Launch.RouteName != "GrammarChapterTest" || len(state.Questions) != j.Current().TargetCount || state.Chapter == nil {
+		t.Fatalf("legacy stop not upgraded: %+v %+v", ref, state)
 	}
 }

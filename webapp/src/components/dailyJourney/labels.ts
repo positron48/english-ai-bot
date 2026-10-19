@@ -8,6 +8,7 @@ export function journeyStepGoal(step: JourneyStep, t: Translate): string {
   const goals: Record<string, string> = {
     'Добавь новые слова и повтори знакомые': 'words',
     'Изучить следующий блок и ответить на вопросы': 'grammar',
+    'Изучить главу и пройти её тест': 'grammar',
     'Пройти полный тест категории': 'categoryTest', 'Пройти полный тест главы': 'chapterTest',
     'Повторить доступные правила': 'grammar_srs', 'Пройти короткую тренировку форм': 'verb_forms',
   }

@@ -34,14 +34,16 @@ type journeyGrammarRef struct {
 	BlockID   string `json:"block_id,omitempty"`
 }
 type journeyGrammarState struct {
-	Chapters  map[string]*repository.Chapter `json:"chapters,omitempty"`
-	Chapter   *repository.Chapter            `json:"chapter,omitempty"`
-	Questions []map[string]interface{}       `json:"questions"`
-	Answers   map[int]interface{}            `json:"answers"`
-	Results   []map[string]interface{}       `json:"results"`
-	Index     int                            `json:"index"`
-	Feedback  bool                           `json:"feedback"`
-	Result    map[string]interface{}         `json:"result,omitempty"`
+	Phase       string                         `json:"phase,omitempty"`
+	TestAttempt int                            `json:"test_attempt,omitempty"`
+	Chapters    map[string]*repository.Chapter `json:"chapters,omitempty"`
+	Chapter     *repository.Chapter            `json:"chapter,omitempty"`
+	Questions   []map[string]interface{}       `json:"questions"`
+	Answers     map[int]interface{}            `json:"answers"`
+	Results     []map[string]interface{}       `json:"results"`
+	Index       int                            `json:"index"`
+	Feedback    bool                           `json:"feedback"`
+	Result      map[string]interface{}         `json:"result,omitempty"`
 }
 
 func grammarJourneyVersion(chapters ...*repository.Chapter) string {
@@ -216,25 +218,6 @@ func (a *DailyJourneyGrammarAdapter) Candidates(ctx context.Context, q database.
 			if !access {
 				continue
 			}
-			version := grammarJourneyVersion(c)
-			for _, item := range c.Blocks {
-				b, ok := item.(map[string]interface{})
-				if !ok || b["type"] != "theory" {
-					continue
-				}
-				id, _ := b["id"].(string)
-				if id == "" {
-					continue
-				}
-				var done bool
-				err := q.QueryRowContext(ctx, `SELECT EXISTS(SELECT 1 FROM grammar_block_progress bp JOIN user_courses uc ON uc.id=bp.user_course_id JOIN courses co ON co.id=uc.course_id WHERE uc.user_id=? AND co.code=? AND bp.chapter_id=? AND bp.block_id=? AND bp.content_version=?)`, user, course, c.ID, id, version).Scan(&done)
-				if err != nil {
-					return nil, err
-				}
-				if !done {
-					return a.candidate(s, ctx, journeyGrammarRef{Kind: "block", ChapterID: c.ID, SectionID: c.SectionID, BlockID: id}, []*repository.Chapter{c})
-				}
-			}
 			return a.candidate(s, ctx, journeyGrammarRef{Kind: "chapter", ChapterID: c.ID, SectionID: c.SectionID}, []*repository.Chapter{c})
 		}
 	}
@@ -245,7 +228,7 @@ func (a *DailyJourneyGrammarAdapter) candidate(s *GrammarService, ctx context.Co
 	route := "GrammarChapter"
 	params := map[string]string{"chapterId": ref.ChapterID}
 	title := "Грамматика"
-	goal := "Изучить следующий блок и ответить на вопросы"
+	goal := "Изучить главу и пройти её тест"
 	if ref.Kind == "block" {
 		_, qs, ok := grammarJourneyBlock(chapters[0], ref.BlockID)
 		if !ok {
@@ -264,8 +247,8 @@ func (a *DailyJourneyGrammarAdapter) candidate(s *GrammarService, ctx context.Co
 			goal = "Пройти полный тест категории"
 		} else {
 			test, err = s.GenerateChapterTest(ctx, ref.ChapterID)
-			route = "GrammarChapterTest"
-			goal = "Пройти полный тест главы"
+			route = "GrammarChapter"
+			goal = "Изучить главу и пройти её тест"
 		}
 		if err != nil {
 			return nil, err
@@ -369,6 +352,47 @@ func (a *DailyJourneyGrammarAdapter) Apply(ctx context.Context, tx *sql.Tx, user
 	}
 	switch action.Type {
 	case "start":
+		var payload struct {
+			BeginTest bool `json:"begin_test"`
+			RetryTest bool `json:"retry_test"`
+		}
+		if err := decodeJourneyPayload(action.Payload, &payload); err != nil {
+			return err
+		}
+		// Upgrade an unfinished legacy block to the full chapter on its test button.
+		if ref.Kind == "block" && payload.BeginTest {
+			ref.Kind = "chapter"
+			ref.BlockID = ""
+			step.ContentRef, _ = json.Marshal(ref)
+			state = journeyGrammarState{}
+			test, err := s.GenerateChapterTest(ctx, ref.ChapterID)
+			if err != nil {
+				return err
+			}
+			step.TargetCount = test.Total
+			step.CompletedCount = 0
+		}
+		if payload.RetryTest {
+			if state.Result == nil || state.Result["passed"] == true {
+				return dailyjourney.ErrInvalidAction
+			}
+			state = journeyGrammarState{TestAttempt: state.TestAttempt + 1, Phase: "test"}
+			step.CompletedCount = 0
+			step.ResultDetails = nil
+		}
+		if state.Answers == nil {
+			state.Answers = map[int]interface{}{}
+		}
+		if ref.Kind == "chapter" {
+			state.Chapter = chapters[0]
+			if payload.BeginTest || payload.RetryTest || state.Phase == "test" {
+				state.Phase = "test"
+				step.Launch = &dailyjourney.Launch{RouteName: "GrammarChapterTest", Params: map[string]string{"chapterId": ref.ChapterID}}
+			} else {
+				state.Phase = "read"
+				step.Launch = &dailyjourney.Launch{RouteName: "GrammarChapter", Params: map[string]string{"chapterId": ref.ChapterID}}
+			}
+		}
 		if state.Questions == nil {
 			state.Questions = []map[string]interface{}{}
 			state.Results = []map[string]interface{}{}
@@ -423,7 +447,7 @@ func (a *DailyJourneyGrammarAdapter) Apply(ctx context.Context, tx *sql.Tx, user
 			}
 		}
 	case "answer":
-		if state.Result != nil || state.Feedback || state.Questions == nil {
+		if state.Result != nil || state.Feedback || state.Questions == nil || state.Phase == "read" {
 			return dailyjourney.ErrInvalidAction
 		}
 		var payload struct {
@@ -495,7 +519,7 @@ func (a *DailyJourneyGrammarAdapter) Apply(ctx context.Context, tx *sql.Tx, user
 				step.ResultDetails, _ = json.Marshal(map[string]interface{}{"kind": "block", "answered": len(state.Answers), "chapter_passed": false})
 			}
 		} else {
-			if state.Result == nil {
+			if state.Result == nil || state.Result["passed"] != true {
 				return dailyjourney.ErrInvalidAction
 			}
 			step.Status = "completed"
@@ -534,6 +558,9 @@ func (a *DailyJourneyGrammarAdapter) finishTest(ctx context.Context, tx *sql.Tx,
 		scopeID = ref.SectionID
 	}
 	key := "daily-journey:" + j.ID + ":" + step.ID
+	if state.TestAttempt > 0 {
+		key += fmt.Sprintf(":retry:%d", state.TestAttempt)
+	}
 	answerJSON, _ := json.Marshal(answers)
 	resultJSON, _ := json.Marshal(state.Results)
 	attempt := &repository.TestAttempt{UserID: user, ScopeType: ref.Kind, ScopeID: scopeID, StartedAt: now, FinishedAt: &now, Score: score, Passed: passed, TotalQuestions: total, AnswersJSON: string(answerJSON), ResultsJSON: string(resultJSON), CourseVersion: &step.ContentVersion, ClientAttemptID: &key}
@@ -594,10 +621,48 @@ func (a *DailyJourneyGrammarAdapter) Exercise(ctx context.Context, user int64, j
 		}
 		public = append(public, clone)
 	}
-	return map[string]interface{}{"kind": ref.Kind, "chapter": state.Chapter, "chapters": state.Chapters, "questions": public, "index": state.Index, "answers": state.Answers, "feedback": state.Feedback, "results": func() interface{} {
+	chapter := state.Chapter
+	if ref.Kind == "block" {
+		engine := a.Resolve(j.CourseCode)
+		var err error
+		chapter, err = engine.ContentRepo.GetChapter(ref.ChapterID)
+		if err != nil {
+			return nil, err
+		}
+	}
+	if chapter != nil {
+		chapter = grammarJourneyStudyChapter(chapter)
+	}
+	return map[string]interface{}{"kind": ref.Kind, "phase": state.Phase, "chapter": chapter, "chapters": state.Chapters, "questions": public, "index": state.Index, "answers": state.Answers, "feedback": state.Feedback, "results": func() interface{} {
 		if ref.Kind == "block" || ref.Kind == "srs" || state.Result != nil {
 			return state.Results
 		}
 		return []interface{}{}
 	}(), "result": state.Result}, nil
+}
+
+// Inline quizzes use the same local grading as the ordinary study page. Only
+// their question bank is exposed; the full test queue remains private.
+func grammarJourneyStudyChapter(c *repository.Chapter) *repository.Chapter {
+	clone := *c
+	ids := map[string]bool{}
+	for _, item := range c.Blocks {
+		block, _ := item.(map[string]interface{})
+		quiz, _ := block["quiz_inline"].(map[string]interface{})
+		questions, _ := quiz["question_ids"].([]interface{})
+		for _, value := range questions {
+			if id, ok := value.(string); ok {
+				ids[id] = true
+			}
+		}
+	}
+	bank := []interface{}{}
+	for id, question := range grammarQuestionBank(c) {
+		if ids[id] {
+			bank = append(bank, question)
+		}
+	}
+	clone.QuestionBank = map[string]interface{}{"questions": bank}
+	clone.ChapterTest = nil
+	return &clone
 }
