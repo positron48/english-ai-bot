@@ -66,6 +66,9 @@ jobs:
       uses: golangci/golangci-lint-action@v9
       with:
         version: v2.10.1
+        # Schema verification fetches golangci-lint.run and can fail before linting.
+        # The lint run still parses the config and reports code/config errors.
+        verify: false
         args: --timeout=3m
 
   test-integration:
