@@ -114,6 +114,7 @@ export function useDailyJourneyExercise<T>(mode: JourneyMode) {
   const finished = computed(() => !!context.value && !!controller.journey.value && controller.journey.value.steps.some(step => step.id === context.value!.stepId && ['completed', 'unavailable', 'skipped'].includes(step.status)))
   return {
     isJourney, context, data, finished, act, back, ready,
+    resultDetails: computed(() => controller.journey.value?.steps.find(step => step.id === context.value?.stepId)?.resultDetails),
     draftKey: (identity: string) => {
       const ctx = context.value
       return isJourney.value && isAuthenticated.value && ctx ? `daily-journey:draft:${currentUserScope()}:${ctx.courseCode}:${ctx.journeyId}:${ctx.stepId}:${identity}` : ''

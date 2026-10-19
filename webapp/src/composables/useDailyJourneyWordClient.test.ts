@@ -13,7 +13,7 @@ let daily: any
 beforeEach(() => {
  vi.clearAllMocks()
  state = { phase: 'train', card: { session_id: -42, card_index: 1, user_card_id: 77 }, options: ['book', 'table'], feedback: { is_correct: false, correct_answer: 'book' } }
- daily = { isJourney: ref(true), error: ref(''), context: ref({ courseCode: 'en_ru' }), finished: ref(false), ready: vi.fn(async () => state), act: vi.fn(), back: vi.fn() }
+ daily = { isJourney: ref(true), error: ref(''), context: ref({ courseCode: 'en_ru' }), resultDetails: ref({ reviewed_words: 5, correct: 4 }), finished: ref(false), ready: vi.fn(async () => state), act: vi.fn(), back: vi.fn() }
  useExercise.mockReturnValue(daily)
 })
 describe('dailyJourney word source on the existing screen', () => {
@@ -36,13 +36,19 @@ describe('dailyJourney word source on the existing screen', () => {
   await expect(client.answer(form)).rejects.toThrow('Network failure')
   expect(standalone.answer).not.toHaveBeenCalled()
  })
- it('acknowledges feedback explicitly and returns to the map after completion', async () => {
+ it('returns ordinary session statistics and keeps the completion screen open', async () => {
   daily.act.mockImplementation(() => { daily.finished.value = true })
   const { client } = useDailyJourneyWordClient()
-  await client.next()
+  expect(await client.next()).toEqual({ complete: true, cards_completed: 5, total_cards: 5, correct_cards: 4 })
   expect(daily.act).toHaveBeenCalledWith('ack_feedback')
-  expect(daily.back).toHaveBeenCalledOnce()
+  expect(daily.back).not.toHaveBeenCalled()
   expect(standalone.current).not.toHaveBeenCalled()
+ })
+ it('restores statistics when a completed route step is opened again', async () => {
+  daily.ready.mockImplementation(async () => { daily.finished.value = true; throw new Error('No active card') })
+  const { client } = useDailyJourneyWordClient()
+  expect(await client.current()).toMatchObject({ complete: true, total_cards: 5, correct_cards: 4 })
+  expect(daily.back).not.toHaveBeenCalled()
  })
  it('preserves standalone behavior when there is no journey context', async () => {
   daily.isJourney.value = false

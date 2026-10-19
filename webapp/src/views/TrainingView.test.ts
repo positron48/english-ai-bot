@@ -6,6 +6,7 @@ import { wordTrainingClient } from '../api/wordTrainingClient'
 const journeyMode = ref(false)
 const journeyData = ref<any>(null)
 const journeyAction = vi.fn()
+const journeyFinished = ref(false)
 
 vi.mock('../api/wordTrainingClient', () => ({ wordTrainingClient: {
   current: vi.fn(), prefetchNext: vi.fn(), reveal: vi.fn(), answer: vi.fn(),
@@ -45,6 +46,7 @@ async function mountTraining() {
   return wrapper
 }
 beforeEach(() => {
+  journeyFinished.value = false
   journeyMode.value = false
   journeyData.value = null
   journeyAction.mockReset()
@@ -160,7 +162,7 @@ it('sanitizes training question HTML while preserving word formatting', async ()
 vi.mock('../composables/useDailyJourneyExercise', () => ({
   useDailyJourneyExercise: () => ({
     isJourney: journeyMode, context: ref({ courseCode: 'es_ru' }), data: journeyData,
-    finished: ref(false), busy: ref(false), error: ref(''),
+    resultDetails: ref({ reviewed_words: 5, correct: 4 }), finished: journeyFinished, busy: ref(false), error: ref(''),
     hasPendingAction: ref(false), ready: async () => journeyData.value, act: journeyAction,
     retry: vi.fn(), back: vi.fn(), draftKey: () => '',
   }),
@@ -192,4 +194,12 @@ it('automatically advances journey words and keeps feedback intact while the nex
   await flushPromises()
   expect(w.get('.question').text()).toBe('дерево')
   expect(w.find('.feedback-section').exists()).toBe(false)
+})
+
+it('shows the ordinary completion screen for a completed daily word session', async () => {
+  journeyMode.value = true
+  journeyFinished.value = true
+  const w = await mountTraining()
+  const completion = w.getComponent({ name: 'TrainingSessionCompletion' })
+  expect(completion.props()).toMatchObject({ totalCards: 5, correctCards: 4, showContinueWithoutDueCards: true, continueLabel: 'dailyJourney.returnToRoute' })
 })

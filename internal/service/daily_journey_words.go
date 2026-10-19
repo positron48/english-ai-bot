@@ -16,6 +16,7 @@ import (
 	"tgbot-skeleton/internal/config"
 	"tgbot-skeleton/internal/dailyjourney"
 	"tgbot-skeleton/internal/database"
+	"tgbot-skeleton/internal/i18n"
 	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
 )
@@ -743,6 +744,14 @@ func (a *DailyJourneyWordsAdapter) Exercise(ctx context.Context, user int64, j *
 	var state journeyWordsState
 	if err := json.Unmarshal(step.State, &state); err != nil {
 		return nil, err
+	}
+	if state.Card != nil {
+		text := func(key string) string { value, _ := state.Card[key].(string); return value }
+		display := text("display_word")
+		if display == "" {
+			display = text("word_en")
+		}
+		state.Card["question"] = TrainingQuestion(i18n.GetLanguageFromContext(ctx), strings.SplitN(j.CourseCode, "_", 2)[0], text("type"), text("direction"), text("word_ru"), display, text("transcription"))
 	}
 	view := JourneyWordsExercise{Phase: state.Phase, AddTarget: state.AddTarget, AddedCount: len(state.Added), Card: state.Card, Feedback: state.Feedback}
 	if state.Phase == "add" {

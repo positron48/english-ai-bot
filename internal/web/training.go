@@ -13,7 +13,6 @@ import (
 	"time"
 
 	"tgbot-skeleton/internal/i18n"
-	"tgbot-skeleton/internal/learning"
 	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
 	"tgbot-skeleton/internal/service"
@@ -466,7 +465,6 @@ func (r *Router) showTrainingCard(w http.ResponseWriter, req *http.Request, stat
 	if item.Type == "spell" && item.Spell != nil {
 		state.ShownAt = time.Now()
 		state.OptionsShownAt = nil
-		tl := learning.TargetLangNameRUPrepositional(sessTL)
 		spellPrefix := item.Spell.Prefix
 		spellAnswer := item.Spell.DisplayWord
 		if !isEnglishTarget {
@@ -475,7 +473,7 @@ func (r *Router) showTrainingCard(w http.ResponseWriter, req *http.Request, stat
 		}
 		response := map[string]interface{}{
 			"type":           "spell",
-			"question":       fmt.Sprintf("Составьте слово на %s: <strong>%s</strong>", tl, item.Spell.WordRU),
+			"question":       service.TrainingQuestion(i18n.GetLanguageFromContext(req.Context()), sessTL, "spell", "", item.Spell.WordRU, "", ""),
 			"word_ru":        item.Spell.WordRU,
 			"word_native":    item.Spell.WordNative,
 			"word_target":    item.Spell.WordTarget,
@@ -523,10 +521,9 @@ func (r *Router) showTrainingCard(w http.ResponseWriter, req *http.Request, stat
 			hintFirstLetter = string(runes[0])
 			hintLength = len(runes)
 		}
-		tl := learning.TargetLangNameRUPrepositional(sessTL)
 		response := map[string]interface{}{
 			"type":              "type",
-			"question":          fmt.Sprintf("Введите слово на %s: <strong>%s</strong>", tl, item.TypeChallenge.WordRU),
+			"question":          service.TrainingQuestion(i18n.GetLanguageFromContext(req.Context()), sessTL, "type", "", item.TypeChallenge.WordRU, "", ""),
 			"word_ru":           item.TypeChallenge.WordRU,
 			"word_native":       item.TypeChallenge.WordNative,
 			"word_target":       item.TypeChallenge.WordTarget,
@@ -598,34 +595,8 @@ func (r *Router) showTrainingCard(w http.ResponseWriter, req *http.Request, stat
 	state.Options = options
 	state.CorrectAnswer = correctAnswer
 
-	// Build question
-	var questionText string
-	lang := i18n.GetLanguageFromContext(req.Context())
-	displayWord := card.TrainingCard.WordEN
-	if card.TrainingCard.DisplayWord != nil && *card.TrainingCard.DisplayWord != "" {
-		displayWord = *card.TrainingCard.DisplayWord
-	}
-	if !isEnglishTarget {
-		displayWord = strings.TrimPrefix(displayWord, "to ")
-	}
-	var tl string
-	switch lang {
-	case "ru":
-		tl = learning.TargetLangNameRUAccusative(sessTL)
-	case "es":
-		tl = learning.TargetLangNameES(sessTL)
-	default:
-		tl = learning.TargetLangNameEN(sessTL)
-	}
-	if card.UserCard.Direction == models.DirectionRUtoEN {
-		questionText = fmt.Sprintf(i18n.T(lang, "training.translateTo"), tl, card.TrainingCard.WordRU)
-	} else {
-		transcriptionHTML := ""
-		if card.TrainingCard.Transcription != "" {
-			transcriptionHTML = fmt.Sprintf(` <span class="transcription">%s</span>`, card.TrainingCard.Transcription)
-		}
-		questionText = fmt.Sprintf(i18n.T(lang, "training.whatMeansWord"), displayWord, transcriptionHTML)
-	}
+	displayWord := service.TrainingDisplayWord(&card.TrainingCard)
+	questionText := service.TrainingQuestion(i18n.GetLanguageFromContext(req.Context()), sessTL, "card", string(card.UserCard.Direction), card.TrainingCard.WordRU, displayWord, card.TrainingCard.Transcription)
 
 	optionsDelayMS, _ := r.getTrainingDelaysForUser(state.UserID)
 	var morph *models.WordMorphInfo

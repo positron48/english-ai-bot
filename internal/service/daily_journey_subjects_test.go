@@ -385,3 +385,36 @@ func TestDailyJourneyReadingAttemptsAndAtomicMark(t *testing.T) {
 		})
 	}
 }
+
+func TestDailyJourneyReadingRetryFailedQuiz(t *testing.T) {
+	db := testutil.SetupTestDB(t)
+	ctx := context.Background()
+	passage := `{"segments":[],"comprehension_questions":[{"prompt":"Ready?","type":"true_false","correct_answer":"true"}]}`
+	err := repository.NewReadingCatalogRepository(db).ReplaceCatalog("retry", "", []repository.ReadingCategoryUpsert{{CategoryID: "retry-a0", Title: "A0", Level: "A0", TextIDs: []string{"retry-text"}}}, []repository.ReadingTextUpsert{{TextID: "retry-text", CategoryID: "retry-a0", Title: "Retry", Level: "A0", TargetLanguage: "en", ReadingPassageJSON: passage}})
+	if err != nil {
+		t.Fatal(err)
+	}
+	user := journeySubjectUser(t, db, 809019)
+	svc := NewDailyJourneyService(db, map[dailyjourney.Mode]DailyJourneyAdapter{dailyjourney.Reading: NewDailyJourneyReadingAdapter(db)})
+	j, err := svc.Start(ctx, user, "en_ru")
+	if err != nil {
+		t.Fatal(err)
+	}
+	journeySubjectAct(t, svc, user, &j, "open", "start", map[string]any{"open_quiz": true})
+	journeySubjectAct(t, svc, user, &j, "wrong", "answer", map[string]any{"index": 0, "answer": "false"})
+	journeySubjectAct(t, svc, user, &j, "retry", "start", map[string]any{"open_quiz": true})
+	view, err := svc.Exercise(ctx, user, "en_ru", j.ID, j.Current().ID)
+	if err != nil {
+		t.Fatal(err)
+	}
+	quiz := view.Data.(JourneyReadingExercise)
+	if quiz.Done || quiz.Feedback || len(quiz.Answers) > 0 || !quiz.QuizOpen || j.Current().CompletedCount != 0 {
+		t.Fatalf("retry did not reset failed quiz: %+v", quiz)
+	}
+	journeySubjectAct(t, svc, user, &j, "correct", "answer", map[string]any{"index": 0, "answer": "true"})
+	journeySubjectAct(t, svc, user, &j, "finish", "ack_feedback", map[string]any{})
+	read, err := repository.NewReadingTextProgressRepository(db).Get(user, "retry-text")
+	if err != nil || read == nil || j.Status != "completed" {
+		t.Fatalf("successful retry: journey=%+v read=%+v err=%v", j, read, err)
+	}
+}

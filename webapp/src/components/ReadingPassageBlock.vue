@@ -142,8 +142,8 @@
         <div v-if="quizQuestions.length" style="margin:12px 0">
           <div class="translation" style="margin-bottom:10px">{{ t('grammar.questionOf', { current: quizIndex + 1, total: quizQuestions.length }) }}</div>
           <GrammarQuestion
-            v-if="!journeyBusy"
             :key="`q-${quizIndex}`"
+            :inert="journeyBusy ? true : undefined"
             :question="quizQuestionCurrent"
             :show-answers="quizAnswered[quizIndex] === true"
             :show-explanation="false"
@@ -158,13 +158,9 @@
             <span class="feedback-text">{{ t('reading.quizResult', { percent: quizPercent, correct: quizCorrectCount, total: quizQuestions.length }) }}</span>
           </div>
         </div>
-        <div v-if="(journeyQuiz || !quizDone) && currentWrongExplanation" class="translation" style="margin-top:10px">{{ currentWrongExplanation }}</div>
+        <div v-if="!quizDone && currentWrongExplanation" class="translation" style="margin-top:10px">{{ currentWrongExplanation }}</div>
         <div style="display:flex; gap:8px; margin-top:14px">
-          <template v-if="journeyQuiz">
-            <button v-if="journeyQuiz.feedback" type="button" class="word-modal-close-btn" :disabled="journeyBusy" @click="emit('journey-next')">{{ journeyQuiz.done ? t('dailyJourney.returnToRoute') : t('dailyJourney.continue') }}</button>
-            <button type="button" class="word-modal-close-btn" :disabled="journeyBusy" @click="closeQuiz">{{ t('common.close') }}</button>
-          </template>
-          <template v-else-if="quizDone">
+          <template v-if="quizDone">
             <button
               v-if="quizCorrectCount >= passThreshold"
               type="button"
@@ -172,7 +168,7 @@
               :disabled="markingRead"
               @click="backToList"
             >
-              {{ t('reading.quizBackToList') }}
+              {{ journeyQuiz ? t('dailyJourney.returnToRoute') : t('reading.quizBackToList') }}
             </button>
             <template v-else>
               <button type="button" class="word-modal-close-btn" :disabled="markingRead" @click="retryQuiz">
@@ -384,17 +380,6 @@ const quizQuestionCurrent = computed(() => {
   return { ...q, type: 'mcq_single' as const }
 })
 const quizCorrectCount = computed(() => Object.values(quizCorrectMap.value).filter(Boolean).length)
-watch(() => props.journeyQuiz, (state) => {
-  if (!state) return
-  quizQuestions.value = state.questions
-  quizAnswers.value = state.answers || {}
-  quizIndex.value = state.index
-  quizCorrectMap.value = state.correct || {}
-  quizAnswered.value = Object.fromEntries(Object.keys(state.answers || {}).map(index => [index, true]))
-  quizDone.value = state.done
-  quizPercent.value = state.questions.length ? Math.round(Object.values(state.correct || {}).filter(Boolean).length * 100 / state.questions.length) : 0
-  quizOpen.value = state.quiz_open
-}, { immediate: true })
 const currentWrongExplanation = computed(() => {
   const idx = quizIndex.value
   if (!quizAnswered.value[idx]) return ''
@@ -683,6 +668,7 @@ function resetQuizState() {
 
 function retryQuiz() {
   if (markingRead.value) return
+  if (props.journeyQuiz) { emit('journey-open-quiz'); return }
   quizQuestions.value = pickQuizQuestions()
   resetQuizState()
 }
@@ -823,6 +809,31 @@ const openRandomUnreadInCategory = async () => {
     randomUnreadNavigating.value = false
   }
 }
+let journeyAdvanceTimer: ReturnType<typeof setTimeout> | undefined
+onBeforeUnmount(() => clearTimeout(journeyAdvanceTimer))
+watch([() => props.journeyQuiz, () => props.journeyBusy], ([state]) => {
+  clearTimeout(journeyAdvanceTimer)
+  if (!state) return
+  quizQuestions.value = state.questions
+  quizAnswers.value = state.answers || {}
+  quizIndex.value = state.index
+  quizCorrectMap.value = state.correct || {}
+  quizAnswered.value = Object.fromEntries(Object.keys(state.answers || {}).map(index => [index, true]))
+  quizDone.value = state.done
+  quizPercent.value = state.questions.length ? Math.round(Object.values(state.correct || {}).filter(Boolean).length * 100 / state.questions.length) : 0
+  quizOpen.value = state.quiz_open
+  if (state.feedback && !state.done && state.quiz_open && !props.journeyBusy) {
+    const index = state.index
+    const ok = state.correct?.[index] === true
+    triggerHapticFeedback(ok)
+    if (ok) playCorrectSound()
+    else playIncorrectSound()
+    journeyAdvanceTimer = setTimeout(() => {
+      if (props.journeyQuiz?.index === index && props.journeyQuiz.feedback && !props.journeyBusy && quizOpen.value) emit('journey-next')
+    }, ok ? 700 : 1000)
+  }
+}, { immediate: true, flush: 'post' })
+
 </script>
 
 <style scoped>

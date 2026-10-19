@@ -7,8 +7,17 @@ import { useDailyJourneyExercise } from './useDailyJourneyExercise'
 // for journey attempts. All answer/next operations retain the daily action key.
 export function useDailyJourneyWordClient() {
   const daily = useDailyJourneyExercise<WordsJourneyExercise>('words')
+  function completion() {
+    const result = daily.resultDetails.value
+    const total = Number(result?.reviewed_words || 0)
+    return { complete: true, cards_completed: total, total_cards: total, correct_cards: Number(result?.correct || 0) }
+  }
   async function current() {
-    const data = await daily.ready()
+    if (daily.finished.value) return completion()
+    let data: WordsJourneyExercise
+    try { data = await daily.ready() }
+    catch (error) { if (daily.finished.value) return completion(); throw error }
+    if (daily.finished.value) return completion()
     if (data.phase !== 'train' || !data.card) throw new Error('Сначала добавьте слова в изучение.')
     return { ...data.card, journey_feedback: data.feedback, journey_options: data.options }
   }
@@ -42,7 +51,7 @@ export function useDailyJourneyWordClient() {
       if (!daily.isJourney.value) return standalone.current()
       await daily.act('ack_feedback')
       if (daily.error.value) throw new Error(daily.error.value)
-      if (daily.finished.value) { await daily.back(); return { complete: true } }
+      if (daily.finished.value) return completion()
       return current()
     },
   }

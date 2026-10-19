@@ -14,7 +14,7 @@
       @journey-answer="answerJourney"
       @journey-open-quiz="daily.act('start', { open_quiz: true })"
       @journey-next="daily.act('ack_feedback')"
-      @journey-back="daily.back"
+      @journey-back="backFromJourney"
       :text-id="textId"
       :category-id="daily.data.value?.document.category_id || categoryId"
       :is-read="readingIsRead"
@@ -51,6 +51,10 @@ const readingIsRead = ref(false)
 const categoryId = ref('')
 
 const displayBlock = computed(() => daily.isJourney.value ? daily.data.value ? { title: daily.data.value.document.title, reading_passage: daily.data.value.document.reading_passage } : null : block.value)
+async function backFromJourney() {
+  if (daily.data.value?.done && daily.data.value.feedback) await daily.act('ack_feedback')
+  if (!daily.error.value) await daily.back()
+}
 async function answerJourney(answer: string) {
   if (!daily.data.value) return
   await daily.act('answer', { index: daily.data.value.index, answer })

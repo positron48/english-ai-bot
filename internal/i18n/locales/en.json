@@ -25,6 +25,8 @@
     "notificationSettingsUpdated": "Notification settings updated successfully"
   },
   "training": {
+    "spellWord": "Compose the word in %s: <strong>%s</strong>",
+    "typeWord": "Type the word in %s: <strong>%s</strong>",
     "translateTo": "Translate to %s: <strong>%s</strong>",
     "whatMeansWord": "What does the word mean: <strong>%s</strong>%s"
   },

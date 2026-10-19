@@ -281,6 +281,18 @@ func (a *DailyJourneyReadingAdapter) Apply(ctx context.Context, tx *sql.Tx, user
 			state = journeyReadingState{Document: doc, Questions: questions[:step.TargetCount], Answers: map[int]string{}, Correct: map[int]bool{}}
 		}
 		if payload.OpenQuiz {
+			if state.Done && !state.Passed {
+				questions, err := readingQuestions(state.Document)
+				if err != nil {
+					return err
+				}
+				rand.Shuffle(len(questions), func(i, k int) { questions[i], questions[k] = questions[k], questions[i] })
+				state = journeyReadingState{Document: state.Document, Questions: questions[:step.TargetCount], Answers: map[int]string{}, Correct: map[int]bool{}}
+				step.CompletedCount = 0
+				step.Feedback = nil
+				step.Result = nil
+				step.ResultDetails = nil
+			}
 			state.QuizOpen = true
 		}
 	case "answer":

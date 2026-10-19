@@ -25,6 +25,8 @@
     "notificationSettingsUpdated": "Настройки уведомлений успешно обновлены"
   },
   "training": {
+    "spellWord": "Составьте слово на %s: <strong>%s</strong>",
+    "typeWord": "Введите слово на %s: <strong>%s</strong>",
     "translateTo": "Переведите на %s: <strong>%s</strong>",
     "whatMeansWord": "Что означает слово: <strong>%s</strong>%s"
   },

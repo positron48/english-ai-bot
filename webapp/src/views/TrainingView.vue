@@ -4,15 +4,17 @@
     <h1 v-if="!daily.isJourney.value && !sessionActive && !loading && !sessionComplete" class="training-title">{{ t('training.title') }}</h1>
     
     <TrainingSessionCompletion
-      v-if="!daily.isJourney.value && sessionComplete && !sessionActive"
+      v-if="sessionComplete && !sessionActive"
       :total-cards="trainingStats.totalCards"
       :correct-cards="trainingStats.correctCards"
       :stats-loaded="statsLoaded"
       :available-for-training="stats.availableForTraining"
       :estimated-time-for-remaining="estimatedTimeForRemaining"
       :show-continue-button="true"
+      :show-continue-without-due-cards="daily.isJourney.value"
       :sounds-enabled="false"
-      @continue="startTraining"
+      :continue-label="daily.isJourney.value ? t('dailyJourney.returnToRoute') : undefined"
+      @continue="daily.isJourney.value ? daily.back() : startTraining()"
     />
 
     <div
@@ -361,7 +363,7 @@
           v-if="!exampleUsageShown && !feedback"
           @click="showExampleUsage" 
           class="btn-example-icon"
-          aria-label="Показать пример"
+          :aria-label="t('vocab.example')"
         >
           <Icon name="lightbulb" class="example-icon" />
         </button>
@@ -1380,13 +1382,9 @@ onUnmounted(() => {
 
 })
 
-watch(daily.finished, (finished) => {
-  if (daily.isJourney.value && finished) void daily.back()
-})
 
 const retryJourney = async () => { await daily.retry(); await checkCurrentSession() }
 const checkCurrentSession = async () => {
-  if (daily.isJourney.value && daily.finished.value) { await daily.back(); return }
 
   try {
     const response = await wordTrainingClient.current()
@@ -1444,7 +1442,8 @@ const applyTrainingSessionResponse = async (response: any): Promise<boolean> => 
     currentCardGeneration++
     currentCard.value = null
     prefetchedCardResponse.value = null
-    await loadStats()
+    if (daily.isJourney.value) statsLoaded.value = true
+    else await loadStats()
     return false
   }
 
