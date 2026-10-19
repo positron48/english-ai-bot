@@ -132,3 +132,24 @@ it('keeps the SRS card mounted and its options stable during a delayed answer an
   expect(getChapterForTheory).not.toHaveBeenCalled()
  } finally { resolve(); view.unmount(); random.mockRestore() }
 })
+
+
+it('marks the incorrect daily SRS choice red and the correct choice green after feedback', async () => {
+ const question = { id: 'wrong-srs', type: 'mcq_single', prompt: 'Choose', choices: [{ id: 'a', text: 'Wrong' }, { id: 'b', text: 'Right' }] }
+ daily.data.value = { ...daily.data.value, kind: 'srs', chapters: {}, questions: [question] }
+ daily.answer.mockImplementation(async (answer: string) => {
+  daily.data.value = { ...daily.data.value, questions: [{ ...question }], feedback: true, answers: { 0: answer }, results: [{ correct: false, correct_answer: 'b' }] }
+ })
+ const view = mount(GrammarTrainingView, { global: { stubs: { ...global.stubs, GrammarQuestion: false } } })
+ try {
+  await flushPromises()
+  await view.findAll('.choice-btn').find(choice => choice.text().includes('Wrong'))!.trigger('click')
+  await flushPromises()
+  const choices = view.findAll('.choice-btn')
+  const wrong = choices.find(choice => choice.text().includes('Wrong'))!
+  expect(wrong.classes()).toContain('incorrect')
+  expect(wrong.classes()).not.toContain('correct')
+  expect(wrong.classes()).not.toContain('selected')
+  expect(choices.find(choice => choice.text().includes('Right'))!.classes()).toContain('correct')
+ } finally { view.unmount() }
+})

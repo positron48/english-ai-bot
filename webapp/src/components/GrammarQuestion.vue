@@ -122,7 +122,7 @@
         @click="selectAnswer(choice.id)"
         :disabled="answered"
         :class="['choice-btn', { 
-          'selected': userAnswer === choice.id,
+          'selected': !answered && userAnswer === choice.id,
           'correct': answered && choice.id === correctAnswer,
           'incorrect': answered && userAnswer === choice.id && choice.id !== correctAnswer
         }]"
@@ -182,7 +182,7 @@
         @click="selectAnswer('true')"
         :disabled="answered"
         :class="['choice-btn', { 
-          'selected': userAnswer === 'true',
+          'selected': !answered && userAnswer === 'true',
           'correct': answered && correctAnswer === 'true',
           'incorrect': answered && userAnswer === 'true' && correctAnswer !== 'true'
         }]"
@@ -193,7 +193,7 @@
         @click="selectAnswer('false')"
         :disabled="answered"
         :class="['choice-btn', { 
-          'selected': userAnswer === 'false',
+          'selected': !answered && userAnswer === 'false',
           'correct': answered && correctAnswer === 'false',
           'incorrect': answered && userAnswer === 'false' && correctAnswer !== 'false'
         }]"
@@ -210,7 +210,7 @@
         @click="selectAnswer(choice.id)"
         :disabled="answered"
         :class="['choice-btn', { 
-          'selected': userAnswer === choice.id,
+          'selected': !answered && userAnswer === choice.id,
           'correct': answered && choice.id === correctAnswer,
           'incorrect': answered && userAnswer === choice.id && choice.id !== correctAnswer
         }]"
@@ -792,11 +792,10 @@ watch(() => props.initialAnswer, () => {
   }
 }, { immediate: true })
 
-watch(() => props.showAnswers, (newVal) => {
-  if (newVal && userAnswer.value !== null) {
-    answered.value = true
-  }
-})
+watch([() => props.showAnswers, () => props.initialAnswer], ([showAnswers, savedAnswer]) => {
+  const answer = savedAnswer ?? userAnswer.value
+  answered.value = !!showAnswers && answer !== null && answer !== undefined
+}, { immediate: true })
 
 watch(() => props.feedbackCorrectAnswer, (value) => {
   if (value === undefined || value === null) return

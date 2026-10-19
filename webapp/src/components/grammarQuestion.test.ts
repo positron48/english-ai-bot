@@ -61,10 +61,38 @@ it('keeps MCQ order and selection when a daily answer replaces the question with
     random.mockReturnValue(0.999)
     await wrapper.setProps({ question: { ...question, correct_answer: answer, explanation: 'Feedback', choices: question.choices.map(choice => ({ ...choice, feedback: 'Why' })) }, showAnswers: true, initialAnswer: answer })
     expect(order()).toEqual(before)
-    expect(wrapper.findAll('.choice-btn')[0].classes()).toContain('selected')
+    expect(wrapper.findAll('.choice-btn')[0].classes()).not.toContain('selected')
     expect(wrapper.findAll('.choice-btn')[0].classes()).toContain('correct')
     await wrapper.setProps({ question: { ...question, id: 'next', prompt: 'Next', choices: [{ id: 'd', text: 'New first' }, { id: 'e', text: 'New second' }] }, showAnswers: false, initialAnswer: undefined })
     expect(order()).toEqual(['New first', 'New second'])
     expect(wrapper.find('.choice-btn.selected').exists()).toBe(false)
   } finally { wrapper.unmount(); random.mockRestore() }
+})
+
+
+it.each([false, true])('grades the saved selected option after restoring daily feedback (correct=%s)', async correct => {
+  const question = { id: 'saved-feedback', type: 'mcq_single' as const, prompt: 'Choose', choices: [{ id: 'a', text: 'Wrong' }, { id: 'b', text: 'Right' }] }
+  const answer = correct ? 'b' : 'a'
+  const wrapper = mount(GrammarQuestion, { props: { question, showAnswers: true, initialAnswer: answer, feedbackCorrectAnswer: 'b' }, global: { plugins: [createI18n({ legacy: false, locale: 'ru', messages: { ru } })] } })
+  await new Promise(resolve => setTimeout(resolve, 0))
+  const choices = wrapper.findAll('.choice-btn')
+  expect(choices.find(choice => choice.text().includes('Right'))!.classes()).toContain('correct')
+  const selected = choices.find(choice => choice.text().includes(correct ? 'Right' : 'Wrong'))!
+  expect(selected.classes()).toContain(correct ? 'correct' : 'incorrect')
+  expect(selected.classes()).not.toContain('selected')
+  expect(choices.filter(choice => choice.classes().includes('incorrect'))).toHaveLength(correct ? 0 : 1)
+  wrapper.unmount()
+})
+
+
+it('keeps immediate-feedback fill input editable until the answer is submitted', async () => {
+ const wrapper = mount(GrammarQuestion, { props: { question: { id: 'inline-fill', type: 'fill_blank', prompt: 'She ___', correct_answer: 'works' }, showAnswers: true }, global: { plugins: [createI18n({ legacy: false, locale: 'ru', messages: { ru } })] } })
+ await wrapper.get('input').setValue('wor')
+ expect(wrapper.get('input').attributes('disabled')).toBeUndefined()
+ expect(wrapper.emitted('answer')).toBeUndefined()
+ await wrapper.get('input').setValue('works')
+ await wrapper.get('.check-btn').trigger('click')
+ expect(wrapper.emitted('answer')?.[0]).toEqual(['works'])
+ expect(wrapper.get('input').classes()).toContain('correct')
+ wrapper.unmount()
 })
