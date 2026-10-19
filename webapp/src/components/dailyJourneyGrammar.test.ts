@@ -97,3 +97,38 @@ it('restores a partial reorder only if its word multiset still matches the quest
  expect(view.emitted('answer')).toBeUndefined()
  view.unmount()
 })
+
+it('keeps the SRS card mounted and its options stable during a delayed answer and feedback reload', async () => {
+ const question = { id: 'srs-stable', type: 'mcq_single', prompt: 'Choose', chapter_id: 'ch1', theory_block_id: 'b1', choices: [{ id: 'a', text: 'One' }, { id: 'b', text: 'Two' }, { id: 'c', text: 'Three' }] }
+ daily.data.value = { ...daily.data.value, kind: 'srs', chapters: { ch1: daily.data.value.chapter }, questions: [question] }
+ let resolve!: () => void
+ const pending = new Promise<void>(done => { resolve = done })
+ daily.answer.mockImplementation(async (answer: string) => {
+  daily.busy.value = true
+  await pending
+  daily.data.value = { ...daily.data.value, questions: [{ ...question, correct_answer: answer }], feedback: true, answers: { 0: answer }, results: [{ correct: true, correct_answer: answer }] }
+  daily.busy.value = false
+ })
+ const random = vi.spyOn(Math, 'random').mockReturnValue(0)
+ const view = mount(GrammarTrainingView, { global: { stubs: { ...global.stubs, GrammarQuestion: false } } })
+ try {
+  await flushPromises()
+  const component = view.getComponent(GrammarQuestion)
+  expect(component.props('theoryBlock')?.id).toBe('b1')
+  const element = component.element
+  const labels = () => component.findAll('.choice-content').map(choice => choice.text())
+  const before = labels()
+  random.mockReturnValue(0.999)
+  await component.findAll('.choice-btn')[0].trigger('click')
+  await flushPromises()
+  expect(view.getComponent(GrammarQuestion).element).toBe(element)
+  expect(labels()).toEqual(before)
+  expect(view.get('.card').attributes('inert')).toBeDefined()
+  resolve()
+  await flushPromises()
+  expect(view.getComponent(GrammarQuestion).element).toBe(element)
+  expect(labels()).toEqual(before)
+  expect(component.findAll('.choice-btn')[0].classes()).toContain('correct')
+  expect(getChapterForTheory).not.toHaveBeenCalled()
+ } finally { resolve(); view.unmount(); random.mockRestore() }
+})

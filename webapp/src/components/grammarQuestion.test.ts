@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
 import { mount } from '@vue/test-utils'
 import { createI18n } from 'vue-i18n'
 import GrammarQuestion from './GrammarQuestion.vue'
@@ -46,4 +46,25 @@ describe('GrammarQuestion reorder', () => {
     expect(wrapper.find('.question-input').exists()).toBe(true)
     wrapper.unmount()
   })
+})
+
+
+it('keeps MCQ order and selection when a daily answer replaces the question with feedback', async () => {
+  const random = vi.spyOn(Math, 'random').mockReturnValue(0)
+  const question = { id: 'stable', type: 'mcq_single' as const, prompt: 'Choose', choices: [{ id: 'a', text: 'First' }, { id: 'b', text: 'Second' }, { id: 'c', text: 'Third' }] }
+  const wrapper = mount(GrammarQuestion, { props: { question, showAnswers: false }, global: { plugins: [createI18n({ legacy: false, locale: 'ru', messages: { ru } })] } })
+  try {
+    const order = () => wrapper.findAll('.choice-content').map(choice => choice.text())
+    const before = order()
+    await wrapper.findAll('.choice-btn')[0].trigger('click')
+    const answer = wrapper.emitted('answer')![0][0]
+    random.mockReturnValue(0.999)
+    await wrapper.setProps({ question: { ...question, correct_answer: answer, explanation: 'Feedback', choices: question.choices.map(choice => ({ ...choice, feedback: 'Why' })) }, showAnswers: true, initialAnswer: answer })
+    expect(order()).toEqual(before)
+    expect(wrapper.findAll('.choice-btn')[0].classes()).toContain('selected')
+    expect(wrapper.findAll('.choice-btn')[0].classes()).toContain('correct')
+    await wrapper.setProps({ question: { ...question, id: 'next', prompt: 'Next', choices: [{ id: 'd', text: 'New first' }, { id: 'e', text: 'New second' }] }, showAnswers: false, initialAnswer: undefined })
+    expect(order()).toEqual(['New first', 'New second'])
+    expect(wrapper.find('.choice-btn.selected').exists()).toBe(false)
+  } finally { wrapper.unmount(); random.mockRestore() }
 })

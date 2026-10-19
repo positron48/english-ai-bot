@@ -36,7 +36,7 @@
 
     <div v-else-if="currentQuestion" class="question-stage">
       <div class="progress-line">{{ currentIndex + 1 }} / {{ totalCount }}</div>
-      <div class="card">
+      <div class="card" :aria-busy="daily.busy.value" :inert="daily.busy.value ? true : undefined">
 
       <GrammarQuestion
         ref="grammarQuestionRef"
@@ -566,7 +566,7 @@ watch(currentQuestion, async (q) => {
   reportDialogOpen.value = false
   reportCategory.value = ''
   reportDetails.value = ''
-  if (!q?.chapter_id || !q?.theory_block_id) return
+  if (daily.isJourney.value || !q?.chapter_id || !q?.theory_block_id) return
   const key = `${q.chapter_id}::${q.theory_block_id}`
   if (theoryBlockMap.value[key]) return
   try {

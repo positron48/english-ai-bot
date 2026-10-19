@@ -746,9 +746,16 @@ const restoreReorderAnswer = (answerStr: string) => {
   userAnswer.value = answerStr
 }
 
-// Watch for question changes to reinitialize
-watch(() => props.question, (newQuestion) => {
-  if (!newQuestion) return
+// Feedback replaces the API object without changing the exercise. Only a new
+// presentation resets/shuffles it; grading fields must preserve the user's card.
+const questionPresentation = computed(() => JSON.stringify({
+  id: props.question.id, type: props.question.type, prompt: props.question.prompt,
+  translation: props.question.translation_ru,
+  choices: props.question.choices?.map(({ id, text }) => ({ id, text })),
+  words: props.question.reorder_words, punctuation: props.question.reorder_punctuation,
+}))
+watch(questionPresentation, () => {
+  const newQuestion = props.question
   
   initializeReorder()
   initializeChoices()
@@ -768,7 +775,14 @@ watch(() => props.question, (newQuestion) => {
   setTimeout(() => {
     restoreAnswer()
   }, 0)
-}, { immediate: true, deep: true })
+}, { immediate: true })
+
+watch(() => props.question, (question) => {
+  if (question.correct_answer !== undefined) correctAnswer.value = question.correct_answer
+  // Attach feedback to the existing order instead of shuffling the options again.
+  const choices = new Map(question.choices?.map(choice => [choice.id, choice]))
+  shuffledChoices.value = shuffledChoices.value.map(choice => choices.get(choice.id) || choice)
+}, { deep: true })
 
 // Watch for initialAnswer changes
 watch(() => props.initialAnswer, () => {
