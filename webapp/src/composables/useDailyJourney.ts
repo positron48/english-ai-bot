@@ -86,6 +86,7 @@ export function useDailyJourney(scope: Ref<string>, createTransport: (scope: str
   return {
     journey, busy, error, currentStep, canSkip,
     hasPendingAction: computed(() => pending.value !== null),
+    pendingAction: computed(() => pending.value?.request || null),
     start: () => pending.value ? sendPending() : run(() => transport.start(), false, true),
     reload: () => run(() => transport.get(), true),
     retry: () => pending.value ? sendPending() : run(() => transport.get()),

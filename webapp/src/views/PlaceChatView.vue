@@ -235,7 +235,7 @@
             :label="t('sentence.voiceInput')"
             @transcript="onVoiceTranscript"
           />
-          <button class="chat-send" type="button" :disabled="sending || !input.trim()" @click="send">
+          <button class="chat-send" type="button" :disabled="sending || (daily.isJourney.value && daily.hasPendingAction.value) || !input.trim()" @click="send">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
               <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" />
             </svg>
@@ -345,7 +345,7 @@ const headerTitle = computed(() => {
 })
 // Keep the composer usable after the quest passes so the learner can say goodbye / finish
 // optional tasks; the session only truly ends when status flips to completed or budget runs out.
-const canSend = computed(() => status.value === 'open' && !budgetExhausted.value && (!daily.isJourney.value || !daily.hasPendingAction.value))
+const canSend = computed(() => status.value === 'open' && !budgetExhausted.value)
 const allTasksDone = computed(() => tasks.value.length > 0 && tasks.value.every(t => t.completed))
 const npcInitial = computed(() => (session.value?.npc_name || '?').trim().slice(0, 1).toUpperCase())
 
@@ -365,7 +365,7 @@ async function scrollToBottom() {
 
 async function send() {
   const text = input.value.trim()
-  if (!text || sending.value || !session.value) return
+  if (!text || sending.value || !session.value || (daily.isJourney.value && daily.hasPendingAction.value)) return
   if (daily.isJourney.value) {
     sending.value = true; sendError.value = false
     try { applyDailySession(await journeyChat.send(session.value.session_id, text)) }
@@ -398,13 +398,17 @@ async function send() {
 }
 
 function applyDailySession(state: any) {
-  session.value = state; messages.value = [...(state.messages || [])]; tasks.value = state.tasks || []
+  session.value = state; messages.value = daily.isJourney.value ? [...journeyChat.messages.value] : [...(state.messages || [])]; tasks.value = state.tasks || []
   status.value = state.status; questPassed.value = state.quest_passed; budgetExhausted.value = state.budget_exhausted
 }
 async function retryDaily() {
+  if (sending.value) return
+  sending.value = true
   try { applyDailySession(await journeyChat.retry()); loadError.value = ''; sendError.value = false; await scrollToBottom() }
   catch { sendError.value = true }
+  finally { sending.value = false; await scrollToBottom(); if (canSend.value) focusComposer() }
 }
+watch(journeyChat.messages, value => { if (daily.isJourney.value) { messages.value = [...value]; void scrollToBottom() } })
 watch(daily.data, state => { if (daily.isJourney.value && state) applyDailySession(state) })
 watch(daily.finished, finished => { if (daily.isJourney.value && finished) void daily.back() })
 

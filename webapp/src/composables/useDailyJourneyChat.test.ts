@@ -25,6 +25,7 @@ describe('daily chat source on the ordinary chat pages', () => {
   expect(ordinary.startPictureQuestSession).not.toHaveBeenCalled()
   await expect(chat.send(13, 'Hola')).rejects.toThrow('изменилось')
   expect(daily.act).not.toHaveBeenCalled()
+  chat.draft.value = 'Hola'
   await chat.send(12, 'Hola')
   expect(daily.act).toHaveBeenCalledExactlyOnceWith('message', { text: 'Hola' })
   expect(emit).toHaveBeenCalledWith('picture-quest-progressed', 'es_ru')
@@ -56,4 +57,60 @@ describe('daily chat source on the ordinary chat pages', () => {
   expect(chat.draft.value).toBe('Draft')
   expect(ordinary.postPictureQuestMessage).not.toHaveBeenCalled()
  })
+})
+
+it.each(['picture', 'conversation'] as const)('%s displays the sent message immediately and reconciles confirmation without duplicates', async mode => {
+ let finish!: () => void
+ const pending = new Promise<void>(resolve => { finish = resolve })
+ daily.act.mockImplementation(async () => { daily.hasPendingAction.value = true; await pending })
+ const chat = scope.run(() => useDailyJourneyChat(mode))!
+ chat.draft.value = 'Mi mensaje'
+ const sending = chat.send(12, 'Mi mensaje')
+ await nextTick(); await nextTick()
+ expect(chat.draft.value).toBe('')
+ expect(chat.messages.value).toEqual([{ role: 'user', content: 'Mi mensaje' }])
+ // A refresh with the previous confirmed snapshot must not remove the pending bubble.
+ daily.data.value = { ...state }
+ await nextTick()
+ expect(chat.messages.value).toHaveLength(1)
+ chat.draft.value = 'Next draft'
+ state = { ...state, messages: [{ role: 'user', content: 'Mi mensaje' }, { role: 'assistant', content: 'Respuesta' }] }
+ daily.data.value = state
+ await nextTick()
+ expect(chat.messages.value).toHaveLength(2)
+ daily.hasPendingAction.value = false
+ finish(); await sending
+ expect(chat.messages.value).toEqual(state.messages)
+ expect(chat.draft.value).toBe('Next draft')
+ expect(daily.act).toHaveBeenCalledOnce()
+})
+
+it('restores a failed message and retries its saved text without overwriting a new draft', async () => {
+ const chat = scope.run(() => useDailyJourneyChat('picture'))!
+ chat.draft.value = 'Original'
+ daily.pendingAction = ref(null)
+ daily.act.mockImplementation(async () => {
+  daily.pendingAction.value = { action: 'message', payload: { text: 'Original' } }
+  daily.hasPendingAction.value = true
+  daily.error.value = 'Network failure'
+ })
+ await expect(chat.send(12, 'Original')).rejects.toThrow('Network failure')
+ expect(chat.draft.value).toBe('Original')
+ expect(chat.messages.value).toEqual([])
+ chat.draft.value = 'New draft'
+ let finish!: () => void
+ const pending = new Promise<void>(resolve => { finish = resolve })
+ daily.retry.mockImplementation(async () => {
+  await pending
+  state = { ...state, messages: [{ role: 'user', content: 'Original' }, { role: 'assistant', content: 'Reply' }] }
+  daily.data.value = state; daily.hasPendingAction.value = false; daily.error.value = ''
+ })
+ const retrying = chat.retry()
+ await nextTick()
+ expect(chat.messages.value).toEqual([{ role: 'user', content: 'Original' }])
+ expect(chat.draft.value).toBe('New draft')
+ finish(); await retrying
+ expect(chat.messages.value).toEqual(state.messages)
+ expect(chat.draft.value).toBe('New draft')
+ expect(daily.act).toHaveBeenCalledOnce()
 })

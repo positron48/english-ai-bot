@@ -127,5 +127,6 @@ export function useDailyJourneyExercise<T>(mode: JourneyMode) {
     error: computed(() => controller.error.value || contextError.value || (isJourney.value && !context.value ? journeyMessage('invalidContext') : controller.hasPendingAction.value && !controller.busy.value && !loading.value ? journeyMessage('pending') : '')),
     retry,
     hasPendingAction: controller.hasPendingAction,
+    pendingAction: controller.pendingAction,
   }
 }

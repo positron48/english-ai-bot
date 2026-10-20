@@ -14,7 +14,8 @@ let chat: any, state: any
 beforeEach(() => {
  vi.clearAllMocks()
  state = { session_id: 12, title: 'Bound chat', npc_name: 'Marta', image_url: '/test.jpg', messages: [{ role: 'assistant', content: 'Hola' }], tasks: [{ code: 'q1', title: 'Required', is_required: true, completed: false }], status: 'open', quest_passed: false, budget_exhausted: false, attempt_finished: false }
- chat = { daily: { isJourney: ref(true), context: ref({ courseCode: 'es_ru' }), error: ref(''), hasPendingAction: ref(false), data: ref(state), finished: ref(false), back: vi.fn() }, draft: ref('Saved draft'), session: vi.fn(async () => state), send: vi.fn(async () => ({ ...state, messages: [...state.messages, { role: 'user', content: 'Saved draft' }, { role: 'assistant', content: 'Muy bien' }] })), retry: vi.fn(), back: vi.fn() }
+ chat = { messages: ref(state.messages), daily: { isJourney: ref(true), context: ref({ courseCode: 'es_ru' }), error: ref(''), hasPendingAction: ref(false), data: ref(state), finished: ref(false), back: vi.fn() }, draft: ref('Saved draft'), session: vi.fn(async () => state), send: vi.fn(async () => ({ ...state, messages: [...state.messages, { role: 'user', content: 'Saved draft' }, { role: 'assistant', content: 'Muy bien' }] })), retry: vi.fn(), back: vi.fn() }
+ chat.send.mockImplementation(async () => { const confirmed = { ...state, messages: [...state.messages, { role: 'user', content: 'Saved draft' }, { role: 'assistant', content: 'Muy bien' }] }; chat.messages.value = confirmed.messages; chat.daily.data.value = confirmed; return confirmed })
  source.mockReturnValue(chat)
 })
 const global = { stubs: { LgPageHeader: { template: '<header><slot name="right" /></header>' }, LgIcon: true, LgLumi: true, LgSpeechBubble: { template: '<div><slot /></div>' }, ClickableText: { props: ['text', 'courseCode'], template: '<span>{{ text }}</span>' }, LgButton: { template: '<button><slot /></button>' }, PictureHintSheet: true, VoiceMicButton: true } }
@@ -34,4 +35,35 @@ describe('daily chat on ordinary pages', () => {
    view.unmount()
   })
  }
+})
+
+it.each([['picture', PictureQuestChatView], ['conversation', PlaceChatView]] as const)('%s keeps the composer and pending user bubble mounted until the AI reply', async (_mode, component) => {
+ let finish!: () => void
+ const pending = new Promise<void>(resolve => { finish = resolve })
+ chat.send.mockImplementation(async () => {
+  chat.draft.value = ''
+  chat.messages.value = [...state.messages, { role: 'user', content: 'Saved draft' }]
+  chat.daily.hasPendingAction.value = true
+  await pending
+  const confirmed = { ...state, messages: [...state.messages, { role: 'user', content: 'Saved draft' }, { role: 'assistant', content: 'Muy bien' }] }
+  chat.messages.value = confirmed.messages; chat.daily.data.value = confirmed
+  chat.daily.hasPendingAction.value = false
+  return confirmed
+ })
+ const view = mount(component, { global })
+ try {
+  await flushPromises()
+  const composer = view.get('input').element
+  await view.get('.chat-send').trigger('click'); await flushPromises()
+  expect(view.get('input').element).toBe(composer)
+  expect((composer as HTMLInputElement).value).toBe('')
+  expect(view.findAll('.chat-user-bubble').map(bubble => bubble.text())).toEqual(['Saved draft'])
+  expect(view.find('.chat-typing').exists()).toBe(true)
+  expect(view.find('.chat-loading').exists()).toBe(false)
+  finish(); await flushPromises()
+  expect(view.get('input').element).toBe(composer)
+  expect(view.findAll('.chat-user-bubble').map(bubble => bubble.text())).toEqual(['Saved draft'])
+  expect(view.text()).toContain('Muy bien')
+  expect(view.find('.chat-typing').exists()).toBe(false)
+ } finally { finish(); view.unmount() }
 })
