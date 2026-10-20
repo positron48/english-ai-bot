@@ -59,3 +59,21 @@ kubectl -n linglow exec deploy/linglow -- /app/import_learning_content --course-
 Повторная полная выборка после замены аудио: `complete=true`, семь активных ID 46, 49–54; #48 отсутствует.
 
 После импорта проверить текущий контент и удаление Extremadura; закрывать только подтверждённые ID 46, 49–54.
+
+
+## Проверка после подтверждения rollout пользователем
+
+`/health` вернул 200, новый endpoint доступен. Preview Extremadura: одна training card и две user cards, dry_run=true, deleted=false. Apply вернул HTTP 500. Повторный detail #49 подтвердил, что word_card=298413, training_card=19217, user_card=13661 сохранились: удаление не выполнено.
+
+Ошибка операционного скрипта: после неуспешного Python-запроса shell продолжил выполнение и вызвал resolve #49 с неверной причиной. #49 ошибочно имеет status=resolved. API повторного открытия не существует; требуется операторский UPDATE для возврата status=active и логи `internal word card deletion failed` для установления причины HTTP 500. Другие жалобы этим запуском не закрывались. Импорт грамматики не подтверждён.
+
+
+## Исправление отказа удаления после rollout
+
+Оператор подтвердил возврат #49 в active. В production-логе: SQLSTATE 23503, `content_reports_user_card_id_fkey`, при DELETE word_cards. Операторский read-only запрос подтвердил: все три FK карточек в content_reports валидированы и имеют ON DELETE SET NULL; user_card_id=13661 существует. Гипотеза ограничивающего legacy FK в production не подтвердилась. Точный источник ошибки внутри каскада ещё не установлен.
+
+Локально исходный код проходит с двумя направлениями user cards и штатными FK, но падает при замене FK user_card_id на NO ACTION. Исправление явно снимает user_card_id, training_card_id и word_card_id в затронутых жалобах до DELETE. Все действия в одной транзакции, целевая word card блокируется FOR UPDATE; dry-run ничего не меняет. Регрессия проверяет оба типа FK, два направления, сохранение payload, откат ссылок жалобы при последующей FK-ошибке, guards ID/курса/слова и сохранность другого курса/жалобы.
+
+Focused PostgreSQL tests и EXPLAIN точных UPDATE: PASS. `make check P=2` после исправления: PASS, 5287 passed, 0 failed, 51 skipped, coverage 81.4%, 357.2 с. Тест с NO ACTION проверяет дополнительный вариант ограничений и не является точным воспроизведением production-схемы. В production исправление ещё не применено; #49 не закрывать до успешного удаления и повторной проверки detail API.
+
+Исправление API выпускается отдельным hotfix `0.12.228`. CI и rollout не отслеживаются по указанию пользователя; после подтверждения выкатки необходимы повторный apply и независимая проверка #49.

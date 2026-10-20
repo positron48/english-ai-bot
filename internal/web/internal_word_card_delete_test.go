@@ -8,15 +8,39 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	"tgbot-skeleton/internal/models"
 	"tgbot-skeleton/internal/repository"
 )
 
-func TestInternalWordCardDelete(t *testing.T) {
+func TestInternalWordCardDelete(t *testing.T) { testInternalWordCardDelete(t, false) }
+
+func TestInternalWordCardDeleteLegacyReportForeignKey(t *testing.T) {
+	testInternalWordCardDelete(t, true)
+}
+
+func testInternalWordCardDelete(t *testing.T, legacyFK bool) {
 	r, _, userID, cleanup := setupGrammarTest(t)
 	defer cleanup()
 	r.internalServiceTokens = map[string]string{"default": "tok"}
 	r.setupProtectedRoutes()
+	if legacyFK {
+		if _, err := r.db.Exec(`ALTER TABLE content_reports DROP CONSTRAINT content_reports_user_card_id_fkey, ADD CONSTRAINT content_reports_user_card_id_fkey FOREIGN KEY(user_card_id) REFERENCES user_cards(id)`); err != nil {
+			t.Fatal(err)
+		}
+		t.Cleanup(func() {
+			_, err := r.db.Exec(`ALTER TABLE content_reports DROP CONSTRAINT content_reports_user_card_id_fkey, ADD CONSTRAINT content_reports_user_card_id_fkey FOREIGN KEY(user_card_id) REFERENCES user_cards(id) ON DELETE SET NULL`)
+			if err != nil {
+				t.Error(err)
+			}
+		})
+	}
+
 	uc, tc := seedWordTrainingReportCard(t, r, userID)
+	secondUC, err := repository.NewUserCardRepository(r.db, r.logger).CreateUserCard(&models.UserCard{UserID: userID, TrainingCardID: tc, Direction: models.DirectionENtoRU, State: models.StateReview})
+	if err != nil {
+		t.Fatal(err)
+	}
+
 	var wordID int64
 	if err := r.db.QueryRow(`SELECT word_card_id FROM training_cards WHERE id=?`, tc).Scan(&wordID); err != nil {
 		t.Fatal(err)
@@ -30,7 +54,12 @@ func TestInternalWordCardDelete(t *testing.T) {
 		t.Fatal(err)
 	}
 	// Same spelling in another course must survive the deletion.
-	if _, err := r.db.Exec(`INSERT INTO word_cards(word,definition,course_code) VALUES ('reportword','keep','en_ru')`); err != nil {
+	var otherWordID int64
+	if err := r.db.QueryRow(`INSERT INTO word_cards(word,definition,course_code) VALUES ('reportword','keep','en_ru') RETURNING id`).Scan(&otherWordID); err != nil {
+		t.Fatal(err)
+	}
+	otherReportID, err := reports.Create(repository.CreateContentReportInput{UserID: userID, SourceType: "word_training", Word: "reportword", WordCardID: &otherWordID, ReportCategory: "other", Payload: map[string]interface{}{"word": "reportword"}})
+	if err != nil {
 		t.Fatal(err)
 	}
 	call := func(path, token, body string) *httptest.ResponseRecorder {
@@ -71,7 +100,7 @@ func TestInternalWordCardDelete(t *testing.T) {
 	if err := json.Unmarshal(w.Body.Bytes(), &result); err != nil {
 		t.Fatal(err)
 	}
-	if !result.DryRun || result.Deleted || result.TrainingCards != 1 || result.UserCards != 1 {
+	if !result.DryRun || result.Deleted || result.TrainingCards != 1 || result.UserCards != 2 {
 		t.Fatalf("unexpected preview: %+v", result)
 	}
 	// Verify the exact production write shape with EXPLAIN on the test database.
@@ -97,6 +126,13 @@ func TestInternalWordCardDelete(t *testing.T) {
 	if err := r.db.QueryRow(`SELECT COUNT(*) FROM user_cards WHERE id=?`, uc).Scan(&remaining); err != nil || remaining != 1 {
 		t.Fatalf("failed deletion changed user cards: count=%d err=%v", remaining, err)
 	}
+	afterFailure, err := reports.GetByID(reportID)
+	if err != nil || afterFailure == nil {
+		t.Fatalf("report lost after failure: %v", err)
+	}
+	if afterFailure.WordCardID == nil || *afterFailure.WordCardID != wordID || afterFailure.TrainingCardID == nil || *afterFailure.TrainingCardID != tc || afterFailure.UserCardID == nil || *afterFailure.UserCardID != uc {
+		t.Fatalf("report links changed on failed deletion: %+v", afterFailure)
+	}
 	if _, err := r.db.Exec(`DROP TABLE complaint_delete_guard`); err != nil {
 		t.Fatal(err)
 	}
@@ -109,6 +145,9 @@ func TestInternalWordCardDelete(t *testing.T) {
 	}
 	if !result.Deleted || result.DryRun {
 		t.Fatalf("not deleted: %+v", result)
+	}
+	if err := r.db.QueryRow(`SELECT COUNT(*) FROM user_cards WHERE id=?`, secondUC).Scan(&remaining); err != nil || remaining != 0 {
+		t.Fatalf("second direction survived: count=%d err=%v", remaining, err)
 	}
 	for _, query := range []string{`SELECT COUNT(*) FROM word_cards WHERE id=?`, `SELECT COUNT(*) FROM training_cards WHERE word_card_id=?`, `SELECT COUNT(*) FROM user_cards WHERE training_card_id IN (SELECT id FROM training_cards WHERE word_card_id=?)`} {
 		if err := r.db.QueryRow(query, wordID).Scan(&remaining); err != nil || remaining != 0 {
@@ -127,6 +166,10 @@ func TestInternalWordCardDelete(t *testing.T) {
 	}
 	if report.WordCardID != nil || report.TrainingCardID != nil || report.UserCardID != nil || report.PayloadJSON != `{"word":"reportword"}` {
 		t.Fatalf("report history not retained: %+v", report)
+	}
+	otherReport, err := reports.GetByID(otherReportID)
+	if err != nil || otherReport == nil || otherReport.WordCardID == nil || *otherReport.WordCardID != otherWordID {
+		t.Fatalf("unrelated report changed: %+v %v", otherReport, err)
 	}
 	w = call(path, "tok", deleting)
 	if w.Code != 404 {

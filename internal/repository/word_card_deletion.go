@@ -21,7 +21,8 @@ type WordCardDeletion struct {
 }
 
 // DeleteWordCardMatching guards the identity in the final DELETE as well as the
-// preview. One parent DELETE and its FK cascades are atomic, including on failure.
+// preview. Report links are detached before cascading deletion, in the same
+// transaction, avoiding dependencies between report FK cascade paths.
 func (r *WordRepository) DeleteWordCardMatching(ctx context.Context, id int64, course, word string, dryRun bool) (*WordCardDeletion, error) {
 	tx, err := r.db.BeginTx(ctx, nil)
 	if err != nil {
@@ -29,7 +30,11 @@ func (r *WordRepository) DeleteWordCardMatching(ctx context.Context, id int64, c
 	}
 	defer tx.Rollback() //nolint:errcheck
 	result := &WordCardDeletion{WordCardID: id, DryRun: dryRun}
-	err = tx.QueryRowContext(ctx, `SELECT word, COALESCE(course_code, '') FROM word_cards WHERE id = ?`, id).Scan(&result.Word, &result.CourseCode)
+	targetQuery := `SELECT word, COALESCE(course_code, '') FROM word_cards WHERE id = ?`
+	if !dryRun {
+		targetQuery += ` FOR UPDATE`
+	}
+	err = tx.QueryRowContext(ctx, targetQuery, id).Scan(&result.Word, &result.CourseCode)
 	if err != nil {
 		return nil, fmt.Errorf("read word deletion target: %w", err)
 	}
@@ -44,6 +49,13 @@ func (r *WordRepository) DeleteWordCardMatching(ctx context.Context, id int64, c
 	}
 	if dryRun {
 		return result, nil
+	}
+	// Clear dependent links while every referenced row still exists. Do not
+	// rely on ordering between the several cascade paths to one report.
+	for _, query := range wordCardReportDetachQueries {
+		if _, err := tx.ExecContext(ctx, query, id); err != nil {
+			return nil, fmt.Errorf("detach word report references: %w", err)
+		}
 	}
 	deleted, err := tx.ExecContext(ctx, `DELETE FROM word_cards WHERE id = ? AND course_code = ? AND word = ?`, id, course, word)
 	if err != nil {
@@ -61,4 +73,13 @@ func (r *WordRepository) DeleteWordCardMatching(ctx context.Context, id int64, c
 	}
 	result.Deleted = true
 	return result, nil
+}
+
+var wordCardReportDetachQueries = []string{
+	`UPDATE content_reports SET user_card_id = NULL
+ WHERE user_card_id IN (SELECT uc.id FROM user_cards uc
+ JOIN training_cards tc ON tc.id = uc.training_card_id WHERE tc.word_card_id = ?)`,
+	`UPDATE content_reports SET training_card_id = NULL
+ WHERE training_card_id IN (SELECT id FROM training_cards WHERE word_card_id = ?)`,
+	`UPDATE content_reports SET word_card_id = NULL WHERE word_card_id = ?`,
 }
