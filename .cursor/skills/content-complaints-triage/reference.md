@@ -17,6 +17,7 @@ kubectl -n spanish get secret spanish-secrets -o jsonpath='{.data.COMPLAINTS_SER
 | GET | `/api/internal/content-reports/summary` | Агрегаты по category/chapter |
 | GET | `/api/internal/content-reports/{id}` | Контекст для правки |
 | POST | `/api/internal/content-reports/resolve-bulk` | Закрыть жалобы |
+| DELETE | `/api/internal/word-cards/{id}` | Удаление слова: JSON `course_code`, `expected_word`, `dry_run` (по умолчанию true); false удаляет слово и каскадные карточки/повторения, сохраняя жалобу |
 | PUT | `/api/internal/training/card/{id}` | JSON: word_ru, meaning_en, example_*, hint, pos, … |
 | POST | `/api/internal/tts/audio` | Ручная загрузка/замена MP3: JSON `word`, `target_lang` (`es`/`en`), `format=mp3`, `audio_base64`, `provider`, `engine`, `voice`; требует TTS service token |
 | POST | `/api/internal/tts/regenerate?course_code=es_ru` | `{"word":"..."}`; для EN указать `en_ru` |

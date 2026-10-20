@@ -658,6 +658,7 @@ func (r *Router) setupProtectedRoutes() {
 	r.mux.HandleFunc("/api/internal/content-reports/grammar", r.handleInternalGrammarContentReports)
 	r.mux.HandleFunc("/api/internal/content-reports/grammar/resolve-bulk", r.handleInternalGrammarContentReportsResolveBulk)
 	r.mux.HandleFunc("/api/internal/training/card/", r.handleInternalTrainingCard)
+	r.mux.HandleFunc("/api/internal/word-cards/", r.handleInternalWordCardDelete)
 	r.mux.HandleFunc("/api/internal/tts/regenerate", r.handleInternalTTSRegenerate)
 	r.mux.HandleFunc("/api/internal/tts/status", r.handleInternalTTSStatus)
 	r.mux.HandleFunc("/api/internal/verb-training/pending", r.handleInternalVerbTrainingPending)
