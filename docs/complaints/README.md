@@ -115,6 +115,7 @@ git commit -m "docs: content complaints triage journal YYYY-MM-DD"
 
 | Дата | Файл | Курс | Жалоб | Тег |
 |------|------|------|-------|-----|
+| 2026-10-28 | [journal-2026-10-28-es-question-quality.md](journal-2026-10-28-es-question-quality.md) | ES | #59–65: исправлены; 172 вопроса переработаны, ожидают импорт | исходники готовы |
 | 2026-10-22 | [journal-2026-10-22-triage.md](journal-2026-10-22-triage.md) | EN+ES | 11 ES; #49 и #55 исправлены в production, 9 grammar ожидают импорт/проверку | 0.12.230 |
 | 2026-10-20 | [journal-2026-10-20-triage.md](journal-2026-10-20-triage.md) | EN+ES | 8 ES; #48 исправлена в production, #49 повторно открыта после отказа API; hotfix удаления ожидает rollout | 0.12.227 / 0.12.228 |
 | 2026-06-04 | [journal-2026-06-04-triage.md](journal-2026-06-04-triage.md) | EN+ES | 33 | 0.11.13 |
