@@ -1,6 +1,7 @@
 """LLM prompt builder for reading cover images."""
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import pathlib
@@ -15,15 +16,8 @@ if str(_REPO_SCRIPTS) not in sys.path:
 import reading_llm_client as rlc  # noqa: E402
 from reading_cover_log import log  # noqa: E402
 
-# qwen3:30b needs headroom: reasoning can eat 2k+ tokens before JSON lands in content.
-# Cover LLM input: opening sentences only (scene is set in the first lines).
-MAX_COVER_SENTENCES = 3
-MAX_COVER_SENTENCES_COMPACT = 2
-MAX_SOURCE_CHARS = 400
-MAX_COVER_SOURCE_LINES = 6  # non-cover plain_text (RU pairs)
-MAX_COVER_SOURCE_LINES_COMPACT = 4
-MAX_SOURCE_CHARS_COMPACT = 260
-
+# Read the whole passage: appearance and scene constraints can occur after
+# the opening lines (for example the mother's green coat in a family scene).
 _SENTENCE_SPLIT_RE = re.compile(r"(?<=[.!?…])\s+")
 
 DEFAULT_COVER_STYLE_PREFIX = "casual watercolor illustration, "
@@ -65,20 +59,30 @@ def ensure_no_text_directive(prompt: str) -> str:
     return text + ", " + NO_TEXT_DIRECTIVE
 
 
-def finalize_cover_prompt(scene_prompt: str) -> str:
-    """Prepend ComfyUI style prefix; optional READING_COVER_STYLE_SUFFIX env only."""
+def finalize_cover_prompt(scene_prompt: str, *, people: str = "", source_context: str = "") -> str:
+    """Keep exact source facts through to the image model, not only the scene LLM."""
     scene = normalize_scene_text(scene_prompt)
     if not scene:
         return ""
     prefix = cover_style_prefix()
     suffix = cover_style_suffix()
     if prefix and not prefix.endswith((" ", ",")):
-        prefix = prefix + " "
-    parts = [prefix, ensure_no_text_directive(scene)]
+        prefix += " "
+    parts = [prefix + scene]
+    if people:
+        parts.append(people)
+    if source_context:
+        parts.append(
+            "Passage context for factual accuracy only; never render its words as writing. "
+            "Preserve the passage's explicit people, ages, counts, appearance, clothing, positions, "
+            "objects, setting and event order. These source facts override optional casting suggestions. "
+            "Choose one faithful scene rather than depicting every event together. "
+            "Source passage:\n" + source_context
+        )
     if suffix:
-        suf = suffix if suffix.startswith(",") else ", " + suffix
-        parts.append(suf)
-    return "".join(parts)
+        parts.append(suffix.lstrip(", "))
+    parts.append(NO_TEXT_DIRECTIVE)
+    return ". ".join(part.rstrip("., ") for part in parts if part)
 
 
 def split_sentences(text: str) -> list[str]:
@@ -110,53 +114,74 @@ def extract_leading_sentences(text: str, *, max_sentences: int, max_chars: int) 
     return " ".join(picked)
 
 
+# Gender-neutral traits; the passage determines each person's gender and age.
+# Most optional appearance palettes are European, with an occasional Afro
+# character. Never replace explicit traits in the passage with these defaults.
+_EUROPEAN_APPEARANCES = (
+    "fair freckled skin, straight ash-blond hair, oval face, blue cardigan",
+    "light olive skin, short wavy chestnut hair, square face, natural average build, rust sweater",
+    "fair skin, cropped copper-red hair, round face, natural average build, forest-green jacket",
+    "lightly tanned skin, straight dark hair, long face, natural proportions, burgundy shirt",
+    "rosy fair skin, straight dark-blond hair, heart-shaped face, round glasses, cream knitwear",
+    "light olive skin, dark-brown curls, broad face, natural average build, ochre sweater",
+    "fair skin, short brown side-parted hair, angular face, navy jacket",
+    "medium olive skin, long wavy black hair, rounded face, natural proportions, teal overshirt",
+)
+_AFRO_APPEARANCE = "dark-brown skin, short tightly coiled black hair, rounded face, rectangular glasses, plum shirt"
+
+
+def appearance_guidance(seed: str) -> str:
+    """Stable per text, varied between texts; only unspecified human traits."""
+    digest = hashlib.sha256(seed.encode("utf-8")).digest()
+    first = digest[1] % len(_EUROPEAN_APPEARANCES)
+    second = (first + 1 + digest[2] % (len(_EUROPEAN_APPEARANCES) - 1)) % len(_EUROPEAN_APPEARANCES)
+    primary = _AFRO_APPEARANCE if digest[0] % 10 == 0 else _EUROPEAN_APPEARANCES[first]
+    ages = ("young adult around 20–30", "young adult around 25–35", "adult around 30–40")
+    casting = (
+        "primary person with Afro appearance and second person with European appearance"
+        if digest[0] % 10 == 0
+        else "people with European appearance"
+    )
+    return (
+        "Human appearance: do not add people absent from the scene. Preserve ALL passage-specified "
+        "gender, age, complexion, hair and clothing; those facts override every suggestion below. "
+        "Only for unspecified traits, use " + casting + ". Describe each visible person individually, avoiding the same "
+        "generic brunette couple across covers. Suggested primary person: " + primary + ". "
+        "Suggested second person, only if present: " + _EUROPEAN_APPEARANCES[second] + ". "
+        "For adults with unspecified age, suggested ages are " + ages[digest[3] % 3] + " and "
+        + ages[digest[4] % 3] + "; never age up a child or contradict the story. "
+        "Unless the story requires otherwise, prioritize ordinary young adults with natural "
+        "proportions and everyday contemporary European clothing suitable for the scene. "
+        "Vary natural hair colors, hairstyles, facial features and small clothing details, "
+        "rather than advanced age, exaggerated muscular physiques, elaborate costumes or stylized exotic looks. "
+        "Keep people natural, without caricatures or stereotypes."
+    )
+
+
 def plain_text_from_doc(doc: dict, *, for_cover: bool = False, compact: bool = False) -> str:
     title = str(doc.get("title") or "").strip()
     rp = doc.get("reading_passage") or {}
     if not title:
         title = str(rp.get("title") or "").strip()
-    parts: list[str] = []
-    if title:
-        parts.append(f"TITLE: {title}")
-    if for_cover or compact:
-        body_parts: list[str] = []
-        for seg in rp.get("segments") or []:
-            if isinstance(seg, dict):
-                text = str(seg.get("text") or "").strip()
-                if text:
-                    body_parts.append(text)
-        max_sentences = MAX_COVER_SENTENCES_COMPACT if compact else MAX_COVER_SENTENCES
-        max_chars = MAX_SOURCE_CHARS_COMPACT if compact else MAX_SOURCE_CHARS
-        excerpt = extract_leading_sentences(
-            " ".join(body_parts),
-            max_sentences=max_sentences,
-            max_chars=max_chars,
-        )
-        if excerpt:
-            parts.append(excerpt)
-        return "\n".join(parts)
-    max_segments = None
-    seg_count = 0
+    parts: list[str] = [f"TITLE: {title}"] if title else []
     for seg in rp.get("segments") or []:
-        if max_segments is not None and seg_count >= max_segments:
-            break
-        if isinstance(seg, dict):
-            text = str(seg.get("text") or "").strip()
-            if not text:
-                continue
-            seg_count += 1
-            ru = str(seg.get("text_translation_ru") or "").strip()
-            if ru:
-                parts.append(f"{text} — {ru}")
-            else:
-                parts.append(text)
+        if not isinstance(seg, dict):
+            continue
+        text = str(seg.get("text") or "").strip()
+        if not text:
+            continue
+        ru = str(seg.get("text_translation_ru") or "").strip()
+        parts.append(f"{text} — {ru}" if ru and not (for_cover or compact) else text)
     return "\n".join(parts)
 
 
-def build_cover_prompt_messages(source_text: str, target_lang: str, title: str = "") -> list[dict]:
-    """Few-shot JSON task — opening sentences are enough for a cover scene."""
+def build_cover_prompt_messages(
+    source_text: str, target_lang: str, title: str = "", *, text_id: str = ""
+) -> list[dict]:
+    """Build one faithful scene, with explicit appearance for existing people."""
     lang = (target_lang or "en").strip().lower()
     topic = (title or "").strip() or "reading text"
+    people = appearance_guidance(text_id or f"{lang}|{topic}|{source_text}")
     return [
         {
             "role": "user",
@@ -165,9 +190,12 @@ def build_cover_prompt_messages(source_text: str, target_lang: str, title: str =
                 f"Title: {topic}\n"
                 f"Passage language: {lang}\n"
                 f"Passage:\n{source_text}\n"
+                f"{people}\n"
                 "Rules: Return a visual scene only. Do not include any visible text, words, letters, "
-                "numbers, signs, labels, captions, logos, documents, book pages, screens, maps, posters, "
-                "menus, forms, or readable markings in the image.\n"
+                "numbers, signs, labels, captions, logos or readable markings in the image. "
+                "When required by the passage, books, documents, computer screens, maps and forms "
+                "may appear as props, but their contents must be abstract or unlettered. "
+                "Depict the main action and setting faithfully, not an unrelated generic cafe scene.\n"
                 "Output:"
             ),
         }
@@ -302,15 +330,20 @@ def build_cover_prompt(course_root: pathlib.Path, doc: dict) -> str:
             source = plain_text_from_doc(doc, for_cover=True, compact=compact)
             if not source.strip():
                 raise ValueError("reading text has no content for cover prompt")
-            label = "cover scene" if attempt == 0 else "cover scene (fewer sentences)"
+            label = "cover scene" if attempt == 0 else "cover scene (retry)"
             log(
                 f"LLM: text_id={text_id or '?'} title={title or '?'} "
                 f"source={len(source)} chars lang={target_lang} compact={compact}"
             )
             log("LLM: requesting scene description from local llama.cpp…")
             try:
+                messages = build_cover_prompt_messages(source, target_lang, title, text_id=text_id)
+                if compact:
+                    messages[0]["content"] += (
+                        '\nReturn only valid JSON {"image_prompt": "visual scene"}; no reasoning or markdown.'
+                    )
                 scene = _request_cover_scene(
-                    build_cover_prompt_messages(source, target_lang, title),
+                    messages,
                     course_root,
                     label=label,
                 )
@@ -318,12 +351,14 @@ def build_cover_prompt(course_root: pathlib.Path, doc: dict) -> str:
             except ValueError:
                 if attempt == 1:
                     raise
-                log("LLM: no JSON in response — retry with fewer opening sentences")
+                log("LLM: no JSON in response — retry without dropping passage facts")
         if not scene:
             raise ValueError("LLM returned empty cover image prompt")
         preview = scene if len(scene) <= 160 else scene[:157] + "…"
         log(f"LLM: scene parsed ({len(scene)} chars): {preview}")
-    full = finalize_cover_prompt(scene)
+    source = plain_text_from_doc(doc, for_cover=True)
+    people = appearance_guidance(text_id or f"{target_lang}|{title}|{source}")
+    full = finalize_cover_prompt(scene, people=people, source_context=source)
     if not full:
         raise ValueError("failed to build cover image prompt")
     log(f"LLM: final prompt {len(full)} chars (style prefix applied)")

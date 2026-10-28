@@ -3,13 +3,16 @@ import os
 import pathlib
 import sys
 import unittest
+from unittest.mock import patch
 
 SCRIPTS = pathlib.Path(__file__).resolve().parent
 sys.path.insert(0, str(SCRIPTS))
 os.environ["READING_COVER_PROMPT_MOCK"] = "1"
 
 from reading_cover_prompt import (  # noqa: E402
+    NO_TEXT_DIRECTIVE,
     _salvage_image_prompt_value,
+    appearance_guidance,
     build_cover_prompt,
     build_cover_prompt_messages,
     extract_leading_sentences,
@@ -37,7 +40,7 @@ class ReadingCoverPromptTest(unittest.TestCase):
         self.assertIn("TITLE: Café talk", text)
         self.assertIn("Hola — Привет", text)
 
-    def test_plain_text_for_cover_skips_ru_and_truncates(self):
+    def test_plain_text_for_cover_skips_ru_but_keeps_late_facts(self):
         doc = {
             "title": "Long",
             "reading_passage": {
@@ -51,7 +54,8 @@ class ReadingCoverPromptTest(unittest.TestCase):
         short = plain_text_from_doc(doc, for_cover=True)
         self.assertIn("Привет", full)
         self.assertNotIn("Привет", short)
-        self.assertGreater(len(full.splitlines()), len(short.splitlines()))
+        self.assertIn("line 19", short)
+        self.assertEqual(len(full.splitlines()), len(short.splitlines()))
 
     def test_split_sentences_and_cover_excerpt(self):
         text = "Primera oración. Segunda oración larga. Tercera. Cuarta."
@@ -77,8 +81,8 @@ class ReadingCoverPromptTest(unittest.TestCase):
         cover = plain_text_from_doc(doc, for_cover=True)
         self.assertIn("TITLE: C1 demo", cover)
         self.assertIn("Una junta revisa el contrato.", cover)
-        self.assertNotIn("anexo final", cover)
-        self.assertLessEqual(len(cover), 400)
+        self.assertIn("anexo final", cover)
+        self.assertIn("anexo final", plain_text_from_doc(doc, for_cover=True, compact=True))
 
     def test_build_cover_prompt_messages_fewshot(self):
         msg = build_cover_prompt_messages("TITLE: La letra ñ\n…", "es", "La letra ñ")[0]["content"]
@@ -88,7 +92,54 @@ class ReadingCoverPromptTest(unittest.TestCase):
         self.assertIn("letters", msg)
         self.assertIn("numbers", msg)
         self.assertIn("Output:", msg)
-        self.assertLess(len(msg), 1000)
+        self.assertIn("may appear as props", msg)
+        self.assertIn("abstract or unlettered", msg)
+        self.assertIn("Human appearance", msg)
+        self.assertIn("Preserve ALL passage-specified", msg)
+        self.assertLess(len(msg), 2500)
+
+    def test_appearance_varies_reproducibly_without_overriding_story(self):
+        first = appearance_guidance("reading-a")
+        self.assertEqual(first, appearance_guidance("reading-a"))
+        self.assertNotEqual(first, appearance_guidance("reading-b"))
+        self.assertIn("do not add people absent from the scene", first)
+        self.assertIn("those facts override every suggestion", first)
+        self.assertIn("never age up a child", first)
+        self.assertIn("prioritize ordinary young adults", first)
+        self.assertNotIn("older adult", first)
+        self.assertNotIn("heavier build", first)
+        # The default should usually cast European appearances; Afro is occasional.
+        samples = [appearance_guidance(f"reading-{i}") for i in range(100)]
+        afro = sum("primary person with Afro appearance" in x for x in samples)
+        self.assertGreater(afro, 0)
+        self.assertLess(afro, 25)
+
+    def test_retry_keeps_late_appearance_facts_and_final_casting(self):
+        doc = {
+            "id": "family-scene",
+            "target_language": "es",
+            "reading_passage": {"segments": [
+                {"text": "Hay una familia en el parque."},
+                {"text": "El padre está a la derecha."},
+                {"text": "Dos niñas están a la izquierda."},
+                {"text": "La madre lleva un abrigo verde."},
+            ]},
+        }
+        with patch.dict(os.environ, {"READING_COVER_PROMPT_MOCK": ""}):
+            with patch("reading_cover_prompt._request_cover_scene", side_effect=[ValueError("bad JSON"), "a family in a park"]) as request:
+                prompt = build_cover_prompt(pathlib.Path("."), doc)
+        self.assertEqual(request.call_count, 2)
+        self.assertIn("no reasoning or markdown", request.call_args_list[1].args[0][0]["content"])
+        for call in request.call_args_list:
+            message = call.args[0][0]["content"]
+            self.assertIn("La madre lleva un abrigo verde.", message)
+            self.assertIn("Preserve ALL passage-specified", message)
+        self.assertIn(appearance_guidance("family-scene"), prompt)
+        self.assertIn("La madre lleva un abrigo verde.", prompt)
+        self.assertIn("Dos niñas están a la izquierda.", prompt)
+        self.assertTrue(prompt.endswith(NO_TEXT_DIRECTIVE))
+        self.assertIn("casual watercolor illustration", prompt)
+        self.assertIn("no letters", prompt)
 
     def test_parse_image_prompt_json(self):
         raw = '```json\n{"image_prompt": "Two friends sharing tapas at a small cafe table"}\n```'
@@ -129,6 +180,7 @@ class ReadingCoverPromptTest(unittest.TestCase):
         self.assertIn("bright kitchen", out)
         self.assertIn("no text", out.lower())
         self.assertIn("no letters", out.lower())
+        self.assertTrue(out.endswith(NO_TEXT_DIRECTIVE))
 
     def test_ensure_no_text_directive(self):
         out = ensure_no_text_directive("a street market")
