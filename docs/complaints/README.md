@@ -115,6 +115,7 @@ git commit -m "docs: content complaints triage journal YYYY-MM-DD"
 
 | Дата | Файл | Курс | Жалоб | Тег |
 |------|------|------|-------|-----|
+| 2026-10-28 | [journal-2026-10-28-reading-covers-completion.md](journal-2026-10-28-reading-covers-completion.md) | EN+ES | 79 обложек добавлены; все 40 minor пересмотрены, ещё 9 заменены; #66 ожидает импорт | 0.12.233 |
 | 2026-10-28 | [journal-2026-10-28-reading-image-audit.md](journal-2026-10-28-reading-image-audit.md) | EN+ES | #59–65 закрыты; 572 изображения проверены Terra, 9 обложек заменены; #66 ожидает импорт | 0.12.232 |
 | 2026-10-28 | [journal-2026-10-28-es-question-quality.md](journal-2026-10-28-es-question-quality.md) | ES | #59–65: закрыты после подтверждения оператора; 172 вопроса переработаны | 0.12.231 |
 | 2026-10-22 | [journal-2026-10-22-triage.md](journal-2026-10-22-triage.md) | EN+ES | 11 ES; #49 и #55 исправлены в production, 9 grammar ожидают импорт/проверку | 0.12.230 |
