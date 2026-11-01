@@ -1,12 +1,12 @@
 {
   "version": 1,
   "source": "courses/spanish-grammar/chapters/076.es.grammar.noun_phrase_upgrade_precision.superlatives_intensifiers_el_mas_muchisimo_super/03-questions.json",
-  "source_sha256": "f2a2aadeaabd35649427908a690a75db12653869f94633a9f82a595b262bf1ae",
+  "source_sha256": "f28a876495872b49ff2cd2d2d7d779e173ae6228837d82753536b43a49e7b615",
   "context_sha256": "1a5b2de04c0b914fd06c2f6fdcad801ea513eb81f30f3c2ac7cdfc583a488c62",
-  "editor": "Codex editor 2026-09-05",
+  "editor": "Codex complaints triage 2026-11-01",
   "verifier": "Anton Filatov (user)",
-  "phase": "done",
-  "reviewed_at": "2026-09-05T09:11:31.561907Z",
+  "phase": "awaiting_verification",
+  "reviewed_at": "2026-11-01T07:04:05.170502+00:00",
   "verified_at": "2026-09-06T17:58:18.569986Z",
   "questions": [
     {
@@ -113,9 +113,9 @@
     },
     {
       "id": "q18",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Вместо не объяснённого mejor проверяется изученная конструкция la + существительное + más + прилагательное.",
+      "verification": "pending"
     },
     {
       "id": "q19",
@@ -336,10 +336,20 @@
   ],
   "checks": [
     {
-      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "command": "python3 logs/complaints/fixes-20261101/validate.py",
       "result": "pass",
-      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+      "evidence": "Сохранены число/порядок/ID/типы/сложность/привязки и ID вариантов; проверены ключи MCQ, уникальность вариантов и подписей; source/final/embedded совпадают."
+    },
+    {
+      "command": "bash courses/spanish-grammar/scripts/validate-chapter.sh es.grammar.noun_phrase_upgrade_precision.superlatives_intensifiers_el_mas_muchisimo_super",
+      "result": "pass",
+      "evidence": "Валидатор главы: валидно."
+    },
+    {
+      "command": "ajv validate --all-errors --validate-formats=false -s <ES schema without $schema> -d <076/105 final>",
+      "result": "pass",
+      "evidence": "После исправления схемы обе главы проходят полную проверку. Некорректный ID, отсутствие pairs и пустой элемент matching отклоняются; опубликованные ID не менялись."
     }
   ],
-  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+  "verification_note": "Правки по жалобам 2026-11-01 ожидают независимой проверки. Предыдущие решения сохранены только для неизменённых вопросов; прежнее подтверждение пользователя не распространяется на новые правки."
 }
