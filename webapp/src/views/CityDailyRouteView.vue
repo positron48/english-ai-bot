@@ -1,7 +1,6 @@
 <template>
   <DailyJourneyRouteView v-if="enabled && !checking && !probeError" :key="courseCode + String(route.query.journey_id || 'today')" :course-code="courseCode" :initial-journey="initialJourney" />
-  <div v-else-if="probeError" role="alert" class="journey-load-error"><p>{{ probeError }}</p><button @click="probe">{{ t('common.retry') }}</button></div>
-  <LgLoader v-else-if="checking" />
+  <DailyJourneyLoading v-else-if="checking || probeError" :key="loadingAttempt" :phase="loadingPhase" :error="probeError" @retry="probe" />
   <LegacyDailyRouteView v-else />
 </template>
 <script setup lang="ts">
@@ -9,7 +8,7 @@ import { computed, onScopeDispose, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'
 import type { DailyJourney } from '../components/dailyJourney/types'
-import LgLoader from '../components/linglow/LgLoader.vue'
+import DailyJourneyLoading from '../components/DailyJourneyLoading.vue'
 import { dailyJourneyClient } from '../api/dailyJourneyClient'
 import { currentUserScope } from '../api/sessionScope'
 import { useCourse } from '../composables/useCourse'
@@ -25,6 +24,8 @@ const explicitJourney = computed(() => typeof route.query.journey_id === 'string
 const initialJourney = ref<DailyJourney | null>(null)
 const enabled = ref(false)
 const checking = ref(false)
+const loadingPhase = ref<'checking' | 'building' | 'restoring'>('checking')
+const loadingAttempt = ref(0)
 const probeError = ref('')
 let generation = 0
 async function probe() {
@@ -33,6 +34,9 @@ async function probe() {
   enabled.value = false
   initialJourney.value = null
   probeError.value = ''
+  checking.value = false
+  loadingPhase.value = 'checking'
+  loadingAttempt.value++
   if (!isAuthenticated.value || !courseCode.value) return
   checking.value = true
   try {
@@ -41,6 +45,7 @@ async function probe() {
     if (request !== generation || user !== currentUserScope()) return
     if (state.enabled) {
       const id = typeof route.query.journey_id === 'string' ? route.query.journey_id : ''
+      loadingPhase.value = id && state.journey?.id !== id ? 'restoring' : state.journey ? 'restoring' : 'building'
       const journey = id && state.journey?.id !== id
         ? await dailyJourneyClient.get(courseCode.value, id)
         : state.journey || await dailyJourneyClient.start(courseCode.value)
@@ -58,6 +63,3 @@ async function probe() {
 watch([courseCode, isAuthenticated, () => route.query.journey_id], () => { void probe() }, { immediate: true })
 onScopeDispose(() => { generation++ })
 </script>
-<style scoped>
-.journey-load-error { padding: 24px; border: 1px solid var(--border); border-radius: 16px; background: var(--card-bg); }.journey-load-error button { margin-top: 16px; }
-</style>

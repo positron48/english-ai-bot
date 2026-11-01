@@ -23,6 +23,7 @@ export interface DailyJourney {
   revision: number
   status: 'active' | 'completed' | 'unavailable' | 'archived'
   steps: JourneyStep[]
+  exercise?: { revision: number; step_id: string; mode: JourneyMode; data: unknown }
 }
 export type JourneyActionType = 'start' | 'add_word' | 'answer' | 'message' | 'ack_feedback' | 'skip'
 export interface JourneyAction {

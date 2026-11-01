@@ -1,6 +1,6 @@
 <template>
   <div class="reading-text-view">
-    <div v-if="daily.isJourney.value && daily.error.value" role="alert"><p>{{ daily.error.value }}</p><button @click="daily.retry">{{ t('common.retry') }}</button><button @click="daily.back">{{ t('dailyJourney.returnToRoute') }}</button></div>
+    <DailyJourneyError v-if="daily.isJourney.value && daily.error.value" :message="daily.error.value" :busy="daily.busy.value" @retry="daily.retry" @back="daily.back" />
     <LgLoader v-else-if="daily.isJourney.value ? !daily.data.value && !daily.error.value : loading" />
     <div v-else-if="error">{{ error }}</div>
     <div v-else-if="daily.isJourney.value && daily.finished.value"><button @click="daily.back">{{ t('dailyJourney.returnToRoute') }}</button></div>
@@ -25,6 +25,7 @@
 </template>
 
 <script setup lang="ts">
+import DailyJourneyError from '../components/DailyJourneyError.vue'
 import { computed, ref, watch } from 'vue'
 import { useRoute } from 'vue-router'
 import { useI18n } from 'vue-i18n'

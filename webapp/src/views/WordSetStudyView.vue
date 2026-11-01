@@ -1,8 +1,7 @@
 <template>
   <div class="word-set-study">
-    <p v-if="daily.data.value?.phase === 'add'">{{ t('dailyJourney.addWords', { done: daily.data.value.added_count, total: daily.data.value.add_target }) }}</p>
-    <div v-if="daily.isJourney.value && daily.error.value" role="alert">{{ daily.error.value }} <button @click="daily.retry">{{ t('common.retry') }}</button><button @click="daily.back">{{ t('dailyJourney.returnToRoute') }}</button></div>
-    <button v-if="daily.isJourney.value" @click="daily.back">{{ t('dailyJourney.returnToRoute') }}</button>
+    <DailyJourneyWordTopUp v-if="daily.data.value?.phase === 'add'" :done="daily.data.value.added_count" :total="daily.data.value.add_target" :busy="daily.busy.value" @back="daily.back" />
+    <DailyJourneyError v-if="daily.isJourney.value && daily.error.value" :message="daily.error.value" :busy="daily.busy.value" @retry="daily.retry" @back="daily.back" />
     <div class="study-header">
       <button @click="exitStudy" class="btn-exit">
         <Icon name="close" />
@@ -75,6 +74,8 @@
 </template>
 
 <script setup lang="ts">
+import DailyJourneyWordTopUp from '../components/DailyJourneyWordTopUp.vue'
+import DailyJourneyError from '../components/DailyJourneyError.vue'
 import { useDailyJourneyExercise } from '../composables/useDailyJourneyExercise'
 import type { WordsJourneyExercise } from '../api/dailyJourneyClient'
 import { ref, computed, onMounted, watch } from 'vue'

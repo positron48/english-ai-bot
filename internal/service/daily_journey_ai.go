@@ -89,7 +89,7 @@ func (s *DailyJourneyService) actAI(ctx context.Context, user int64, course, id,
 		if action.Type == "start" {
 			step.Status = "active"
 		}
-		return nil
+		return s.snapshot(ctx, tx, user, j, step)
 	})
 	if completeErr != nil {
 		cleanupCtx, stop := context.WithTimeout(context.Background(), 5*time.Second)

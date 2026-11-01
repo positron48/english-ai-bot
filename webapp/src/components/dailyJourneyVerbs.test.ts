@@ -39,3 +39,17 @@ describe('daily verbs on the existing panel', () => {
   view.unmount()
  })
 })
+
+it('keeps the completed journey practice and its mistakes open until the user returns', async () => {
+ state = { session_id: -42, completed: true, results: [{ card_id: 9, outcome: 'incorrect', lemma: 'hablar', correct_answer: 'hablo', tense: 'presente', person: '1', number: 'singular' }] }
+ daily.finished.value = true
+ const view = mount(VerbFormsTrainingPanel, { global })
+ await flushPromises()
+ expect(view.text()).toContain('hablar → hablo')
+ expect(view.text()).toContain('verbPractice.finished')
+ expect(view.findAll('button').some(b => b.text() === 'verbPractice.repeat')).toBe(false)
+ expect(back).not.toHaveBeenCalled()
+ await view.findAll('button').find(b => b.text() === 'dailyJourney.returnToRoute')!.trigger('click')
+ expect(back).toHaveBeenCalledOnce()
+ view.unmount()
+})

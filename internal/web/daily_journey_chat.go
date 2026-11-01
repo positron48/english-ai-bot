@@ -599,8 +599,14 @@ func (a *dailyJourneyChatAdapter) ApplyAI(ctx context.Context, tx *sql.Tx, user 
 	step.State, err = json.Marshal(state)
 	return err
 }
-func (a *dailyJourneyChatAdapter) Exercise(ctx context.Context, user int64, j *dailyjourney.Journey, step *dailyjourney.Step) (interface{}, error) {
-	c, state, err := a.bound(ctx, a.router.db, user, j.CourseCode, step)
+func (a *dailyJourneyChatAdapter) Exercise(ctx context.Context, user int64, j *dailyjourney.Journey, step *dailyjourney.Step) (any, error) {
+	return a.exercise(ctx, a.router.db, user, j, step)
+}
+func (a *dailyJourneyChatAdapter) ExerciseTx(ctx context.Context, tx *sql.Tx, user int64, j *dailyjourney.Journey, step *dailyjourney.Step) (any, error) {
+	return a.exercise(ctx, tx, user, j, step)
+}
+func (a *dailyJourneyChatAdapter) exercise(ctx context.Context, q database.ContextDBTX, user int64, j *dailyjourney.Journey, step *dailyjourney.Step) (any, error) {
+	c, state, err := a.bound(ctx, q, user, j.CourseCode, step)
 	if err != nil {
 		return nil, err
 	}
@@ -628,7 +634,7 @@ func (a *dailyJourneyChatAdapter) Exercise(ctx context.Context, user int64, j *d
 		out["title"] = sc.Title
 		out["npc_name"] = sc.NPCName
 		out["npc_image_url"] = ""
-		if images, err := repository.NewConversationRepository(a.router.db, a.router.logger).GetNPCImages(ctx, sc.CourseID); err != nil {
+		if images, err := repository.NewConversationRepository(a.router.db, a.router.logger).WithQueries(q).GetNPCImages(ctx, sc.CourseID); err != nil {
 			return nil, err
 		} else {
 			out["npc_image_url"] = images[sc.NPCCode]

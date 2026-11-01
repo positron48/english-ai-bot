@@ -113,7 +113,7 @@ it.each(modes)('%s keeps the exercise visible while sending and retries a failed
  reject(new Error('Network failure')); await sending
  expect(daily.error.value).toBe('Network failure')
  const originalAction = client.act.mock.calls[0][3]
- client.act.mockImplementationOnce(async () => { j.revision++; return { ...j } })
+ client.act.mockImplementationOnce(async () => { j.revision++; return { ...j, exercise: { revision: j.revision, step_id: j.steps[0].id, mode, data: { revision: j.revision } } } })
  client.exercise.mockClear()
  await daily.retry()
  expect(daily.error.value).toBe('')
@@ -121,7 +121,7 @@ it.each(modes)('%s keeps the exercise visible while sending and retries a failed
  expect(await daily.ready()).toEqual({ revision: 1 })
  expect(client.act).toHaveBeenCalledTimes(2)
  expect(client.act.mock.calls[1][3]).toEqual(originalAction)
- expect(client.exercise).toHaveBeenCalledOnce()
+ expect(client.exercise).not.toHaveBeenCalled()
  scope.stop()
 })
 it('waits for a follow-up exercise read when another tab advanced the revision', async () => {
@@ -160,5 +160,47 @@ it('follows the confirmed chapter-to-test launch without a context error or stal
   expect(replace).toHaveBeenCalledWith({ name: 'GrammarChapterTest', params: { chapterId: 'ch1' }, query: route.query })
   expect(daily.error.value).toBe('')
   expect(client.exercise).not.toHaveBeenCalled()
+ } finally { scope.stop() }
+})
+
+it('renders a delayed action receipt directly without a second exercise read', async () => {
+ const j = readingJourney()
+ route.query = { course_code: j.courseCode, journey_id: j.id, journey_step_id: j.steps[1].id }
+ client.get.mockResolvedValue(j)
+ client.exercise.mockResolvedValue({ journey: j, step_id: j.steps[1].id, mode: 'reading', data: { feedback: false } })
+ let resolve!: (value: unknown) => void
+ client.act.mockImplementation(() => new Promise(done => { resolve = done }))
+ const scope = effectScope()
+ const daily = scope.run(() => useDailyJourneyExercise<{ feedback: boolean }>('reading'))!
+ try {
+  await daily.ready()
+  client.exercise.mockClear()
+  const answering = daily.act('answer', { index: 0, answer: 'true' })
+  await flushPromises()
+  expect(daily.busy.value).toBe(true)
+  expect(daily.data.value).toEqual({ feedback: false })
+  resolve({ ...j, revision: 1, exercise: { revision: 1, step_id: j.steps[1].id, mode: 'reading', data: { feedback: true } } })
+  await answering
+  expect(daily.data.value).toEqual({ feedback: true })
+  expect(daily.busy.value).toBe(false)
+  expect(client.exercise).not.toHaveBeenCalled()
+ } finally { scope.stop() }
+})
+
+it('does not apply an exercise snapshot belonging to a different step or revision', async () => {
+ const j = readingJourney()
+ route.query = { course_code: j.courseCode, journey_id: j.id, journey_step_id: j.steps[1].id }
+ client.get.mockResolvedValue(j)
+ client.exercise.mockResolvedValue({ journey: j, step_id: j.steps[1].id, mode: 'reading', data: { safe: true } })
+ const scope = effectScope()
+ const daily = scope.run(() => useDailyJourneyExercise('reading'))!
+ try {
+  await daily.ready()
+  const newer = { ...j, revision: 1, exercise: { revision: 0, step_id: j.steps[0].id, mode: 'words', data: { unsafe: true } } }
+  client.act.mockResolvedValue(newer)
+  client.exercise.mockResolvedValue({ journey: newer, step_id: j.steps[1].id, mode: 'reading', data: { safe: 'new' } })
+  await daily.act('answer', { answer: 'true' })
+  expect(daily.data.value).toEqual({ safe: 'new' })
+  expect(client.exercise).toHaveBeenCalledTimes(2)
  } finally { scope.stop() }
 })

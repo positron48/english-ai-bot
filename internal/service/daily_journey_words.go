@@ -37,7 +37,16 @@ func NewDailyJourneyWordsAdapter(db *sql.DB, logger *zap.Logger, learning config
 	return &DailyJourneyWordsAdapter{db: db, logger: logger, learning: learning}
 }
 
+type journeyPreparedWord struct {
+	Index                   int            `json:"index"`
+	Card                    map[string]any `json:"card"`
+	Options                 []string       `json:"options"`
+	CorrectAnswer           string         `json:"correct_answer"`
+	DelayMS                 int            `json:"delay_ms"`
+	WrongAnswerDelaySeconds int            `json:"wrong_answer_delay_seconds"`
+}
 type journeyWordsState struct {
+	Next                    *journeyPreparedWord        `json:"next,omitempty"`
 	WrongAnswerDelaySeconds int                         `json:"wrong_answer_delay_seconds"`
 	DelayMS                 int                         `json:"delay_ms"`
 	Phase                   string                      `json:"phase"`
@@ -55,6 +64,7 @@ type journeyWordsState struct {
 	Feedback                map[string]any              `json:"feedback"`
 }
 type JourneyWordsExercise struct {
+	NextCard   map[string]any    `json:"next_card,omitempty"`
 	Phase      string            `json:"phase"`
 	AddTarget  int               `json:"add_target"`
 	AddedCount int               `json:"added_count"`
@@ -490,6 +500,25 @@ func journeySessionID(id string) int64 {
 	return -int64(binary.LittleEndian.Uint64(sum[:8])%(1<<52) + 1)
 }
 func (a *DailyJourneyWordsAdapter) card(ctx context.Context, tx *sql.Tx, user int64, j *dailyjourney.Journey, step *dailyjourney.Step, state *journeyWordsState) error {
+	if next := state.Next; next != nil && next.Index == state.Index {
+		state.Card, state.Options, state.CorrectAnswer = next.Card, next.Options, next.CorrectAnswer
+		state.DelayMS, state.WrongAnswerDelaySeconds = next.DelayMS, next.WrongAnswerDelaySeconds
+		state.ShownAt, state.OptionsShownAt = time.Now(), nil
+	} else if err := a.buildCard(ctx, tx, user, j, step, state); err != nil {
+		return err
+	}
+	state.Next = nil
+	if state.Index+1 < len(state.Queue) {
+		preview := *state
+		preview.Index++
+		if err := a.buildCard(ctx, tx, user, j, step, &preview); err != nil {
+			return err
+		}
+		state.Next = &journeyPreparedWord{Index: preview.Index, Card: preview.Card, Options: preview.Options, CorrectAnswer: preview.CorrectAnswer, DelayMS: preview.DelayMS, WrongAnswerDelaySeconds: preview.WrongAnswerDelaySeconds}
+	}
+	return nil
+}
+func (a *DailyJourneyWordsAdapter) buildCard(ctx context.Context, tx *sql.Tx, user int64, j *dailyjourney.Journey, step *dailyjourney.Step, state *journeyWordsState) error {
 	item := state.Queue[state.Index]
 	state.ShownAt = time.Now()
 	state.OptionsShownAt = nil
@@ -741,21 +770,35 @@ func srsStateForJourney(card *models.UserCard) string {
 	return string(data)
 }
 func (a *DailyJourneyWordsAdapter) Exercise(ctx context.Context, user int64, j *dailyjourney.Journey, step *dailyjourney.Step) (any, error) {
+	return a.exercise(ctx, a.db, user, j, step)
+}
+func (a *DailyJourneyWordsAdapter) ExerciseTx(ctx context.Context, tx *sql.Tx, user int64, j *dailyjourney.Journey, step *dailyjourney.Step) (any, error) {
+	return a.exercise(ctx, tx, user, j, step)
+}
+func (a *DailyJourneyWordsAdapter) exercise(ctx context.Context, q database.ContextDBTX, user int64, j *dailyjourney.Journey, step *dailyjourney.Step) (any, error) {
 	var state journeyWordsState
 	if err := json.Unmarshal(step.State, &state); err != nil {
 		return nil, err
 	}
-	if state.Card != nil {
-		text := func(key string) string { value, _ := state.Card[key].(string); return value }
+	localizeCard := func(card map[string]any) {
+		if card == nil {
+			return
+		}
+		text := func(key string) string { value, _ := card[key].(string); return value }
 		display := text("display_word")
 		if display == "" {
 			display = text("word_en")
 		}
-		state.Card["question"] = TrainingQuestion(i18n.GetLanguageFromContext(ctx), strings.SplitN(j.CourseCode, "_", 2)[0], text("type"), text("direction"), text("word_ru"), display, text("transcription"))
+		card["question"] = TrainingQuestion(i18n.GetLanguageFromContext(ctx), strings.SplitN(j.CourseCode, "_", 2)[0], text("type"), text("direction"), text("word_ru"), display, text("transcription"))
 	}
+	localizeCard(state.Card)
 	view := JourneyWordsExercise{Phase: state.Phase, AddTarget: state.AddTarget, AddedCount: len(state.Added), Card: state.Card, Feedback: state.Feedback}
+	if state.Next != nil && state.Next.Index == state.Index+1 && state.Index < len(state.Queue) {
+		localizeCard(state.Next.Card)
+		view.NextCard = state.Next.Card
+	}
 	if state.Phase == "add" {
-		pool, err := a.addable(ctx, a.db, user, j.CourseCode)
+		pool, err := a.addable(ctx, q, user, j.CourseCode)
 		if err != nil {
 			return nil, err
 		}

@@ -1212,7 +1212,25 @@
       "disabled": "El recorrido diario no está disponible ahora.",
       "invalidContext": "Contexto del recorrido no válido.",
       "pending": "La acción anterior espera confirmación. Reinténtalo.",
-      "staleChat": "La conversación cambió. Reintenta la solicitud anterior o actualiza la actividad."
+      "staleChat": "La conversación cambió. Reintenta la solicitud anterior o actualiza la actividad.",
+      "stepUnavailable": "Esta actividad ya no está disponible."
+    },
+    "loading": {
+      "title": "Lumi prepara tu ruta",
+      "errorTitle": "No se ha podido preparar tu ruta",
+      "checking": "Comprobando tu ruta guardada…",
+      "building": "Eligiendo las actividades de hoy…",
+      "restoring": "Abriendo tu ruta guardada…",
+      "stages": "Preparación de la ruta",
+      "checkStep": "Tu progreso",
+      "buildStep": "Actividades de hoy",
+      "restoreStep": "Continuar tu ruta",
+      "hint": "Un poco de descubrimiento y un poco de repaso, a tu ritmo.",
+      "slow": "Está tardando más de lo habitual. Lumi sigue preparando tus actividades."
+    },
+    "topUp": {
+      "title": "Amplía tu vocabulario",
+      "remaining": "Palabras que faltan para empezar: {count}"
     }
   }
 }

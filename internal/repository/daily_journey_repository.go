@@ -309,6 +309,9 @@ func journeyActionHash(stepID string, action dailyjourney.Action) (string, error
 func persistJourneyAction(ctx context.Context, tx *sql.Tx, j *dailyjourney.Journey, step *dailyjourney.Step, action dailyjourney.Action, hash, reservationToken string) error {
 	j.Resolve()
 	j.Revision++
+	if j.Exercise != nil {
+		j.Exercise.Revision = j.Revision
+	}
 	launch, err := json.Marshal(step.Launch)
 	if err != nil {
 		return err

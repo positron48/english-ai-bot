@@ -54,14 +54,24 @@ type Step struct {
 	State          json.RawMessage `json:"-"`
 }
 type Journey struct {
-	ID               string `json:"id"`
-	CourseCode       string `json:"courseCode"`
-	Date             string `json:"date"`
-	DayTimezone      string `json:"dayTimezone"`
-	Status           string `json:"status"`
-	AlgorithmVersion int    `json:"algorithmVersion"`
-	Revision         int64  `json:"revision"`
-	Steps            []Step `json:"steps"`
+	ID               string            `json:"id"`
+	CourseCode       string            `json:"courseCode"`
+	Date             string            `json:"date"`
+	DayTimezone      string            `json:"dayTimezone"`
+	Status           string            `json:"status"`
+	AlgorithmVersion int               `json:"algorithmVersion"`
+	Revision         int64             `json:"revision"`
+	Steps            []Step            `json:"steps"`
+	Exercise         *ExerciseSnapshot `json:"exercise,omitempty"`
+}
+
+// Public subject state returned with an action and stored in its immutable
+// receipt. Private step state is never serialized into this snapshot.
+type ExerciseSnapshot struct {
+	Revision int64           `json:"revision"`
+	StepID   string          `json:"step_id"`
+	Mode     Mode            `json:"mode"`
+	Data     json.RawMessage `json:"data"`
 }
 type Action struct {
 	ClientActionID   string          `json:"client_action_id"`

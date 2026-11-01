@@ -1,6 +1,6 @@
 <template>
   <div class="training">
-    <div v-if="daily.isJourney.value && daily.error.value" role="alert"><p>{{ daily.error.value }}</p><button @click="retryJourney">{{ t('common.retry') }}</button><button @click="daily.back">{{ t('dailyJourney.returnToRoute') }}</button></div>
+    <DailyJourneyError v-if="daily.isJourney.value && daily.error.value" :message="daily.error.value" :busy="daily.busy.value" @retry="retryJourney" @back="daily.back" />
     <h1 v-if="!daily.isJourney.value && !sessionActive && !loading && !sessionComplete" class="training-title">{{ t('training.title') }}</h1>
     
     <TrainingSessionCompletion
@@ -104,6 +104,8 @@
       v-if="sessionActive && currentCard" 
       class="card"
       :class="{ 'card-timer-active': waitingDelay }"
+      :aria-busy="daily.isJourney.value && daily.busy.value"
+      :inert="daily.isJourney.value && (daily.busy.value || daily.hasPendingAction.value) ? true : undefined"
       @mousedown="waitingDelay ? handleTimerMouseDown($event) : null"
       @mouseup="waitingDelay ? handleTimerMouseUp($event) : null"
       @mouseleave="waitingDelay ? handleTimerMouseLeave() : null"
@@ -504,6 +506,7 @@
 </template>
 
 <script setup lang="ts">
+import DailyJourneyError from '../components/DailyJourneyError.vue'
 import { useScopedExerciseDraft } from '../composables/useScopedExerciseDraft'
 import DOMPurify from 'dompurify'
 import type { Card, OptionsResponse, Feedback } from '../api/trainingTypes'
@@ -2403,10 +2406,25 @@ const nextCard = async () => {
     prefetchedCardResponse.value = null
     if (cached && currentCard.value && cached.session_id === currentCard.value.session_id &&
         cached.card_index === currentCard.value.card_index + 1) {
-      // Show the prefetched card immediately; sync backend session state in the
-      // background so reveal/answer use options for the active card, not the previous one.
-      void syncCurrentCardState()
-      await applyTrainingSessionResponse(cached)
+      // Show the prepared question immediately. Journey acknowledgments still
+      // commit at the end of feedback (not during pause or before reload).
+      if (daily.isJourney.value) {
+        const advance = wordTrainingClient.next()
+        syncCurrentInFlight = advance.then(() => undefined).catch(() => undefined)
+        try {
+          await applyTrainingSessionResponse(cached)
+          const confirmed = await advance
+          if (!sameTrainingCard(cached, confirmed) || confirmed.complete) await applyTrainingSessionResponse(confirmed)
+          else if (confirmed.type === 'type') {
+            // setupCard ran while the preview was inert; focus once input is enabled.
+            await nextTick()
+            typeInputRef.value?.focus()
+          }
+        } finally { syncCurrentInFlight = null }
+      } else {
+        void syncCurrentCardState()
+        await applyTrainingSessionResponse(cached)
+      }
       return
     }
 

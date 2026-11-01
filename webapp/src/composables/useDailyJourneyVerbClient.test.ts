@@ -36,9 +36,9 @@ describe('verb source for the ordinary practice panel', () => {
   const client = useDailyJourneyVerbClient()
   await expect(client.act('repeat', { session_id: -42, card_id: 9 })).rejects.toThrow('недоступно')
   daily.act.mockImplementation(() => { daily.finished.value = true })
-  await client.act('advance', { session_id: -42, card_id: 9 })
+  expect(await client.act('advance', { session_id: -42, card_id: 9 })).toMatchObject({ completed: true })
   expect(daily.act).toHaveBeenCalledWith('ack_feedback')
-  expect(daily.back).toHaveBeenCalledOnce()
+  expect(daily.back).not.toHaveBeenCalled()
   expect(request).not.toHaveBeenCalled()
  })
  it('keeps ordinary APIs unchanged and never uses them as a daily error fallback', async () => {

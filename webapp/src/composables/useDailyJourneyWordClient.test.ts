@@ -61,3 +61,11 @@ describe('dailyJourney word source on the existing screen', () => {
   expect(daily.act).not.toHaveBeenCalled()
  })
 })
+
+it('prefetches only the public next question without acknowledging feedback', async () => {
+ state.next_card = { session_id: -42, card_index: 2, type: 'spell', letters: ['b', 'o', 'o', 'k'] }
+ const { client } = useDailyJourneyWordClient()
+ expect(await client.prefetchNext()).toEqual(state.next_card)
+ expect(daily.act).not.toHaveBeenCalled()
+ expect(state.card.card_index).toBe(1)
+})

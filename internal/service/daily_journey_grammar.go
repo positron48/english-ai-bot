@@ -261,7 +261,28 @@ func (a *DailyJourneyGrammarAdapter) candidate(s *GrammarService, ctx context.Co
 	raw, _ := json.Marshal(ref)
 	return []dailyjourney.Step{{Mode: dailyjourney.Grammar, Title: title, Goal: goal, TargetCount: count, ContentRef: raw, ContentVersion: grammarJourneyVersion(chapters...), Launch: &dailyjourney.Launch{RouteName: route, Params: params}}}, nil
 }
+
+type journeyGrammarLive struct {
+	engine   *GrammarService
+	ref      journeyGrammarRef
+	chapters []*repository.Chapter
+}
+
 func (a *DailyJourneyGrammarAdapter) live(ctx context.Context, q database.ContextDBTX, user int64, course string, step *dailyjourney.Step) (*GrammarService, journeyGrammarRef, []*repository.Chapter, error) {
+	key := struct {
+		adapter *DailyJourneyGrammarAdapter
+		q       database.ContextDBTX
+		user    int64
+		course  string
+		step    *dailyjourney.Step
+	}{a, q, user, course, step}
+	result, err := journeyRead(ctx, key, func() (journeyGrammarLive, error) {
+		engine, ref, chapters, err := a.loadLive(ctx, q, user, course, step)
+		return journeyGrammarLive{engine, ref, chapters}, err
+	})
+	return result.engine, result.ref, result.chapters, err
+}
+func (a *DailyJourneyGrammarAdapter) loadLive(ctx context.Context, q database.ContextDBTX, user int64, course string, step *dailyjourney.Step) (*GrammarService, journeyGrammarRef, []*repository.Chapter, error) {
 	var ref journeyGrammarRef
 	if err := json.Unmarshal(step.ContentRef, &ref); err != nil {
 		return nil, ref, nil, err
@@ -580,7 +601,13 @@ func (a *DailyJourneyGrammarAdapter) finishTest(ctx context.Context, tx *sql.Tx,
 	step.ResultDetails, _ = json.Marshal(state.Result)
 	return nil
 }
-func (a *DailyJourneyGrammarAdapter) Exercise(ctx context.Context, user int64, j *dailyjourney.Journey, step *dailyjourney.Step) (interface{}, error) {
+func (a *DailyJourneyGrammarAdapter) Exercise(ctx context.Context, user int64, j *dailyjourney.Journey, step *dailyjourney.Step) (any, error) {
+	return a.exercise(ctx, a.db, user, j, step)
+}
+func (a *DailyJourneyGrammarAdapter) ExerciseTx(ctx context.Context, tx *sql.Tx, user int64, j *dailyjourney.Journey, step *dailyjourney.Step) (any, error) {
+	return a.exercise(ctx, tx, user, j, step)
+}
+func (a *DailyJourneyGrammarAdapter) exercise(ctx context.Context, q database.ContextDBTX, user int64, j *dailyjourney.Journey, step *dailyjourney.Step) (any, error) {
 	var state journeyGrammarState
 	if err := json.Unmarshal(step.State, &state); err != nil {
 		return nil, err
@@ -623,8 +650,10 @@ func (a *DailyJourneyGrammarAdapter) Exercise(ctx context.Context, user int64, j
 	}
 	chapter := state.Chapter
 	if ref.Kind == "block" {
-		engine := a.Resolve(j.CourseCode)
-		var err error
+		engine, err := a.engine(q, j.CourseCode)
+		if err != nil {
+			return nil, err
+		}
 		chapter, err = engine.ContentRepo.GetChapter(ref.ChapterID)
 		if err != nil {
 			return nil, err

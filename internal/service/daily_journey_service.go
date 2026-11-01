@@ -67,6 +67,7 @@ func (s *DailyJourneyService) Get(ctx context.Context, userID int64, course, id 
 	return s.repo.Get(ctx, userID, course, id)
 }
 func (s *DailyJourneyService) Start(ctx context.Context, userID int64, course string) (*dailyjourney.Journey, error) {
+	ctx = withJourneyReads(ctx)
 	if _, err := s.courses.EnsureUserCourse(ctx, userID, course); err != nil {
 		return nil, err
 	}
@@ -117,6 +118,7 @@ func (s *DailyJourneyService) Start(ctx context.Context, userID int64, course st
 // start is also resume: it never creates an unrelated global active session.
 // The adapter initializes/retrieves its bound session in Apply using the same tx.
 func (s *DailyJourneyService) Act(ctx context.Context, userID int64, course, id, stepID string, action dailyjourney.Action) (*dailyjourney.Journey, error) {
+	ctx = withJourneyReads(ctx)
 	switch action.Type {
 	case "start", "skip", "add_word", "answer", "message", "ack_feedback":
 	default:
@@ -177,7 +179,7 @@ func (s *DailyJourneyService) Act(ctx context.Context, userID int64, course, id,
 		if action.Type == "start" {
 			step.Status = "active"
 		}
-		return nil
+		return s.snapshot(ctx, tx, userID, j, step)
 	})
 }
 
@@ -253,6 +255,7 @@ type DailyJourneyExerciseView struct {
 }
 
 func (s *DailyJourneyService) Exercise(ctx context.Context, user int64, course, id, stepID string) (*DailyJourneyExerciseView, error) {
+	ctx = withJourneyReads(ctx)
 	j, err := s.repo.Get(ctx, user, course, id)
 	if err != nil {
 		return nil, err
@@ -277,4 +280,33 @@ func (s *DailyJourneyService) Exercise(ctx context.Context, user int64, course, 
 		return nil, err
 	}
 	return &DailyJourneyExerciseView{Journey: j, StepID: step.ID, Mode: step.Mode, Data: data}, nil
+}
+
+// Render before commit using the same transaction as the subject write. The
+// repository stamps the resulting revision and persists this exact response.
+func (s *DailyJourneyService) snapshot(ctx context.Context, tx *sql.Tx, user int64, j *dailyjourney.Journey, step *dailyjourney.Step) error {
+	if step.Status != "active" && step.Status != "completed" {
+		return nil
+	}
+	adapter := s.adapters[step.Mode]
+	var data any
+	var err error
+	if renderer, ok := adapter.(interface {
+		ExerciseTx(context.Context, *sql.Tx, int64, *dailyjourney.Journey, *dailyjourney.Step) (any, error)
+	}); ok {
+		data, err = renderer.ExerciseTx(ctx, tx, user, j, step)
+	} else if renderer, ok := adapter.(DailyJourneyExerciseAdapter); ok {
+		data, err = renderer.Exercise(ctx, user, j, step)
+	} else {
+		return nil
+	}
+	if err != nil {
+		return err
+	}
+	raw, err := json.Marshal(data)
+	if err != nil {
+		return err
+	}
+	j.Exercise = &dailyjourney.ExerciseSnapshot{StepID: step.ID, Mode: step.Mode, Data: raw}
+	return nil
 }

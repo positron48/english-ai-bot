@@ -64,6 +64,8 @@ it('creates today’s route immediately without an intermediate start screen', a
   expect(view.find('[data-test="legacy"]').exists()).toBe(false)
   await flushPromises()
   expect(start).toHaveBeenCalledExactlyOnceWith('en_ru')
+  expect(view.get('[role="status"]').text()).toBe('dailyJourney.loading.building')
+  expect(view.find('img[alt="Lumi"]').exists()).toBe(true)
   expect(view.find('[data-test="legacy"]').exists()).toBe(false)
   resolve(journey)
   await flushPromises()

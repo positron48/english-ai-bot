@@ -1,3 +1,4 @@
+import { journeyMessage } from '../components/dailyJourney/messages'
 import { apiClient } from '../api/client'
 import { emitAppDataEvent } from '../api/cacheInvalidation'
 import { useDailyJourneyExercise } from './useDailyJourneyExercise'
@@ -6,7 +7,13 @@ export function useDailyJourneyVerbClient<T extends JourneyVerbSession>() {
  const daily = useDailyJourneyExercise<T>('verb_forms')
  async function current(): Promise<T> {
   if (!daily.isJourney.value) return apiClient.request<T>('/api/verb-training/v2/current')
-  return daily.ready()
+  try {
+   const state = await daily.ready()
+   if (!daily.finished.value) return state
+  } catch (error) { if (!daily.finished.value) throw error }
+  if (daily.stepStatus?.value && daily.stepStatus.value !== 'completed') throw new Error(journeyMessage('stepUnavailable'))
+  const details = daily.resultDetails?.value
+  return (details?.practice || { completed: true, session_id: 0, card_index: Number(details?.answered || 0), total_cards: Number(details?.answered || 0), results: [], summary: { correct: Number(details?.correct || 0), total: Number(details?.answered || 0) } }) as T
  }
  async function act(action: string, body: Record<string, unknown>): Promise<T> {
   if (!daily.isJourney.value) return apiClient.request<T>('/api/verb-training/v2/' + action, { method: 'POST', body })
@@ -20,8 +27,7 @@ export function useDailyJourneyVerbClient<T extends JourneyVerbSession>() {
   else throw new Error('Это действие недоступно в маршруте дня.')
   if (daily.error.value) throw new Error(daily.error.value)
   if (action === 'answer') emitAppDataEvent('verb-training-recorded', daily.context.value?.courseCode)
-  if (daily.finished.value) { await daily.back(); return state }
-  return daily.ready()
+  return current()
  }
  async function forms(lemma: string): Promise<{ forms: any[] }> {
   if (!daily.isJourney.value) return apiClient.request('/api/verb-training/forms-by-lemma?lemma=' + encodeURIComponent(lemma))

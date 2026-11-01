@@ -25,7 +25,12 @@ export function useDailyJourneyWordClient() {
     ...standalone,
     start: async () => daily.isJourney.value ? current() : standalone.start(),
     current: async () => daily.isJourney.value ? current() : standalone.current(),
-    prefetchNext: async () => daily.isJourney.value ? null : standalone.prefetchNext(),
+    prefetchNext: async () => {
+      if (!daily.isJourney.value) return standalone.prefetchNext()
+      if (daily.finished.value) return null
+      const data = await daily.ready()
+      return data.next_card || null
+    },
     reveal: async () => {
       if (!daily.isJourney.value) return standalone.reveal()
       await daily.act('start', { reveal: true })

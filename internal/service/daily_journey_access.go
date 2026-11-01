@@ -11,6 +11,16 @@ import (
 
 // Reads enrollment and the canonical city mastery without enrolling or opening content.
 func dailyJourneyOpenLevels(ctx context.Context, db *sql.DB, q database.ContextDBTX, user int64, course string) (map[string]bool, error) {
+	key := struct {
+		db     *sql.DB
+		q      database.ContextDBTX
+		user   int64
+		course string
+	}{db, q, user, course}
+	return journeyRead(ctx, key, func() (map[string]bool, error) { return loadJourneyOpenLevels(ctx, db, q, user, course) })
+}
+
+func loadJourneyOpenLevels(ctx context.Context, db *sql.DB, q database.ContextDBTX, user int64, course string) (map[string]bool, error) {
 	var courseID, userCourseID int64
 	var language, tier string
 	err := q.QueryRowContext(ctx, `SELECT c.id,uc.id,c.target_lang,COALESCE(u.subscription_tier,'free') FROM user_courses uc JOIN courses c ON c.id=uc.course_id JOIN users u ON u.id=uc.user_id WHERE uc.user_id=? AND c.code=? AND uc.status='active' AND c.status='active'`, user, course).Scan(&courseID, &userCourseID, &language, &tier)

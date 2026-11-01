@@ -185,6 +185,26 @@ func TestDailyJourneyWordsRealSRSAtomicity(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+	receipt, err := svc.Act(ctx, user, "en_ru", j.ID, step.ID, action)
+	if err != nil {
+		t.Fatal(err)
+	}
+	if receipt.Exercise == nil || receipt.Exercise.Revision != receipt.Revision || receipt.Exercise.StepID != step.ID {
+		t.Fatal("missing action exercise snapshot")
+	}
+	var receiptData JourneyWordsExercise
+	if err := json.Unmarshal(receipt.Exercise.Data, &receiptData); err != nil {
+		t.Fatal(err)
+	}
+	if receiptData.Feedback["is_correct"] != false || receiptData.NextCard["card_index"] != float64(2) {
+		t.Fatal("answer response lacks feedback/preview")
+	}
+	for _, secret := range []string{"correct_answer", "options", "feedback"} {
+		if _, exists := receiptData.NextCard[secret]; exists {
+			t.Fatal("preview leaked", secret)
+		}
+	}
+	receiptJSON, _ := json.Marshal(receipt)
 	data := view.Data.(JourneyWordsExercise)
 	if data.Feedback["is_correct"] != false || data.Card["card_index"].(float64) != 1 {
 		t.Fatal("feedback not restored")
@@ -204,6 +224,23 @@ func TestDailyJourneyWordsRealSRSAtomicity(t *testing.T) {
 	// Finish the real queue without touching the independent normal session.
 	j = view.Journey
 	journeySubjectAct(t, svc, user, &j, "ack-first", "ack_feedback", map[string]any{})
+	var advanced JourneyWordsExercise
+	if err := json.Unmarshal(j.Exercise.Data, &advanced); err != nil {
+		t.Fatal(err)
+	}
+	previewJSON, _ := json.Marshal(receiptData.NextCard)
+	actualJSON, _ := json.Marshal(advanced.Card)
+	if string(previewJSON) != string(actualJSON) {
+		t.Fatal("prepared question changed on acknowledgment")
+	}
+	repeated, err := svc.Act(ctx, user, "en_ru", j.ID, step.ID, action)
+	if err != nil {
+		t.Fatal(err)
+	}
+	repeatedJSON, _ := json.Marshal(repeated)
+	if string(receiptJSON) != string(repeatedJSON) {
+		t.Fatal("retry returned a different revision/subject snapshot")
+	}
 	for index := 1; index < 20; index++ {
 		journeySubjectAct(t, svc, user, &j, fmt.Sprintf("reveal-%d", index), "start", map[string]any{"reveal": true})
 		if err := json.Unmarshal(j.Current().State, &state); err != nil {

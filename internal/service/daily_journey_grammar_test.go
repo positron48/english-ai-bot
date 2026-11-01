@@ -368,6 +368,13 @@ func TestDailyJourneyGrammarSRSQueueAndAtomicity(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
+
+	if _, err := db.Exec(`INSERT INTO grammar_training_content_questions(bundle_id,question_id,chapter_id,theory_block_id,raw_json,source_hash) SELECT bundle_id,'newly-accessible-question',chapter_id,'newly-accessible-block',jsonb_set(jsonb_set(raw_json::jsonb,'{id}','"newly-accessible-question"'),'{theory_block_id}','"newly-accessible-block"')::text,source_hash FROM grammar_training_content_questions WHERE bundle_id='en' AND question_id='journey-srs-q1'`); err != nil {
+		t.Fatal(err)
+	}
+	if _, err := repository.NewCourseRepository(db, zap.NewNop()).MapLegacyContent(context.Background(), "en_ru", "en"); err != nil {
+		t.Fatal(err)
+	}
 	// A pending stop created before this release can still carry the old limit.
 	if _, err := db.Exec(`UPDATE daily_journey_steps SET target_count=5 WHERE id=?`, j.Current().ID); err != nil {
 		t.Fatal(err)

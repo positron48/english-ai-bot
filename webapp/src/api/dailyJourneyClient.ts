@@ -43,6 +43,7 @@ export interface WordsJourneyExercise {
  add_target: number
  added_count: number
  addable: Record<number, number[]> | null
+ next_card?: any
  card?: any
  feedback?: any
  options?: string[]

@@ -27,7 +27,27 @@ type DailyJourneyGrammarSRSAdapter struct {
 func NewDailyJourneyGrammarSRSAdapter(db *sql.DB, resolve func(string) *GrammarService) *DailyJourneyGrammarSRSAdapter {
 	return &DailyJourneyGrammarSRSAdapter{DailyJourneyGrammarAdapter: NewDailyJourneyGrammarAdapter(db, resolve)}
 }
+
+type journeySRSPool struct {
+	engine    *GrammarService
+	questions map[string][]map[string]interface{}
+	version   string
+}
+
 func (a *DailyJourneyGrammarSRSAdapter) pool(ctx context.Context, q database.ContextDBTX, user int64, course string) (*GrammarService, map[string][]map[string]interface{}, string, error) {
+	key := struct {
+		adapter *DailyJourneyGrammarSRSAdapter
+		q       database.ContextDBTX
+		user    int64
+		course  string
+	}{a, q, user, course}
+	result, err := journeyRead(ctx, key, func() (journeySRSPool, error) {
+		engine, questions, version, err := a.loadPool(ctx, q, user, course)
+		return journeySRSPool{engine, questions, version}, err
+	})
+	return result.engine, result.questions, result.version, err
+}
+func (a *DailyJourneyGrammarSRSAdapter) loadPool(ctx context.Context, q database.ContextDBTX, user int64, course string) (*GrammarService, map[string][]map[string]interface{}, string, error) {
 	if _, err := dailyJourneyOpenLevels(ctx, a.db, q, user, course); err != nil {
 		return nil, nil, "", err
 	}
@@ -121,11 +141,11 @@ func (a *DailyJourneyGrammarSRSAdapter) Validate(ctx context.Context, q database
 	if len(state.Questions) > 0 {
 		return a.validatePinned(ctx, q, user, course, &state)
 	}
-	_, pool, version, err := a.pool(ctx, q, user, course)
+	_, pool, _, err := a.pool(ctx, q, user, course)
 	if err != nil {
 		return err
 	}
-	if len(pool) == 0 || version != step.ContentVersion {
+	if len(pool) == 0 {
 		return ErrDailyJourneyContentUnavailable
 	}
 	return nil
@@ -143,13 +163,11 @@ func (a *DailyJourneyGrammarSRSAdapter) Apply(ctx context.Context, tx *sql.Tx, u
 	}
 	var pool map[string][]map[string]interface{}
 	if state.Questions == nil {
-		var version string
-		s, pool, version, err = a.pool(ctx, tx, user, j.CourseCode)
+		// No questions are pinned until the stop starts. Finishing an earlier
+		// grammar chapter can legitimately expand this pool.
+		s, pool, _, err = a.pool(ctx, tx, user, j.CourseCode)
 		if err != nil {
 			return err
-		}
-		if version != step.ContentVersion {
-			return ErrDailyJourneyContentUnavailable
 		}
 	}
 	switch action.Type {

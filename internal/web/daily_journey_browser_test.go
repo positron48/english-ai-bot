@@ -97,7 +97,7 @@ func TestDailyJourneyBrowserQA(t *testing.T) {
 	pub := repository.NewGrammarPublishRepository(db, logger)
 	must(pub.SetPublished("section", "es.qa", true, nil))
 	for _, chapter := range []string{"es.qa.one", "es.qa.two"} {
-		raw := fmt.Sprintf(`{"id":%q,"section_id":"es.qa","title":"QA grammar","target_language":"es","blocks":[{"id":"b1","type":"theory","theory":{"content_md":"**Soy** means I am."}},{"id":"quiz","type":"quiz_inline","quiz_inline":{"question_ids":["q1"]}}],"question_bank":{"questions":[{"id":"q1","type":"fill_blank","prompt":"Yo ___ estudiante.","correct_answer":"soy","chapter_id":%q,"theory_block_id":"b1"}]},"chapter_test":{"pool_question_ids":["q1"],"num_questions":1}}`, chapter, chapter)
+		raw := fmt.Sprintf(`{"id":%q,"section_id":"es.qa","title":"QA grammar","target_language":"es","blocks":[{"id":"b1","type":"theory","theory":{"content_md":"**Soy** means I am."}},{"id":"quiz","type":"quiz_inline","quiz_inline":{"question_ids":["q1"]}}],"question_bank":{"questions":[{"id":"q1","type":"fill_blank","prompt":"Yo ___ estudiante.","correct_answer":"soy","chapter_id":%q,"theory_block_id":"b1"}]},"chapter_test":{"selection_strategy":{"type":"random"},"pool_question_ids":["q1"],"num_questions":1}}`, chapter, chapter)
 		exec(`INSERT INTO grammar_content_chapters(bundle_id,chapter_id,section_id,title,level,ui_language,target_language,raw_json,source_hash) VALUES('es',?,'es.qa','QA grammar','A0','ru','es',?,'qa')`, chapter, raw)
 		must(pub.SetPublished("chapter", chapter, true, nil))
 	}
@@ -133,15 +133,16 @@ func TestDailyJourneyBrowserQA(t *testing.T) {
 	adapters := map[dailyjourney.Mode]service.DailyJourneyAdapter{dailyjourney.Words: service.NewDailyJourneyWordsAdapter(db, logger, lc), dailyjourney.Reading: service.NewDailyJourneyReadingAdapter(db), dailyjourney.Grammar: service.NewDailyJourneyGrammarAdapter(db, resolve), dailyjourney.GrammarSRS: service.NewDailyJourneyGrammarSRSAdapter(db, resolve), dailyjourney.VerbForms: service.NewDailyJourneyVerbsAdapter(db, cfg.Training, lc, logger), dailyjourney.Picture: &dailyJourneyChatAdapter{router: r, mode: dailyjourney.Picture, run: fake}, dailyjourney.Conversation: &dailyJourneyChatAdapter{router: r, mode: dailyjourney.Conversation, run: fake}}
 	verbs := repository.NewVerbFormsRepository(db, logger)
 	var verbWord int64
-	must(db.QueryRow(`INSERT INTO word_cards(word,definition,pos,course_code) VALUES('qaviajar','{}','verb','es_ru') RETURNING id`).Scan(&verbWord))
+	must(db.QueryRow(`INSERT INTO word_cards(word,definition,pos,course_code) VALUES('viajar','{}','verb','es_ru') RETURNING id`).Scan(&verbWord))
 	exec(`INSERT INTO user_word_knowledge(user_id,word_card_id,status) VALUES(?,?,'known')`, user.ID, verbWord)
-	lemma, err := verbs.UpsertVerbLemma("qaviajar", "es", "qa", "1", "qa", "{}")
+	lemma, err := verbs.UpsertVerbLemma("viajar", "es", "qa", "1", "qa", "{}")
 	must(err)
 	must(verbs.LinkWordCardToLemma(verbWord, lemma, 1, "qa"))
-	form, err := verbs.UpsertVerbForm(&models.VerbFormDict{VerbLemmaID: lemma, Mood: "indicativo", Tense: "presente", Person: "3", Number: "singular", SurfaceForm: "viaja"})
+	_, err = verbs.UpsertVerbForm(&models.VerbFormDict{VerbLemmaID: lemma, Mood: "indicativo", Tense: "presente", Person: "3", Number: "singular", SurfaceForm: "viaja"})
 	must(err)
-	_, err = verbs.UpsertVerbTrainingCard(&models.VerbTrainingCard{WordCardID: verbWord, VerbFormDictID: form, CardType: models.VerbCardTypeCloze, PromptJSON: `{"content_version":4,"practice_eligible":true,"lemma":"qaviajar","question":"Él ____.","example_translation":"Он путешествует.","person":"3","number":"singular","tense":"presente","mood":"indicativo","rule":{"id":"qa","regular":false}}`, AnswerJSON: `{"surface_form":"viaja"}`, DistractorsJSON: `[]`})
-	must(err)
+	// Use the same artifact-backed cards as standalone practice. Visiting the
+	// words page refreshes this pool, so hand-written cards would be replaced.
+	must(service.NewVerbTrainingService(verbs, lc, cfg.Training, logger).EnsureVerbFormUserCards(user.ID, models.DefaultSpanishVerbScopes()))
 	r.SetDailyJourneyService(service.NewDailyJourneyService(db, adapters))
 	// Explicit QA itinerary intentionally includes every seeded mode, bypassing only random selection.
 	_, err = repository.NewDailyJourneyRepository(db).Start(ctx, user.ID, "es_ru", time.Now(), func(tx *sql.Tx) ([]dailyjourney.Step, error) {

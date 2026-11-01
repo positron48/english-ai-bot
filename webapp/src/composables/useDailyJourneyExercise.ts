@@ -50,7 +50,12 @@ export function useDailyJourneyExercise<T>(mode: JourneyMode) {
     loading.value = true
     try {
       const ownStep = journey.steps.find(step => step.id === ctx.stepId)
-      if (journey.id === ctx.journeyId && journey.courseCode === ctx.courseCode && ownStep && ['completed', 'unavailable', 'skipped'].includes(ownStep.status)) return
+      const snapshot = journey.exercise
+      const hasSnapshot = snapshot?.revision === journey.revision && snapshot.step_id === ctx.stepId && snapshot.mode === mode && snapshot.data != null
+      if (journey.id === ctx.journeyId && journey.courseCode === ctx.courseCode && ownStep && ['completed', 'unavailable', 'skipped'].includes(ownStep.status)) {
+        if (ownStep.mode === mode && hasSnapshot) data.value = snapshot!.data as T
+        return
+      }
       const current = controller.currentStep.value
       if (mode === 'words' && current?.mode === 'words' && current.id === ctx.stepId && journey.id === ctx.journeyId && journey.courseCode === ctx.courseCode && current.launch && ['Training', 'WordSets', 'WordSetDetail', 'WordSetStudy'].includes(String(route.name))) {
         if ((current.launch.routeName === 'Training' && route.name !== 'Training') || (current.launch.routeName === 'WordSets' && route.name === 'Training')) {
@@ -64,6 +69,9 @@ export function useDailyJourneyExercise<T>(mode: JourneyMode) {
 
       const step = verifyDailyJourneyContext(ctx, journey, String(route.name || ''), route.params)
       if (step.mode !== mode) throw new Error('Неверный режим задания.')
+      // Action receipts carry the public subject state at this exact revision.
+      // Keep the GET fallback for initial reads and pre-upgrade receipts.
+      if (hasSnapshot) { data.value = snapshot!.data as T; return }
       const view = await dailyJourneyClient.exercise<T>(ctx.courseCode, ctx.journeyId, ctx.stepId)
       if (request !== generation) return
       verifyDailyJourneyContext(ctx, view.journey, String(route.name || ''), route.params)
@@ -118,6 +126,7 @@ export function useDailyJourneyExercise<T>(mode: JourneyMode) {
   const finished = computed(() => !!context.value && !!controller.journey.value && controller.journey.value.steps.some(step => step.id === context.value!.stepId && ['completed', 'unavailable', 'skipped'].includes(step.status)))
   return {
     isJourney, context, data, finished, act, back, ready,
+    stepStatus: computed(() => controller.journey.value?.steps.find(step => step.id === context.value?.stepId)?.status),
     resultDetails: computed(() => controller.journey.value?.steps.find(step => step.id === context.value?.stepId)?.resultDetails),
     draftKey: (identity: string) => {
       const ctx = context.value

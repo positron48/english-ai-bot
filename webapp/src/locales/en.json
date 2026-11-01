@@ -1251,7 +1251,25 @@
       "disabled": "The daily journey is currently unavailable.",
       "invalidContext": "Invalid journey context.",
       "pending": "The previous action is awaiting confirmation. Please retry.",
-      "staleChat": "The conversation changed. Retry the previous request or reload the activity."
+      "staleChat": "The conversation changed. Retry the previous request or reload the activity.",
+      "stepUnavailable": "This activity is no longer available."
+    },
+    "loading": {
+      "title": "Lumi is preparing your journey",
+      "errorTitle": "Your journey could not be prepared",
+      "checking": "Checking your saved journey…",
+      "building": "Choosing today’s activities…",
+      "restoring": "Opening your saved journey…",
+      "stages": "Journey preparation",
+      "checkStep": "Your progress",
+      "buildStep": "Today’s activities",
+      "restoreStep": "Resume your journey",
+      "hint": "A little discovery, a little review — at your own pace.",
+      "slow": "This is taking longer than usual. Lumi is still preparing your activities."
+    },
+    "topUp": {
+      "title": "Grow your vocabulary",
+      "remaining": "Words to add before practice: {count}"
     }
   }
 }

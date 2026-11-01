@@ -7,6 +7,7 @@ const journeyMode = ref(false)
 const journeyData = ref<any>(null)
 const journeyAction = vi.fn()
 const journeyFinished = ref(false)
+const journeyBusy = ref(false)
 
 vi.mock('../api/wordTrainingClient', () => ({ wordTrainingClient: {
   current: vi.fn(), prefetchNext: vi.fn(), reveal: vi.fn(), answer: vi.fn(),
@@ -47,6 +48,7 @@ async function mountTraining() {
 }
 beforeEach(() => {
   journeyFinished.value = false
+  journeyBusy.value = false
   journeyMode.value = false
   journeyData.value = null
   journeyAction.mockReset()
@@ -162,7 +164,7 @@ it('sanitizes training question HTML while preserving word formatting', async ()
 vi.mock('../composables/useDailyJourneyExercise', () => ({
   useDailyJourneyExercise: () => ({
     isJourney: journeyMode, context: ref({ courseCode: 'es_ru' }), data: journeyData,
-    resultDetails: ref({ reviewed_words: 5, correct: 4 }), finished: journeyFinished, busy: ref(false), error: ref(''),
+    resultDetails: ref({ reviewed_words: 5, correct: 4 }), finished: journeyFinished, busy: journeyBusy, error: ref(''),
     hasPendingAction: ref(false), ready: async () => journeyData.value, act: journeyAction,
     retry: vi.fn(), back: vi.fn(), draftKey: () => '',
   }),
@@ -194,6 +196,66 @@ it('automatically advances journey words and keeps feedback intact while the nex
   await flushPromises()
   expect(w.get('.question').text()).toBe('дерево')
   expect(w.find('.feedback-section').exists()).toBe(false)
+})
+
+it('shows the prepared journey question while acknowledgment is pending and reveals only after commit', async () => {
+  journeyMode.value = true
+  journeyData.value = { phase: 'train', card: card(1), next_card: card(2), options: ['дом', 'книга'] }
+  const ack = deferred<void>()
+  journeyAction.mockImplementation(async (action: string) => {
+    if (action === 'answer') journeyData.value = { ...journeyData.value, feedback: { is_correct: true, correct_answer: 'дом' } }
+    if (action === 'ack_feedback') {
+      journeyBusy.value = true
+      await ack.promise
+      journeyData.value = { phase: 'train', card: card(2), options: ['árbol', 'flor'] }
+      journeyBusy.value = false
+    }
+  })
+  const w = await mountTraining()
+  await vi.advanceTimersByTimeAsync(1000)
+  const state = (w.vm as any).$.setupState
+  await state.submitAnswer(0)
+  await vi.advanceTimersByTimeAsync(1000)
+  expect(w.get('.question').text()).toBe('дерево')
+  expect(w.findAll('.option-text')).toHaveLength(0)
+  expect(w.find('[inert]').exists()).toBe(true)
+  journeyAction.mockClear()
+  await vi.advanceTimersByTimeAsync(1000)
+  expect(journeyAction).not.toHaveBeenCalled()
+  ack.resolve()
+  await flushPromises()
+  expect(w.find('[inert]').exists()).toBe(false)
+  expect(w.findAll('.option-text').map(n => n.text())).toEqual(['árbol', 'flor'])
+  expect(journeyAction).toHaveBeenCalledWith('start', { reveal: true })
+})
+
+it('focuses a prepared typing card after the journey transition is confirmed', async () => {
+  journeyMode.value = true
+  const typing = { ...card(2), type: 'type', hint_length: 5, hint_first_letter: 'á' }
+  journeyData.value = { phase: 'train', card: card(1), next_card: typing, options: ['дом', 'книга'] }
+  const ack = deferred<void>()
+  journeyAction.mockImplementation(async (action: string) => {
+    if (action === 'answer') journeyData.value = { ...journeyData.value, feedback: { is_correct: true, correct_answer: 'дом' } }
+    if (action === 'ack_feedback') {
+      journeyBusy.value = true
+      await ack.promise
+      journeyData.value = { phase: 'train', card: typing }
+      journeyBusy.value = false
+    }
+  })
+  const focus = vi.spyOn(HTMLInputElement.prototype, 'focus')
+  try {
+    const w = await mountTraining()
+    await vi.advanceTimersByTimeAsync(1000)
+    await (w.vm as any).$.setupState.submitAnswer(0)
+    await vi.advanceTimersByTimeAsync(1000)
+    expect(w.find('[inert]').exists()).toBe(true)
+    focus.mockClear()
+    ack.resolve()
+    await flushPromises()
+    expect(w.find('[inert]').exists()).toBe(false)
+    expect(focus).toHaveBeenCalledOnce()
+  } finally { focus.mockRestore() }
 })
 
 it('shows the ordinary completion screen for a completed daily word session', async () => {

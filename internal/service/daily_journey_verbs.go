@@ -81,7 +81,28 @@ func (a *DailyJourneyVerbsAdapter) Candidates(ctx context.Context, q database.Co
 	sum := sha256.Sum256(raw)
 	return []dailyjourney.Step{{Mode: dailyjourney.VerbForms, Title: "Формы глаголов", Goal: "Пройти короткую тренировку форм", TargetCount: len(queue), ContentRef: raw, ContentVersion: hex.EncodeToString(sum[:]), Launch: &dailyjourney.Launch{RouteName: "VerbTraining"}}}, nil
 }
+
+type journeyVerbBound struct {
+	repo   *repository.VerbFormsRepository
+	scopes []string
+	cards  []repository.VerbQueueCard
+}
+
 func (a *DailyJourneyVerbsAdapter) bound(ctx context.Context, q database.ContextDBTX, user int64, course string, step *dailyjourney.Step) (*repository.VerbFormsRepository, []string, []repository.VerbQueueCard, error) {
+	key := struct {
+		adapter *DailyJourneyVerbsAdapter
+		q       database.ContextDBTX
+		user    int64
+		course  string
+		step    *dailyjourney.Step
+	}{a, q, user, course, step}
+	result, err := journeyRead(ctx, key, func() (journeyVerbBound, error) {
+		repo, scopes, cards, err := a.loadBound(ctx, q, user, course, step)
+		return journeyVerbBound{repo, scopes, cards}, err
+	})
+	return result.repo, result.scopes, result.cards, err
+}
+func (a *DailyJourneyVerbsAdapter) loadBound(ctx context.Context, q database.ContextDBTX, user int64, course string, step *dailyjourney.Step) (*repository.VerbFormsRepository, []string, []repository.VerbQueueCard, error) {
 	repo, scopes, err := a.access(ctx, q, user, course)
 	if err != nil {
 		return nil, nil, nil, err
@@ -218,7 +239,7 @@ func (a *DailyJourneyVerbsAdapter) Apply(ctx context.Context, tx *sql.Tx, user i
 					correct++
 				}
 			}
-			step.ResultDetails, _ = json.Marshal(map[string]interface{}{"answered": len(state.Results), "correct": correct})
+			step.ResultDetails, _ = json.Marshal(map[string]interface{}{"answered": len(state.Results), "correct": correct, "practice": PublicVerbPractice(&state)})
 		}
 	default:
 		return dailyjourney.ErrInvalidAction
@@ -226,7 +247,13 @@ func (a *DailyJourneyVerbsAdapter) Apply(ctx context.Context, tx *sql.Tx, user i
 	step.State, err = json.Marshal(state)
 	return err
 }
-func (a *DailyJourneyVerbsAdapter) Exercise(ctx context.Context, user int64, j *dailyjourney.Journey, step *dailyjourney.Step) (interface{}, error) {
+func (a *DailyJourneyVerbsAdapter) Exercise(ctx context.Context, user int64, j *dailyjourney.Journey, step *dailyjourney.Step) (any, error) {
+	return a.exercise(ctx, a.db, user, j, step)
+}
+func (a *DailyJourneyVerbsAdapter) ExerciseTx(ctx context.Context, tx *sql.Tx, user int64, j *dailyjourney.Journey, step *dailyjourney.Step) (any, error) {
+	return a.exercise(ctx, tx, user, j, step)
+}
+func (a *DailyJourneyVerbsAdapter) exercise(ctx context.Context, q database.DBTX, user int64, j *dailyjourney.Journey, step *dailyjourney.Step) (any, error) {
 	var state repository.VerbPractice
 	if err := json.Unmarshal(step.State, &state); err != nil {
 		return nil, err
@@ -236,7 +263,7 @@ func (a *DailyJourneyVerbsAdapter) Exercise(ctx context.Context, user int64, j *
 		var prompt map[string]interface{}
 		_ = json.Unmarshal([]byte(state.Queue[state.Index].PromptJSON), &prompt)
 		lemma, _ := prompt["lemma"].(string)
-		forms, err := repository.NewVerbFormsRepository(a.db, a.logger).ListVerbFormsForLemma(lemma, "es")
+		forms, err := repository.NewVerbFormsRepository(a.db, a.logger).WithQueries(q).ListVerbFormsForLemma(lemma, "es")
 		if err != nil {
 			return nil, err
 		}

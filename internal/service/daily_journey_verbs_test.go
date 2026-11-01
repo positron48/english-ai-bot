@@ -201,6 +201,22 @@ func TestDailyJourneyVerbsAtomicIndependentPractice(t *testing.T) {
 			t.Fatalf("%s %d %v", table, n, err)
 		}
 	}
+	var summary struct {
+		Practice struct {
+			Completed bool                              `json:"completed"`
+			Results   []repository.VerbPracticeFeedback `json:"results"`
+		} `json:"practice"`
+	}
+	for _, step := range j.Steps {
+		if step.Mode == dailyjourney.VerbForms {
+			if err := json.Unmarshal(step.ResultDetails, &summary); err != nil {
+				t.Fatal(err)
+			}
+			if !summary.Practice.Completed || len(summary.Practice.Results) != 10 {
+				t.Fatal("completion cannot restore the ordinary result panel")
+			}
+		}
+	}
 	var raw string
 	var ended sql.NullTime
 	if err := db.QueryRow(`SELECT session_json,ended_at,done_count FROM verb_training_sessions WHERE id=?`, normalID).Scan(&raw, &ended, &n); err != nil || raw != `{"independent":true}` || ended.Valid || n != 0 {

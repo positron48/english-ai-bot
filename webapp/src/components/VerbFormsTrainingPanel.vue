@@ -1,12 +1,13 @@
 <template>
   <section id="verb-forms-training" class="verb-practice" :aria-busy="busy">
-    <p v-if="error || daily.error.value" class="practice-error" role="alert">{{ error || daily.error.value }} <button type="button" @click="recover">{{ t('verbPractice.reload') }}</button></p>
-    <button v-if="daily.isJourney.value" class="practice-tool" type="button" @click="daily.back">{{ t('dailyJourney.returnToRoute') }}</button>
+    <DailyJourneyError v-if="daily.isJourney.value && (error || daily.error.value)" :message="error || daily.error.value" :busy="busy" @retry="recover" @back="daily.back" />
+    <p v-else-if="error" class="practice-error" role="alert">{{ error }} <button type="button" @click="recover">{{ t('verbPractice.reload') }}</button></p>
     <p v-if="loading" role="status">{{ t('common.loading') }}</p>
-    <template v-else-if="!daily.isJourney.value && session?.completed">
-      <h2>{{ t('verbPractice.finished') }}</h2>
+    <template v-else-if="session?.completed">
+      <div class="practice-finished"><LgLumi v-if="daily.isJourney.value" pose="clapping" :size="120" contained /><h2>{{ t('verbPractice.finished') }}</h2></div>
       <p v-if="session.retry">{{ t('verbPractice.retryNotice') }}</p>
-      <dl class="result-grid">
+      <p v-if="session.summary">{{ t('dailyJourney.results.practice', session.summary) }}</p>
+      <dl v-else class="result-grid">
         <div><dt>{{ t('verbPractice.independent') }}</dt><dd>{{ count('correct', false) }}</dd></div>
         <div><dt>{{ t('verbPractice.withHelp') }}</dt><dd>{{ count('correct', true) }}</dd></div>
         <div><dt>{{ t('verbPractice.mistakes') }}</dt><dd>{{ count('incorrect') }}</dd></div>
@@ -17,8 +18,8 @@
         <p v-for="result in mistakes" :key="result.card_id"><strong>{{ result.lemma }} → {{ result.correct_answer }}</strong><br>{{ tenseLabel(result.tense) }} · {{ pronoun(result.person, result.number) }}</p>
       </div>
       <div class="practice-actions">
-        <button v-if="mistakes.length" class="btn btn-primary" :disabled="busy" @click="act('repeat')">{{ t('verbPractice.repeat') }}</button>
-        <button class="btn btn-secondary" :disabled="busy" @click="act('start')">{{ t('verbPractice.continue') }}</button>
+        <button v-if="!daily.isJourney.value && mistakes.length" class="btn btn-primary" :disabled="busy" @click="act('repeat')">{{ t('verbPractice.repeat') }}</button>
+        <button class="btn btn-secondary" :disabled="busy" @click="daily.isJourney.value ? daily.back() : act('start')">{{ t(daily.isJourney.value ? 'dailyJourney.returnToRoute' : 'verbPractice.continue') }}</button>
       </div>
     </template>
     <template v-else-if="session?.card_id && session.prompt">
@@ -102,16 +103,17 @@ import { currentUserScope } from '../api/sessionScope'
 import { useDailyJourneyVerbClient } from '../composables/useDailyJourneyVerbClient'
 import ClickableText from './ClickableText.vue'
 import LgIcon from './linglow/LgIcon.vue'
+import LgLumi from './linglow/LgLumi.vue'
+import DailyJourneyError from './DailyJourneyError.vue'
 
 const props = withDefaults(defineProps<{ embedded?: boolean; autoStart?: boolean; hidePageTitle?: boolean }>(), { embedded: true, autoStart: false, hidePageTitle: false })
 const { t, te } = useI18n()
 interface Rule { id: string; regular: boolean; ending?: string; stem?: string; pattern?: string }
 interface Feedback { card_id: number; outcome: string; assisted: boolean; chosen_option: string; correct_answer: string; sentence: string; translation: string; lemma: string; tense: string; mood: string; person: string; number: string; rule: Rule | null; accent_only: boolean }
 interface Prompt { question: string; example_translation?: string; lemma: string; ru_gloss?: string; mood: string; tense: string; person: string; number: string; rule?: Rule }
-interface Session { session_id: number; card_id?: number; card_index: number; total_cards: number; input_mode: string; options?: string[]; prompt?: Prompt; completed?: boolean; idle?: boolean; empty?: boolean; retry?: boolean; assisted?: boolean; feedback?: Feedback; results?: Feedback[] }
+interface Session { summary?: { correct: number; total: number }; session_id: number; card_id?: number; card_index: number; total_cards: number; input_mode: string; options?: string[]; prompt?: Prompt; completed?: boolean; idle?: boolean; empty?: boolean; retry?: boolean; assisted?: boolean; feedback?: Feedback; results?: Feedback[] }
 const client = useDailyJourneyVerbClient<Session>()
 const daily = client.daily
-watch(daily.finished, finished => { if (daily.isJourney.value && finished) void daily.back() })
 interface Form { mood: string; tense: string; person: string; number: string; surface_form: string }
 const session = ref<Session | null>(null)
 const loading = ref(true), busy = ref(false), error = ref(''), typedAnswer = ref(''), showHint = ref(false), showTranslation = ref(false)
@@ -125,7 +127,7 @@ const draftKey = computed(() => {
 })
 watch([draftKey, () => !!session.value?.feedback], ([key, feedback]) => {
   if (!key) return
-  try { if (feedback) { sessionStorage.removeItem(key); typedAnswer.value = '' } else typedAnswer.value = sessionStorage.getItem(key) || '' } catch { /* storage is optional */ }
+  try { if (feedback) { sessionStorage.removeItem(key); typedAnswer.value = session.value?.feedback?.chosen_option || typedAnswer.value } else typedAnswer.value = sessionStorage.getItem(key) || '' } catch { /* storage is optional */ }
 })
 watch(typedAnswer, answer => {
   if (!draftKey.value || session.value?.feedback) return
@@ -200,6 +202,7 @@ onMounted(async () => { await recover(); loading.value = false; if (!error.value
 </script>
 
 <style scoped>
+.practice-finished { display: grid; justify-items: center; text-align: center; gap: 8px; }.practice-finished h2 { margin: 0 0 16px; }
 .practice-translation-wrap { margin: 0 0 1rem; }
 .practice-translation-toggle { display: inline-flex; align-items: center; gap: 6px; min-height: 36px; padding: 4px 0; border: 0; background: transparent; color: var(--subtext, inherit); font: inherit; font-size: .9rem; cursor: pointer; }
 .practice-translation-toggle svg { transition: transform .15s; }
@@ -247,10 +250,16 @@ progress::-webkit-progress-value { background: var(--salvia, #52754a); border-ra
 .practice-next button { width: 100%; min-height: 48px; }
 .practice-input { display: grid; gap: 10px; }
 .practice-input input { min-height: 48px; padding: 10px; border: 1px solid currentColor; border-radius: 12px; font: inherit; color: inherit; background: transparent; width: 100%; box-sizing: border-box; }
-.result-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.result-grid div { padding: 12px; border: 1px solid currentColor; border-radius: 12px; }
+.result-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin: 8px 0 24px; }
+.result-grid div { padding: 14px; border: 1px solid var(--border); border-radius: 14px; }
+.result-grid dt { font-size: .85rem; line-height: 1.4; color: var(--subtext); }
 .result-grid dd { margin: 8px 0 0; font-size: 1.5rem; font-weight: 650; }
+.mistake-list { margin: 0 0 24px; padding: 16px; border-radius: 16px; background: var(--surface-2); }
+.mistake-list h3 { margin: 0 0 12px; font-size: 1.1rem; }
+.mistake-list p { margin: 0; line-height: 1.5; overflow-wrap: anywhere; }
+.mistake-list p + p { margin-top: 12px; }
 .practice-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+.practice-actions button { flex: 1; min-height: 48px; }
 .practice-error { padding: 12px; border: 1px solid #b75145; border-radius: 12px; }
 .forms-overlay { position: fixed; inset: 0; z-index: 1100; background: #0008; display: grid; place-items: center; padding: 16px; }
 .forms-dialog { width: min(100%, 520px); max-height: 80dvh; overflow-y: auto; padding: 20px; box-sizing: border-box; border-radius: 20px; background: var(--lg-surface, var(--card-bg, #fff9ed)); }
