@@ -28,7 +28,7 @@ import LgIcon from './linglow/LgIcon.vue'
 import type { JourneyStep, StepStatus, JourneyMode } from './dailyJourney/types'
 const { t } = useI18n()
 const props = defineProps<{ steps: JourneyStep[]; currentId?: string; finished?: boolean }>()
-const icons: Record<JourneyMode, string> = { words: 'book', reading: 'book-open', grammar: 'lightbulb', grammar_srs: 'refresh', verb_forms: 'ruler', picture: 'palette', conversation: 'message-circle' }
+const icons: Record<JourneyMode, string> = { words: 'book', reading: 'book-open', grammar: 'lightbulb', grammar_srs: 'refresh', verb_forms: 'ruler', sentences: 'message-circle', picture: 'palette', conversation: 'message-circle' }
 const completed = computed(() => props.steps.filter(s => s.status === 'completed').length)
 const currentIndex = computed(() => props.finished ? Math.max(0, props.steps.length - 1) : Math.max(0, props.steps.findIndex(s => s.id === props.currentId)))
 function point(index: number) { return { x: (index + .5) / Math.max(1, props.steps.length) * 1000, y: index % 2 ? 142 : 165 } }

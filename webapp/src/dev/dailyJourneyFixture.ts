@@ -9,6 +9,7 @@ const modes: Record<JourneyMode, [string, string]> = {
   picture: ['Картинка', 'Опиши изображение и получи обратную связь.'],
   conversation: ['Диалог', 'Выполни задачи разговора с NPC.'],
   verb_forms: ['Формы глаголов', 'Вспомни формы доступных испанских глаголов.'],
+  sentences: ['Составление предложений', 'Составь 10 предложений.'],
   grammar_srs: ['Повторение грамматики', 'Повтори вопросы из изученных глав.'],
 }
 export function createJourneyFixture(courseCode: string, scenario: FixtureScenario): DailyJourney {

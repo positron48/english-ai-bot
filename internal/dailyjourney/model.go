@@ -28,6 +28,7 @@ const (
 	Grammar      Mode = "grammar"
 	GrammarSRS   Mode = "grammar_srs"
 	VerbForms    Mode = "verb_forms"
+	Sentences    Mode = "sentences"
 	Picture      Mode = "picture"
 	Conversation Mode = "conversation"
 )
@@ -120,7 +121,7 @@ func Select(candidates []Step, rng *rand.Rand) []Step {
 	groups := map[Mode][]Step{}
 	for _, candidate := range candidates {
 		switch candidate.Mode {
-		case Words, Reading, Grammar, GrammarSRS, VerbForms, Picture, Conversation:
+		case Words, Reading, Grammar, GrammarSRS, VerbForms, Sentences, Picture, Conversation:
 			groups[candidate.Mode] = append(groups[candidate.Mode], candidate)
 		}
 	}
@@ -138,7 +139,7 @@ func Select(candidates []Step, rng *rand.Rand) []Step {
 	pick(Words, true)
 	pick(Reading, true)
 	optional := []Mode{}
-	for _, m := range []Mode{Grammar, GrammarSRS, VerbForms, Picture, Conversation} {
+	for _, m := range []Mode{Grammar, GrammarSRS, VerbForms, Sentences, Picture, Conversation} {
 		if len(groups[m]) > 0 {
 			optional = append(optional, m)
 		}

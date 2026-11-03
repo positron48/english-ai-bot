@@ -45,6 +45,8 @@ func TestDailyJourneyLaunchValidation(t *testing.T) {
 		want   bool
 	}{
 		{dailyjourney.Words, "Training", nil, true},
+		{dailyjourney.Sentences, "SentenceComposition", nil, true},
+		{dailyjourney.Sentences, "Training", nil, false},
 		{dailyjourney.Words, "Chat", nil, false},
 		{dailyjourney.Reading, "ReadingText", map[string]string{"textId": "text-a"}, true},
 		{dailyjourney.Reading, "ReadingText", nil, false},

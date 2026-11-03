@@ -13,6 +13,7 @@ export type AppDataDirtyTag =
   | 'grammar'
   | 'reading'
   | 'speaking'
+  | 'sentences'
   | 'conversation'
   | 'picture'
   | 'stats'
@@ -39,13 +40,14 @@ export const SCREEN_DIRTY_TAGS: Record<AppDataScreenKey, AppDataDirtyTag[]> = {
   dashboard: ['words', 'srs', 'stats', 'progress', 'grammar', 'reading', 'daily-route'],
   city: ['city', 'grammar', 'reading', 'conversation', 'picture', 'progress', 'words'],
   'city-district': ['city', 'grammar', 'reading', 'conversation', 'picture', 'progress', 'words'],
-  learning: ['grammar', 'words', 'reading', 'speaking'],
+  learning: ['grammar', 'words', 'reading', 'speaking', 'sentences'],
   progress: ['stats', 'progress', 'grammar', 'reading', 'words'],
   'daily-route': ['srs', 'daily-route', 'reading', 'grammar', 'words'],
   review: ['srs'],
 }
 
 export const EVENT_DIRTY_TAGS: Record<string, AppDataDirtyTag[]> = {
+  'sentence-attempt-recorded': ['sentences', 'stats', 'progress', 'daily-route'],
   'daily-journey-progressed': ['daily-route', 'stats', 'progress'],
   'word-review-recorded': ['words', 'srs', 'stats', 'progress', 'daily-route'],
   'word-review-session-completed': ['words', 'srs', 'stats', 'progress', 'daily-route'],

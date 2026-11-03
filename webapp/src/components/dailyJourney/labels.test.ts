@@ -12,6 +12,9 @@ describe('journey locales',()=>{
   const i18n=createI18n({legacy:false,locale,messages:{ru,en,es}})
   const t=(key:string,values?:Record<string,unknown>)=>i18n.global.t(key,values||{})
   for(const text of [journeyStepTitle(step,t),journeyStepGoal(step,t),journeyResultLabel(step,t)])expect(text).not.toContain('dailyJourney.')
+  const sentenceStep = {...step, mode:'sentences' as const, title:'Составление предложений', targetCount:10}
+  expect(journeyStepTitle(sentenceStep,t)).toBe(t('dailyJourney.modes.sentences'))
+  expect(journeyStepGoal(sentenceStep,t)).toContain('10')
   expect(journeyStepTitle({...step,mode:'picture',title:'A real title'},t)).toBe('A real title')
   expect(journeyStepTitle({...step,title:'grammar'},t)).toBe(journeyStepTitle(step,t))
   expect(journeyStepGoal({...step,mode:'conversation',goal:'Закончить попытку: до 3 реплик',targetCount:3},t)).toContain('3')

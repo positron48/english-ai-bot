@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"tgbot-skeleton/internal/database"
 	"tgbot-skeleton/internal/models"
 
 	"go.uber.org/zap"
@@ -14,11 +15,19 @@ import (
 // per-word participation counters.
 type SentenceCompositionRepository struct {
 	db     *sql.DB
+	q      database.DBTX
 	logger *zap.Logger
 }
 
 func NewSentenceCompositionRepository(db *sql.DB, logger *zap.Logger) *SentenceCompositionRepository {
-	return &SentenceCompositionRepository{db: db, logger: logger}
+	return &SentenceCompositionRepository{db: db, q: db, logger: logger}
+}
+
+// WithQueries binds reads and MarkStarted to the caller's transaction.
+func (r *SentenceCompositionRepository) WithQueries(q database.DBTX) *SentenceCompositionRepository {
+	copy := *r
+	copy.q = q
+	return &copy
 }
 
 // SelectCandidateWords returns eligible course vocabulary: reviewed words at or above
@@ -80,7 +89,7 @@ func (r *SentenceCompositionRepository) selectCandidateWords(userID int64, cours
 		HAVING NOT ? OR BOOL_OR(COALESCE(LOWER(TRIM(tc_display.pos)), '') LIKE 'verb%')
 		ORDER BY used_count ASC, MAX(COALESCE(swu.last_used_on, '1970-01-01')) ASC, RANDOM()
 		LIMIT ?`
-	rows, err := r.db.Query(query,
+	rows, err := r.q.Query(query,
 		courseCode, courseCode,
 		userID, courseCode, courseCode, minMastery,
 		userID, courseCode, courseCode, courseCode,
@@ -111,7 +120,7 @@ func (r *SentenceCompositionRepository) selectCandidateWords(userID int64, cours
 // LatestSet returns the user's most recent set for the course, or nil if none exist.
 // Used both for the regeneration guard and for "today's available training".
 func (r *SentenceCompositionRepository) LatestSet(userID int64, courseCode string) (*models.SentenceSet, error) {
-	row := r.db.QueryRow(`
+	row := r.q.QueryRow(`
 		SELECT id, user_id, course_code, CAST(generation_date AS text), COALESCE(scopes_json::text, '[]'),
 		       status, started_at, completed_at, star_count, passed_count, failed_count, created_at
 		FROM sentence_sets
@@ -171,7 +180,7 @@ func (r *SentenceCompositionRepository) CreateSet(set *models.SentenceSet, items
 
 // GetSetByID loads a set by id.
 func (r *SentenceCompositionRepository) GetSetByID(setID int64) (*models.SentenceSet, error) {
-	row := r.db.QueryRow(`
+	row := r.q.QueryRow(`
 		SELECT id, user_id, course_code, CAST(generation_date AS text), COALESCE(scopes_json::text, '[]'),
 		       status, started_at, completed_at, star_count, passed_count, failed_count, created_at
 		FROM sentence_sets WHERE id = ?`, setID)
@@ -180,7 +189,7 @@ func (r *SentenceCompositionRepository) GetSetByID(setID int64) (*models.Sentenc
 
 // GetItems returns all items of a set ordered by position.
 func (r *SentenceCompositionRepository) GetItems(setID int64) ([]models.SentenceItem, error) {
-	rows, err := r.db.Query(`
+	rows, err := r.q.Query(`
 		SELECT id, set_id, position, prompt_ru, COALESCE(clarification_ru, ''), reference_es, COALESCE(word_card_ids::text, '[]'),
 		       attempted_at, user_input, error_count, outcome, grading_json::text
 		FROM sentence_items WHERE set_id = ? ORDER BY position ASC`, setID)
@@ -201,7 +210,7 @@ func (r *SentenceCompositionRepository) GetItems(setID int64) ([]models.Sentence
 
 // GetItemWithSet loads a single item plus its parent set (for ownership and grading context).
 func (r *SentenceCompositionRepository) GetItemWithSet(itemID int64) (*models.SentenceItem, *models.SentenceSet, error) {
-	itemRow := r.db.QueryRow(`
+	itemRow := r.q.QueryRow(`
 		SELECT id, set_id, position, prompt_ru, COALESCE(clarification_ru, ''), reference_es, COALESCE(word_card_ids::text, '[]'),
 		       attempted_at, user_input, error_count, outcome, grading_json::text
 		FROM sentence_items WHERE id = ?`, itemID)
@@ -219,7 +228,7 @@ func (r *SentenceCompositionRepository) GetItemWithSet(itemID int64) (*models.Se
 // MarkStarted flips a 'ready' set to 'started' and stamps started_at (the consumption marker).
 // No-op when already started/completed.
 func (r *SentenceCompositionRepository) MarkStarted(setID int64) error {
-	_, err := r.db.Exec(`
+	_, err := r.q.Exec(`
 		UPDATE sentence_sets
 		SET status = 'started', started_at = CURRENT_TIMESTAMP
 		WHERE id = ? AND status = 'ready'`, setID)
@@ -239,7 +248,23 @@ func (r *SentenceCompositionRepository) RecordAttempt(itemID int64, userInput st
 	}
 	defer func() { _ = tx.Rollback() }()
 
+	updated, err := r.RecordAttemptTx(tx, itemID, userInput, errorCount, outcome, gradingJSON)
+	if err != nil {
+		return nil, err
+	}
+
+	if err := tx.Commit(); err != nil {
+		return nil, fmt.Errorf("commit: %w", err)
+	}
+	return updated, nil
+}
+
+// RecordAttemptTx saves the attempt and counters inside a journey action transaction.
+func (r *SentenceCompositionRepository) RecordAttemptTx(tx *sql.Tx, itemID int64, userInput string, errorCount int, outcome, gradingJSON string) (*models.SentenceSet, error) {
 	var setID int64
+	if err := tx.QueryRow(`SELECT s.id FROM sentence_sets s JOIN sentence_items i ON i.set_id=s.id WHERE i.id=? FOR UPDATE OF s`, itemID).Scan(&setID); err != nil {
+		return nil, err
+	}
 	res, err := tx.Exec(`
 		UPDATE sentence_items
 		SET attempted_at = CURRENT_TIMESTAMP, user_input = ?, error_count = ?, outcome = ?, grading_json = CAST(? AS jsonb)
@@ -277,10 +302,7 @@ func (r *SentenceCompositionRepository) RecordAttempt(itemID int64, userInput st
 		return nil, fmt.Errorf("update set counters: %w", err)
 	}
 
-	if err := tx.Commit(); err != nil {
-		return nil, fmt.Errorf("commit: %w", err)
-	}
-	return r.GetSetByID(setID)
+	return r.WithQueries(tx).GetSetByID(setID)
 }
 
 type rowScanner interface {
@@ -360,7 +382,7 @@ type UserSetOverview struct {
 // ListUserOverviews returns one row per user/course that has at least one sentence set,
 // ordered by most recent activity. Used by the admin "results by users" screen.
 func (r *SentenceCompositionRepository) ListUserOverviews() ([]UserSetOverview, error) {
-	rows, err := r.db.Query(`
+	rows, err := r.q.Query(`
 		SELECT s.user_id,
 		       s.course_code,
 		       COALESCE(u.telegram_id, 0),
@@ -398,7 +420,7 @@ func (r *SentenceCompositionRepository) ListSetsByUser(userID int64, limit int) 
 	if limit <= 0 {
 		limit = 50
 	}
-	rows, err := r.db.Query(`
+	rows, err := r.q.Query(`
 		SELECT id, user_id, course_code, CAST(generation_date AS text), COALESCE(scopes_json::text, '[]'),
 		       status, started_at, completed_at, star_count, passed_count, failed_count, created_at
 		FROM sentence_sets
@@ -467,7 +489,7 @@ func (r *SentenceCompositionRepository) DeleteReadySet(userID, setID int64) (boo
 // ParticipationCount returns the stored participation counter for one word (testing/inspection).
 func (r *SentenceCompositionRepository) ParticipationCount(userID, wordCardID int64, courseCode string) (int, error) {
 	var n int
-	err := r.db.QueryRow(`SELECT COALESCE(used_count, 0) FROM sentence_word_usage WHERE user_id = ? AND word_card_id = ? AND course_code = ?`,
+	err := r.q.QueryRow(`SELECT COALESCE(used_count, 0) FROM sentence_word_usage WHERE user_id = ? AND word_card_id = ? AND course_code = ?`,
 		userID, wordCardID, courseCode).Scan(&n)
 	if err == sql.ErrNoRows {
 		return 0, nil

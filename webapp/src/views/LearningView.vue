@@ -208,6 +208,7 @@ const { load: loadLearningCache, hydrateFromCache } = useCachedOverviewScreen<an
 async function loadLearningData(force = false) {
   await loadLearningCache(force)
   const meProfile = await ensureMe()
+  await loadSentenceAvailability()
   if (meProfile?.features) {
     conversationPro.value = !!meProfile.features.conversation
     picturePro.value = !!meProfile.features.picture_description
@@ -283,8 +284,8 @@ const handleNetworkChange = () => {
   isOffline.value = typeof navigator !== 'undefined' && navigator.onLine === false
 }
 
-// applySentenceToday sets availability from the aggregate's sentence_today part (available=true
-// already implies the feature is enabled), so the initial load needs no separate /me + /today.
+// The overview can be cached while a worker prepares a new set. Refresh this small
+// availability check on entry so a newly ready training appears immediately.
 async function loadSentenceAvailability() {
   if (isOffline.value) {
     sentenceAvailable.value = false
@@ -294,11 +295,12 @@ async function loadSentenceAvailability() {
     sentenceAvailable.value = false
     return
   }
+  const course = currentCourseCode.value
   try {
-    const today = await sentenceClient.today(currentCourseCode.value)
-    applySentenceToday(today)
+    const today = await sentenceClient.today(course)
+    if (course === currentCourseCode.value && !isOffline.value) applySentenceToday(today)
   } catch {
-    sentenceAvailable.value = false
+    if (course === currentCourseCode.value) sentenceAvailable.value = false
   }
 }
 
@@ -345,7 +347,7 @@ watch(currentCourseCode, async () => {
 
 watch(isOffline, async (offline) => {
   if (!offline) {
-    await refreshVerbFormsPoolCount()
+    await Promise.all([refreshVerbFormsPoolCount(), loadSentenceAvailability()])
   }
 })
 

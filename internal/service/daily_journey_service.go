@@ -43,7 +43,7 @@ func NewDailyJourneyService(db *sql.DB, adapters map[dailyjourney.Mode]DailyJour
 	return &DailyJourneyService{db: db, repo: repository.NewDailyJourneyRepository(db), courses: repository.NewCourseRepository(db, nil), adapters: registry, now: time.Now}
 }
 
-// Ready deliberately keeps the production entrance disabled until ALL seven
+// Ready deliberately keeps the production entrance disabled until all registered
 // modes have real adapters. Course-specific unavailability is handled by an
 // adapter's empty Candidates result, not by pretending an adapter exists.
 func (s *DailyJourneyService) Ready() bool {
@@ -58,7 +58,7 @@ func (s *DailyJourneyService) Ready() bool {
 	return true
 }
 
-var journeyModes = []dailyjourney.Mode{dailyjourney.Words, dailyjourney.Reading, dailyjourney.Grammar, dailyjourney.GrammarSRS, dailyjourney.VerbForms, dailyjourney.Picture, dailyjourney.Conversation}
+var journeyModes = []dailyjourney.Mode{dailyjourney.Words, dailyjourney.Reading, dailyjourney.Grammar, dailyjourney.GrammarSRS, dailyjourney.VerbForms, dailyjourney.Sentences, dailyjourney.Picture, dailyjourney.Conversation}
 
 func (s *DailyJourneyService) Current(ctx context.Context, userID int64, course string) (*dailyjourney.Journey, error) {
 	return s.repo.Current(ctx, userID, course, s.now().Format("2006-01-02"))
@@ -125,7 +125,7 @@ func (s *DailyJourneyService) Act(ctx context.Context, userID int64, course, id,
 		return nil, dailyjourney.ErrInvalidAction
 	}
 	// Selection is tentative; ReserveAI rechecks owner/revision/current step under lock.
-	if action.Type == "start" || action.Type == "message" {
+	if action.Type == "start" || action.Type == "message" || action.Type == "answer" {
 		j, err := s.repo.Get(ctx, userID, course, id)
 		if err != nil {
 			return nil, err
@@ -219,6 +219,10 @@ func validJourneyLaunch(step dailyjourney.Step) bool {
 		}
 	case dailyjourney.VerbForms:
 		if name != "VerbTraining" {
+			return false
+		}
+	case dailyjourney.Sentences:
+		if name != "SentenceComposition" {
 			return false
 		}
 	case dailyjourney.Picture:

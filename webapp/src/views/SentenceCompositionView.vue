@@ -1,5 +1,6 @@
 <template>
   <div class="sc lg-page">
+    <DailyJourneyError v-if="daily.isJourney.value && daily.error.value" :message="daily.error.value" :busy="daily.busy.value" @retry="daily.retry" @back="daily.back" />
     <LgPageHeader :title="t('sentence.title')" :show-back="true" @back="goBack" />
 
     <div v-if="loading" class="sc-state">{{ t('common.loading') }}</div>
@@ -8,7 +9,7 @@
     <div v-else-if="!available && !finished" class="sc-card sc-state-card">
       <div class="sc-empty-icon"><LgIcon name="sprout" :s="40" c="var(--salvia, currentColor)" /></div>
       <p class="sc-empty-text">{{ t('sentence.noSet') }}</p>
-      <button class="sc-next" type="button" @click="goBack">{{ t('common.back') }}</button>
+      <button class="sc-next" type="button" @click="goBack">{{ daily.isJourney.value ? t('dailyJourney.returnToRoute') : t('common.back') }}</button>
     </div>
 
     <!-- Completed -->
@@ -20,11 +21,11 @@
         <div class="sc-stat sc-stat--passed"><span class="sc-stat-num">{{ setState.passed }}</span><LgIcon name="check" :s="16" /></div>
         <div class="sc-stat sc-stat--failed"><span class="sc-stat-num">{{ setState.failed }}</span><LgIcon name="x" :s="16" /></div>
       </div>
-      <button class="sc-next" type="button" @click="goBack">{{ t('common.back') }}</button>
+      <button class="sc-next" type="button" @click="goBack">{{ daily.isJourney.value ? t('dailyJourney.returnToRoute') : t('common.back') }}</button>
     </div>
 
     <!-- Exercise -->
-    <main v-else-if="current" class="sc-card">
+    <main v-else-if="current" class="sc-card" :inert="daily.isJourney.value && (daily.busy.value || daily.hasPendingAction.value) ? true : undefined">
       <!-- progress -->
       <div class="sc-progress-row">
         <div class="sc-progress-count">{{ attempted }} / {{ total }}</div>
@@ -57,7 +58,7 @@
           @input="markInput"
         />
         <VoiceMicButton
-          :lang="learning?.target_lang ?? 'en'"
+          :lang="daily.context.value?.courseCode.split('_')[0] || learning?.target_lang || 'en'"
           :disabled="grading || !!result"
           :label="t('sentence.voiceInput')"
           @transcript="onVoiceTranscript"
@@ -122,9 +123,14 @@
 </template>
 
 <script setup lang="ts">
-import { computed, onMounted, ref } from 'vue'
+import { computed, onMounted, ref, watch } from 'vue'
 import { useRouter } from 'vue-router'
 import { useI18n } from 'vue-i18n'
+import { useScopedExerciseDraft } from '../composables/useScopedExerciseDraft'
+import { currentUserScope } from '../api/sessionScope'
+import DailyJourneyError from '../components/DailyJourneyError.vue'
+import { useDailyJourneyExercise } from '../composables/useDailyJourneyExercise'
+import { emitAppDataEvent } from '../api/cacheInvalidation'
 import LgPageHeader from '../components/linglow/LgPageHeader.vue'
 import LgIcon from '../components/linglow/LgIcon.vue'
 import SentenceGrading from '../components/SentenceGrading.vue'
@@ -160,9 +166,31 @@ const total = ref(0)
 const attempted = ref(0)
 const setState = ref<SentenceSetState>({ status: '', stars: 0, passed: 0, failed: 0, total: 0, attempted: 0 })
 
+const daily = useDailyJourneyExercise<{ current: SentenceItem | null; set: SentenceSetState; done: boolean }>('sentences')
+watch(daily.data, data => {
+  if (!daily.isJourney.value || !data) return
+  available.value = true
+  finished.value = data.done
+  const sameItem = current.value?.id === data.current?.id
+  current.value = data.current
+  setState.value = data.set
+  total.value = data.set.total
+  attempted.value = data.set.attempted
+  result.value = data.current?.grading || null
+  resultInput.value = data.current?.user_input || ''
+  if (!sameItem || result.value) input.value = resultInput.value
+  gradingError.value = false
+  if (data.current?.attempted) emitAppDataEvent('sentence-attempt-recorded', daily.context.value?.courseCode)
+})
+
+const draftKey = computed(() => daily.isJourney.value && daily.context.value && current.value
+  ? `daily-journey:sentence-draft:${currentUserScope()}:${daily.context.value.courseCode}:${daily.context.value.journeyId}:${daily.context.value.stepId}:${current.value.id}` : '')
+useScopedExerciseDraft(draftKey, () => input.value, draft => { if (typeof draft === 'string') input.value = draft }, () => !!result.value)
+
 const progressPct = computed(() => (total.value > 0 ? Math.round((attempted.value / total.value) * 100) : 0))
 
 function goBack() {
+  if (daily.isJourney.value) { void daily.back(); return }
   if (typeof window !== 'undefined' && window.history.length > 1) router.back()
   else router.push('/dashboard')
 }
@@ -193,7 +221,12 @@ async function submit() {
   gradingError.value = false
   try {
     resultInput.value = input.value.trim()
+    if (daily.isJourney.value) {
+      await daily.act('answer', { item_id: current.value.id, user_input: input.value })
+      return
+    }
     const res = await sentenceClient.answer(current.value.id, input.value)
+    emitAppDataEvent('sentence-attempt-recorded', currentCourseCode.value)
     result.value = res.grading
     setState.value = res.set
     attempted.value = res.set.attempted
@@ -206,6 +239,7 @@ async function submit() {
 }
 
 async function next() {
+  if (daily.isJourney.value) { await daily.act('ack_feedback'); return }
   if (setState.value.status === 'completed') {
     finished.value = true
     current.value = null
@@ -215,6 +249,11 @@ async function next() {
 }
 
 onMounted(async () => {
+  if (daily.isJourney.value) {
+    try { await daily.ready() } catch { /* The journey error keeps retry and return available. */ }
+    finally { loading.value = false }
+    return
+  }
   await ensureMe()
   if (!hasFeature('sentence_composition')) {
     router.replace('/dashboard')

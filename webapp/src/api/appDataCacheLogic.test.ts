@@ -62,6 +62,7 @@ describe('appDataCacheLogic', () => {
     expect(screensForTags(['words', 'srs'])).toContain('daily-route')
     expect(tagsAffectScreen('review', ['srs'])).toBe(true)
     expect(tagsAffectScreen('learning', ['srs'])).toBe(false)
+    expect(screensForTags(['sentences'])).toContain('learning')
     expect(screensForTags(['course']).length).toBe(7)
   })
 

@@ -90,7 +90,7 @@ it('shows loading rather than a pending-action error while an answer is in fligh
 const modes: Array<[JourneyMode, string, Record<string, string>]> = [
  ['words', 'Training', {}], ['reading', 'ReadingText', { textId: 'read-a' }],
  ['grammar', 'GrammarChapter', { chapterId: 'ch1' }], ['grammar_srs', 'GrammarTraining', {}],
- ['verb_forms', 'VerbTraining', {}], ['picture', 'PictureQuestChat', { questCode: 'pic' }],
+ ['sentences', 'SentenceComposition', {}], ['verb_forms', 'VerbTraining', {}], ['picture', 'PictureQuestChat', { questCode: 'pic' }],
  ['conversation', 'PlaceChat', { districtCode: 'a0', scenarioCode: 'npc' }],
 ]
 it.each(modes)('%s keeps the exercise visible while sending and retries a failed action once', async (mode, name, params) => {

@@ -130,7 +130,7 @@ func TestDailyJourneyBrowserQA(t *testing.T) {
 		}
 		return nil
 	}
-	adapters := map[dailyjourney.Mode]service.DailyJourneyAdapter{dailyjourney.Words: service.NewDailyJourneyWordsAdapter(db, logger, lc), dailyjourney.Reading: service.NewDailyJourneyReadingAdapter(db), dailyjourney.Grammar: service.NewDailyJourneyGrammarAdapter(db, resolve), dailyjourney.GrammarSRS: service.NewDailyJourneyGrammarSRSAdapter(db, resolve), dailyjourney.VerbForms: service.NewDailyJourneyVerbsAdapter(db, cfg.Training, lc, logger), dailyjourney.Picture: &dailyJourneyChatAdapter{router: r, mode: dailyjourney.Picture, run: fake}, dailyjourney.Conversation: &dailyJourneyChatAdapter{router: r, mode: dailyjourney.Conversation, run: fake}}
+	adapters := map[dailyjourney.Mode]service.DailyJourneyAdapter{dailyjourney.Words: service.NewDailyJourneyWordsAdapter(db, logger, lc), dailyjourney.Reading: service.NewDailyJourneyReadingAdapter(db), dailyjourney.Grammar: service.NewDailyJourneyGrammarAdapter(db, resolve), dailyjourney.GrammarSRS: service.NewDailyJourneyGrammarSRSAdapter(db, resolve), dailyjourney.VerbForms: service.NewDailyJourneyVerbsAdapter(db, cfg.Training, lc, logger), dailyjourney.Sentences: &dailyJourneySentencesAdapter{router: r}, dailyjourney.Picture: &dailyJourneyChatAdapter{router: r, mode: dailyjourney.Picture, run: fake}, dailyjourney.Conversation: &dailyJourneyChatAdapter{router: r, mode: dailyjourney.Conversation, run: fake}}
 	verbs := repository.NewVerbFormsRepository(db, logger)
 	var verbWord int64
 	must(db.QueryRow(`INSERT INTO word_cards(word,definition,pos,course_code) VALUES('viajar','{}','verb','es_ru') RETURNING id`).Scan(&verbWord))

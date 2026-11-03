@@ -84,6 +84,15 @@
       </div>
     </div>
 
+    <router-link
+      v-if="!daily.isJourney.value && !sessionActive && !loading && sentenceAvailable && isOnline"
+      :to="{ name: 'SentenceComposition', query: { course_code: currentCourseCode } }"
+      class="card training-verb-forms-cta"
+    >
+      <h3 class="training-verb-forms-cta__title">{{ t('sentence.title') }}</h3>
+      <p class="training-verb-forms-cta__text">{{ t('sentence.dashboardSub') }}</p>
+    </router-link>
+
     <LgLoader v-if="loading" />
 
     <!-- Network error notification -->
@@ -530,6 +539,8 @@ import {
   buildReportComment
 } from '../constants/contentReportCategories'
 import { useLearningConfig } from '../composables/useLearningConfig'
+import { sentenceClient } from '../api/sentenceClient'
+import { useMe } from '../composables/useMe'
 import { useCourse } from '../composables/useCourse'
 import { useSpanishVerbFormsPractice } from '../composables/useSpanishVerbFormsPractice'
 
@@ -546,6 +557,21 @@ const {
   refreshVerbFormsPoolCount,
   openVerbFormsTraining,
 } = useSpanishVerbFormsPractice(isOnline)
+
+const { ensureMe, hasFeature } = useMe()
+const sentenceAvailable = ref(false)
+watch([currentCourseCode, isOnline, daily.isJourney], async ([course, online, journey], _, onCleanup) => {
+  let stale = false
+  onCleanup(() => { stale = true })
+  sentenceAvailable.value = false
+  if (!course || !online || journey) return
+  try {
+    await ensureMe()
+    if (stale || !hasFeature('sentence_composition')) return
+    const today = await sentenceClient.today(course)
+    if (!stale) sentenceAvailable.value = today.available && (today.remaining ?? 0) > 0
+  } catch { /* Hide the entrance until availability can be confirmed. */ }
+}, { immediate: true })
 
 watch(currentCourseCode, async () => {
   await ensureLearningLoaded()

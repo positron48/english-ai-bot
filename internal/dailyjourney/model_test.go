@@ -7,7 +7,7 @@ import (
 
 func TestDailyJourneySelection(t *testing.T) {
 	candidates := []Step{{Mode: Words}, {Mode: Reading}}
-	for _, m := range []Mode{Grammar, GrammarSRS, VerbForms, Picture, Conversation} {
+	for _, m := range []Mode{Grammar, GrammarSRS, VerbForms, Sentences, Picture, Conversation} {
 		candidates = append(candidates, Step{Mode: m})
 	}
 	// A much larger picture catalog must not bias mode selection.
@@ -31,8 +31,8 @@ func TestDailyJourneySelection(t *testing.T) {
 			}
 		}
 	}
-	for _, m := range []Mode{Grammar, GrammarSRS, VerbForms, Picture, Conversation} {
-		if seen[m] < 1050 || seen[m] > 1350 {
+	for _, m := range []Mode{Grammar, GrammarSRS, VerbForms, Sentences, Picture, Conversation} {
+		if seen[m] < 850 || seen[m] > 1150 {
 			t.Fatalf("biased/missing mode %s: %d", m, seen[m])
 		}
 	}

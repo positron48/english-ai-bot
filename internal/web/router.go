@@ -191,7 +191,7 @@ func NewRouter(
 		grammar.MirrorSRS = cfg.Linglow.SRSReadEnabled
 		grammarSRS := service.NewDailyJourneyGrammarSRSAdapter(db, resolveGrammar)
 		grammarSRS.MirrorSRS = cfg.Linglow.SRSReadEnabled
-		r.dailyJourneyService = service.NewDailyJourneyService(db, map[dailyjourney.Mode]service.DailyJourneyAdapter{dailyjourney.Reading: service.NewDailyJourneyReadingAdapter(db), dailyjourney.Words: words, dailyjourney.Grammar: grammar, dailyjourney.GrammarSRS: grammarSRS, dailyjourney.VerbForms: service.NewDailyJourneyVerbsAdapter(db, cfg.Training, cfg.Learning, logger), dailyjourney.Picture: &dailyJourneyChatAdapter{router: r, mode: dailyjourney.Picture}, dailyjourney.Conversation: &dailyJourneyChatAdapter{router: r, mode: dailyjourney.Conversation}})
+		r.dailyJourneyService = service.NewDailyJourneyService(db, map[dailyjourney.Mode]service.DailyJourneyAdapter{dailyjourney.Reading: service.NewDailyJourneyReadingAdapter(db), dailyjourney.Words: words, dailyjourney.Grammar: grammar, dailyjourney.GrammarSRS: grammarSRS, dailyjourney.VerbForms: service.NewDailyJourneyVerbsAdapter(db, cfg.Training, cfg.Learning, logger), dailyjourney.Sentences: &dailyJourneySentencesAdapter{router: r}, dailyjourney.Picture: &dailyJourneyChatAdapter{router: r, mode: dailyjourney.Picture}, dailyjourney.Conversation: &dailyJourneyChatAdapter{router: r, mode: dailyjourney.Conversation}})
 		r.courseRepo = repository.NewCourseRepository(db, logger)
 		r.linglowEventRepo = repository.NewLinglowEventRepository(db)
 		r.linglowSRSMirrorRepo = repository.NewLinglowSRSMirrorRepository(db)

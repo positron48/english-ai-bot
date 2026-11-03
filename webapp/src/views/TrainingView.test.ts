@@ -2,7 +2,10 @@ import { afterEach, beforeEach, expect, it, vi } from 'vitest'
 import { flushPromises, shallowMount } from '@vue/test-utils'
 import { ref } from 'vue'
 import TrainingView from './TrainingView.vue'
+import { sentenceClient } from '../api/sentenceClient'
 import { wordTrainingClient } from '../api/wordTrainingClient'
+vi.mock('../api/sentenceClient', () => ({ sentenceClient: { today: vi.fn() } }))
+vi.mock('../composables/useMe', () => ({ useMe: () => ({ ensureMe: vi.fn(), hasFeature: () => true }) }))
 const journeyMode = ref(false)
 const journeyData = ref<any>(null)
 const journeyAction = vi.fn()
@@ -42,11 +45,12 @@ function deferred<T>() {
 }
 let wrapper: ReturnType<typeof shallowMount> | undefined
 async function mountTraining() {
-  wrapper = shallowMount(TrainingView)
+  wrapper = shallowMount(TrainingView, { global: { stubs: { RouterLink: { props: ['to'], template: '<a data-test="sentence-entry"><slot /></a>' } } } })
   await flushPromises()
   return wrapper
 }
 beforeEach(() => {
+  vi.mocked(sentenceClient.today).mockResolvedValue({ available: false })
   journeyFinished.value = false
   journeyBusy.value = false
   journeyMode.value = false
@@ -264,4 +268,18 @@ it('shows the ordinary completion screen for a completed daily word session', as
   const w = await mountTraining()
   const completion = w.getComponent({ name: 'TrainingSessionCompletion' })
   expect(completion.props()).toMatchObject({ totalCards: 5, correctCards: 4, showContinueWithoutDueCards: true, continueLabel: 'dailyJourney.returnToRoute' })
+})
+
+
+it.each([
+  [{ available: true, remaining: 10 }, true],
+  [{ available: true, remaining: 0 }, false],
+  [{ available: false, remaining: 10 }, false],
+] as const)('shows the direct sentence entrance only for an available unfinished set: %j', async (today, visible) => {
+  vi.mocked(wordTrainingClient.current).mockResolvedValue({ active: false } as any)
+  vi.mocked(sentenceClient.today).mockResolvedValue(today)
+  const view = await mountTraining()
+  expect(view.find('[data-test="sentence-entry"]').exists()).toBe(visible)
+  if (visible) expect(view.get('[data-test="sentence-entry"]').text()).toContain('sentence.title')
+  expect(sentenceClient.today).toHaveBeenCalledWith('es_ru')
 })

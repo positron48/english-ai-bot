@@ -1,4 +1,4 @@
-export type JourneyMode = 'words' | 'reading' | 'grammar' | 'grammar_srs' | 'verb_forms' | 'picture' | 'conversation'
+export type JourneyMode = 'words' | 'reading' | 'grammar' | 'grammar_srs' | 'verb_forms' | 'sentences' | 'picture' | 'conversation'
 export type StepStatus = 'pending' | 'active' | 'completed' | 'skipped' | 'unavailable'
 export interface JourneyStep {
   id: string

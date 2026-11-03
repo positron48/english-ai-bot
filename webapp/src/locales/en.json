@@ -1221,6 +1221,7 @@
       "unfinished": "Unfinished"
     },
     "modes": {
+      "sentences": "Sentence composition",
       "words": "Words",
       "reading": "Reading",
       "grammar": "Grammar",
@@ -1230,6 +1231,7 @@
       "conversation": "Conversation"
     },
     "goals": {
+      "sentences": "Compose {count} sentences",
       "words": "Add new words and review familiar ones",
       "grammar": "Study a chapter and take its test",
       "categoryTest": "Take the full category test",

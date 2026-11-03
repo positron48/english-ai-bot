@@ -16,7 +16,7 @@ export function parseDailyJourneyContext(query: LocationQuery): DailyJourneyCont
 const launchRoutes: Record<JourneyStep['mode'], Record<string, string[]>> = {
   words: { Training: [], WordSets: [] }, reading: { ReadingText: ['textId'] },
   grammar: { GrammarChapter: ['chapterId'], GrammarChapterTest: ['chapterId'], GrammarCategoryTest: ['sectionId'] },
-  grammar_srs: { GrammarTraining: [] }, verb_forms: { VerbTraining: [] },
+  grammar_srs: { GrammarTraining: [] }, verb_forms: { VerbTraining: [] }, sentences: { SentenceComposition: [] },
   picture: { PictureQuestChat: ['questCode'] }, conversation: { PlaceChat: ['districtCode', 'scenarioCode'] },
 }
 

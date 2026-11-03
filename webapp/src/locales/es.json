@@ -1182,6 +1182,7 @@
       "unfinished": "Sin finalizar"
     },
     "modes": {
+      "sentences": "Construcción de frases",
       "words": "Palabras",
       "reading": "Lectura",
       "grammar": "Gramática",
@@ -1191,6 +1192,7 @@
       "conversation": "Conversación"
     },
     "goals": {
+      "sentences": "Construye {count} frases",
       "words": "Añade palabras nuevas y repasa las conocidas",
       "grammar": "Estudia un capítulo y realiza su prueba",
       "categoryTest": "Completa la prueba de categoría",
