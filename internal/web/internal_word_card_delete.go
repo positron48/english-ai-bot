@@ -17,8 +17,12 @@ import (
 // handleInternalWordCardDelete deletes one verified dictionary entry, including
 // its training cards and review history. Omitted dry_run means preview only.
 func (r *Router) handleInternalWordCardDelete(w http.ResponseWriter, req *http.Request) {
+	if req.Method == http.MethodPatch {
+		r.handleInternalWordCardRename(w, req)
+		return
+	}
 	if req.Method != http.MethodDelete {
-		w.Header().Set("Allow", http.MethodDelete)
+		w.Header().Set("Allow", "DELETE, PATCH")
 		http.Error(w, "Method not allowed", http.StatusMethodNotAllowed)
 		return
 	}

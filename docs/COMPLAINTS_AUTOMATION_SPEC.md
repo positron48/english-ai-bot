@@ -85,3 +85,28 @@ Content-Type: application/json
 
 Перед закрытием жалобы проверить detail API: соответствующие карточки отсутствуют, историческая жалоба сохранена.
 Для Extremadura отдельная миграция больше не требуется: удаление производится этим API после rollout и явного apply.
+
+### Rename a dictionary word without resetting progress
+
+`PATCH /api/internal/word-cards/{id}` uses `X-Service-Token` and accepts:
+
+```json
+{"course_code":"es_ru","expected_word":"apatecer","new_word":"apetecer","transcription":"/apeˈteθeɾ/","dry_run":true}
+```
+
+Omitting `dry_run` previews only. Apply with `dry_run:false`. `transcription` is optional
+and, when provided, updates both the dictionary and its training cards. The operation
+locks the dictionary and training rows in a transaction, preserves their IDs and user
+progress, updates canonical spellings and matching/default display forms, updates a
+matching `verb_forms_json.v1`, and removes the old canonical lookup alias. Custom display
+forms, other verb forms, translations and historical complaint payloads stay unchanged.
+
+404: missing ID. 409: stale course/spelling, existing new spelling in the same course
+(case insensitive), unexpected training spelling, or invalid verb-form metadata. No
+automatic merging. Malformed/unknown JSON fields and unchanged/invalid names give 400.
+A failed child update rolls the whole operation back. A repeated request with the old
+expected spelling returns 409; inspect the current card before retrying.
+
+Audio is not copied from the misspelled key. Generate/upload audio for `new_word` with
+`target_lang=es` (or the relevant course language), verify ready, and verify the card
+again after applying. Existing TTS upload/status endpoints remain unchanged.
