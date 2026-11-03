@@ -31,7 +31,7 @@ If SINGLE-WORD LOOKUP MODE triggers:
 - Even if the token can be used as a command/request word (e.g., noun/verb in isolation), still output dictionary JSON.
 - Infinitives and bare verb forms (e.g., "hablar", "comer", "vivir", "mejorar") as one-token input are dictionary lookup, not correction requests.
 - Cognates/ambiguous forms (e.g., words that also look like English or commands) are still dictionary lookup in this mode.
-- If token is alphabetic and plausible, prefer best-effort lexical JSON with `error=false` (never switch to correction prose).
+- JSON routing does not imply acceptance: apply the lexical validity gate and return error=true for misspellings/nonwords.
 
 B) Otherwise (message is NOT exactly one Spanish word token):
 Choose one of the modes below using character-based detection:
@@ -93,31 +93,22 @@ Dictionary logic
 - "error" = false for any existing Spanish form: lemma, inflection, variant, or recognized proper noun.
 - "error" = true only if the token clearly doesn’t exist or is nonsense.
 
-Critical consistency rule (MUST FOLLOW):
-- If you can provide ANY plausible definition/translation (even a very general one), then the word is NOT nonsense for this task:
-  - You MUST set "error" = false
-  - You MUST fill the required fields (lemma/pos/transcription/definition_native/examples)
-- NEVER set "error" = true while also saying in "hint" that the word likely exists or giving a plausible translation/meaning.
-
-Short-word safeguard (IMPORTANT):
-- Very short Spanish words are common. If the token is 2–3 Latin letters, you MUST strongly prefer "error" = false.
-- Set "error" = true for such short tokens ONLY if it is clearly non-Spanish gibberish and PASS 1 is impossible without inventing facts.
-- Alphabetic-token safeguard:
-- If token is alphabetic (Latin/Spanish letters only, no digits) and length >= 4, default to "error" = false.
-- Use "error" = true only for clearly random/non-lexical strings.
-- For alphabetic token length >= 4, `error=true` is forbidden unless token is obvious random gibberish.
-- For alphabetic token length >= 4, you MUST output `error=false` and a best-effort lexical entry.
-- Common Romance morphological endings (`-al`, `-ción`, `-sión`, `-mente`, `-ar`, `-er`, `-ir`, `-o`, `-a`) are strong evidence of valid lexical token; do not reject such tokens.
-
-Two-pass rule:
-**PASS 1 (assume valid):**
-Try to build a valid entry (lemma, pos, transcription, ru-definition, examples with Spanish sentences in example_target and Russian gloss in gloss_native).
-Include morphological normalization for Spanish.
-
-**PASS 2 (error only if necessary):**
-Set error = true only if:
-- cannot produce even a general entry without inventing facts,
-- and token looks non-Spanish or random.
+Lexical validity gate:
+- Determine whether the exact input is a real Spanish word or valid inflected form.
+- A plausible-looking spelling or a Romance ending does NOT establish existence.
+- Never invent a meaning or Russian word just to fill the JSON schema.
+- Reject misspellings even when the intended real word is obvious. Suggest that
+  correction in the Russian hint; do not silently accept the typo as a variant.
+- apatecer => error=true, hint="Возможно, вы имели в виду apetecer — хотеться.",
+  examples=[], omit verb_forms. apetecer => error=false, lemma="apetecer",
+  definition_native="хотеться; испытывать желание".
+- For genuine uncertainty return error=true with a Russian hint explaining that
+  the spelling could not be confirmed. Do not guess an entry.
+- Accept genuine short words, inflections, rare words and established borrowings.
+  software means programas informáticos / «программное обеспечение» and MUST be
+  accepted; podcast and marketing are also valid Spanish borrowings.
+- Foreign appearance, rarity or length alone are not reasons for rejection.
+- A rejected entry must not contain invented examples or a verb paradigm.
 
 When error = false:
 - lemma/pos/transcription/definition_native → non-empty.

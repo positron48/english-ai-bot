@@ -36,6 +36,14 @@ func ValidateTrainingCardResponse(targetLang string, wordCard *models.WordCard, 
 
 	lemma := strings.ToLower(wordCard.Word)
 	var errors []string
+	// The generated canonical spelling and lemma must describe the same item.
+	// Empty lemma remains compatible with older providers; the prompt requires it.
+	if strings.TrimSpace(resp.Lemma) != "" && !strings.EqualFold(strings.TrimSpace(resp.Lemma), strings.TrimSpace(resp.WordEN)) {
+		errors = append(errors, "R11 generated lemma differs from canonical word; reject inconsistent spelling")
+	}
+	if resp.Error != "" {
+		errors = append(errors, "R11 rejected response must not contain senses")
+	}
 
 	// R0: top-level word/display fields must not contain comma-separated forms
 	if strings.Contains(resp.WordEN, ",") {

@@ -922,3 +922,23 @@ func TestDiffersOnlyByFirstChar(t *testing.T) {
 
 // Helper function - uses existing stringPtr from word_service_integration_test.go
 // For exact substring matching in error messages, we use strings.Contains directly
+
+func TestValidateTrainingCardResponse_RejectsSilentSpellingCorrection(t *testing.T) {
+	resp := &models.TrainingCardResponse{WordEN: "apatecer", Lemma: "apetecer", Senses: []models.TrainingCardSense{{WordRU: "хотеться"}}}
+	got := ValidateTrainingCardResponse("es", &models.WordCard{Word: "apatecer"}, resp)
+	if !strings.Contains(got, "R11") {
+		t.Fatalf("silent typo correction accepted: %s", got)
+	}
+	resp.Lemma = "apatecer"
+	resp.Error = "invalid_word"
+	if got = ValidateTrainingCardResponse("es", &models.WordCard{Word: "apatecer"}, resp); !strings.Contains(got, "R11") {
+		t.Fatal("contradictory rejection accepted")
+	}
+}
+
+func TestValidateTrainingCardResponse_LemmaAllowsRealInflections(t *testing.T) {
+	resp := &models.TrainingCardResponse{WordEN: "hablar", Lemma: "hablar", Senses: []models.TrainingCardSense{{WordRU: "говорить"}}}
+	if got := ValidateTrainingCardResponse("es", &models.WordCard{Word: "hablando"}, resp); strings.Contains(got, "R11") {
+		t.Fatal(got)
+	}
+}
