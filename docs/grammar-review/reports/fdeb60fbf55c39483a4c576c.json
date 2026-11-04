@@ -25,7 +25,13 @@
       "id": "q3",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "hablar — лемма, hablé требуется выбрать по ayer/yo."
+      }
     },
     {
       "id": "q4",
@@ -49,7 +55,13 @@
       "id": "q7",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "vivir требует vivieron по ellos/прошедшему."
+      }
     },
     {
       "id": "q8",
@@ -79,7 +91,13 @@
       "id": "q12",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "trabajar требует trabajaste по tú/2020."
+      }
     },
     {
       "id": "q13",
@@ -109,7 +127,13 @@
       "id": "q17",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "llegar требует llegaron по ellos/ayer."
+      }
     },
     {
       "id": "q18",
@@ -139,7 +163,13 @@
       "id": "q22",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "vivir задаёт лемму, vivió нужно выбрать по él/2018."
+      }
     },
     {
       "id": "q23",
@@ -169,7 +199,13 @@
       "id": "q27",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "beber требует bebisteis по vosotros/прошедшему."
+      }
     },
     {
       "id": "q28",
@@ -199,7 +235,13 @@
       "id": "q32",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "hablar задаёт лемму, habló нужно выбрать по él/ayer."
+      }
     },
     {
       "id": "q33",
@@ -223,7 +265,13 @@
       "id": "q36",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "comer задаёт лемму, comí нужно выбрать по yo/ayer."
+      }
     },
     {
       "id": "q37",
@@ -253,7 +301,13 @@
       "id": "q41",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "hablar задаёт лемму, hablamos нужно выбрать по nosotros."
+      }
     },
     {
       "id": "q42",
@@ -265,7 +319,13 @@
       "id": "q43",
       "decision": "fixed",
       "note": "Устранена неоднозначность: прежний контекст допускал другое время или несколько ответов.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "hablar — лемма; форму nosotros настоящего времени нужно образовать."
+      }
     },
     {
       "id": "q44",
@@ -277,7 +337,13 @@
       "id": "q45",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "vivir не раскрывает форму vivimos; нужно выбрать лицо и время."
+      }
     },
     {
       "id": "q46",
@@ -289,13 +355,25 @@
       "id": "q47",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "vivir и 2019 задают лемму и прошлое; форму nosotros выбирает ученик."
+      }
     },
     {
       "id": "q48",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "estudiar задаёт лемму; ayer требует форму прошедшего nosotros."
+      }
     },
     {
       "id": "q49",
@@ -313,19 +391,37 @@
       "id": "q51",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "trabajar не сообщает окончание третьего лица множественного числа."
+      }
     },
     {
       "id": "q52",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "caminar — исходный инфинитив; требуется самостоятельное спряжение."
+      }
     },
     {
       "id": "q53",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "vivir — лемма, форма yo indefinido не дана."
+      }
     },
     {
       "id": "q54",
@@ -349,7 +445,13 @@
       "id": "q57",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "escribir не сообщает форму третьего лица indefinido."
+      }
     },
     {
       "id": "q58",

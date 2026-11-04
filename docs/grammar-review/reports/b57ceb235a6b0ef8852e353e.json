@@ -13,37 +13,73 @@
       "id": "q1",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают перевод инфинитива или лицо спряжения, а не готовую форму. Для ответа необходимо применить окончания и орфографию."
+      }
     },
     {
       "id": "q2",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают перевод инфинитива или лицо спряжения, а не готовую форму. Для ответа необходимо применить окончания и орфографию."
+      }
     },
     {
       "id": "q3",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают перевод инфинитива или лицо спряжения, а не готовую форму. Для ответа необходимо применить окончания и орфографию."
+      }
     },
     {
       "id": "q4",
       "decision": "fixed",
       "note": "Исправлены неверные форма, ключ или грамматическое объяснение.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают перевод инфинитива или лицо спряжения, а не готовую форму. Для ответа необходимо применить окончания и орфографию."
+      }
     },
     {
       "id": "q5",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают перевод инфинитива или лицо спряжения, а не готовую форму. Для ответа необходимо применить окончания и орфографию."
+      }
     },
     {
       "id": "q6",
       "decision": "fixed",
       "note": "Исправлены неверные форма, ключ или грамматическое объяснение.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "В скобках перевод инфинитива, лицо или исходный глагол для преобразования, готовой формы нет."
+      }
     },
     {
       "id": "q7",
@@ -55,19 +91,37 @@
       "id": "q8",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "В скобках перевод инфинитива, лицо или исходный глагол для преобразования, готовой формы нет."
+      }
     },
     {
       "id": "q9",
       "decision": "fixed",
       "note": "Исправлены неверные форма, ключ или грамматическое объяснение.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "В скобках перевод инфинитива, лицо или исходный глагол для преобразования, готовой формы нет."
+      }
     },
     {
       "id": "q10",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "В скобках перевод инфинитива, лицо или исходный глагол для преобразования, готовой формы нет."
+      }
     }
   ],
   "checks": [

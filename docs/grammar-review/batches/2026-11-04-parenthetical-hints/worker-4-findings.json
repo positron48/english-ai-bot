@@ -1,0 +1,3017 @@
+{
+  "worker": "worker-4",
+  "findings": [
+    {
+      "source": "courses/spanish-grammar/chapters/120.es.grammar.subjunctive_noun_clauses.emotion_evaluation_me_alegra_que_es_bueno_que/03-questions.json",
+      "id": "q52",
+      "before": {
+        "id": "q52",
+        "type": "fill_blank",
+        "prompt": "Один субъект: *Prefiero **___** en casa.* (preferir + infinitivo, mismo sujeto)",
+        "theory_block_id": "b5_theory_subjunctive_vs_indicative_fact",
+        "difficulty": 1,
+        "correct_answer": "cenar",
+        "explanation": "Mismo sujeto → infinitivo.",
+        "tags": [
+          "b5"
+        ]
+      },
+      "after": {
+        "id": "q52",
+        "type": "fill_blank",
+        "prompt": "Скажите «Я предпочитаю ужинать дома»: *Prefiero **___** en casa.* (одно слово)",
+        "theory_block_id": "b5_theory_subjunctive_vs_indicative_fact",
+        "difficulty": 1,
+        "correct_answer": "cenar",
+        "explanation": "Предпочитает и ужинает один человек, поэтому после prefiero нужен инфинитив cenar: Prefiero cenar en casa.",
+        "tags": [
+          "b5"
+        ]
+      },
+      "reason": "Убрано готовое правило preferir + infinitivo и восстановлено недостающее значение «ужинать»: раньше ключ cenar нельзя было вывести из условия. Теперь русский смысл задаёт глагол, а форму после prefiero нужно выбрать.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/123.es.grammar.subjunctive_noun_clauses.negative_commands_polite_commands_subjunctive/03-questions.json",
+      "id": "q59",
+      "before": {
+        "id": "q59",
+        "type": "mcq_single",
+        "prompt": "Два местоимения в *No ___ lleven* (*ustedes*, *se lo*):",
+        "theory_block_id": "b5_theory_pronouns_negative_commands",
+        "difficulty": 2,
+        "choices": [
+          {
+            "id": "a",
+            "text": "*se lo*",
+            "feedback": "Indirecto + directo."
+          },
+          {
+            "id": "b",
+            "text": "*lo se*",
+            "feedback": "Порядок."
+          },
+          {
+            "id": "c",
+            "text": "*le lo*",
+            "feedback": "→ часто *se lo*."
+          },
+          {
+            "id": "d",
+            "text": "*los se*",
+            "feedback": "Неверно."
+          }
+        ],
+        "correct_answer": "a",
+        "explanation": "Как в обычном предложении.",
+        "tags": [
+          "b5"
+        ]
+      },
+      "after": {
+        "id": "q59",
+        "type": "mcq_single",
+        "prompt": "Вы обращаетесь к нескольким людям: «Не относите ему это». Выберите два местоимения: *No ___ lleven.* (обращение к ustedes)",
+        "theory_block_id": "b5_theory_pronouns_negative_commands",
+        "difficulty": 2,
+        "choices": [
+          {
+            "id": "a",
+            "text": "*se lo*",
+            "feedback": "Indirecto + directo."
+          },
+          {
+            "id": "b",
+            "text": "*lo se*",
+            "feedback": "Порядок."
+          },
+          {
+            "id": "c",
+            "text": "*le lo*",
+            "feedback": "Перед прямым местоимением lo косвенное le заменяется на se."
+          },
+          {
+            "id": "d",
+            "text": "*los se*",
+            "feedback": "Неверно."
+          }
+        ],
+        "correct_answer": "a",
+        "explanation": "Косвенное дополнение «ему» обычно выражается le, но перед прямым lo оно меняется на se. В отрицательной команде оба местоимения стоят перед глаголом: No se lo lleven.",
+        "tags": [
+          "b5"
+        ]
+      },
+      "reason": "Убрана готовая последовательность se lo из скобок; русский смысл задаёт косвенное и прямое дополнения, а их форму и порядок ученик выбирает сам.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/125.es.grammar.subjunctive_noun_clauses.build_speak_wishes_recommendations_emotions_opinions/03-questions.json",
+      "id": "q1",
+      "before": {
+        "id": "q1",
+        "type": "mcq_single",
+        "prompt": "Главная цель главы 125 (сборка фраз и устная практика):",
+        "theory_block_id": "b1_theory_build_speak_subjunctive_noun_clauses_overview",
+        "difficulty": 1,
+        "choices": [
+          {
+            "id": "a",
+            "text": "заново выучить таблицу окончаний subjuntivo",
+            "feedback": "Формы — гл. 118–119."
+          },
+          {
+            "id": "b",
+            "text": "свободно комбинировать желание, совет, эмоцию и мнение в связной речи",
+            "feedback": "Да."
+          },
+          {
+            "id": "c",
+            "text": "разобрать отрицательные команды *no hables*",
+            "feedback": "Это гл. 123."
+          },
+          {
+            "id": "d",
+            "text": "изучить *cuando* с будущим",
+            "feedback": "Раздел 19."
+          }
+        ],
+        "correct_answer": "b",
+        "explanation": "Практическая сборка после алгоритма гл. 124.",
+        "tags": [
+          "b1"
+        ]
+      },
+      "after": {
+        "id": "q1",
+        "type": "mcq_single",
+        "prompt": "Вы рады, что Ana здесь, и считаете, что она может помочь. Выберите правильную фразу. (эмоция и мнение)",
+        "theory_block_id": "b1_theory_build_speak_subjunctive_noun_clauses_overview",
+        "difficulty": 1,
+        "choices": [
+          {
+            "id": "a",
+            "text": "Me alegra que Ana está aquí y creo que puede ayudarnos.",
+            "feedback": "Эмоциональная оценка me alegra que требует subjuntivo esté."
+          },
+          {
+            "id": "b",
+            "text": "Me alegra que Ana esté aquí y creo que puede ayudarnos.",
+            "feedback": "Эмоция требует esté, а утвердительное мнение creo que — puede."
+          },
+          {
+            "id": "c",
+            "text": "Me alegra que Ana esté aquí y creo que pueda ayudarnos.",
+            "feedback": "Утвердительное creo que здесь вводит мнение как факт: puede."
+          },
+          {
+            "id": "d",
+            "text": "Me alegra que Ana está aquí y creo que pueda ayudarnos.",
+            "feedback": "Наклонения перепутаны: нужны esté после эмоции и puede после утвердительного мнения."
+          }
+        ],
+        "correct_answer": "b",
+        "explanation": "После эмоциональной оценки me alegra que используется subjuntivo: esté. Утвердительное мнение creo que сочетается с indicativo: puede.",
+        "tags": [
+          "b1"
+        ]
+      },
+      "reason": "Убрана подсказка цели главы «сборка фраз» и мета-вопрос о структуре учебника. Теперь проверяется соединение эмоциональной оценки и утвердительного мнения.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/125.es.grammar.subjunctive_noun_clauses.build_speak_wishes_recommendations_emotions_opinions/03-questions.json",
+      "id": "q14",
+      "before": {
+        "id": "q14",
+        "type": "fill_blank",
+        "prompt": "Вставьте: *Quiero **___** mañana.* (venir — infinitivo, yo, один субъект; не *que venga*)",
+        "theory_block_id": "b2_theory_speaking_wishes_influence",
+        "difficulty": 2,
+        "correct_answer": "venir",
+        "explanation": "Тот же субъект → infinitivo без *que*.",
+        "tags": [
+          "b2"
+        ]
+      },
+      "after": {
+        "id": "q14",
+        "type": "fill_blank",
+        "prompt": "Вставьте нужную форму глагола из скобок: *Quiero **___** mañana.* (vengo)",
+        "theory_block_id": "b2_theory_speaking_wishes_influence",
+        "difficulty": 2,
+        "correct_answer": "venir",
+        "explanation": "После quiero при одном и том же субъекте используется инфинитив venir: Quiero venir mañana.",
+        "tags": [
+          "b2"
+        ]
+      },
+      "reason": "Независимая проверка: русское «прийти» допускало llegar наряду с venir. Дана исходная личная форма vengo для преобразования в инфинитив; готовый ключ не назван.",
+      "report_state": "done",
+      "revision_editor": "coordinator"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/129.es.grammar.subjunctive_time_purpose_relative.aunque_por_mas_que_como_si_meaning_mood/03-questions.json",
+      "id": "q129_b5_cloze",
+      "before": {
+        "id": "q129_b5_cloze",
+        "type": "cloze_mixed",
+        "theory_block_id": "b5_theory_como_si_subjuntivo_tense",
+        "difficulty": 4,
+        "prompt": "Два пропуска, ответ через «|».\n1) *Me mira como si no me ___.* (*conocer*, несовершенное сослагательное, 1 л. ед.)\n2) *Sonrió como si ___ la lotería.* (*haber* + *ganado* — плюсквамперфект сослагательного)",
+        "word_bank": [
+          "conociera",
+          "conoce",
+          "hubiera ganado",
+          "ganara"
+        ],
+        "correct_answer": "conociera|hubiera ganado",
+        "explanation": "Одновременность → *conociera*; предшествование «победы» → *hubiera ganado*.",
+        "tags": [
+          "cloze",
+          "como_si"
+        ]
+      },
+      "after": {
+        "id": "q129_b5_cloze",
+        "type": "cloze_mixed",
+        "theory_block_id": "b5_theory_como_si_subjuntivo_tense",
+        "difficulty": 4,
+        "prompt": "Два пропуска, ответ через «|». Используйте слова из банка.\n1) *Me mira como si no me ___.* (*conocer*, несовершенное сослагательное, 3 л. ед.; вариант на -ra)\n2) *Sonrió como si ___ la lotería.* (*haber* + *ganado* — плюсквамперфект сослагательного; форма haber на -ra)",
+        "word_bank": [
+          "conociera",
+          "conoce",
+          "hubiera ganado",
+          "ganara"
+        ],
+        "correct_answer": "conociera|hubiera ganado",
+        "explanation": "Одновременность → *conociera*; предшествование «победы» → *hubiera ganado*.",
+        "tags": [
+          "cloze",
+          "como_si"
+        ]
+      },
+      "reason": "Независимая проверка: явно ограничен выбор словами банка и вариантом на -ra, чтобы исключить равно нормативные -se при единственном ключе; личная форма conocer согласована с me mira.",
+      "report_state": "done",
+      "revision_editor": "coordinator"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/129.es.grammar.subjunctive_time_purpose_relative.aunque_por_mas_que_como_si_meaning_mood/03-questions.json",
+      "id": "q129_b3_prod",
+      "before": {
+        "id": "q129_b3_prod",
+        "type": "production_hint",
+        "theory_block_id": "b3_theory_aunque_subjuntivo",
+        "difficulty": 3,
+        "prompt": "Устно: **даже если нас не поддержат — мы продолжим**, с *Seguir* и *apoyar* в нужных лицах (*nosotros* / *ellos*).",
+        "hints": [
+          "Главная часть: *Seguiremos, …*",
+          "В уступке — сослагательное множественного для «они поддержат нас»."
+        ],
+        "rubric_ru": "Проверьте согласование и сослагательное в отрицании.",
+        "correct_answer": "Seguiremos, aunque no nos apoyen.",
+        "explanation": "Как в примере теории *Seguiremos, aunque no nos apoyen.*",
+        "tags": [
+          "production",
+          "oral"
+        ]
+      },
+      "after": {
+        "id": "q129_b3_prod",
+        "type": "production_hint",
+        "theory_block_id": "b3_theory_aunque_subjuntivo",
+        "difficulty": 3,
+        "prompt": "Устно: **даже если нас не поддержат — мы продолжим**, с *Seguir* и *apoyar* в нужных лицах (*nosotros* / *ellos*).",
+        "hints": [
+          "В главной части выразите будущее действие глаголом seguir для nosotros.",
+          "В уступке используйте сослагательное наклонение: поддержку со стороны других людей нельзя считать гарантированной."
+        ],
+        "rubric_ru": "Проверьте согласование и сослагательное в отрицании.",
+        "correct_answer": "Seguiremos, aunque no nos apoyen.",
+        "explanation": "Как в примере теории *Seguiremos, aunque no nos apoyen.*",
+        "tags": [
+          "production",
+          "oral"
+        ]
+      },
+      "reason": "В дополнительной подсказке убрано готовое Seguiremos; вместо него задана грамматическая задача futuro simple от seguir.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/129.es.grammar.subjunctive_time_purpose_relative.aunque_por_mas_que_como_si_meaning_mood/03-questions.json",
+      "id": "q129_b4_prod",
+      "before": {
+        "id": "q129_b4_prod",
+        "type": "production_hint",
+        "theory_block_id": "b4_theory_por_mas_que_subjuntivo",
+        "difficulty": 3,
+        "prompt": "Устно: «**как ни беги — не успеешь вовремя**» с *por mucho que* и *correr* (2 л. ед.).",
+        "hints": [
+          "Структура: *Por mucho que …, no …*",
+          "После связки — форма *corra*."
+        ],
+        "rubric_ru": "Без смены шаблона на *cuanto más*.",
+        "correct_answer": "Por mucho que corras, no llegarás a tiempo.",
+        "explanation": "Та же связка *por mucho que* + сослагательное; обращение на «ты» (*corras*, *llegarás*).",
+        "tags": [
+          "production",
+          "oral"
+        ]
+      },
+      "after": {
+        "id": "q129_b4_prod",
+        "type": "production_hint",
+        "theory_block_id": "b4_theory_por_mas_que_subjuntivo",
+        "difficulty": 3,
+        "prompt": "Устно: «**как ни беги — не успеешь вовремя**» с *por mucho que* и *correr* (2 л. ед.).",
+        "hints": [
+          "Начните с уступительной связки и затем выразите отрицательный результат.",
+          "После por mucho que образуйте presente de subjuntivo глагола correr для обращения на tú."
+        ],
+        "rubric_ru": "Без смены шаблона на *cuanto más*.",
+        "correct_answer": "Por mucho que corras, no llegarás a tiempo.",
+        "explanation": "Та же связка *por mucho que* + сослагательное; обращение на «ты» (*corras*, *llegarás*).",
+        "tags": [
+          "production",
+          "oral"
+        ]
+      },
+      "reason": "Убрана готовая и к тому же неверная для tú форма corra из hints; теперь требуется самостоятельно образовать subjuntivo для адресата.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/129.es.grammar.subjunctive_time_purpose_relative.aunque_por_mas_que_como_si_meaning_mood/03-questions.json",
+      "id": "q129_b6_prod",
+      "before": {
+        "id": "q129_b6_prod",
+        "type": "production_hint",
+        "theory_block_id": "b6_theory_ru_traps_aunque_como_si",
+        "difficulty": 3,
+        "prompt": "Устно дайте **две** микрофразы: (1) нейтральная инструкция «сделай, как я показал» с *hacer* и *mostrar* в прошлом; (2) «ведёт себя, как будто он директор» с *como si*.",
+        "hints": [
+          "Для (1) не используйте *como si*.",
+          "Для (2) после *como si* — *fuera* / *fuese*."
+        ],
+        "rubric_ru": "Задание на разведение шаблонов; оценивайте раздельно две фразы.",
+        "correct_answer": "Hazlo como te mostré. | Actúa como si fuera el director.",
+        "explanation": "(1) *como* + изъявительное про реальное прошлое; (2) *como si* + сослагательное.",
+        "tags": [
+          "production",
+          "contrast"
+        ]
+      },
+      "after": {
+        "id": "q129_b6_prod",
+        "type": "production_hint",
+        "theory_block_id": "b6_theory_ru_traps_aunque_como_si",
+        "difficulty": 3,
+        "prompt": "Устно дайте **две** микрофразы: (1) нейтральная инструкция «сделай, как я показал» с *hacer* и *mostrar* в прошлом; (2) «ведёт себя, как будто он директор» с *como si*.",
+        "hints": [
+          "В первой фразе способ действия опирается на реальное прошлое событие.",
+          "Во второй фразе воображаемая роль требует imperfecto de subjuntivo глагола ser."
+        ],
+        "rubric_ru": "Задание на разведение шаблонов; оценивайте раздельно две фразы.",
+        "correct_answer": "Hazlo como te mostré. | Actúa como si fuera el director.",
+        "explanation": "(1) *como* + изъявительное про реальное прошлое; (2) *como si* + сослагательное.",
+        "tags": [
+          "production",
+          "contrast"
+        ]
+      },
+      "reason": "Убраны готовые fuera/fuese из hints; для второй фразы задано только время и наклонение ser.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/129.es.grammar.subjunctive_time_purpose_relative.aunque_por_mas_que_como_si_meaning_mood/03-questions.json",
+      "id": "q129_b2_prod",
+      "before": {
+        "id": "q129_b2_prod",
+        "type": "production_hint",
+        "theory_block_id": "b2_theory_aunque_indicativo",
+        "difficulty": 2,
+        "prompt": "Устно: «**хотя ты устал, закончи отчёт сегодня**» — усталость как факт (*estar* 2 л. ед., *terminar* 2 л. ед. повелительное).",
+        "hints": [
+          "Уступка: *Aunque …*",
+          "В придаточном — изъявительное *estás*, не *estés*."
+        ],
+        "rubric_ru": "Проверьте констатацию усталости, не гипотезу.",
+        "correct_answer": "Aunque estás cansado, termina el informe hoy.",
+        "explanation": "Образец из блока b2.",
+        "tags": [
+          "production",
+          "oral"
+        ]
+      },
+      "after": {
+        "id": "q129_b2_prod",
+        "type": "production_hint",
+        "theory_block_id": "b2_theory_aunque_indicativo",
+        "difficulty": 2,
+        "prompt": "Устно: «**хотя ты устал, закончи отчёт сегодня**» — усталость как факт (*estar* 2 л. ед., *terminar* 2 л. ед. повелительное).",
+        "hints": [
+          "Начните с уступительной связки.",
+          "Усталость представлена как установленный факт, а закончить отчёт нужно попросить собеседника."
+        ],
+        "rubric_ru": "Проверьте констатацию усталости, не гипотезу.",
+        "correct_answer": "Aunque estás cansado, termina el informe hoy.",
+        "explanation": "Образец из блока b2.",
+        "tags": [
+          "production",
+          "oral"
+        ]
+      },
+      "reason": "Убрана готовая форма estás и отвергнутая estés из hints; сохраняется смысл усталости как установленного факта.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/129.es.grammar.subjunctive_time_purpose_relative.aunque_por_mas_que_como_si_meaning_mood/03-questions.json",
+      "id": "q129_b5_prod2",
+      "before": {
+        "id": "q129_b5_prod2",
+        "type": "production_hint",
+        "theory_block_id": "b5_theory_como_si_subjuntivo_tense",
+        "difficulty": 5,
+        "prompt": "Устно: «**говорил так, как будто прожил там всю жизнь**» — опора в прошлом (*hablar* несовершенное изъявительное), «прожить» с предшествованием (*haber* + *vivir*).",
+        "hints": [
+          "Начало: *Hablaba como si …*",
+          "Для «раньше момента речи» — *hubiera vivido*."
+        ],
+        "rubric_ru": "Не подставляйте изъявительный претерит после *como si*.",
+        "correct_answer": "Hablaba como si hubiera vivido allí toda la vida.",
+        "explanation": "Как в примере теории с плюсквамперфектом сослагательного.",
+        "tags": [
+          "production",
+          "pluscuamperfecto"
+        ]
+      },
+      "after": {
+        "id": "q129_b5_prod2",
+        "type": "production_hint",
+        "theory_block_id": "b5_theory_como_si_subjuntivo_tense",
+        "difficulty": 5,
+        "prompt": "Устно: «**говорил так, как будто прожил там всю жизнь**» — опора в прошлом (*hablar* несовершенное изъявительное), «прожить» с предшествованием (*haber* + *vivir*).",
+        "hints": [
+          "Первая часть описывает речь в прошлом; затем вводится нереальное сравнение.",
+          "Жизнь в том месте предшествует моменту речи: требуется pluscuamperfecto de subjuntivo глагола vivir."
+        ],
+        "rubric_ru": "Не подставляйте изъявительный претерит после *como si*.",
+        "correct_answer": "Hablaba como si hubiera vivido allí toda la vida.",
+        "explanation": "Как в примере теории с плюсквамперфектом сослагательного.",
+        "tags": [
+          "production",
+          "pluscuamperfecto"
+        ]
+      },
+      "reason": "Убрана готовая форма hubiera vivido из hints; указана только временная связь и целевая категория.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/130.es.grammar.subjunctive_time_purpose_relative.relative_clauses_known_unknown_hypothetical_reference/03-questions.json",
+      "id": "q130_b1_prod",
+      "before": {
+        "id": "q130_b1_prod",
+        "type": "production_hint",
+        "theory_block_id": "b1_theory_relative_mood_overview",
+        "difficulty": 2,
+        "prompt": "Устно составьте фразу: **конкретный автомобиль в гараже — новый**, с относительным *que* и изъявительным о положении (*estar*).",
+        "hints": [
+          "Начните с *El coche…*",
+          "Для «находится в гараже» подойдёт *está en el garaje*."
+        ],
+        "rubric_ru": "Проверьте изъявительное в придаточном о данном автомобиле.",
+        "correct_answer": "El coche que está en el garaje es nuevo.",
+        "explanation": "Та же логика, что в примере с книгой на столе: конкретный референт → изъявительное.",
+        "tags": [
+          "production"
+        ]
+      },
+      "after": {
+        "id": "q130_b1_prod",
+        "type": "production_hint",
+        "theory_block_id": "b1_theory_relative_mood_overview",
+        "difficulty": 2,
+        "prompt": "Устно составьте фразу: **конкретный автомобиль в гараже — новый**, с относительным *que* и изъявительным о положении (*estar*).",
+        "hints": [
+          "Опишите конкретный автомобиль с помощью относительного придаточного с que.",
+          "Местоположение известного предмета сообщается как факт; образуйте нужную форму estar."
+        ],
+        "rubric_ru": "Проверьте изъявительное в придаточном о данном автомобиле.",
+        "correct_answer": "El coche que está en el garaje es nuevo.",
+        "explanation": "Та же логика, что в примере с книгой на столе: конкретный референт → изъявительное.",
+        "tags": [
+          "production"
+        ]
+      },
+      "reason": "Из дополнительных hints убраны готовые спрягаемые формы/фрагменты ответа; сохранены смысл, синтаксическая связь и требования к образованию форм.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/130.es.grammar.subjunctive_time_purpose_relative.relative_clauses_known_unknown_hypothetical_reference/03-questions.json",
+      "id": "q130_b2_prod",
+      "before": {
+        "id": "q130_b2_prod",
+        "type": "production_hint",
+        "theory_block_id": "b2_theory_relative_indicativo_known_specific",
+        "difficulty": 2,
+        "prompt": "Устно: **я знаю человека, который владеет тремя языками**, с *conocer* и *dominar* (3 л. ед. изъявительное в придаточном).",
+        "hints": [
+          "Структура: *Conozco a alguien que…*",
+          "Для навыка: *domina tres idiomas*."
+        ],
+        "rubric_ru": "Не подставляйте сослагательное, если речь о реально известном человеке.",
+        "correct_answer": "Conozco a alguien que domina tres idiomas.",
+        "explanation": "Параллель *conozco… que habla…* из теории.",
+        "tags": [
+          "production",
+          "conocer"
+        ]
+      },
+      "after": {
+        "id": "q130_b2_prod",
+        "type": "production_hint",
+        "theory_block_id": "b2_theory_relative_indicativo_known_specific",
+        "difficulty": 2,
+        "prompt": "Устно: **я знаю человека, который владеет тремя языками**, с *conocer* и *dominar* (3 л. ед. изъявительное в придаточном).",
+        "hints": [
+          "После conocer перед обозначением человека нужен личный предлог a.",
+          "Навык реально известного человека сообщается в изъявительном наклонении; образуйте форму dominar."
+        ],
+        "rubric_ru": "Не подставляйте сослагательное, если речь о реально известном человеке.",
+        "correct_answer": "Conozco a alguien que domina tres idiomas.",
+        "explanation": "Параллель *conozco… que habla…* из теории.",
+        "tags": [
+          "production",
+          "conocer"
+        ]
+      },
+      "reason": "Из дополнительных hints убраны готовые спрягаемые формы/фрагменты ответа; сохранены смысл, синтаксическая связь и требования к образованию форм.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/130.es.grammar.subjunctive_time_purpose_relative.relative_clauses_known_unknown_hypothetical_reference/03-questions.json",
+      "id": "q130_b3_prod",
+      "before": {
+        "id": "q130_b3_prod",
+        "type": "production_hint",
+        "theory_block_id": "b3_theory_relative_subjuntivo_unknown_hypothetical",
+        "difficulty": 3,
+        "prompt": "Устно: **ищу квартиру с двумя ванными** — открытый класс, *buscar*, *tener* (сослагательное).",
+        "hints": [
+          "Используйте *Busco un piso…*",
+          "После *que* — *tenga*."
+        ],
+        "rubric_ru": "Проверьте сослагательное как условие отбора.",
+        "correct_answer": "Busco un piso que tenga dos baños.",
+        "explanation": "Модель поиска из блока b3.",
+        "tags": [
+          "production",
+          "buscar"
+        ]
+      },
+      "after": {
+        "id": "q130_b3_prod",
+        "type": "production_hint",
+        "theory_block_id": "b3_theory_relative_subjuntivo_unknown_hypothetical",
+        "difficulty": 3,
+        "prompt": "Устно: **ищу квартиру с двумя ванными** — открытый класс, *buscar*, *tener* (сослагательное).",
+        "hints": [
+          "Свяжите поиск квартиры с требованием к ней относительным придаточным.",
+          "Квартира ещё не выбрана: образуйте форму tener в сослагательном наклонении."
+        ],
+        "rubric_ru": "Проверьте сослагательное как условие отбора.",
+        "correct_answer": "Busco un piso que tenga dos baños.",
+        "explanation": "Модель поиска из блока b3.",
+        "tags": [
+          "production",
+          "buscar"
+        ]
+      },
+      "reason": "Из дополнительных hints убраны готовые спрягаемые формы/фрагменты ответа; сохранены смысл, синтаксическая связь и требования к образованию форм.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/130.es.grammar.subjunctive_time_purpose_relative.relative_clauses_known_unknown_hypothetical_reference/03-questions.json",
+      "id": "q130_b4_prod",
+      "before": {
+        "id": "q130_b4_prod",
+        "type": "production_hint",
+        "theory_block_id": "b4_theory_el_que_lo_que_pronouns",
+        "difficulty": 3,
+        "prompt": "Устно: **сделаю то, что ты предложишь на собрании**, с *hacer* (1 л. ед. будущее) и *proponer* (сослагательное после *lo que*).",
+        "hints": [
+          "Начало: *Haré lo que…*",
+          "Форма для «ты предложишь» в этой рамке — *propongas*."
+        ],
+        "rubric_ru": "Не заменяйте *lo que* на *el que* при содержании предложения.",
+        "correct_answer": "Haré lo que propongas en la reunión.",
+        "explanation": "Согласуется с примером *Haré lo que me recomiendes…*.",
+        "tags": [
+          "production",
+          "lo_que"
+        ]
+      },
+      "after": {
+        "id": "q130_b4_prod",
+        "type": "production_hint",
+        "theory_block_id": "b4_theory_el_que_lo_que_pronouns",
+        "difficulty": 3,
+        "prompt": "Устно: **сделаю то, что ты предложишь на собрании**, с *hacer* (1 л. ед. будущее) и *proponer* (сослагательное после *lo que*).",
+        "hints": [
+          "В главной части используйте будущее время hacer для yo.",
+          "Предложение собеседника ещё неизвестно: образуйте форму proponer для tú в сослагательном наклонении."
+        ],
+        "rubric_ru": "Не заменяйте *lo que* на *el que* при содержании предложения.",
+        "correct_answer": "Haré lo que propongas en la reunión.",
+        "explanation": "Согласуется с примером *Haré lo que me recomiendes…*.",
+        "tags": [
+          "production",
+          "lo_que"
+        ]
+      },
+      "reason": "Из дополнительных hints убраны готовые спрягаемые формы/фрагменты ответа; сохранены смысл, синтаксическая связь и требования к образованию форм.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/130.es.grammar.subjunctive_time_purpose_relative.relative_clauses_known_unknown_hypothetical_reference/03-questions.json",
+      "id": "q130_b5_prod",
+      "before": {
+        "id": "q130_b5_prod",
+        "type": "production_hint",
+        "theory_block_id": "b5_theory_buscar_cualquier_todo_negacion",
+        "difficulty": 3,
+        "prompt": "Устно: **любой сбой, который случится, мы фиксируем в журнале**, с *cualquier* и *ocurrir* (сослагательное).",
+        "hints": [
+          "Структура: *Cualquier fallo que…, lo registramos.*",
+          "Глагол в придаточном — *ocurra*."
+        ],
+        "rubric_ru": "Проверьте сослагательное после *cualquier N que*.",
+        "correct_answer": "Cualquier fallo que ocurra, lo registramos en el libro.",
+        "explanation": "Та же логика, что *Cualquier problema que surja…*.",
+        "tags": [
+          "production",
+          "cualquier"
+        ]
+      },
+      "after": {
+        "id": "q130_b5_prod",
+        "type": "production_hint",
+        "theory_block_id": "b5_theory_buscar_cualquier_todo_negacion",
+        "difficulty": 3,
+        "prompt": "Устно: **любой сбой, который случится, мы фиксируем в журнале**, с *cualquier* и *ocurrir* (сослагательное).",
+        "hints": [
+          "Относительное придаточное описывает любой возможный сбой, а главная часть — наше действие.",
+          "Образуйте сослагательное наклонение ocurrir для 3-го лица единственного числа."
+        ],
+        "rubric_ru": "Проверьте сослагательное после *cualquier N que*.",
+        "correct_answer": "Cualquier fallo que ocurra, lo registramos en el libro.",
+        "explanation": "Та же логика, что *Cualquier problema que surja…*.",
+        "tags": [
+          "production",
+          "cualquier"
+        ]
+      },
+      "reason": "Из дополнительных hints убраны готовые спрягаемые формы/фрагменты ответа; сохранены смысл, синтаксическая связь и требования к образованию форм.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/130.es.grammar.subjunctive_time_purpose_relative.relative_clauses_known_unknown_hypothetical_reference/03-questions.json",
+      "id": "q130_b6_prod",
+      "before": {
+        "id": "q130_b6_prod",
+        "type": "production_hint",
+        "theory_block_id": "b6_theory_ru_traps_relative_mood",
+        "difficulty": 4,
+        "prompt": "Устно дайте **две** микрофразы: (1) *lo que pasa* в нейтральном смысле; (2) контраст «фактический отчёт Марии» vs «гипотетический мой без данных» с *necesitar*, *redactar*.",
+        "hints": [
+          "Для (1) не используйте *el que*.",
+          "Для (2) повторите пару *redactó* / *redacte* из теории."
+        ],
+        "rubric_ru": "Оценивайте раздельно: шаблон *lo que* и контраст наклонений.",
+        "correct_answer": "Mira lo que pasa en la calle. | Necesito el informe que redactó María, no el que redacte yo sin datos.",
+        "explanation": "Сшивка примеров из блоков b1 и b6.",
+        "tags": [
+          "production",
+          "contrast"
+        ]
+      },
+      "after": {
+        "id": "q130_b6_prod",
+        "type": "production_hint",
+        "theory_block_id": "b6_theory_ru_traps_relative_mood",
+        "difficulty": 4,
+        "prompt": "Устно дайте **две** микрофразы: (1) *lo que pasa* в нейтральном смысле; (2) контраст «фактический отчёт Марии» vs «гипотетический мой без данных» с *necesitar*, *redactar*.",
+        "hints": [
+          "В первой фразе относительное местоимение относится к содержанию ситуации, а не к конкретному человеку.",
+          "Во второй фразе противопоставьте уже составленный Марией отчёт и ещё не существующий собственный: это разные наклонения."
+        ],
+        "rubric_ru": "Оценивайте раздельно: шаблон *lo que* и контраст наклонений.",
+        "correct_answer": "Mira lo que pasa en la calle. | Necesito el informe que redactó María, no el que redacte yo sin datos.",
+        "explanation": "Сшивка примеров из блоков b1 и b6.",
+        "tags": [
+          "production",
+          "contrast"
+        ]
+      },
+      "reason": "Из дополнительных hints убраны готовые спрягаемые формы/фрагменты ответа; сохранены смысл, синтаксическая связь и требования к образованию форм.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/130.es.grammar.subjunctive_time_purpose_relative.relative_clauses_known_unknown_hypothetical_reference/03-questions.json",
+      "id": "q130_b5_prod2",
+      "before": {
+        "id": "q130_b5_prod2",
+        "type": "production_hint",
+        "theory_block_id": "b5_theory_buscar_cualquier_todo_negacion",
+        "difficulty": 4,
+        "prompt": "Устно: **сохраню всё, что попросишь письменно до пятницы**, с *guardar* (1 л. ед. будущее), *todo lo que* и *pedir* (2 л. ед. сослагательное).",
+        "hints": [
+          "Начало: *Guardaré todo lo que…*",
+          "Форма *pidas*."
+        ],
+        "rubric_ru": "Проверьте *todo lo que* + сослагательное.",
+        "correct_answer": "Guardaré todo lo que pidas por escrito antes del viernes.",
+        "explanation": "Модель *todo lo que* из блока b5.",
+        "tags": [
+          "production",
+          "todo_lo_que"
+        ]
+      },
+      "after": {
+        "id": "q130_b5_prod2",
+        "type": "production_hint",
+        "theory_block_id": "b5_theory_buscar_cualquier_todo_negacion",
+        "difficulty": 4,
+        "prompt": "Устно: **сохраню всё, что попросишь письменно до пятницы**, с *guardar* (1 л. ед. будущее), *todo lo que* и *pedir* (2 л. ед. сослагательное).",
+        "hints": [
+          "Главная часть выражает будущее действие говорящего.",
+          "Просьба собеседника ещё не прозвучала: образуйте сослагательное наклонение pedir для tú."
+        ],
+        "rubric_ru": "Проверьте *todo lo que* + сослагательное.",
+        "correct_answer": "Guardaré todo lo que pidas por escrito antes del viernes.",
+        "explanation": "Модель *todo lo que* из блока b5.",
+        "tags": [
+          "production",
+          "todo_lo_que"
+        ]
+      },
+      "reason": "Из дополнительных hints убраны готовые спрягаемые формы/фрагменты ответа; сохранены смысл, синтаксическая связь и требования к образованию форм.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/133.es.grammar.subjunctive_past_counterfactuals.imperfect_subjunctive_forms_ra_se/03-questions.json",
+      "id": "q133_b1_tf",
+      "before": {
+        "id": "q133_b1_tf",
+        "type": "true_false",
+        "theory_block_id": "b1_theory_imperfect_subjunctive_overview_section20",
+        "difficulty": 2,
+        "prompt": "Imperfecto de subjuntivo — это modo (наклонение), а не просто «прошедший hablar» как pretérito.",
+        "correct_answer": "true",
+        "explanation": "Отдельное наклонение.",
+        "tags": [
+          "tf"
+        ]
+      },
+      "after": {
+        "id": "q133_b1_tf",
+        "type": "true_false",
+        "theory_block_id": "b1_theory_imperfect_subjunctive_overview_section20",
+        "difficulty": 2,
+        "prompt": "Верно ли: imperfecto de subjuntivo — одно из времён сослагательного наклонения, а не прошедшее время indicativo?",
+        "correct_answer": "true",
+        "explanation": "Subjuntivo — наклонение; imperfecto de subjuntivo — одно из его времён. Нельзя приравнивать его к pretérito de indicativo только из-за отсылки к прошлому.",
+        "tags": [
+          "tf"
+        ]
+      },
+      "reason": "Сопутствующая явная ошибка: imperfecto de subjuntivo называлось отдельным наклонением. Теперь различены наклонение subjuntivo и время imperfecto внутри него.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/133.es.grammar.subjunctive_past_counterfactuals.imperfect_subjunctive_forms_ra_se/03-questions.json",
+      "id": "q133_b6_tf",
+      "before": {
+        "id": "q133_b6_tf",
+        "type": "true_false",
+        "theory_block_id": "b6_theory_ru_traps_imperfect_subjunctive",
+        "difficulty": 3,
+        "prompt": "*Hablaba* (indicativo) и *hablara* (subjuntivo) — разные категории.",
+        "correct_answer": "true",
+        "explanation": "Ловушка b6.",
+        "tags": [
+          "tf"
+        ]
+      },
+      "after": {
+        "id": "q133_b6_tf",
+        "type": "true_false",
+        "theory_block_id": "b6_theory_ru_traps_imperfect_subjunctive",
+        "difficulty": 3,
+        "prompt": "Верно ли: формы *hablaba* и *hablara* относятся к разным наклонениям?",
+        "correct_answer": "true",
+        "explanation": "Hablaba — imperfecto de indicativo; hablara — imperfecto de subjuntivo. Сходство формы не делает их одним наклонением.",
+        "tags": [
+          "tf"
+        ]
+      },
+      "reason": "Скобки заранее подписывали indicativo/subjuntivo, а вопрос просил подтвердить различие. Подписи убраны: нужно распознать наклонения самих форм.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/133.es.grammar.subjunctive_past_counterfactuals.imperfect_subjunctive_forms_ra_se/03-questions.json",
+      "id": "q133_b1_prod",
+      "before": {
+        "id": "q133_b1_prod",
+        "type": "production_hint",
+        "theory_block_id": "b1_theory_imperfect_subjunctive_overview_section20",
+        "difficulty": 2,
+        "prompt": "Устно: **меня удивило, что ты принял предложение**, с *me sorprendió que* + *aceptar* (2 л. ед., -ra).",
+        "hints": [
+          "*Me sorprendió que…*",
+          "Форма *aceptaras*."
+        ],
+        "rubric_ru": "Рамка эмоции в прошлом.",
+        "correct_answer": "Me sorprendió que aceptaras la propuesta tan rápido.",
+        "explanation": "Шаблон ex_b1_1.",
+        "tags": [
+          "production"
+        ]
+      },
+      "after": {
+        "id": "q133_b1_prod",
+        "type": "production_hint",
+        "theory_block_id": "b1_theory_imperfect_subjunctive_overview_section20",
+        "difficulty": 2,
+        "prompt": "Устно: **меня удивило, что ты принял предложение**, с *me sorprendió que* + *aceptar* (2 л. ед., -ra).",
+        "hints": [
+          "Начните с эмоциональной реакции в прошлом.",
+          "После que образуйте imperfecto de subjuntivo глагола aceptar для tú в варианте на -ra."
+        ],
+        "rubric_ru": "Рамка эмоции в прошлом.",
+        "correct_answer": "Me sorprendió que aceptaras la propuesta tan rápido.",
+        "explanation": "Шаблон ex_b1_1.",
+        "tags": [
+          "production"
+        ]
+      },
+      "reason": "Из hints убраны готовые формы и складывающиеся в ответ фразы; сохранена задача самостоятельно образовать формы и собрать высказывание.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/133.es.grammar.subjunctive_past_counterfactuals.imperfect_subjunctive_forms_ra_se/03-questions.json",
+      "id": "q133_b2_prod",
+      "before": {
+        "id": "q133_b2_prod",
+        "type": "production_hint",
+        "theory_block_id": "b2_theory_formation_preterite_third_plural_ra_se",
+        "difficulty": 2,
+        "prompt": "Устно: **если бы мог, путешествовал бы больше**, с *si* + *poder* (1 л. ед., -ra) + condicional *viajar*.",
+        "hints": [
+          "*Si pudiera…*",
+          "Главная часть: condicional *viajaría*."
+        ],
+        "rubric_ru": "Si + imp. subj. + cond.",
+        "correct_answer": "Si pudiera, viajaría más.",
+        "explanation": "Пример ex_b2_2.",
+        "tags": [
+          "production"
+        ]
+      },
+      "after": {
+        "id": "q133_b2_prod",
+        "type": "production_hint",
+        "theory_block_id": "b2_theory_formation_preterite_third_plural_ra_se",
+        "difficulty": 2,
+        "prompt": "Устно: **если бы мог, путешествовал бы больше**, с *si* + *poder* (1 л. ед., -ra) + condicional *viajar*.",
+        "hints": [
+          "Условие описывает нереальную возможность говорящего: образуйте imperfecto de subjuntivo от poder.",
+          "Результат выразите в condicional simple глагола viajar для yo."
+        ],
+        "rubric_ru": "Si + imp. subj. + cond.",
+        "correct_answer": "Si pudiera, viajaría más.",
+        "explanation": "Пример ex_b2_2.",
+        "tags": [
+          "production"
+        ]
+      },
+      "reason": "Из hints убраны готовые формы и складывающиеся в ответ фразы; сохранена задача самостоятельно образовать формы и собрать высказывание.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/133.es.grammar.subjunctive_past_counterfactuals.imperfect_subjunctive_forms_ra_se/03-questions.json",
+      "id": "q133_b3_prod",
+      "before": {
+        "id": "q133_b3_prod",
+        "type": "production_hint",
+        "theory_block_id": "b3_theory_ra_vs_se_regional_style",
+        "difficulty": 3,
+        "prompt": "Устно: **попросил, чтобы позвонили, когда выйду**, с *pedí que me* + *llamar* (3 л. ед., -se) + *cuando saliera*.",
+        "hints": [
+          "*Pedí que me llamase…*",
+          "*cuando saliera*."
+        ],
+        "rubric_ru": "Парадигма -se допустима.",
+        "correct_answer": "Pedí que me llamase cuando saliera.",
+        "explanation": "Пример ex_b3_2.",
+        "tags": [
+          "production"
+        ]
+      },
+      "after": {
+        "id": "q133_b3_prod",
+        "type": "production_hint",
+        "theory_block_id": "b3_theory_ra_vs_se_regional_style",
+        "difficulty": 3,
+        "prompt": "Устно: **попросил, чтобы позвонили, когда выйду**, с *pedí que me* + *llamar* (3 л. ед., -se) + *cuando saliera*.",
+        "hints": [
+          "После просьбы в прошлом нужна личная форма llamar в imperfecto de subjuntivo.",
+          "Используйте вариант на -se и затем присоедините придаточное времени."
+        ],
+        "rubric_ru": "Парадигма -se допустима.",
+        "correct_answer": "Pedí que me llamase cuando saliera.",
+        "explanation": "Пример ex_b3_2.",
+        "tags": [
+          "production"
+        ]
+      },
+      "reason": "Из hints убраны готовые формы и складывающиеся в ответ фразы; сохранена задача самостоятельно образовать формы и собрать высказывание.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/133.es.grammar.subjunctive_past_counterfactuals.imperfect_subjunctive_forms_ra_se/03-questions.json",
+      "id": "q133_b4_prod",
+      "before": {
+        "id": "q133_b4_prod",
+        "type": "production_hint",
+        "theory_block_id": "b4_theory_common_uses_preview",
+        "difficulty": 3,
+        "prompt": "Устно: **хотел(а) бы столик на двоих**, формула *quisiera* + infinitivo.",
+        "hints": [
+          "*Quisiera…*",
+          "*reservar una mesa*."
+        ],
+        "rubric_ru": "Вежливость «сейчас».",
+        "correct_answer": "Quisiera reservar una mesa para dos, por favor.",
+        "explanation": "ex_b4_1.",
+        "tags": [
+          "production"
+        ]
+      },
+      "after": {
+        "id": "q133_b4_prod",
+        "type": "production_hint",
+        "theory_block_id": "b4_theory_common_uses_preview",
+        "difficulty": 3,
+        "prompt": "Устно: **хотел(а) бы столик на двоих**, формула *quisiera* + infinitivo.",
+        "hints": [
+          "Выберите вежливую форму глагола querer и присоедините инфинитив reservar.",
+          "Добавьте объект просьбы, количество мест и вежливое завершение."
+        ],
+        "rubric_ru": "Вежливость «сейчас».",
+        "correct_answer": "Quisiera reservar una mesa para dos, por favor.",
+        "explanation": "ex_b4_1.",
+        "tags": [
+          "production"
+        ]
+      },
+      "reason": "Из hints убраны готовые формы и складывающиеся в ответ фразы; сохранена задача самостоятельно образовать формы и собрать высказывание.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/135.es.grammar.subjunctive_past_counterfactuals.si_plus_imperfect_subjunctive_plus_conditional/03-questions.json",
+      "id": "q135_b5_transform",
+      "before": {
+        "id": "q135_b5_transform",
+        "type": "transform",
+        "theory_block_id": "b5_theory_variants_ojala_como_si_si_no",
+        "difficulty": 2,
+        "prompt": "Исправьте желание (без *si*):",
+        "source_sentence": "Ojalá si tuviera más tiempo libre.",
+        "correct_answer": "Ojalá tuviera más tiempo libre.",
+        "explanation": "Уберите *si* после *ojalá* (b5).",
+        "tags": [
+          "transform"
+        ]
+      },
+      "after": {
+        "id": "q135_b5_transform",
+        "type": "transform",
+        "theory_block_id": "b5_theory_variants_ojala_como_si_si_no",
+        "difficulty": 2,
+        "prompt": "Исправьте ошибку в выражении желания, сохранив остальные слова.",
+        "source_sentence": "Ojalá si tuviera más tiempo libre.",
+        "correct_answer": "Ojalá tuviera más tiempo libre.",
+        "explanation": "Уберите *si* после *ojalá* (b5).",
+        "tags": [
+          "transform"
+        ]
+      },
+      "reason": "Убрана команда «без si»: она заранее называла единственную ошибку в исходном Ojalá si tuviera. Учащийся теперь сам находит лишний союз.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/138.es.grammar.subjunctive_past_counterfactuals.third_conditional_mixed_counterfactuals/03-questions.json",
+      "id": "q138_b2_fill_1",
+      "before": {
+        "id": "q138_b2_fill_1",
+        "type": "fill_blank",
+        "theory_block_id": "b2_theory_si_clause_structure_negation_order",
+        "difficulty": 2,
+        "prompt": "«Si ___ hubiéramos salido tarde, no habríamos perdido la última película.» (отрицание перед hubiera, 1ª pl.)",
+        "correct_answer": "no",
+        "explanation": "Правильно: *Si **no** hubiéramos salido tarde…* — *no* перед формой *hubiera*; лицо согласовано с *habríamos*."
+      },
+      "after": {
+        "id": "q138_b2_fill_1",
+        "type": "fill_blank",
+        "theory_block_id": "b2_theory_si_clause_structure_negation_order",
+        "difficulty": 2,
+        "prompt": "«Si no ___ salido tarde, no habríamos perdido la última película.» (haber; nosotros; imperfecto de subjuntivo на -ra)",
+        "correct_answer": "hubiéramos",
+        "explanation": "В отрицательном нереальном условии no стоит перед вспомогательным глаголом. Для nosotros форма haber — hubiéramos: Si no hubiéramos salido tarde…"
+      },
+      "reason": "Вместо подсказанного no и правила его позиции пропуск проверяет форму вспомогательного глагола в отрицательном нереальном условии; готовая целевая форма не дана.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/138.es.grammar.subjunctive_past_counterfactuals.third_conditional_mixed_counterfactuals/03-questions.json",
+      "id": "q138_b4_fill_2",
+      "before": {
+        "id": "q138_b4_fill_2",
+        "type": "fill_blank",
+        "theory_block_id": "b4_theory_mixed_present_condition_past_result",
+        "difficulty": 3,
+        "prompt": "«Si fuera más organizado, ___ terminado el informe a tiempo la semana pasada.» (condicional compuesto от terminar, 1 л. ед.ч., только habría)",
+        "correct_answer": "habría",
+        "explanation": "Прошлый результат: *habría terminado*; вводится форма *habría*."
+      },
+      "after": {
+        "id": "q138_b4_fill_2",
+        "type": "fill_blank",
+        "theory_block_id": "b4_theory_mixed_present_condition_past_result",
+        "difficulty": 3,
+        "prompt": "«Si fuera más organizado, ___ terminado el informe a tiempo la semana pasada.» (haber; yo; condicional simple)",
+        "correct_answer": "habría",
+        "explanation": "Прошлый результат: *habría terminado*; вводится форма *habría*."
+      },
+      "reason": "Удалено прямое «только habría». Заданы haber/yo/condicional simple, поэтому нужную форму вспомогательного ученик образует сам.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/138.es.grammar.subjunctive_past_counterfactuals.third_conditional_mixed_counterfactuals/03-questions.json",
+      "id": "q138_b6_fill_2",
+      "before": {
+        "id": "q138_b6_fill_2",
+        "type": "fill_blank",
+        "theory_block_id": "b6_theory_ru_traps_third_mixed",
+        "difficulty": 4,
+        "prompt": "«Si tuviera dinero, ___ comprado un coche ayer.» (condicional compuesto, 1 л. ед.ч., только habría)",
+        "correct_answer": "habría",
+        "explanation": "Результат в прошлом: *habría comprado*, не *compraría*."
+      },
+      "after": {
+        "id": "q138_b6_fill_2",
+        "type": "fill_blank",
+        "theory_block_id": "b6_theory_ru_traps_third_mixed",
+        "difficulty": 4,
+        "prompt": "«Si tuviera dinero, ___ comprado un coche ayer.» (haber; yo; condicional simple)",
+        "correct_answer": "habría",
+        "explanation": "Результат в прошлом: *habría comprado*, не *compraría*."
+      },
+      "reason": "Удалено прямое «только habría». Сохраняется смысл прошлого результата и грамматическое задание на вспомогательный haber.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/140.es.grammar.voice_reported_speech_distancing.passive_ser_agent_phrases/03-questions.json",
+      "id": "q140_b6_f2",
+      "before": {
+        "id": "q140_b6_f2",
+        "type": "fill_blank",
+        "theory_block_id": "b6_theory_ru_traps_passive_ser",
+        "difficulty": 3,
+        "prompt": "«El manuscrito ___ hallado; luego fue estudiado.» (вставьте форму *ser*, pret. indef., 3 л. ед.; одно слово)",
+        "correct_answer": "fue",
+        "explanation": "Событие обнаружения → *fue hallado*."
+      },
+      "after": {
+        "id": "q140_b6_f2",
+        "type": "fill_blank",
+        "theory_block_id": "b6_theory_ru_traps_passive_ser",
+        "difficulty": 3,
+        "prompt": "«El manuscrito ___ hallado; después lo estudiaron.» (ser; pretérito indefinido; 3-е лицо единственного числа)",
+        "correct_answer": "fue",
+        "explanation": "Событие обнаружения → *fue hallado*."
+      },
+      "reason": "Готовое fue повторялось во второй части того же условия. Вторая часть переведена в актив, чтобы форму ser в пропуске нужно было образовать самостоятельно.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/150.es.grammar.c1_style_discourse_register.hedging_stance_precision_quiza_al_parecer_es_probable/03-questions.json",
+      "id": "q150_b4_m3",
+      "before": {
+        "id": "q150_b4_m3",
+        "type": "cloze_mixed",
+        "prompt": "Два пропуска, ответ через «|».\n1) *Es probable que el informe ___ la hipótesis.* (presente de subjuntivo de *confirmar*, без тильды)\n2) *Puede que la reunión se ___.* (presente de subjuntivo от *retrasar* в пассивной раме *se retrase*, без тильды)\n3) Слова — только из банка.",
+        "theory_block_id": "b4_theory_es_probable_posible_epistemic_c1",
+        "difficulty": 3,
+        "word_bank": [
+          "confirme",
+          "confirma",
+          "retrase",
+          "retrasa",
+          "confirmara",
+          "retrasara"
+        ],
+        "correct_answer": "confirme|retrase",
+        "explanation": "И ***es probable que***, и ***puede que*** в этом блоке требуют **сослагательного** в придаточном.",
+        "tags": [
+          "cloze",
+          "es_probable_que"
+        ]
+      },
+      "after": {
+        "id": "q150_b4_m3",
+        "type": "cloze_mixed",
+        "prompt": "Два пропуска, ответ через «|».\n1) *Es probable que el informe ___ la hipótesis.* (presente de subjuntivo de *confirmar*, без тильды)\n2) *Puede que la reunión se ___.* (retrasar; presente de subjuntivo; 3-е лицо единственного числа)\n3) Слова — только из банка.",
+        "theory_block_id": "b4_theory_es_probable_posible_epistemic_c1",
+        "difficulty": 3,
+        "word_bank": [
+          "confirme",
+          "confirma",
+          "retrase",
+          "retrasa",
+          "confirmara",
+          "retrasara"
+        ],
+        "correct_answer": "confirme|retrase",
+        "explanation": "И ***es probable que***, и ***puede que*** в этом блоке требуют **сослагательного** в придаточном.",
+        "tags": [
+          "cloze",
+          "es_probable_que"
+        ]
+      },
+      "reason": "Из скобок удалена готовая форма retrase в se retrase; остались исходный глагол и параметры образования формы.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/150.es.grammar.c1_style_discourse_register.hedging_stance_precision_quiza_al_parecer_es_probable/03-questions.json",
+      "id": "q150_b6_m2",
+      "before": {
+        "id": "q150_b6_m2",
+        "type": "cloze_mixed",
+        "prompt": "Два пропуска, ответ через «|».\n1) *Existe la ___ de que el plazo se extienda hasta septiembre.* (существительное от *posible*, без тильды)\n2) *Parece ___ que la reforma afecte sobre todo a pymes.* (краткая форма прилагательного «вероятный», без тильды)\n3) Слова — только из банка.",
+        "theory_block_id": "b6_theory_hedging_nominalization_professional_c1",
+        "difficulty": 3,
+        "word_bank": [
+          "posibilidad",
+          "probabilidad",
+          "probable",
+          "posible",
+          "riesgo",
+          "parecer"
+        ],
+        "correct_answer": "posibilidad|probable",
+        "explanation": "Модели блока: *existe la posibilidad de que…* и полупредикативная связка *parece probable que…*.",
+        "tags": [
+          "cloze",
+          "nominalization"
+        ]
+      },
+      "after": {
+        "id": "q150_b6_m2",
+        "type": "cloze_mixed",
+        "prompt": "Два пропуска, ответ через «|».\n1) *Existe la ___ de que el plazo se extienda hasta septiembre.* (существительное от *posible*, без тильды)\n2) *Parece ___ que la reforma afecte sobre todo a pymes.* (прилагательное «вероятный», без тильды)\n3) Слова — только из банка.",
+        "theory_block_id": "b6_theory_hedging_nominalization_professional_c1",
+        "difficulty": 3,
+        "word_bank": [
+          "posibilidad",
+          "probabilidad",
+          "probable",
+          "posible",
+          "riesgo",
+          "parecer"
+        ],
+        "correct_answer": "posibilidad|probable",
+        "explanation": "Модели блока: *existe la posibilidad de que…* и полупредикативная связка *parece probable que…*.",
+        "tags": [
+          "cloze",
+          "nominalization"
+        ]
+      },
+      "reason": "Сопутствующая ошибка: probable ошибочно называлось краткой формой. Исправлен термин, ключ не менялся.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/151.es.grammar.c1_style_discourse_register.formal_informal_tone_email_interview_essay_debate/03-questions.json",
+      "id": "q151_b4_m2",
+      "before": {
+        "id": "q151_b4_m2",
+        "type": "cloze_mixed",
+        "prompt": "Два пропуска, ответ через «|».\n1) *___ explicarme cómo es el día a día del puesto?* (начало вежливого вопроса к интервьюеру, без тильды)\n2) *Gracias por ___ tiempo.* (притяжательное местоимение на *usted*, без тильды)\n3) Слова только из банка.",
+        "theory_block_id": "b4_theory_interview_register_c1",
+        "difficulty": 3,
+        "word_bank": [
+          "Podria",
+          "Puedes",
+          "Manda",
+          "su",
+          "tu",
+          "mi"
+        ],
+        "correct_answer": "Podria|su",
+        "explanation": "К интервьюеру — ***¿Podría…?***; благодарность сопровождает **вежливое** *su* при *usted*.",
+        "tags": [
+          "cloze",
+          "interview"
+        ]
+      },
+      "after": {
+        "id": "q151_b4_m2",
+        "type": "cloze_mixed",
+        "prompt": "Два пропуска, ответ через «|».\n1) *¿___ explicarme cómo es el día a día del puesto?* (вежливый вопрос к интервьюеру на usted)\n2) *Gracias por ___ tiempo.* (притяжательное местоимение при обращении на usted)\nСлова — только из банка.",
+        "theory_block_id": "b4_theory_interview_register_c1",
+        "difficulty": 3,
+        "word_bank": [
+          "Podría",
+          "Puedes",
+          "Manda",
+          "su",
+          "tu",
+          "mi"
+        ],
+        "correct_answer": "Podría|su",
+        "explanation": "К интервьюеру — ***¿Podría…?***; благодарность сопровождает **вежливое** *su* при *usted*.",
+        "tags": [
+          "cloze",
+          "interview"
+        ]
+      },
+      "reason": "Сопутствующая ошибка: указание «без тильды» заставляло вводить ошибочное Podria. Восстановлены Podría, начальный ¿ и нормативное написание ключа.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/151.es.grammar.c1_style_discourse_register.formal_informal_tone_email_interview_essay_debate/03-questions.json",
+      "id": "q151_b5_r4",
+      "before": {
+        "id": "q151_b5_r4",
+        "type": "cloze_mixed",
+        "prompt": "Два пропуска, ответ через «|».\n1) *___ implementación de políticas verdes constituye un desafío prioritario.* (артикль перед ж.р. существительным *implementación*, без тильды)\n2) *No obstante, su coste inicial limita la ___ en pymes.* (существительное «принятие, внедрение», без тильды)\n3) Слова только из банка.",
+        "theory_block_id": "b5_theory_essay_academic_register_c1",
+        "difficulty": 4,
+        "word_bank": [
+          "La",
+          "El",
+          "Los",
+          "adopcion",
+          "aceptacion",
+          "venta"
+        ],
+        "correct_answer": "La|adopcion",
+        "explanation": "Номинализация с **артиклем** (*La implementación*); лексически уместно *limita la adopción* в контексте политики и МСП.",
+        "tags": [
+          "cloze",
+          "nominalization"
+        ]
+      },
+      "after": {
+        "id": "q151_b5_r4",
+        "type": "cloze_mixed",
+        "prompt": "Два пропуска, ответ через «|».\n1) *___ implementación de políticas verdes constituye un desafío prioritario.* (артикль перед ж.р. существительным *implementación*)\n2) *No obstante, su coste inicial limita la ___ en pymes.* (существительное от adoptar)\n3) Слова только из банка.",
+        "theory_block_id": "b5_theory_essay_academic_register_c1",
+        "difficulty": 4,
+        "word_bank": [
+          "La",
+          "El",
+          "Los",
+          "adopción",
+          "aceptación",
+          "venta"
+        ],
+        "correct_answer": "La|adopción",
+        "explanation": "Номинализация с **артиклем** (*La implementación*); лексически уместно *limita la adopción* в контексте политики и МСП.",
+        "tags": [
+          "cloze",
+          "nominalization"
+        ]
+      },
+      "reason": "Независимая проверка: широкий русский перевод допускал aceptación из того же банка. Производящая основа adoptar задаёт словообразование без готового ключа adopción; нормативные ударения сохранены.",
+      "report_state": "done",
+      "revision_editor": "coordinator"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/152.es.grammar.c1_style_discourse_register.build_rewrite_neutral_formal_spoken_written_direct_tactful/03-questions.json",
+      "id": "q152_b2_m3",
+      "before": {
+        "id": "q152_b2_m3",
+        "type": "cloze_mixed",
+        "prompt": "Два пропуска, ответ через «|».\n1) *___ Sr. López: Le escribo para solicitar una copia del contrato.* (обращение в письме, м.р., без тильды)\n2) *¿___ remitirme la factura, por favor?* (форма *poder* для косвенной вежливой просьбы, без тильды)\nСлова — только из банка.",
+        "theory_block_id": "b2_theory_neutral_to_formal_rewrite_c1",
+        "difficulty": 3,
+        "word_bank": [
+          "Estimado",
+          "Estimada",
+          "Hola",
+          "Podria",
+          "Mandame",
+          "Flipa"
+        ],
+        "correct_answer": "Estimado|Podria",
+        "explanation": "Мужское *Estimado* согласуется с *Sr. López*; форма *podría* вводит косвенную вежливую просьбу.",
+        "tags": [
+          "cloze",
+          "formal_email"
+        ]
+      },
+      "after": {
+        "id": "q152_b2_m3",
+        "type": "cloze_mixed",
+        "prompt": "Два пропуска, ответ через «|».\n1) *___ Sr. López: Le escribo para solicitar una copia del contrato.* (обращение в письме, м.р.)\n2) *¿___ remitirme la factura, por favor?* (форма *poder* для косвенной вежливой просьбы)\nСлова — только из банка.",
+        "theory_block_id": "b2_theory_neutral_to_formal_rewrite_c1",
+        "difficulty": 3,
+        "word_bank": [
+          "Estimado",
+          "Estimada",
+          "Hola",
+          "Podría",
+          "Mándame",
+          "Flipa"
+        ],
+        "correct_answer": "Estimado|Podría",
+        "explanation": "Мужское *Estimado* согласуется с *Sr. López*; форма *podría* вводит косвенную вежливую просьбу.",
+        "tags": [
+          "cloze",
+          "formal_email"
+        ]
+      },
+      "reason": "Сопутствующая ошибка: устранено требование неверной орфографии; восстановлены Podría и Mándame.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/152.es.grammar.c1_style_discourse_register.build_rewrite_neutral_formal_spoken_written_direct_tactful/03-questions.json",
+      "id": "q152_b3_m3",
+      "before": {
+        "id": "q152_b3_m3",
+        "type": "cloze_mixed",
+        "prompt": "Два пропуска, ответ через «|».\nУстный чат: *tb necesito el doc pa el lunes, ¿ok?*\nПисьменно: *___ necesito el documento para el lunes. ___ parece bien?*\n(Без тильды; слова только из банка.)",
+        "theory_block_id": "b3_theory_spoken_to_written_rewrite_c1",
+        "difficulty": 3,
+        "word_bank": [
+          "Tambien",
+          "tb",
+          "pa",
+          "¿Le",
+          "¿Te",
+          "Flipa"
+        ],
+        "correct_answer": "Tambien|¿Le",
+        "explanation": "*tb* разворачивается в *También*, *pa* — в *para*, а устное *¿ok?* заменяется письменным вопросом *¿Le parece bien?*.",
+        "tags": [
+          "cloze",
+          "chat"
+        ]
+      },
+      "after": {
+        "id": "q152_b3_m3",
+        "type": "cloze_mixed",
+        "prompt": "Два пропуска, ответ через «|».\nУстный чат: *tb necesito el doc pa el lunes, ¿ok?*\nПерепишите для письма с обращением на usted: *___ necesito el documento para el lunes. ___ parece bien?*\n(Слова — только из банка.)",
+        "theory_block_id": "b3_theory_spoken_to_written_rewrite_c1",
+        "difficulty": 3,
+        "word_bank": [
+          "También",
+          "tb",
+          "pa",
+          "¿Le",
+          "¿Te",
+          "Flipa"
+        ],
+        "correct_answer": "También|¿Le",
+        "explanation": "Сокращение tb заменяется полным También, а pa — para. В этом задании явно требуется обращение на usted, поэтому вопрос оформляется как ¿Le parece bien?.",
+        "tags": [
+          "cloze",
+          "chat"
+        ]
+      },
+      "reason": "Убрана подсказка писать без тильды, восстановлено También; явно задано обращение на usted, поскольку прежний письменный контекст допускал и ¿Te, и ¿Le.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/152.es.grammar.c1_style_discourse_register.build_rewrite_neutral_formal_spoken_written_direct_tactful/03-questions.json",
+      "id": "q152_b4_r4",
+      "before": {
+        "id": "q152_b4_r4",
+        "type": "short_answer",
+        "prompt": "Впишите **одно** испанское слово латиницей **без** тильды — вводная смягчающая конструкция в начале *___ que convendria revisar este apartado* (вместо прямого *Esto está mal*):",
+        "theory_block_id": "b4_theory_direct_to_tactful_rewrite_c1",
+        "difficulty": 2,
+        "correct_answer": "Creo",
+        "explanation": "Блок: *Creo que convendría revisar…* — смягчающее вводное + сохранение смысла (нужна правка).",
+        "tags": [
+          "short_answer",
+          "hedge"
+        ]
+      },
+      "after": {
+        "id": "q152_b4_r4",
+        "type": "short_answer",
+        "prompt": "Впишите одно слово, чтобы смягчить прямую критику *Esto está mal*: *___ que convendría revisar este apartado.* (creer; yo; presente de indicativo)",
+        "theory_block_id": "b4_theory_direct_to_tactful_rewrite_c1",
+        "difficulty": 2,
+        "correct_answer": "Creo",
+        "explanation": "Блок: *Creo que convendría revisar…* — смягчающее вводное + сохранение смысла (нужна правка).",
+        "tags": [
+          "short_answer",
+          "hedge"
+        ]
+      },
+      "reason": "Независимая проверка: лемма creer, лицо и время исключают Pienso/Opino/Supongo; удалено ненужное требование писать без тильды, сохранено нормативное convendría.",
+      "report_state": "done",
+      "revision_editor": "coordinator"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/152.es.grammar.c1_style_discourse_register.build_rewrite_neutral_formal_spoken_written_direct_tactful/03-questions.json",
+      "id": "q152_b5_m3",
+      "before": {
+        "id": "q152_b5_m3",
+        "type": "cloze_mixed",
+        "prompt": "Два пропуска, ответ через «|».\nЧат: *tb necesito q me confirmes ya*\nПисьменно нейтрально и тактично: *¿___ confirmarme cuando le sea posible? ___ agradecería una respuesta hoy, si puede.*\n(Без тильды; только слова из банка.)",
+        "theory_block_id": "b5_theory_combined_multi_axis_rewrite_c1",
+        "difficulty": 3,
+        "word_bank": [
+          "Podria",
+          "Mandame",
+          "Le",
+          "Te",
+          "Flipa",
+          "Confirmame"
+        ],
+        "correct_answer": "Podria|Le",
+        "explanation": "Косвенный вопрос *¿Podría confirmarme…?* смягчает просьбу, а *Le agradecería…* ясно и тактично сообщает желательный срок.",
+        "tags": [
+          "cloze",
+          "combined"
+        ]
+      },
+      "after": {
+        "id": "q152_b5_m3",
+        "type": "cloze_mixed",
+        "prompt": "Два пропуска, ответ через «|».\nЧат: *tb necesito q me confirmes ya*\nПисьменно нейтрально и тактично: *¿___ confirmarme cuando le sea posible? ___ agradecería una respuesta hoy, si puede.*\n(Слова — только из банка.)",
+        "theory_block_id": "b5_theory_combined_multi_axis_rewrite_c1",
+        "difficulty": 3,
+        "word_bank": [
+          "Podría",
+          "Mándame",
+          "Le",
+          "Te",
+          "Flipa",
+          "Confírmame"
+        ],
+        "correct_answer": "Podría|Le",
+        "explanation": "Косвенный вопрос *¿Podría confirmarme…?* смягчает просьбу, а *Le agradecería…* ясно и тактично сообщает желательный срок.",
+        "tags": [
+          "cloze",
+          "combined"
+        ]
+      },
+      "reason": "Убрано требование писать без тильды; восстановлены Podría, Mándame, Confírmame и нормативный ключ.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/training_pack/chapters/003/es.01.b1_theory_stressed_syllable.questions.json",
+      "id": "q6",
+      "before": {
+        "type": "mcq_single",
+        "prompt": "Что общего у hotel (ho-TEL) и café (ca-FÉ)?",
+        "choices": [
+          {
+            "id": "a",
+            "text": "В обоих словах ударение на последнем слоге"
+          },
+          {
+            "id": "b",
+            "text": "Оба слова пишутся с тильдой"
+          },
+          {
+            "id": "c",
+            "text": "Оба слова пишутся без тильды"
+          },
+          {
+            "id": "d",
+            "text": "В обоих словах ударение на первом слоге"
+          }
+        ],
+        "correct_answer": "a",
+        "explanation": "В ho-TEL и ca-FÉ ударным является последний слог. При этом café пишется с тильдой, а hotel — без неё.",
+        "theory_block_id": "b1_theory_stressed_syllable",
+        "chapter_id": "es.grammar.orientation_alphabet_sounds.stress_rules_written_accents",
+        "concept_id": "stressed_syllable_basics",
+        "difficulty": 2,
+        "id": "q6",
+        "signature": "da9b71810d133b7a"
+      },
+      "after": {
+        "type": "mcq_single",
+        "prompt": "Что общего у hotel и café?",
+        "choices": [
+          {
+            "id": "a",
+            "text": "В обоих словах ударение на последнем слоге"
+          },
+          {
+            "id": "b",
+            "text": "Оба слова пишутся с тильдой"
+          },
+          {
+            "id": "c",
+            "text": "Оба слова пишутся без тильды"
+          },
+          {
+            "id": "d",
+            "text": "В обоих словах ударение на первом слоге"
+          }
+        ],
+        "correct_answer": "a",
+        "explanation": "В ho-TEL и ca-FÉ ударным является последний слог. При этом café пишется с тильдой, а hotel — без неё.",
+        "theory_block_id": "b1_theory_stressed_syllable",
+        "chapter_id": "es.grammar.orientation_alphabet_sounds.stress_rules_written_accents",
+        "concept_id": "stressed_syllable_basics",
+        "difficulty": 2,
+        "id": "q6",
+        "signature": "af6e1a77033d34db"
+      },
+      "reason": "Убрана фонетическая разбивка в скобках с уже выделенным ударным слогом. Теперь ударение и отношение к тильде нужно определить по самому слову и изученному правилу.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/training_pack/chapters/003/es.01.b1_theory_stressed_syllable.questions.json",
+      "id": "q13",
+      "before": {
+        "type": "mcq_single",
+        "prompt": "Какое утверждение верно для mesa (ME-sa) и café (ca-FÉ)?",
+        "choices": [
+          {
+            "id": "a",
+            "text": "В mesa нет ударения, а в café есть"
+          },
+          {
+            "id": "b",
+            "text": "Тильда в café обозначает безударную гласную"
+          },
+          {
+            "id": "c",
+            "text": "Оба слова имеют ударный слог, но тильда есть только в café"
+          },
+          {
+            "id": "d",
+            "text": "Тильда в café заменяет слог fé"
+          }
+        ],
+        "correct_answer": "c",
+        "explanation": "В mesa ударный слог me, в café — fé. Только в café ударение отмечается на письме тильдой.",
+        "theory_block_id": "b1_theory_stressed_syllable",
+        "chapter_id": "es.grammar.orientation_alphabet_sounds.stress_rules_written_accents",
+        "concept_id": "stressed_syllable_basics",
+        "difficulty": 2,
+        "id": "q13",
+        "signature": "3c48c553f0cf75e2"
+      },
+      "after": {
+        "type": "mcq_single",
+        "prompt": "Какое утверждение верно для mesa и café?",
+        "choices": [
+          {
+            "id": "a",
+            "text": "В mesa нет ударения, а в café есть"
+          },
+          {
+            "id": "b",
+            "text": "Тильда в café обозначает безударную гласную"
+          },
+          {
+            "id": "c",
+            "text": "Оба слова имеют ударный слог, но тильда есть только в café"
+          },
+          {
+            "id": "d",
+            "text": "Тильда в café заменяет слог fé"
+          }
+        ],
+        "correct_answer": "c",
+        "explanation": "В mesa ударный слог me, в café — fé. Только в café ударение отмечается на письме тильдой.",
+        "theory_block_id": "b1_theory_stressed_syllable",
+        "chapter_id": "es.grammar.orientation_alphabet_sounds.stress_rules_written_accents",
+        "concept_id": "stressed_syllable_basics",
+        "difficulty": 2,
+        "id": "q13",
+        "signature": "2561e5d12bcf2d70"
+      },
+      "reason": "Убрана фонетическая разбивка в скобках с уже выделенным ударным слогом. Теперь ударение и отношение к тильде нужно определить по самому слову и изученному правилу.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/training_pack/chapters/003/es.01.b1_theory_stressed_syllable.questions.json",
+      "id": "q17",
+      "before": {
+        "type": "mcq_single",
+        "prompt": "В паре mesa (ME-sa) и lápiz (LÁ-piz) как соотносятся ударение и тильда?",
+        "choices": [
+          {
+            "id": "a",
+            "text": "Оба слова имеют ударение на последнем слоге"
+          },
+          {
+            "id": "b",
+            "text": "Оба имеют ударение на первом слоге, но тильда есть только в lápiz"
+          },
+          {
+            "id": "c",
+            "text": "У mesa нет ударения, потому что нет тильды"
+          },
+          {
+            "id": "d",
+            "text": "Оба слова должны писаться без тильды"
+          }
+        ],
+        "correct_answer": "b",
+        "explanation": "В обоих двусложных словах ударение на первом слоге: me и lá. Наличие ударения не означает, что тильда требуется в обоих словах.",
+        "theory_block_id": "b1_theory_stressed_syllable",
+        "chapter_id": "es.grammar.orientation_alphabet_sounds.stress_rules_written_accents",
+        "concept_id": "stressed_syllable_basics",
+        "difficulty": 2,
+        "id": "q17",
+        "signature": "d540e3dbef376eb1"
+      },
+      "after": {
+        "type": "mcq_single",
+        "prompt": "В паре mesa и lápiz как соотносятся ударение и тильда?",
+        "choices": [
+          {
+            "id": "a",
+            "text": "Оба слова имеют ударение на последнем слоге"
+          },
+          {
+            "id": "b",
+            "text": "Оба имеют ударение на первом слоге, но тильда есть только в lápiz"
+          },
+          {
+            "id": "c",
+            "text": "У mesa нет ударения, потому что нет тильды"
+          },
+          {
+            "id": "d",
+            "text": "Оба слова должны писаться без тильды"
+          }
+        ],
+        "correct_answer": "b",
+        "explanation": "В обоих двусложных словах ударение на первом слоге: me и lá. Наличие ударения не означает, что тильда требуется в обоих словах.",
+        "theory_block_id": "b1_theory_stressed_syllable",
+        "chapter_id": "es.grammar.orientation_alphabet_sounds.stress_rules_written_accents",
+        "concept_id": "stressed_syllable_basics",
+        "difficulty": 2,
+        "id": "q17",
+        "signature": "9897c54a0f7814d1"
+      },
+      "reason": "Убрана фонетическая разбивка в скобках с уже выделенным ударным слогом. Теперь ударение и отношение к тильде нужно определить по самому слову и изученному правилу.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/training_pack/chapters/003/es.01.b1_theory_stressed_syllable.questions.json",
+      "id": "q18",
+      "before": {
+        "type": "mcq_single",
+        "prompt": "В manzana (man-ZA-na) нет тильды. Какой вывод верен?",
+        "choices": [
+          {
+            "id": "a",
+            "text": "В слове нет ударного слога"
+          },
+          {
+            "id": "b",
+            "text": "Ударны все три слога"
+          },
+          {
+            "id": "c",
+            "text": "Ударный слог za не отмечен тильдой на письме"
+          },
+          {
+            "id": "d",
+            "text": "Ударение обязательно на последнем слоге"
+          }
+        ],
+        "correct_answer": "c",
+        "explanation": "manzana произносится man-ZA-na: ударный слог za есть и без письменной тильды.",
+        "theory_block_id": "b1_theory_stressed_syllable",
+        "chapter_id": "es.grammar.orientation_alphabet_sounds.stress_rules_written_accents",
+        "concept_id": "stressed_syllable_basics",
+        "difficulty": 3,
+        "id": "q18",
+        "signature": "e43c2855c0413e6b"
+      },
+      "after": {
+        "type": "mcq_single",
+        "prompt": "В manzana нет тильды. Какой вывод верен?",
+        "choices": [
+          {
+            "id": "a",
+            "text": "В слове нет ударного слога"
+          },
+          {
+            "id": "b",
+            "text": "Ударны все три слога"
+          },
+          {
+            "id": "c",
+            "text": "Ударный слог za не отмечен тильдой на письме"
+          },
+          {
+            "id": "d",
+            "text": "Ударение обязательно на последнем слоге"
+          }
+        ],
+        "correct_answer": "c",
+        "explanation": "manzana произносится man-ZA-na: ударный слог za есть и без письменной тильды.",
+        "theory_block_id": "b1_theory_stressed_syllable",
+        "chapter_id": "es.grammar.orientation_alphabet_sounds.stress_rules_written_accents",
+        "concept_id": "stressed_syllable_basics",
+        "difficulty": 3,
+        "id": "q18",
+        "signature": "4aec02930de3dbe2"
+      },
+      "reason": "Убрана фонетическая разбивка в скобках с уже выделенным ударным слогом. Теперь ударение и отношение к тильде нужно определить по самому слову и изученному правилу.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/training_pack/chapters/003/es.05.b5_theory_esdrujulas_always_accented.questions.json",
+      "id": "q8",
+      "before": {
+        "type": "mcq_single",
+        "prompt": "Почему в técnico (TÉC-ni-co) тильда обязательна?",
+        "choices": [
+          {
+            "id": "a",
+            "text": "Ударение на третьем слоге от конца"
+          },
+          {
+            "id": "b",
+            "text": "Все слова на o требуют тильды"
+          },
+          {
+            "id": "c",
+            "text": "Слово является aguda на гласную"
+          },
+          {
+            "id": "d",
+            "text": "Ударение падает на последний слог"
+          }
+        ],
+        "correct_answer": "a",
+        "explanation": "В TÉC-ni-co три слога, ударный téc — третий от конца. Все esdrújulas пишутся с тильдой.",
+        "theory_block_id": "b5_theory_esdrujulas_always_accented",
+        "chapter_id": "es.grammar.orientation_alphabet_sounds.stress_rules_written_accents",
+        "concept_id": "esdrujulas_always_accented",
+        "difficulty": 2,
+        "id": "q8",
+        "signature": "43c46d855265a20b"
+      },
+      "after": {
+        "type": "mcq_single",
+        "prompt": "Почему в técnico тильда обязательна?",
+        "choices": [
+          {
+            "id": "a",
+            "text": "Ударение на третьем слоге от конца"
+          },
+          {
+            "id": "b",
+            "text": "Все слова на o требуют тильды"
+          },
+          {
+            "id": "c",
+            "text": "Слово является aguda на гласную"
+          },
+          {
+            "id": "d",
+            "text": "Ударение падает на последний слог"
+          }
+        ],
+        "correct_answer": "a",
+        "explanation": "В TÉC-ni-co три слога, ударный téc — третий от конца. Все esdrújulas пишутся с тильдой.",
+        "theory_block_id": "b5_theory_esdrujulas_always_accented",
+        "chapter_id": "es.grammar.orientation_alphabet_sounds.stress_rules_written_accents",
+        "concept_id": "esdrujulas_always_accented",
+        "difficulty": 2,
+        "id": "q8",
+        "signature": "03d136c6d0eb208f"
+      },
+      "reason": "Убрана фонетическая разбивка в скобках с уже выделенным ударным слогом. Теперь ударение и отношение к тильде нужно определить по самому слову и изученному правилу.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/training_pack/chapters/003/es.05.b5_theory_esdrujulas_always_accented.questions.json",
+      "id": "q12",
+      "before": {
+        "type": "mcq_single",
+        "prompt": "Какой слог в máximo (má-xi-mo) является третьим от конца и несёт ударение?",
+        "choices": [
+          {
+            "id": "a",
+            "text": "mo"
+          },
+          {
+            "id": "b",
+            "text": "xi"
+          },
+          {
+            "id": "c",
+            "text": "má"
+          },
+          {
+            "id": "d",
+            "text": "В слове только два слога"
+          }
+        ],
+        "correct_answer": "c",
+        "explanation": "Считая от конца: mo, xi, má. Ударение на третьем слоге от конца делает máximo словом типа esdrújula с обязательной тильдой.",
+        "theory_block_id": "b5_theory_esdrujulas_always_accented",
+        "chapter_id": "es.grammar.orientation_alphabet_sounds.stress_rules_written_accents",
+        "concept_id": "esdrujulas_always_accented",
+        "difficulty": 2,
+        "id": "q12",
+        "signature": "2b92d93430f066b2"
+      },
+      "after": {
+        "type": "mcq_single",
+        "prompt": "Какой слог в máximo является третьим от конца и несёт ударение?",
+        "choices": [
+          {
+            "id": "a",
+            "text": "mo"
+          },
+          {
+            "id": "b",
+            "text": "xi"
+          },
+          {
+            "id": "c",
+            "text": "má"
+          },
+          {
+            "id": "d",
+            "text": "В слове только два слога"
+          }
+        ],
+        "correct_answer": "c",
+        "explanation": "Считая от конца: mo, xi, má. Ударение на третьем слоге от конца делает máximo словом типа esdrújula с обязательной тильдой.",
+        "theory_block_id": "b5_theory_esdrujulas_always_accented",
+        "chapter_id": "es.grammar.orientation_alphabet_sounds.stress_rules_written_accents",
+        "concept_id": "esdrujulas_always_accented",
+        "difficulty": 2,
+        "id": "q12",
+        "signature": "e02f91f224e132fd"
+      },
+      "reason": "Убрана фонетическая разбивка в скобках с уже выделенным ударным слогом. Теперь ударение и отношение к тильде нужно определить по самому слову и изученному правилу.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/training_pack/chapters/003/es.05.b5_theory_esdrujulas_always_accented.questions.json",
+      "id": "q13",
+      "before": {
+        "type": "mcq_single",
+        "prompt": "Почему síntesis (SÍN-te-sis) пишется с тильдой, хотя оканчивается на s?",
+        "choices": [
+          {
+            "id": "a",
+            "text": "Любое слово на s требует тильды"
+          },
+          {
+            "id": "b",
+            "text": "Ударение в слове падает на последний слог"
+          },
+          {
+            "id": "c",
+            "text": "Это esdrújula: ударение на третьем слоге от конца"
+          },
+          {
+            "id": "d",
+            "text": "В слове есть дифтонг"
+          }
+        ],
+        "correct_answer": "c",
+        "explanation": "В SÍN-te-sis ударный sín — третий слог от конца. Esdrújulas требуют тильды независимо от окончания, в том числе на s.",
+        "theory_block_id": "b5_theory_esdrujulas_always_accented",
+        "chapter_id": "es.grammar.orientation_alphabet_sounds.stress_rules_written_accents",
+        "concept_id": "esdrujulas_always_accented",
+        "difficulty": 2,
+        "id": "q13",
+        "signature": "659d8729b6e52f4c"
+      },
+      "after": {
+        "type": "mcq_single",
+        "prompt": "Почему síntesis пишется с тильдой, хотя оканчивается на s?",
+        "choices": [
+          {
+            "id": "a",
+            "text": "Любое слово на s требует тильды"
+          },
+          {
+            "id": "b",
+            "text": "Ударение в слове падает на последний слог"
+          },
+          {
+            "id": "c",
+            "text": "Это esdrújula: ударение на третьем слоге от конца"
+          },
+          {
+            "id": "d",
+            "text": "В слове есть дифтонг"
+          }
+        ],
+        "correct_answer": "c",
+        "explanation": "В SÍN-te-sis ударный sín — третий слог от конца. Esdrújulas требуют тильды независимо от окончания, в том числе на s.",
+        "theory_block_id": "b5_theory_esdrujulas_always_accented",
+        "chapter_id": "es.grammar.orientation_alphabet_sounds.stress_rules_written_accents",
+        "concept_id": "esdrujulas_always_accented",
+        "difficulty": 2,
+        "id": "q13",
+        "signature": "27bd183f4203f458"
+      },
+      "reason": "Убрана фонетическая разбивка в скобках с уже выделенным ударным слогом. Теперь ударение и отношение к тильде нужно определить по самому слову и изученному правилу.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/training_pack/chapters/049/es.02.b2_theory_regular_ar_endings_indefinido_a2.questions.json",
+      "id": "q4",
+      "before": {
+        "type": "mcq_single",
+        "prompt": "Как правильно: 'Yo _______ la lección' (глагол 'estudiar')?",
+        "choices": [
+          {
+            "id": "a",
+            "text": "estudie"
+          },
+          {
+            "id": "b",
+            "text": "estudié"
+          },
+          {
+            "id": "c",
+            "text": "estudio"
+          },
+          {
+            "id": "d",
+            "text": "estudiaba"
+          }
+        ],
+        "correct_answer": "b",
+        "explanation": "В indefinido для 'yo' у глагола на -ar требуется окончание -é: estudié. Форма estudie без ударения может быть формой сослагательного наклонения или формой обращения usted в повелительном наклонении.",
+        "theory_block_id": "b2_theory_regular_ar_endings_indefinido_a2",
+        "chapter_id": "es.grammar.past_preterito_indefinido.regular_indefinido_endings",
+        "concept_id": "regular_ar_endings_indefinido_a2",
+        "difficulty": 2,
+        "id": "q4",
+        "signature": "60de52e78ba03b55"
+      },
+      "after": {
+        "type": "mcq_single",
+        "prompt": "Выберите форму pretérito indefinido: 'Yo _______ la lección' (глагол 'estudiar').",
+        "choices": [
+          {
+            "id": "a",
+            "text": "estudie"
+          },
+          {
+            "id": "b",
+            "text": "estudié"
+          },
+          {
+            "id": "c",
+            "text": "estudio"
+          },
+          {
+            "id": "d",
+            "text": "estudiaba"
+          }
+        ],
+        "correct_answer": "b",
+        "explanation": "В indefinido для 'yo' у глагола на -ar требуется окончание -é: estudié. Форма estudie без ударения может быть формой сослагательного наклонения или формой обращения usted в повелительном наклонении.",
+        "theory_block_id": "b2_theory_regular_ar_endings_indefinido_a2",
+        "chapter_id": "es.grammar.past_preterito_indefinido.regular_indefinido_endings",
+        "concept_id": "regular_ar_endings_indefinido_a2",
+        "difficulty": 2,
+        "id": "q4",
+        "signature": "18d93806a47a6dc2"
+      },
+      "reason": "Смежный дефект: без времени подходят estudio, estudiaba и estudié; явно задано pretérito indefinido, инфинитив оставлен как нормальное условие.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/training_pack/chapters/049/es.02.b2_theory_regular_ar_endings_indefinido_a2.questions.json",
+      "id": "q5",
+      "before": {
+        "type": "mcq_single",
+        "prompt": "Какое окончание для 'vosotros' в прошедшем времени (глагол 'cantar')?",
+        "choices": [
+          {
+            "id": "a",
+            "text": "cantasteis"
+          },
+          {
+            "id": "b",
+            "text": "cantaste"
+          },
+          {
+            "id": "c",
+            "text": "cantaron"
+          },
+          {
+            "id": "d",
+            "text": "cantamos"
+          }
+        ],
+        "correct_answer": "a",
+        "explanation": "Для 'vosotros' (2-е лицо мн.ч.) окончание -asteis. Правильно: cantasteis, а не cantaste (ты) или cantaron (они).",
+        "theory_block_id": "b2_theory_regular_ar_endings_indefinido_a2",
+        "chapter_id": "es.grammar.past_preterito_indefinido.regular_indefinido_endings",
+        "concept_id": "regular_ar_endings_indefinido_a2",
+        "difficulty": 3,
+        "id": "q5",
+        "signature": "2fdb28de1ceed3c5"
+      },
+      "after": {
+        "type": "mcq_single",
+        "prompt": "Какая форма глагола 'cantar' соответствует vosotros в pretérito indefinido (прошедшее завершённое действие)?",
+        "choices": [
+          {
+            "id": "a",
+            "text": "cantasteis"
+          },
+          {
+            "id": "b",
+            "text": "cantaste"
+          },
+          {
+            "id": "c",
+            "text": "cantaron"
+          },
+          {
+            "id": "d",
+            "text": "cantamos"
+          }
+        ],
+        "correct_answer": "a",
+        "explanation": "Для 'vosotros' (2-е лицо мн.ч.) окончание -asteis. Правильно: cantasteis, а не cantaste (ты) или cantaron (они).",
+        "theory_block_id": "b2_theory_regular_ar_endings_indefinido_a2",
+        "chapter_id": "es.grammar.past_preterito_indefinido.regular_indefinido_endings",
+        "concept_id": "regular_ar_endings_indefinido_a2",
+        "difficulty": 3,
+        "id": "q5",
+        "signature": "da20b0109c34eab8"
+      },
+      "reason": "Смежный дефект: варианты содержат полные формы, поэтому вопрос уточнён как выбор формы, а не окончания; названо требуемое время.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/training_pack/chapters/054/es.02.b2_theory_high_frequency_forms.questions.json",
+      "id": "q10",
+      "before": {
+        "type": "mcq_single",
+        "prompt": "Какая форма глагола 'hablar' в pretérito indefinido (первое лицо)?",
+        "choices": [
+          {
+            "id": "a",
+            "text": "hablo"
+          },
+          {
+            "id": "b",
+            "text": "habló"
+          },
+          {
+            "id": "c",
+            "text": "hablé"
+          },
+          {
+            "id": "d",
+            "text": "hablaban"
+          }
+        ],
+        "correct_answer": "c",
+        "explanation": "Глагол 'hablar' (окончание -ar) в pretérito indefinido первого лица имеет форму 'hablé'.",
+        "theory_block_id": "b2_theory_high_frequency_forms",
+        "chapter_id": "es.grammar.past_preterito_indefinido.build_speak_tell_happened_yesterday",
+        "concept_id": "indefinido_high_frequency_forms",
+        "difficulty": 1,
+        "id": "q10",
+        "signature": "f97d3f5d56a41b6b"
+      },
+      "after": {
+        "type": "mcq_single",
+        "prompt": "Какая форма глагола 'hablar' в pretérito indefinido (первое лицо единственного числа)?",
+        "choices": [
+          {
+            "id": "a",
+            "text": "hablo"
+          },
+          {
+            "id": "b",
+            "text": "habló"
+          },
+          {
+            "id": "c",
+            "text": "hablé"
+          },
+          {
+            "id": "d",
+            "text": "hablaban"
+          }
+        ],
+        "correct_answer": "c",
+        "explanation": "Глагол 'hablar' (окончание -ar) в pretérito indefinido первого лица единственного числа имеет форму 'hablé'.",
+        "theory_block_id": "b2_theory_high_frequency_forms",
+        "chapter_id": "es.grammar.past_preterito_indefinido.build_speak_tell_happened_yesterday",
+        "concept_id": "indefinido_high_frequency_forms",
+        "difficulty": 1,
+        "id": "q10",
+        "signature": "c0a33279cc1df0db"
+      },
+      "reason": "Смежный дефект: первое лицо уточнено до единственного числа; для ir/ser среди вариантов присутствовало также первое лицо множественного числа fuimos.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/training_pack/chapters/054/es.02.b2_theory_high_frequency_forms.questions.json",
+      "id": "q11",
+      "before": {
+        "type": "mcq_single",
+        "prompt": "Какая форма глагола 'comer' в pretérito indefinido (первое лицо)?",
+        "choices": [
+          {
+            "id": "a",
+            "text": "como"
+          },
+          {
+            "id": "b",
+            "text": "comió"
+          },
+          {
+            "id": "c",
+            "text": "comí"
+          },
+          {
+            "id": "d",
+            "text": "comían"
+          }
+        ],
+        "correct_answer": "c",
+        "explanation": "Глагол 'comer' (окончание -er) в pretérito indefinido первого лица имеет форму 'comí'.",
+        "theory_block_id": "b2_theory_high_frequency_forms",
+        "chapter_id": "es.grammar.past_preterito_indefinido.build_speak_tell_happened_yesterday",
+        "concept_id": "indefinido_high_frequency_forms",
+        "difficulty": 1,
+        "id": "q11",
+        "signature": "5a213b262f2f8742"
+      },
+      "after": {
+        "type": "mcq_single",
+        "prompt": "Какая форма глагола 'comer' в pretérito indefinido (первое лицо единственного числа)?",
+        "choices": [
+          {
+            "id": "a",
+            "text": "como"
+          },
+          {
+            "id": "b",
+            "text": "comió"
+          },
+          {
+            "id": "c",
+            "text": "comí"
+          },
+          {
+            "id": "d",
+            "text": "comían"
+          }
+        ],
+        "correct_answer": "c",
+        "explanation": "Глагол 'comer' (окончание -er) в pretérito indefinido первого лица единственного числа имеет форму 'comí'.",
+        "theory_block_id": "b2_theory_high_frequency_forms",
+        "chapter_id": "es.grammar.past_preterito_indefinido.build_speak_tell_happened_yesterday",
+        "concept_id": "indefinido_high_frequency_forms",
+        "difficulty": 1,
+        "id": "q11",
+        "signature": "ce39b7c3298a0f5e"
+      },
+      "reason": "Смежный дефект: первое лицо уточнено до единственного числа; для ir/ser среди вариантов присутствовало также первое лицо множественного числа fuimos.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/training_pack/chapters/054/es.02.b2_theory_high_frequency_forms.questions.json",
+      "id": "q12",
+      "before": {
+        "type": "mcq_single",
+        "prompt": "Какая форма глагола 'vivir' в pretérito indefinido (первое лицо)?",
+        "choices": [
+          {
+            "id": "a",
+            "text": "vivo"
+          },
+          {
+            "id": "b",
+            "text": "vivió"
+          },
+          {
+            "id": "c",
+            "text": "viví"
+          },
+          {
+            "id": "d",
+            "text": "vivían"
+          }
+        ],
+        "correct_answer": "c",
+        "explanation": "Глагол 'vivir' (окончание -ir) в pretérito indefinido первого лица имеет форму 'viví'.",
+        "theory_block_id": "b2_theory_high_frequency_forms",
+        "chapter_id": "es.grammar.past_preterito_indefinido.build_speak_tell_happened_yesterday",
+        "concept_id": "indefinido_high_frequency_forms",
+        "difficulty": 1,
+        "id": "q12",
+        "signature": "1f1636144e0b6211"
+      },
+      "after": {
+        "type": "mcq_single",
+        "prompt": "Какая форма глагола 'vivir' в pretérito indefinido (первое лицо единственного числа)?",
+        "choices": [
+          {
+            "id": "a",
+            "text": "vivo"
+          },
+          {
+            "id": "b",
+            "text": "vivió"
+          },
+          {
+            "id": "c",
+            "text": "viví"
+          },
+          {
+            "id": "d",
+            "text": "vivían"
+          }
+        ],
+        "correct_answer": "c",
+        "explanation": "Глагол 'vivir' (окончание -ir) в pretérito indefinido первого лица единственного числа имеет форму 'viví'.",
+        "theory_block_id": "b2_theory_high_frequency_forms",
+        "chapter_id": "es.grammar.past_preterito_indefinido.build_speak_tell_happened_yesterday",
+        "concept_id": "indefinido_high_frequency_forms",
+        "difficulty": 1,
+        "id": "q12",
+        "signature": "63f0267ef73457ed"
+      },
+      "reason": "Смежный дефект: первое лицо уточнено до единственного числа; для ir/ser среди вариантов присутствовало также первое лицо множественного числа fuimos.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/training_pack/chapters/054/es.02.b2_theory_high_frequency_forms.questions.json",
+      "id": "q13",
+      "before": {
+        "type": "mcq_single",
+        "prompt": "Какая форма глагола 'hacer' в pretérito indefinido (первое лицо)?",
+        "choices": [
+          {
+            "id": "a",
+            "text": "hago"
+          },
+          {
+            "id": "b",
+            "text": "hizo"
+          },
+          {
+            "id": "c",
+            "text": "hice"
+          },
+          {
+            "id": "d",
+            "text": "hacía"
+          }
+        ],
+        "correct_answer": "c",
+        "explanation": "Глагол 'hacer' имеет нерегулярную форму 'hice' в pretérito indefinido первого лица.",
+        "theory_block_id": "b2_theory_high_frequency_forms",
+        "chapter_id": "es.grammar.past_preterito_indefinido.build_speak_tell_happened_yesterday",
+        "concept_id": "indefinido_high_frequency_forms",
+        "difficulty": 2,
+        "id": "q13",
+        "signature": "02f936cbf24f245e"
+      },
+      "after": {
+        "type": "mcq_single",
+        "prompt": "Какая форма глагола 'hacer' в pretérito indefinido (первое лицо единственного числа)?",
+        "choices": [
+          {
+            "id": "a",
+            "text": "hago"
+          },
+          {
+            "id": "b",
+            "text": "hizo"
+          },
+          {
+            "id": "c",
+            "text": "hice"
+          },
+          {
+            "id": "d",
+            "text": "hacía"
+          }
+        ],
+        "correct_answer": "c",
+        "explanation": "Глагол 'hacer' имеет нерегулярную форму 'hice' в pretérito indefinido первого лица единственного числа.",
+        "theory_block_id": "b2_theory_high_frequency_forms",
+        "chapter_id": "es.grammar.past_preterito_indefinido.build_speak_tell_happened_yesterday",
+        "concept_id": "indefinido_high_frequency_forms",
+        "difficulty": 2,
+        "id": "q13",
+        "signature": "f743557e58bb0d14"
+      },
+      "reason": "Смежный дефект: первое лицо уточнено до единственного числа; для ir/ser среди вариантов присутствовало также первое лицо множественного числа fuimos.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/training_pack/chapters/054/es.02.b2_theory_high_frequency_forms.questions.json",
+      "id": "q14",
+      "before": {
+        "type": "mcq_single",
+        "prompt": "Какая форма глагола 'ir' в pretérito indefinido (первое лицо)?",
+        "choices": [
+          {
+            "id": "a",
+            "text": "fue"
+          },
+          {
+            "id": "b",
+            "text": "fuimos"
+          },
+          {
+            "id": "c",
+            "text": "fui"
+          },
+          {
+            "id": "d",
+            "text": "iba"
+          }
+        ],
+        "correct_answer": "c",
+        "explanation": "Глагол 'ir' в pretérito indefinido первого лица имеет форму 'fui'.",
+        "theory_block_id": "b2_theory_high_frequency_forms",
+        "chapter_id": "es.grammar.past_preterito_indefinido.build_speak_tell_happened_yesterday",
+        "concept_id": "indefinido_high_frequency_forms",
+        "difficulty": 1,
+        "id": "q14",
+        "signature": "19d358ddcd7ea259"
+      },
+      "after": {
+        "type": "mcq_single",
+        "prompt": "Какая форма глагола 'ir' в pretérito indefinido (первое лицо единственного числа)?",
+        "choices": [
+          {
+            "id": "a",
+            "text": "fue"
+          },
+          {
+            "id": "b",
+            "text": "fuimos"
+          },
+          {
+            "id": "c",
+            "text": "fui"
+          },
+          {
+            "id": "d",
+            "text": "iba"
+          }
+        ],
+        "correct_answer": "c",
+        "explanation": "Глагол 'ir' в pretérito indefinido первого лица единственного числа имеет форму 'fui'.",
+        "theory_block_id": "b2_theory_high_frequency_forms",
+        "chapter_id": "es.grammar.past_preterito_indefinido.build_speak_tell_happened_yesterday",
+        "concept_id": "indefinido_high_frequency_forms",
+        "difficulty": 1,
+        "id": "q14",
+        "signature": "f1c637d4816aebfd"
+      },
+      "reason": "Смежный дефект: первое лицо уточнено до единственного числа; для ir/ser среди вариантов присутствовало также первое лицо множественного числа fuimos.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/training_pack/chapters/054/es.02.b2_theory_high_frequency_forms.questions.json",
+      "id": "q15",
+      "before": {
+        "type": "mcq_single",
+        "prompt": "Какая форма глагола 'ser' в pretérito indefinido (первое лицо)?",
+        "choices": [
+          {
+            "id": "a",
+            "text": "fue"
+          },
+          {
+            "id": "b",
+            "text": "fuimos"
+          },
+          {
+            "id": "c",
+            "text": "fui"
+          },
+          {
+            "id": "d",
+            "text": "era"
+          }
+        ],
+        "correct_answer": "c",
+        "explanation": "Глагол 'ser' в pretérito indefinido первого лица имеет форму 'fui', как и 'ir'.",
+        "theory_block_id": "b2_theory_high_frequency_forms",
+        "chapter_id": "es.grammar.past_preterito_indefinido.build_speak_tell_happened_yesterday",
+        "concept_id": "indefinido_high_frequency_forms",
+        "difficulty": 2,
+        "id": "q15",
+        "signature": "2a9bfdb02c94819e"
+      },
+      "after": {
+        "type": "mcq_single",
+        "prompt": "Какая форма глагола 'ser' в pretérito indefinido (первое лицо единственного числа)?",
+        "choices": [
+          {
+            "id": "a",
+            "text": "fue"
+          },
+          {
+            "id": "b",
+            "text": "fuimos"
+          },
+          {
+            "id": "c",
+            "text": "fui"
+          },
+          {
+            "id": "d",
+            "text": "era"
+          }
+        ],
+        "correct_answer": "c",
+        "explanation": "Глагол 'ser' в pretérito indefinido первого лица единственного числа имеет форму 'fui', как и 'ir'.",
+        "theory_block_id": "b2_theory_high_frequency_forms",
+        "chapter_id": "es.grammar.past_preterito_indefinido.build_speak_tell_happened_yesterday",
+        "concept_id": "indefinido_high_frequency_forms",
+        "difficulty": 2,
+        "id": "q15",
+        "signature": "6b7c554a811d4285"
+      },
+      "reason": "Смежный дефект: первое лицо уточнено до единственного числа; для ir/ser среди вариантов присутствовало также первое лицо множественного числа fuimos.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/training_pack/chapters/054/es.02.b2_theory_high_frequency_forms.questions.json",
+      "id": "q19",
+      "before": {
+        "type": "mcq_single",
+        "prompt": "Какая форма глагола 'comer' в pretérito indefinido (первое лицо) используется для 'вчера'?",
+        "choices": [
+          {
+            "id": "a",
+            "text": "como"
+          },
+          {
+            "id": "b",
+            "text": "comí"
+          },
+          {
+            "id": "c",
+            "text": "comió"
+          },
+          {
+            "id": "d",
+            "text": "comían"
+          }
+        ],
+        "correct_answer": "b",
+        "explanation": "Глагол 'comer' в pretérito indefinido первого лица имеет форму 'comí', что соответствует действию 'вчера'.",
+        "theory_block_id": "b2_theory_high_frequency_forms",
+        "chapter_id": "es.grammar.past_preterito_indefinido.build_speak_tell_happened_yesterday",
+        "concept_id": "indefinido_high_frequency_forms",
+        "difficulty": 1,
+        "id": "q19",
+        "signature": "dff2725449c83b06"
+      },
+      "after": {
+        "type": "mcq_single",
+        "prompt": "Какая форма глагола 'comer' в pretérito indefinido (первое лицо единственного числа) используется для 'вчера'?",
+        "choices": [
+          {
+            "id": "a",
+            "text": "como"
+          },
+          {
+            "id": "b",
+            "text": "comí"
+          },
+          {
+            "id": "c",
+            "text": "comió"
+          },
+          {
+            "id": "d",
+            "text": "comían"
+          }
+        ],
+        "correct_answer": "b",
+        "explanation": "Глагол 'comer' в pretérito indefinido первого лица единственного числа имеет форму 'comí', что соответствует действию 'вчера'.",
+        "theory_block_id": "b2_theory_high_frequency_forms",
+        "chapter_id": "es.grammar.past_preterito_indefinido.build_speak_tell_happened_yesterday",
+        "concept_id": "indefinido_high_frequency_forms",
+        "difficulty": 1,
+        "id": "q19",
+        "signature": "e10f4568673f40bc"
+      },
+      "reason": "Смежный дефект: первое лицо уточнено до единственного числа; для ir/ser среди вариантов присутствовало также первое лицо множественного числа fuimos.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/training_pack/chapters/077/es.02.b2_theory_generic_reference_without_article.questions.json",
+      "id": "q2",
+      "before": {
+        "type": "mcq_single",
+        "prompt": "Как правильно: «Она пьёт сок» (без артикля)?",
+        "choices": [
+          {
+            "id": "a",
+            "text": "Ella bebe jugo"
+          },
+          {
+            "id": "b",
+            "text": "Ella bebe el jugo"
+          },
+          {
+            "id": "c",
+            "text": "Ella bebe un jugo"
+          },
+          {
+            "id": "d",
+            "text": "Ella bebe la jugo"
+          }
+        ],
+        "correct_answer": "a",
+        "explanation": "После глагола 'beber' неисчисляемые вещества употребляются без артикля, например, 'beber jugo' (пить сок).",
+        "theory_block_id": "b2_theory_generic_reference_without_article",
+        "chapter_id": "es.grammar.noun_phrase_upgrade_precision.articles_generic_reference_body_parts_abstract_nouns",
+        "concept_id": "generic_reference_without_article",
+        "difficulty": 2,
+        "id": "q2",
+        "signature": "d399acda0bb9e292"
+      },
+      "after": {
+        "type": "mcq_single",
+        "prompt": "Она рассказывает, что обычно пьёт на завтрак. Как сказать «Она пьёт сок», называя вид напитка вообще, без указания на определённый сок или одну порцию?",
+        "choices": [
+          {
+            "id": "a",
+            "text": "Ella bebe jugo"
+          },
+          {
+            "id": "b",
+            "text": "Ella bebe el jugo"
+          },
+          {
+            "id": "c",
+            "text": "Ella bebe un jugo"
+          },
+          {
+            "id": "d",
+            "text": "Ella bebe la jugo"
+          }
+        ],
+        "correct_answer": "a",
+        "explanation": "Ella bebe jugo называет напиток как вещество вообще. El jugo обозначает определённый сок, un jugo — одну порцию, а la не согласуется с мужским родом jugo.",
+        "theory_block_id": "b2_theory_generic_reference_without_article",
+        "chapter_id": "es.grammar.noun_phrase_upgrade_precision.articles_generic_reference_body_parts_abstract_nouns",
+        "concept_id": "generic_reference_without_article",
+        "difficulty": 2,
+        "id": "q2",
+        "signature": "aafa8ef8669e8157"
+      },
+      "reason": "Убрана прямая подсказка «без артикля»; смысловой контекст задаёт вещество вообще, а объяснение больше не утверждает запрет артикля после beber.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/training_pack/chapters/077/es.02.b2_theory_generic_reference_without_article.questions.json",
+      "id": "q3",
+      "before": {
+        "type": "mcq_single",
+        "prompt": "Как правильно: «Мне нужно доверие» (без артикля)?",
+        "choices": [
+          {
+            "id": "a",
+            "text": "Necesito confianza"
+          },
+          {
+            "id": "b",
+            "text": "Necesito la confianza"
+          },
+          {
+            "id": "c",
+            "text": "Necesito un confianza"
+          },
+          {
+            "id": "d",
+            "text": "Necesito el confianza"
+          }
+        ],
+        "correct_answer": "a",
+        "explanation": "Абстрактные существительные в значении 'не конкретное' употребляются без артикля, например, 'necesitar confianza' (нуждаться в доверии).",
+        "theory_block_id": "b2_theory_generic_reference_without_article",
+        "chapter_id": "es.grammar.noun_phrase_upgrade_precision.articles_generic_reference_body_parts_abstract_nouns",
+        "concept_id": "generic_reference_without_article",
+        "difficulty": 3,
+        "id": "q3",
+        "signature": "ed765ff61350def4"
+      },
+      "after": {
+        "type": "mcq_single",
+        "prompt": "Как сказать «Мне нужно доверие», имея в виду доверие вообще, а не доверие определённого человека?",
+        "choices": [
+          {
+            "id": "a",
+            "text": "Necesito confianza"
+          },
+          {
+            "id": "b",
+            "text": "Necesito la confianza"
+          },
+          {
+            "id": "c",
+            "text": "Necesito un confianza"
+          },
+          {
+            "id": "d",
+            "text": "Necesito el confianza"
+          }
+        ],
+        "correct_answer": "a",
+        "explanation": "В Necesito confianza абстрактное существительное обозначает доверие вообще. La confianza относится к определённому доверию; un и el не согласуются с женским родом confianza.",
+        "theory_block_id": "b2_theory_generic_reference_without_article",
+        "chapter_id": "es.grammar.noun_phrase_upgrade_precision.articles_generic_reference_body_parts_abstract_nouns",
+        "concept_id": "generic_reference_without_article",
+        "difficulty": 3,
+        "id": "q3",
+        "signature": "f336014c5356d371"
+      },
+      "reason": "Убрана прямая подсказка «без артикля»; значение доверия вообще задано контекстом.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/training_pack/chapters/077/es.02.b2_theory_generic_reference_without_article.questions.json",
+      "id": "q4",
+      "before": {
+        "type": "mcq_single",
+        "prompt": "Как правильно: «Они покупают сыр» (без артикля)?",
+        "choices": [
+          {
+            "id": "a",
+            "text": "Compran queso"
+          },
+          {
+            "id": "b",
+            "text": "Compran el queso"
+          },
+          {
+            "id": "c",
+            "text": "Compran un queso"
+          },
+          {
+            "id": "d",
+            "text": "Compran la queso"
+          }
+        ],
+        "correct_answer": "a",
+        "explanation": "После глагола 'comprar' неисчисляемые продукты употребляются без артикля, например, 'comprar queso' (купить сыр).",
+        "theory_block_id": "b2_theory_generic_reference_without_article",
+        "chapter_id": "es.grammar.noun_phrase_upgrade_precision.articles_generic_reference_body_parts_abstract_nouns",
+        "concept_id": "generic_reference_without_article",
+        "difficulty": 2,
+        "id": "q4",
+        "signature": "0c1fd9da734b6a93"
+      },
+      "after": {
+        "type": "mcq_single",
+        "prompt": "Как сказать «Они покупают сыр», называя продукт вообще, а не конкретный сыр или одну целую головку?",
+        "choices": [
+          {
+            "id": "a",
+            "text": "Compran queso"
+          },
+          {
+            "id": "b",
+            "text": "Compran el queso"
+          },
+          {
+            "id": "c",
+            "text": "Compran un queso"
+          },
+          {
+            "id": "d",
+            "text": "Compran la queso"
+          }
+        ],
+        "correct_answer": "a",
+        "explanation": "Compran queso обозначает покупку сыра как продукта. El queso указывает на определённый сыр, un queso — на отдельную головку; la не согласуется с мужским родом queso.",
+        "theory_block_id": "b2_theory_generic_reference_without_article",
+        "chapter_id": "es.grammar.noun_phrase_upgrade_precision.articles_generic_reference_body_parts_abstract_nouns",
+        "concept_id": "generic_reference_without_article",
+        "difficulty": 2,
+        "id": "q4",
+        "signature": "1377542b478dec1e"
+      },
+      "reason": "Прямая подсказка «без артикля» заменена смысловым контекстом; объяснение уточнено, чтобы не запрещать артикль после глагола вообще.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/training_pack/chapters/077/es.02.b2_theory_generic_reference_without_article.questions.json",
+      "id": "q6",
+      "before": {
+        "type": "mcq_single",
+        "prompt": "Как правильно: «Он ест сыр» (без артикля)?",
+        "choices": [
+          {
+            "id": "a",
+            "text": "Él come queso"
+          },
+          {
+            "id": "b",
+            "text": "Él come el queso"
+          },
+          {
+            "id": "c",
+            "text": "Él come un queso"
+          },
+          {
+            "id": "d",
+            "text": "Él come la queso"
+          }
+        ],
+        "correct_answer": "a",
+        "explanation": "После глагола 'comer' неисчисляемые продукты употребляются без артикля, например, 'comer queso' (есть сыр).",
+        "theory_block_id": "b2_theory_generic_reference_without_article",
+        "chapter_id": "es.grammar.noun_phrase_upgrade_precision.articles_generic_reference_body_parts_abstract_nouns",
+        "concept_id": "generic_reference_without_article",
+        "difficulty": 2,
+        "id": "q6",
+        "signature": "5e3b3dd5f96d7426"
+      },
+      "after": {
+        "type": "mcq_single",
+        "prompt": "Как сказать «Он ест сыр», называя продукт вообще, а не конкретный сыр или одну целую головку?",
+        "choices": [
+          {
+            "id": "a",
+            "text": "Él come queso"
+          },
+          {
+            "id": "b",
+            "text": "Él come el queso"
+          },
+          {
+            "id": "c",
+            "text": "Él come un queso"
+          },
+          {
+            "id": "d",
+            "text": "Él come la queso"
+          }
+        ],
+        "correct_answer": "a",
+        "explanation": "Él come queso обозначает употребление сыра как продукта. El queso указывает на определённый сыр, un queso — на отдельную головку; la не согласуется с мужским родом queso.",
+        "theory_block_id": "b2_theory_generic_reference_without_article",
+        "chapter_id": "es.grammar.noun_phrase_upgrade_precision.articles_generic_reference_body_parts_abstract_nouns",
+        "concept_id": "generic_reference_without_article",
+        "difficulty": 2,
+        "id": "q6",
+        "signature": "9fb1e3daa60638c3"
+      },
+      "reason": "Прямая подсказка «без артикля» заменена смысловым контекстом; объяснение уточнено, чтобы не запрещать артикль после глагола вообще.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/training_pack/chapters/077/es.02.b2_theory_generic_reference_without_article.questions.json",
+      "id": "q7",
+      "before": {
+        "type": "mcq_single",
+        "prompt": "Как правильно: «Мы пьём молоко» (без артикля)?",
+        "choices": [
+          {
+            "id": "a",
+            "text": "Bebemos leche"
+          },
+          {
+            "id": "b",
+            "text": "Bebemos la leche"
+          },
+          {
+            "id": "c",
+            "text": "Bebemos un leche"
+          },
+          {
+            "id": "d",
+            "text": "Bebemos el leche"
+          }
+        ],
+        "correct_answer": "a",
+        "explanation": "После глагола 'beber' неисчисляемые жидкости употребляются без артикля, например, 'beber leche' (пить молоко).",
+        "theory_block_id": "b2_theory_generic_reference_without_article",
+        "chapter_id": "es.grammar.noun_phrase_upgrade_precision.articles_generic_reference_body_parts_abstract_nouns",
+        "concept_id": "generic_reference_without_article",
+        "difficulty": 2,
+        "id": "q7",
+        "signature": "3c32c6cb014aac27"
+      },
+      "after": {
+        "type": "mcq_single",
+        "prompt": "Как сказать «Мы пьём молоко», называя напиток вообще, а не определённое молоко, о котором говорили раньше?",
+        "choices": [
+          {
+            "id": "a",
+            "text": "Bebemos leche"
+          },
+          {
+            "id": "b",
+            "text": "Bebemos la leche"
+          },
+          {
+            "id": "c",
+            "text": "Bebemos un leche"
+          },
+          {
+            "id": "d",
+            "text": "Bebemos el leche"
+          }
+        ],
+        "correct_answer": "a",
+        "explanation": "Bebemos leche называет молоко как вещество вообще. La leche обозначает определённое молоко; un и el не согласуются с женским родом leche.",
+        "theory_block_id": "b2_theory_generic_reference_without_article",
+        "chapter_id": "es.grammar.noun_phrase_upgrade_precision.articles_generic_reference_body_parts_abstract_nouns",
+        "concept_id": "generic_reference_without_article",
+        "difficulty": 2,
+        "id": "q7",
+        "signature": "1d4f8cc2666bfc68"
+      },
+      "reason": "Прямая подсказка «без артикля» заменена смысловым контекстом; объяснение уточнено, чтобы не запрещать артикль после глагола вообще.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/training_pack/chapters/077/es.02.b2_theory_generic_reference_without_article.questions.json",
+      "id": "q9",
+      "before": {
+        "type": "mcq_single",
+        "prompt": "Как правильно: «Она покупает сыр» (без артикля)?",
+        "choices": [
+          {
+            "id": "a",
+            "text": "Ella compra queso"
+          },
+          {
+            "id": "b",
+            "text": "Ella compra el queso"
+          },
+          {
+            "id": "c",
+            "text": "Ella compra un queso"
+          },
+          {
+            "id": "d",
+            "text": "Ella compra la queso"
+          }
+        ],
+        "correct_answer": "a",
+        "explanation": "После глагола 'comprar' неисчисляемые продукты употребляются без артикля, например, 'comprar queso' (купить сыр).",
+        "theory_block_id": "b2_theory_generic_reference_without_article",
+        "chapter_id": "es.grammar.noun_phrase_upgrade_precision.articles_generic_reference_body_parts_abstract_nouns",
+        "concept_id": "generic_reference_without_article",
+        "difficulty": 2,
+        "id": "q9",
+        "signature": "a327394a044c655d"
+      },
+      "after": {
+        "type": "mcq_single",
+        "prompt": "Как сказать «Она покупает сыр», называя продукт вообще, а не конкретный сыр или одну целую головку?",
+        "choices": [
+          {
+            "id": "a",
+            "text": "Ella compra queso"
+          },
+          {
+            "id": "b",
+            "text": "Ella compra el queso"
+          },
+          {
+            "id": "c",
+            "text": "Ella compra un queso"
+          },
+          {
+            "id": "d",
+            "text": "Ella compra la queso"
+          }
+        ],
+        "correct_answer": "a",
+        "explanation": "Ella compra queso обозначает покупку сыра как продукта. El queso указывает на определённый сыр, un queso — на отдельную головку; la не согласуется с мужским родом queso.",
+        "theory_block_id": "b2_theory_generic_reference_without_article",
+        "chapter_id": "es.grammar.noun_phrase_upgrade_precision.articles_generic_reference_body_parts_abstract_nouns",
+        "concept_id": "generic_reference_without_article",
+        "difficulty": 2,
+        "id": "q9",
+        "signature": "3641377b3f904f27"
+      },
+      "reason": "Прямая подсказка «без артикля» заменена смысловым контекстом; объяснение уточнено, чтобы не запрещать артикль после глагола вообще.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/120.es.grammar.subjunctive_noun_clauses.emotion_evaluation_me_alegra_que_es_bueno_que/03-questions.json",
+      "id": "q10",
+      "before": {
+        "id": "q10",
+        "type": "fill_blank",
+        "prompt": "Вставьте: *Es una pena que no **___** a la fiesta.* (poder, él, subjuntivo)",
+        "theory_block_id": "b1_theory_emotion_evaluation_overview",
+        "difficulty": 2,
+        "correct_answer": "pueda",
+        "explanation": "Es una pena que → subjuntivo (pueda).",
+        "tags": [
+          "b1"
+        ]
+      },
+      "report_state": "done",
+      "after": {
+        "id": "q10",
+        "type": "fill_blank",
+        "prompt": "Вставьте: *Es una pena que no **___** venir a la fiesta.* (poder, él, subjuntivo)",
+        "theory_block_id": "b1_theory_emotion_evaluation_overview",
+        "difficulty": 2,
+        "correct_answer": "pueda",
+        "explanation": "Es una pena que → subjuntivo (pueda).",
+        "tags": [
+          "b1"
+        ]
+      },
+      "reason": "Независимая проверка: после формы poder отсутствовал смысловой инфинитив; добавлен venir, ключ pueda сохранён. Смежный дефект.",
+      "revision_editor": "coordinator"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/133.es.grammar.subjunctive_past_counterfactuals.imperfect_subjunctive_forms_ra_se/03-questions.json",
+      "id": "q133_b4_cloze",
+      "before": {
+        "id": "q133_b4_cloze",
+        "type": "cloze_mixed",
+        "theory_block_id": "b4_theory_common_uses_preview",
+        "difficulty": 3,
+        "prompt": "Два пропуска, ответ через «|».\n1) *Quisiera ___ una mesa para dos.* (reservar: одно слово)\n2) *Si ___ un día libre, dormiría hasta tarde.* (tener, 1 л. ед., -ra)",
+        "word_bank": [
+          "reservar",
+          "reserve",
+          "tuviera",
+          "tendria",
+          "reserva",
+          "tuviese"
+        ],
+        "correct_answer": "reservar|tuviera",
+        "explanation": "*Quisiera* + inf.; *si* + subj.",
+        "tags": [
+          "cloze"
+        ]
+      },
+      "report_state": "done",
+      "after": {
+        "id": "q133_b4_cloze",
+        "type": "cloze_mixed",
+        "theory_block_id": "b4_theory_common_uses_preview",
+        "difficulty": 3,
+        "prompt": "Два пропуска, ответ через «|».\n1) *Quisiera ___ una mesa para dos.* (reservé: одно слово)\n2) *Si ___ un día libre, dormiría hasta tarde.* (tener, 1 л. ед., -ra)",
+        "word_bank": [
+          "reservar",
+          "reserve",
+          "tuviera",
+          "tendria",
+          "reserva",
+          "tuviese"
+        ],
+        "correct_answer": "reservar|tuviera",
+        "explanation": "*Quisiera* + inf.; *si* + subj.",
+        "tags": [
+          "cloze"
+        ]
+      },
+      "reason": "Независимая проверка: скобки повторяли готовый инфинитив reservar; дана личная форма reservé, которую надо преобразовать после quisiera.",
+      "revision_editor": "coordinator"
+    }
+  ],
+  "final_status": "complete_independently_verified",
+  "independent_verification": "complete",
+  "final_counts": {
+    "reviewed": 412,
+    "fixed": 60,
+    "ok": 352
+  },
+  "final_evidence": "README.md and independent-source-acceptance.json"
+}

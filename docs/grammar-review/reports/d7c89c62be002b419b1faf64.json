@@ -25,7 +25,13 @@
       "id": "q3",
       "decision": "ok",
       "note": "Грамматика, ключ и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках исходный глагол или русский смысл союза; требуется построить Past Continuous/Past Simple либо выбрать союз."
+      }
     },
     {
       "id": "q5",
@@ -49,7 +55,13 @@
       "id": "q8",
       "decision": "ok",
       "note": "Грамматика, ключ и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках исходный глагол или русский смысл союза; требуется построить Past Continuous/Past Simple либо выбрать союз."
+      }
     },
     {
       "id": "q9",
@@ -67,7 +79,13 @@
       "id": "q12",
       "decision": "ok",
       "note": "Грамматика, ключ и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках исходный глагол или русский смысл союза; требуется построить Past Continuous/Past Simple либо выбрать союз."
+      }
     },
     {
       "id": "q13",
@@ -85,7 +103,13 @@
       "id": "q16",
       "decision": "ok",
       "note": "Грамматика, ключ и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках исходный глагол или русский смысл союза; требуется построить Past Continuous/Past Simple либо выбрать союз."
+      }
     },
     {
       "id": "q17",
@@ -115,7 +139,13 @@
       "id": "q22",
       "decision": "ok",
       "note": "Грамматика, ключ и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках исходный глагол или русский смысл союза; требуется построить Past Continuous/Past Simple либо выбрать союз."
+      }
     },
     {
       "id": "q23",
@@ -133,7 +163,13 @@
       "id": "q26",
       "decision": "ok",
       "note": "Грамматика, ключ и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках исходный глагол или русский смысл союза; требуется построить Past Continuous/Past Simple либо выбрать союз."
+      }
     },
     {
       "id": "q27",
@@ -163,7 +199,13 @@
       "id": "q32",
       "decision": "ok",
       "note": "Грамматика, ключ и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках исходный глагол или русский смысл союза; требуется построить Past Continuous/Past Simple либо выбрать союз."
+      }
     },
     {
       "id": "q33",
@@ -181,7 +223,13 @@
       "id": "q36",
       "decision": "ok",
       "note": "Грамматика, ключ и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках исходный глагол или русский смысл союза; требуется построить Past Continuous/Past Simple либо выбрать союз."
+      }
     },
     {
       "id": "q37",
@@ -211,7 +259,13 @@
       "id": "q43",
       "decision": "ok",
       "note": "Грамматика, ключ и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках исходный глагол или русский смысл союза; требуется построить Past Continuous/Past Simple либо выбрать союз."
+      }
     },
     {
       "id": "q45",
@@ -223,7 +277,13 @@
       "id": "q46",
       "decision": "ok",
       "note": "Грамматика, ключ и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки дают исходный глагол либо несколько альтернатив союзов; готовый ключ не выделен."
+      }
     },
     {
       "id": "q47",
@@ -253,7 +313,13 @@
       "id": "q52",
       "decision": "ok",
       "note": "Грамматика, ключ и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки дают исходный глагол либо несколько альтернатив союзов; готовый ключ не выделен."
+      }
     },
     {
       "id": "q53",
@@ -271,7 +337,13 @@
       "id": "q55",
       "decision": "ok",
       "note": "Грамматика, ключ и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки дают исходный глагол либо несколько альтернатив союзов; готовый ключ не выделен."
+      }
     },
     {
       "id": "q56",
@@ -289,7 +361,13 @@
       "id": "q59",
       "decision": "ok",
       "note": "Грамматика, ключ и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки дают исходный глагол либо несколько альтернатив союзов; готовый ключ не выделен."
+      }
     },
     {
       "id": "q60",
@@ -303,6 +381,11 @@
       "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
       "result": "pass",
       "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    },
+    {
+      "command": "python3 logs/complaints/parenthetical-audit-20261104/worker-2-validate.py",
+      "result": "pass",
+      "evidence": "Parentheses audit 2026-11-04, worker-2: exact identity/order/type/difficulty/theory bindings, unmodified objects and prior report decisions preserved against assigned baseline; logs/complaints/parenthetical-audit-20261104/worker-2-evidence/preservation-and-validators.json. Narrow audit only, not renewed whole-file editorial verification."
     }
   ],
   "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."

@@ -85,13 +85,25 @@
       "id": "q19",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Число ограничивает проверяемое утверждение, не сообщает true/false."
+      }
     },
     {
       "id": "q20",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Число не снимает проверку дистанции; ответ false не раскрыт."
+      }
     },
     {
       "id": "q21",
@@ -181,13 +193,25 @@
       "id": "q39",
       "decision": "fixed",
       "note": "Уточнены контекст, время, согласование или отличие обычного вопроса от переспроса.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "be требует is после this."
+      }
     },
     {
       "id": "q40",
       "decision": "fixed",
       "note": "Уточнены контекст, время, согласование или отличие обычного вопроса от переспроса.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "be требует are после these."
+      }
     },
     {
       "id": "q41",
@@ -229,7 +253,13 @@
       "id": "q49",
       "decision": "fixed",
       "note": "Уточнены контекст, время, согласование или отличие обычного вопроса от переспроса.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "be требует are по these."
+      }
     },
     {
       "id": "q50",
@@ -271,13 +301,25 @@
       "id": "q56",
       "decision": "fixed",
       "note": "Уточнены обычный вопрос и настоящее время; допустимый переспрос не объявлен ошибкой.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "be требует is по that."
+      }
     },
     {
       "id": "q57",
       "decision": "fixed",
       "note": "Уточнены обычный вопрос и настоящее время; допустимый переспрос не объявлен ошибкой.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "be требует are по those."
+      }
     },
     {
       "id": "q58",

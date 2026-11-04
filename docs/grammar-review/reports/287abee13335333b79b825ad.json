@@ -19,7 +19,13 @@
       "id": "q2",
       "decision": "fixed",
       "note": "Ограничены настоящее время/сокращение, исправлена инструкция или неоднозначный вариант с not после глагола.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках русский смысл, категория отрицания либо примеры предмета вопроса. Выбор формы/стиля и согласования остаётся самостоятельным."
+      }
     },
     {
       "id": "q4",
@@ -31,7 +37,13 @@
       "id": "q5",
       "decision": "fixed",
       "note": "Ограничены настоящее время/сокращение, исправлена инструкция или неоднозначный вариант с not после глагола.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках русский смысл, категория отрицания либо примеры предмета вопроса. Выбор формы/стиля и согласования остаётся самостоятельным."
+      }
     },
     {
       "id": "q6",
@@ -49,7 +61,13 @@
       "id": "q8",
       "decision": "fixed",
       "note": "Ограничены настоящее время/сокращение, исправлена инструкция или неоднозначный вариант с not после глагола.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках русский смысл, категория отрицания либо примеры предмета вопроса. Выбор формы/стиля и согласования остаётся самостоятельным."
+      }
     },
     {
       "id": "q9",
@@ -61,7 +79,13 @@
       "id": "q11",
       "decision": "fixed",
       "note": "Ограничены настоящее время/сокращение, исправлена инструкция или неоднозначный вариант с not после глагола.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках русский смысл, категория отрицания либо примеры предмета вопроса. Выбор формы/стиля и согласования остаётся самостоятельным."
+      }
     },
     {
       "id": "q12",
@@ -79,7 +103,13 @@
       "id": "q14",
       "decision": "fixed",
       "note": "Ограничены настоящее время/сокращение, исправлена инструкция или неоднозначный вариант с not после глагола.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках русский смысл, категория отрицания либо примеры предмета вопроса. Выбор формы/стиля и согласования остаётся самостоятельным."
+      }
     },
     {
       "id": "q16",
@@ -91,7 +121,13 @@
       "id": "q17",
       "decision": "fixed",
       "note": "Ограничены настоящее время/сокращение, исправлена инструкция или неоднозначный вариант с not после глагола.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках русский смысл, категория отрицания либо примеры предмета вопроса. Выбор формы/стиля и согласования остаётся самостоятельным."
+      }
     },
     {
       "id": "q19",
@@ -103,7 +139,13 @@
       "id": "q20",
       "decision": "fixed",
       "note": "Ограничены настоящее время/сокращение, исправлена инструкция или неоднозначный вариант с not после глагола.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках русский смысл, категория отрицания либо примеры предмета вопроса. Выбор формы/стиля и согласования остаётся самостоятельным."
+      }
     },
     {
       "id": "q22",
@@ -115,7 +157,13 @@
       "id": "q23",
       "decision": "fixed",
       "note": "Ограничены настоящее время/сокращение, исправлена инструкция или неоднозначный вариант с not после глагола.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках русский смысл, категория отрицания либо примеры предмета вопроса. Выбор формы/стиля и согласования остаётся самостоятельным."
+      }
     },
     {
       "id": "q24",
@@ -133,7 +181,13 @@
       "id": "q26",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках русский смысл, категория отрицания либо примеры предмета вопроса. Выбор формы/стиля и согласования остаётся самостоятельным."
+      }
     },
     {
       "id": "q28",
@@ -157,7 +211,13 @@
       "id": "q32",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках русский смысл, категория отрицания либо примеры предмета вопроса. Выбор формы/стиля и согласования остаётся самостоятельным."
+      }
     },
     {
       "id": "q33",
@@ -169,7 +229,13 @@
       "id": "q35",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки уточняют отрицательный смысл, вопросительное значение или класс вспомогательного глагола/предлога; ключ не указан."
+      }
     },
     {
       "id": "q36",
@@ -181,7 +247,13 @@
       "id": "q38",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки уточняют отрицательный смысл, вопросительное значение или класс вспомогательного глагола/предлога; ключ не указан."
+      }
     },
     {
       "id": "q39",
@@ -205,13 +277,25 @@
       "id": "q46",
       "decision": "fixed",
       "note": "Уточнены форма/значение и стандартная норма; исправлены два допустимых ответа, недоказанная частотность либо согласование goes.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки уточняют отрицательный смысл, вопросительное значение или класс вспомогательного глагола/предлога; ключ не указан."
+      }
     },
     {
       "id": "q47",
       "decision": "fixed",
       "note": "Уточнены форма/значение и стандартная норма; исправлены два допустимых ответа, недоказанная частотность либо согласование goes.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки уточняют отрицательный смысл, вопросительное значение или класс вспомогательного глагола/предлога; ключ не указан."
+      }
     },
     {
       "id": "q48",
@@ -223,7 +307,13 @@
       "id": "q49",
       "decision": "fixed",
       "note": "Уточнены форма/значение и стандартная норма; исправлены два допустимых ответа, недоказанная частотность либо согласование goes.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки уточняют отрицательный смысл, вопросительное значение или класс вспомогательного глагола/предлога; ключ не указан."
+      }
     },
     {
       "id": "q50",
@@ -235,7 +325,13 @@
       "id": "q51",
       "decision": "fixed",
       "note": "Уточнены форма/значение и стандартная норма; исправлены два допустимых ответа, недоказанная частотность либо согласование goes.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки уточняют отрицательный смысл, вопросительное значение или класс вспомогательного глагола/предлога; ключ не указан."
+      }
     },
     {
       "id": "q53",
@@ -247,7 +343,13 @@
       "id": "q54",
       "decision": "fixed",
       "note": "Уточнены форма/значение и стандартная норма; исправлены два допустимых ответа, недоказанная частотность либо согласование goes.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки уточняют отрицательный смысл, вопросительное значение или класс вспомогательного глагола/предлога; ключ не указан."
+      }
     },
     {
       "id": "q56",
@@ -259,7 +361,13 @@
       "id": "q57",
       "decision": "fixed",
       "note": "Уточнена инструкция/формат ответа либо исправлено drinks после he never.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки уточняют отрицательный смысл, вопросительное значение или класс вспомогательного глагола/предлога; ключ не указан."
+      }
     },
     {
       "id": "q59",
@@ -271,7 +379,13 @@
       "id": "q60",
       "decision": "fixed",
       "note": "Уточнена инструкция/формат ответа либо исправлено drinks после he never.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки уточняют отрицательный смысл, вопросительное значение или класс вспомогательного глагола/предлога; ключ не указан."
+      }
     },
     {
       "id": "q45",
@@ -320,6 +434,11 @@
       "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
       "result": "pass",
       "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    },
+    {
+      "command": "python3 logs/complaints/parenthetical-audit-20261104/worker-2-validate.py",
+      "result": "pass",
+      "evidence": "Parentheses audit 2026-11-04, worker-2: exact identity/order/type/difficulty/theory bindings, unmodified objects and prior report decisions preserved against assigned baseline; logs/complaints/parenthetical-audit-20261104/worker-2-evidence/preservation-and-validators.json. Narrow audit only, not renewed whole-file editorial verification."
     }
   ],
   "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."

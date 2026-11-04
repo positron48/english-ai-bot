@@ -25,7 +25,13 @@
       "id": "q3",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Русское притяжательное значение надо выразить английским my."
+      }
     },
     {
       "id": "q4",
@@ -43,7 +49,13 @@
       "id": "q7",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "you преобразуется в your перед phone."
+      }
     },
     {
       "id": "q8",
@@ -61,13 +73,25 @@
       "id": "q10",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "we преобразуется в our."
+      }
     },
     {
       "id": "q11",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "they преобразуется в their."
+      }
     },
     {
       "id": "q12",
@@ -85,7 +109,13 @@
       "id": "q15",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "I преобразуется в my."
+      }
     },
     {
       "id": "q16",
@@ -97,7 +127,13 @@
       "id": "q17",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "she преобразуется в her перед phone."
+      }
     },
     {
       "id": "q20",
@@ -121,13 +157,25 @@
       "id": "q23",
       "decision": "fixed",
       "note": "Уточнены границы правила, собственность предмета или конкретное законченное предложение; пол подлежащего не гарантирует владельца.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "she преобразуется в притяжательное her; смысл владения уточнён."
+      }
     },
     {
       "id": "q24",
       "decision": "fixed",
       "note": "Уточнены границы правила, собственность предмета или конкретное законченное предложение; пол подлежащего не гарантирует владельца.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "he преобразуется в his; конкретный владелец задан."
+      }
     },
     {
       "id": "q27",
@@ -139,7 +187,13 @@
       "id": "q28",
       "decision": "fixed",
       "note": "Исправлены неверный ключ/подсказка, запрет Whose is this?, his/her для животных, альтернативный порядок или необходимость уточнить форму ответа.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "it требует притяжательной формы its."
+      }
     },
     {
       "id": "q29",
@@ -151,7 +205,13 @@
       "id": "q30",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Русское «чья» задаёт смысл; Whose не дано."
+      }
     },
     {
       "id": "q31",
@@ -181,7 +241,13 @@
       "id": "q38",
       "decision": "fixed",
       "note": "Исправлены неверный ключ/подсказка, запрет Whose is this?, his/her для животных, альтернативный порядок или необходимость уточнить форму ответа.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "I требует притяжательного my."
+      }
     },
     {
       "id": "q39",
@@ -199,13 +265,25 @@
       "id": "q42",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "they требует притяжательного their."
+      }
     },
     {
       "id": "q44",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "you требует притяжательного your."
+      }
     },
     {
       "id": "q45",
@@ -223,7 +301,13 @@
       "id": "q51",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "I требует притяжательного my."
+      }
     },
     {
       "id": "q52",
@@ -241,13 +325,25 @@
       "id": "q54",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "we требует притяжательного our."
+      }
     },
     {
       "id": "q57",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "she требует притяжательного her."
+      }
     },
     {
       "id": "q58",

@@ -1,11 +1,11 @@
 {
   "version": 1,
   "source": "courses/spanish-grammar/chapters/085.es.grammar.prepositions_verb_patterns.verb_plus_preposition_patterns_pensar_en_depender_de/03-questions.json",
-  "source_sha256": "a5c086456cc667f9159eefd44e07bf6c4f21dc1a0e8714d5e6d486882876c180",
+  "source_sha256": "d9391fd6158faeaab45a53325ae912a2f6a49a59df1cc22113cf7be988814fc8",
   "context_sha256": "80d33424a1c2b32f90efb6947e2e3ae146b6d6b4b62477e198145b3663229cf3",
   "editor": "Codex editor 2026-09-05",
   "verifier": "Anton Filatov (user)",
-  "phase": "done",
+  "phase": "awaiting_verification",
   "reviewed_at": "2026-09-05T10:43:26.040170Z",
   "verified_at": "2026-09-06T17:58:18.569986Z",
   "questions": [
@@ -29,9 +29,18 @@
     },
     {
       "id": "q4",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Независимая проверка: Помимо pensar en нормативно pensar sobre в значении размышлять о теме; для одного ключа ограничить предлагаемые предлоги. Уточнён набор сравниваемых форм/значений без прямой инструкции выбрать один названный ответ.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "Независимая проверка: Помимо pensar en нормативно pensar sobre в значении размышлять о теме; для одного ключа ограничить предлагаемые предлоги. Уточнён набор сравниваемых форм/значений без прямой инструкции выбрать один названный ответ.",
+        "verifier": "parentheses_2",
+        "verified_at": "2026-11-04T09:40:29.033435+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q5",
@@ -55,7 +64,13 @@
       "id": "q8",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Скобки относятся к обсуждаемому примеру/контексту; требуется определить грамматическую правильность или значение."
+      }
     },
     {
       "id": "q9",
@@ -67,7 +82,13 @@
       "id": "q10",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Русский смысл/ситуация в скобках задаёт нужное значение, английский/испанский ответ не назван."
+      }
     },
     {
       "id": "q11",
@@ -83,9 +104,18 @@
     },
     {
       "id": "q13",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Независимая проверка: Помимо en возможно pensar sobre el futuro; строковый ключ требует ограниченного набора. Уточнён набор сравниваемых форм/значений без прямой инструкции выбрать один названный ответ.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "Независимая проверка: Помимо en возможно pensar sobre el futuro; строковый ключ требует ограниченного набора. Уточнён набор сравниваемых форм/значений без прямой инструкции выбрать один названный ответ.",
+        "verifier": "parentheses_2",
+        "verified_at": "2026-11-04T09:40:29.033435+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q14",
@@ -97,7 +127,13 @@
       "id": "q15",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Скобки уточняют ситуацию/референт/время, а не дают готовый ответ."
+      }
     },
     {
       "id": "q16",
@@ -115,7 +151,13 @@
       "id": "q18",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Русский смысл/ситуация в скобках задаёт нужное значение, английский/испанский ответ не назван."
+      }
     },
     {
       "id": "q19",
@@ -151,13 +193,25 @@
       "id": "q24",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Русский смысл/ситуация в скобках задаёт нужное значение, английский/испанский ответ не назван."
+      }
     },
     {
       "id": "q25",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Русский смысл/ситуация в скобках задаёт нужное значение, английский/испанский ответ не назван."
+      }
     },
     {
       "id": "q26",
@@ -199,7 +253,13 @@
       "id": "q32",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Русский смысл/ситуация в скобках задаёт нужное значение, английский/испанский ответ не назван."
+      }
     },
     {
       "id": "q33",
@@ -223,13 +283,25 @@
       "id": "q36",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Грамматическое ограничение в скобках снимает неоднозначность; нужную форму/конструкцию всё равно требуется построить."
+      }
     },
     {
       "id": "q37",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Русский смысл/ситуация в скобках задаёт нужное значение, английский/испанский ответ не назван."
+      }
     },
     {
       "id": "q38",
@@ -259,7 +331,13 @@
       "id": "q42",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Русский смысл/ситуация в скобках задаёт нужное значение, английский/испанский ответ не назван."
+      }
     },
     {
       "id": "q43",
@@ -295,7 +373,13 @@
       "id": "q48",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Грамматическое ограничение в скобках снимает неоднозначность; нужную форму/конструкцию всё равно требуется построить."
+      }
     },
     {
       "id": "q49",
@@ -307,7 +391,13 @@
       "id": "q50",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Русский смысл/ситуация в скобках задаёт нужное значение, английский/испанский ответ не назван."
+      }
     },
     {
       "id": "q51",
@@ -335,9 +425,18 @@
     },
     {
       "id": "q55",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Вопрос уже показывал de после обоих глаголов и повторял схему в скобках. Теперь нужно самостоятельно вспомнить управление и сравнить его.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "fixed",
+        "note": "Вопрос уже показывал de после обоих глаголов и повторял схему в скобках. Теперь нужно самостоятельно вспомнить управление и сравнить его.",
+        "verifier": "parentheses_2",
+        "verified_at": "2026-11-04T09:40:29.033435+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q56",
@@ -349,7 +448,13 @@
       "id": "q57",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Русский смысл/ситуация в скобках задаёт нужное значение, английский/испанский ответ не назван."
+      }
     },
     {
       "id": "q58",
@@ -367,7 +472,13 @@
       "id": "q60",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Русский смысл/ситуация в скобках задаёт нужное значение, английский/испанский ответ не назван."
+      }
     },
     {
       "id": "q61",
@@ -397,7 +508,13 @@
       "id": "q65",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Русский смысл/ситуация в скобках задаёт нужное значение, английский/испанский ответ не назван."
+      }
     },
     {
       "id": "q66",
@@ -439,7 +556,13 @@
       "id": "q72",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Русский смысл/ситуация в скобках задаёт нужное значение, английский/испанский ответ не назван."
+      }
     }
   ],
   "checks": [
@@ -447,7 +570,33 @@
       "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
       "result": "pass",
       "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    },
+    {
+      "command": "python3 logs/complaints/parenthetical-audit-20261104/worker-3-validate.py",
+      "result": "pass",
+      "evidence": "1549 selected decisions complete; 5921 objects compared with baseline, 5836 untouched; IDs/order/type/difficulty/theory/choice IDs preserved; source/final/embedded and signatures checked. Evidence: logs/complaints/parenthetical-audit-20261104/worker-3-validation.json."
+    },
+    {
+      "command": "Unchanged owning validate-chapter.sh and AJV draft2020 on isolated baseline/current final copies (worker-3-validate.py)",
+      "result": "pass",
+      "evidence": "Chapter validator exits 0 before and after. AJV passes both versions."
     }
   ],
-  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+  "verification_note": "Parenthetical-hints audit 2026-11-04: changed questions await independent verification; prior unrelated decisions retained.",
+  "parentheses_audit_verification": {
+    "verifier": "parentheses_2",
+    "verified_at": "2026-11-04T09:40:29.033435+00:00",
+    "verification": "ok",
+    "scope": "narrow_parentheses_audit_changed_questions",
+    "question_ids": [
+      "q4",
+      "q13",
+      "q55"
+    ],
+    "evidence": [
+      "docs/grammar-review/batches/2026-11-04-parenthetical-hints/independent-worker-3.json",
+      "docs/grammar-review/batches/2026-11-04-parenthetical-hints/independent-worker-3-extension.json"
+    ],
+    "note": "Независимая проверка изменённых вопросов узкого аудита подсказок; out_of_scope не сертифицированы. Фазы общего обзора и source/context hashes не изменялись."
+  }
 }

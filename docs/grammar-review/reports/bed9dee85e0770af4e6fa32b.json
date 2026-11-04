@@ -19,7 +19,13 @@
       "id": "q2",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "«Много» требует выбора much по неисчисляемому time."
+      }
     },
     {
       "id": "q3",
@@ -43,7 +49,13 @@
       "id": "q6",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "«Много» требует many по cars."
+      }
     },
     {
       "id": "q7",
@@ -61,7 +73,13 @@
       "id": "q9",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "«Много» требует much по information."
+      }
     },
     {
       "id": "q10",
@@ -79,7 +97,13 @@
       "id": "q12",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: correct_answer, explanation, prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Русский смысл и регистр требуют конструкции a lot of; lot не дан."
+      }
     },
     {
       "id": "q13",
@@ -97,7 +121,13 @@
       "id": "q16",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: explanation, prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "«Много» требует many перед people."
+      }
     },
     {
       "id": "q17",
@@ -127,7 +157,13 @@
       "id": "q22",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "«Много» требует many перед options."
+      }
     },
     {
       "id": "q23",
@@ -151,7 +187,13 @@
       "id": "q26",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "«Много» требует much перед work."
+      }
     },
     {
       "id": "q27",
@@ -187,7 +229,13 @@
       "id": "q32",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Отрицательная оценка количества задаёт little, английское слово не дано."
+      }
     },
     {
       "id": "q33",
@@ -211,7 +259,13 @@
       "id": "q36",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Смысл «почти нет» отличает little от a little; форму выбирает ученик."
+      }
     },
     {
       "id": "q37",
@@ -229,7 +283,13 @@
       "id": "q39",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Смысл «почти нет» и friends требуют few, не little."
+      }
     },
     {
       "id": "q40",
@@ -247,7 +307,13 @@
       "id": "q42",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: correct_answer, explanation, prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Достаточность количества задаёт a little; little не дано."
+      }
     },
     {
       "id": "q43",
@@ -271,7 +337,13 @@
       "id": "q46",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: correct_answer, explanation, prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Достаточность и money требуют a little, английский ключ не написан."
+      }
     },
     {
       "id": "q47",
@@ -289,7 +361,13 @@
       "id": "q49",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: explanation, prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Достаточность и minutes требуют a few."
+      }
     },
     {
       "id": "q50",
@@ -307,7 +385,13 @@
       "id": "q52",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "«Много» перед money требует much."
+      }
     },
     {
       "id": "q53",
@@ -331,7 +415,13 @@
       "id": "q56",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "«Много» перед emails требует many."
+      }
     },
     {
       "id": "q57",
@@ -349,7 +439,13 @@
       "id": "q59",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: correct_answer, explanation, prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Русское «много» задаёт смысл a lot of, lot нужно восстановить."
+      }
     },
     {
       "id": "q60",

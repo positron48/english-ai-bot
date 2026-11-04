@@ -1,11 +1,11 @@
 {
   "version": 1,
   "source": "courses/english-grammar/training_pack/chapters/119/en.01.b1_theory_overview.questions.json",
-  "source_sha256": "1cff780a5ade5fa8f9ae03ab9b3a0ec0f5afdc0ef0a7c61c90e885f62df4aee4",
+  "source_sha256": "de9d98c6c0ec5fd63058a740f0d290c83c9e6fc9473ddb4cec6782bc228309a6",
   "context_sha256": "29d775ffbb77e9c0bf710000a00c10265f2b36be5c9face7a8ff06f20a16a9bd",
   "editor": "Codex editor 2026-09-06",
   "verifier": "Anton Filatov (user)",
-  "phase": "done",
+  "phase": "awaiting_verification",
   "reviewed_at": "2026-09-05T22:43:19.937678Z",
   "verified_at": "2026-09-06T17:58:18.569986Z",
   "questions": [
@@ -17,9 +17,18 @@
     },
     {
       "id": "q2",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Пример tell him прямо называл правильный глагол tell. Теперь показано окружение без пропущенного глагола.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "fixed",
+        "note": "Пример tell him прямо называл правильный глагол tell. Теперь показано окружение без пропущенного глагола.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q3",
@@ -75,7 +84,30 @@
       "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
       "result": "pass",
       "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    },
+    {
+      "command": "python3 logs/complaints/parenthetical-audit-20261104/worker-2-validate.py",
+      "result": "pass",
+      "evidence": "Parentheses audit 2026-11-04, worker-2: exact identity/order/type/difficulty/theory bindings, unmodified objects and prior report decisions preserved against assigned baseline; logs/complaints/parenthetical-audit-20261104/worker-2-evidence/preservation-and-validators.json. Narrow audit only, not renewed whole-file editorial verification."
+    },
+    {
+      "command": "python3 logs/complaints/parenthetical-audit-20261104/worker-2-validate.py [assigned courses/english-grammar/training_pack/chapters/119/en.01.b1_theory_overview.questions.json]",
+      "result": "pass",
+      "evidence": "Training source and embedded byte-identical; changed signatures recomputed with stock question_signature; unique computed signatures within changed file. logs/complaints/parenthetical-audit-20261104/worker-2-evidence/preservation-and-validators.json"
     }
   ],
-  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось. Изменение q2 2026-11-04: проверка подсказок в скобках, независимая проверка ожидается.",
+  "parentheses_audit_verification": {
+    "verifier": "parentheses_3",
+    "verified_at": "2026-11-04T09:44:02.337656+00:00",
+    "verification": "ok",
+    "scope": "narrow_parentheses_audit_changed_questions",
+    "question_ids": [
+      "q2"
+    ],
+    "evidence": [
+      "docs/grammar-review/batches/2026-11-04-parenthetical-hints/independent-worker-2.json"
+    ],
+    "note": "Независимо прочитаны все вопросы изменённого источника; подтверждены изменённые вопросы узкого аудита. Advisory вне selected не сертифицированы. Фазы общего обзора и source/context hashes не изменялись."
+  }
 }

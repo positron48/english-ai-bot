@@ -61,7 +61,13 @@
       "id": "q048_b1_09",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Скобки не содержат готового ключа. Проверен только узкий критерий раскрытия ответа, не общая редакторская корректность задания."
+      }
     },
     {
       "id": "q048_b1_10",
@@ -121,7 +127,13 @@
       "id": "q048_b2_09",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Скобки не содержат готового ключа. Проверен только узкий критерий раскрытия ответа, не общая редакторская корректность задания."
+      }
     },
     {
       "id": "q048_b2_10",
@@ -163,7 +175,13 @@
       "id": "q048_b3_06",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Скобки относятся к обсуждаемому примеру/контексту; требуется определить грамматическую правильность или значение."
+      }
     },
     {
       "id": "q048_b3_07",
@@ -175,13 +193,25 @@
       "id": "q048_b3_08",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Русский смысл/ситуация в скобках задаёт нужное значение, английский/испанский ответ не назван."
+      }
     },
     {
       "id": "q048_b3_09",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Скобки не содержат готового ключа. Проверен только узкий критерий раскрытия ответа, не общая редакторская корректность задания."
+      }
     },
     {
       "id": "q048_b3_10",
@@ -205,7 +235,13 @@
       "id": "q048_b4_03",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Русский смысл/ситуация в скобках задаёт нужное значение, английский/испанский ответ не назван."
+      }
     },
     {
       "id": "q048_b4_04",
@@ -241,7 +277,13 @@
       "id": "q048_b4_09",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Скобки не содержат готового ключа. Проверен только узкий критерий раскрытия ответа, не общая редакторская корректность задания."
+      }
     },
     {
       "id": "q048_b4_10",
@@ -361,13 +403,25 @@
       "id": "q048_b6_09",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Скобки не содержат готового ключа. Проверен только узкий критерий раскрытия ответа, не общая редакторская корректность задания."
+      }
     },
     {
       "id": "q048_b6_10",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Лексема или инфинитив задаёт материал для выбора грамматической формы по контексту; допустимое совпадение с начальной формой само по себе не отменяет этот выбор."
+      }
     }
   ],
   "checks": [

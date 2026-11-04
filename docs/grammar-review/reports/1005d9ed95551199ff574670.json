@@ -1,11 +1,11 @@
 {
   "version": 1,
   "source": "courses/spanish-grammar/chapters/021.es.grammar.existence_location_possession.estar_location_temporary_states/03-questions.json",
-  "source_sha256": "7b4eff7a6a15f5632f0a9d44d61adf38655d2cc90e5748db1cb6e7b11e940e1a",
+  "source_sha256": "af60c94eca6e22a4a8b662bae5ae0cf41392d1e9f18d2e19747d5a5a6f350b10",
   "context_sha256": "4de16863577fb8236e93f9ceff2ab9d9ae0a25b2890428746f0d289f83aab036",
   "editor": "Codex editor 2026-09-04",
   "verifier": "Anton Filatov (user)",
-  "phase": "done",
+  "phase": "awaiting_verification",
   "reviewed_at": "2026-09-04T14:30:55.671967+00:00",
   "verified_at": "2026-09-06T17:58:18.569986Z",
   "questions": [
@@ -37,7 +37,13 @@
       "id": "q5",
       "decision": "fixed",
       "note": "Ограничено настоящее время: другие формы estar также грамматически возможны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "estar требует estoy по yo."
+      }
     },
     {
       "id": "q6",
@@ -103,7 +109,13 @@
       "id": "q16",
       "decision": "fixed",
       "note": "Задано значение предлога; у la oficina возможны другие пространственные отношения.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Предлог места — категория, en нужно подобрать по смыслу внутри."
+      }
     },
     {
       "id": "q17",
@@ -157,13 +169,25 @@
       "id": "q25",
       "decision": "fixed",
       "note": "Убрана подсказка с ответом и обобщение об обязательном de без дополнения.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Предлог — категория, de после cerca нужно знать."
+      }
     },
     {
       "id": "q26",
       "decision": "fixed",
       "note": "Убрана подсказка, раскрывающая ответ.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Предлог — категория, de после delante нужно знать."
+      }
     },
     {
       "id": "q27",
@@ -217,13 +241,25 @@
       "id": "q35",
       "decision": "fixed",
       "note": "Задано настоящее время.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "estar требует estoy по yo."
+      }
     },
     {
       "id": "q36",
       "decision": "fixed",
       "note": "Задано настоящее время.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "estar требует estamos по nosotros."
+      }
     },
     {
       "id": "q37",
@@ -277,7 +313,13 @@
       "id": "q45",
       "decision": "fixed",
       "note": "Ограничены глаголы и настоящее время, чтобы ответ был однозначным.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Профессия задаёт значение, выбор ser/estar и es не написан."
+      }
     },
     {
       "id": "q46",
@@ -336,14 +378,32 @@
     {
       "id": "q55",
       "decision": "fixed",
-      "note": "Явно заданы лицо и время.",
-      "verification": "ok"
+      "note": "2026-11-04: объяснение синхронизировано с новой репликой без ссылки на удалённую вторую часть.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "fixed",
+        "note": "Готовое estoy в первой части удалено; остаётся самостоятельное спряжение estar для yo.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q56",
       "decision": "fixed",
-      "note": "Явно заданы лицо и время.",
-      "verification": "ok"
+      "note": "2026-11-04: объяснение синхронизировано с новой репликой без ссылки на две одинаковые формы.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "fixed",
+        "note": "Готовое estamos в первой части удалено; требуется форма estar для nosotros.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q57",
@@ -410,7 +470,26 @@
       "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
       "result": "pass",
       "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    },
+    {
+      "command": "python3 logs/complaints/parenthetical-audit-20261104/worker-1-validate.py",
+      "result": "pass",
+      "evidence": "2026-11-04 narrow parentheses audit: identity/order/bindings and untouched questions preserved; source/final/embedded exact; official isolated chapter assembly/validation or training validate_question and signature checks passed. See worker-1-evidence/validation.json."
     }
   ],
-  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+  "verification_note": "2026-11-04 parenthetical-hints audit: changed questions awaiting independent verification. Historical verification applies only to unchanged questions.",
+  "parentheses_audit_verification": {
+    "verifier": "parentheses_3",
+    "verified_at": "2026-11-04T09:44:02.337656+00:00",
+    "verification": "ok",
+    "scope": "narrow_parentheses_audit_changed_questions",
+    "question_ids": [
+      "q55",
+      "q56"
+    ],
+    "evidence": [
+      "docs/grammar-review/batches/2026-11-04-parenthetical-hints/independent-worker-1.json"
+    ],
+    "note": "Независимо прочитаны все вопросы изменённого источника; подтверждены изменённые вопросы узкого аудита. Advisory вне selected не сертифицированы. Фазы общего обзора и source/context hashes не изменялись."
+  }
 }

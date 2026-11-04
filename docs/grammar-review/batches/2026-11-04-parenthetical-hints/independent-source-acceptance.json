@@ -1,0 +1,607 @@
+{
+  "courses/english-grammar/chapters/028.en.grammar.now_present_continuous_contrast.form_am_is_are/03-questions.json": {
+    "evidence": "independent-worker-1.json",
+    "reviewer": "parentheses_3",
+    "sha256": "44fd082aa4161ad92b0d6325dcda424665e931b46e8ad1a79e436c98ee585650"
+  },
+  "courses/english-grammar/chapters/036.en.grammar.past_1_past_simple.irregular_verbs_how_to/03-questions.json": {
+    "evidence": "independent-worker-1.json",
+    "reviewer": "parentheses_3",
+    "sha256": "2e334e63e499335e79b710ac57f4fa1804a4e0ecbc2721347526af3b8b3384bf"
+  },
+  "courses/english-grammar/chapters/038.en.grammar.past_1_past_simple.negatives_didn_t_v1/03-questions.json": {
+    "evidence": "independent-worker-1.json",
+    "reviewer": "parentheses_3",
+    "sha256": "be840ed6d3a53f10515af5c5b98ef11434d171460b9f4e951feb813c6c931418"
+  },
+  "courses/english-grammar/chapters/050.en.grammar.future_plans.time_clauses_when_after/03-questions.json": {
+    "evidence": "independent-worker-1.json",
+    "reviewer": "parentheses_3",
+    "sha256": "5d43372e5241994b08778ebaea6e73d9c30111a807cbe565fd9ee139e89cca0a"
+  },
+  "courses/english-grammar/chapters/057.en.grammar.core_modality_ability_permission.may_might_probability/03-questions.json": {
+    "evidence": "independent-worker-1.json",
+    "reviewer": "parentheses_3",
+    "sha256": "ee5ba4cc15be6191fb2b60ae84d3003ae90dcb09f794236d08bc6a8adc740ef7"
+  },
+  "courses/english-grammar/chapters/080.en.grammar.prepositions_verb_patterns.phrasal_verbs_as_grammar/03-questions.json": {
+    "evidence": "independent-worker-1.json",
+    "reviewer": "parentheses_3",
+    "sha256": "f7bb27edf9ef0fbcfbd0f241e056a20f9cbff353e495a979834cb9bb1e9b4f65"
+  },
+  "courses/english-grammar/chapters/083.en.grammar.complex_sentences_1_connecting.because_so_although_but/03-questions.json": {
+    "evidence": "independent-worker-1.json",
+    "reviewer": "parentheses_3",
+    "sha256": "2c2d38fa7057b948b6da8dd714122d09a802162c36908e373f5dc02354699359"
+  },
+  "courses/english-grammar/chapters/092.en.grammar.perfect_aspect_experience_result.experience_have_you_ever/03-questions.json": {
+    "evidence": "independent-worker-1.json",
+    "reviewer": "parentheses_3",
+    "sha256": "3310e99cc4b5bc67e7f69f7816eff8980f250fe9e37580f708b4b762317a46ba"
+  },
+  "courses/english-grammar/chapters/097.en.grammar.perfect_aspect_experience_result.build_speak_biography_experience/03-questions.json": {
+    "evidence": "independent-worker-1.json",
+    "reviewer": "parentheses_3",
+    "sha256": "c03b099a484713b5d535ffe5ada4f4cdb12a93fa081488a9d706fded52f0344a"
+  },
+  "courses/english-grammar/chapters/127.en.grammar.information_structure_style.ellipsis_substitution_so_neither/03-questions.json": {
+    "evidence": "independent-worker-1.json",
+    "reviewer": "parentheses_3",
+    "sha256": "1d8ea246055fe03262770034cb3e5ff594b05bfc13561cc13f3a9eb3b45f85a7"
+  },
+  "courses/english-grammar/chapters/129.en.grammar.information_structure_style.formal_vs_informal_contractions/03-questions.json": {
+    "evidence": "independent-worker-1.json",
+    "reviewer": "parentheses_3",
+    "sha256": "6245c4cf68f468f9bf811b5f4995190c0c784a21115011a3b55e897e6aa88e6b"
+  },
+  "courses/english-grammar/training_pack/chapters/036/en.02.b2_theory_patterns_over_memorization.questions.json": {
+    "evidence": "independent-worker-1.json",
+    "reviewer": "parentheses_3",
+    "sha256": "8b17007cdd337948b26c87687768d2e2beab650ad5a1792304a62b048f7a97b3"
+  },
+  "courses/english-grammar/training_pack/chapters/068/en.02.b2_size_age_color.questions.json": {
+    "evidence": "independent-worker-1.json",
+    "reviewer": "parentheses_3",
+    "sha256": "792096d55277956be260b1b245c4113e6daad4623e5ca56331de757e821da2fd"
+  },
+  "courses/spanish-grammar/chapters/003.es.grammar.orientation_alphabet_sounds.stress_rules_written_accents/03-questions.json": {
+    "evidence": "independent-worker-1.json",
+    "reviewer": "parentheses_3",
+    "sha256": "2eed5b74f184c4bb7d5fa295da85918e6712ed26549b58500139a018483b3e24"
+  },
+  "courses/spanish-grammar/chapters/006.es.grammar.orientation_alphabet_sounds.build_read_decode_words_read_mini_sentences_aloud/03-questions.json": {
+    "evidence": "independent-worker-1.json",
+    "reviewer": "parentheses_3",
+    "sha256": "ca02475295534da290ea78cf3ce2cf2944ab6a5943d1cd90327101c2df604836"
+  },
+  "courses/spanish-grammar/chapters/021.es.grammar.existence_location_possession.estar_location_temporary_states/03-questions.json": {
+    "evidence": "independent-worker-1.json",
+    "reviewer": "parentheses_3",
+    "sha256": "fa65db6c7fa71f2951c53994b325691fe153f9b1d225e029c4f3cc16dc235dbc"
+  },
+  "courses/spanish-grammar/chapters/081.es.grammar.prepositions_verb_patterns.personal_object_marking/03-questions.json": {
+    "evidence": "independent-worker-1.json",
+    "reviewer": "parentheses_3",
+    "sha256": "60222aa4aa392341491f63e10e454f71dd96c400545d55181c80001024e7569c"
+  },
+  "courses/spanish-grammar/chapters/088.es.grammar.pronouns_direct_indirect.direct_object_pronouns_lo_la_los_las/03-questions.json": {
+    "evidence": "independent-worker-1.json",
+    "reviewer": "parentheses_3",
+    "sha256": "d17d1c3d684ba080cf2a24325746198172ac7941eef8cda09ce8ec796420e8dd"
+  },
+  "courses/spanish-grammar/chapters/090.es.grammar.pronouns_direct_indirect.placement_rules_before_verb_attached_after/03-questions.json": {
+    "evidence": "independent-worker-1.json",
+    "reviewer": "parentheses_3",
+    "sha256": "302cc30c897669f11e52a07b05e08447ceaed7aa2b675670ebc81a0c7fa1bfe3"
+  },
+  "courses/spanish-grammar/chapters/091.es.grammar.pronouns_direct_indirect.double_pronouns_me_lo_se_lo_te_la/03-questions.json": {
+    "evidence": "independent-worker-1.json",
+    "reviewer": "parentheses_3",
+    "sha256": "25d8b99df99431e4a7556efa0c0d968333fc352105e6b2fa39d567767c9fa265"
+  },
+  "courses/spanish-grammar/chapters/092.es.grammar.pronouns_direct_indirect.le_lo_la_baseline_norm_learners_should_treat/03-questions.json": {
+    "evidence": "independent-worker-1.json",
+    "reviewer": "parentheses_3",
+    "sha256": "1bf1a858a0b6bef91674d75bc6220bff521d96b187de5443addb71b25b94deb5"
+  },
+  "courses/spanish-grammar/chapters/098.es.grammar.se_system_pronominal_verbs.ser_estar_contrast_result_state_participles/03-questions.json": {
+    "evidence": "independent-worker-1.json",
+    "reviewer": "parentheses_3",
+    "sha256": "73a5cdda5c3259e6f36286e098f32fc45794d55e02237de0b1a6363230ae4a73"
+  },
+  "courses/spanish-grammar/chapters/108.es.grammar.non_finite_forms_periphrases.gerundio_ongoing_action_manner_do/03-questions.json": {
+    "evidence": "independent-worker-1.json",
+    "reviewer": "parentheses_3",
+    "sha256": "b9f349de62911496a9a544875c407950c0fd2d930e0cba8b2b7b3e51ad29b533"
+  },
+  "courses/spanish-grammar/chapters/110.es.grammar.non_finite_forms_periphrases.periphrases_change_process_seguir_plus_gerundio_acabar_de/03-questions.json": {
+    "evidence": "independent-worker-1.json",
+    "reviewer": "parentheses_3",
+    "sha256": "fca19a2e5c233fa94fc31742f64933ba7ed4919ce1830b607c4feedc39cb4f3d"
+  },
+  "courses/spanish-grammar/chapters/111.es.grammar.non_finite_forms_periphrases.soler_llevar_plus_gerundio_terminar_por_aspect_nuance/03-questions.json": {
+    "evidence": "independent-worker-1.json",
+    "reviewer": "parentheses_3",
+    "sha256": "44a17d41808ae8e9cddfb9c507b35abba3351f14a0bf2dc457476083be490c02"
+  },
+  "courses/spanish-grammar/chapters/118.es.grammar.subjunctive_noun_clauses.form_present_subjunctive/03-questions.json": {
+    "evidence": "independent-worker-1.json",
+    "reviewer": "parentheses_3",
+    "sha256": "c9a9207984135df84ed77eb9630a8931f0dcac97561ff2f097208181f28df6ba"
+  },
+  "courses/spanish-grammar/chapters/086.es.grammar.prepositions_verb_patterns.adjective_plus_preposition_patterns_contento_con_parecido_lleno/03-questions.json": {
+    "evidence": "independent-worker-1.json",
+    "reviewer": "parentheses_3",
+    "sha256": "689eec05ec6257371fc039d02e3beb4767a6933e9f6f0f411a6c0bfbe6812b42"
+  },
+  "courses/english-grammar/chapters/016.en.grammar.talking_about_things_nouns.possessive_s_anna_s/03-questions.json": {
+    "evidence": "independent-worker-2.json",
+    "reviewer": "parentheses_3",
+    "sha256": "e595539eedf3d59646749d337598f519c7dc14b05dbce6b40491d0ee6836bc2c"
+  },
+  "courses/english-grammar/chapters/044.en.grammar.past_2_background_process.when_while_as_in/03-questions.json": {
+    "evidence": "independent-worker-2.json",
+    "reviewer": "parentheses_3",
+    "sha256": "63f349f6bdcca73b93aebeb7e3e8c32dbdd281f7ba7b35663e599678f7253194"
+  },
+  "courses/english-grammar/chapters/047.en.grammar.future_plans.will_instant_decisions_promises/03-questions.json": {
+    "evidence": "independent-worker-2.json",
+    "reviewer": "parentheses_3",
+    "sha256": "2b92a694a1d2fad2aa596d837073aa0dd3b7ce9af62b560a5a055d654fc3422f"
+  },
+  "courses/english-grammar/chapters/048.en.grammar.future_plans.be_going_to_intention/03-questions.json": {
+    "evidence": "independent-worker-2.json",
+    "reviewer": "parentheses_3",
+    "sha256": "06bdfa143693406b6d28ec37191c18bf95f7291679cb8eca407feba022681cc2"
+  },
+  "courses/english-grammar/chapters/054.en.grammar.core_modality_ability_permission.must_vs_have_to/03-questions.json": {
+    "evidence": "independent-worker-2.json",
+    "reviewer": "parentheses_3",
+    "sha256": "ac71c25f555293d0dc7846819805a1072cf56f98479459d0ab25440c8e90bd80"
+  },
+  "courses/english-grammar/chapters/058.en.grammar.core_modality_ability_permission.build_speak_house_work/03-questions.json": {
+    "evidence": "independent-worker-2.json",
+    "reviewer": "parentheses_3",
+    "sha256": "72fe44d22c34710f84f5259cad03a3e7f6292d6b437b249005c5b0e8245d9fd3"
+  },
+  "courses/english-grammar/chapters/063.en.grammar.noun_system_upgrade_countability.zero_article_plurals_abstract/03-questions.json": {
+    "evidence": "independent-worker-2.json",
+    "reviewer": "parentheses_3",
+    "sha256": "f992fc6470c92bbedc8cb4b3e269e7496dfd89e86c7d0e4d36cd7205ce139604"
+  },
+  "courses/english-grammar/chapters/118.en.grammar.non_finite_forms_deep.build_write_a_short/03-questions.json": {
+    "evidence": "independent-worker-2.json",
+    "reviewer": "parentheses_3",
+    "sha256": "9f12cc8db1eb9ab770594243440774b462207df217b3badff2979602d1786dd5"
+  },
+  "courses/english-grammar/chapters/119.en.grammar.reported_speech_meaning_transfer.reported_statements_say_tell/03-questions.json": {
+    "evidence": "independent-worker-2.json",
+    "reviewer": "parentheses_3",
+    "sha256": "ebe0603ae555b9ff85cae4f0da94bda2eb734f6b2faecafad13e61a2c52418a3"
+  },
+  "courses/english-grammar/chapters/125.en.grammar.information_structure_style.inversion_never_have_i/03-questions.json": {
+    "evidence": "independent-worker-2.json",
+    "reviewer": "parentheses_3",
+    "sha256": "eeef3dd26c9fc515982ac29d342d2490279b99dd8bb18da1b38eb00d90ad1e41"
+  },
+  "courses/english-grammar/training_pack/chapters/088/en.04.b4_theory_whose_possession.questions.json": {
+    "evidence": "independent-worker-2.json",
+    "reviewer": "parentheses_3",
+    "sha256": "d953fc5d3f573b8914fb127fe8c51d6ead97e77d257f9b1e77c4fd751890c083"
+  },
+  "courses/english-grammar/training_pack/chapters/109/en.04.b4_theory_word_order.questions.json": {
+    "evidence": "independent-worker-2.json",
+    "reviewer": "parentheses_3",
+    "sha256": "16ee8598130710c476de2541e3d294c23091d9e5987103e4f97cea11438ac358"
+  },
+  "courses/english-grammar/training_pack/chapters/115/en.01.b1_theory_overview.questions.json": {
+    "evidence": "independent-worker-2.json",
+    "reviewer": "parentheses_3",
+    "sha256": "6bc2719dfbfe59cbea8a0d9de252b3d90e0c1c32f38f265b5ddaee52b631d7f0"
+  },
+  "courses/english-grammar/training_pack/chapters/119/en.01.b1_theory_overview.questions.json": {
+    "evidence": "independent-worker-2.json",
+    "reviewer": "parentheses_3",
+    "sha256": "387fc985e29af76544988fd34d307785786a0084fb2126b3a8ac61a01e1cbf1c"
+  },
+  "courses/spanish-grammar/chapters/009.es.grammar.noun_gender_articles_agreement.definite_indefinite_articles_el_la_los_las_un/03-questions.json": {
+    "evidence": "independent-worker-2.json",
+    "reviewer": "parentheses_3",
+    "sha256": "d8a73425cffb0667abc900855ad187b7d0dce09febc0fb49566f4b8c033ae6c6"
+  },
+  "courses/spanish-grammar/chapters/042.es.grammar.present_irregulars_reflexives_gustar.build_speak_i_usually_do_happening_now/03-questions.json": {
+    "evidence": "independent-worker-2.json",
+    "reviewer": "parentheses_3",
+    "sha256": "0828fd8bf4b8d81e1d11628706469be46df76f2d5ff01838f630b6af14e55afa"
+  },
+  "courses/spanish-grammar/chapters/053.es.grammar.past_preterito_indefinido.sequencing_events_simple_story/03-questions.json": {
+    "evidence": "independent-worker-2.json",
+    "reviewer": "parentheses_3",
+    "sha256": "626e75047d5a59bfe1f7d74fe25733234be7ebbd86107b32bc49be1fe7bd01c8"
+  },
+  "courses/spanish-grammar/chapters/079.es.grammar.noun_phrase_upgrade_precision.neuter_lo_lo_bueno_lo_importante/03-questions.json": {
+    "evidence": "independent-worker-2.json",
+    "reviewer": "parentheses_3",
+    "sha256": "6f5174dd5ba7d47c6de5e748edd9c5595c3c3441366b0ac8d660e267ffd1c416"
+  },
+  "courses/spanish-grammar/chapters/089.es.grammar.pronouns_direct_indirect.indirect_object_pronouns_le_les_recipient_meaning/03-questions.json": {
+    "evidence": "independent-worker-2.json",
+    "reviewer": "parentheses_3",
+    "sha256": "31da39e865c366f573f9186608dd1af8ddd735e283e56fbdee2ff107997916f9"
+  },
+  "courses/spanish-grammar/chapters/093.es.grammar.pronouns_direct_indirect.build_speak_giving_showing_buying_telling/03-questions.json": {
+    "evidence": "independent-worker-2.json",
+    "reviewer": "parentheses_3",
+    "sha256": "d1240a4c300668e7fc1eb78a53671eaa55d3efcd20b326711cddc71a7f388421"
+  },
+  "courses/spanish-grammar/chapters/095.es.grammar.se_system_pronominal_verbs.pronominal_verbs_that_change_meaning_ir_irse_quedar/03-questions.json": {
+    "evidence": "independent-worker-2.json",
+    "reviewer": "parentheses_3",
+    "sha256": "be9f77db1efbfd6eae3621ee90cb8566c9fe8726d46b104218511ba83c38c48e"
+  },
+  "courses/spanish-grammar/chapters/099.es.grammar.se_system_pronominal_verbs.build_write_everyday_incidents_rules_short_news_items/03-questions.json": {
+    "evidence": "independent-worker-2.json",
+    "reviewer": "parentheses_3",
+    "sha256": "ff496a9b2b8bc26851a54e0ad43545e658aec8fb2cbf6620f0250880e0882f54"
+  },
+  "courses/spanish-grammar/chapters/112.es.grammar.non_finite_forms_periphrases.build_speak_routines_progress_interruption_change/03-questions.json": {
+    "evidence": "independent-worker-2.json",
+    "reviewer": "parentheses_3",
+    "sha256": "46ea3d50d5a37df5634d78ca7a7d394a30d974396d36cfcd99f91f57d8644242"
+  },
+  "courses/spanish-grammar/chapters/114.es.grammar.compound_tenses_narration.future_perfect_conditional_perfect/03-questions.json": {
+    "evidence": "independent-worker-2.json",
+    "reviewer": "parentheses_3",
+    "sha256": "7dbabf619042d5a6c9b999cd1865aad4a79c9c98c8330858d3ebccb6197c0e26"
+  },
+  "courses/spanish-grammar/chapters/117.es.grammar.compound_tenses_narration.build_write_biography_flashback_cause_effect_chains/03-questions.json": {
+    "evidence": "independent-worker-2.json",
+    "reviewer": "parentheses_3",
+    "sha256": "68c254ea08806bcde8d557b63105f9e7d1a710c7b46afd1635c65ce74fd898aa"
+  },
+  "courses/spanish-grammar/chapters/119.es.grammar.subjunctive_noun_clauses.desire_influence_quiero_que_necesito_que/03-questions.json": {
+    "evidence": "independent-worker-2.json",
+    "reviewer": "parentheses_3",
+    "sha256": "afed358ca8c54c8a1e8bf0443f5e490dc3476c8b273753d51047e565b45a92b0"
+  },
+  "courses/spanish-grammar/chapters/128.es.grammar.subjunctive_time_purpose_relative.antes_de_que_despues_de_que_subject_change/03-questions.json": {
+    "evidence": "independent-worker-2.json",
+    "reviewer": "parentheses_3",
+    "sha256": "a69606dba0e6dd9c3f22dd6e271b4ad1b0f062664334c4ae115282c067914981"
+  },
+  "courses/spanish-grammar/chapters/132.es.grammar.subjunctive_time_purpose_relative.build_write_plans_warnings_requirements_search_criteria/03-questions.json": {
+    "evidence": "independent-worker-2.json",
+    "reviewer": "parentheses_3",
+    "sha256": "a2cad93cefd74bdd37672401b5b68445e79b895c2b1ead1dfa294be3f15908ec"
+  },
+  "courses/spanish-grammar/chapters/134.es.grammar.subjunctive_past_counterfactuals.sequence_tenses_after_past_reporting_verbs/03-questions.json": {
+    "evidence": "independent-worker-2.json",
+    "reviewer": "parentheses_3",
+    "sha256": "73ca322cad637031651bffb866eda31b0f4cb440c2f67c0e801e1b4bfc0c0016"
+  },
+  "courses/spanish-grammar/chapters/141.es.grammar.voice_reported_speech_distancing.se_passive_impersonal_se_generic_statements/03-questions.json": {
+    "evidence": "independent-worker-2.json",
+    "reviewer": "parentheses_3",
+    "sha256": "ac944b5009a6c9d0ade1f95e7e3645a9a84ba75287aa12a4f69ce829e95cde1f"
+  },
+  "courses/spanish-grammar/chapters/142.es.grammar.voice_reported_speech_distancing.reported_statements_questions_mechanical_backshift/03-questions.json": {
+    "evidence": "independent-worker-2.json",
+    "reviewer": "parentheses_3",
+    "sha256": "a13fbed5ca2f1f4cea4fd08de56e4c1be24895405574cf430aab3d394bbf805b"
+  },
+  "courses/spanish-grammar/chapters/144.es.grammar.voice_reported_speech_distancing.evidential_distancing_expressions_al_parecer_segun_se_dice/03-questions.json": {
+    "evidence": "independent-worker-2.json",
+    "reviewer": "parentheses_3",
+    "sha256": "06b468220c68ee0744d29f96d569cf5ee6d53eab3fbc8752e5f230af2e3fd3db"
+  },
+  "courses/spanish-grammar/chapters/147.es.grammar.c1_style_discourse_register.information_structure_word_order_moves_why/03-questions.json": {
+    "evidence": "independent-worker-2.json",
+    "reviewer": "parentheses_3",
+    "sha256": "48dee25390d0e95f7332956479d1f49785d218ee158646884c84d77ab774f5d8"
+  },
+  "courses/english-grammar/chapters/005.en.grammar.first_sentences_be_as.statements_with_be_identity/03-questions.json": {
+    "evidence": "independent-worker-3-extension.json",
+    "reviewer": "parentheses_2",
+    "sha256": "ffaaa9806954723222cda3ecab52c7b917108b143ea381cc77ae139a9adefcc7"
+  },
+  "courses/english-grammar/chapters/010.en.grammar.first_sentences_be_as.adjectives_after_be_she/03-questions.json": {
+    "evidence": "independent-worker-3-extension.json",
+    "reviewer": "parentheses_2",
+    "sha256": "1aeab8790862e3e89a009d5156c2a3175ad56c08c820c144d771a4f72793509d"
+  },
+  "courses/english-grammar/chapters/046.en.grammar.past_2_background_process.build_speak_a_story/03-questions.json": {
+    "evidence": "independent-worker-3-extension.json",
+    "reviewer": "parentheses_2",
+    "sha256": "9c926692849325c31fea4c2dce64725189345634555369a8c33a5f6e65ac4b52"
+  },
+  "courses/english-grammar/chapters/051.en.grammar.future_plans.build_speak_weekend_plans/03-questions.json": {
+    "evidence": "independent-worker-3-extension.json",
+    "reviewer": "parentheses_2",
+    "sha256": "85da42b97ea4a393bee596563f83add28050ae4de639b045a3cff52289ad8cba"
+  },
+  "courses/english-grammar/chapters/056.en.grammar.core_modality_ability_permission.should_advice_expectation/03-questions.json": {
+    "evidence": "independent-worker-3-extension.json",
+    "reviewer": "parentheses_2",
+    "sha256": "b5070ecbe0edb7b37797d5e2da23bfbe2b756553d71dbb80ec85d99113e06faf"
+  },
+  "courses/english-grammar/chapters/059.en.grammar.noun_system_upgrade_countability.countable_vs_uncountable/03-questions.json": {
+    "evidence": "independent-worker-3-extension.json",
+    "reviewer": "parentheses_2",
+    "sha256": "01bb3f3342d290ea9fa7a961c2c94ccfb81068c9909ca9047dd9f4ffda700e56"
+  },
+  "courses/english-grammar/chapters/069.en.grammar.describing_precisely_adjectives_adverbs.comparatives_superlatives_irregulars/03-questions.json": {
+    "evidence": "independent-worker-3-extension.json",
+    "reviewer": "parentheses_2",
+    "sha256": "03e10f8925aefb1972b4e5c2ed97f46389d4915b4d7ba4632e472e747506ae94"
+  },
+  "courses/english-grammar/chapters/081.en.grammar.prepositions_verb_patterns.build_speak_directions_location/03-questions.json": {
+    "evidence": "independent-worker-3-extension.json",
+    "reviewer": "parentheses_2",
+    "sha256": "3ab2ca74b431ef445236c4dc1386ea7457e47a1022a42022e40877e258ce5f3a"
+  },
+  "courses/english-grammar/chapters/105.en.grammar.conditionals_hypotheticals.zero_conditional/03-questions.json": {
+    "evidence": "independent-worker-3-extension.json",
+    "reviewer": "parentheses_2",
+    "sha256": "575558ceed680756bb9a51df56ec120df334096864f98e1b5cfb88e421188c0b"
+  },
+  "courses/english-grammar/chapters/110.en.grammar.conditionals_hypotheticals.unless_provided_as_long/03-questions.json": {
+    "evidence": "independent-worker-3-extension.json",
+    "reviewer": "parentheses_2",
+    "sha256": "4dfefd474b0158392173cda88495ced2a94abc4b2062f338373931bd3a3ed9fc"
+  },
+  "courses/english-grammar/chapters/113.en.grammar.non_finite_forms_deep.gerund_vs_infinitive_basic/03-questions.json": {
+    "evidence": "independent-worker-3-extension.json",
+    "reviewer": "parentheses_2",
+    "sha256": "046cb8eaa7493c8625d2be4be0a4d86782821cbfa56cae2de08b1a721cca3bbf"
+  },
+  "courses/english-grammar/training_pack/chapters/074/en.02.b2_descriptive_language.questions.json": {
+    "evidence": "independent-worker-3-extension.json",
+    "reviewer": "parentheses_2",
+    "sha256": "d59bbc527880bff83085e37596630af40adb261a158d622ac98519139a727692"
+  },
+  "courses/english-grammar/training_pack/chapters/074/en.05.b5_recommendation.questions.json": {
+    "evidence": "independent-worker-3-extension.json",
+    "reviewer": "parentheses_2",
+    "sha256": "a4397fba25c02ca852ca1998f1abe948494e64a450676a1a95cb112ad263cf55"
+  },
+  "courses/english-grammar/training_pack/chapters/098/en.04.b4_theory_be_tense_agreement.questions.json": {
+    "evidence": "independent-worker-3-extension.json",
+    "reviewer": "parentheses_2",
+    "sha256": "a34533c45a0e03efd7e81839a12f6e2acf56e241622cf78bf9bb8a8d905c569b"
+  },
+  "courses/spanish-grammar/chapters/025.es.grammar.existence_location_possession.possessives_mi_tu_su_nuestro_de_plus_noun/03-questions.json": {
+    "evidence": "independent-worker-3-extension.json",
+    "reviewer": "parentheses_2",
+    "sha256": "835ef83e157612de13b851df01d3ac05d0b9d84b928f2ab0024f9443110f5fcc"
+  },
+  "courses/spanish-grammar/chapters/046.es.grammar.past_preterito_perfecto.markers_ya_todavia_no_alguna_vez_nunca_esta/03-questions.json": {
+    "evidence": "independent-worker-3-extension.json",
+    "reviewer": "parentheses_2",
+    "sha256": "3a7a1c4345c50abfdfafbf7d2377263154a12bca119061846bcc94fc32a28f1c"
+  },
+  "courses/spanish-grammar/chapters/056.es.grammar.past_imperfecto_contrast.imperfecto_forms_three_main_irregulars/03-questions.json": {
+    "evidence": "independent-worker-3-extension.json",
+    "reviewer": "parentheses_2",
+    "sha256": "3be41a320f3de9c7e3996ec065e92bed34680505928ad4d3bc0c764a9b4a3688"
+  },
+  "courses/spanish-grammar/chapters/080.es.grammar.noun_phrase_upgrade_precision.build_speak_compare_cities_people_habits_options/03-questions.json": {
+    "evidence": "independent-worker-3-extension.json",
+    "reviewer": "parentheses_2",
+    "sha256": "f176e16c20fa7189e8b1d165857cd5b7a26761f7f754a505743181b379f27f60"
+  },
+  "courses/spanish-grammar/chapters/082.es.grammar.prepositions_verb_patterns.core_prepositions_de_en_con_sin_sobre/03-questions.json": {
+    "evidence": "independent-worker-3-extension.json",
+    "reviewer": "parentheses_2",
+    "sha256": "35d86fadd8095045866c49040718dafeefed1c58503ec61247670c42de42ca14"
+  },
+  "courses/spanish-grammar/chapters/085.es.grammar.prepositions_verb_patterns.verb_plus_preposition_patterns_pensar_en_depender_de/03-questions.json": {
+    "evidence": "independent-worker-3-extension.json",
+    "reviewer": "parentheses_2",
+    "sha256": "9e2d7f23a82427298d95088718beac31ce0560ee14e1e376f4af04ff57a540b8"
+  },
+  "courses/spanish-grammar/chapters/096.es.grammar.se_system_pronominal_verbs.accidental_se_se_me_cayo_se_nos_olvido/03-questions.json": {
+    "evidence": "independent-worker-3-extension.json",
+    "reviewer": "parentheses_2",
+    "sha256": "aa05eb084af68efd5976fd7ebbd57719e577d60a34e7cfd8e3d92f6290666ad2"
+  },
+  "courses/spanish-grammar/chapters/104.es.grammar.complex_sentences_connecting.relative_clauses_que_quien_donde_cuyo_starter_use/03-questions.json": {
+    "evidence": "independent-worker-3-extension.json",
+    "reviewer": "parentheses_2",
+    "sha256": "5827ba95ffae339f0258d773e6035f0c90fd62ff9e0236c6d1d4fafdf0588f91"
+  },
+  "courses/spanish-grammar/chapters/105.es.grammar.complex_sentences_connecting.indirect_questions_no_se_que_me_puedes_decir/03-questions.json": {
+    "evidence": "independent-worker-3-extension.json",
+    "reviewer": "parentheses_2",
+    "sha256": "9c1e35051375b65c1c0e5b986371aff0b129dde0a357934e5a3ecfc1399c3cdf"
+  },
+  "courses/spanish-grammar/chapters/106.es.grammar.complex_sentences_connecting.build_write_120_180_word_text_connectors_relative/03-questions.json": {
+    "evidence": "independent-worker-3-extension.json",
+    "reviewer": "parentheses_2",
+    "sha256": "077898fcb649f3a8a67a1cd846e0a1fb5f10a1c63c1c00ac4a73633a98e541fb"
+  },
+  "courses/spanish-grammar/chapters/107.es.grammar.non_finite_forms_periphrases.infinitive_after_prepositions_conjunctions/03-questions.json": {
+    "evidence": "independent-worker-3-extension.json",
+    "reviewer": "parentheses_2",
+    "sha256": "a72d03e0d8123f3933cf1a6e81c424f23aa8574755ac18396191c12ca211384b"
+  },
+  "courses/spanish-grammar/chapters/116.es.grammar.compound_tenses_narration.timeline_control_perfecto_indefinido_imperfecto_pluscuamperfecto/03-questions.json": {
+    "evidence": "independent-worker-3-extension.json",
+    "reviewer": "parentheses_2",
+    "sha256": "06d5dff6d88096541c393d67c89054f088826f14f4e24d70b6be1078722690ce"
+  },
+  "courses/spanish-grammar/chapters/122.es.grammar.subjunctive_noun_clauses.impersonal_expressions_triggers_certainty/03-questions.json": {
+    "evidence": "independent-worker-3-extension.json",
+    "reviewer": "parentheses_2",
+    "sha256": "d53c177a936cbcd609bf7b96fa4a7701a453d4ef2319318ad6c43cde4dd728c9"
+  },
+  "courses/spanish-grammar/chapters/124.es.grammar.subjunctive_noun_clauses.indicative_subjunctive_decision_rules_noun_clauses/03-questions.json": {
+    "evidence": "independent-worker-3-extension.json",
+    "reviewer": "parentheses_2",
+    "sha256": "c98105c1ab85b3da3d6efca91fc5e989f9b473f1807b6a040ababcdf6aadcb06"
+  },
+  "courses/spanish-grammar/chapters/127.es.grammar.subjunctive_time_purpose_relative.para_que_fin_de_que_sin_que/03-questions.json": {
+    "evidence": "independent-worker-3-extension.json",
+    "reviewer": "parentheses_2",
+    "sha256": "409b6c7bc5437e3fe382542de7ecf888510d3e27e55743512a16084cc5ff20df"
+  },
+  "courses/spanish-grammar/chapters/136.es.grammar.subjunctive_past_counterfactuals.perfect_subjunctive_haya_hecho/03-questions.json": {
+    "evidence": "independent-worker-3-extension.json",
+    "reviewer": "parentheses_2",
+    "sha256": "044941f7b03c5018b6fdf43b93a8c3cdcc57e4a1679e7cf2c75c87cb3212053e"
+  },
+  "courses/spanish-grammar/chapters/139.es.grammar.subjunctive_past_counterfactuals.build_speak_regrets_hypotheticals_alternative_histories/03-questions.json": {
+    "evidence": "independent-worker-3-extension.json",
+    "reviewer": "parentheses_2",
+    "sha256": "018e0020860800015810794ec400441ef4c755c464e56a489406ce41e27dd65d"
+  },
+  "courses/spanish-grammar/chapters/145.es.grammar.voice_reported_speech_distancing.build_write_news_reports_formal_summaries/03-questions.json": {
+    "evidence": "independent-worker-3-extension.json",
+    "reviewer": "parentheses_2",
+    "sha256": "35536d77a2dac7b55a8a3423a8a3e010531213a79d0e84e17ba9c667c1289a2c"
+  },
+  "courses/spanish-grammar/chapters/146.es.grammar.c1_style_discourse_register.discourse_markers_argument_sin_embargo_de_hecho_en/03-questions.json": {
+    "evidence": "independent-worker-3-extension.json",
+    "reviewer": "parentheses_2",
+    "sha256": "79734b5d2667c8baa237f6c71ecafd315b0a2038b0d59259bfa2d95a02a29b15"
+  },
+  "courses/spanish-grammar/chapters/148.es.grammar.c1_style_discourse_register.focus_emphasis_strategies_spanish/03-questions.json": {
+    "evidence": "independent-worker-3-extension.json",
+    "reviewer": "parentheses_2",
+    "sha256": "dd049664b752e6e45c7d2e808e53826c12b72a9ab30921c0496d4483547896d9"
+  },
+  "courses/spanish-grammar/chapters/149.es.grammar.c1_style_discourse_register.nominalization_dense_academic_professional_style/03-questions.json": {
+    "evidence": "independent-worker-3-extension.json",
+    "reviewer": "parentheses_2",
+    "sha256": "548d84e9b490c89b50b15f5d72eeece6578c2d51c80291aeabb4742e11e96bc8"
+  },
+  "courses/spanish-grammar/training_pack/chapters/032/es.03.b3_theory_frequency_a_veces.questions.json": {
+    "evidence": "independent-worker-3-extension.json",
+    "reviewer": "parentheses_2",
+    "sha256": "70808028355452dde3493d101e44adef5a210665c61a4d8a3503f294461e68fc"
+  },
+  "courses/spanish-grammar/training_pack/chapters/046/es.02.b2_theory_pp_marker_ya_scope_word_order_a2.questions.json": {
+    "evidence": "independent-worker-3-extension.json",
+    "reviewer": "parentheses_2",
+    "sha256": "07f8845aba85c6ad883182deea1cbf1976199d167d4b42f199b1100626b1ee39"
+  },
+  "courses/spanish-grammar/training_pack/chapters/056/es.06.b6_theory_ru_traps_imperfecto_three_irregulars.questions.json": {
+    "evidence": "independent-worker-3-extension.json",
+    "reviewer": "parentheses_2",
+    "sha256": "07a831ec1e783ef03772ab773e4135843a48c1cce1cdfd2e4164d0367ecec6b6"
+  },
+  "courses/english-grammar/chapters/026.en.grammar.first_actions_present_simple.imperatives_open_don_t/03-questions.json": {
+    "evidence": "independent-worker-3-extension.json",
+    "reviewer": "parentheses_2",
+    "sha256": "cfbe1a40ec9712f077691352ecc4194489d61c2861d72572114903834537b3f6"
+  },
+  "courses/english-grammar/chapters/031.en.grammar.now_present_continuous_contrast.stative_verbs_know_like/03-questions.json": {
+    "evidence": "independent-worker-3-extension.json",
+    "reviewer": "parentheses_2",
+    "sha256": "84da9907d7d6902d65c292dc0b92187a6158691bbda0a78cde0a58235c674573"
+  },
+  "courses/english-grammar/chapters/102.en.grammar.voice_focus_passive_and.causative_have_get_something/03-questions.json": {
+    "evidence": "independent-worker-3-extension.json",
+    "reviewer": "parentheses_2",
+    "sha256": "8776db885c203e25db66f76817a908bb067dea6e223ec0612f42f86ad6566dbc"
+  },
+  "courses/spanish-grammar/chapters/073.es.grammar.noun_phrase_upgrade_precision.mucho_poco_bastante_demasiado_suficiente/03-questions.json": {
+    "evidence": "independent-worker-3-extension.json",
+    "reviewer": "parentheses_2",
+    "sha256": "e5e722ecfaee5a3410f9275019399260de92e82dbfd9625dc071f6f2c439f2bb"
+  },
+  "courses/english-grammar/chapters/033.en.grammar.now_present_continuous_contrast.build_speak_what_s/03-questions.json": {
+    "evidence": "independent-literal-worker-2-extension.json",
+    "reviewer": "parentheses_1",
+    "sha256": "aa43e621ea015212b13dd12251408c85aaf61e17bcfa7ccabab225b7eb422559"
+  },
+  "courses/spanish-grammar/chapters/008.es.grammar.noun_gender_articles_agreement.singular_plural_s_es_common_spelling_changes/03-questions.json": {
+    "evidence": "independent-literal-worker-2-extension.json",
+    "reviewer": "parentheses_1",
+    "sha256": "faae11db376b4330ada431844126331fd50b00d06a248a094d98e241a696fc1c"
+  },
+  "courses/spanish-grammar/chapters/120.es.grammar.subjunctive_noun_clauses.emotion_evaluation_me_alegra_que_es_bueno_que/03-questions.json": {
+    "evidence": "independent-worker-4.json",
+    "reviewer": "parentheses_1",
+    "sha256": "f9e1c594565eec50391ac32b087bd39f2a4de87f44f6c159a7b871085640f86a"
+  },
+  "courses/spanish-grammar/chapters/123.es.grammar.subjunctive_noun_clauses.negative_commands_polite_commands_subjunctive/03-questions.json": {
+    "evidence": "independent-worker-4.json",
+    "reviewer": "parentheses_1",
+    "sha256": "c737e8827e0f20addc814145e50b46fe272b5066a7002ae5ccc8bcaddde8259a"
+  },
+  "courses/spanish-grammar/chapters/125.es.grammar.subjunctive_noun_clauses.build_speak_wishes_recommendations_emotions_opinions/03-questions.json": {
+    "evidence": "independent-worker-4.json",
+    "reviewer": "parentheses_1",
+    "sha256": "ccc63404d1ac206787801498dada80c2aa7ce20a9ae1d6d919878a14ef9fb70f"
+  },
+  "courses/spanish-grammar/chapters/129.es.grammar.subjunctive_time_purpose_relative.aunque_por_mas_que_como_si_meaning_mood/03-questions.json": {
+    "evidence": "independent-worker-4.json",
+    "reviewer": "parentheses_1",
+    "sha256": "98ded1e433b44fdb22332c25441898915dede449686ea7a797981baa843190bf"
+  },
+  "courses/spanish-grammar/chapters/130.es.grammar.subjunctive_time_purpose_relative.relative_clauses_known_unknown_hypothetical_reference/03-questions.json": {
+    "evidence": "independent-worker-4.json",
+    "reviewer": "parentheses_1",
+    "sha256": "339a27fe6a0c380cdef337cc528b143c5f026db7b1691dc8c75f3a647656fd27"
+  },
+  "courses/spanish-grammar/chapters/133.es.grammar.subjunctive_past_counterfactuals.imperfect_subjunctive_forms_ra_se/03-questions.json": {
+    "evidence": "independent-worker-4.json",
+    "reviewer": "parentheses_1",
+    "sha256": "bee0dd5c6dedcbbe9f12bcc0901278485461502ff67526fa61b23542de4af365"
+  },
+  "courses/spanish-grammar/chapters/135.es.grammar.subjunctive_past_counterfactuals.si_plus_imperfect_subjunctive_plus_conditional/03-questions.json": {
+    "evidence": "independent-worker-4.json",
+    "reviewer": "parentheses_1",
+    "sha256": "7367e65e28926d46cee7dfbd36bd3a6e09ab3027c4a5f888aa2a26fc2bf85a8c"
+  },
+  "courses/spanish-grammar/chapters/138.es.grammar.subjunctive_past_counterfactuals.third_conditional_mixed_counterfactuals/03-questions.json": {
+    "evidence": "independent-worker-4.json",
+    "reviewer": "parentheses_1",
+    "sha256": "bba2a3ec62b7a60ba97dfc23dd5e17cdbb80f8d539746a33e123168f92104cc0"
+  },
+  "courses/spanish-grammar/chapters/140.es.grammar.voice_reported_speech_distancing.passive_ser_agent_phrases/03-questions.json": {
+    "evidence": "independent-worker-4.json",
+    "reviewer": "parentheses_1",
+    "sha256": "94c9f8f18a1c272a0427b43007461ec3dbf7190e74ce15969ec0cc5ca1f479be"
+  },
+  "courses/spanish-grammar/chapters/150.es.grammar.c1_style_discourse_register.hedging_stance_precision_quiza_al_parecer_es_probable/03-questions.json": {
+    "evidence": "independent-worker-4.json",
+    "reviewer": "parentheses_1",
+    "sha256": "c96742ff32500c35e19b85dd38da62b5d2865f8232578a36bcdb7262b7de70f9"
+  },
+  "courses/spanish-grammar/chapters/151.es.grammar.c1_style_discourse_register.formal_informal_tone_email_interview_essay_debate/03-questions.json": {
+    "evidence": "independent-worker-4.json",
+    "reviewer": "parentheses_1",
+    "sha256": "bc53c6b401bc2a5e5bdd92c5f52aebd16e238e11f2ec6105dd2baa214b9a153d"
+  },
+  "courses/spanish-grammar/chapters/152.es.grammar.c1_style_discourse_register.build_rewrite_neutral_formal_spoken_written_direct_tactful/03-questions.json": {
+    "evidence": "independent-worker-4.json",
+    "reviewer": "parentheses_1",
+    "sha256": "93cbbe4befa0e95724db9095842a02a32b0d3badc43c15b82b8c1d0fce7b0925"
+  },
+  "courses/spanish-grammar/training_pack/chapters/003/es.01.b1_theory_stressed_syllable.questions.json": {
+    "evidence": "independent-worker-4.json",
+    "reviewer": "parentheses_1",
+    "sha256": "4fec5017830c76bdd7f90d9cee16ea64dae712ea06d66891f76bd4422223ff91"
+  },
+  "courses/spanish-grammar/training_pack/chapters/003/es.05.b5_theory_esdrujulas_always_accented.questions.json": {
+    "evidence": "independent-worker-4.json",
+    "reviewer": "parentheses_1",
+    "sha256": "86633081b1d858f279a2c44a8cdc2c0c4dfc0b1bcb54dda3dec6ca7ff831ee3d"
+  },
+  "courses/spanish-grammar/training_pack/chapters/049/es.02.b2_theory_regular_ar_endings_indefinido_a2.questions.json": {
+    "evidence": "independent-worker-4.json",
+    "reviewer": "parentheses_1",
+    "sha256": "52a502154571056f2ab133721d853f607f11381be9303e37a763d85e534d2275"
+  },
+  "courses/spanish-grammar/training_pack/chapters/054/es.02.b2_theory_high_frequency_forms.questions.json": {
+    "evidence": "independent-worker-4.json",
+    "reviewer": "parentheses_1",
+    "sha256": "46d4c84745eeb4c2c474c14ec6cf28b8476b25faa5b81103ecbe6ebce2e2cb77"
+  },
+  "courses/spanish-grammar/training_pack/chapters/077/es.02.b2_theory_generic_reference_without_article.questions.json": {
+    "evidence": "independent-worker-4.json",
+    "reviewer": "parentheses_1",
+    "sha256": "f687632e40973dc7f64e8571ccdf7fab714a59123da9126156f121da019d0d86"
+  }
+}

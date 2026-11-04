@@ -1,11 +1,11 @@
 {
   "version": 1,
   "source": "courses/spanish-grammar/chapters/025.es.grammar.existence_location_possession.possessives_mi_tu_su_nuestro_de_plus_noun/03-questions.json",
-  "source_sha256": "1a2873f7ada9d9c139d2dfe050b2479fd0b2703c3e8db4602e5f284c5ab5b201",
+  "source_sha256": "dba79fd8f6c75747e700684523492257141eadacbe26274dd4eb63b2c9e63b64",
   "context_sha256": "eb5b3ba1733f9e51b57ee50118b8152b711ff9545de3ea2921543f22334e5094",
   "editor": "Codex editor 2026-09-04",
   "verifier": "Anton Filatov (user)",
-  "phase": "done",
+  "phase": "awaiting_verification",
   "reviewed_at": "2026-09-04T15:09:02.584987+00:00",
   "verified_at": "2026-09-06T17:58:18.569986Z",
   "questions": [
@@ -25,7 +25,13 @@
       "id": "q3",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Грамматическое ограничение в скобках снимает неоднозначность; нужную форму/конструкцию всё равно требуется построить."
+      }
     },
     {
       "id": "q4",
@@ -37,13 +43,25 @@
       "id": "q6",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Грамматическое ограничение в скобках снимает неоднозначность; нужную форму/конструкцию всё равно требуется построить."
+      }
     },
     {
       "id": "q7",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Грамматическое ограничение в скобках снимает неоднозначность; нужную форму/конструкцию всё равно требуется построить."
+      }
     },
     {
       "id": "q8",
@@ -85,13 +103,25 @@
       "id": "q14",
       "decision": "fixed",
       "note": "Убраны отсылки к учебной модели; уточнены значение, орфография, владелец и допустимые варианты.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Грамматическое ограничение в скобках снимает неоднозначность; нужную форму/конструкцию всё равно требуется построить."
+      }
     },
     {
       "id": "q15",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Грамматическое ограничение в скобках снимает неоднозначность; нужную форму/конструкцию всё равно требуется построить."
+      }
     },
     {
       "id": "q16",
@@ -103,13 +133,25 @@
       "id": "q18",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Грамматическое ограничение в скобках снимает неоднозначность; нужную форму/конструкцию всё равно требуется построить."
+      }
     },
     {
       "id": "q19",
       "decision": "fixed",
       "note": "Убраны отсылки к учебной модели; уточнены значение, орфография, владелец и допустимые варианты.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Грамматическое ограничение в скобках снимает неоднозначность; нужную форму/конструкцию всё равно требуется построить."
+      }
     },
     {
       "id": "q20",
@@ -169,13 +211,25 @@
       "id": "q30",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Грамматическое ограничение в скобках снимает неоднозначность; нужную форму/конструкцию всё равно требуется построить."
+      }
     },
     {
       "id": "q31",
       "decision": "fixed",
       "note": "Явно задан владелец и смысл; устранены учебные отсылки и допустимые конструкции среди дистракторов.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Грамматическое ограничение в скобках снимает неоднозначность; нужную форму/конструкцию всё равно требуется построить."
+      }
     },
     {
       "id": "q32",
@@ -235,13 +289,25 @@
       "id": "q42",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Грамматическое ограничение в скобках снимает неоднозначность; нужную форму/конструкцию всё равно требуется построить."
+      }
     },
     {
       "id": "q43",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Грамматическое ограничение в скобках снимает неоднозначность; нужную форму/конструкцию всё равно требуется построить."
+      }
     },
     {
       "id": "q44",
@@ -301,13 +367,25 @@
       "id": "q54",
       "decision": "fixed",
       "note": "Уточнены перевод, грамматические функции и открытый ответ; убран ложный запрет tener с притяжательным.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Лексема или инфинитив задаёт материал для выбора грамматической формы по контексту; допустимое совпадение с начальной формой само по себе не отменяет этот выбор."
+      }
     },
     {
       "id": "q55",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Русский смысл/ситуация в скобках задаёт нужное значение, английский/испанский ответ не назван."
+      }
     },
     {
       "id": "q56",
@@ -325,7 +403,13 @@
       "id": "q58",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Русский смысл/ситуация в скобках задаёт нужное значение, английский/испанский ответ не назван."
+      }
     },
     {
       "id": "q59",
@@ -367,19 +451,40 @@
       "id": "q66",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Грамматическое ограничение в скобках снимает неоднозначность; нужную форму/конструкцию всё равно требуется построить."
+      }
     },
     {
       "id": "q67",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Грамматическое ограничение в скобках снимает неоднозначность; нужную форму/конструкцию всё равно требуется построить."
+      }
     },
     {
       "id": "q68",
       "decision": "fixed",
-      "note": "Уточнены орфография и согласование с предметом, без неточного сравнения с полом владельца.",
-      "verification": "ok"
+      "note": "Убрано одновременное предъявление mi и mí, по которому ответ «пишутся не одинаково» определялся визуально без знания правила. Теперь проверяется написание местоимения после предлога.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "fixed",
+        "note": "Убрано одновременное предъявление mi и mí, по которому ответ «пишутся не одинаково» определялся визуально без знания правила. Теперь проверяется написание местоимения после предлога.",
+        "verifier": "parentheses_2",
+        "verified_at": "2026-11-04T09:40:29.033435+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q69",
@@ -397,7 +502,13 @@
       "id": "q71",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Русский смысл/ситуация в скобках задаёт нужное значение, английский/испанский ответ не назван."
+      }
     },
     {
       "id": "q72",
@@ -446,7 +557,31 @@
       "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
       "result": "pass",
       "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    },
+    {
+      "command": "python3 logs/complaints/parenthetical-audit-20261104/worker-3-validate.py",
+      "result": "pass",
+      "evidence": "1549 selected decisions complete; 5921 objects compared with baseline, 5836 untouched; IDs/order/type/difficulty/theory/choice IDs preserved; source/final/embedded and signatures checked. Evidence: logs/complaints/parenthetical-audit-20261104/worker-3-validation.json."
+    },
+    {
+      "command": "Unchanged owning validate-chapter.sh and AJV draft2020 on isolated baseline/current final copies (worker-3-validate.py)",
+      "result": "known_baseline",
+      "evidence": "Chapter validator exits 0 before and after. AJV reports the same pre-existing schema errors in both versions; see per-source before/after evidence in worker-3-validation.json."
     }
   ],
-  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+  "verification_note": "Parenthetical-hints audit 2026-11-04: changed questions await independent verification; prior unrelated decisions retained.",
+  "parentheses_audit_verification": {
+    "verifier": "parentheses_2",
+    "verified_at": "2026-11-04T09:40:29.033435+00:00",
+    "verification": "ok",
+    "scope": "narrow_parentheses_audit_changed_questions",
+    "question_ids": [
+      "q68"
+    ],
+    "evidence": [
+      "docs/grammar-review/batches/2026-11-04-parenthetical-hints/independent-worker-3.json",
+      "docs/grammar-review/batches/2026-11-04-parenthetical-hints/independent-worker-3-extension.json"
+    ],
+    "note": "Независимая проверка изменённых вопросов узкого аудита подсказок; out_of_scope не сертифицированы. Фазы общего обзора и source/context hashes не изменялись."
+  }
 }

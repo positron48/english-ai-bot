@@ -1,11 +1,11 @@
 {
   "version": 1,
   "source": "courses/spanish-grammar/chapters/091.es.grammar.pronouns_direct_indirect.double_pronouns_me_lo_se_lo_te_la/03-questions.json",
-  "source_sha256": "444271b4a148e1af03887c1dbd3c0db59ee12139272ce780b9c23fc51f3bc012",
+  "source_sha256": "8c3615de6f263a8d33fd203181c3631178838fa110b624eaddf655cd9c8aba04",
   "context_sha256": "0768b097236250341765d12dc417ac927f09a77afcf56c3b0a9cf5e9170cba4c",
   "editor": "Codex editor 2026-09-05",
   "verifier": "Anton Filatov (user)",
-  "phase": "done",
+  "phase": "awaiting_verification",
   "reviewed_at": "2026-09-05T19:11:03.103133Z",
   "verified_at": "2026-09-06T17:58:18.569986Z",
   "questions": [
@@ -13,7 +13,13 @@
       "id": "q1",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Примеры цепочек задают объект обсуждения, но не условие их использования."
+      }
     },
     {
       "id": "q2",
@@ -23,9 +29,18 @@
     },
     {
       "id": "q3",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "2026-11-04: удалён готовый пример преобразования Se lo doy вместо Le doy el libro, демонстрировавший ответ на проверяемое правило.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "fixed",
+        "note": "Удалён готовый пример замены обоих дополнений, демонстрировавший проверяемую возможность.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q4",
@@ -49,7 +64,13 @@
       "id": "q7",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "la entrada и получатель tú задают референты; прямое местоимение нужно выбрать."
+      }
     },
     {
       "id": "q8",
@@ -65,9 +86,18 @@
     },
     {
       "id": "q10",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "2026-11-04: удалены готовые примеры te la / te lo, в которых неизменность проверяемого te была видна прямо из условия.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "fixed",
+        "note": "Удалены примеры te la / te lo, прямо показывавшие неизменность te по роду объекта.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q11",
@@ -97,7 +127,13 @@
       "id": "q15",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "tú и la tarea задают референты, косвенное Te нужно выбрать."
+      }
     },
     {
       "id": "q16",
@@ -133,7 +169,13 @@
       "id": "q21",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "vosotros задаёт адресата, форму Os нужно знать."
+      }
     },
     {
       "id": "q22",
@@ -161,9 +203,18 @@
     },
     {
       "id": "q26",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "2026-11-04: удалено готовое исключение не le lo; получатель сохранён, замену le на se ученик должен применить сам.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "fixed",
+        "note": "Убрано готовое исключение не le lo; сохранён получатель третьего лица для самостоятельного выбора Se.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q27",
@@ -193,7 +244,13 @@
       "id": "q31",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "«Им» задаёт получателя, CD las — уже данное прямое дополнение; преобразование в Se не раскрыто."
+      }
     },
     {
       "id": "q32",
@@ -235,7 +292,13 @@
       "id": "q38",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Русский перевод задаёт отрицание, испанское No не дано."
+      }
     },
     {
       "id": "q39",
@@ -247,7 +310,13 @@
       "id": "q40",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Скобки перефразируют само проверяемое утверждение о соседстве; отдельного готового примера-доказательства нет."
+      }
     },
     {
       "id": "q41",
@@ -301,13 +370,25 @@
       "id": "q49",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "tú и decir — лицо и лемма, форму и цепочку нужно образовать."
+      }
     },
     {
       "id": "q50",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: explanation. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "explicar, me и lo — компоненты; форму императива, слитность и ударение нужно выбрать."
+      }
     },
     {
       "id": "q51",
@@ -319,7 +400,13 @@
       "id": "q52",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "decir задаёт лемму формы di; причина постановки тильды не объяснена в условии."
+      }
     },
     {
       "id": "q53",
@@ -343,7 +430,13 @@
       "id": "q56",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: explanation. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "dar, tú, me и lo задают компоненты; итоговую форму Dámelo нужно выбрать."
+      }
     },
     {
       "id": "q57",
@@ -361,13 +454,28 @@
       "id": "q59",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "den и местоимения задают компоненты, но слитность и тильда остаются задачей."
+      }
     },
     {
       "id": "q60",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "2026-11-04: удалён готовый пример Dígaselo, показывавший результат проверяемого преобразования.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "fixed",
+        "note": "Удалён готовый Dígaselo, показывавший проверяемое преобразование le в se.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q61",
@@ -395,9 +503,18 @@
     },
     {
       "id": "q65",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "2026-11-04: удалено готовое исключение не le lo; русский смысл задаёт получателя без раскрытия нужного преобразования.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "fixed",
+        "note": "Убрано готовое исключение не le lo; получатель и объект сохранены в русском смысле.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q66",
@@ -427,7 +544,13 @@
       "id": "q70",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Русский пример иллюстрирует два объекта, испанская цепочка не показана."
+      }
     },
     {
       "id": "q71",
@@ -447,7 +570,29 @@
       "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
       "result": "pass",
       "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    },
+    {
+      "command": "python3 logs/complaints/parenthetical-audit-20261104/worker-1-validate.py",
+      "result": "pass",
+      "evidence": "2026-11-04 narrow parentheses audit: identity/order/bindings and untouched questions preserved; source/final/embedded exact; official isolated chapter assembly/validation or training validate_question and signature checks passed. See worker-1-evidence/validation.json."
     }
   ],
-  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+  "verification_note": "2026-11-04 parenthetical-hints audit: changed questions awaiting independent verification. Historical verification applies only to unchanged questions.",
+  "parentheses_audit_verification": {
+    "verifier": "parentheses_3",
+    "verified_at": "2026-11-04T09:44:02.337656+00:00",
+    "verification": "ok",
+    "scope": "narrow_parentheses_audit_changed_questions",
+    "question_ids": [
+      "q3",
+      "q10",
+      "q26",
+      "q60",
+      "q65"
+    ],
+    "evidence": [
+      "docs/grammar-review/batches/2026-11-04-parenthetical-hints/independent-worker-1.json"
+    ],
+    "note": "Независимо прочитаны все вопросы изменённого источника; подтверждены изменённые вопросы узкого аудита. Advisory вне selected не сертифицированы. Фазы общего обзора и source/context hashes не изменялись."
+  }
 }

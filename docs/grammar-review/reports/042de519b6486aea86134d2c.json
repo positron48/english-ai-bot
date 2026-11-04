@@ -1,11 +1,11 @@
 {
   "version": 1,
   "source": "courses/english-grammar/chapters/097.en.grammar.perfect_aspect_experience_result.build_speak_biography_experience/03-questions.json",
-  "source_sha256": "ac6db8c8c18d3bd636200c35450aa5b4e38e21f8eb1e574c33aa92a888828a94",
+  "source_sha256": "6aa29dc7ee229b531ba2eb6e34c738a96a3773bf5efa5c81fdc59d18695e50c9",
   "context_sha256": "b7fe736825dc78ac110ba049cb7fc7225c107f74c402fca5a871e57350eac71c",
   "editor": "Codex editor 2026-09-05",
   "verifier": "Anton Filatov (user)",
-  "phase": "done",
+  "phase": "awaiting_verification",
   "reviewed_at": "2026-09-05T20:08:42.722977Z",
   "verified_at": "2026-09-06T17:58:18.569986Z",
   "questions": [
@@ -19,7 +19,13 @@
       "id": "q2",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "live требует lived после have."
+      }
     },
     {
       "id": "q3",
@@ -37,7 +43,13 @@
       "id": "q6",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "work требует worked после have."
+      }
     },
     {
       "id": "q7",
@@ -55,7 +67,13 @@
       "id": "q10",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "live требует lived после has."
+      }
     },
     {
       "id": "q11",
@@ -71,9 +89,18 @@
     },
     {
       "id": "q14",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Независимая проверка: категория «наречие отрицания» не различала not/never; задан семантический контекст и набор маркеров.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "Независимая проверка: категория «наречие отрицания» не различала not/never; задан семантический контекст и набор маркеров.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q15",
@@ -95,9 +122,18 @@
     },
     {
       "id": "q18",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Независимая проверка: very recently допускало just/recently; дан набор маркеров для указанного недавнего события.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "Независимая проверка: very recently допускало just/recently; дан набор маркеров для указанного недавнего события.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q20",
@@ -115,7 +151,13 @@
       "id": "q22",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "sooner than expected задаёт оттенок already, само слово не дано."
+      }
     },
     {
       "id": "q23",
@@ -139,7 +181,13 @@
       "id": "q26",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "go требует went по 2019."
+      }
     },
     {
       "id": "q27",
@@ -155,9 +203,18 @@
     },
     {
       "id": "q30",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "2026-11-04: готовый ключ met уже встречался в предыдущем предложении I've met her before. Контекст заменён на I've known her for years; контраст опыта/состояния с конкретным прошлым событием сохранён, ответ больше не копируется.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "fixed",
+        "note": "Готовое met в предыдущей части заменено контекстом I've known her; meet надо изменить самостоятельно.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q31",
@@ -181,7 +238,13 @@
       "id": "q34",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "live требует lived для завершённого периода."
+      }
     },
     {
       "id": "q35",
@@ -199,7 +262,13 @@
       "id": "q38",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: explanation. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "finish требует finished после had."
+      }
     },
     {
       "id": "q39",
@@ -217,7 +286,13 @@
       "id": "q42",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "visit требует visited после had."
+      }
     },
     {
       "id": "q43",
@@ -241,7 +316,13 @@
       "id": "q46",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: explanation. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "buy требует V3 bought после had."
+      }
     },
     {
       "id": "q47",
@@ -259,7 +340,13 @@
       "id": "q50",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "prepare требует prepared после had."
+      }
     },
     {
       "id": "q51",
@@ -277,7 +364,13 @@
       "id": "q54",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: correct_answer, explanation, prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "receive требует received после had."
+      }
     },
     {
       "id": "q55",
@@ -299,9 +392,18 @@
     },
     {
       "id": "q58",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Независимая проверка: явно задан Past Simple, чтобы исключить также допустимый Past Perfect had gone.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "Независимая проверка: явно задан Past Simple, чтобы исключить также допустимый Past Perfect had gone.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q60",
@@ -319,7 +421,13 @@
       "id": "q62",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "start требует started по last month."
+      }
     },
     {
       "id": "q63",
@@ -337,7 +445,13 @@
       "id": "q66",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "bring требует V3 brought после had."
+      }
     },
     {
       "id": "q67",
@@ -359,9 +473,18 @@
     },
     {
       "id": "q70",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "2026-11-04: предыдущая часть I've never worked содержала готовый ключ worked. Переписана через been a banker; контраст опыта с конкретным прошлым сохранён, требуется самостоятельно образовать worked.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "fixed",
+        "note": "Готовое worked в предыдущей части удалено; задан контекст never been a banker.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q71",
@@ -381,7 +504,29 @@
       "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
       "result": "pass",
       "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    },
+    {
+      "command": "python3 logs/complaints/parenthetical-audit-20261104/worker-1-validate.py",
+      "result": "pass",
+      "evidence": "2026-11-04 narrow parentheses audit: identity/order/bindings and untouched questions preserved; source/final/embedded exact; official isolated chapter assembly/validation or training validate_question and signature checks passed. See worker-1-evidence/validation.json."
     }
   ],
-  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+  "verification_note": "2026-11-04 parenthetical-hints audit: changed questions awaiting independent verification. Historical verification applies only to unchanged questions.",
+  "parentheses_audit_verification": {
+    "verifier": "parentheses_3",
+    "verified_at": "2026-11-04T09:44:02.337656+00:00",
+    "verification": "ok",
+    "scope": "narrow_parentheses_audit_changed_questions",
+    "question_ids": [
+      "q14",
+      "q18",
+      "q30",
+      "q58",
+      "q70"
+    ],
+    "evidence": [
+      "docs/grammar-review/batches/2026-11-04-parenthetical-hints/independent-worker-1.json"
+    ],
+    "note": "Независимо прочитаны все вопросы изменённого источника; подтверждены изменённые вопросы узкого аудита. Advisory вне selected не сертифицированы. Фазы общего обзора и source/context hashes не изменялись."
+  }
 }

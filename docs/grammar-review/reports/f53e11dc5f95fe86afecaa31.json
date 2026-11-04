@@ -1,11 +1,11 @@
 {
   "version": 1,
   "source": "courses/spanish-grammar/training_pack/chapters/046/es.02.b2_theory_pp_marker_ya_scope_word_order_a2.questions.json",
-  "source_sha256": "04aa5c9ff55c8553af1d3cf83ff17ee653d7cb93d1dd2251cad1c7f887a78134",
+  "source_sha256": "41cedddd165427de0a75ed83a51b37edb5dfb6171ee74ec08c7a3ba98011149c",
   "context_sha256": "5c292d00dd014e3a52be84ec1cfd3dc155d99cba757c5f048eb47e0f5f02d4a4",
   "editor": "Codex editor",
   "verifier": "Anton Filatov (user)",
-  "phase": "done",
+  "phase": "awaiting_verification",
   "reviewed_at": "2026-09-04",
   "verified_at": "2026-09-06T17:58:18.569986Z",
   "questions": [
@@ -19,7 +19,13 @@
       "id": "q2",
       "decision": "fixed",
       "note": "Исправлены условие, варианты и объяснение.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Грамматическое ограничение в скобках снимает неоднозначность; нужную форму/конструкцию всё равно требуется построить."
+      }
     },
     {
       "id": "q3",
@@ -31,43 +37,94 @@
       "id": "q4",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Русский смысл/ситуация в скобках задаёт нужное значение, английский/испанский ответ не назван."
+      }
     },
     {
       "id": "q5",
       "decision": "fixed",
-      "note": "Исправлены условие, варианты и объяснение.",
-      "verification": "ok"
+      "note": "В исходном вопросе с отрицанием подходили сразу a, c и d. Положительная формулировка даёт единственный верный вариант b и сохраняет противопоставление ya и todavía no.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "fixed",
+        "note": "В исходном вопросе с отрицанием подходили сразу a, c и d. Положительная формулировка даёт единственный верный вариант b и сохраняет противопоставление ya и todavía no.",
+        "verifier": "parentheses_2",
+        "verified_at": "2026-11-04T09:40:29.033435+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q6",
       "decision": "fixed",
       "note": "Исправлены условие, варианты и объяснение.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Грамматическое ограничение в скобках снимает неоднозначность; нужную форму/конструкцию всё равно требуется построить."
+      }
     },
     {
       "id": "q7",
       "decision": "fixed",
-      "note": "Исправлены условие, варианты и объяснение.",
-      "verification": "ok"
+      "note": "Независимая проверка: Варианты a (уже перестал пить молоко) и b (больше не пью) оба соответствуют требуемому прекращению привычки; distractor a нужно заменить.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "Независимая проверка: Варианты a (уже перестал пить молоко) и b (больше не пью) оба соответствуют требуемому прекращению привычки; distractor a нужно заменить.",
+        "verifier": "parentheses_2",
+        "verified_at": "2026-11-04T09:40:29.033435+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q8",
       "decision": "fixed",
       "note": "Исправлены условие, варианты и объяснение.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Грамматическое ограничение в скобках снимает неоднозначность; нужную форму/конструкцию всё равно требуется построить."
+      }
     },
     {
       "id": "q9",
-      "decision": "ok",
-      "note": "",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Исходное «ya не используется для уже» допускало вариант d, где ya вообще нет. Уточнено, что требуется предложение, содержащее ya с другим значением.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "fixed",
+        "note": "Исходное «ya не используется для уже» допускало вариант d, где ya вообще нет. Уточнено, что требуется предложение, содержащее ya с другим значением.",
+        "verifier": "parentheses_2",
+        "verified_at": "2026-11-04T09:40:29.033435+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q10",
       "decision": "fixed",
       "note": "Исправлены условие, варианты и объяснение.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Грамматическое ограничение в скобках снимает неоднозначность; нужную форму/конструкцию всё равно требуется построить."
+      }
     }
   ],
   "checks": [
@@ -75,7 +132,28 @@
       "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
       "result": "pass",
       "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    },
+    {
+      "command": "python3 logs/complaints/parenthetical-audit-20261104/worker-3-validate.py",
+      "result": "pass",
+      "evidence": "1549 selected decisions complete; 5921 objects compared with baseline, 5836 untouched; IDs/order/type/difficulty/theory/choice IDs preserved; source/final/embedded and signatures checked. Evidence: logs/complaints/parenthetical-audit-20261104/worker-3-validation.json."
     }
   ],
-  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+  "verification_note": "Parenthetical-hints audit 2026-11-04: changed questions await independent verification; prior unrelated decisions retained.",
+  "parentheses_audit_verification": {
+    "verifier": "parentheses_2",
+    "verified_at": "2026-11-04T09:40:29.033435+00:00",
+    "verification": "ok",
+    "scope": "narrow_parentheses_audit_changed_questions",
+    "question_ids": [
+      "q5",
+      "q7",
+      "q9"
+    ],
+    "evidence": [
+      "docs/grammar-review/batches/2026-11-04-parenthetical-hints/independent-worker-3.json",
+      "docs/grammar-review/batches/2026-11-04-parenthetical-hints/independent-worker-3-extension.json"
+    ],
+    "note": "Независимая проверка изменённых вопросов узкого аудита подсказок; out_of_scope не сертифицированы. Фазы общего обзора и source/context hashes не изменялись."
+  }
 }

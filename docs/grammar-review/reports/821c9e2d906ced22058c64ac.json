@@ -25,7 +25,13 @@
       "id": "q029_b1_03",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "preparar, настоящее и лицо задают параметры спряжения; prepara не дано."
+      }
     },
     {
       "id": "q029_b1_04",
@@ -55,7 +61,13 @@
       "id": "q029_b1_08",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "explicar и лицо/время задают спряжение, explica не дано."
+      }
     },
     {
       "id": "q029_b1_09",
@@ -85,7 +97,13 @@
       "id": "q029_b2_02",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "correr и лицо/время задают спряжение, corre не дано."
+      }
     },
     {
       "id": "q029_b2_03",
@@ -109,7 +127,13 @@
       "id": "q029_b2_06",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "leer и формальное единственное лицо требуют lee."
+      }
     },
     {
       "id": "q029_b2_07",
@@ -133,7 +157,13 @@
       "id": "q029_b2_10",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "beber требует beben по ellas."
+      }
     },
     {
       "id": "q029_b3_01",
@@ -151,7 +181,13 @@
       "id": "q029_b3_03",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "escribir и ella задают форму Escribe, капитализация лишь формат."
+      }
     },
     {
       "id": "q029_b3_04",
@@ -181,7 +217,13 @@
       "id": "q029_b3_08",
       "decision": "fixed",
       "note": "Исправлены ложный запрет нулевого подлежащего, -amos вместо -emos, неоднозначный род «мы», условия/feedback или разбор герундия.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Русское мы и мужская группа задают Nosotros, слово не написано."
+      }
     },
     {
       "id": "q029_b3_09",
@@ -211,7 +253,13 @@
       "id": "q029_b4_02",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "practicar требует practican по mis amigos."
+      }
     },
     {
       "id": "q029_b4_03",
@@ -235,7 +283,13 @@
       "id": "q029_b4_06",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "leer требует lee по la vecina."
+      }
     },
     {
       "id": "q029_b4_07",
@@ -253,7 +307,13 @@
       "id": "q029_b4_10",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "escuchar требует escuchan по tíos."
+      }
     },
     {
       "id": "q029_b4_11",
@@ -277,7 +337,13 @@
       "id": "q029_b5_03",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Русская частота всегда задаёт значение Siempre, латиница/регистр — формат."
+      }
     },
     {
       "id": "q029_b5_04",
@@ -307,7 +373,13 @@
       "id": "q029_b5_08",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Русское сегодня задаёт значение Hoy, латиница/регистр — формат."
+      }
     },
     {
       "id": "q029_b5_09",
@@ -343,7 +415,13 @@
       "id": "q029_b6_04",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "viajar требует viajamos по nosotras."
+      }
     },
     {
       "id": "q029_b6_05",
@@ -373,7 +451,13 @@
       "id": "q029_b6_10",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "beber требует bebes по tú."
+      }
     },
     {
       "id": "q029_b6_11",

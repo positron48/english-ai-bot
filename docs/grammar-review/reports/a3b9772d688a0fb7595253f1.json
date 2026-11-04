@@ -1,11 +1,11 @@
 {
   "version": 1,
   "source": "courses/english-grammar/chapters/016.en.grammar.talking_about_things_nouns.possessive_s_anna_s/03-questions.json",
-  "source_sha256": "f8a2e16a54b44f9e7413d582dc88199f4e749c4abb8d970631a6973daf82b9ee",
+  "source_sha256": "cd0f89b42094ec52e7da369db936aa2e946d3935f00d3e183be9d4992b4a4c90",
   "context_sha256": "5bab07141ca7a1d22bdfdf694de00385c94a006035e2ec4256b64fe85f0d97df",
   "editor": "Codex editor 2026-09-04",
   "verifier": "Anton Filatov (user)",
-  "phase": "done",
+  "phase": "awaiting_verification",
   "reviewed_at": "2026-09-04T13:18:00.368322+00:00",
   "verified_at": "2026-09-06T17:58:18.569986Z",
   "questions": [
@@ -25,7 +25,13 @@
       "id": "q3",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают владельца/русское значение либо исходную лексику действия; английская грамматическая форма не сообщается."
+      }
     },
     {
       "id": "q4",
@@ -43,7 +49,13 @@
       "id": "q6",
       "decision": "fixed",
       "note": "Уточнён формат/вариант ответа и исправлены оставшиеся ложные ограничения в feedback; вопросы не требуют помнить текст главы.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают владельца/русское значение либо исходную лексику действия; английская грамматическая форма не сообщается."
+      }
     },
     {
       "id": "q7",
@@ -55,7 +67,13 @@
       "id": "q8",
       "decision": "fixed",
       "note": "Артикль the добавлен в условие, поскольку контракт fill_blank принимает одно слово. Без артикля исходное This is teacher’s desk было неполным.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают владельца/русское значение либо исходную лексику действия; английская грамматическая форма не сообщается."
+      }
     },
     {
       "id": "q10",
@@ -73,19 +91,37 @@
       "id": "q12",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают владельца/русское значение либо исходную лексику действия; английская грамматическая форма не сообщается."
+      }
     },
     {
       "id": "q13",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают владельца/русское значение либо исходную лексику действия; английская грамматическая форма не сообщается."
+      }
     },
     {
       "id": "q15",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают владельца/русское значение либо исходную лексику действия; английская грамматическая форма не сообщается."
+      }
     },
     {
       "id": "q17",
@@ -103,13 +139,25 @@
       "id": "q19",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают владельца/русское значение либо исходную лексику действия; английская грамматическая форма не сообщается."
+      }
     },
     {
       "id": "q20",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают владельца/русское значение либо исходную лексику действия; английская грамматическая форма не сообщается."
+      }
     },
     {
       "id": "q21",
@@ -121,7 +169,13 @@
       "id": "q22",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают владельца/русское значение либо исходную лексику действия; английская грамматическая форма не сообщается."
+      }
     },
     {
       "id": "q23",
@@ -162,8 +216,17 @@
     {
       "id": "q30",
       "decision": "fixed",
-      "note": "Устранены ложная неграмматичность of/’s, неопределённая инструкция или уточнены границы вставки.",
-      "verification": "ok"
+      "note": "Убрано прямое требование добавить ’s к Anna, раскрывавшее притяжательную форму. Русский смысл задаёт владельца без готового окончания.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "fixed",
+        "note": "Убрано прямое требование добавить ’s к Anna, раскрывавшее притяжательную форму. Русский смысл задаёт владельца без готового окончания.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q31",
@@ -175,7 +238,13 @@
       "id": "q32",
       "decision": "fixed",
       "note": "Устранены ложная неграмматичность of/’s, неопределённая инструкция или уточнены границы вставки.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают владельца/русское значение либо исходную лексику действия; английская грамматическая форма не сообщается."
+      }
     },
     {
       "id": "q33",
@@ -187,7 +256,13 @@
       "id": "q34",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают владельца/русское значение либо исходную лексику действия; английская грамматическая форма не сообщается."
+      }
     },
     {
       "id": "q35",
@@ -236,7 +311,30 @@
       "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
       "result": "pass",
       "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    },
+    {
+      "command": "python3 logs/complaints/parenthetical-audit-20261104/worker-2-validate.py",
+      "result": "pass",
+      "evidence": "Parentheses audit 2026-11-04, worker-2: exact identity/order/type/difficulty/theory bindings, unmodified objects and prior report decisions preserved against assigned baseline; logs/complaints/parenthetical-audit-20261104/worker-2-evidence/preservation-and-validators.json. Narrow audit only, not renewed whole-file editorial verification."
+    },
+    {
+      "command": "python3 logs/complaints/parenthetical-audit-20261104/worker-2-validate.py [assigned courses/english-grammar/chapters/016.en.grammar.talking_about_things_nouns.possessive_s_anna_s/03-questions.json]",
+      "result": "pass",
+      "evidence": "Stock chapter validator logic on baseline and final, with output artifact redirected to worker-2 evidence: 0 errors, 0 warnings, 0 suggestions in both. Source questions equal final question bank; final and embedded byte-identical. logs/complaints/parenthetical-audit-20261104/worker-2-evidence/preservation-and-validators.json"
     }
   ],
-  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось. Изменение q30 2026-11-04: проверка подсказок в скобках, независимая проверка ожидается.",
+  "parentheses_audit_verification": {
+    "verifier": "parentheses_3",
+    "verified_at": "2026-11-04T09:44:02.337656+00:00",
+    "verification": "ok",
+    "scope": "narrow_parentheses_audit_changed_questions",
+    "question_ids": [
+      "q30"
+    ],
+    "evidence": [
+      "docs/grammar-review/batches/2026-11-04-parenthetical-hints/independent-worker-2.json"
+    ],
+    "note": "Независимо прочитаны все вопросы изменённого источника; подтверждены изменённые вопросы узкого аудита. Advisory вне selected не сертифицированы. Фазы общего обзора и source/context hashes не изменялись."
+  }
 }

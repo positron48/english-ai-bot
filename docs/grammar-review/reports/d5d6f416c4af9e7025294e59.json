@@ -37,7 +37,13 @@
       "id": "q5",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "empezar задаёт лемму, орфографическую замену в empecé нужно применить."
+      }
     },
     {
       "id": "q6",
@@ -79,7 +85,13 @@
       "id": "q12",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "tocar — лемма, написание toqué не показано."
+      }
     },
     {
       "id": "q13",
@@ -97,7 +109,13 @@
       "id": "q15",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "buscar проясняет исходный глагол, но не сообщает правку c на qu."
+      }
     },
     {
       "id": "q16",
@@ -115,7 +133,13 @@
       "id": "q18",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "buscar не раскрывает форму busqué; подсказки преобразования нет."
+      }
     },
     {
       "id": "q19",
@@ -139,7 +163,13 @@
       "id": "q22",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "llegar — лемма, написание llegué нужно образовать."
+      }
     },
     {
       "id": "q23",
@@ -175,7 +205,13 @@
       "id": "q28",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "llegar не сообщает ответ или правило орфографической замены."
+      }
     },
     {
       "id": "q29",
@@ -199,7 +235,13 @@
       "id": "q32",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "empezar не раскрывает empecé или правило замены z."
+      }
     },
     {
       "id": "q33",
@@ -235,7 +277,13 @@
       "id": "q38",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "finalizar не раскрывает finalicé или правило замены z."
+      }
     },
     {
       "id": "q39",
@@ -265,13 +313,25 @@
       "id": "q43",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "pedir — лемма; смену гласной и окончание нужно выбрать."
+      }
     },
     {
       "id": "q44",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "dormir не сообщает durmieron; требуется спряжение."
+      }
     },
     {
       "id": "q45",
@@ -283,7 +343,13 @@
       "id": "q46",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "dormir и indefinido задают глагол и время, но не исправленную основу."
+      }
     },
     {
       "id": "q47",
@@ -337,7 +403,13 @@
       "id": "q55",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "pagar — лемма; pagaron в другом лице не даёт готового pagué."
+      }
     },
     {
       "id": "q56",
@@ -355,7 +427,13 @@
       "id": "q58",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "dormir и другая форма durmió не раскрывают форму nosotros dormimos."
+      }
     },
     {
       "id": "q59",

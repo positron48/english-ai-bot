@@ -55,13 +55,25 @@
       "id": "q043_b1_08",
       "decision": "ok",
       "note": "Грамматика, ключ и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "leer задаёт смысловую лемму, he нужно выбрать как вспомогательную форму."
+      }
     },
     {
       "id": "q043_b1_09",
       "decision": "ok",
       "note": "Грамматика, ключ и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "salir задаёт смысловую лемму, han определяется ustedes."
+      }
     },
     {
       "id": "q043_b1_10",
@@ -133,13 +145,25 @@
       "id": "q043_b2_09",
       "decision": "ok",
       "note": "Грамматика, ключ и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "cocinar задаёт лемму, ha надо выбрать по ella."
+      }
     },
     {
       "id": "q043_b2_10",
       "decision": "ok",
       "note": "Грамматика, ключ и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "beber задаёт лемму, he определяется yo."
+      }
     },
     {
       "id": "q043_b2_11",
@@ -193,25 +217,49 @@
       "id": "q043_b3_07",
       "decision": "ok",
       "note": "Грамматика, ключ и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "brillar требует причастия brillado."
+      }
     },
     {
       "id": "q043_b3_08",
       "decision": "ok",
       "note": "Грамматика, ключ и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "cerrar требует причастия cerrado."
+      }
     },
     {
       "id": "q043_b3_09",
       "decision": "ok",
       "note": "Грамматика, ключ и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "llegar требует llegado после has."
+      }
     },
     {
       "id": "q043_b3_10",
       "decision": "ok",
       "note": "Грамматика, ключ и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "comer требует comido после hemos."
+      }
     },
     {
       "id": "q043_b3_11",
@@ -283,7 +331,13 @@
       "id": "q043_b4_10",
       "decision": "ok",
       "note": "Грамматика, ключ и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "abrir требует неправильного причастия abierto."
+      }
     },
     {
       "id": "q043_b4_11",
@@ -337,13 +391,25 @@
       "id": "q043_b5_08",
       "decision": "ok",
       "note": "Грамматика, ключ и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "haber и yo требуют he, готовая форма не дана."
+      }
     },
     {
       "id": "q043_b5_09",
       "decision": "ok",
       "note": "Грамматика, ключ и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Русский адресат тебе задаёт местоимение te."
+      }
     },
     {
       "id": "q043_b5_10",
@@ -361,13 +427,25 @@
       "id": "q043_b6_01",
       "decision": "ok",
       "note": "Грамматика, ключ и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "hablar задаёт лемму, неизменное hablado требуется выбрать."
+      }
     },
     {
       "id": "q043_b6_02",
       "decision": "ok",
       "note": "Грамматика, ключ и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "llegar задаёт лемму, неизменное llegado требуется выбрать."
+      }
     },
     {
       "id": "q043_b6_03",
@@ -403,13 +481,25 @@
       "id": "q043_b6_08",
       "decision": "ok",
       "note": "Грамматика, ключ и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "firmar требует firmado после ha."
+      }
     },
     {
       "id": "q043_b6_09",
       "decision": "ok",
       "note": "Грамматика, ключ и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "jugar требует jugado после han."
+      }
     },
     {
       "id": "q043_b6_10",

@@ -1,0 +1,68 @@
+{
+  "selected_questions": 4647,
+  "selected_sources": 428,
+  "selected_questions_fixed": 578,
+  "extra_complaint71_questions_fixed": 1,
+  "all_changed_questions_verified": 579,
+  "changed_sources": 121,
+  "questions_in_changed_sources_read_independently": 6673,
+  "source_acceptance_hashes": "pass",
+  "source_final_embedded_sync": "pass",
+  "identity_order_type_difficulty_theory_binding_choice_ids": "pass",
+  "report_selected_coverage": "pass",
+  "preexisting_stale_reports_preserved": 17,
+  "schema": {
+    "pass": 91,
+    "training": 17,
+    "known_baseline": 13
+  },
+  "schema_new_errors": 0,
+  "training_signatures": {
+    "en": {
+      "questions": 6901,
+      "new_cross_source_signature_duplicates": {}
+    },
+    "es": {
+      "questions": 5375,
+      "new_cross_source_signature_duplicates": {}
+    }
+  },
+  "unrelated_preservation": {
+    "docs/complaints/journal-2026-11-01-triage.md": true,
+    "docs/spanish_citizenship_exam_topics_2026.csv": true,
+    "webapp/dist/index.html": true
+  },
+  "production": "not deployed; complaints 71 and 73 still open",
+  "go_tests": [
+    {
+      "command": "go test ./internal/grammarbundle ./internal/grammartrainingpack -count=1",
+      "exit_code": 0,
+      "packages": [
+        "grammarbundle",
+        "grammartrainingpack"
+      ]
+    },
+    {
+      "command": "go test ./internal/repository -run 'TestNewGrammarContentRepositoryForLearning|TestBuildTheoryBlockIndex_EmbeddedBundle|TestRealEsTrainingPackOnDiskLoads|TestReorder|TestGrammarQuestionLookup|TestGrammarUnsupportedQuestions' -count=1",
+      "exit_code": 0
+    }
+  ],
+  "git_diff_check": {
+    "root": "pass",
+    "english_course": "pass",
+    "spanish_course": "pass"
+  },
+  "release_checks": {
+    "command": "make check P=3 COUNT=1",
+    "exit_code": 0,
+    "go_passed": 5294,
+    "go_failed": 0,
+    "go_skipped": 51,
+    "coverage_percent": 81.4,
+    "webapp": "pass",
+    "go_lint": "pass",
+    "integration": "pass",
+    "reading_validators": "pass",
+    "log": "logs/complaints/release-20261104/make-check.log"
+  }
+}

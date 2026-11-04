@@ -1,11 +1,11 @@
 {
   "version": 1,
   "source": "courses/english-grammar/chapters/046.en.grammar.past_2_background_process.build_speak_a_story/03-questions.json",
-  "source_sha256": "c3be2896a060d50fa6b7fb62ed2d2216be18016eacb1080896386276c60ee2e5",
+  "source_sha256": "930747e2f92d6453c99a2f5cf8d4f923700076af6e804f113ae3f87df64c5819",
   "context_sha256": "82595245d2c95effa6f22698d876d19942bc8d5cb630a92aca57fde81dcf1b8f",
   "editor": "Codex editor 2026-09-04",
   "verifier": "Anton Filatov (user)",
-  "phase": "done",
+  "phase": "awaiting_verification",
   "reviewed_at": "2026-09-04T18:30:29.031273+00:00",
   "verified_at": "2026-09-06T17:58:18.569986Z",
   "questions": [
@@ -29,9 +29,18 @@
     },
     {
       "id": "q8",
-      "decision": "ok",
-      "note": "Грамматика, ключ и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Сопутствующий явный дефект: после вставки прежнего ключа предложение оставалось незавершённым. Добавлено нужное дополнение/состояние; ключ и грамматическая цель сохранены.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "fixed",
+        "note": "Сопутствующий явный дефект: после вставки прежнего ключа предложение оставалось незавершённым. Добавлено нужное дополнение/состояние; ключ и грамматическая цель сохранены.",
+        "verifier": "parentheses_2",
+        "verified_at": "2026-11-04T09:40:29.033435+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q11",
@@ -43,7 +52,13 @@
       "id": "q12",
       "decision": "ok",
       "note": "Грамматика, ключ и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Лексема или инфинитив задаёт материал для выбора грамматической формы по контексту; допустимое совпадение с начальной формой само по себе не отменяет этот выбор."
+      }
     },
     {
       "id": "q13",
@@ -61,7 +76,13 @@
       "id": "q15",
       "decision": "ok",
       "note": "Грамматика, ключ и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Лексема или инфинитив задаёт материал для выбора грамматической формы по контексту; допустимое совпадение с начальной формой само по себе не отменяет этот выбор."
+      }
     },
     {
       "id": "q17",
@@ -85,7 +106,13 @@
       "id": "q20",
       "decision": "ok",
       "note": "Грамматика, ключ и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Лексема или инфинитив задаёт материал для выбора грамматической формы по контексту; допустимое совпадение с начальной формой само по себе не отменяет этот выбор."
+      }
     },
     {
       "id": "q23",
@@ -97,7 +124,13 @@
       "id": "q24",
       "decision": "ok",
       "note": "Грамматика, ключ и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Лексема или инфинитив задаёт материал для выбора грамматической формы по контексту; допустимое совпадение с начальной формой само по себе не отменяет этот выбор."
+      }
     },
     {
       "id": "q25",
@@ -115,7 +148,13 @@
       "id": "q27",
       "decision": "ok",
       "note": "Грамматика, ключ и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Лексема или инфинитив задаёт материал для выбора грамматической формы по контексту; допустимое совпадение с начальной формой само по себе не отменяет этот выбор."
+      }
     },
     {
       "id": "q29",
@@ -133,7 +172,13 @@
       "id": "q36",
       "decision": "ok",
       "note": "Грамматика, ключ и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Лексема или инфинитив задаёт материал для выбора грамматической формы по контексту; допустимое совпадение с начальной формой само по себе не отменяет этот выбор."
+      }
     },
     {
       "id": "q37",
@@ -151,7 +196,13 @@
       "id": "q39",
       "decision": "ok",
       "note": "Грамматика, ключ и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Русский смысл/ситуация в скобках задаёт нужное значение, английский/испанский ответ не назван."
+      }
     },
     {
       "id": "q41",
@@ -173,9 +224,18 @@
     },
     {
       "id": "q44",
-      "decision": "ok",
-      "note": "Грамматика, ключ и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Сопутствующий явный дефект: после вставки прежнего ключа предложение оставалось незавершённым. Добавлено нужное дополнение/состояние; ключ и грамматическая цель сохранены.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "fixed",
+        "note": "Сопутствующий явный дефект: после вставки прежнего ключа предложение оставалось незавершённым. Добавлено нужное дополнение/состояние; ключ и грамматическая цель сохранены.",
+        "verifier": "parentheses_2",
+        "verified_at": "2026-11-04T09:40:29.033435+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q45",
@@ -193,7 +253,13 @@
       "id": "q48",
       "decision": "ok",
       "note": "Грамматика, ключ и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "В скобках перечислены альтернативы; выбрать правильную всё равно требуется по грамматике и контексту."
+      }
     },
     {
       "id": "q49",
@@ -211,7 +277,13 @@
       "id": "q51",
       "decision": "ok",
       "note": "Грамматика, ключ и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Лексема или инфинитив задаёт материал для выбора грамматической формы по контексту; допустимое совпадение с начальной формой само по себе не отменяет этот выбор."
+      }
     },
     {
       "id": "q53",
@@ -235,7 +307,13 @@
       "id": "q56",
       "decision": "ok",
       "note": "Грамматика, ключ и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Лексема или инфинитив задаёт материал для выбора грамматической формы по контексту; допустимое совпадение с начальной формой само по себе не отменяет этот выбор."
+      }
     },
     {
       "id": "q57",
@@ -253,7 +331,13 @@
       "id": "q60",
       "decision": "ok",
       "note": "Грамматика, ключ и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Лексема или инфинитив задаёт материал для выбора грамматической формы по контексту; допустимое совпадение с начальной формой само по себе не отменяет этот выбор."
+      }
     }
   ],
   "checks": [
@@ -261,7 +345,32 @@
       "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
       "result": "pass",
       "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    },
+    {
+      "command": "python3 logs/complaints/parenthetical-audit-20261104/worker-3-validate.py",
+      "result": "pass",
+      "evidence": "1549 selected decisions complete; 5921 objects compared with baseline, 5836 untouched; IDs/order/type/difficulty/theory/choice IDs preserved; source/final/embedded and signatures checked. Evidence: logs/complaints/parenthetical-audit-20261104/worker-3-validation.json."
+    },
+    {
+      "command": "Unchanged owning validate-chapter.sh and AJV draft2020 on isolated baseline/current final copies (worker-3-validate.py)",
+      "result": "pass",
+      "evidence": "Chapter validator exits 0 before and after. AJV passes both versions."
     }
   ],
-  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+  "verification_note": "Parenthetical-hints audit 2026-11-04: changed questions await independent verification; prior unrelated decisions retained.",
+  "parentheses_audit_verification": {
+    "verifier": "parentheses_2",
+    "verified_at": "2026-11-04T09:40:29.033435+00:00",
+    "verification": "ok",
+    "scope": "narrow_parentheses_audit_changed_questions",
+    "question_ids": [
+      "q8",
+      "q44"
+    ],
+    "evidence": [
+      "docs/grammar-review/batches/2026-11-04-parenthetical-hints/independent-worker-3.json",
+      "docs/grammar-review/batches/2026-11-04-parenthetical-hints/independent-worker-3-extension.json"
+    ],
+    "note": "Независимая проверка изменённых вопросов узкого аудита подсказок; out_of_scope не сертифицированы. Фазы общего обзора и source/context hashes не изменялись."
+  }
 }

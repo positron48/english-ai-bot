@@ -1,0 +1,1156 @@
+{
+  "reviewer": "parentheses_1",
+  "editor": "coordinator",
+  "scope": "Independent reading of the complete two newly changed worker-2 sources EN033 and ES008 for narrow parentheses leakage and correctness of literal-copy edits; not restart of full grammar review campaign.",
+  "status": "pass",
+  "questions": [
+    {
+      "n": 0,
+      "source": "courses/english-grammar/chapters/033.en.grammar.now_present_continuous_contrast.build_speak_what_s/03-questions.json",
+      "id": "q1",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Контекст урока и процесса требует am studying, ключ в условии не повторяется."
+    },
+    {
+      "n": 1,
+      "source": "courses/english-grammar/chapters/033.en.grammar.now_present_continuous_contrast.build_speak_what_s/03-questions.json",
+      "id": "q2",
+      "selected": true,
+      "literal_changed": true,
+      "decision": "ok",
+      "note": "Новая исходная форма goes требует преобразования к I: go. Время задано однозначно, прямой копии больше нет."
+    },
+    {
+      "n": 2,
+      "source": "courses/english-grammar/chapters/033.en.grammar.now_present_continuous_contrast.build_speak_what_s/03-questions.json",
+      "id": "q3",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Проверяется ложное абсолютное правило о маркере, оценка не раскрыта."
+    },
+    {
+      "n": 3,
+      "source": "courses/english-grammar/chapters/033.en.grammar.now_present_continuous_contrast.build_speak_what_s/03-questions.json",
+      "id": "q4",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Название времени задаёт грамматическую цель; drinks требуется согласовать с she."
+    },
+    {
+      "n": 4,
+      "source": "courses/english-grammar/chapters/033.en.grammar.now_present_continuous_contrast.build_speak_what_s/03-questions.json",
+      "id": "q6",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Положение usually ограничивает порядок, готовая фраза отсутствует."
+    },
+    {
+      "n": 5,
+      "source": "courses/english-grammar/chapters/033.en.grammar.now_present_continuous_contrast.build_speak_what_s/03-questions.json",
+      "id": "q7",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Present Continuous и текущий звонок требуют are/doing, готовых форм в вопросе нет."
+    },
+    {
+      "n": 6,
+      "source": "courses/english-grammar/chapters/033.en.grammar.now_present_continuous_contrast.build_speak_what_s/03-questions.json",
+      "id": "q8",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Утверждение об always оценивается целиком, ответ не подсказан."
+    },
+    {
+      "n": 7,
+      "source": "courses/english-grammar/chapters/033.en.grammar.now_present_continuous_contrast.build_speak_what_s/03-questions.json",
+      "id": "q9",
+      "selected": true,
+      "literal_changed": true,
+      "decision": "ok",
+      "note": "Goes — личная исходная форма; для I требуется go, ключ не копируется."
+    },
+    {
+      "n": 8,
+      "source": "courses/english-grammar/chapters/033.en.grammar.now_present_continuous_contrast.build_speak_what_s/03-questions.json",
+      "id": "q10",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Контекст чтения в процессе требует is reading, отличая существующую форму read."
+    },
+    {
+      "n": 9,
+      "source": "courses/english-grammar/chapters/033.en.grammar.now_present_continuous_contrast.build_speak_what_s/03-questions.json",
+      "id": "q11",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Место currently задано для однозначной перестановки; предложение надо собрать."
+    },
+    {
+      "n": 10,
+      "source": "courses/english-grammar/chapters/033.en.grammar.now_present_continuous_contrast.build_speak_what_s/03-questions.json",
+      "id": "q12",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Проверяется абсолютное утверждение о every day, нет подсказки false."
+    },
+    {
+      "n": 11,
+      "source": "courses/english-grammar/chapters/033.en.grammar.now_present_continuous_contrast.build_speak_what_s/03-questions.json",
+      "id": "q13",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Текущее действие отделено от привычек и прошлого, готовой формы в условии нет."
+    },
+    {
+      "n": 12,
+      "source": "courses/english-grammar/chapters/033.en.grammar.now_present_continuous_contrast.build_speak_what_s/03-questions.json",
+      "id": "q15",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Вопрос надо собрать из материала, What не раскрывает всю конструкцию."
+    },
+    {
+      "n": 13,
+      "source": "courses/english-grammar/chapters/033.en.grammar.now_present_continuous_contrast.build_speak_what_s/03-questions.json",
+      "id": "q16",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "На текущий вопрос нужно выбрать соответствующий ответ, ключ не приведён в условии."
+    },
+    {
+      "n": 14,
+      "source": "courses/english-grammar/chapters/033.en.grammar.now_present_continuous_contrast.build_speak_what_s/03-questions.json",
+      "id": "q19",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Форма вопроса is he working выбирается по грамматике, подсказки ключа нет."
+    },
+    {
+      "n": 15,
+      "source": "courses/english-grammar/chapters/033.en.grammar.now_present_continuous_contrast.build_speak_what_s/03-questions.json",
+      "id": "q21",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Границы и место now фиксируют порядок, конструкцию надо собрать."
+    },
+    {
+      "n": 16,
+      "source": "courses/english-grammar/chapters/033.en.grammar.now_present_continuous_contrast.build_speak_what_s/03-questions.json",
+      "id": "q22",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Контраст working/resting задаёт отрицание, нужная форма am not не дана."
+    },
+    {
+      "n": 17,
+      "source": "courses/english-grammar/chapters/033.en.grammar.now_present_continuous_contrast.build_speak_what_s/03-questions.json",
+      "id": "q24",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Утверждение о ежедневной привычке проверяется по значению Continuous."
+    },
+    {
+      "n": 18,
+      "source": "courses/english-grammar/chapters/033.en.grammar.now_present_continuous_contrast.build_speak_what_s/03-questions.json",
+      "id": "q25",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Настоящий процесс требуется различить с другими значениями now."
+    },
+    {
+      "n": 19,
+      "source": "courses/english-grammar/chapters/033.en.grammar.now_present_continuous_contrast.build_speak_what_s/03-questions.json",
+      "id": "q26",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Привычки требуют do usually, готовый вариант заранее не указан."
+    },
+    {
+      "n": 20,
+      "source": "courses/english-grammar/chapters/033.en.grammar.now_present_continuous_contrast.build_speak_what_s/03-questions.json",
+      "id": "q28",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Начало, конец и usually ограничивают перестановку, весь вопрос не дан."
+    },
+    {
+      "n": 21,
+      "source": "courses/english-grammar/chapters/033.en.grammar.now_present_continuous_contrast.build_speak_what_s/03-questions.json",
+      "id": "q29",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Нужно выбрать ответ о привычке, а не текущем или прошлом действии."
+    },
+    {
+      "n": 22,
+      "source": "courses/english-grammar/chapters/033.en.grammar.now_present_continuous_contrast.build_speak_what_s/03-questions.json",
+      "id": "q30",
+      "selected": true,
+      "literal_changed": true,
+      "decision": "ok",
+      "note": "Новая исходная drinks требует формы drink для I; Present Simple задаёт единственный ответ, утечка устранена."
+    },
+    {
+      "n": 23,
+      "source": "courses/english-grammar/chapters/033.en.grammar.now_present_continuous_contrast.build_speak_what_s/03-questions.json",
+      "id": "q31",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Вопрос о регулярном посещении спортзала нужно отличить от процесса сейчас."
+    },
+    {
+      "n": 24,
+      "source": "courses/english-grammar/chapters/033.en.grammar.now_present_continuous_contrast.build_speak_what_s/03-questions.json",
+      "id": "q32",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Do/does и форма he work проверяются выбором вопроса, подсказки нет."
+    },
+    {
+      "n": 25,
+      "source": "courses/english-grammar/chapters/033.en.grammar.now_present_continuous_contrast.build_speak_what_s/03-questions.json",
+      "id": "q33",
+      "selected": true,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Go — исходная основа, для she требуется goes; буквального готового ключа нет."
+    },
+    {
+      "n": 26,
+      "source": "courses/english-grammar/chapters/033.en.grammar.now_present_continuous_contrast.build_speak_what_s/03-questions.json",
+      "id": "q34",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Границы и always фиксируют порядок, предложение нужно собрать."
+    },
+    {
+      "n": 27,
+      "source": "courses/english-grammar/chapters/033.en.grammar.now_present_continuous_contrast.build_speak_what_s/03-questions.json",
+      "id": "q35",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Отрицание Present Simple перед go требует don't, готовой подсказки нет."
+    },
+    {
+      "n": 28,
+      "source": "courses/english-grammar/chapters/033.en.grammar.now_present_continuous_contrast.build_speak_what_s/03-questions.json",
+      "id": "q37",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Проверяется классификация примера как привычки, ответ не указан."
+    },
+    {
+      "n": 29,
+      "source": "courses/english-grammar/chapters/033.en.grammar.now_present_continuous_contrast.build_speak_what_s/03-questions.json",
+      "id": "q38",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Название времени задаёт цель распознавания do you usually do."
+    },
+    {
+      "n": 30,
+      "source": "courses/english-grammar/chapters/033.en.grammar.now_present_continuous_contrast.build_speak_what_s/03-questions.json",
+      "id": "q39",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Задана последовательность времён, но формы в вариантах надо распознать."
+    },
+    {
+      "n": 31,
+      "source": "courses/english-grammar/chapters/033.en.grammar.now_present_continuous_contrast.build_speak_what_s/03-questions.json",
+      "id": "q42",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Последовательность Continuous/Simple проверяется по конструкции, готовый текст не сообщён."
+    },
+    {
+      "n": 32,
+      "source": "courses/english-grammar/chapters/033.en.grammar.now_present_continuous_contrast.build_speak_what_s/03-questions.json",
+      "id": "q43",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Проверяется возможность сочетания времён, ключ true отсутствует в условии."
+    },
+    {
+      "n": 33,
+      "source": "courses/english-grammar/chapters/033.en.grammar.now_present_continuous_contrast.build_speak_what_s/03-questions.json",
+      "id": "q45",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Требуется распознать формы чтения в заданном порядке времён."
+    },
+    {
+      "n": 34,
+      "source": "courses/english-grammar/chapters/033.en.grammar.now_present_continuous_contrast.build_speak_what_s/03-questions.json",
+      "id": "q47",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Предложение является материалом семантической оценки контраста."
+    },
+    {
+      "n": 35,
+      "source": "courses/english-grammar/chapters/033.en.grammar.now_present_continuous_contrast.build_speak_what_s/03-questions.json",
+      "id": "q49",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Формы are meeting/meet требуется отличить от иных комбинаций."
+    },
+    {
+      "n": 36,
+      "source": "courses/english-grammar/chapters/033.en.grammar.now_present_continuous_contrast.build_speak_what_s/03-questions.json",
+      "id": "q50",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Нужно оценить запрет отдельных предложений; ответ не подсказан."
+    },
+    {
+      "n": 37,
+      "source": "courses/english-grammar/chapters/033.en.grammar.now_present_continuous_contrast.build_speak_what_s/03-questions.json",
+      "id": "q51",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Диалог проверяет последовательность вопросов и времён, готовый вариант не показан в условии."
+    },
+    {
+      "n": 38,
+      "source": "courses/english-grammar/chapters/033.en.grammar.now_present_continuous_contrast.build_speak_what_s/03-questions.json",
+      "id": "q54",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Нужно распознать две грамматические формы в диалоге."
+    },
+    {
+      "n": 39,
+      "source": "courses/english-grammar/chapters/033.en.grammar.now_present_continuous_contrast.build_speak_what_s/03-questions.json",
+      "id": "q55",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Оценивается допустимость переключения времён по контексту."
+    },
+    {
+      "n": 40,
+      "source": "courses/english-grammar/chapters/033.en.grammar.now_present_continuous_contrast.build_speak_what_s/03-questions.json",
+      "id": "q57",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Контекст поздних занятий и последовательность времён требуют выбрать формы, готового ответа нет."
+    },
+    {
+      "n": 41,
+      "source": "courses/english-grammar/chapters/033.en.grammar.now_present_continuous_contrast.build_speak_what_s/03-questions.json",
+      "id": "q59",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Проверяется допустимость обоих времён в разговоре, не их обязательность."
+    },
+    {
+      "n": 42,
+      "source": "courses/english-grammar/chapters/033.en.grammar.now_present_continuous_contrast.build_speak_what_s/03-questions.json",
+      "id": "q61",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Поздняя работа сопоставляется с обычным распорядком, формы требуется распознать."
+    },
+    {
+      "n": 43,
+      "source": "courses/english-grammar/chapters/033.en.grammar.now_present_continuous_contrast.build_speak_what_s/03-questions.json",
+      "id": "q62",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Метавопрос о переключении времён, внешней метки ответа нет."
+    },
+    {
+      "n": 44,
+      "source": "courses/spanish-grammar/chapters/008.es.grammar.noun_gender_articles_agreement.singular_plural_s_es_common_spelling_changes/03-questions.json",
+      "id": "q1",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Casa — исходная единственная форма, требуется casas."
+    },
+    {
+      "n": 45,
+      "source": "courses/spanish-grammar/chapters/008.es.grammar.noun_gender_articles_agreement.singular_plural_s_es_common_spelling_changes/03-questions.json",
+      "id": "q2",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Libro требуется преобразовать в libros, множественный ключ не дан."
+    },
+    {
+      "n": 46,
+      "source": "courses/spanish-grammar/chapters/008.es.grammar.noun_gender_articles_agreement.singular_plural_s_es_common_spelling_changes/03-questions.json",
+      "id": "q3",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Coche требуется преобразовать в coches."
+    },
+    {
+      "n": 47,
+      "source": "courses/spanish-grammar/chapters/008.es.grammar.noun_gender_articles_agreement.singular_plural_s_es_common_spelling_changes/03-questions.json",
+      "id": "q4",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Тип окончания задаёт категорию, суффикс -s надо выбрать."
+    },
+    {
+      "n": 48,
+      "source": "courses/spanish-grammar/chapters/008.es.grammar.noun_gender_articles_agreement.singular_plural_s_es_common_spelling_changes/03-questions.json",
+      "id": "q5",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Mesa требует формы mesas, не копирования исходника."
+    },
+    {
+      "n": 49,
+      "source": "courses/spanish-grammar/chapters/008.es.grammar.noun_gender_articles_agreement.singular_plural_s_es_common_spelling_changes/03-questions.json",
+      "id": "q6",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Род и число libros требуют самостоятельно выбрать los."
+    },
+    {
+      "n": 50,
+      "source": "courses/spanish-grammar/chapters/008.es.grammar.noun_gender_articles_agreement.singular_plural_s_es_common_spelling_changes/03-questions.json",
+      "id": "q7",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Грамматическое утверждение оценивается целиком."
+    },
+    {
+      "n": 51,
+      "source": "courses/spanish-grammar/chapters/008.es.grammar.noun_gender_articles_agreement.singular_plural_s_es_common_spelling_changes/03-questions.json",
+      "id": "q8",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Неверная casaes является объектом оценки, правильная форма не названа."
+    },
+    {
+      "n": 52,
+      "source": "courses/spanish-grammar/chapters/008.es.grammar.noun_gender_articles_agreement.singular_plural_s_es_common_spelling_changes/03-questions.json",
+      "id": "q9",
+      "selected": true,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Исходное libro в скобках требует множественного libros."
+    },
+    {
+      "n": 53,
+      "source": "courses/spanish-grammar/chapters/008.es.grammar.noun_gender_articles_agreement.singular_plural_s_es_common_spelling_changes/03-questions.json",
+      "id": "q10",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Ошибка Las casa требует согласовать существительное, готовая правка только среди вариантов."
+    },
+    {
+      "n": 54,
+      "source": "courses/spanish-grammar/chapters/008.es.grammar.noun_gender_articles_agreement.singular_plural_s_es_common_spelling_changes/03-questions.json",
+      "id": "q11",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Исходное papel требует образования papeles."
+    },
+    {
+      "n": 55,
+      "source": "courses/spanish-grammar/chapters/008.es.grammar.noun_gender_articles_agreement.singular_plural_s_es_common_spelling_changes/03-questions.json",
+      "id": "q12",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Ciudad требует формы ciudades, ключ не сообщён."
+    },
+    {
+      "n": 56,
+      "source": "courses/spanish-grammar/chapters/008.es.grammar.noun_gender_articles_agreement.singular_plural_s_es_common_spelling_changes/03-questions.json",
+      "id": "q13",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Color требует формы colores, ключ не раскрыт."
+    },
+    {
+      "n": 57,
+      "source": "courses/spanish-grammar/chapters/008.es.grammar.noun_gender_articles_agreement.singular_plural_s_es_common_spelling_changes/03-questions.json",
+      "id": "q14",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Примеры слов задают класс, окончание -es нужно определить."
+    },
+    {
+      "n": 58,
+      "source": "courses/spanish-grammar/chapters/008.es.grammar.noun_gender_articles_agreement.singular_plural_s_es_common_spelling_changes/03-questions.json",
+      "id": "q15",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Reloj требует образования relojes."
+    },
+    {
+      "n": 59,
+      "source": "courses/spanish-grammar/chapters/008.es.grammar.noun_gender_articles_agreement.singular_plural_s_es_common_spelling_changes/03-questions.json",
+      "id": "q16",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Проверяется правило для слов на l/r/d, ответ true не дан отдельно."
+    },
+    {
+      "n": 60,
+      "source": "courses/spanish-grammar/chapters/008.es.grammar.noun_gender_articles_agreement.singular_plural_s_es_common_spelling_changes/03-questions.json",
+      "id": "q17",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Форма papels дана как проверяемое утверждение, не готовый правильный ответ."
+    },
+    {
+      "n": 61,
+      "source": "courses/spanish-grammar/chapters/008.es.grammar.noun_gender_articles_agreement.singular_plural_s_es_common_spelling_changes/03-questions.json",
+      "id": "q18",
+      "selected": true,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Papel в скобках требует образования papeles, прямой копии нет."
+    },
+    {
+      "n": 62,
+      "source": "courses/spanish-grammar/chapters/008.es.grammar.noun_gender_articles_agreement.singular_plural_s_es_common_spelling_changes/03-questions.json",
+      "id": "q19",
+      "selected": true,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Ciudad в скобках требует образования ciudades."
+    },
+    {
+      "n": 63,
+      "source": "courses/spanish-grammar/chapters/008.es.grammar.noun_gender_articles_agreement.singular_plural_s_es_common_spelling_changes/03-questions.json",
+      "id": "q20",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Неправильный исходник является материалом исправления, правильная фраза не подсказана."
+    },
+    {
+      "n": 64,
+      "source": "courses/spanish-grammar/chapters/008.es.grammar.noun_gender_articles_agreement.singular_plural_s_es_common_spelling_changes/03-questions.json",
+      "id": "q21",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Luz требует орфографического преобразования в luces."
+    },
+    {
+      "n": 65,
+      "source": "courses/spanish-grammar/chapters/008.es.grammar.noun_gender_articles_agreement.singular_plural_s_es_common_spelling_changes/03-questions.json",
+      "id": "q22",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Lápiz требует lápices с c и ударением."
+    },
+    {
+      "n": 66,
+      "source": "courses/spanish-grammar/chapters/008.es.grammar.noun_gender_articles_agreement.singular_plural_s_es_common_spelling_changes/03-questions.json",
+      "id": "q23",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Voz требует voces, готовый ключ в условии не дан."
+    },
+    {
+      "n": 67,
+      "source": "courses/spanish-grammar/chapters/008.es.grammar.noun_gender_articles_agreement.singular_plural_s_es_common_spelling_changes/03-questions.json",
+      "id": "q24",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Вопрос о букве перед es не называет c заранее."
+    },
+    {
+      "n": 68,
+      "source": "courses/spanish-grammar/chapters/008.es.grammar.noun_gender_articles_agreement.singular_plural_s_es_common_spelling_changes/03-questions.json",
+      "id": "q25",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Ошибка luzes требует самостоятельного выбора замены z→c."
+    },
+    {
+      "n": 69,
+      "source": "courses/spanish-grammar/chapters/008.es.grammar.noun_gender_articles_agreement.singular_plural_s_es_common_spelling_changes/03-questions.json",
+      "id": "q26",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Правило z→ces является целиком утверждением для оценки."
+    },
+    {
+      "n": 70,
+      "source": "courses/spanish-grammar/chapters/008.es.grammar.noun_gender_articles_agreement.singular_plural_s_es_common_spelling_changes/03-questions.json",
+      "id": "q27",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Vozes — ошибочный объект проверки, не подсказка ключа."
+    },
+    {
+      "n": 71,
+      "source": "courses/spanish-grammar/chapters/008.es.grammar.noun_gender_articles_agreement.singular_plural_s_es_common_spelling_changes/03-questions.json",
+      "id": "q28",
+      "selected": true,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Voz — исходная форма, для Las требуется voces."
+    },
+    {
+      "n": 72,
+      "source": "courses/spanish-grammar/chapters/008.es.grammar.noun_gender_articles_agreement.singular_plural_s_es_common_spelling_changes/03-questions.json",
+      "id": "q29",
+      "selected": true,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Скобка задаёт контекст количества, а не готовое lápices."
+    },
+    {
+      "n": 73,
+      "source": "courses/spanish-grammar/chapters/008.es.grammar.noun_gender_articles_agreement.singular_plural_s_es_common_spelling_changes/03-questions.json",
+      "id": "q30",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Нужно исправить luzes и сохранить согласование, единственная верная правка в вариантах."
+    },
+    {
+      "n": 74,
+      "source": "courses/spanish-grammar/chapters/008.es.grammar.noun_gender_articles_agreement.singular_plural_s_es_common_spelling_changes/03-questions.json",
+      "id": "q31",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Lunes задано как исходное слово для выбора множественного из вариантов; отдельной готовой скобки нет, вопрос вне выбранной подсказки."
+    },
+    {
+      "n": 75,
+      "source": "courses/spanish-grammar/chapters/008.es.grammar.noun_gender_articles_agreement.singular_plural_s_es_common_spelling_changes/03-questions.json",
+      "id": "q32",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Crisis задано как исходное слово для выбора множественного, вне выбранных скобок."
+    },
+    {
+      "n": 76,
+      "source": "courses/spanish-grammar/chapters/008.es.grammar.noun_gender_articles_agreement.singular_plural_s_es_common_spelling_changes/03-questions.json",
+      "id": "q33",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Compás требует compases без тильды, готовой формы нет."
+    },
+    {
+      "n": 77,
+      "source": "courses/spanish-grammar/chapters/008.es.grammar.noun_gender_articles_agreement.singular_plural_s_es_common_spelling_changes/03-questions.json",
+      "id": "q34",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Нужно выбрать неизменяемое слово среди четырёх примеров."
+    },
+    {
+      "n": 78,
+      "source": "courses/spanish-grammar/chapters/008.es.grammar.noun_gender_articles_agreement.singular_plural_s_es_common_spelling_changes/03-questions.json",
+      "id": "q35",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Конечное ударение задаёт категорию, правильное окончание нужно знать."
+    },
+    {
+      "n": 79,
+      "source": "courses/spanish-grammar/chapters/008.es.grammar.noun_gender_articles_agreement.singular_plural_s_es_common_spelling_changes/03-questions.json",
+      "id": "q36",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Неизменяемость lunes является оцениваемым утверждением, ключ true не указан отдельно."
+    },
+    {
+      "n": 80,
+      "source": "courses/spanish-grammar/chapters/008.es.grammar.noun_gender_articles_agreement.singular_plural_s_es_common_spelling_changes/03-questions.json",
+      "id": "q37",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Luneses дано как ненормативная форма для оценки, правильная форма отдельно не раскрывается."
+    },
+    {
+      "n": 81,
+      "source": "courses/spanish-grammar/chapters/008.es.grammar.noun_gender_articles_agreement.singular_plural_s_es_common_spelling_changes/03-questions.json",
+      "id": "q38",
+      "selected": true,
+      "literal_changed": true,
+      "decision": "ok",
+      "note": "Новый пропуск проверяет артикль los для повторения по понедельникам; скобка задаёт русский смысл и число, ключ не дан, ответ однозначен."
+    },
+    {
+      "n": 82,
+      "source": "courses/spanish-grammar/chapters/008.es.grammar.noun_gender_articles_agreement.singular_plural_s_es_common_spelling_changes/03-questions.json",
+      "id": "q39",
+      "selected": true,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Compás в скобках требует compases и изменения акцента, копирования нет."
+    },
+    {
+      "n": 83,
+      "source": "courses/spanish-grammar/chapters/008.es.grammar.noun_gender_articles_agreement.singular_plural_s_es_common_spelling_changes/03-questions.json",
+      "id": "q40",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Неправильная полная фраза — допустимый исходный материал исправления."
+    },
+    {
+      "n": 84,
+      "source": "courses/spanish-grammar/chapters/008.es.grammar.noun_gender_articles_agreement.singular_plural_s_es_common_spelling_changes/03-questions.json",
+      "id": "q41",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "El — исходная единственная форма артикля, требуется множественное los."
+    },
+    {
+      "n": 85,
+      "source": "courses/spanish-grammar/chapters/008.es.grammar.noun_gender_articles_agreement.singular_plural_s_es_common_spelling_changes/03-questions.json",
+      "id": "q42",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "La — исходная форма, для множественного нужно las."
+    },
+    {
+      "n": 86,
+      "source": "courses/spanish-grammar/chapters/008.es.grammar.noun_gender_articles_agreement.singular_plural_s_es_common_spelling_changes/03-questions.json",
+      "id": "q43",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Мужское множественное libros требует nuevos, нужная форма заранее не дана."
+    },
+    {
+      "n": 87,
+      "source": "courses/spanish-grammar/chapters/008.es.grammar.noun_gender_articles_agreement.singular_plural_s_es_common_spelling_changes/03-questions.json",
+      "id": "q44",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Женское множественное mesas требует blancas."
+    },
+    {
+      "n": 88,
+      "source": "courses/spanish-grammar/chapters/008.es.grammar.noun_gender_articles_agreement.singular_plural_s_es_common_spelling_changes/03-questions.json",
+      "id": "q45",
+      "selected": true,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Скобка задаёт род, un нужно преобразовать в unos."
+    },
+    {
+      "n": 89,
+      "source": "courses/spanish-grammar/chapters/008.es.grammar.noun_gender_articles_agreement.singular_plural_s_es_common_spelling_changes/03-questions.json",
+      "id": "q46",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Проверяется правило полного согласования, отдельной метки ответа нет."
+    },
+    {
+      "n": 90,
+      "source": "courses/spanish-grammar/chapters/008.es.grammar.noun_gender_articles_agreement.singular_plural_s_es_common_spelling_changes/03-questions.json",
+      "id": "q47",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Неправильная именная группа является объектом оценки."
+    },
+    {
+      "n": 91,
+      "source": "courses/spanish-grammar/chapters/008.es.grammar.noun_gender_articles_agreement.singular_plural_s_es_common_spelling_changes/03-questions.json",
+      "id": "q48",
+      "selected": true,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Род/число в скобках требуют выбрать определённый артикль las."
+    },
+    {
+      "n": 92,
+      "source": "courses/spanish-grammar/chapters/008.es.grammar.noun_gender_articles_agreement.singular_plural_s_es_common_spelling_changes/03-questions.json",
+      "id": "q49",
+      "selected": true,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Nuevo — исходная форма, требуется nuevos с libros."
+    },
+    {
+      "n": 93,
+      "source": "courses/spanish-grammar/chapters/008.es.grammar.noun_gender_articles_agreement.singular_plural_s_es_common_spelling_changes/03-questions.json",
+      "id": "q50",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Исходная ошибочная фраза требует полного согласования, готовая правка только в вариантах."
+    },
+    {
+      "n": 94,
+      "source": "courses/spanish-grammar/chapters/008.es.grammar.noun_gender_articles_agreement.singular_plural_s_es_common_spelling_changes/03-questions.json",
+      "id": "q51",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Полная именная группа — материал преобразования в множественное число."
+    },
+    {
+      "n": 95,
+      "source": "courses/spanish-grammar/chapters/008.es.grammar.noun_gender_articles_agreement.singular_plural_s_es_common_spelling_changes/03-questions.json",
+      "id": "q52",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Полная именная группа требует luces и согласования остальных слов."
+    },
+    {
+      "n": 96,
+      "source": "courses/spanish-grammar/chapters/008.es.grammar.noun_gender_articles_agreement.singular_plural_s_es_common_spelling_changes/03-questions.json",
+      "id": "q53",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Нужно проверить согласование всех трёх элементов, ключ не раскрыт."
+    },
+    {
+      "n": 97,
+      "source": "courses/spanish-grammar/chapters/008.es.grammar.noun_gender_articles_agreement.singular_plural_s_es_common_spelling_changes/03-questions.json",
+      "id": "q54",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Lunes — исходное слово для выбора полной нормативной фразы, скобки с готовым ответом нет."
+    },
+    {
+      "n": 98,
+      "source": "courses/spanish-grammar/chapters/008.es.grammar.noun_gender_articles_agreement.singular_plural_s_es_common_spelling_changes/03-questions.json",
+      "id": "q55",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Una ciudad grande требует изменений во всей группе, готовый результат отсутствует."
+    },
+    {
+      "n": 99,
+      "source": "courses/spanish-grammar/chapters/008.es.grammar.noun_gender_articles_agreement.singular_plural_s_es_common_spelling_changes/03-questions.json",
+      "id": "q56",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Оценивается стратегия проверки, ответ не указан отдельно."
+    },
+    {
+      "n": 100,
+      "source": "courses/spanish-grammar/chapters/008.es.grammar.noun_gender_articles_agreement.singular_plural_s_es_common_spelling_changes/03-questions.json",
+      "id": "q57",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Утверждение о несогласуемом артикле и прилагательном неверно; ответ оценивает правило целиком."
+    },
+    {
+      "n": 101,
+      "source": "courses/spanish-grammar/chapters/008.es.grammar.noun_gender_articles_agreement.singular_plural_s_es_common_spelling_changes/03-questions.json",
+      "id": "q58",
+      "selected": true,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "ciudad — исходное единственное число; требуется образовать ciudades, готовый ключ не дан."
+    },
+    {
+      "n": 102,
+      "source": "courses/spanish-grammar/chapters/008.es.grammar.noun_gender_articles_agreement.singular_plural_s_es_common_spelling_changes/03-questions.json",
+      "id": "q59",
+      "selected": true,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "luz — исходное единственное число; требуется изменение z→c и -es, ключ не дан."
+    },
+    {
+      "n": 103,
+      "source": "courses/spanish-grammar/chapters/008.es.grammar.noun_gender_articles_agreement.singular_plural_s_es_common_spelling_changes/03-questions.json",
+      "id": "q60",
+      "selected": false,
+      "literal_changed": false,
+      "decision": "ok",
+      "note": "Полная ошибочная фраза служит материалом исправления; единственный вариант согласует ciudades, grandes, están."
+    }
+  ],
+  "read": 104,
+  "total": 104,
+  "completed_at": "2026-11-04T09:37:58.326139+00:00",
+  "sources": [
+    {
+      "source": "courses/english-grammar/chapters/033.en.grammar.now_present_continuous_contrast.build_speak_what_s/03-questions.json",
+      "report": "docs/grammar-review/reports/d4611f71e64cd3819f7d9e23.json",
+      "read_ids": [
+        "q1",
+        "q2",
+        "q3",
+        "q4",
+        "q6",
+        "q7",
+        "q8",
+        "q9",
+        "q10",
+        "q11",
+        "q12",
+        "q13",
+        "q15",
+        "q16",
+        "q19",
+        "q21",
+        "q22",
+        "q24",
+        "q25",
+        "q26",
+        "q28",
+        "q29",
+        "q30",
+        "q31",
+        "q32",
+        "q33",
+        "q34",
+        "q35",
+        "q37",
+        "q38",
+        "q39",
+        "q42",
+        "q43",
+        "q45",
+        "q47",
+        "q49",
+        "q50",
+        "q51",
+        "q54",
+        "q55",
+        "q57",
+        "q59",
+        "q61",
+        "q62"
+      ],
+      "selected_read_ids": [
+        "q2",
+        "q9",
+        "q30",
+        "q33"
+      ],
+      "accepted_changed_ids": [
+        "q2",
+        "q9",
+        "q30"
+      ],
+      "source_bytes_sha256": "aa43e621ea015212b13dd12251408c85aaf61e17bcfa7ccabab225b7eb422559",
+      "source_fingerprint": "579f41b98d0458a877bc6db3608d7e6292c3aef7b1a0ac8cbf1c97d41b8d95bd",
+      "context_fingerprint": "4e8d1d384fa401a2f625f0b64f8d4e1356c732e033e3f63839d003839b0f1161",
+      "baseline": "logs/complaints/parenthetical-audit-20261104/baseline/courses/english-grammar/chapters/033.en.grammar.now_present_continuous_contrast.build_speak_what_s/03-questions.json",
+      "checks": {
+        "baseline_fingerprint_matches_manifest": true,
+        "context_fingerprint_unchanged": true,
+        "question_ids_and_order_unchanged": true,
+        "changed_ids_exact": true,
+        "all_other_question_fields_preserved": true,
+        "top_level_preserved": true,
+        "source_final_questions_equal": true,
+        "final_embedded_bytes_equal": true,
+        "report_source_fingerprint_current": true,
+        "report_context_fingerprint_current": true
+      }
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/008.es.grammar.noun_gender_articles_agreement.singular_plural_s_es_common_spelling_changes/03-questions.json",
+      "report": "docs/grammar-review/reports/ffc758cb892647ff3d9bb612.json",
+      "read_ids": [
+        "q1",
+        "q2",
+        "q3",
+        "q4",
+        "q5",
+        "q6",
+        "q7",
+        "q8",
+        "q9",
+        "q10",
+        "q11",
+        "q12",
+        "q13",
+        "q14",
+        "q15",
+        "q16",
+        "q17",
+        "q18",
+        "q19",
+        "q20",
+        "q21",
+        "q22",
+        "q23",
+        "q24",
+        "q25",
+        "q26",
+        "q27",
+        "q28",
+        "q29",
+        "q30",
+        "q31",
+        "q32",
+        "q33",
+        "q34",
+        "q35",
+        "q36",
+        "q37",
+        "q38",
+        "q39",
+        "q40",
+        "q41",
+        "q42",
+        "q43",
+        "q44",
+        "q45",
+        "q46",
+        "q47",
+        "q48",
+        "q49",
+        "q50",
+        "q51",
+        "q52",
+        "q53",
+        "q54",
+        "q55",
+        "q56",
+        "q57",
+        "q58",
+        "q59",
+        "q60"
+      ],
+      "selected_read_ids": [
+        "q9",
+        "q18",
+        "q19",
+        "q28",
+        "q29",
+        "q38",
+        "q39",
+        "q45",
+        "q48",
+        "q49",
+        "q58",
+        "q59"
+      ],
+      "accepted_changed_ids": [
+        "q38"
+      ],
+      "source_bytes_sha256": "faae11db376b4330ada431844126331fd50b00d06a248a094d98e241a696fc1c",
+      "source_fingerprint": "3bf114fecdb58383a8d1ead40d09b8158c661e5c2b4a222de5f38375fd176abe",
+      "context_fingerprint": "e57bb4615e87856c1ecc963757c9275634e6bb0809dd45e789d28403864de7a6",
+      "baseline": "logs/complaints/parenthetical-audit-20261104/baseline/courses/spanish-grammar/chapters/008.es.grammar.noun_gender_articles_agreement.singular_plural_s_es_common_spelling_changes/03-questions.json",
+      "checks": {
+        "baseline_fingerprint_matches_manifest": true,
+        "context_fingerprint_unchanged": true,
+        "question_ids_and_order_unchanged": true,
+        "changed_ids_exact": true,
+        "all_other_question_fields_preserved": true,
+        "top_level_preserved": true,
+        "source_final_questions_equal": true,
+        "final_embedded_bytes_equal": true,
+        "report_source_fingerprint_current": true,
+        "report_context_fingerprint_current": true
+      }
+    }
+  ],
+  "accepted_changes": 4,
+  "source_count": 2,
+  "semantic_findings": [],
+  "limitations": [
+    "Complete reading of these two source question banks and their existing context for the narrow parentheses task; not completion of the entire grammar campaign.",
+    "No source or report files modified by this review."
+  ],
+  "report_verification_update": {
+    "updated_at": "2026-11-04T09:39:50.342853+00:00",
+    "authorized_by": "coordinator explicit follow-up message",
+    "reports": [
+      {
+        "report": "docs/grammar-review/reports/d4611f71e64cd3819f7d9e23.json",
+        "updated_ids": [
+          "q2",
+          "q9",
+          "q30"
+        ],
+        "unrelated_fields_preserved": true,
+        "source_context_hashes_and_phase_unchanged": true
+      },
+      {
+        "report": "docs/grammar-review/reports/ffc758cb892647ff3d9bb612.json",
+        "updated_ids": [
+          "q38"
+        ],
+        "unrelated_fields_preserved": true,
+        "source_context_hashes_and_phase_unchanged": true
+      }
+    ]
+  }
+}

@@ -31,7 +31,13 @@
       "id": "q4",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Грамматическое ограничение в скобках снимает неоднозначность; нужную форму/конструкцию всё равно требуется построить."
+      }
     },
     {
       "id": "q5",

@@ -1,11 +1,11 @@
 {
   "version": 1,
   "source": "courses/spanish-grammar/chapters/110.es.grammar.non_finite_forms_periphrases.periphrases_change_process_seguir_plus_gerundio_acabar_de/03-questions.json",
-  "source_sha256": "97770136c632e012523184589ab7d11e5d4d51dbecd9409be5c2e86ce856df5a",
+  "source_sha256": "91e5a857020498f864e382a5dd3135864ee7434ab42fd43ea987e833b488145a",
   "context_sha256": "c1cad3b391e4aa4c9adea00035f83567e2f66f1d57297a1f4b3fe83121b3ef22",
   "editor": "Codex editor 2026-09-06",
   "verifier": "Anton Filatov (user)",
-  "phase": "done",
+  "phase": "awaiting_verification",
   "reviewed_at": "2026-09-05T21:49:14.314609Z",
   "verified_at": "2026-09-06T17:58:18.569986Z",
   "questions": [
@@ -29,21 +29,45 @@
     },
     {
       "id": "q004",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "2026-11-04: удалена готовая модель seguir + gerundio, прямо указывавшая единственный вариант с Sigue; сохранено проверяемое значение продолжения.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "fixed",
+        "note": "Удалена готовая модель seguir + gerundio; выбор проверяет значение продолжения процесса.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q005",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "seguir — инфинитив, форму yo Sigo нужно образовать."
+      }
     },
     {
       "id": "q006",
       "decision": "fixed",
-      "note": "Исправлены или уточнены поля: prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "note": "Не задано время seguir: sigues и seguías подходят. Указать presente.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "Не задано время seguir: sigues и seguías подходят. Указать presente.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q007",
@@ -102,14 +126,29 @@
     {
       "id": "q016",
       "decision": "fixed",
-      "note": "Исправлены или уточнены поля: prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "note": "Не задано время acabar: acabo и acababa подходят. Указать presente.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "Не задано время acabar: acabo и acababa подходят. Указать presente.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q017",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "acabar — лемма, форму nosotros acabamos нужно образовать."
+      }
     },
     {
       "id": "q018",
@@ -167,15 +206,33 @@
     },
     {
       "id": "q027",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Не задано время volver: vuelve/volvió/volverá подходят. Указать presente.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "Не задано время volver: vuelve/volvió/volverá подходят. Указать presente.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q028",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "No + форма volver не задаёт приказ: vuelves (констатация) также грамматично. Указать отрицательное повелительное к tú.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "No + форма volver не задаёт приказ: vuelves (констатация) также грамматично. Указать отрицательное повелительное к tú.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q029",
@@ -197,9 +254,18 @@
     },
     {
       "id": "q032",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "2026-11-04: удалено готовое правило infinitivo вместо gerundio; ошибочный вариант уточнён до Vuelve a lloviendo, чтобы исключить чтение volver как возвращаться.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "fixed",
+        "note": "Удалено готовое правило о gerundio/infinitivo; Vuelve a lloviendo делает ошибку однозначной.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q033",
@@ -234,14 +300,29 @@
     {
       "id": "q038",
       "decision": "fixed",
-      "note": "Исправлены или уточнены поля: prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "note": "Не задано время dejar: dejamos/dejábamos/dejaremos подходят. Указать presente.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "Не задано время dejar: dejamos/dejábamos/dejaremos подходят. Указать presente.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q039",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "dejar — исходный глагол, форма tú dejas не дана."
+      }
     },
     {
       "id": "q040",
@@ -263,9 +344,18 @@
     },
     {
       "id": "q043",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "2026-11-04: удалена готовая правка gerundio вместо infinitivo; два других ошибочных distractors сделаны правильными, чтобы сохранить единственный ключ b в общем поиске ошибки.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "fixed",
+        "note": "Удалена готовая правка; остальные distractors сделаны грамматичными, чтобы поиск ошибки имел единственный ключ b.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q044",
@@ -299,15 +389,30 @@
     },
     {
       "id": "q049",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Acaba и acabó de llover hace un minuto допустимы; указать presente.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "Acaba и acabó de llover hace un minuto допустимы; указать presente.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q050",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "volver — лемма, форму tú vuelves нужно образовать."
+      }
     },
     {
       "id": "q051",
@@ -366,14 +471,32 @@
     {
       "id": "q060",
       "decision": "fixed",
-      "note": "Исправлены или уточнены поля: prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "note": "Sigo и seguí preparando после уже отправленной заявки допустимы; указать presente.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "Sigo и seguí preparando после уже отправленной заявки допустимы; указать presente.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q061",
       "decision": "fixed",
-      "note": "Исправлены или уточнены поля: prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "note": "Vuelvo и volveré a repetir подходят; указать presente.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "Vuelvo и volveré a repetir подходят; указать presente.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q062",
@@ -391,7 +514,13 @@
       "id": "q064",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Недавность задаёт значение перифразы, правильная связка acabar de не приведена."
+      }
     },
     {
       "id": "q065",
@@ -411,7 +540,35 @@
       "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
       "result": "pass",
       "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    },
+    {
+      "command": "python3 logs/complaints/parenthetical-audit-20261104/worker-1-validate.py",
+      "result": "pass",
+      "evidence": "2026-11-04 narrow parentheses audit: identity/order/bindings and untouched questions preserved; source/final/embedded exact; official isolated chapter assembly/validation or training validate_question and signature checks passed. See worker-1-evidence/validation.json."
     }
   ],
-  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+  "verification_note": "2026-11-04 parenthetical-hints audit: changed questions awaiting independent verification. Historical verification applies only to unchanged questions.",
+  "parentheses_audit_verification": {
+    "verifier": "parentheses_3",
+    "verified_at": "2026-11-04T09:44:02.337656+00:00",
+    "verification": "ok",
+    "scope": "narrow_parentheses_audit_changed_questions",
+    "question_ids": [
+      "q004",
+      "q006",
+      "q016",
+      "q027",
+      "q028",
+      "q032",
+      "q038",
+      "q043",
+      "q049",
+      "q060",
+      "q061"
+    ],
+    "evidence": [
+      "docs/grammar-review/batches/2026-11-04-parenthetical-hints/independent-worker-1.json"
+    ],
+    "note": "Независимо прочитаны все вопросы изменённого источника; подтверждены изменённые вопросы узкого аудита. Advisory вне selected не сертифицированы. Фазы общего обзора и source/context hashes не изменялись."
+  }
 }

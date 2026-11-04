@@ -19,7 +19,13 @@
       "id": "q2",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "I нужно преобразовать в притяжательное My."
+      }
     },
     {
       "id": "q5",
@@ -115,7 +121,13 @@
       "id": "q38",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Русское «то» задаёт дальнее указание, английская форма не дана."
+      }
     },
     {
       "id": "q39",
@@ -139,7 +151,13 @@
       "id": "q42",
       "decision": "fixed",
       "note": "Уточнены ближнее указание, время и состав диалога; правильные альтернативы не объявляются ошибками.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Ближнее указание и русский смысл задают контекст; This не дан."
+      }
     },
     {
       "id": "q44",
@@ -157,7 +175,13 @@
       "id": "q46",
       "decision": "fixed",
       "note": "Уточнены ближнее указание, время и состав диалога; правильные альтернативы не объявляются ошибками.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Контекст знакомства задаёт смысл this; английский ответ не повторён."
+      }
     },
     {
       "id": "q47",
@@ -193,7 +217,13 @@
       "id": "q58",
       "decision": "fixed",
       "note": "Уточнены ближнее указание, время и состав диалога; правильные альтернативы не объявляются ошибками.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "be требует are по they."
+      }
     }
   ],
   "checks": [

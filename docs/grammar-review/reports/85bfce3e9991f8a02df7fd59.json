@@ -1,11 +1,11 @@
 {
   "version": 1,
   "source": "courses/spanish-grammar/chapters/127.es.grammar.subjunctive_time_purpose_relative.para_que_fin_de_que_sin_que/03-questions.json",
-  "source_sha256": "01bdaaa0c36ac3e588e6e13cfe1dedcd1a0eaa98d473e7237a4d7a5302b5ace0",
+  "source_sha256": "291513292130656a25fac78238a88515ccf592c9f0ddf19fda497ad457eab52a",
   "context_sha256": "7f18aa5f4a4f5679f2ba39d4028750850d512b5da586a0e6386c4a4dda7e7cf1",
   "editor": "Codex editor 2026-09-06",
   "verifier": "Anton Filatov (user)",
-  "phase": "done",
+  "phase": "awaiting_verification",
   "reviewed_at": "2026-09-05T23:19:57.034034Z",
   "verified_at": "2026-09-06T17:58:18.569986Z",
   "questions": [
@@ -36,8 +36,17 @@
     {
       "id": "q5",
       "decision": "fixed",
-      "note": "Исправлены или уточнены поля: prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "note": "Скобки содержали готовый ключ para. Вместо него дан русский смысл цели, чтобы ученик сам построил para que.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "fixed",
+        "note": "Скобки содержали готовый ключ para. Вместо него дан русский смысл цели, чтобы ученик сам построил para que.",
+        "verifier": "parentheses_2",
+        "verified_at": "2026-11-04T09:40:29.033435+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q6",
@@ -79,13 +88,25 @@
       "id": "q12",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Лексема или инфинитив задаёт материал для выбора грамматической формы по контексту; допустимое совпадение с начальной формой само по себе не отменяет этот выбор."
+      }
     },
     {
       "id": "q13",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Лексема или инфинитив задаёт материал для выбора грамматической формы по контексту; допустимое совпадение с начальной формой само по себе не отменяет этот выбор."
+      }
     },
     {
       "id": "q14",
@@ -102,8 +123,17 @@
     {
       "id": "q16",
       "decision": "fixed",
-      "note": "Исправлены или уточнены поля: prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "note": "В скобках был указан готовый ключ. Вместо прямого указания испанского слова дан смысл цели или несостоявшегося действия на русском; грамматическую связку нужно подобрать самостоятельно.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "fixed",
+        "note": "В скобках был указан готовый ключ. Вместо прямого указания испанского слова дан смысл цели или несостоявшегося действия на русском; грамматическую связку нужно подобрать самостоятельно.",
+        "verifier": "parentheses_2",
+        "verified_at": "2026-11-04T09:40:29.033435+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q17",
@@ -145,7 +175,13 @@
       "id": "q23",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Лексема или инфинитив задаёт материал для выбора грамматической формы по контексту; допустимое совпадение с начальной формой само по себе не отменяет этот выбор."
+      }
     },
     {
       "id": "q24",
@@ -157,7 +193,13 @@
       "id": "q25",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Лексема или инфинитив задаёт материал для выбора грамматической формы по контексту; допустимое совпадение с начальной формой само по себе не отменяет этот выбор."
+      }
     },
     {
       "id": "q26",
@@ -173,9 +215,18 @@
     },
     {
       "id": "q28",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Независимая проверка: В слоте a ___ de que возможны fin и efectos (формальная цель); после удаления готового fin ключ стал не полностью единственным.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "Независимая проверка: В слоте a ___ de que возможны fin и efectos (формальная цель); после удаления готового fin ключ стал не полностью единственным.",
+        "verifier": "parentheses_2",
+        "verified_at": "2026-11-04T09:40:29.033435+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q29",
@@ -223,13 +274,25 @@
       "id": "q36",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Лексема или инфинитив задаёт материал для выбора грамматической формы по контексту; допустимое совпадение с начальной формой само по себе не отменяет этот выбор."
+      }
     },
     {
       "id": "q37",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Лексема или инфинитив задаёт материал для выбора грамматической формы по контексту; допустимое совпадение с начальной формой само по себе не отменяет этот выбор."
+      }
     },
     {
       "id": "q38",
@@ -246,8 +309,17 @@
     {
       "id": "q40",
       "decision": "fixed",
-      "note": "Исправлены или уточнены поля: prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "note": "В скобках был указан готовый ключ. Вместо прямого указания испанского слова дан смысл цели или несостоявшегося действия на русском; грамматическую связку нужно подобрать самостоятельно.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "fixed",
+        "note": "В скобках был указан готовый ключ. Вместо прямого указания испанского слова дан смысл цели или несостоявшегося действия на русском; грамматическую связку нужно подобрать самостоятельно.",
+        "verifier": "parentheses_2",
+        "verified_at": "2026-11-04T09:40:29.033435+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q41",
@@ -283,25 +355,55 @@
       "id": "q46",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: choices. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Лексема или инфинитив задаёт материал для выбора грамматической формы по контексту; допустимое совпадение с начальной формой само по себе не отменяет этот выбор."
+      }
     },
     {
       "id": "q47",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "В скобках был указан готовый ключ. Вместо прямого указания испанского слова дан смысл цели или несостоявшегося действия на русском; грамматическую связку нужно подобрать самостоятельно.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "fixed",
+        "note": "В скобках был указан готовый ключ. Вместо прямого указания испанского слова дан смысл цели или несостоявшегося действия на русском; грамматическую связку нужно подобрать самостоятельно.",
+        "verifier": "parentheses_2",
+        "verified_at": "2026-11-04T09:40:29.033435+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q48",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Координатор при чтении diff: после снятия слова «инфинитив» всё ещё повторялся готовый aprobar. Дана личная форма aprobé для преобразования после para.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "Координатор при чтении diff: после снятия слова «инфинитив» всё ещё повторялся готовый aprobar. Дана личная форма aprobé для преобразования после para.",
+        "verifier": "parentheses_2",
+        "verified_at": "2026-11-04T09:40:29.033435+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q49",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Лексема или инфинитив задаёт материал для выбора грамматической формы по контексту; допустимое совпадение с начальной формой само по себе не отменяет этот выбор."
+      }
     },
     {
       "id": "q50",
@@ -317,15 +419,30 @@
     },
     {
       "id": "q52",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Независимая проверка: После venir цель естественно выражается как Vengo temprano a ayudar и para ayudar; снятая подсказка para оставила два правильных предлога.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "Независимая проверка: После venir цель естественно выражается как Vengo temprano a ayudar и para ayudar; снятая подсказка para оставила два правильных предлога.",
+        "verifier": "parentheses_2",
+        "verified_at": "2026-11-04T09:40:29.033435+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q53",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Русский смысл/ситуация в скобках задаёт нужное значение, английский/испанский ответ не назван."
+      }
     },
     {
       "id": "q54",
@@ -390,8 +507,17 @@
     {
       "id": "q64",
       "decision": "fixed",
-      "note": "Исправлены или уточнены поля: prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "note": "В скобках был указан готовый ключ. Вместо прямого указания испанского слова дан смысл цели или несостоявшегося действия на русском; грамматическую связку нужно подобрать самостоятельно.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "fixed",
+        "note": "В скобках был указан готовый ключ. Вместо прямого указания испанского слова дан смысл цели или несостоявшегося действия на русском; грамматическую связку нужно подобрать самостоятельно.",
+        "verifier": "parentheses_2",
+        "verified_at": "2026-11-04T09:40:29.033435+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q65",
@@ -435,7 +561,38 @@
       "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
       "result": "pass",
       "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    },
+    {
+      "command": "python3 logs/complaints/parenthetical-audit-20261104/worker-3-validate.py",
+      "result": "pass",
+      "evidence": "1549 selected decisions complete; 5921 objects compared with baseline, 5836 untouched; IDs/order/type/difficulty/theory/choice IDs preserved; source/final/embedded and signatures checked. Evidence: logs/complaints/parenthetical-audit-20261104/worker-3-validation.json."
+    },
+    {
+      "command": "Unchanged owning validate-chapter.sh and AJV draft2020 on isolated baseline/current final copies (worker-3-validate.py)",
+      "result": "pass",
+      "evidence": "Chapter validator exits 0 before and after. AJV passes both versions."
     }
   ],
-  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+  "verification_note": "Parenthetical-hints audit 2026-11-04: changed questions await independent verification; prior unrelated decisions retained.",
+  "parentheses_audit_verification": {
+    "verifier": "parentheses_2",
+    "verified_at": "2026-11-04T09:40:29.033435+00:00",
+    "verification": "ok",
+    "scope": "narrow_parentheses_audit_changed_questions",
+    "question_ids": [
+      "q5",
+      "q16",
+      "q28",
+      "q40",
+      "q47",
+      "q48",
+      "q52",
+      "q64"
+    ],
+    "evidence": [
+      "docs/grammar-review/batches/2026-11-04-parenthetical-hints/independent-worker-3.json",
+      "docs/grammar-review/batches/2026-11-04-parenthetical-hints/independent-worker-3-extension.json"
+    ],
+    "note": "Независимая проверка изменённых вопросов узкого аудита подсказок; out_of_scope не сертифицированы. Фазы общего обзора и source/context hashes не изменялись."
+  }
 }

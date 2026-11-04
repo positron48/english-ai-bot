@@ -19,13 +19,25 @@
       "id": "q2",
       "decision": "fixed",
       "note": "Удалена подсказка V3; требуется применить правило в конструкции has.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "eat — лемма; eaten нужно выбрать после has."
+      }
     },
     {
       "id": "q3",
       "decision": "fixed",
       "note": "Удалена подсказка V3; проверяется пассивная рамка was written.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "write — лемма; written нужно выбрать в пассиве."
+      }
     },
     {
       "id": "q4",
@@ -67,7 +79,13 @@
       "id": "q10",
       "decision": "ok",
       "note": "V2 глагола eat — ate, ключ и пример верны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "V2 задаёт категорию Past Simple, ate не написано."
+      }
     }
   ],
   "checks": [

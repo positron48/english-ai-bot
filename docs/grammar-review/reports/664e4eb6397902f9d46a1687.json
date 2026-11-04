@@ -19,7 +19,13 @@
       "id": "q2",
       "decision": "fixed",
       "note": "Область qu уточнена обычными словами, исправлен пример qui.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки уточняют смысл, формат, регистр или термин, не сообщая готовый грамматический ответ."
+      }
     },
     {
       "id": "q3",

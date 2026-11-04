@@ -1,0 +1,1354 @@
+{
+  "workers": [
+    {
+      "worker": "worker-1",
+      "expected": 1137,
+      "saved": 1137,
+      "missing": 0,
+      "decisions": {
+        "ok": 1009,
+        "fixed": 128
+      }
+    },
+    {
+      "worker": "worker-2",
+      "expected": 1549,
+      "saved": 1549,
+      "missing": 0,
+      "decisions": {
+        "ok": 1372,
+        "fixed": 177
+      }
+    },
+    {
+      "worker": "worker-3",
+      "expected": 1549,
+      "saved": 1549,
+      "missing": 0,
+      "decisions": {
+        "ok": 1336,
+        "fixed": 213
+      }
+    },
+    {
+      "worker": "worker-4",
+      "expected": 412,
+      "saved": 412,
+      "missing": 0,
+      "decisions": {
+        "ok": 352,
+        "fixed": 60
+      }
+    }
+  ],
+  "changed_sources": 121,
+  "changed_questions": 579,
+  "changes": [
+    {
+      "source": "courses/english-grammar/chapters/028.en.grammar.now_present_continuous_contrast.form_am_is_are/03-questions.json",
+      "ids": [
+        "q57"
+      ],
+      "worker": "worker-1"
+    },
+    {
+      "source": "courses/english-grammar/chapters/036.en.grammar.past_1_past_simple.irregular_verbs_how_to/03-questions.json",
+      "ids": [
+        "q18",
+        "q30"
+      ],
+      "worker": "worker-1"
+    },
+    {
+      "source": "courses/english-grammar/chapters/038.en.grammar.past_1_past_simple.negatives_didn_t_v1/03-questions.json",
+      "ids": [
+        "q18",
+        "q27",
+        "q32"
+      ],
+      "worker": "worker-1"
+    },
+    {
+      "source": "courses/english-grammar/chapters/050.en.grammar.future_plans.time_clauses_when_after/03-questions.json",
+      "ids": [
+        "q2",
+        "q12",
+        "q14",
+        "q19",
+        "q23",
+        "q31",
+        "q43",
+        "q47",
+        "q50",
+        "q55",
+        "q60",
+        "q62",
+        "q66",
+        "q71"
+      ],
+      "worker": "worker-1"
+    },
+    {
+      "source": "courses/english-grammar/chapters/057.en.grammar.core_modality_ability_permission.may_might_probability/03-questions.json",
+      "ids": [
+        "q2",
+        "q9",
+        "q14",
+        "q23",
+        "q42",
+        "q51",
+        "q54",
+        "q57",
+        "q62",
+        "q66",
+        "q70"
+      ],
+      "worker": "worker-1"
+    },
+    {
+      "source": "courses/english-grammar/chapters/080.en.grammar.prepositions_verb_patterns.phrasal_verbs_as_grammar/03-questions.json",
+      "ids": [
+        "q1",
+        "q12",
+        "q13",
+        "q17",
+        "q21",
+        "q25",
+        "q29",
+        "q30",
+        "q33",
+        "q36",
+        "q49",
+        "q57",
+        "q60",
+        "q61",
+        "q72"
+      ],
+      "worker": "worker-1"
+    },
+    {
+      "source": "courses/english-grammar/chapters/083.en.grammar.complex_sentences_1_connecting.because_so_although_but/03-questions.json",
+      "ids": [
+        "q2",
+        "q6",
+        "q10",
+        "q30",
+        "q38",
+        "q42",
+        "q46",
+        "q54",
+        "q58",
+        "q70",
+        "q72"
+      ],
+      "worker": "worker-1"
+    },
+    {
+      "source": "courses/english-grammar/chapters/092.en.grammar.perfect_aspect_experience_result.experience_have_you_ever/03-questions.json",
+      "ids": [
+        "q14",
+        "q64"
+      ],
+      "worker": "worker-1"
+    },
+    {
+      "source": "courses/english-grammar/chapters/097.en.grammar.perfect_aspect_experience_result.build_speak_biography_experience/03-questions.json",
+      "ids": [
+        "q14",
+        "q18",
+        "q30",
+        "q58",
+        "q70"
+      ],
+      "worker": "worker-1"
+    },
+    {
+      "source": "courses/english-grammar/chapters/127.en.grammar.information_structure_style.ellipsis_substitution_so_neither/03-questions.json",
+      "ids": [
+        "q38",
+        "q60"
+      ],
+      "worker": "worker-1"
+    },
+    {
+      "source": "courses/english-grammar/chapters/129.en.grammar.information_structure_style.formal_vs_informal_contractions/03-questions.json",
+      "ids": [
+        "q2",
+        "q3",
+        "q22",
+        "q26",
+        "q31",
+        "q36",
+        "q38",
+        "q50",
+        "q55",
+        "q60"
+      ],
+      "worker": "worker-1"
+    },
+    {
+      "source": "courses/english-grammar/training_pack/chapters/036/en.02.b2_theory_patterns_over_memorization.questions.json",
+      "ids": [
+        "q3"
+      ],
+      "worker": "worker-1"
+    },
+    {
+      "source": "courses/english-grammar/training_pack/chapters/068/en.02.b2_size_age_color.questions.json",
+      "ids": [
+        "q2",
+        "q3",
+        "q7"
+      ],
+      "worker": "worker-1"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/003.es.grammar.orientation_alphabet_sounds.stress_rules_written_accents/03-questions.json",
+      "ids": [
+        "q37"
+      ],
+      "worker": "worker-1"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/006.es.grammar.orientation_alphabet_sounds.build_read_decode_words_read_mini_sentences_aloud/03-questions.json",
+      "ids": [
+        "q29",
+        "q58"
+      ],
+      "worker": "worker-1"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/021.es.grammar.existence_location_possession.estar_location_temporary_states/03-questions.json",
+      "ids": [
+        "q55",
+        "q56"
+      ],
+      "worker": "worker-1"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/081.es.grammar.prepositions_verb_patterns.personal_object_marking/03-questions.json",
+      "ids": [
+        "q11",
+        "q30",
+        "q52",
+        "q64"
+      ],
+      "worker": "worker-1"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/086.es.grammar.prepositions_verb_patterns.adjective_plus_preposition_patterns_contento_con_parecido_lleno/03-questions.json",
+      "ids": [
+        "q9",
+        "q14",
+        "q26",
+        "q31",
+        "q35"
+      ],
+      "worker": "worker-1"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/088.es.grammar.pronouns_direct_indirect.direct_object_pronouns_lo_la_los_las/03-questions.json",
+      "ids": [
+        "q27",
+        "q67"
+      ],
+      "worker": "worker-1"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/090.es.grammar.pronouns_direct_indirect.placement_rules_before_verb_attached_after/03-questions.json",
+      "ids": [
+        "q1",
+        "q28",
+        "q31",
+        "q61"
+      ],
+      "worker": "worker-1"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/091.es.grammar.pronouns_direct_indirect.double_pronouns_me_lo_se_lo_te_la/03-questions.json",
+      "ids": [
+        "q3",
+        "q10",
+        "q26",
+        "q60",
+        "q65"
+      ],
+      "worker": "worker-1"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/092.es.grammar.pronouns_direct_indirect.le_lo_la_baseline_norm_learners_should_treat/03-questions.json",
+      "ids": [
+        "q63"
+      ],
+      "worker": "worker-1"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/098.es.grammar.se_system_pronominal_verbs.ser_estar_contrast_result_state_participles/03-questions.json",
+      "ids": [
+        "q098_b3_06",
+        "q098_b6_09"
+      ],
+      "worker": "worker-1"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/108.es.grammar.non_finite_forms_periphrases.gerundio_ongoing_action_manner_do/03-questions.json",
+      "ids": [
+        "q039",
+        "q049",
+        "q050"
+      ],
+      "worker": "worker-1"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/110.es.grammar.non_finite_forms_periphrases.periphrases_change_process_seguir_plus_gerundio_acabar_de/03-questions.json",
+      "ids": [
+        "q004",
+        "q006",
+        "q016",
+        "q027",
+        "q028",
+        "q032",
+        "q038",
+        "q043",
+        "q049",
+        "q060",
+        "q061"
+      ],
+      "worker": "worker-1"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/111.es.grammar.non_finite_forms_periphrases.soler_llevar_plus_gerundio_terminar_por_aspect_nuance/03-questions.json",
+      "ids": [
+        "q005",
+        "q006",
+        "q027",
+        "q060"
+      ],
+      "worker": "worker-1"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/118.es.grammar.subjunctive_noun_clauses.form_present_subjunctive/03-questions.json",
+      "ids": [
+        "q18",
+        "q28"
+      ],
+      "worker": "worker-1"
+    },
+    {
+      "source": "courses/english-grammar/chapters/016.en.grammar.talking_about_things_nouns.possessive_s_anna_s/03-questions.json",
+      "ids": [
+        "q30"
+      ],
+      "worker": "worker-2"
+    },
+    {
+      "source": "courses/english-grammar/chapters/033.en.grammar.now_present_continuous_contrast.build_speak_what_s/03-questions.json",
+      "ids": [
+        "q2",
+        "q9",
+        "q30"
+      ],
+      "worker": "worker-2"
+    },
+    {
+      "source": "courses/english-grammar/chapters/044.en.grammar.past_2_background_process.when_while_as_in/03-questions.json",
+      "ids": [
+        "q3",
+        "q16",
+        "q36",
+        "q46",
+        "q59"
+      ],
+      "worker": "worker-2"
+    },
+    {
+      "source": "courses/english-grammar/chapters/047.en.grammar.future_plans.will_instant_decisions_promises/03-questions.json",
+      "ids": [
+        "q38",
+        "q50",
+        "q66"
+      ],
+      "worker": "worker-2"
+    },
+    {
+      "source": "courses/english-grammar/chapters/048.en.grammar.future_plans.be_going_to_intention/03-questions.json",
+      "ids": [
+        "q2"
+      ],
+      "worker": "worker-2"
+    },
+    {
+      "source": "courses/english-grammar/chapters/054.en.grammar.core_modality_ability_permission.must_vs_have_to/03-questions.json",
+      "ids": [
+        "q2",
+        "q7",
+        "q11",
+        "q31",
+        "q35",
+        "q55"
+      ],
+      "worker": "worker-2"
+    },
+    {
+      "source": "courses/english-grammar/chapters/058.en.grammar.core_modality_ability_permission.build_speak_house_work/03-questions.json",
+      "ids": [
+        "q2",
+        "q6",
+        "q9",
+        "q14",
+        "q17",
+        "q21",
+        "q26",
+        "q35",
+        "q50",
+        "q62"
+      ],
+      "worker": "worker-2"
+    },
+    {
+      "source": "courses/english-grammar/chapters/063.en.grammar.noun_system_upgrade_countability.zero_article_plurals_abstract/03-questions.json",
+      "ids": [
+        "q2",
+        "q5",
+        "q6",
+        "q9",
+        "q12",
+        "q16",
+        "q24",
+        "q32",
+        "q39",
+        "q42",
+        "q46",
+        "q49",
+        "q52",
+        "q54",
+        "q59"
+      ],
+      "worker": "worker-2"
+    },
+    {
+      "source": "courses/english-grammar/chapters/118.en.grammar.non_finite_forms_deep.build_write_a_short/03-questions.json",
+      "ids": [
+        "q5",
+        "q9",
+        "q27",
+        "q31",
+        "q35",
+        "q42",
+        "q46",
+        "q51",
+        "q54",
+        "q58"
+      ],
+      "worker": "worker-2"
+    },
+    {
+      "source": "courses/english-grammar/chapters/119.en.grammar.reported_speech_meaning_transfer.reported_statements_say_tell/03-questions.json",
+      "ids": [
+        "q38",
+        "q47",
+        "q58"
+      ],
+      "worker": "worker-2"
+    },
+    {
+      "source": "courses/english-grammar/chapters/125.en.grammar.information_structure_style.inversion_never_have_i/03-questions.json",
+      "ids": [
+        "q2",
+        "q7",
+        "q11",
+        "q16",
+        "q26",
+        "q31",
+        "q36",
+        "q50",
+        "q55",
+        "q60"
+      ],
+      "worker": "worker-2"
+    },
+    {
+      "source": "courses/english-grammar/training_pack/chapters/088/en.04.b4_theory_whose_possession.questions.json",
+      "ids": [
+        "q4"
+      ],
+      "worker": "worker-2"
+    },
+    {
+      "source": "courses/english-grammar/training_pack/chapters/109/en.04.b4_theory_word_order.questions.json",
+      "ids": [
+        "q3"
+      ],
+      "worker": "worker-2"
+    },
+    {
+      "source": "courses/english-grammar/training_pack/chapters/115/en.01.b1_theory_overview.questions.json",
+      "ids": [
+        "q6",
+        "q10"
+      ],
+      "worker": "worker-2"
+    },
+    {
+      "source": "courses/english-grammar/training_pack/chapters/119/en.01.b1_theory_overview.questions.json",
+      "ids": [
+        "q2"
+      ],
+      "worker": "worker-2"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/008.es.grammar.noun_gender_articles_agreement.singular_plural_s_es_common_spelling_changes/03-questions.json",
+      "ids": [
+        "q38"
+      ],
+      "worker": "worker-2"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/009.es.grammar.noun_gender_articles_agreement.definite_indefinite_articles_el_la_los_las_un/03-questions.json",
+      "ids": [
+        "q33"
+      ],
+      "worker": "worker-2"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/042.es.grammar.present_irregulars_reflexives_gustar.build_speak_i_usually_do_happening_now/03-questions.json",
+      "ids": [
+        "q042_b4_10"
+      ],
+      "worker": "worker-2"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/053.es.grammar.past_preterito_indefinido.sequencing_events_simple_story/03-questions.json",
+      "ids": [
+        "q053_b2_03",
+        "q053_b5_03",
+        "q053_b5_04"
+      ],
+      "worker": "worker-2"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/079.es.grammar.noun_phrase_upgrade_precision.neuter_lo_lo_bueno_lo_importante/03-questions.json",
+      "ids": [
+        "q2",
+        "q7",
+        "q13",
+        "q18",
+        "q32",
+        "q35",
+        "q40",
+        "q43",
+        "q46",
+        "q51",
+        "q62",
+        "q65"
+      ],
+      "worker": "worker-2"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/089.es.grammar.pronouns_direct_indirect.indirect_object_pronouns_le_les_recipient_meaning/03-questions.json",
+      "ids": [
+        "q44",
+        "q60",
+        "q64"
+      ],
+      "worker": "worker-2"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/093.es.grammar.pronouns_direct_indirect.build_speak_giving_showing_buying_telling/03-questions.json",
+      "ids": [
+        "q4",
+        "q29",
+        "q35",
+        "q61"
+      ],
+      "worker": "worker-2"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/095.es.grammar.se_system_pronominal_verbs.pronominal_verbs_that_change_meaning_ir_irse_quedar/03-questions.json",
+      "ids": [
+        "q095_b6_05"
+      ],
+      "worker": "worker-2"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/099.es.grammar.se_system_pronominal_verbs.build_write_everyday_incidents_rules_short_news_items/03-questions.json",
+      "ids": [
+        "q099_b2_08",
+        "q099_b3_06",
+        "q099_b4_04"
+      ],
+      "worker": "worker-2"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/112.es.grammar.non_finite_forms_periphrases.build_speak_routines_progress_interruption_change/03-questions.json",
+      "ids": [
+        "q005",
+        "q006",
+        "q007",
+        "q008",
+        "q016",
+        "q018",
+        "q019",
+        "q027",
+        "q028",
+        "q029",
+        "q030",
+        "q038",
+        "q039",
+        "q040",
+        "q041",
+        "q052",
+        "q061",
+        "q062"
+      ],
+      "worker": "worker-2"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/114.es.grammar.compound_tenses_narration.future_perfect_conditional_perfect/03-questions.json",
+      "ids": [
+        "q57"
+      ],
+      "worker": "worker-2"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/117.es.grammar.compound_tenses_narration.build_write_biography_flashback_cause_effect_chains/03-questions.json",
+      "ids": [
+        "q5",
+        "q27",
+        "q53",
+        "q65"
+      ],
+      "worker": "worker-2"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/119.es.grammar.subjunctive_noun_clauses.desire_influence_quiero_que_necesito_que/03-questions.json",
+      "ids": [
+        "q29",
+        "q44",
+        "q52"
+      ],
+      "worker": "worker-2"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/128.es.grammar.subjunctive_time_purpose_relative.antes_de_que_despues_de_que_subject_change/03-questions.json",
+      "ids": [
+        "q28",
+        "q42",
+        "q43"
+      ],
+      "worker": "worker-2"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/132.es.grammar.subjunctive_time_purpose_relative.build_write_plans_warnings_requirements_search_criteria/03-questions.json",
+      "ids": [
+        "q132_b1_cloze",
+        "q132_b5_cloze",
+        "q132_b1_fill",
+        "q132_b2_fill",
+        "q132_b3_fill",
+        "q132_b4_fill",
+        "q132_b5_fill",
+        "q132_b6_fill"
+      ],
+      "worker": "worker-2"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/134.es.grammar.subjunctive_past_counterfactuals.sequence_tenses_after_past_reporting_verbs/03-questions.json",
+      "ids": [
+        "q134_b1_prod",
+        "q134_b2_mcq_m",
+        "q134_b2_prod",
+        "q134_b3_prod",
+        "q134_b4_prod",
+        "q134_b5_prod"
+      ],
+      "worker": "worker-2"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/141.es.grammar.voice_reported_speech_distancing.se_passive_impersonal_se_generic_statements/03-questions.json",
+      "ids": [
+        "q141_b1_f1",
+        "q141_b1_f2",
+        "q141_b2_m1",
+        "q141_b2_f1",
+        "q141_b2_f2",
+        "q141_b3_f1",
+        "q141_b4_f1",
+        "q141_b4_f2",
+        "q141_b5_f1",
+        "q141_b6_m2",
+        "q141_b6_f1"
+      ],
+      "worker": "worker-2"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/142.es.grammar.voice_reported_speech_distancing.reported_statements_questions_mechanical_backshift/03-questions.json",
+      "ids": [
+        "q142_b4_f1",
+        "q142_b5_f1"
+      ],
+      "worker": "worker-2"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/144.es.grammar.voice_reported_speech_distancing.evidential_distancing_expressions_al_parecer_segun_se_dice/03-questions.json",
+      "ids": [
+        "q144_b1_f1",
+        "q144_b1_f2",
+        "q144_b2_f2",
+        "q144_b3_f1",
+        "q144_b3_f2",
+        "q144_b3_r2",
+        "q144_b5_f2",
+        "q144_b6_f1"
+      ],
+      "worker": "worker-2"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/147.es.grammar.c1_style_discourse_register.information_structure_word_order_moves_why/03-questions.json",
+      "ids": [
+        "q147_b1_f1",
+        "q147_b1_f2",
+        "q147_b2_f1",
+        "q147_b2_f2",
+        "q147_b3_f1",
+        "q147_b3_f2",
+        "q147_b4_f1",
+        "q147_b4_f2",
+        "q147_b5_f1",
+        "q147_b5_f2",
+        "q147_b5_r1",
+        "q147_b6_f1",
+        "q147_b6_f2"
+      ],
+      "worker": "worker-2"
+    },
+    {
+      "source": "courses/english-grammar/chapters/005.en.grammar.first_sentences_be_as.statements_with_be_identity/03-questions.json",
+      "ids": [
+        "q49"
+      ],
+      "worker": "worker-3"
+    },
+    {
+      "source": "courses/english-grammar/chapters/010.en.grammar.first_sentences_be_as.adjectives_after_be_she/03-questions.json",
+      "ids": [
+        "q6",
+        "q10",
+        "q12",
+        "q16",
+        "q20",
+        "q22",
+        "q26",
+        "q30",
+        "q32",
+        "q36"
+      ],
+      "worker": "worker-3"
+    },
+    {
+      "source": "courses/english-grammar/chapters/026.en.grammar.first_actions_present_simple.imperatives_open_don_t/03-questions.json",
+      "ids": [
+        "q3",
+        "q7",
+        "q11",
+        "q13",
+        "q17",
+        "q21",
+        "q23",
+        "q26",
+        "q28",
+        "q62",
+        "q66",
+        "q73"
+      ],
+      "worker": "worker-3"
+    },
+    {
+      "source": "courses/english-grammar/chapters/031.en.grammar.now_present_continuous_contrast.stative_verbs_know_like/03-questions.json",
+      "ids": [
+        "q4",
+        "q13",
+        "q18",
+        "q34",
+        "q35",
+        "q40",
+        "q48",
+        "q51",
+        "q57"
+      ],
+      "worker": "worker-3"
+    },
+    {
+      "source": "courses/english-grammar/chapters/046.en.grammar.past_2_background_process.build_speak_a_story/03-questions.json",
+      "ids": [
+        "q8",
+        "q44"
+      ],
+      "worker": "worker-3"
+    },
+    {
+      "source": "courses/english-grammar/chapters/051.en.grammar.future_plans.build_speak_weekend_plans/03-questions.json",
+      "ids": [
+        "q2",
+        "q24",
+        "q26",
+        "q31",
+        "q36",
+        "q50"
+      ],
+      "worker": "worker-3"
+    },
+    {
+      "source": "courses/english-grammar/chapters/056.en.grammar.core_modality_ability_permission.should_advice_expectation/03-questions.json",
+      "ids": [
+        "q39",
+        "q46",
+        "q57",
+        "q66"
+      ],
+      "worker": "worker-3"
+    },
+    {
+      "source": "courses/english-grammar/chapters/059.en.grammar.noun_system_upgrade_countability.countable_vs_uncountable/03-questions.json",
+      "ids": [
+        "q6",
+        "q26",
+        "q42"
+      ],
+      "worker": "worker-3"
+    },
+    {
+      "source": "courses/english-grammar/chapters/069.en.grammar.describing_precisely_adjectives_adverbs.comparatives_superlatives_irregulars/03-questions.json",
+      "ids": [
+        "q7",
+        "q36",
+        "q38"
+      ],
+      "worker": "worker-3"
+    },
+    {
+      "source": "courses/english-grammar/chapters/081.en.grammar.prepositions_verb_patterns.build_speak_directions_location/03-questions.json",
+      "ids": [
+        "q10",
+        "q14",
+        "q22",
+        "q30",
+        "q34",
+        "q42",
+        "q62"
+      ],
+      "worker": "worker-3"
+    },
+    {
+      "source": "courses/english-grammar/chapters/102.en.grammar.voice_focus_passive_and.causative_have_get_something/03-questions.json",
+      "ids": [
+        "q3",
+        "q7",
+        "q36"
+      ],
+      "worker": "worker-3"
+    },
+    {
+      "source": "courses/english-grammar/chapters/105.en.grammar.conditionals_hypotheticals.zero_conditional/03-questions.json",
+      "ids": [
+        "q8",
+        "q13",
+        "q23",
+        "q26",
+        "q28",
+        "q31",
+        "q38",
+        "q45",
+        "q47",
+        "q49",
+        "q57",
+        "q59"
+      ],
+      "worker": "worker-3"
+    },
+    {
+      "source": "courses/english-grammar/chapters/110.en.grammar.conditionals_hypotheticals.unless_provided_as_long/03-questions.json",
+      "ids": [
+        "q15",
+        "q18",
+        "q26",
+        "q39",
+        "q54"
+      ],
+      "worker": "worker-3"
+    },
+    {
+      "source": "courses/english-grammar/chapters/113.en.grammar.non_finite_forms_deep.gerund_vs_infinitive_basic/03-questions.json",
+      "ids": [
+        "q10",
+        "q18",
+        "q40",
+        "q45"
+      ],
+      "worker": "worker-3"
+    },
+    {
+      "source": "courses/english-grammar/training_pack/chapters/074/en.02.b2_descriptive_language.questions.json",
+      "ids": [
+        "q1",
+        "q2",
+        "q3",
+        "q4",
+        "q5",
+        "q6",
+        "q7",
+        "q8",
+        "q9",
+        "q10"
+      ],
+      "worker": "worker-3"
+    },
+    {
+      "source": "courses/english-grammar/training_pack/chapters/074/en.05.b5_recommendation.questions.json",
+      "ids": [
+        "q6"
+      ],
+      "worker": "worker-3"
+    },
+    {
+      "source": "courses/english-grammar/training_pack/chapters/098/en.04.b4_theory_be_tense_agreement.questions.json",
+      "ids": [
+        "q1",
+        "q2",
+        "q3",
+        "q4",
+        "q8",
+        "q10"
+      ],
+      "worker": "worker-3"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/025.es.grammar.existence_location_possession.possessives_mi_tu_su_nuestro_de_plus_noun/03-questions.json",
+      "ids": [
+        "q68"
+      ],
+      "worker": "worker-3"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/046.es.grammar.past_preterito_perfecto.markers_ya_todavia_no_alguna_vez_nunca_esta/03-questions.json",
+      "ids": [
+        "q046_b1_08",
+        "q046_b3_02",
+        "q046_b6_07",
+        "q046_b6_08",
+        "q046_b6_09"
+      ],
+      "worker": "worker-3"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/056.es.grammar.past_imperfecto_contrast.imperfecto_forms_three_main_irregulars/03-questions.json",
+      "ids": [
+        "q056_b3_03",
+        "q056_b4_05"
+      ],
+      "worker": "worker-3"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/073.es.grammar.noun_phrase_upgrade_precision.mucho_poco_bastante_demasiado_suficiente/03-questions.json",
+      "ids": [
+        "q16",
+        "q24",
+        "q35",
+        "q44"
+      ],
+      "worker": "worker-3"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/080.es.grammar.noun_phrase_upgrade_precision.build_speak_compare_cities_people_habits_options/03-questions.json",
+      "ids": [
+        "q51",
+        "q56",
+        "q67"
+      ],
+      "worker": "worker-3"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/082.es.grammar.prepositions_verb_patterns.core_prepositions_de_en_con_sin_sobre/03-questions.json",
+      "ids": [
+        "q57",
+        "q69"
+      ],
+      "worker": "worker-3"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/085.es.grammar.prepositions_verb_patterns.verb_plus_preposition_patterns_pensar_en_depender_de/03-questions.json",
+      "ids": [
+        "q4",
+        "q13",
+        "q55"
+      ],
+      "worker": "worker-3"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/096.es.grammar.se_system_pronominal_verbs.accidental_se_se_me_cayo_se_nos_olvido/03-questions.json",
+      "ids": [
+        "q096_b1_06"
+      ],
+      "worker": "worker-3"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/104.es.grammar.complex_sentences_connecting.relative_clauses_que_quien_donde_cuyo_starter_use/03-questions.json",
+      "ids": [
+        "q65"
+      ],
+      "worker": "worker-3"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/105.es.grammar.complex_sentences_connecting.indirect_questions_no_se_que_me_puedes_decir/03-questions.json",
+      "ids": [
+        "q1",
+        "q20",
+        "q21",
+        "q32",
+        "q39",
+        "q53",
+        "q56"
+      ],
+      "worker": "worker-3"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/106.es.grammar.complex_sentences_connecting.build_write_120_180_word_text_connectors_relative/03-questions.json",
+      "ids": [
+        "q008",
+        "q015",
+        "q041",
+        "q047",
+        "q055"
+      ],
+      "worker": "worker-3"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/107.es.grammar.non_finite_forms_periphrases.infinitive_after_prepositions_conjunctions/03-questions.json",
+      "ids": [
+        "q005",
+        "q006",
+        "q017",
+        "q028",
+        "q049",
+        "q050",
+        "q060",
+        "q061"
+      ],
+      "worker": "worker-3"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/116.es.grammar.compound_tenses_narration.timeline_control_perfecto_indefinido_imperfecto_pluscuamperfecto/03-questions.json",
+      "ids": [
+        "q6",
+        "q14",
+        "q23",
+        "q40",
+        "q54",
+        "q65"
+      ],
+      "worker": "worker-3"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/122.es.grammar.subjunctive_noun_clauses.impersonal_expressions_triggers_certainty/03-questions.json",
+      "ids": [
+        "q6",
+        "q47"
+      ],
+      "worker": "worker-3"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/124.es.grammar.subjunctive_noun_clauses.indicative_subjunctive_decision_rules_noun_clauses/03-questions.json",
+      "ids": [
+        "q39",
+        "q61"
+      ],
+      "worker": "worker-3"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/127.es.grammar.subjunctive_time_purpose_relative.para_que_fin_de_que_sin_que/03-questions.json",
+      "ids": [
+        "q5",
+        "q16",
+        "q28",
+        "q40",
+        "q47",
+        "q48",
+        "q52",
+        "q64"
+      ],
+      "worker": "worker-3"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/136.es.grammar.subjunctive_past_counterfactuals.perfect_subjunctive_haya_hecho/03-questions.json",
+      "ids": [
+        "q136_b1_cloze",
+        "q136_b1_fill",
+        "q136_b2_mcq_m",
+        "q136_b4_fill",
+        "q136_b5_cloze",
+        "q136_b5_fill",
+        "q136_b6_fill"
+      ],
+      "worker": "worker-3"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/139.es.grammar.subjunctive_past_counterfactuals.build_speak_regrets_hypotheticals_alternative_histories/03-questions.json",
+      "ids": [
+        "q139_b1_fill_1",
+        "q139_b2_fill_1",
+        "q139_b2_fill_2",
+        "q139_b3_fill_1",
+        "q139_b3_fill_2",
+        "q139_b4_fill_1",
+        "q139_b4_fill_2",
+        "q139_b5_fill_1",
+        "q139_b5_fill_2",
+        "q139_b6_fill_1",
+        "q139_b6_fill_2"
+      ],
+      "worker": "worker-3"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/145.es.grammar.voice_reported_speech_distancing.build_write_news_reports_formal_summaries/03-questions.json",
+      "ids": [
+        "q145_b1_f1",
+        "q145_b1_f2",
+        "q145_b2_f1",
+        "q145_b2_f2",
+        "q145_b3_f1",
+        "q145_b4_f1",
+        "q145_b4_f2",
+        "q145_b5_f1",
+        "q145_b5_f2",
+        "q145_b6_f1",
+        "q145_b6_f2"
+      ],
+      "worker": "worker-3"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/146.es.grammar.c1_style_discourse_register.discourse_markers_argument_sin_embargo_de_hecho_en/03-questions.json",
+      "ids": [
+        "q146_b1_f1",
+        "q146_b1_f2",
+        "q146_b3_f2",
+        "q146_b4_f1",
+        "q146_b5_f2",
+        "q146_b6_f2"
+      ],
+      "worker": "worker-3"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/148.es.grammar.c1_style_discourse_register.focus_emphasis_strategies_spanish/03-questions.json",
+      "ids": [
+        "q148_b1_f1",
+        "q148_b1_f2",
+        "q148_b1_t1",
+        "q148_b2_f1",
+        "q148_b2_f2",
+        "q148_b3_f1",
+        "q148_b3_f2",
+        "q148_b4_f2",
+        "q148_b5_f1",
+        "q148_b5_f2",
+        "q148_b6_f1"
+      ],
+      "worker": "worker-3"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/149.es.grammar.c1_style_discourse_register.nominalization_dense_academic_professional_style/03-questions.json",
+      "ids": [
+        "q149_b2_m3",
+        "q149_b3_r4",
+        "q149_b5_m3"
+      ],
+      "worker": "worker-3"
+    },
+    {
+      "source": "courses/spanish-grammar/training_pack/chapters/032/es.03.b3_theory_frequency_a_veces.questions.json",
+      "ids": [
+        "q7"
+      ],
+      "worker": "worker-3"
+    },
+    {
+      "source": "courses/spanish-grammar/training_pack/chapters/046/es.02.b2_theory_pp_marker_ya_scope_word_order_a2.questions.json",
+      "ids": [
+        "q5",
+        "q7",
+        "q9"
+      ],
+      "worker": "worker-3"
+    },
+    {
+      "source": "courses/spanish-grammar/training_pack/chapters/056/es.06.b6_theory_ru_traps_imperfecto_three_irregulars.questions.json",
+      "ids": [
+        "q12",
+        "q14"
+      ],
+      "worker": "worker-3"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/120.es.grammar.subjunctive_noun_clauses.emotion_evaluation_me_alegra_que_es_bueno_que/03-questions.json",
+      "ids": [
+        "q10",
+        "q52"
+      ],
+      "worker": "worker-4"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/123.es.grammar.subjunctive_noun_clauses.negative_commands_polite_commands_subjunctive/03-questions.json",
+      "ids": [
+        "q59"
+      ],
+      "worker": "worker-4"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/125.es.grammar.subjunctive_noun_clauses.build_speak_wishes_recommendations_emotions_opinions/03-questions.json",
+      "ids": [
+        "q1",
+        "q14"
+      ],
+      "worker": "worker-4"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/129.es.grammar.subjunctive_time_purpose_relative.aunque_por_mas_que_como_si_meaning_mood/03-questions.json",
+      "ids": [
+        "q129_b5_cloze",
+        "q129_b3_prod",
+        "q129_b4_prod",
+        "q129_b6_prod",
+        "q129_b2_prod",
+        "q129_b5_prod2"
+      ],
+      "worker": "worker-4"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/130.es.grammar.subjunctive_time_purpose_relative.relative_clauses_known_unknown_hypothetical_reference/03-questions.json",
+      "ids": [
+        "q130_b1_prod",
+        "q130_b2_prod",
+        "q130_b3_prod",
+        "q130_b4_prod",
+        "q130_b5_prod",
+        "q130_b6_prod",
+        "q130_b5_prod2"
+      ],
+      "worker": "worker-4"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/133.es.grammar.subjunctive_past_counterfactuals.imperfect_subjunctive_forms_ra_se/03-questions.json",
+      "ids": [
+        "q133_b4_cloze",
+        "q133_b1_tf",
+        "q133_b6_tf",
+        "q133_b1_prod",
+        "q133_b2_prod",
+        "q133_b3_prod",
+        "q133_b4_prod"
+      ],
+      "worker": "worker-4"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/135.es.grammar.subjunctive_past_counterfactuals.si_plus_imperfect_subjunctive_plus_conditional/03-questions.json",
+      "ids": [
+        "q135_b5_transform"
+      ],
+      "worker": "worker-4"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/138.es.grammar.subjunctive_past_counterfactuals.third_conditional_mixed_counterfactuals/03-questions.json",
+      "ids": [
+        "q138_b2_fill_1",
+        "q138_b4_fill_2",
+        "q138_b6_fill_2"
+      ],
+      "worker": "worker-4"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/140.es.grammar.voice_reported_speech_distancing.passive_ser_agent_phrases/03-questions.json",
+      "ids": [
+        "q140_b6_f2"
+      ],
+      "worker": "worker-4"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/150.es.grammar.c1_style_discourse_register.hedging_stance_precision_quiza_al_parecer_es_probable/03-questions.json",
+      "ids": [
+        "q150_b4_m3",
+        "q150_b6_m2"
+      ],
+      "worker": "worker-4"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/151.es.grammar.c1_style_discourse_register.formal_informal_tone_email_interview_essay_debate/03-questions.json",
+      "ids": [
+        "q151_b4_m2",
+        "q151_b5_r4"
+      ],
+      "worker": "worker-4"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/152.es.grammar.c1_style_discourse_register.build_rewrite_neutral_formal_spoken_written_direct_tactful/03-questions.json",
+      "ids": [
+        "q152_b2_m3",
+        "q152_b3_m3",
+        "q152_b4_r4",
+        "q152_b5_m3"
+      ],
+      "worker": "worker-4"
+    },
+    {
+      "source": "courses/spanish-grammar/training_pack/chapters/003/es.01.b1_theory_stressed_syllable.questions.json",
+      "ids": [
+        "q6",
+        "q13",
+        "q17",
+        "q18"
+      ],
+      "worker": "worker-4"
+    },
+    {
+      "source": "courses/spanish-grammar/training_pack/chapters/003/es.05.b5_theory_esdrujulas_always_accented.questions.json",
+      "ids": [
+        "q8",
+        "q12",
+        "q13"
+      ],
+      "worker": "worker-4"
+    },
+    {
+      "source": "courses/spanish-grammar/training_pack/chapters/049/es.02.b2_theory_regular_ar_endings_indefinido_a2.questions.json",
+      "ids": [
+        "q4",
+        "q5"
+      ],
+      "worker": "worker-4"
+    },
+    {
+      "source": "courses/spanish-grammar/training_pack/chapters/054/es.02.b2_theory_high_frequency_forms.questions.json",
+      "ids": [
+        "q10",
+        "q11",
+        "q12",
+        "q13",
+        "q14",
+        "q15",
+        "q19"
+      ],
+      "worker": "worker-4"
+    },
+    {
+      "source": "courses/spanish-grammar/training_pack/chapters/077/es.02.b2_theory_generic_reference_without_article.questions.json",
+      "ids": [
+        "q2",
+        "q3",
+        "q4",
+        "q6",
+        "q7",
+        "q9"
+      ],
+      "worker": "worker-4"
+    }
+  ],
+  "errors": []
+}

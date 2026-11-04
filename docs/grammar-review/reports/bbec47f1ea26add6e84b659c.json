@@ -25,13 +25,25 @@
       "id": "q3",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают исходный глагол/лицо/время, референта местоимения или смысл высказывания. Прямые ключи, готовый грамматический разбор и соседний неполный шаблон исправлены отдельно."
+      }
     },
     {
       "id": "q4",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают исходный глагол/лицо/время, референта местоимения или смысл высказывания. Прямые ключи, готовый грамматический разбор и соседний неполный шаблон исправлены отдельно."
+      }
     },
     {
       "id": "q5",
@@ -79,13 +91,25 @@
       "id": "q12",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают исходный глагол/лицо/время, референта местоимения или смысл высказывания. Прямые ключи, готовый грамматический разбор и соседний неполный шаблон исправлены отдельно."
+      }
     },
     {
       "id": "q13",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают исходный глагол/лицо/время, референта местоимения или смысл высказывания. Прямые ключи, готовый грамматический разбор и соседний неполный шаблон исправлены отдельно."
+      }
     },
     {
       "id": "q14",
@@ -139,13 +163,25 @@
       "id": "q22",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают исходный глагол/лицо/время, референта местоимения или смысл высказывания. Прямые ключи, готовый грамматический разбор и соседний неполный шаблон исправлены отдельно."
+      }
     },
     {
       "id": "q23",
       "decision": "fixed",
       "note": "Устранена неоднозначность между indefinido и imperfecto.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают исходный глагол/лицо/время, референта местоимения или смысл высказывания. Прямые ключи, готовый грамматический разбор и соседний неполный шаблон исправлены отдельно."
+      }
     },
     {
       "id": "q24",
@@ -199,13 +235,25 @@
       "id": "q32",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают исходный глагол/лицо/время, референта местоимения или смысл высказывания. Прямые ключи, готовый грамматический разбор и соседний неполный шаблон исправлены отдельно."
+      }
     },
     {
       "id": "q33",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают исходный глагол/лицо/время, референта местоимения или смысл высказывания. Прямые ключи, готовый грамматический разбор и соседний неполный шаблон исправлены отдельно."
+      }
     },
     {
       "id": "q34",
@@ -259,13 +307,25 @@
       "id": "q42",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают исходный глагол/лицо/время, референта местоимения или смысл высказывания. Прямые ключи, готовый грамматический разбор и соседний неполный шаблон исправлены отдельно."
+      }
     },
     {
       "id": "q43",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают исходный глагол/лицо/время, референта местоимения или смысл высказывания. Прямые ключи, готовый грамматический разбор и соседний неполный шаблон исправлены отдельно."
+      }
     },
     {
       "id": "q44",
@@ -331,13 +391,25 @@
       "id": "q54",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают исходный глагол/лицо/время, референта местоимения или смысл высказывания. Прямые ключи, готовый грамматический разбор и соседний неполный шаблон исправлены отдельно."
+      }
     },
     {
       "id": "q55",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают исходный глагол/лицо/время, референта местоимения или смысл высказывания. Прямые ключи, готовый грамматический разбор и соседний неполный шаблон исправлены отдельно."
+      }
     },
     {
       "id": "q56",
@@ -375,6 +447,11 @@
       "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
       "result": "pass",
       "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    },
+    {
+      "command": "python3 logs/complaints/parenthetical-audit-20261104/worker-2-validate.py",
+      "result": "pass",
+      "evidence": "Parentheses audit 2026-11-04, worker-2: exact identity/order/type/difficulty/theory bindings, unmodified objects and prior report decisions preserved against assigned baseline; logs/complaints/parenthetical-audit-20261104/worker-2-evidence/preservation-and-validators.json. Narrow audit only, not renewed whole-file editorial verification."
     }
   ],
   "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."

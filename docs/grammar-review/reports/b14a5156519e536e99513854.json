@@ -1,11 +1,11 @@
 {
   "version": 1,
   "source": "courses/english-grammar/chapters/119.en.grammar.reported_speech_meaning_transfer.reported_statements_say_tell/03-questions.json",
-  "source_sha256": "8abec71a046b1f04208103c500e159e7d29e62473d623dc46210adfc88cd9ce5",
+  "source_sha256": "c732e4c0c616922d093ec71dc5ccf67f571911be03d06d0a2dbfb720f0e5498c",
   "context_sha256": "739c90a3618c1d2cde6f1b68f11d48acb93081ef391ef31922d7732e492c7cca",
   "editor": "Codex editor 2026-09-06",
   "verifier": "Anton Filatov (user)",
-  "phase": "done",
+  "phase": "awaiting_verification",
   "reviewed_at": "2026-09-05T22:43:19.936971Z",
   "verified_at": "2026-09-06T17:58:18.569986Z",
   "questions": [
@@ -25,7 +25,13 @@
       "id": "q3",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках русский смысл, исходный глагол или название грамматической категории; готовая форма не сообщается. Выявленные механические подсказки исправлены отдельно."
+      }
     },
     {
       "id": "q4",
@@ -61,7 +67,13 @@
       "id": "q10",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках русский смысл, исходный глагол или название грамматической категории; готовая форма не сообщается. Выявленные механические подсказки исправлены отдельно."
+      }
     },
     {
       "id": "q11",
@@ -91,7 +103,13 @@
       "id": "q15",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках русский смысл, исходный глагол или название грамматической категории; готовая форма не сообщается. Выявленные механические подсказки исправлены отдельно."
+      }
     },
     {
       "id": "q16",
@@ -115,7 +133,13 @@
       "id": "q19",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках русский смысл, исходный глагол или название грамматической категории; готовая форма не сообщается. Выявленные механические подсказки исправлены отдельно."
+      }
     },
     {
       "id": "q20",
@@ -145,7 +169,13 @@
       "id": "q24",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках русский смысл, исходный глагол или название грамматической категории; готовая форма не сообщается. Выявленные механические подсказки исправлены отдельно."
+      }
     },
     {
       "id": "q25",
@@ -169,7 +199,13 @@
       "id": "q28",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках русский смысл, исходный глагол или название грамматической категории; готовая форма не сообщается. Выявленные механические подсказки исправлены отдельно."
+      }
     },
     {
       "id": "q29",
@@ -187,7 +223,13 @@
       "id": "q31",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: correct_answer, explanation, prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках русский смысл, исходный глагол или название грамматической категории; готовая форма не сообщается. Выявленные механические подсказки исправлены отдельно."
+      }
     },
     {
       "id": "q32",
@@ -205,7 +247,13 @@
       "id": "q34",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках русский смысл, исходный глагол или название грамматической категории; готовая форма не сообщается. Выявленные механические подсказки исправлены отдельно."
+      }
     },
     {
       "id": "q35",
@@ -228,8 +276,17 @@
     {
       "id": "q38",
       "decision": "fixed",
-      "note": "Исправлены или уточнены поля: correct_answer, explanation, prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "note": "Независимая проверка: next/following были равно допустимы; задан набор слов с различным временным значением.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "Независимая проверка: next/following были равно допустимы; задан набор слов с различным временным значением.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q39",
@@ -276,8 +333,17 @@
     {
       "id": "q47",
       "decision": "fixed",
-      "note": "Исправлены или уточнены поля: explanation, prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "note": "Удалено готовое выражение the day before из скобок; преобразование временного указателя теперь требуется выполнить самостоятельно.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "fixed",
+        "note": "Удалено готовое выражение the day before из скобок; преобразование временного указателя теперь требуется выполнить самостоятельно.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q48",
@@ -335,9 +401,18 @@
     },
     {
       "id": "q58",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Независимая проверка: вместо перевода термина backshift и необоснованного объявления is ошибкой проверяется форма was в явно заданной прошедшей точке.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "Независимая проверка: вместо перевода термина backshift и необоснованного объявления is ошибкой проверяется форма was в явно заданной прошедшей точке.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q59",
@@ -357,7 +432,32 @@
       "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
       "result": "pass",
       "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    },
+    {
+      "command": "python3 logs/complaints/parenthetical-audit-20261104/worker-2-validate.py",
+      "result": "pass",
+      "evidence": "Parentheses audit 2026-11-04, worker-2: exact identity/order/type/difficulty/theory bindings, unmodified objects and prior report decisions preserved against assigned baseline; logs/complaints/parenthetical-audit-20261104/worker-2-evidence/preservation-and-validators.json. Narrow audit only, not renewed whole-file editorial verification."
+    },
+    {
+      "command": "python3 logs/complaints/parenthetical-audit-20261104/worker-2-validate.py [assigned courses/english-grammar/chapters/119.en.grammar.reported_speech_meaning_transfer.reported_statements_say_tell/03-questions.json]",
+      "result": "pass",
+      "evidence": "Stock chapter validator logic on baseline and final, with output artifact redirected to worker-2 evidence: 0 errors, 0 warnings, 0 suggestions in both. Source questions equal final question bank; final and embedded byte-identical. logs/complaints/parenthetical-audit-20261104/worker-2-evidence/preservation-and-validators.json"
     }
   ],
-  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось. Изменение q47 2026-11-04: проверка подсказок в скобках, независимая проверка ожидается.",
+  "parentheses_audit_verification": {
+    "verifier": "parentheses_3",
+    "verified_at": "2026-11-04T09:44:02.337656+00:00",
+    "verification": "ok",
+    "scope": "narrow_parentheses_audit_changed_questions",
+    "question_ids": [
+      "q38",
+      "q47",
+      "q58"
+    ],
+    "evidence": [
+      "docs/grammar-review/batches/2026-11-04-parenthetical-hints/independent-worker-2.json"
+    ],
+    "note": "Независимо прочитаны все вопросы изменённого источника; подтверждены изменённые вопросы узкого аудита. Advisory вне selected не сертифицированы. Фазы общего обзора и source/context hashes не изменялись."
+  }
 }

@@ -13,13 +13,25 @@
       "id": "q1",
       "decision": "fixed",
       "note": "Убраны номера групп как внешние опоры; уточнены разные формы и устранены два правильных ответа.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "V1=V2=V3 — определение проверяемого класса, put необходимо знать."
+      }
     },
     {
       "id": "q2",
       "decision": "fixed",
       "note": "Убраны номера групп как внешние опоры; уточнены разные формы и устранены два правильных ответа.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "V1-V2-V3 задаёт порядок проверяемого паттерна i-a-u, drink надо определить."
+      }
     },
     {
       "id": "q3",

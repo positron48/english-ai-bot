@@ -19,7 +19,13 @@
       "id": "q2",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "do требует does по she."
+      }
     },
     {
       "id": "q3",
@@ -49,7 +55,13 @@
       "id": "q7",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Русская лексема не пишет английское do; требуется усилительный вспомогательный."
+      }
     },
     {
       "id": "q8",
@@ -73,7 +85,13 @@
       "id": "q11",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Русская лексема задаёт вспомогательный глагол; английское do не дано."
+      }
     },
     {
       "id": "q12",
@@ -115,7 +133,13 @@
       "id": "q19",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "do требует did по прошлому контексту разговора."
+      }
     },
     {
       "id": "q20",
@@ -139,7 +163,13 @@
       "id": "q23",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "do требует did по yesterday."
+      }
     },
     {
       "id": "q24",
@@ -157,7 +187,13 @@
       "id": "q26",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "do требует does по he."
+      }
     },
     {
       "id": "q27",
@@ -181,7 +217,13 @@
       "id": "q30",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Русская лексема не даёт английского написания do; проверяется усиление утверждения."
+      }
     },
     {
       "id": "q31",
@@ -211,7 +253,13 @@
       "id": "q35",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "do требует does по she."
+      }
     },
     {
       "id": "q36",
@@ -265,7 +313,13 @@
       "id": "q47",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Русская лексема задаёт значение, английское do не напечатано."
+      }
     },
     {
       "id": "q48",
@@ -283,7 +337,13 @@
       "id": "q50",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Русская вежливая просьба задаёт усилительное Do, готового слова нет."
+      }
     },
     {
       "id": "q51",
@@ -307,7 +367,13 @@
       "id": "q54",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Русское пожалуйста задаёт коммуникативную функцию, Do не написано."
+      }
     },
     {
       "id": "q55",
@@ -331,7 +397,13 @@
       "id": "q58",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Русское пожалуйста задаёт усиление побуждения, английского Do нет."
+      }
     },
     {
       "id": "q59",

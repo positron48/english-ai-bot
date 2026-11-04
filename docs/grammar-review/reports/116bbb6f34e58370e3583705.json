@@ -19,7 +19,13 @@
       "id": "q2",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: explanation. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "В скобках задан инфинитив для преобразования, смысловая ситуация или форма обращения; готового ответа нет."
+      }
     },
     {
       "id": "q3",
@@ -37,13 +43,25 @@
       "id": "q5",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: correct_answer, explanation, prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "В скобках задан инфинитив для преобразования, смысловая ситуация или форма обращения; готового ответа нет."
+      }
     },
     {
       "id": "q6",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: explanation. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "В скобках задан инфинитив для преобразования, смысловая ситуация или форма обращения; готового ответа нет."
+      }
     },
     {
       "id": "q7",
@@ -61,7 +79,13 @@
       "id": "q9",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: explanation, prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "В скобках задан инфинитив для преобразования, смысловая ситуация или форма обращения; готового ответа нет."
+      }
     },
     {
       "id": "q10",

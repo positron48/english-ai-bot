@@ -1,11 +1,11 @@
 {
   "version": 1,
   "source": "courses/spanish-grammar/chapters/111.es.grammar.non_finite_forms_periphrases.soler_llevar_plus_gerundio_terminar_por_aspect_nuance/03-questions.json",
-  "source_sha256": "ab782727a0b7daf32712505735d7df77f2f089d2b48b44f7710e53112e153679",
+  "source_sha256": "826d02b4cfea32689068259a2e5237a8d22d54ebedb39927346e166587870691",
   "context_sha256": "3e6cb635c7ba658cc98559e6804f4bb952b3a8b6d9c3e0403b31270a2c010a15",
   "editor": "Codex editor 2026-09-06",
   "verifier": "Anton Filatov (user)",
-  "phase": "done",
+  "phase": "awaiting_verification",
   "reviewed_at": "2026-09-05T21:49:15.030382Z",
   "verified_at": "2026-09-06T17:58:18.569986Z",
   "questions": [
@@ -36,14 +36,32 @@
     {
       "id": "q005",
       "decision": "fixed",
-      "note": "Исправлены или уточнены поля: prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "note": "2026-11-04 adjacent_defect: вместо levantarse, уже выраженного после пропуска, указан действительно спрягаемый soler и настоящее время; ключ suelo теперь соответствует инструкции.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "fixed",
+        "note": "adjacent_defect: ошибочно указанный levantarse заменён леммой soler для проверяемого suelo; задано настоящее время.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q006",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Suelen и solían visitarnos подходят; указать presente.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "Suelen и solían visitarnos подходят; указать presente.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q007",
@@ -73,7 +91,13 @@
       "id": "q011",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "soler, yo, presente — параметры, не готовое Suelo."
+      }
     },
     {
       "id": "q012",
@@ -91,7 +115,13 @@
       "id": "q014",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "«Ты» задаёт лицо, смысл длительности требует выбрать перифразу самостоятельно."
+      }
     },
     {
       "id": "q015",
@@ -103,13 +133,25 @@
       "id": "q016",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "hacer — лемма, герундий haciendo нужно образовать."
+      }
     },
     {
       "id": "q017",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "esperar — исходная лемма, esperando не дано."
+      }
     },
     {
       "id": "q018",
@@ -167,15 +209,30 @@
     },
     {
       "id": "q027",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Terminó/termina/terminará por decir подходят; указать pretérito indefinido.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "Terminó/termina/terminará por decir подходят; указать pretérito indefinido.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q028",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "terminar и я задают лемму/лицо, terminé нужно образовать."
+      }
     },
     {
       "id": "q029",
@@ -205,7 +262,13 @@
       "id": "q033",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "terminar, él и indefinido — параметры спряжения, не ответ."
+      }
     },
     {
       "id": "q034",
@@ -235,13 +298,25 @@
       "id": "q038",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "soler и я — исходные параметры, Suelo нужно образовать."
+      }
     },
     {
       "id": "q039",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "leer — лемма, неправильный герундий leyendo не дан."
+      }
     },
     {
       "id": "q040",
@@ -271,7 +346,13 @@
       "id": "q044",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "soler, yo и presente — параметры спряжения, Suelo не дано."
+      }
     },
     {
       "id": "q045",
@@ -301,13 +382,25 @@
       "id": "q049",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "llevar и я — исходная лемма/лицо, llevo нужно образовать."
+      }
     },
     {
       "id": "q050",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "llevar и я не раскрывают готовую форму llevo."
+      }
     },
     {
       "id": "q051",
@@ -337,7 +430,13 @@
       "id": "q055",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "acabar, presente и безличность задают категории, форму Acaba нужно образовать."
+      }
     },
     {
       "id": "q056",
@@ -365,15 +464,30 @@
     },
     {
       "id": "q060",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "2026-11-04 adjacent_defect: исправлено несогласованное levantarmе на levantarnos при nosotros/Solemos; сохранены цель спряжения и ключ.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "fixed",
+        "note": "adjacent_defect: levantarmе исправлено на levantarnos для согласования с nosotros/Solemos; задано настоящее время.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q061",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "esperar — лемма, герундий esperando не дан."
+      }
     },
     {
       "id": "q062",
@@ -411,7 +525,28 @@
       "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
       "result": "pass",
       "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    },
+    {
+      "command": "python3 logs/complaints/parenthetical-audit-20261104/worker-1-validate.py",
+      "result": "pass",
+      "evidence": "2026-11-04 narrow parentheses audit: identity/order/bindings and untouched questions preserved; source/final/embedded exact; official isolated chapter assembly/validation or training validate_question and signature checks passed. See worker-1-evidence/validation.json."
     }
   ],
-  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+  "verification_note": "2026-11-04 parenthetical-hints audit: changed questions awaiting independent verification. Historical verification applies only to unchanged questions.",
+  "parentheses_audit_verification": {
+    "verifier": "parentheses_3",
+    "verified_at": "2026-11-04T09:44:02.337656+00:00",
+    "verification": "ok",
+    "scope": "narrow_parentheses_audit_changed_questions",
+    "question_ids": [
+      "q005",
+      "q006",
+      "q027",
+      "q060"
+    ],
+    "evidence": [
+      "docs/grammar-review/batches/2026-11-04-parenthetical-hints/independent-worker-1.json"
+    ],
+    "note": "Независимо прочитаны все вопросы изменённого источника; подтверждены изменённые вопросы узкого аудита. Advisory вне selected не сертифицированы. Фазы общего обзора и source/context hashes не изменялись."
+  }
 }

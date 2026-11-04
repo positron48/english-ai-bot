@@ -19,7 +19,13 @@
       "id": "q2",
       "decision": "fixed",
       "note": "Исправлены переходность die, допустимость tieing или название требуемой формы.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Русский перевод различает лемму die; dying нужно образовать."
+      }
     },
     {
       "id": "q3",
@@ -67,7 +73,13 @@
       "id": "q10",
       "decision": "fixed",
       "note": "Уточнено значение die и дан контекст растения; устранено совпадение signature с q5.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Русский перевод задаёт смысл die; форма dying не раскрыта."
+      }
     }
   ],
   "checks": [

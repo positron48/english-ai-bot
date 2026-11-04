@@ -1,11 +1,11 @@
 {
   "version": 1,
   "source": "courses/english-grammar/chapters/127.en.grammar.information_structure_style.ellipsis_substitution_so_neither/03-questions.json",
-  "source_sha256": "d79c3e09bed985f61de2c3d85d1c2df79e1314e24435298a5d9a7696aa6677bc",
+  "source_sha256": "296378a1b65b8267d9cf760eaf5b3e28b30f7eceacf3815a422c43304314e2e2",
   "context_sha256": "c98eea40c8afda66866ed08b7f5fd7b4cd5d7a7a85fae0ad469d8eb67d6e8844",
   "editor": "Codex editor 2026-09-06",
   "verifier": "Anton Filatov (user)",
-  "phase": "done",
+  "phase": "awaiting_verification",
   "reviewed_at": "2026-09-05T23:33:34.484734Z",
   "verified_at": "2026-09-06T17:58:18.569986Z",
   "questions": [
@@ -19,7 +19,13 @@
       "id": "q2",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "do требует did в отрицательном согласии по прошлому."
+      }
     },
     {
       "id": "q3",
@@ -49,7 +55,13 @@
       "id": "q7",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Модальный — категория, can нужно восстановить из согласия; повтор относится к самой теме ellipsis."
+      }
     },
     {
       "id": "q8",
@@ -73,7 +85,13 @@
       "id": "q11",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Будущее задаёт временную категорию will; готовый ответ не дан в скобках."
+      }
     },
     {
       "id": "q12",
@@ -91,7 +109,13 @@
       "id": "q14",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "do требует did по прошлому контрасту."
+      }
     },
     {
       "id": "q15",
@@ -121,7 +145,13 @@
       "id": "q19",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "do требует did в эллиптическом ответе."
+      }
     },
     {
       "id": "q20",
@@ -139,7 +169,13 @@
       "id": "q22",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Категория глагола не раскрывает do по we."
+      }
     },
     {
       "id": "q23",
@@ -163,7 +199,13 @@
       "id": "q26",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: explanation, prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Подтверждение задаёт функцию конструкции, do не назван."
+      }
     },
     {
       "id": "q27",
@@ -193,7 +235,13 @@
       "id": "q31",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: explanation, prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Подтверждение задаёт функцию конструкции, do не назван."
+      }
     },
     {
       "id": "q32",
@@ -223,7 +271,13 @@
       "id": "q36",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: explanation, prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Категория глагола не раскрывает do в согласии."
+      }
     },
     {
       "id": "q37",
@@ -233,9 +287,18 @@
     },
     {
       "id": "q38",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Независимая проверка: явно сохранено множественное число заменяемой группы, чтобы исключить one при выборе одного предмета.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "Независимая проверка: явно сохранено множественное число заменяемой группы, чтобы исключить one при выборе одного предмета.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q40",
@@ -277,7 +340,13 @@
       "id": "q48",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Замена — категория; one требуется по singular jacket."
+      }
     },
     {
       "id": "q49",
@@ -289,7 +358,13 @@
       "id": "q50",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "be требует am по I."
+      }
     },
     {
       "id": "q51",
@@ -319,7 +394,13 @@
       "id": "q55",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Замена — категория; ones требуется по these/those."
+      }
     },
     {
       "id": "q56",
@@ -347,9 +428,18 @@
     },
     {
       "id": "q60",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Независимая проверка: явно сохранено множественное число заменяемой группы, чтобы исключить one при выборе одного предмета.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "Независимая проверка: явно сохранено множественное число заменяемой группы, чтобы исключить one при выборе одного предмета.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     }
   ],
   "checks": [
@@ -357,7 +447,26 @@
       "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
       "result": "pass",
       "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    },
+    {
+      "command": "python3 logs/complaints/parenthetical-audit-20261104/worker-1-validate.py",
+      "result": "pass",
+      "evidence": "2026-11-04 narrow parentheses audit: identity/order/bindings and untouched questions preserved; source/final/embedded exact; official isolated chapter assembly/validation or training validate_question and signature checks passed. See worker-1-evidence/validation.json."
     }
   ],
-  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+  "verification_note": "2026-11-04 parenthetical-hints audit: changed questions awaiting independent verification. Historical verification applies only to unchanged questions.",
+  "parentheses_audit_verification": {
+    "verifier": "parentheses_3",
+    "verified_at": "2026-11-04T09:44:02.337656+00:00",
+    "verification": "ok",
+    "scope": "narrow_parentheses_audit_changed_questions",
+    "question_ids": [
+      "q38",
+      "q60"
+    ],
+    "evidence": [
+      "docs/grammar-review/batches/2026-11-04-parenthetical-hints/independent-worker-1.json"
+    ],
+    "note": "Независимо прочитаны все вопросы изменённого источника; подтверждены изменённые вопросы узкого аудита. Advisory вне selected не сертифицированы. Фазы общего обзора и source/context hashes не изменялись."
+  }
 }

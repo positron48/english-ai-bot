@@ -1,11 +1,11 @@
 {
   "version": 1,
   "source": "courses/spanish-grammar/chapters/129.es.grammar.subjunctive_time_purpose_relative.aunque_por_mas_que_como_si_meaning_mood/03-questions.json",
-  "source_sha256": "9a67ec38bb2917f1be540d900bfb94955ae11fcb51537ef891294ee01377345d",
+  "source_sha256": "ff92d9347eadea950588e5343ebadba16036aeb19d76a9335385dcbbe74c310d",
   "context_sha256": "9bc4934ac580940a9255edd164e7168623f38a5454607f6911516d4ea9d65b5d",
   "editor": "Codex editor 2026-09-06",
   "verifier": "Anton Filatov (user)",
-  "phase": "done",
+  "phase": "awaiting_verification",
   "reviewed_at": "2026-09-05T23:43:35.850772Z",
   "verified_at": "2026-09-06T17:58:18.569986Z",
   "questions": [
@@ -37,7 +37,13 @@
       "id": "q129_b2_mcq_m",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают лемму, лицо, временной/смысловой контекст; целевая форма либо сочетание выбирается самостоятельно, готовый ключ не указан."
+      }
     },
     {
       "id": "q129_b2_mcq_h",
@@ -49,7 +55,13 @@
       "id": "q129_b3_mcq_e",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают лемму, лицо, временной/смысловой контекст; целевая форма либо сочетание выбирается самостоятельно, готовый ключ не указан."
+      }
     },
     {
       "id": "q129_b3_mcq_m",
@@ -85,7 +97,13 @@
       "id": "q129_b5_mcq_e",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают лемму, лицо, временной/смысловой контекст; целевая форма либо сочетание выбирается самостоятельно, готовый ключ не указан."
+      }
     },
     {
       "id": "q129_b5_mcq_m",
@@ -121,37 +139,76 @@
       "id": "q129_b1_cloze",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: explanation. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают лемму, лицо, временной/смысловой контекст; целевая форма либо сочетание выбирается самостоятельно, готовый ключ не указан."
+      }
     },
     {
       "id": "q129_b2_cloze",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают лемму, лицо, временной/смысловой контекст; целевая форма либо сочетание выбирается самостоятельно, готовый ключ не указан."
+      }
     },
     {
       "id": "q129_b3_cloze",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают лемму, лицо, временной/смысловой контекст; целевая форма либо сочетание выбирается самостоятельно, готовый ключ не указан."
+      }
     },
     {
       "id": "q129_b4_cloze",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают лемму, лицо, временной/смысловой контекст; целевая форма либо сочетание выбирается самостоятельно, готовый ключ не указан."
+      }
     },
     {
       "id": "q129_b5_cloze",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Независимая проверка: явно ограничен выбор словами банка и вариантом на -ra, чтобы исключить равно нормативные -se при единственном ключе; личная форма conocer согласована с me mira.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "Независимая проверка: явно ограничен выбор словами банка и вариантом на -ra, чтобы исключить равно нормативные -se при единственном ключе; личная форма conocer согласована с me mira.",
+        "verifier": "parentheses_1",
+        "verified_at": "2026-11-04T09:19:42.825635+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q129_b6_cloze",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают лемму, лицо, временной/смысловой контекст; целевая форма либо сочетание выбирается самостоятельно, готовый ключ не указан."
+      }
     },
     {
       "id": "q129_b1_err",
@@ -247,7 +304,13 @@
       "id": "q129_b2_transform",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Наклонение задаёт требуемое преобразование исходной фразы; форма estás не дана."
+      }
     },
     {
       "id": "q129_b3_transform",
@@ -317,39 +380,90 @@
     },
     {
       "id": "q129_b3_prod",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "В дополнительной подсказке убрано готовое Seguiremos; вместо него задана грамматическая задача futuro simple от seguir.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "fixed",
+        "note": "В дополнительной подсказке убрано готовое Seguiremos; вместо него задана грамматическая задача futuro simple от seguir.",
+        "verifier": "parentheses_1",
+        "verified_at": "2026-11-04T09:19:42.825635+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q129_b4_prod",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Убрана готовая и к тому же неверная для tú форма corra из hints; теперь требуется самостоятельно образовать subjuntivo для адресата.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "fixed",
+        "note": "Убрана готовая и к тому же неверная для tú форма corra из hints; теперь требуется самостоятельно образовать subjuntivo для адресата.",
+        "verifier": "parentheses_1",
+        "verified_at": "2026-11-04T09:19:42.825635+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q129_b5_prod",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Лемма, лицо и смысл факта/поиска задают исходные данные; формы и порядок слов нужно выбрать самостоятельно. Перечни альтернатив не выделяют готовый ответ."
+      }
     },
     {
       "id": "q129_b6_prod",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Убраны готовые fuera/fuese из hints; для второй фразы задано только время и наклонение ser.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "fixed",
+        "note": "Убраны готовые fuera/fuese из hints; для второй фразы задано только время и наклонение ser.",
+        "verifier": "parentheses_1",
+        "verified_at": "2026-11-04T09:19:42.825635+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q129_b2_prod",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Убрана готовая форма estás и отвергнутая estés из hints; сохраняется смысл усталости как установленного факта.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "fixed",
+        "note": "Убрана готовая форма estás и отвергнутая estés из hints; сохраняется смысл усталости как установленного факта.",
+        "verifier": "parentheses_1",
+        "verified_at": "2026-11-04T09:19:42.825635+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q129_b5_prod2",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Убрана готовая форма hubiera vivido из hints; указана только временная связь и целевая категория.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "fixed",
+        "note": "Убрана готовая форма hubiera vivido из hints; указана только временная связь и целевая категория.",
+        "verifier": "parentheses_1",
+        "verified_at": "2026-11-04T09:19:42.825635+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q129_b3_reorder2",
@@ -377,5 +491,85 @@
       "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
     }
   ],
-  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось.",
+  "parentheses_audit_verification": {
+    "scope": "Narrow parenthetical answer-leakage audit and correctness of edits; not completion of the full grammar review campaign.",
+    "editor": "coordinator",
+    "verifier": "parentheses_1",
+    "verified_at": "2026-11-04T09:19:42.825635+00:00",
+    "verification": "ok",
+    "read_question_ids": [
+      "q129_b1_mcq_e",
+      "q129_b1_mcq_m",
+      "q129_b1_mcq_h",
+      "q129_b2_mcq_e",
+      "q129_b2_mcq_m",
+      "q129_b2_mcq_h",
+      "q129_b3_mcq_e",
+      "q129_b3_mcq_m",
+      "q129_b3_mcq_h",
+      "q129_b4_mcq_e",
+      "q129_b4_mcq_m",
+      "q129_b4_mcq_h",
+      "q129_b5_mcq_e",
+      "q129_b5_mcq_m",
+      "q129_b5_mcq_h",
+      "q129_b6_mcq_e",
+      "q129_b6_mcq_m",
+      "q129_b6_mcq_h",
+      "q129_b1_cloze",
+      "q129_b2_cloze",
+      "q129_b3_cloze",
+      "q129_b4_cloze",
+      "q129_b5_cloze",
+      "q129_b6_cloze",
+      "q129_b1_err",
+      "q129_b2_err",
+      "q129_b3_err",
+      "q129_b4_err",
+      "q129_b5_err",
+      "q129_b6_err",
+      "q129_b1_err2",
+      "q129_b4_err2",
+      "q129_b1_reorder",
+      "q129_b2_reorder",
+      "q129_b3_reorder",
+      "q129_b4_reorder",
+      "q129_b5_reorder",
+      "q129_b6_reorder",
+      "q129_b1_transform",
+      "q129_b2_transform",
+      "q129_b3_transform",
+      "q129_b4_transform",
+      "q129_b5_transform",
+      "q129_b6_transform",
+      "q129_b1_explain",
+      "q129_b2_explain",
+      "q129_b3_explain",
+      "q129_b4_explain",
+      "q129_b5_explain",
+      "q129_b6_explain",
+      "q129_b1_prod",
+      "q129_b3_prod",
+      "q129_b4_prod",
+      "q129_b5_prod",
+      "q129_b6_prod",
+      "q129_b2_prod",
+      "q129_b5_prod2",
+      "q129_b3_reorder2",
+      "q129_b5_reorder2",
+      "q129_b4_transform2"
+    ],
+    "accepted_changed_ids": [
+      "q129_b5_cloze",
+      "q129_b3_prod",
+      "q129_b4_prod",
+      "q129_b6_prod",
+      "q129_b2_prod",
+      "q129_b5_prod2"
+    ],
+    "evidence": "logs/complaints/parenthetical-audit-20261104/independent-worker-4.json",
+    "out_of_scope_ids": [],
+    "note": "All questions in this changed source were read with context. Pre-existing findings outside selected_ids remain separately recorded in independent evidence; historical full-review metadata and source/context fingerprints are preserved."
+  }
 }

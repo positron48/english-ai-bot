@@ -61,7 +61,13 @@
       "id": "q9",
       "decision": "fixed",
       "note": "Русская инструкция и конкретный пропуск вместо служебного испанского термина.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Пометы задают тип условного предложения, исходную форму/звук, русский смысл или формат ввода. Нормальная неизменяемость lunes во множественном числе сохранена как грамматическая цель; прямые ключи исправлены отдельно."
+      }
     },
     {
       "id": "q10",
@@ -121,7 +127,13 @@
       "id": "q19",
       "decision": "fixed",
       "note": "Русская инструкция и конкретный пропуск вместо служебного термина.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Пометы задают тип условного предложения, исходную форму/звук, русский смысл или формат ввода. Нормальная неизменяемость lunes во множественном числе сохранена как грамматическая цель; прямые ключи исправлены отдельно."
+      }
     },
     {
       "id": "q20",
@@ -175,13 +187,25 @@
       "id": "q28",
       "decision": "fixed",
       "note": "Русская фраза дополняется русским ответом; не требуется угадать испанский термин.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Пометы задают тип условного предложения, исходную форму/звук, русский смысл или формат ввода. Нормальная неизменяемость lunes во множественном числе сохранена как грамматическая цель; прямые ключи исправлены отдельно."
+      }
     },
     {
       "id": "q29",
       "decision": "fixed",
       "note": "Неопределённый испанский термин заменён конкретным открывающим знаком.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Пометы задают тип условного предложения, исходную форму/звук, русский смысл или формат ввода. Нормальная неизменяемость lunes во множественном числе сохранена как грамматическая цель; прямые ключи исправлены отдельно."
+      }
     },
     {
       "id": "q30",
@@ -355,13 +379,25 @@
       "id": "q58",
       "decision": "fixed",
       "note": "Убран неопределённый испанский термин; конкретный пример и русский ответ.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Пометы задают тип условного предложения, исходную форму/звук, русский смысл или формат ввода. Нормальная неизменяемость lunes во множественном числе сохранена как грамматическая цель; прямые ключи исправлены отдельно."
+      }
     },
     {
       "id": "q59",
       "decision": "fixed",
       "note": "Убрано угадывание exclamativa; конкретный пример и русский ответ.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Пометы задают тип условного предложения, исходную форму/звук, русский смысл или формат ввода. Нормальная неизменяемость lunes во множественном числе сохранена как грамматическая цель; прямые ключи исправлены отдельно."
+      }
     },
     {
       "id": "q60",
@@ -405,6 +441,11 @@
       "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
       "result": "pass",
       "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    },
+    {
+      "command": "python3 logs/complaints/parenthetical-audit-20261104/worker-2-validate.py",
+      "result": "pass",
+      "evidence": "Parentheses audit 2026-11-04, worker-2: exact identity/order/type/difficulty/theory bindings, unmodified objects and prior report decisions preserved against assigned baseline; logs/complaints/parenthetical-audit-20261104/worker-2-evidence/preservation-and-validators.json. Narrow audit only, not renewed whole-file editorial verification."
     }
   ],
   "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."

@@ -55,7 +55,13 @@
       "id": "q058_b1_08",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "ir — лемма; неправильная форма iba не раскрыта."
+      }
     },
     {
       "id": "q058_b1_09",
@@ -127,13 +133,25 @@
       "id": "q058_b2_08",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "estudiar не сообщает форму imperfecto estudiaba."
+      }
     },
     {
       "id": "q058_b2_09",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "vivir, nosotros и imperfecto задают задачу, но не ответ vivíamos."
+      }
     },
     {
       "id": "q058_b2_10",
@@ -199,7 +217,13 @@
       "id": "q058_b3_08",
       "decision": "fixed",
       "note": "Добавлено подлежащее ellos, устраняющее неоднозначность лица формы llegaba/llegaban.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "llegar — инфинитив, нужно образовать llegaban."
+      }
     },
     {
       "id": "q058_b3_09",
@@ -271,13 +295,25 @@
       "id": "q058_b4_08",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "jugar — инфинитив, требуемая форма jugaba не дана."
+      }
     },
     {
       "id": "q058_b4_09",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "tener, yo и imperfecto — параметры, не готовое tenía."
+      }
     },
     {
       "id": "q058_b4_10",
@@ -343,13 +379,25 @@
       "id": "q058_b5_08",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "practicar не даёт готовую форму practicaba."
+      }
     },
     {
       "id": "q058_b5_09",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "cocinar, nosotros и imperfecto требуют самостоятельного окончания и ударения."
+      }
     },
     {
       "id": "q058_b5_10",
@@ -415,13 +463,25 @@
       "id": "q058_b6_08",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "ir — лемма, fui в иной функции не копируется в требуемый фон iba."
+      }
     },
     {
       "id": "q058_b6_09",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "aprender, yo и indefinido — исходные данные спряжения."
+      }
     },
     {
       "id": "q058_b6_10",

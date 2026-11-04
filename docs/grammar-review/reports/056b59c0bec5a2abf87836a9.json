@@ -61,7 +61,13 @@
       "id": "q057_b1_09",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "ser, лицо и длительное прошлое задают категорию спряжения; era не показано."
+      }
     },
     {
       "id": "q057_b1_10",
@@ -133,7 +139,13 @@
       "id": "q057_b2_09",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "jugar, лицо и длительное прошлое не дают основу/окончание jugaban."
+      }
     },
     {
       "id": "q057_b2_10",
@@ -205,7 +217,13 @@
       "id": "q057_b3_09",
       "decision": "fixed",
       "note": "Исправлено русское объяснение формы первого лица.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "caminar, лицо и время требуют образовать caminaba."
+      }
     },
     {
       "id": "q057_b3_10",
@@ -277,13 +295,25 @@
       "id": "q057_b4_09",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "charlar, лицо и время не раскрывают charlaban."
+      }
     },
     {
       "id": "q057_b4_10",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "temblar, ellas и imperfecto задают параметры спряжения, не ключ."
+      }
     },
     {
       "id": "q057_b4_11",
@@ -349,7 +379,13 @@
       "id": "q057_b5_09",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "visitar, лицо и время оставляют форму visitaba ученику."
+      }
     },
     {
       "id": "q057_b5_10",
@@ -421,13 +457,25 @@
       "id": "q057_b6_09",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "nadar, лицо и время не сообщают nadaban."
+      }
     },
     {
       "id": "q057_b6_10",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "encontrar, yo и indefinido требуют образовать encontré."
+      }
     },
     {
       "id": "q057_b6_11",

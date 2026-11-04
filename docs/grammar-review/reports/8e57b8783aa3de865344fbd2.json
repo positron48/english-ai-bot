@@ -1,11 +1,11 @@
 {
   "version": 1,
   "source": "courses/spanish-grammar/chapters/086.es.grammar.prepositions_verb_patterns.adjective_plus_preposition_patterns_contento_con_parecido_lleno/03-questions.json",
-  "source_sha256": "1bfad878109ec65ed401ffbab2feb7d838c8767f4753cc350b4a48ca619a6545",
+  "source_sha256": "0f9ba40a733cd246200cb854daa6555d1d5dd0db5e102b578b4f720ed2b5e28e",
   "context_sha256": "0bb156a947ae89ff40e6f65e3b3d4ee9da53b68521b4d7139cee6414279b4a37",
   "editor": "Codex editor 2026-09-05",
   "verifier": "Anton Filatov (user)",
-  "phase": "done",
+  "phase": "awaiting_verification",
   "reviewed_at": "2026-09-05T10:39:10.988563Z",
   "verified_at": "2026-09-06T17:58:18.569986Z",
   "questions": [
@@ -31,7 +31,13 @@
       "id": "q4",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Русское управление «доволен чем» задаёт смысл; con нужно знать."
+      }
     },
     {
       "id": "q5",
@@ -43,7 +49,13 @@
       "id": "q6",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Категория «прилагательное + предлог» не выбирает между двумя наборами с прилагательными."
+      }
     },
     {
       "id": "q7",
@@ -59,9 +71,18 @@
     },
     {
       "id": "q9",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "После a больше нет артикля el: исключено недопустимое сочетание a el.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "После a больше нет артикля el: исключено недопустимое сочетание a el.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q10",
@@ -89,9 +110,18 @@
     },
     {
       "id": "q14",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Исключён второй допустимый вариант de; выбор con остаётся самостоятельной проверкой управления.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "Исключён второй допустимый вариант de; выбор con остаётся самостоятельной проверкой управления.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q15",
@@ -121,7 +151,13 @@
       "id": "q19",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "con/de/en — варианты; русское значение не сообщает управление enfadado."
+      }
     },
     {
       "id": "q20",
@@ -145,7 +181,13 @@
       "id": "q23",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: explanation, prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "con/de/en — альтернативы, управление furiosa нужно выбрать."
+      }
     },
     {
       "id": "q24",
@@ -161,9 +203,18 @@
     },
     {
       "id": "q26",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Самопроверка editor1 выявила a el при ключе a; координатор заменил дополнение на множественное число, чтобы проверять предлог без пропущенного обязательного слияния al. Требуется независимое принятие parentheses_3.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "Самопроверка editor1 выявила a el при ключе a; координатор заменил дополнение на множественное число, чтобы проверять предлог без пропущенного обязательного слияния al. Требуется независимое принятие parentheses_3.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q27",
@@ -191,9 +242,18 @@
     },
     {
       "id": "q31",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Ограничены варианты, поскольку distinto допускает оба предлога a и de.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "Ограничены варианты, поскольку distinto допускает оба предлога a и de.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q32",
@@ -215,9 +275,18 @@
     },
     {
       "id": "q35",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Самопроверка editor1 выявила a el при ключе a; координатор заменил дополнение на множественное число, сохранив проверку управления parecerse a. Требуется независимое принятие parentheses_3.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "Самопроверка editor1 выявила a el при ключе a; координатор заменил дополнение на множественное число, сохранив проверку управления parecerse a. Требуется независимое принятие parentheses_3.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q36",
@@ -235,7 +304,13 @@
       "id": "q38",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "de/en/con — варианты; русский смысл не сообщает управление cansado."
+      }
     },
     {
       "id": "q39",
@@ -265,7 +340,13 @@
       "id": "q43",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "de/con/en — варианты, нужен выбор управления lleno."
+      }
     },
     {
       "id": "q44",
@@ -289,7 +370,13 @@
       "id": "q47",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: explanation. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "de/en/con — варианты, нужен самостоятельный выбор после harto."
+      }
     },
     {
       "id": "q48",
@@ -307,7 +394,13 @@
       "id": "q50",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "en/de/a — альтернативы, русский смысл не даёт готовую испанскую конструкцию."
+      }
     },
     {
       "id": "q51",
@@ -337,7 +430,13 @@
       "id": "q55",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "en/de/a — альтернативы, управление experto не раскрыто."
+      }
     },
     {
       "id": "q56",
@@ -355,7 +454,13 @@
       "id": "q58",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "de/en/a — варианты, русский предлог не совпадает с обязательной подсказкой испанского."
+      }
     },
     {
       "id": "q59",
@@ -373,7 +478,13 @@
       "id": "q61",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "B1 — уровень курса, не ответ на вопрос об алгоритме выбора."
+      }
     },
     {
       "id": "q62",
@@ -391,7 +502,13 @@
       "id": "q64",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: explanation. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "en/de/con иллюстрирует набор предлогов в проверяемом утверждении, не его истинность."
+      }
     },
     {
       "id": "q65",
@@ -403,7 +520,13 @@
       "id": "q66",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: explanation, prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Русское «похож на» задаёт значение, форму a нужно знать."
+      }
     },
     {
       "id": "q67",
@@ -433,7 +556,13 @@
       "id": "q71",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "cansado повторяет опорное слово, но не проверяемый предлог de."
+      }
     },
     {
       "id": "q72",
@@ -449,5 +578,22 @@
       "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
     }
   ],
-  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось.",
+  "parentheses_audit_verification": {
+    "verifier": "parentheses_3",
+    "verified_at": "2026-11-04T09:44:02.337656+00:00",
+    "verification": "ok",
+    "scope": "narrow_parentheses_audit_changed_questions",
+    "question_ids": [
+      "q9",
+      "q14",
+      "q26",
+      "q31",
+      "q35"
+    ],
+    "evidence": [
+      "docs/grammar-review/batches/2026-11-04-parenthetical-hints/independent-worker-1.json"
+    ],
+    "note": "Независимо прочитаны все вопросы изменённого источника; подтверждены изменённые вопросы узкого аудита. Advisory вне selected не сертифицированы. Фазы общего обзора и source/context hashes не изменялись."
+  }
 }

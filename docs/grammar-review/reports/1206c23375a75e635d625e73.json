@@ -97,13 +97,25 @@
       "id": "q040_b2_03",
       "decision": "ok",
       "note": "Usted соответствует está.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают адресата, лемму/лицо/время, процессуальный смысл либо проверяемый ошибочный пример; готовый ключ не раскрыт."
+      }
     },
     {
       "id": "q040_b2_04",
       "decision": "fixed",
       "note": "Указано время, убрана служебная фраза про скобки.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают адресата, лемму/лицо/время, процессуальный смысл либо проверяемый ошибочный пример; готовый ключ не раскрыт."
+      }
     },
     {
       "id": "q040_b2_05",
@@ -115,13 +127,25 @@
       "id": "q040_b2_06",
       "decision": "ok",
       "note": "El niño соответствует está.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают адресата, лемму/лицо/время, процессуальный смысл либо проверяемый ошибочный пример; готовый ключ не раскрыт."
+      }
     },
     {
       "id": "q040_b2_07",
       "decision": "ok",
       "note": "Ser не образует эту конструкцию.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают адресата, лемму/лицо/время, процессуальный смысл либо проверяемый ошибочный пример; готовый ключ не раскрыт."
+      }
     },
     {
       "id": "q040_b2_08",
@@ -133,7 +157,13 @@
       "id": "q040_b2_09",
       "decision": "ok",
       "note": "Место и процесс используют estar.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают адресата, лемму/лицо/время, процессуальный смысл либо проверяемый ошибочный пример; готовый ключ не раскрыт."
+      }
     },
     {
       "id": "q040_b2_10",
@@ -175,25 +205,49 @@
       "id": "q040_b3_04",
       "decision": "fixed",
       "note": "Убрана служебная фраза про скобки.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают адресата, лемму/лицо/время, процессуальный смысл либо проверяемый ошибочный пример; готовый ключ не раскрыт."
+      }
     },
     {
       "id": "q040_b3_05",
       "decision": "ok",
       "note": "Escribir → escribiendo.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают адресата, лемму/лицо/время, процессуальный смысл либо проверяемый ошибочный пример; готовый ключ не раскрыт."
+      }
     },
     {
       "id": "q040_b3_06",
       "decision": "fixed",
       "note": "Добавлено необходимое чередование e → i.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают адресата, лемму/лицо/время, процессуальный смысл либо проверяемый ошибочный пример; готовый ключ не раскрыт."
+      }
     },
     {
       "id": "q040_b3_07",
       "decision": "ok",
       "note": "После estar в перифразе герундий.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают адресата, лемму/лицо/время, процессуальный смысл либо проверяемый ошибочный пример; готовый ключ не раскрыт."
+      }
     },
     {
       "id": "q040_b3_08",
@@ -259,19 +313,37 @@
       "id": "q040_b4_06",
       "decision": "fixed",
       "note": "Убрана служебная ссылка на скобки.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают адресата, лемму/лицо/время, процессуальный смысл либо проверяемый ошибочный пример; готовый ключ не раскрыт."
+      }
     },
     {
       "id": "q040_b4_07",
       "decision": "ok",
       "note": "Ir → yendo.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают адресата, лемму/лицо/время, процессуальный смысл либо проверяемый ошибочный пример; готовый ключ не раскрыт."
+      }
     },
     {
       "id": "q040_b4_08",
       "decision": "ok",
       "note": "Dormir → durmiendo.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают адресата, лемму/лицо/время, процессуальный смысл либо проверяемый ошибочный пример; готовый ключ не раскрыт."
+      }
     },
     {
       "id": "q040_b4_09",
@@ -307,7 +379,13 @@
       "id": "q040_b5_02",
       "decision": "fixed",
       "note": "Убрана служебная вставка sin tilde в отвлекающем варианте.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают адресата, лемму/лицо/время, процессуальный смысл либо проверяемый ошибочный пример; готовый ключ не раскрыт."
+      }
     },
     {
       "id": "q040_b5_03",
@@ -337,7 +415,13 @@
       "id": "q040_b5_07",
       "decision": "ok",
       "note": "Buscándolo требует ударения; только один вариант верен.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают адресата, лемму/лицо/время, процессуальный смысл либо проверяемый ошибочный пример; готовый ключ не раскрыт."
+      }
     },
     {
       "id": "q040_b5_08",
@@ -361,7 +445,13 @@
       "id": "q040_b5_11",
       "decision": "fixed",
       "note": "Добавлено отсутствовавшее лицо yo и время.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают адресата, лемму/лицо/время, процессуальный смысл либо проверяемый ошибочный пример; готовый ключ не раскрыт."
+      }
     },
     {
       "id": "q040_b5_12",
@@ -415,7 +505,13 @@
       "id": "q040_b6_08",
       "decision": "ok",
       "note": "Только estoy estudiando правильно образует конструкцию.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают исходный глагол/лицо/время, референта местоимения или смысл высказывания. Прямые ключи, готовый грамматический разбор и соседний неполный шаблон исправлены отдельно."
+      }
     },
     {
       "id": "q040_b6_09",
@@ -482,6 +578,11 @@
       "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
       "result": "pass",
       "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    },
+    {
+      "command": "python3 logs/complaints/parenthetical-audit-20261104/worker-2-validate.py",
+      "result": "pass",
+      "evidence": "Parentheses audit 2026-11-04, worker-2: exact identity/order/type/difficulty/theory bindings, unmodified objects and prior report decisions preserved against assigned baseline; logs/complaints/parenthetical-audit-20261104/worker-2-evidence/preservation-and-validators.json. Narrow audit only, not renewed whole-file editorial verification."
     }
   ],
   "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."

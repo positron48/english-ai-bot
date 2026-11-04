@@ -1,0 +1,41 @@
+{
+  "source": "courses/spanish-grammar/chapters/079.es.grammar.noun_phrase_upgrade_precision.neuter_lo_lo_bueno_lo_importante/03-questions.json",
+  "id": "q18",
+  "before": {
+    "id": "q18",
+    "type": "fill_blank",
+    "theory_block_id": "b2_theory_lo_plus_adjective_form",
+    "difficulty": 2,
+    "prompt": "Вставьте нейтральный артикль: ___ raro del caso es el silencio. — «Странное в этом деле — молчание».",
+    "correct_answer": "lo",
+    "explanation": "Lo + прилагательное обозначает абстрактный аспект: lo raro — «то, что странно». Здесь не называется конкретный предмет мужского или женского рода.",
+    "tags": [
+      "lo_adjective",
+      "abstract"
+    ]
+  },
+  "after": {
+    "id": "q18",
+    "type": "fill_blank",
+    "theory_block_id": "b2_theory_lo_plus_adjective_form",
+    "difficulty": 2,
+    "prompt": "Вставьте одно слово, чтобы передать смысл «Странное в этом деле — молчание»: ___ raro del caso es el silencio.",
+    "correct_answer": "lo",
+    "explanation": "Lo + прилагательное обозначает абстрактный аспект: lo raro — «то, что странно». Здесь не называется конкретный предмет мужского или женского рода.",
+    "tags": [
+      "lo_adjective",
+      "abstract"
+    ]
+  },
+  "editor": "coordinator",
+  "scope": "Complaint #71 continuation; outside the 4647 bracket selection",
+  "verification": "ok",
+  "verifiers": [
+    "parentheses_2",
+    "parentheses_3"
+  ],
+  "evidence": [
+    "independent-worker-3.json",
+    "independent-worker-2.json"
+  ]
+}

@@ -1,11 +1,11 @@
 {
   "version": 1,
   "source": "courses/spanish-grammar/chapters/092.es.grammar.pronouns_direct_indirect.le_lo_la_baseline_norm_learners_should_treat/03-questions.json",
-  "source_sha256": "2d7bcf0685d901b5059e54c135be351f65f8083be8f9966ebbe959f6a4549e29",
+  "source_sha256": "17ddb441f78848e1c63d533fecc37331b8dd0f6730b20b72e4b4cc9de66b1a86",
   "context_sha256": "7add400bfbdd88358243f14370aaf12ff186147aa79e4aed929df85f80a42a20",
   "editor": "Codex editor 2026-09-05",
   "verifier": "Anton Filatov (user)",
-  "phase": "done",
+  "phase": "awaiting_verification",
   "reviewed_at": "2026-09-05T19:12:40.425484Z",
   "verified_at": "2026-09-06T17:58:18.569986Z",
   "questions": [
@@ -19,7 +19,13 @@
       "id": "q2",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "CD — сокращение категории прямого дополнения, набор местоимений нужно знать."
+      }
     },
     {
       "id": "q3",
@@ -31,7 +37,13 @@
       "id": "q4",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: explanation. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "CD задаёт синтаксическую функцию; сравниваемые варианты составляют само проверяемое утверждение."
+      }
     },
     {
       "id": "q5",
@@ -49,7 +61,13 @@
       "id": "q7",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "CD задаёт роль Miguel, но местоимение lo нужно выбрать."
+      }
     },
     {
       "id": "q8",
@@ -109,7 +127,13 @@
       "id": "q17",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "les — исходная форма для преобразования перед las; Se не сообщено."
+      }
     },
     {
       "id": "q18",
@@ -187,7 +211,13 @@
       "id": "q30",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "leísmo — требуемая языковая категория, конкретный ключ Le отдельно не приведён."
+      }
     },
     {
       "id": "q31",
@@ -199,7 +229,13 @@
       "id": "q32",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "«Разг.» задаёт регистр исходного примера, нормативную замену нужно определить."
+      }
     },
     {
       "id": "q33",
@@ -235,13 +271,25 @@
       "id": "q38",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "coche задаёт референт lo; синтаксические роли lo/le нужно определить."
+      }
     },
     {
       "id": "q39",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: explanation. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "leísmo — название обсуждаемой особенности, истинность нормы не доказана примером в скобках."
+      }
     },
     {
       "id": "q40",
@@ -253,7 +301,13 @@
       "id": "q41",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "CD задаёт роль, ver — has visto повторяет данную форму глагола, не ключ lo."
+      }
     },
     {
       "id": "q42",
@@ -337,7 +391,13 @@
       "id": "q55",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "CI задаёт косвенное дополнение, местоимение Le нужно выбрать."
+      }
     },
     {
       "id": "q56",
@@ -383,9 +443,18 @@
     },
     {
       "id": "q63",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "2026-11-04: сохранён формат fill_blank с категорией местоимения вместо удалённого готового ключа.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "fixed",
+        "note": "Удалён буквальный ключ se и готовое правило перед lo; русский смысл сохраняет получателя и объект.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q64",
@@ -421,7 +490,13 @@
       "id": "q69",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "CI задаёт функцию, не готовую форму Le."
+      }
     },
     {
       "id": "q70",
@@ -447,7 +522,25 @@
       "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
       "result": "pass",
       "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    },
+    {
+      "command": "python3 logs/complaints/parenthetical-audit-20261104/worker-1-validate.py",
+      "result": "pass",
+      "evidence": "2026-11-04 narrow parentheses audit: identity/order/bindings and untouched questions preserved; source/final/embedded exact; official isolated chapter assembly/validation or training validate_question and signature checks passed. See worker-1-evidence/validation.json."
     }
   ],
-  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+  "verification_note": "2026-11-04 parenthetical-hints audit: changed questions awaiting independent verification. Historical verification applies only to unchanged questions.",
+  "parentheses_audit_verification": {
+    "verifier": "parentheses_3",
+    "verified_at": "2026-11-04T09:44:02.337656+00:00",
+    "verification": "ok",
+    "scope": "narrow_parentheses_audit_changed_questions",
+    "question_ids": [
+      "q63"
+    ],
+    "evidence": [
+      "docs/grammar-review/batches/2026-11-04-parenthetical-hints/independent-worker-1.json"
+    ],
+    "note": "Независимо прочитаны все вопросы изменённого источника; подтверждены изменённые вопросы узкого аудита. Advisory вне selected не сертифицированы. Фазы общего обзора и source/context hashes не изменялись."
+  }
 }

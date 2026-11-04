@@ -37,13 +37,25 @@
       "id": "q036_b1_05",
       "decision": "fixed",
       "note": "Уточнены настоящее изъявительное время и предмет вопроса; устранено ложное противопоставление особой формы и чередования, убраны ссылки на главу и неясные метафоры.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "ir требует voy по yo в presente."
+      }
     },
     {
       "id": "q036_b1_06",
       "decision": "fixed",
       "note": "Уточнены настоящее изъявительное время и предмет вопроса; устранено ложное противопоставление особой формы и чередования, убраны ссылки на главу и неясные метафоры.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "ir требует van по ellos."
+      }
     },
     {
       "id": "q036_b1_07",
@@ -73,25 +85,49 @@
       "id": "q036_b1_11",
       "decision": "fixed",
       "note": "Уточнены настоящее изъявительное время и предмет вопроса; устранено ложное противопоставление особой формы и чередования, убраны ссылки на главу и неясные метафоры.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "ir требует vamos по nosotros."
+      }
     },
     {
       "id": "q036_b1_12",
       "decision": "ok",
       "note": "Особая форма и согласование глагола с подлежащим корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "ir/nosotros/presente задают спряжение, vamos не дано."
+      }
     },
     {
       "id": "q036_b2_01",
       "decision": "fixed",
       "note": "Уточнены настоящее изъявительное время и предмет вопроса; устранено ложное противопоставление особой формы и чередования, убраны ссылки на главу и неясные метафоры.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "ir требует vas по tú."
+      }
     },
     {
       "id": "q036_b2_02",
       "decision": "fixed",
       "note": "Уточнены настоящее изъявительное время и предмет вопроса; устранено ложное противопоставление особой формы и чередования, убраны ссылки на главу и неясные метафоры.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "ir требует va по usted."
+      }
     },
     {
       "id": "q036_b2_03",
@@ -139,7 +175,13 @@
       "id": "q036_b2_10",
       "decision": "fixed",
       "note": "Восстановлен отсутствовавший пропуск, уточнены время и единственный ключ; исправлены объяснения согласования и немотивированное противопоставление голода воде.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "ir требует va по ella."
+      }
     },
     {
       "id": "q036_b2_11",
@@ -157,19 +199,37 @@
       "id": "q036_b3_01",
       "decision": "fixed",
       "note": "Восстановлен отсутствовавший пропуск, уточнены время и единственный ключ; исправлены объяснения согласования и немотивированное противопоставление голода воде.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "tener требует tengo по yo."
+      }
     },
     {
       "id": "q036_b3_02",
       "decision": "fixed",
       "note": "Восстановлен отсутствовавший пропуск, уточнены время и единственный ключ; исправлены объяснения согласования и немотивированное противопоставление голода воде.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "tener требует tienen по ustedes."
+      }
     },
     {
       "id": "q036_b3_03",
       "decision": "fixed",
       "note": "Восстановлен отсутствовавший пропуск, уточнены время и единственный ключ; исправлены объяснения согласования и немотивированное противопоставление голода воде.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "tener требует tenemos по nosotros."
+      }
     },
     {
       "id": "q036_b3_04",
@@ -205,7 +265,13 @@
       "id": "q036_b3_09",
       "decision": "fixed",
       "note": "Восстановлен отсутствовавший пропуск, уточнены время и единственный ключ; исправлены объяснения согласования и немотивированное противопоставление голода воде.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "tener требует tienes по tú."
+      }
     },
     {
       "id": "q036_b3_10",
@@ -229,19 +295,37 @@
       "id": "q036_b4_01",
       "decision": "fixed",
       "note": "Восстановлен отсутствовавший пропуск, уточнены время и единственный ключ; исправлены объяснения согласования и немотивированное противопоставление голода воде.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "hacer требует hago по yo."
+      }
     },
     {
       "id": "q036_b4_02",
       "decision": "fixed",
       "note": "Восстановлен отсутствовавший пропуск, уточнены время и единственный ключ; исправлены объяснения согласования и немотивированное противопоставление голода воде.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "hacer требует hacen по ellos."
+      }
     },
     {
       "id": "q036_b4_03",
       "decision": "fixed",
       "note": "Восстановлен отсутствовавший пропуск, уточнены время и единственный ключ; исправлены объяснения согласования и немотивированное противопоставление голода воде.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "hacer требует haces по tú."
+      }
     },
     {
       "id": "q036_b4_04",
@@ -283,7 +367,13 @@
       "id": "q036_b4_10",
       "decision": "fixed",
       "note": "Уточнены время и основа, восстановлен пропуск, устранены три подходящих неверных формы; исправлена терминология ударения и дан ясный контекст venir.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "hacer требует hace по ella."
+      }
     },
     {
       "id": "q036_b4_11",
@@ -295,25 +385,49 @@
       "id": "q036_b4_12",
       "decision": "ok",
       "note": "Формы hacer/venir, лицо и ключ корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "hacer/yo/presente задают параметры, Hago не дано."
+      }
     },
     {
       "id": "q036_b5_01",
       "decision": "fixed",
       "note": "Уточнены время и основа, восстановлен пропуск, устранены три подходящих неверных формы; исправлена терминология ударения и дан ясный контекст venir.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "venir требует vengo по yo."
+      }
     },
     {
       "id": "q036_b5_02",
       "decision": "fixed",
       "note": "Уточнены время и основа, восстановлен пропуск, устранены три подходящих неверных формы; исправлена терминология ударения и дан ясный контекст venir.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "venir требует viene по tu hermana."
+      }
     },
     {
       "id": "q036_b5_03",
       "decision": "fixed",
       "note": "Уточнены время и основа, восстановлен пропуск, устранены три подходящих неверных формы; исправлена терминология ударения и дан ясный контекст venir.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "venir требует venimos по nosotros."
+      }
     },
     {
       "id": "q036_b5_04",
@@ -349,7 +463,13 @@
       "id": "q036_b5_09",
       "decision": "fixed",
       "note": "Уточнены время и основа, восстановлен пропуск, устранены три подходящих неверных формы; исправлена терминология ударения и дан ясный контекст venir.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "venir требует vienen по ellos."
+      }
     },
     {
       "id": "q036_b5_10",
@@ -373,31 +493,61 @@
       "id": "q036_b6_01",
       "decision": "fixed",
       "note": "Уточнено время открытого ответа; в вопросе на формы исправлен бессмысленный пример decir las sillas.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "decir требует digo по yo."
+      }
     },
     {
       "id": "q036_b6_02",
       "decision": "fixed",
       "note": "Уточнено время открытого ответа; в вопросе на формы исправлен бессмысленный пример decir las sillas.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "poner требует pongo по yo."
+      }
     },
     {
       "id": "q036_b6_03",
       "decision": "fixed",
       "note": "Уточнено время открытого ответа; в вопросе на формы исправлен бессмысленный пример decir las sillas.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "decir требует dice по ella."
+      }
     },
     {
       "id": "q036_b6_04",
       "decision": "fixed",
       "note": "Уточнено время открытого ответа; в вопросе на формы исправлен бессмысленный пример decir las sillas.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "poner требует ponemos по nosotros."
+      }
     },
     {
       "id": "q036_b6_05",
       "decision": "fixed",
       "note": "Уточнено время открытого ответа; в вопросе на формы исправлен бессмысленный пример decir las sillas.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "decir требует dicen по ellos."
+      }
     },
     {
       "id": "q036_b6_06",

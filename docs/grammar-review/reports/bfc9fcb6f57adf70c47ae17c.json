@@ -25,7 +25,13 @@
       "id": "q3",
       "decision": "fixed",
       "note": "Явно задано Past Continuous, уточнена орфография и трактовка процесса; q25 устранены одинаковые варианты.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Инфинитив be/смысловая помета/глагол в скобках задают материал; согласование или выбор временной формы не сообщаются. Совпадение базовой формы для I — нормальное правило согласования, а не посторонняя лексическая подсказка."
+      }
     },
     {
       "id": "q5",
@@ -49,7 +55,13 @@
       "id": "q8",
       "decision": "fixed",
       "note": "Явно задано Past Continuous, уточнена орфография и трактовка процесса; q25 устранены одинаковые варианты.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Инфинитив be/смысловая помета/глагол в скобках задают материал; согласование или выбор временной формы не сообщаются. Совпадение базовой формы для I — нормальное правило согласования, а не посторонняя лексическая подсказка."
+      }
     },
     {
       "id": "q9",
@@ -67,7 +79,13 @@
       "id": "q12",
       "decision": "fixed",
       "note": "Явно задано Past Continuous, уточнена орфография и трактовка процесса; q25 устранены одинаковые варианты.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках исходный глагол или русский смысл союза; требуется построить Past Continuous/Past Simple либо выбрать союз."
+      }
     },
     {
       "id": "q13",
@@ -85,7 +103,13 @@
       "id": "q16",
       "decision": "fixed",
       "note": "Явно задано Past Continuous, уточнена орфография и трактовка процесса; q25 устранены одинаковые варианты.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках исходный глагол или русский смысл союза; требуется построить Past Continuous/Past Simple либо выбрать союз."
+      }
     },
     {
       "id": "q17",
@@ -115,7 +139,13 @@
       "id": "q22",
       "decision": "fixed",
       "note": "Явно задано Past Continuous, уточнена орфография и трактовка процесса; q25 устранены одинаковые варианты.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках исходный глагол или русский смысл союза; требуется построить Past Continuous/Past Simple либо выбрать союз."
+      }
     },
     {
       "id": "q23",
@@ -133,7 +163,13 @@
       "id": "q26",
       "decision": "fixed",
       "note": "Уточнено время в пропуске, убраны подсказки-звёздочки и пересечение was/were с V2; восстановлено listen to music и точный feedback.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках исходный глагол или русский смысл союза; требуется построить Past Continuous/Past Simple либо выбрать союз."
+      }
     },
     {
       "id": "q27",
@@ -163,7 +199,13 @@
       "id": "q32",
       "decision": "fixed",
       "note": "Уточнено время в пропуске, убраны подсказки-звёздочки и пересечение was/were с V2; восстановлено listen to music и точный feedback.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках исходный глагол или русский смысл союза; требуется построить Past Continuous/Past Simple либо выбрать союз."
+      }
     },
     {
       "id": "q33",
@@ -181,7 +223,13 @@
       "id": "q36",
       "decision": "fixed",
       "note": "Уточнено время в пропуске, убраны подсказки-звёздочки и пересечение was/were с V2; восстановлено listen to music и точный feedback.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках исходный глагол или русский смысл союза; требуется построить Past Continuous/Past Simple либо выбрать союз."
+      }
     },
     {
       "id": "q37",
@@ -217,7 +265,13 @@
       "id": "q43",
       "decision": "fixed",
       "note": "Уточнено время в пропуске, убраны подсказки-звёздочки и пересечение was/were с V2; восстановлено listen to music и точный feedback.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках исходный глагол или русский смысл союза; требуется построить Past Continuous/Past Simple либо выбрать союз."
+      }
     },
     {
       "id": "q45",
@@ -241,7 +295,13 @@
       "id": "q49",
       "decision": "fixed",
       "note": "Уточнено время в пропуске, убраны подсказки-звёздочки и пересечение was/were с V2; восстановлено listen to music и точный feedback.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках исходный глагол или русский смысл союза; требуется построить Past Continuous/Past Simple либо выбрать союз."
+      }
     },
     {
       "id": "q50",
@@ -259,7 +319,13 @@
       "id": "q52",
       "decision": "fixed",
       "note": "Уточнены время в открытом ответе и проверяемое согласование; убрана звёздочка у правильной формы.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках исходный глагол или русский смысл союза; требуется построить Past Continuous/Past Simple либо выбрать союз."
+      }
     },
     {
       "id": "q53",
@@ -277,7 +343,13 @@
       "id": "q55",
       "decision": "ok",
       "note": "Согласование, вопрос и форма -ing однозначны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках исходный глагол или русский смысл союза; требуется построить Past Continuous/Past Simple либо выбрать союз."
+      }
     },
     {
       "id": "q56",
@@ -295,7 +367,13 @@
       "id": "q59",
       "decision": "fixed",
       "note": "Уточнены время в открытом ответе и проверяемое согласование; убрана звёздочка у правильной формы.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках исходный глагол или русский смысл союза; требуется построить Past Continuous/Past Simple либо выбрать союз."
+      }
     },
     {
       "id": "q60",
@@ -344,6 +422,11 @@
       "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
       "result": "pass",
       "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    },
+    {
+      "command": "python3 logs/complaints/parenthetical-audit-20261104/worker-2-validate.py",
+      "result": "pass",
+      "evidence": "Parentheses audit 2026-11-04, worker-2: exact identity/order/type/difficulty/theory bindings, unmodified objects and prior report decisions preserved against assigned baseline; logs/complaints/parenthetical-audit-20261104/worker-2-evidence/preservation-and-validators.json. Narrow audit only, not renewed whole-file editorial verification."
     }
   ],
   "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."

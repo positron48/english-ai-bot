@@ -37,13 +37,25 @@
       "id": "q6",
       "decision": "fixed",
       "note": "Уточнены настоящее время, обращение ustedes или нормативное ударение.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Исходные ser/estar/tener и смысловые пометы ограничивают значение, но не подсказывают спряжённую форму или вариант ответа."
+      }
     },
     {
       "id": "q7",
       "decision": "fixed",
       "note": "Уточнены настоящее время, обращение ustedes или нормативное ударение.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Исходные ser/estar/tener и смысловые пометы ограничивают значение, но не подсказывают спряжённую форму или вариант ответа."
+      }
     },
     {
       "id": "q8",
@@ -79,7 +91,13 @@
       "id": "q13",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Исходные ser/estar/tener и смысловые пометы ограничивают значение, но не подсказывают спряжённую форму или вариант ответа."
+      }
     },
     {
       "id": "q14",
@@ -103,37 +121,73 @@
       "id": "q18",
       "decision": "fixed",
       "note": "Уточнены настоящее время, обращение ustedes или нормативное ударение.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Исходные ser/estar/tener и смысловые пометы ограничивают значение, но не подсказывают спряжённую форму или вариант ответа."
+      }
     },
     {
       "id": "q19",
       "decision": "fixed",
       "note": "Уточнены настоящее время, обращение ustedes или нормативное ударение.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки уточняют роль, количество/время или перевод проверяемого высказывания; ключевая испанская форма не названа."
+      }
     },
     {
       "id": "q20",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки уточняют роль, количество/время или перевод проверяемого высказывания; ключевая испанская форма не названа."
+      }
     },
     {
       "id": "q21",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки уточняют роль, количество/время или перевод проверяемого высказывания; ключевая испанская форма не названа."
+      }
     },
     {
       "id": "q22",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки уточняют роль, количество/время или перевод проверяемого высказывания; ключевая испанская форма не названа."
+      }
     },
     {
       "id": "q23",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки уточняют роль, количество/время или перевод проверяемого высказывания; ключевая испанская форма не названа."
+      }
     },
     {
       "id": "q24",
@@ -169,13 +223,25 @@
       "id": "q30",
       "decision": "fixed",
       "note": "Уточнён формат/время/лицо, устранён допустимый сокращённый ответ либо исправлено объяснение.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки уточняют роль, количество/время или перевод проверяемого высказывания; ключевая испанская форма не названа."
+      }
     },
     {
       "id": "q31",
       "decision": "fixed",
       "note": "Уточнён формат/время/лицо, устранён допустимый сокращённый ответ либо исправлено объяснение.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки уточняют роль, количество/время или перевод проверяемого высказывания; ключевая испанская форма не названа."
+      }
     },
     {
       "id": "q32",
@@ -199,7 +265,13 @@
       "id": "q35",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки уточняют роль, количество/время или перевод проверяемого высказывания; ключевая испанская форма не названа."
+      }
     },
     {
       "id": "q36",
@@ -235,13 +307,25 @@
       "id": "q42",
       "decision": "fixed",
       "note": "Уточнён формат/время/лицо, устранён допустимый сокращённый ответ либо исправлено объяснение.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки уточняют роль, количество/время или перевод проверяемого высказывания; ключевая испанская форма не названа."
+      }
     },
     {
       "id": "q43",
       "decision": "fixed",
       "note": "Уточнён формат/время/лицо, устранён допустимый сокращённый ответ либо исправлено объяснение.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки уточняют роль, количество/время или перевод проверяемого высказывания; ключевая испанская форма не названа."
+      }
     },
     {
       "id": "q44",
@@ -265,7 +349,13 @@
       "id": "q47",
       "decision": "fixed",
       "note": "Уточнены смысл/время/формат, исправлено объяснение либо удалён допустимый второй ответ.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки уточняют роль, количество/время или перевод проверяемого высказывания; ключевая испанская форма не названа."
+      }
     },
     {
       "id": "q48",
@@ -301,13 +391,25 @@
       "id": "q54",
       "decision": "fixed",
       "note": "Уточнены смысл/время/формат, исправлено объяснение либо удалён допустимый второй ответ.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки уточняют роль, количество/время или перевод проверяемого высказывания; ключевая испанская форма не названа."
+      }
     },
     {
       "id": "q55",
       "decision": "fixed",
       "note": "Уточнены смысл/время/формат, исправлено объяснение либо удалён допустимый второй ответ.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки уточняют роль, количество/время или перевод проверяемого высказывания; ключевая испанская форма не названа."
+      }
     },
     {
       "id": "q56",
@@ -361,19 +463,37 @@
       "id": "q64",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки уточняют роль, количество/время или перевод проверяемого высказывания; ключевая испанская форма не названа."
+      }
     },
     {
       "id": "q66",
       "decision": "fixed",
       "note": "Уточнены смысл/время/формат, исправлено объяснение либо удалён допустимый второй ответ.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки уточняют роль, количество/время или перевод проверяемого высказывания; ключевая испанская форма не названа."
+      }
     },
     {
       "id": "q67",
       "decision": "fixed",
       "note": "Уточнено время или удалена служебная отсылка к теории.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки уточняют роль, количество/время или перевод проверяемого высказывания; ключевая испанская форма не названа."
+      }
     },
     {
       "id": "q68",
@@ -446,6 +566,11 @@
       "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
       "result": "pass",
       "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    },
+    {
+      "command": "python3 logs/complaints/parenthetical-audit-20261104/worker-2-validate.py",
+      "result": "pass",
+      "evidence": "Parentheses audit 2026-11-04, worker-2: exact identity/order/type/difficulty/theory bindings, unmodified objects and prior report decisions preserved against assigned baseline; logs/complaints/parenthetical-audit-20261104/worker-2-evidence/preservation-and-validators.json. Narrow audit only, not renewed whole-file editorial verification."
     }
   ],
   "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."

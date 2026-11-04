@@ -1,11 +1,11 @@
 {
   "version": 1,
   "source": "courses/spanish-grammar/chapters/145.es.grammar.voice_reported_speech_distancing.build_write_news_reports_formal_summaries/03-questions.json",
-  "source_sha256": "2e69a1408b67adc13921ca529737f41acbfa908f9d378db1e64e316718376a93",
+  "source_sha256": "f3e026ce6fd2af2ff751642922fd8e3a7ae72c8ec00358b004b16c720c5ed9d8",
   "context_sha256": "dcd92c930ade5eacd4d22564faaa6117ae73990619995cc18d046e142e08b40d",
   "editor": "Codex editor 2026-09-06",
   "verifier": "Anton Filatov (user)",
-  "phase": "done",
+  "phase": "awaiting_verification",
   "reviewed_at": "2026-09-06T00:33:05.451031Z",
   "verified_at": "2026-09-06T17:58:18.569986Z",
   "questions": [
@@ -19,7 +19,13 @@
       "id": "q145_b1_m2",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Скобки относятся к обсуждаемому примеру/контексту; требуется определить грамматическую правильность или значение."
+      }
     },
     {
       "id": "q145_b1_m3",
@@ -36,14 +42,32 @@
     {
       "id": "q145_b1_f1",
       "decision": "fixed",
-      "note": "Исправлены или уточнены поля: correct_answer, prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "note": "Независимая перепроверка: открытый ввод допускал como síntesis; задан набор предлогов для устойчивой формулы en síntesis.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "Независимая перепроверка: открытый ввод допускал como síntesis; задан набор предлогов для устойчивой формулы en síntesis.",
+        "verifier": "parentheses_2",
+        "verified_at": "2026-11-04T09:40:29.033435+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q145_b1_f2",
       "decision": "fixed",
-      "note": "Исправлены или уточнены поля: correct_answer, prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "note": "Независимая проверка: Нет заданной леммы: núcleo/resumen/relato допускаются контекстом. Нужен проверяемый грамматический слот.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "Независимая проверка: Нет заданной леммы: núcleo/resumen/relato допускаются контекстом. Нужен проверяемый грамматический слот.",
+        "verifier": "parentheses_2",
+        "verified_at": "2026-11-04T09:40:29.033435+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q145_b1_t1",
@@ -108,20 +132,44 @@
     {
       "id": "q145_b2_f1",
       "decision": "fixed",
-      "note": "Исправлены или уточнены поля: prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "note": "Независимая проверка: Incluya/aporte/añada/presente — все подходят; не задан глагол.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "Независимая проверка: Incluya/aporte/añada/presente — все подходят; не задан глагол.",
+        "verifier": "parentheses_2",
+        "verified_at": "2026-11-04T09:40:29.033435+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q145_b2_f2",
       "decision": "fixed",
-      "note": "Исправлены или уточнены поля: correct_answer, explanation, prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "note": "Независимая проверка: Не задано действие и время: elevó/bajó/mantuvo и настоящее также возможны.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "Независимая проверка: Не задано действие и время: elevó/bajó/mantuvo и настоящее также возможны.",
+        "verifier": "parentheses_2",
+        "verified_at": "2026-11-04T09:40:29.033435+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q145_b2_t1",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Скобки относятся к обсуждаемому примеру/контексту; требуется определить грамматическую правильность или значение."
+      }
     },
     {
       "id": "q145_b2_t2",
@@ -139,7 +187,13 @@
       "id": "q145_b2_r1",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Лексема или инфинитив задаёт материал для выбора грамматической формы по контексту; допустимое совпадение с начальной формой само по себе не отменяет этот выбор."
+      }
     },
     {
       "id": "q145_b2_r2",
@@ -180,14 +234,29 @@
     {
       "id": "q145_b3_f1",
       "decision": "fixed",
-      "note": "Исправлены или уточнены поля: explanation, prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "note": "Независимая проверка: Asimismo, Además, También, Entonces и другие связки подходят; отношение добавления не задано и ключ не единственный.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "Независимая проверка: Asimismo, Además, También, Entonces и другие связки подходят; отношение добавления не задано и ключ не единственный.",
+        "verifier": "parentheses_2",
+        "verified_at": "2026-11-04T09:40:29.033435+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q145_b3_f2",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Скобки не содержат готового ключа. Проверен только узкий критерий раскрытия ответа, не общая редакторская корректность задания."
+      }
     },
     {
       "id": "q145_b3_t1",
@@ -223,7 +292,13 @@
       "id": "q145_b3_match",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Скобки относятся к обсуждаемому примеру/контексту; требуется определить грамматическую правильность или значение."
+      }
     },
     {
       "id": "q145_b4_m1",
@@ -252,14 +327,32 @@
     {
       "id": "q145_b4_f1",
       "decision": "fixed",
-      "note": "Исправлены или уточнены поля: prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "note": "Независимая проверка: Форма слова не задаёт время и лемму: fue/era и составные формы пассива возможны; явно задать ser и indefinido.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "Независимая проверка: Форма слова не задаёт время и лемму: fue/era и составные формы пассива возможны; явно задать ser и indefinido.",
+        "verifier": "parentheses_2",
+        "verified_at": "2026-11-04T09:40:29.033435+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q145_b4_f2",
       "decision": "fixed",
-      "note": "Исправлены или уточнены поля: prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "note": "Независимая проверка: Без указания безличного сообщения возможны Se, Le, Nos и т.д. с подразумеваемым субъектом informa.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "Независимая проверка: Без указания безличного сообщения возможны Se, Le, Nos и т.д. с подразумеваемым субъектом informa.",
+        "verifier": "parentheses_2",
+        "verified_at": "2026-11-04T09:40:29.033435+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q145_b4_t1",
@@ -324,14 +417,32 @@
     {
       "id": "q145_b5_f1",
       "decision": "fixed",
-      "note": "Исправлены или уточнены поля: correct_answer, prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "note": "Независимая проверка: Не указан смысл источника; формальная рамка допускает разные слова и обороты, включая Conforme a. Уточнить значение и одно слово.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "Независимая проверка: Не указан смысл источника; формальная рамка допускает разные слова и обороты, включая Conforme a. Уточнить значение и одно слово.",
+        "verifier": "parentheses_2",
+        "verified_at": "2026-11-04T09:40:29.033435+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q145_b5_f2",
       "decision": "fixed",
-      "note": "Исправлены или уточнены поля: prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "note": "В ключе было только Al, но после пропуска отсутствовала обязательная часть parecer. Добавлено слово, чтобы при верном ответе получалась полная связка.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "fixed",
+        "note": "В ключе было только Al, но после пропуска отсутствовала обязательная часть parecer. Добавлено слово, чтобы при верном ответе получалась полная связка.",
+        "verifier": "parentheses_2",
+        "verified_at": "2026-11-04T09:40:29.033435+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q145_b5_t1",
@@ -367,7 +478,13 @@
       "id": "q145_b5_match",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Скобки относятся к обсуждаемому примеру/контексту; требуется определить грамматическую правильность или значение."
+      }
     },
     {
       "id": "q145_b6_m1",
@@ -396,14 +513,32 @@
     {
       "id": "q145_b6_f1",
       "decision": "fixed",
-      "note": "Исправлены или уточнены поля: explanation, prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "note": "Независимая проверка: Существительное не задано: calco/préstamo/traslado возможны по контексту; нужно проверять грамматическую форму.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "Независимая проверка: Существительное не задано: calco/préstamo/traslado возможны по контексту; нужно проверять грамматическую форму.",
+        "verifier": "parentheses_2",
+        "verified_at": "2026-11-04T09:40:29.033435+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q145_b6_f2",
       "decision": "fixed",
-      "note": "Исправлены или уточнены поля: correct_answer, explanation, prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "note": "Независимая проверка: Resumen ejecutivo и Informe ejecutivo допустимы как заголовки; одна строка ответа не охватывает оба.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "Независимая проверка: Resumen ejecutivo и Informe ejecutivo допустимы как заголовки; одна строка ответа не охватывает оба.",
+        "verifier": "parentheses_2",
+        "verified_at": "2026-11-04T09:40:29.033435+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q145_b6_t1",
@@ -433,7 +568,13 @@
       "id": "q145_b6_r2",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Грамматическое ограничение в скобках снимает неоднозначность; нужную форму/конструкцию всё равно требуется построить."
+      }
     },
     {
       "id": "q145_b6_match",
@@ -447,7 +588,41 @@
       "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
       "result": "pass",
       "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    },
+    {
+      "command": "python3 logs/complaints/parenthetical-audit-20261104/worker-3-validate.py",
+      "result": "pass",
+      "evidence": "1549 selected decisions complete; 5921 objects compared with baseline, 5836 untouched; IDs/order/type/difficulty/theory/choice IDs preserved; source/final/embedded and signatures checked. Evidence: logs/complaints/parenthetical-audit-20261104/worker-3-validation.json."
+    },
+    {
+      "command": "Unchanged owning validate-chapter.sh and AJV draft2020 on isolated baseline/current final copies (worker-3-validate.py)",
+      "result": "pass",
+      "evidence": "Chapter validator exits 0 before and after. AJV passes both versions."
     }
   ],
-  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+  "verification_note": "Parenthetical-hints audit 2026-11-04: changed questions await independent verification; prior unrelated decisions retained.",
+  "parentheses_audit_verification": {
+    "verifier": "parentheses_2",
+    "verified_at": "2026-11-04T09:40:29.033435+00:00",
+    "verification": "ok",
+    "scope": "narrow_parentheses_audit_changed_questions",
+    "question_ids": [
+      "q145_b1_f1",
+      "q145_b1_f2",
+      "q145_b2_f1",
+      "q145_b2_f2",
+      "q145_b3_f1",
+      "q145_b4_f1",
+      "q145_b4_f2",
+      "q145_b5_f1",
+      "q145_b5_f2",
+      "q145_b6_f1",
+      "q145_b6_f2"
+    ],
+    "evidence": [
+      "docs/grammar-review/batches/2026-11-04-parenthetical-hints/independent-worker-3.json",
+      "docs/grammar-review/batches/2026-11-04-parenthetical-hints/independent-worker-3-extension.json"
+    ],
+    "note": "Независимая проверка изменённых вопросов узкого аудита подсказок; out_of_scope не сертифицированы. Фазы общего обзора и source/context hashes не изменялись."
+  }
 }

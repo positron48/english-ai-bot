@@ -25,7 +25,13 @@
       "id": "q3",
       "decision": "fixed",
       "note": "Исправлены русский предлог и число адресатов в обращении.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Скобки уточняют ситуацию/референт/время, а не дают готовый ответ."
+      }
     },
     {
       "id": "q4",
@@ -49,7 +55,13 @@
       "id": "q7",
       "decision": "fixed",
       "note": "Исправлены русский предлог и число адресатов в обращении.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Скобки уточняют ситуацию/референт/время, а не дают готовый ответ."
+      }
     },
     {
       "id": "q8",

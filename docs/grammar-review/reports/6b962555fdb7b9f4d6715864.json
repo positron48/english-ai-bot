@@ -13,13 +13,25 @@
       "id": "q1",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Множественное число — необходимое ограничение для these/are."
+      }
     },
     {
       "id": "q2",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Множественное число и дистанция задают контекст, those не раскрыто."
+      }
     },
     {
       "id": "q3",
@@ -31,13 +43,25 @@
       "id": "q4",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Число и дистанция задают условия, форму those are надо выбрать."
+      }
     },
     {
       "id": "q5",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Число и близость задают условия, these are требуется выбрать."
+      }
     },
     {
       "id": "q6",
@@ -49,7 +73,13 @@
       "id": "q7",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Множественное число и дальность требуют выбора those are, ключ не дан."
+      }
     },
     {
       "id": "q8",
@@ -61,7 +91,13 @@
       "id": "q9",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Множественное число и дальность задают условия, нужная фраза не дана."
+      }
     },
     {
       "id": "q10",

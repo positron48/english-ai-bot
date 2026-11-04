@@ -67,7 +67,13 @@
       "id": "q17",
       "decision": "fixed",
       "note": "Уточнены требуемая конструкция, время и сохраняемое количество; допустимая инверсия не объявляется ошибкой.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках дан класс артикля, фонетическое пояснение проверяемого утверждения или инфинитив be; готовая нужная форма не указана."
+      }
     },
     {
       "id": "q18",
@@ -79,7 +85,13 @@
       "id": "q21",
       "decision": "fixed",
       "note": "Уточнены требуемая конструкция, время и сохраняемое количество; допустимая инверсия не объявляется ошибкой.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках дан класс артикля, фонетическое пояснение проверяемого утверждения или инфинитив be; готовая нужная форма не указана."
+      }
     },
     {
       "id": "q22",
@@ -115,7 +127,13 @@
       "id": "q32",
       "decision": "fixed",
       "note": "Уточнены требуемая конструкция, время и сохраняемое количество; допустимая инверсия не объявляется ошибкой.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках дан класс артикля, фонетическое пояснение проверяемого утверждения или инфинитив be; готовая нужная форма не указана."
+      }
     },
     {
       "id": "q33",
@@ -133,7 +151,13 @@
       "id": "q36",
       "decision": "fixed",
       "note": "Уточнены время, обычный вопрос и границы правки; исправлены ложный запрет a после there are и правило отрицаний.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках дан класс артикля, фонетическое пояснение проверяемого утверждения или инфинитив be; готовая нужная форма не указана."
+      }
     },
     {
       "id": "q37",
@@ -169,7 +193,13 @@
       "id": "q47",
       "decision": "fixed",
       "note": "Уточнены время, обычный вопрос и границы правки; исправлены ложный запрет a после there are и правило отрицаний.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках дан класс артикля, фонетическое пояснение проверяемого утверждения или инфинитив be; готовая нужная форма не указана."
+      }
     },
     {
       "id": "q48",
@@ -193,7 +223,13 @@
       "id": "q51",
       "decision": "fixed",
       "note": "Уточнены время, обычный вопрос и границы правки; исправлены ложный запрет a после there are и правило отрицаний.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках дан класс артикля, фонетическое пояснение проверяемого утверждения или инфинитив be; готовая нужная форма не указана."
+      }
     },
     {
       "id": "q52",
@@ -320,6 +356,11 @@
       "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
       "result": "pass",
       "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    },
+    {
+      "command": "python3 logs/complaints/parenthetical-audit-20261104/worker-2-validate.py",
+      "result": "pass",
+      "evidence": "Parentheses audit 2026-11-04, worker-2: exact identity/order/type/difficulty/theory bindings, unmodified objects and prior report decisions preserved against assigned baseline; logs/complaints/parenthetical-audit-20261104/worker-2-evidence/preservation-and-validators.json. Narrow audit only, not renewed whole-file editorial verification."
     }
   ],
   "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."

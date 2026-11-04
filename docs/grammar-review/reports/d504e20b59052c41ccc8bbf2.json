@@ -61,7 +61,13 @@
       "id": "q9",
       "decision": "fixed",
       "note": "Уточнена функция his/her, устранены ссылка на букву ответа или вопрос-переспрос без контекста.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Женский род владельца уточняет русское ей; her нужно выбрать самостоятельно."
+      }
     },
     {
       "id": "q10",

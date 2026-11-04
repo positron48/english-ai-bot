@@ -25,13 +25,25 @@
       "id": "q3",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Несколько адресатов задают лицо/число, Ustedes нужно восстановить по trabajan."
+      }
     },
     {
       "id": "q4",
       "decision": "fixed",
       "note": "Уточнены регион, состав группы и адресат; señora не объявлено безусловным требованием usted, сохранены допустимые варианты обращения.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Неформальная смешанная группа/Мадрид задают vosotros, слово не раскрыто."
+      }
     },
     {
       "id": "q5",
@@ -61,7 +73,13 @@
       "id": "q9",
       "decision": "fixed",
       "note": "Уточнены регион, состав группы и адресат; señora не объявлено безусловным требованием usted, сохранены допустимые варианты обращения.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Формальность и число задают адресата, Usted не дан."
+      }
     },
     {
       "id": "q10",
@@ -85,13 +103,25 @@
       "id": "q13",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Один человек/формально задают категорию, Usted не написан."
+      }
     },
     {
       "id": "q14",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Неформальность и число задают категорию, tú надо выбрать."
+      }
     },
     {
       "id": "q15",
@@ -121,7 +151,13 @@
       "id": "q19",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Лицо и неформальность задают адресата, tú нужно выбрать."
+      }
     },
     {
       "id": "q20",
@@ -151,7 +187,13 @@
       "id": "q24",
       "decision": "fixed",
       "note": "Уточнены регион, адресат и утвердительная форма настоящего времени; учтены vosotros/vosotras и императив tú trabaja.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Число и Колумбия задают ustedes, готовое слово не написано."
+      }
     },
     {
       "id": "q25",
@@ -181,7 +223,13 @@
       "id": "q29",
       "decision": "fixed",
       "note": "Уточнены регион, адресат и утвердительная форма настоящего времени; учтены vosotros/vosotras и императив tú trabaja.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Женская группа и Испания задают vosotras, форма не дана."
+      }
     },
     {
       "id": "q30",
@@ -205,13 +253,25 @@
       "id": "q33",
       "decision": "fixed",
       "note": "Уточнены регион, адресат и утвердительная форма настоящего времени; учтены vosotros/vosotras и императив tú trabaja.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "ser требует sois по vosotros."
+      }
     },
     {
       "id": "q34",
       "decision": "fixed",
       "note": "Уточнены регион, адресат и утвердительная форма настоящего времени; учтены vosotros/vosotras и императив tú trabaja.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "vivir требует viven по ustedes."
+      }
     },
     {
       "id": "q35",
@@ -229,7 +289,13 @@
       "id": "q37",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Регион/число/неформальность задают категорию, vivís нужно выбрать по спряжению."
+      }
     },
     {
       "id": "q38",
@@ -241,7 +307,13 @@
       "id": "q39",
       "decision": "fixed",
       "note": "Уточнены регион, адресат и утвердительная форма настоящего времени; учтены vosotros/vosotras и императив tú trabaja.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "trabajar требует trabajas по tú."
+      }
     },
     {
       "id": "q40",
@@ -265,13 +337,25 @@
       "id": "q43",
       "decision": "fixed",
       "note": "Уточнены адресат/регистр/регион, исправлено неверное толкование Dime tú, допустимые варианты не названы ошибочными, вместо алгоритма проверяется согласование.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Один адресат и вежливое Вы задают usted без готового ключа."
+      }
     },
     {
       "id": "q44",
       "decision": "fixed",
       "note": "Уточнены обращение к группе в Мексике и формат fill_blank с подсказкой в конце.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Класс местоимения не раскрывает ustedes; контекст Мексики задаёт форму обращения."
+      }
     },
     {
       "id": "q45",
@@ -361,7 +445,13 @@
       "id": "q59",
       "decision": "fixed",
       "note": "Явно задано формальное обращение к группе; Señores само по себе не исключает vosotros. Восстановлен формат fill_blank.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Класс местоимения не раскрывает ustedes; формальное множественное Вы требует знания формы."
+      }
     },
     {
       "id": "q60",

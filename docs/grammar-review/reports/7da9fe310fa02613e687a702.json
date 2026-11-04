@@ -19,7 +19,13 @@
       "id": "q3",
       "decision": "ok",
       "note": "Форма used to, значение прошлой привычки/состояния и ключ согласованы.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "use требует формы used в конструкции прошлой привычки."
+      }
     },
     {
       "id": "q5",
@@ -43,7 +49,13 @@
       "id": "q8",
       "decision": "ok",
       "note": "Форма used to, значение прошлой привычки/состояния и ключ согласованы.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "use требует used в used to."
+      }
     },
     {
       "id": "q9",
@@ -55,7 +67,13 @@
       "id": "q12",
       "decision": "ok",
       "note": "Форма used to, значение прошлой привычки/состояния и ключ согласованы.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "use требует used для прежнего состояния."
+      }
     },
     {
       "id": "q13",
@@ -67,13 +85,25 @@
       "id": "q14",
       "decision": "ok",
       "note": "Форма used to, значение прошлой привычки/состояния и ключ согласованы.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "use требует used в конструкции прежних поездок."
+      }
     },
     {
       "id": "q15",
       "decision": "ok",
       "note": "Форма used to, значение прошлой привычки/состояния и ключ согласованы.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "V1 лишь расшифровывает термин в проверяемом утверждении; true/false не дан."
+      }
     },
     {
       "id": "q17",
@@ -85,7 +115,13 @@
       "id": "q18",
       "decision": "ok",
       "note": "Форма used to, значение прошлой привычки/состояния и ключ согласованы.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "use требует used в конструкции прошлой привычки."
+      }
     },
     {
       "id": "q19",
@@ -109,7 +145,13 @@
       "id": "q23",
       "decision": "ok",
       "note": "Форма used to, значение прошлой привычки/состояния и ключ согласованы.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "use требует used для прежней привычки."
+      }
     },
     {
       "id": "q24",
@@ -139,7 +181,13 @@
       "id": "q30",
       "decision": "ok",
       "note": "Форма и смысл согласованы, единственный подходящий ответ.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "do требует Did для вопроса о прошлом."
+      }
     },
     {
       "id": "q31",
@@ -169,7 +217,13 @@
       "id": "q38",
       "decision": "ok",
       "note": "Форма и смысл согласованы, единственный подходящий ответ.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "use требует used; противопоставление настоящему задаёт прошлую привычку."
+      }
     },
     {
       "id": "q39",
@@ -187,7 +241,13 @@
       "id": "q42",
       "decision": "fixed",
       "note": "Уточнена экзаменационная орфография либо смысл единичного события/привычки; временной маркер сам по себе не запрещает used to.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "use требует used в used to."
+      }
     },
     {
       "id": "q43",
@@ -211,7 +271,13 @@
       "id": "q47",
       "decision": "fixed",
       "note": "Уточнена экзаменационная орфография либо смысл единичного события/привычки; временной маркер сам по себе не запрещает used to.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "use требует used по прошлому детскому действию."
+      }
     },
     {
       "id": "q48",
@@ -229,7 +295,13 @@
       "id": "q50",
       "decision": "ok",
       "note": "Форма и смысл согласованы, единственный подходящий ответ.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "use требует used для прежнего состояния."
+      }
     },
     {
       "id": "q51",
@@ -265,7 +337,13 @@
       "id": "q59",
       "decision": "ok",
       "note": "Написание, форма be и смысл соответствуют заданию.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "use требует used для прежнего владения."
+      }
     },
     {
       "id": "q60",

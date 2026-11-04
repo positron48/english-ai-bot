@@ -37,13 +37,25 @@
       "id": "q5",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках глагольная лемма или смысл характеристики/происхождения; требуется согласовать ser/estar либо выбрать вопросительное слово."
+      }
     },
     {
       "id": "q6",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках глагольная лемма или смысл характеристики/происхождения; требуется согласовать ser/estar либо выбрать вопросительное слово."
+      }
     },
     {
       "id": "q7",
@@ -97,13 +109,25 @@
       "id": "q15",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках глагольная лемма или смысл характеристики/происхождения; требуется согласовать ser/estar либо выбрать вопросительное слово."
+      }
     },
     {
       "id": "q16",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках глагольная лемма или смысл характеристики/происхождения; требуется согласовать ser/estar либо выбрать вопросительное слово."
+      }
     },
     {
       "id": "q17",
@@ -157,13 +181,25 @@
       "id": "q25",
       "decision": "fixed",
       "note": "Убраны нерусские singular и лишняя подсказка числа; указано время.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках глагольная лемма или смысл характеристики/происхождения; требуется согласовать ser/estar либо выбрать вопросительное слово."
+      }
     },
     {
       "id": "q26",
       "decision": "fixed",
       "note": "Убраны нерусские plural и подсказка числа; указано время.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках глагольная лемма или смысл характеристики/происхождения; требуется согласовать ser/estar либо выбрать вопросительное слово."
+      }
     },
     {
       "id": "q27",
@@ -217,13 +253,25 @@
       "id": "q35",
       "decision": "fixed",
       "note": "Для местонахождения офиса естественно estar; для темы ser использовано место экзамена.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках глагольная лемма или смысл характеристики/происхождения; требуется согласовать ser/estar либо выбрать вопросительное слово."
+      }
     },
     {
       "id": "q36",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках глагольная лемма или смысл характеристики/происхождения; требуется согласовать ser/estar либо выбрать вопросительное слово."
+      }
     },
     {
       "id": "q37",
@@ -247,7 +295,13 @@
       "id": "q40",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках глагольная лемма или смысл характеристики/происхождения; требуется согласовать ser/estar либо выбрать вопросительное слово."
+      }
     },
     {
       "id": "q41",
@@ -277,13 +331,25 @@
       "id": "q45",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках глагольная лемма или смысл характеристики/происхождения; требуется согласовать ser/estar либо выбрать вопросительное слово."
+      }
     },
     {
       "id": "q46",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках глагольная лемма или смысл характеристики/происхождения; требуется согласовать ser/estar либо выбрать вопросительное слово."
+      }
     },
     {
       "id": "q47",
@@ -337,13 +403,25 @@
       "id": "q55",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках глагольная лемма или смысл характеристики/происхождения; требуется согласовать ser/estar либо выбрать вопросительное слово."
+      }
     },
     {
       "id": "q56",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках глагольная лемма или смысл характеристики/происхождения; требуется согласовать ser/estar либо выбрать вопросительное слово."
+      }
     },
     {
       "id": "q57",
@@ -410,6 +488,11 @@
       "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
       "result": "pass",
       "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    },
+    {
+      "command": "python3 logs/complaints/parenthetical-audit-20261104/worker-2-validate.py",
+      "result": "pass",
+      "evidence": "Parentheses audit 2026-11-04, worker-2: exact identity/order/type/difficulty/theory bindings, unmodified objects and prior report decisions preserved against assigned baseline; logs/complaints/parenthetical-audit-20261104/worker-2-evidence/preservation-and-validators.json. Narrow audit only, not renewed whole-file editorial verification."
     }
   ],
   "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."

@@ -37,13 +37,25 @@
       "id": "q5",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Дано утверждение для преобразования в отрицание; not и правильный порядок надо выбрать."
+      }
     },
     {
       "id": "q6",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Дано утверждение для преобразования в вопрос, инверсия остаётся проверяемой."
+      }
     },
     {
       "id": "q7",
@@ -61,7 +73,13 @@
       "id": "q9",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Дано утверждение для преобразования в вопрос, готового вопроса нет."
+      }
     },
     {
       "id": "q10",

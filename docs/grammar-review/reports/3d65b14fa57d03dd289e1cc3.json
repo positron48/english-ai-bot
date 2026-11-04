@@ -1,11 +1,11 @@
 {
   "version": 1,
   "source": "courses/spanish-grammar/chapters/138.es.grammar.subjunctive_past_counterfactuals.third_conditional_mixed_counterfactuals/03-questions.json",
-  "source_sha256": "6bf4b336cd5886fce97a51ead21970bf6f52eb82f0f760f525f9666c46357680",
+  "source_sha256": "bedeebe5c7de88e7e30695d67a4e07709fdd60171a51b1834b28a46aa32d130a",
   "context_sha256": "7bf7bb70b1a19530a78962bc61c316d82951effad13e1238ee1b4956bbd5d145",
   "editor": "Codex editor 2026-09-06",
   "verifier": "Anton Filatov (user)",
-  "phase": "done",
+  "phase": "awaiting_verification",
   "reviewed_at": "2026-09-06T00:08:09.374400Z",
   "verified_at": "2026-09-06T17:58:18.569986Z",
   "questions": [
@@ -13,7 +13,13 @@
       "id": "q138_b1_mcq_d1",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают лицо/время, русский смысл или технический формат записи. Для ответа требуется знать форму haber/participio или оценить грамматическое утверждение; полного ключа в скобках нет."
+      }
     },
     {
       "id": "q138_b1_mcq_d3",
@@ -31,13 +37,25 @@
       "id": "q138_b1_fill_1",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: correct_answer. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают лицо/время, русский смысл или технический формат записи. Для ответа требуется знать форму haber/participio или оценить грамматическое утверждение; полного ключа в скобках нет."
+      }
     },
     {
       "id": "q138_b1_fill_2",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают лицо/время, русский смысл или технический формат записи. Для ответа требуется знать форму haber/participio или оценить грамматическое утверждение; полного ключа в скобках нет."
+      }
     },
     {
       "id": "q138_b1_tf_1",
@@ -49,7 +67,13 @@
       "id": "q138_b1_tf_2",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают временную модель, лицо или уточняют термин; форма/грамматическое утверждение всё ещё требует решения."
+      }
     },
     {
       "id": "q138_b1_err_1",
@@ -91,19 +115,40 @@
       "id": "q138_b2_mcq_d5",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают временную модель, лицо или уточняют термин; форма/грамматическое утверждение всё ещё требует решения."
+      }
     },
     {
       "id": "q138_b2_fill_1",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Вместо подсказанного no и правила его позиции пропуск проверяет форму вспомогательного глагола в отрицательном нереальном условии; готовая целевая форма не дана.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "fixed",
+        "note": "Вместо подсказанного no и правила его позиции пропуск проверяет форму вспомогательного глагола в отрицательном нереальном условии; готовая целевая форма не дана.",
+        "verifier": "parentheses_1",
+        "verified_at": "2026-11-04T09:19:42.825635+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q138_b2_fill_2",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: correct_answer, explanation. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают временную модель, лицо или уточняют термин; форма/грамматическое утверждение всё ещё требует решения."
+      }
     },
     {
       "id": "q138_b2_tf_1",
@@ -163,13 +208,25 @@
       "id": "q138_b3_fill_1",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: correct_answer. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают временную модель, лицо или уточняют термин; форма/грамматическое утверждение всё ещё требует решения."
+      }
     },
     {
       "id": "q138_b3_fill_2",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: correct_answer. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают временную модель, лицо или уточняют термин; форма/грамматическое утверждение всё ещё требует решения."
+      }
     },
     {
       "id": "q138_b3_tf_1",
@@ -229,13 +286,28 @@
       "id": "q138_b4_fill_1",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают временную модель, лицо или уточняют термин; форма/грамматическое утверждение всё ещё требует решения."
+      }
     },
     {
       "id": "q138_b4_fill_2",
       "decision": "fixed",
-      "note": "Исправлены или уточнены поля: correct_answer. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "note": "Удалено прямое «только habría». Заданы haber/yo/condicional simple, поэтому нужную форму вспомогательного ученик образует сам.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "fixed",
+        "note": "Удалено прямое «только habría». Заданы haber/yo/condicional simple, поэтому нужную форму вспомогательного ученик образует сам.",
+        "verifier": "parentheses_1",
+        "verified_at": "2026-11-04T09:19:42.825635+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q138_b4_tf_1",
@@ -265,7 +337,13 @@
       "id": "q138_b4_reorder_2",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают временную модель, лицо или уточняют термин; форма/грамматическое утверждение всё ещё требует решения."
+      }
     },
     {
       "id": "q138_b4_match",
@@ -295,13 +373,25 @@
       "id": "q138_b5_fill_1",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: correct_answer, explanation. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают временную модель, лицо или уточняют термин; форма/грамматическое утверждение всё ещё требует решения."
+      }
     },
     {
       "id": "q138_b5_fill_2",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают временную модель, лицо или уточняют термин; форма/грамматическое утверждение всё ещё требует решения."
+      }
     },
     {
       "id": "q138_b5_tf_1",
@@ -361,13 +451,28 @@
       "id": "q138_b6_fill_1",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают временную модель, лицо или уточняют термин; форма/грамматическое утверждение всё ещё требует решения."
+      }
     },
     {
       "id": "q138_b6_fill_2",
       "decision": "fixed",
-      "note": "Исправлены или уточнены поля: correct_answer. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "note": "Удалено прямое «только habría». Сохраняется смысл прошлого результата и грамматическое задание на вспомогательный haber.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "fixed",
+        "note": "Удалено прямое «только habría». Сохраняется смысл прошлого результата и грамматическое задание на вспомогательный haber.",
+        "verifier": "parentheses_1",
+        "verified_at": "2026-11-04T09:19:42.825635+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q138_b6_tf_1",
@@ -391,7 +496,13 @@
       "id": "q138_b6_reorder_1",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают временную модель, лицо или уточняют термин; форма/грамматическое утверждение всё ещё требует решения."
+      }
     },
     {
       "id": "q138_b6_reorder_2",
@@ -409,7 +520,13 @@
       "id": "q138_b1_mcq_d2",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают временную модель, лицо или уточняют термин; форма/грамматическое утверждение всё ещё требует решения."
+      }
     },
     {
       "id": "q138_b2_mcq_d2",
@@ -449,5 +566,96 @@
       "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
     }
   ],
-  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось.",
+  "parentheses_audit_verification": {
+    "scope": "Narrow parenthetical answer-leakage audit and correctness of edits; not completion of the full grammar review campaign.",
+    "editor": "coordinator",
+    "verifier": "parentheses_1",
+    "verified_at": "2026-11-04T09:19:42.825635+00:00",
+    "verification": "ok",
+    "read_question_ids": [
+      "q138_b1_mcq_d1",
+      "q138_b1_mcq_d3",
+      "q138_b1_mcq_d5",
+      "q138_b1_fill_1",
+      "q138_b1_fill_2",
+      "q138_b1_tf_1",
+      "q138_b1_tf_2",
+      "q138_b1_err_1",
+      "q138_b1_reorder_1",
+      "q138_b1_reorder_2",
+      "q138_b1_match",
+      "q138_b2_mcq_d1",
+      "q138_b2_mcq_d3",
+      "q138_b2_mcq_d5",
+      "q138_b2_fill_1",
+      "q138_b2_fill_2",
+      "q138_b2_tf_1",
+      "q138_b2_tf_2",
+      "q138_b2_err_1",
+      "q138_b2_reorder_1",
+      "q138_b2_reorder_2",
+      "q138_b2_match",
+      "q138_b3_mcq_d1",
+      "q138_b3_mcq_d3",
+      "q138_b3_mcq_d5",
+      "q138_b3_fill_1",
+      "q138_b3_fill_2",
+      "q138_b3_tf_1",
+      "q138_b3_tf_2",
+      "q138_b3_err_1",
+      "q138_b3_reorder_1",
+      "q138_b3_reorder_2",
+      "q138_b3_match",
+      "q138_b4_mcq_d1",
+      "q138_b4_mcq_d3",
+      "q138_b4_mcq_d5",
+      "q138_b4_fill_1",
+      "q138_b4_fill_2",
+      "q138_b4_tf_1",
+      "q138_b4_tf_2",
+      "q138_b4_err_1",
+      "q138_b4_reorder_1",
+      "q138_b4_reorder_2",
+      "q138_b4_match",
+      "q138_b5_mcq_d1",
+      "q138_b5_mcq_d3",
+      "q138_b5_mcq_d5",
+      "q138_b5_fill_1",
+      "q138_b5_fill_2",
+      "q138_b5_tf_1",
+      "q138_b5_tf_2",
+      "q138_b5_err_1",
+      "q138_b5_reorder_1",
+      "q138_b5_reorder_2",
+      "q138_b5_match",
+      "q138_b6_mcq_d1",
+      "q138_b6_mcq_d3",
+      "q138_b6_mcq_d5",
+      "q138_b6_fill_1",
+      "q138_b6_fill_2",
+      "q138_b6_tf_1",
+      "q138_b6_tf_2",
+      "q138_b6_err_1",
+      "q138_b6_reorder_1",
+      "q138_b6_reorder_2",
+      "q138_b6_match",
+      "q138_b1_mcq_d2",
+      "q138_b2_mcq_d2",
+      "q138_b3_mcq_d2",
+      "q138_b4_mcq_d2",
+      "q138_b5_mcq_d2",
+      "q138_b6_mcq_d2"
+    ],
+    "accepted_changed_ids": [
+      "q138_b2_fill_1",
+      "q138_b4_fill_2",
+      "q138_b6_fill_2"
+    ],
+    "evidence": "logs/complaints/parenthetical-audit-20261104/independent-worker-4.json",
+    "out_of_scope_ids": [
+      "q138_b6_mcq_d5"
+    ],
+    "note": "All questions in this changed source were read with context. Pre-existing findings outside selected_ids remain separately recorded in independent evidence; historical full-review metadata and source/context fingerprints are preserved."
+  }
 }

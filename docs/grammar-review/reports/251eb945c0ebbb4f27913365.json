@@ -1,11 +1,11 @@
 {
   "version": 1,
   "source": "courses/spanish-grammar/chapters/006.es.grammar.orientation_alphabet_sounds.build_read_decode_words_read_mini_sentences_aloud/03-questions.json",
-  "source_sha256": "44af67d6797c4e2262dd7b4a281570aa3c966281eea90c56ccd94dd41c6088d0",
+  "source_sha256": "f79bfbb5c190ba50713c2d11462841dddef98c36dec9c51ab17b3ea35db284e4",
   "context_sha256": "e3cce9c8e648b2be2d21938913a7e04e1de30dc1e9958f0d18a2603cc02ad56d",
   "editor": "Codex editor 2026-09-04",
   "verifier": "Anton Filatov (user)",
-  "phase": "done",
+  "phase": "awaiting_verification",
   "reviewed_at": "2026-09-04T11:05:13.676890+00:00",
   "verified_at": "2026-09-06T17:58:18.569986Z",
   "questions": [
@@ -55,13 +55,25 @@
       "id": "q8",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Первый слог — позиция, требуется выделить ca из casa."
+      }
     },
     {
       "id": "q9",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Средний слог — позиция, требуется выделить lo из pelota."
+      }
     },
     {
       "id": "q10",
@@ -121,7 +133,13 @@
       "id": "q19",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Две позиции — варианты; ударение comer нужно определить по правилу."
+      }
     },
     {
       "id": "q20",
@@ -179,9 +197,18 @@
     },
     {
       "id": "q29",
-      "decision": "ok",
-      "note": "",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "2026-11-04: пример carro прямо показывал двойную rr, о выборе которой спрашивали. Пример убран; требуется знание записи сильного звука между гласными.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "fixed",
+        "note": "Пример carro, визуально раскрывавший rr, удалён.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q30",
@@ -235,13 +262,25 @@
       "id": "q38",
       "decision": "fixed",
       "note": "Эталон no больше не выписан перед пропуском.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Частица отрицания — категория, no нужно знать по смыслу."
+      }
     },
     {
       "id": "q39",
       "decision": "fixed",
       "note": "Перевод задаёт точный смысл пропуска.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Предлог места — категория, en требуется выбрать по estar en casa."
+      }
     },
     {
       "id": "q40",
@@ -295,13 +334,25 @@
       "id": "q48",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Скобки повторяют позицию открывающего знака, но ¿ не сообщают."
+      }
     },
     {
       "id": "q49",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Позиция знака задаёт смысл; ¡ нужно выбрать самостоятельно."
+      }
     },
     {
       "id": "q50",
@@ -343,7 +394,13 @@
       "id": "q56",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Точность→интонация описывает две стадии метода, true/false не дано."
+      }
     },
     {
       "id": "q57",
@@ -354,14 +411,29 @@
     {
       "id": "q58",
       "decision": "fixed",
-      "note": "Задана базовая форма слова для однозначного открытого ответа; форма ответа в подсказке не раскрывается.",
-      "verification": "ok"
+      "note": "2026-11-04: добавлена категория знака препинания без самого ответа для соблюдения формата fill_blank.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "fixed",
+        "note": "Русский готовый ответ самопроверка заменён практической задачей восстановить ¿.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q59",
       "decision": "fixed",
       "note": "Практическая самопроверка акцента вместо угадывания рекомендуемого числа повторов.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Формат буквы с акцентом задаёт орфографическую задачу, é нужно образовать."
+      }
     },
     {
       "id": "q60",
@@ -405,7 +477,26 @@
       "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
       "result": "pass",
       "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    },
+    {
+      "command": "python3 logs/complaints/parenthetical-audit-20261104/worker-1-validate.py",
+      "result": "pass",
+      "evidence": "2026-11-04 narrow parentheses audit: identity/order/bindings and untouched questions preserved; source/final/embedded exact; official isolated chapter assembly/validation or training validate_question and signature checks passed. See worker-1-evidence/validation.json."
     }
   ],
-  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+  "verification_note": "2026-11-04 parenthetical-hints audit: changed questions awaiting independent verification. Historical verification applies only to unchanged questions.",
+  "parentheses_audit_verification": {
+    "verifier": "parentheses_3",
+    "verified_at": "2026-11-04T09:44:02.337656+00:00",
+    "verification": "ok",
+    "scope": "narrow_parentheses_audit_changed_questions",
+    "question_ids": [
+      "q29",
+      "q58"
+    ],
+    "evidence": [
+      "docs/grammar-review/batches/2026-11-04-parenthetical-hints/independent-worker-1.json"
+    ],
+    "note": "Независимо прочитаны все вопросы изменённого источника; подтверждены изменённые вопросы узкого аудита. Advisory вне selected не сертифицированы. Фазы общего обзора и source/context hashes не изменялись."
+  }
 }

@@ -1,11 +1,11 @@
 {
   "version": 1,
   "source": "courses/english-grammar/chapters/028.en.grammar.now_present_continuous_contrast.form_am_is_are/03-questions.json",
-  "source_sha256": "ac8b6cac21116f0ff09f0b37caafd03b3bc0c856be4aaa730ab8dd338ed6c9a5",
+  "source_sha256": "a6a66841b4d00aefb2753bc46ca70dcefd2fa7222695374a0cae9ac11c37ce82",
   "context_sha256": "aa22202c06ab3dfe5db3c9dcd3cad2ba8c65a75d66f0cd64c6e525cb95f7cd37",
   "editor": "Codex editor 2026-09-04",
   "verifier": "Anton Filatov (user)",
-  "phase": "done",
+  "phase": "awaiting_verification",
   "reviewed_at": "2026-09-04T15:36:19.424794+00:00",
   "verified_at": "2026-09-06T17:58:18.569986Z",
   "questions": [
@@ -19,7 +19,13 @@
       "id": "q2",
       "decision": "fixed",
       "note": "Явно задано настоящее время формы be, чтобы исключить was/were.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "be требует is для she; рабочая форма не дана."
+      }
     },
     {
       "id": "q3",
@@ -31,7 +37,13 @@
       "id": "q5",
       "decision": "fixed",
       "note": "Явно задано настоящее время формы be, чтобы исключить was/were.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "be требует Are для you в вопросе."
+      }
     },
     {
       "id": "q6",
@@ -43,7 +55,13 @@
       "id": "q7",
       "decision": "fixed",
       "note": "Явно задано настоящее время формы be, чтобы исключить was/were.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "be требует am для I."
+      }
     },
     {
       "id": "q8",
@@ -55,7 +73,13 @@
       "id": "q10",
       "decision": "fixed",
       "note": "Явно задано настоящее время формы be, чтобы исключить was/were.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "be требует are для they."
+      }
     },
     {
       "id": "q11",
@@ -73,7 +97,13 @@
       "id": "q13",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "work требует образования working."
+      }
     },
     {
       "id": "q14",
@@ -85,7 +115,13 @@
       "id": "q15",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "play требует образования playing."
+      }
     },
     {
       "id": "q16",
@@ -103,7 +139,13 @@
       "id": "q18",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "listen требует образования listening."
+      }
     },
     {
       "id": "q19",
@@ -115,7 +157,13 @@
       "id": "q21",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "cook требует образования cooking."
+      }
     },
     {
       "id": "q22",
@@ -127,13 +175,25 @@
       "id": "q23",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "wait требует образования waiting."
+      }
     },
     {
       "id": "q25",
       "decision": "fixed",
       "note": "Удалён дубликат правильного ответа swimming, уточнено правило e или улучшены орфографические дистракторы.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "write требует dropping e: writing."
+      }
     },
     {
       "id": "q26",
@@ -145,7 +205,13 @@
       "id": "q27",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "take требует dropping e: taking."
+      }
     },
     {
       "id": "q29",
@@ -157,7 +223,13 @@
       "id": "q30",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "come требует dropping e: coming."
+      }
     },
     {
       "id": "q31",
@@ -169,7 +241,13 @@
       "id": "q33",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "bake требует dropping e: baking."
+      }
     },
     {
       "id": "q34",
@@ -181,13 +259,25 @@
       "id": "q35",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "live требует преобразования living с удалением e."
+      }
     },
     {
       "id": "q37",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "run требует running с удвоением согласной."
+      }
     },
     {
       "id": "q38",
@@ -199,7 +289,13 @@
       "id": "q39",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "get требует getting с удвоением согласной."
+      }
     },
     {
       "id": "q41",
@@ -211,7 +307,13 @@
       "id": "q42",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "begin требует beginning с удвоением согласной."
+      }
     },
     {
       "id": "q43",
@@ -223,7 +325,13 @@
       "id": "q45",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "shut требует shutting с удвоением согласной."
+      }
     },
     {
       "id": "q46",
@@ -235,7 +343,13 @@
       "id": "q47",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "swim требует swimming с удвоением согласной."
+      }
     },
     {
       "id": "q49",
@@ -247,13 +361,25 @@
       "id": "q50",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "plan требует planning с удвоением согласной."
+      }
     },
     {
       "id": "q52",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "lie требует преобразования ie в y: lying."
+      }
     },
     {
       "id": "q53",
@@ -265,7 +391,13 @@
       "id": "q54",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "die требует преобразования ie в y: dying."
+      }
     },
     {
       "id": "q56",
@@ -276,26 +408,53 @@
     {
       "id": "q57",
       "decision": "fixed",
-      "note": "Уточнено значение die или учтён допустимый словарный вариант tieing.",
-      "verification": "ok"
+      "note": "2026-11-04: при повторной проверке заменён tie на die, чтобы исключить словарный альтернативный вариант tieing в задании с единственным строковым ключом; сохранена цель ie → y + ing.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "fixed",
+        "note": "Удалено правило ie → y; при повторной сверке tie заменён на die для однозначного ключа dying без словарной альтернативы tieing.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q59",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Русский перевод разграничивает значение lie, форма -ing среди вариантов не подсказана."
+      }
     },
     {
       "id": "q60",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Лемма lie и перевод задают смысл; lying ещё требуется образовать."
+      }
     },
     {
       "id": "q62",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "read требует образования reading."
+      }
     },
     {
       "id": "q63",
@@ -307,7 +466,13 @@
       "id": "q64",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "run требует running с удвоением согласной."
+      }
     },
     {
       "id": "q65",
@@ -325,7 +490,13 @@
       "id": "q67",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "go требует образования going."
+      }
     },
     {
       "id": "q68",
@@ -337,19 +508,37 @@
       "id": "q69",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "sit требует sitting с удвоением согласной."
+      }
     },
     {
       "id": "q72",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "begin требует beginning с удвоением согласной."
+      }
     },
     {
       "id": "q75",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "bake требует baking с удалением e."
+      }
     }
   ],
   "checks": [
@@ -392,7 +581,25 @@
       "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
       "result": "pass",
       "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    },
+    {
+      "command": "python3 logs/complaints/parenthetical-audit-20261104/worker-1-validate.py",
+      "result": "pass",
+      "evidence": "2026-11-04 narrow parentheses audit: identity/order/bindings and untouched questions preserved; source/final/embedded exact; official isolated chapter assembly/validation or training validate_question and signature checks passed. See worker-1-evidence/validation.json."
     }
   ],
-  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+  "verification_note": "2026-11-04 parenthetical-hints audit: changed questions awaiting independent verification. Historical verification applies only to unchanged questions.",
+  "parentheses_audit_verification": {
+    "verifier": "parentheses_3",
+    "verified_at": "2026-11-04T09:44:02.337656+00:00",
+    "verification": "ok",
+    "scope": "narrow_parentheses_audit_changed_questions",
+    "question_ids": [
+      "q57"
+    ],
+    "evidence": [
+      "docs/grammar-review/batches/2026-11-04-parenthetical-hints/independent-worker-1.json"
+    ],
+    "note": "Независимо прочитаны все вопросы изменённого источника; подтверждены изменённые вопросы узкого аудита. Advisory вне selected не сертифицированы. Фазы общего обзора и source/context hashes не изменялись."
+  }
 }

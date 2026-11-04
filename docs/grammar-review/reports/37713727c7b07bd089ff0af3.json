@@ -1,11 +1,11 @@
 {
   "version": 1,
   "source": "courses/spanish-grammar/chapters/088.es.grammar.pronouns_direct_indirect.direct_object_pronouns_lo_la_los_las/03-questions.json",
-  "source_sha256": "8b562c49ad7b00e5114ec000e23c206a6fb71ad87c2254094aca7e68135d36c7",
+  "source_sha256": "7e8030bf92459496560b519c581f98797e8c891a288472cffd19e5a7cd6febd1",
   "context_sha256": "b945d10f4b367cde60c17ec5bbce15fa4929d87ac57a32670ffbd095c5cc5803",
   "editor": "Codex editor 2026-09-05",
   "verifier": "Anton Filatov (user)",
-  "phase": "done",
+  "phase": "awaiting_verification",
   "reviewed_at": "2026-09-05T10:42:05.853575Z",
   "verified_at": "2026-09-06T17:58:18.569986Z",
   "questions": [
@@ -61,7 +61,13 @@
       "id": "q9",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "el coche задаёт референт местоимения, не форму lo."
+      }
     },
     {
       "id": "q10",
@@ -103,13 +109,25 @@
       "id": "q16",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Laura — конкретный референт проверяемого правила, согласование остаётся предметом оценки."
+      }
     },
     {
       "id": "q17",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "las llaves — референт; совпадение артикля и местоимения не указывает само правило замены."
+      }
     },
     {
       "id": "q18",
@@ -139,7 +157,13 @@
       "id": "q22",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "el informe задаёт референт, lo не раскрыто."
+      }
     },
     {
       "id": "q23",
@@ -167,9 +191,18 @@
     },
     {
       "id": "q27",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "2026-11-04: удалён готовый ключ lo из скобок; русский смысл сохраняет однозначный референт нейтрального местоимения.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "fixed",
+        "note": "Удалён готовый ключ lo; сохранено русское «не понимаю это», достаточное для нейтрального местоимения.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q28",
@@ -187,7 +220,13 @@
       "id": "q30",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: explanation. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "mis gafas и женский множественный род — категории согласования; местоимение Las нужно выбрать."
+      }
     },
     {
       "id": "q31",
@@ -235,7 +274,13 @@
       "id": "q38",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "el problema — референт; род и местоимение нужно определить самостоятельно."
+      }
     },
     {
       "id": "q39",
@@ -247,7 +292,13 @@
       "id": "q40",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "las entradas — заменяемая группа, не прямое указание использовать местоимение las."
+      }
     },
     {
       "id": "q41",
@@ -265,7 +316,13 @@
       "id": "q43",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "gafas задаёт референт, местоимение las нужно выбрать."
+      }
     },
     {
       "id": "q44",
@@ -277,7 +334,13 @@
       "id": "q45",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Только женщины уточняет состав группы, но требует знания формы las вместо los."
+      }
     },
     {
       "id": "q46",
@@ -325,7 +388,13 @@
       "id": "q53",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "el pan задаёт референт, местоимение Lo не дано."
+      }
     },
     {
       "id": "q54",
@@ -355,7 +424,13 @@
       "id": "q58",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "el informe задаёт референт, не форму lo."
+      }
     },
     {
       "id": "q59",
@@ -379,7 +454,13 @@
       "id": "q62",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "el libro и требование выразить CD задают смысл и роль, не готовое lo."
+      }
     },
     {
       "id": "q63",
@@ -407,9 +488,18 @@
     },
     {
       "id": "q67",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "2026-11-04: удалён готовый ключ lo из скобок; русский смысл задаёт референт без испанского ответа.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "fixed",
+        "note": "Удалён готовый ключ lo; русский перевод сохраняет нейтральный референт без испанского ответа.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q68",
@@ -421,7 +511,13 @@
       "id": "q69",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "«Калька с русского» обозначает общий тип ошибки, не конкретный вариант."
+      }
     },
     {
       "id": "q70",
@@ -447,7 +543,26 @@
       "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
       "result": "pass",
       "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    },
+    {
+      "command": "python3 logs/complaints/parenthetical-audit-20261104/worker-1-validate.py",
+      "result": "pass",
+      "evidence": "2026-11-04 narrow parentheses audit: identity/order/bindings and untouched questions preserved; source/final/embedded exact; official isolated chapter assembly/validation or training validate_question and signature checks passed. See worker-1-evidence/validation.json."
     }
   ],
-  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+  "verification_note": "2026-11-04 parenthetical-hints audit: changed questions awaiting independent verification. Historical verification applies only to unchanged questions.",
+  "parentheses_audit_verification": {
+    "verifier": "parentheses_3",
+    "verified_at": "2026-11-04T09:44:02.337656+00:00",
+    "verification": "ok",
+    "scope": "narrow_parentheses_audit_changed_questions",
+    "question_ids": [
+      "q27",
+      "q67"
+    ],
+    "evidence": [
+      "docs/grammar-review/batches/2026-11-04-parenthetical-hints/independent-worker-1.json"
+    ],
+    "note": "Независимо прочитаны все вопросы изменённого источника; подтверждены изменённые вопросы узкого аудита. Advisory вне selected не сертифицированы. Фазы общего обзора и source/context hashes не изменялись."
+  }
 }

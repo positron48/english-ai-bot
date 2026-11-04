@@ -37,7 +37,13 @@
       "id": "q5",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Смысловые пометы и исходные глаголы в скобках прочитаны; готовый ответ не продиктован."
+      }
     },
     {
       "id": "q6",
@@ -97,7 +103,13 @@
       "id": "q15",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Смысловые пометы и исходные глаголы в скобках прочитаны; готовый ответ не продиктован."
+      }
     },
     {
       "id": "q16",
@@ -121,7 +133,13 @@
       "id": "q19",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Смысловые пометы и исходные глаголы в скобках прочитаны; готовый ответ не продиктован."
+      }
     },
     {
       "id": "q20",
@@ -163,7 +181,13 @@
       "id": "q26",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Смысловые пометы и исходные глаголы в скобках прочитаны; готовый ответ не продиктован."
+      }
     },
     {
       "id": "q27",
@@ -187,7 +211,13 @@
       "id": "q30",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Смысловые пометы и исходные глаголы в скобках прочитаны; готовый ответ не продиктован."
+      }
     },
     {
       "id": "q31",
@@ -223,13 +253,25 @@
       "id": "q36",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Смысловые пометы и исходные глаголы в скобках прочитаны; готовый ответ не продиктован."
+      }
     },
     {
       "id": "q37",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Смысловые пометы и исходные глаголы в скобках прочитаны; готовый ответ не продиктован."
+      }
     },
     {
       "id": "q38",
@@ -253,7 +295,13 @@
       "id": "q41",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Смысловые пометы и исходные глаголы в скобках прочитаны; готовый ответ не продиктован."
+      }
     },
     {
       "id": "q42",
@@ -295,7 +343,13 @@
       "id": "q48",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Смысловые пометы и исходные глаголы в скобках прочитаны; готовый ответ не продиктован."
+      }
     },
     {
       "id": "q49",
@@ -319,7 +373,13 @@
       "id": "q52",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Смысловые пометы и исходные глаголы в скобках прочитаны; готовый ответ не продиктован."
+      }
     },
     {
       "id": "q53",
@@ -337,7 +397,13 @@
       "id": "q55",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Смысловые пометы и исходные глаголы в скобках прочитаны; готовый ответ не продиктован."
+      }
     },
     {
       "id": "q56",
@@ -379,7 +445,13 @@
       "id": "q62",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Смысловые пометы и исходные глаголы в скобках прочитаны; готовый ответ не продиктован."
+      }
     },
     {
       "id": "q63",
@@ -435,6 +507,11 @@
       "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
       "result": "pass",
       "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    },
+    {
+      "command": "python3 logs/complaints/parenthetical-audit-20261104/worker-2-validate.py",
+      "result": "pass",
+      "evidence": "Parentheses audit 2026-11-04, worker-2: exact identity/order/type/difficulty/theory bindings, unmodified objects and prior report decisions preserved against assigned baseline; logs/complaints/parenthetical-audit-20261104/worker-2-evidence/preservation-and-validators.json. Narrow audit only, not renewed whole-file editorial verification."
     }
   ],
   "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."

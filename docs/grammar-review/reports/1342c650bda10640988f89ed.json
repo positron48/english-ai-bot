@@ -1,19 +1,28 @@
 {
   "version": 1,
   "source": "courses/spanish-grammar/chapters/090.es.grammar.pronouns_direct_indirect.placement_rules_before_verb_attached_after/03-questions.json",
-  "source_sha256": "5cbfadd52bdb45fd7da002c8c1a4892ab428555bb6dee3aadce0587ba0332b1f",
+  "source_sha256": "27e94819ceb2f2086c84e7dbedf3af291cc1f7f0d40fa2b51a6bb5b8522149f1",
   "context_sha256": "4de27ad3356277edeeb9d7be6a7fb946e43bfa2a8900e7d73fdb21c56a6a54ee",
   "editor": "Codex editor 2026-09-05",
   "verifier": "Anton Filatov (user)",
-  "phase": "done",
+  "phase": "awaiting_verification",
   "reviewed_at": "2026-09-05T19:13:50.093211Z",
   "verified_at": "2026-09-06T17:58:18.569986Z",
   "questions": [
     {
       "id": "q1",
       "decision": "fixed",
-      "note": "Исправлены или уточнены поля: choices. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "note": "2026-11-04: удалён готовый пример La veo, показывавший проверяемое положение местоимения; уточнено утвердительное предложение.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "fixed",
+        "note": "Удалён пример La veo, уже демонстрировавший правильную позицию; задано утвердительное предложение.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q2",
@@ -67,7 +76,13 @@
       "id": "q10",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: explanation. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "el regalo — заменяемый референт, Lo нужно выбрать."
+      }
     },
     {
       "id": "q11",
@@ -91,7 +106,13 @@
       "id": "q14",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Русский перевод задаёт отрицание, испанское No не показано."
+      }
     },
     {
       "id": "q15",
@@ -109,7 +130,13 @@
       "id": "q17",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: choices. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "tú задаёт лицо императива, но не его отрицательную форму/порядок местоимений."
+      }
     },
     {
       "id": "q18",
@@ -127,13 +154,25 @@
       "id": "q20",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Русский перевод задаёт отрицательный смысл, No не дано."
+      }
     },
     {
       "id": "q21",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: choices. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Отрицательный imperativo — проверяемая категория, готовая ошибка не названа."
+      }
     },
     {
       "id": "q22",
@@ -174,14 +213,29 @@
     {
       "id": "q28",
       "decision": "fixed",
-      "note": "Исправлены или уточнены поля: choices. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "note": "2026-11-04: удалена готовая форма contártelo из условия вопроса о порядке; ложный вариант больше не цитирует правильную цепочку вопреки своему тексту.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "fixed",
+        "note": "Убран готовый contártelo из условия о порядке; ложный вариант очищен от противоречивого правильного примера.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q29",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: choices. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Русский смысл задаёт просьбу, слитное написание и тильду нужно выбрать."
+      }
     },
     {
       "id": "q30",
@@ -192,8 +246,17 @@
     {
       "id": "q31",
       "decision": "fixed",
-      "note": "Исправлены или уточнены поля: choices. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "note": "2026-11-04: удалена готовая цепочка se + lo; также устранён adjacent_defect — лишнее el informe после уже заменяющего его lo.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "fixed",
+        "note": "Убрана готовая цепочка se + lo и лишнее el informe после местоименной замены; выбор формы и ударения остаётся ученику.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q32",
@@ -265,13 +328,25 @@
       "id": "q43",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: choices. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Присоединение к gerundio задаёт конструкцию; правильное написание с ударением всё ещё нужно выбрать."
+      }
     },
     {
       "id": "q44",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Русское отрицание задаёт смысл; испанский ключ No не дан."
+      }
     },
     {
       "id": "q45",
@@ -301,13 +376,25 @@
       "id": "q49",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: choices. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "tú задаёт лицо императива, форму и цепочку нужно выбрать."
+      }
     },
     {
       "id": "q50",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "usted задаёт лицо вежливого императива, не готовый ответ."
+      }
     },
     {
       "id": "q51",
@@ -337,7 +424,13 @@
       "id": "q55",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Lo mira — проверяемый пример неправильного положения в сформулированном утверждении, исправленная команда не показана."
+      }
     },
     {
       "id": "q56",
@@ -349,7 +442,13 @@
       "id": "q58",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "decir, tú, утвердительный императив и два местоимения — исходные параметры; форму глагола, порядок, слитность и ударение нужно образовать."
+      }
     },
     {
       "id": "q59",
@@ -361,25 +460,52 @@
       "id": "q60",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Русское «скажи мне это» задаёт смысл; правильный порядок цепочки в условии не приведён."
+      }
     },
     {
       "id": "q57",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "escribe + me — исходные компоненты для проверки слитного написания и ударения; готового Escríbeme нет."
+      }
     },
     {
       "id": "q61",
       "decision": "fixed",
-      "note": "Исправлены или уточнены поля: prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "note": "2026-11-04: удалена готовая цепочка se + lo, подсказывавшая проверяемые замену le и порядок местоимений.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "fixed",
+        "note": "Удалена готовая цепочка se + lo; оставлены лемма и тип будущей конструкции.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q62",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Смешение imperativo обозначает область проверки, не конкретную исправленную форму."
+      }
     },
     {
       "id": "q63",
@@ -397,7 +523,13 @@
       "id": "q65",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "infinitivo/gerundio обозначают область проверки; готовой правки нет."
+      }
     },
     {
       "id": "q66",
@@ -447,7 +579,28 @@
       "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
       "result": "pass",
       "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    },
+    {
+      "command": "python3 logs/complaints/parenthetical-audit-20261104/worker-1-validate.py",
+      "result": "pass",
+      "evidence": "2026-11-04 narrow parentheses audit: identity/order/bindings and untouched questions preserved; source/final/embedded exact; official isolated chapter assembly/validation or training validate_question and signature checks passed. See worker-1-evidence/validation.json."
     }
   ],
-  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+  "verification_note": "2026-11-04 parenthetical-hints audit: changed questions awaiting independent verification. Historical verification applies only to unchanged questions.",
+  "parentheses_audit_verification": {
+    "verifier": "parentheses_3",
+    "verified_at": "2026-11-04T09:44:02.337656+00:00",
+    "verification": "ok",
+    "scope": "narrow_parentheses_audit_changed_questions",
+    "question_ids": [
+      "q1",
+      "q28",
+      "q31",
+      "q61"
+    ],
+    "evidence": [
+      "docs/grammar-review/batches/2026-11-04-parenthetical-hints/independent-worker-1.json"
+    ],
+    "note": "Независимо прочитаны все вопросы изменённого источника; подтверждены изменённые вопросы узкого аудита. Advisory вне selected не сертифицированы. Фазы общего обзора и source/context hashes не изменялись."
+  }
 }

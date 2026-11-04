@@ -19,7 +19,13 @@
       "id": "q2",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки содержат исходный глагол, смысловую роль/время/тип ситуации либо перевод термина; вариант ответа не назван. Прямые демонстрации ключа исправлены отдельно."
+      }
     },
     {
       "id": "q3",
@@ -49,7 +55,13 @@
       "id": "q7",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки содержат исходный глагол, смысловую роль/время/тип ситуации либо перевод термина; вариант ответа не назван. Прямые демонстрации ключа исправлены отдельно."
+      }
     },
     {
       "id": "q8",
@@ -73,7 +85,13 @@
       "id": "q11",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: explanation. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки содержат исходный глагол, смысловую роль/время/тип ситуации либо перевод термина; вариант ответа не назван. Прямые демонстрации ключа исправлены отдельно."
+      }
     },
     {
       "id": "q12",
@@ -91,7 +109,13 @@
       "id": "q14",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки содержат исходный глагол, смысловую роль/время/тип ситуации либо перевод термина; вариант ответа не назван. Прямые демонстрации ключа исправлены отдельно."
+      }
     },
     {
       "id": "q16",
@@ -115,7 +139,13 @@
       "id": "q19",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки содержат исходный глагол, смысловую роль/время/тип ситуации либо перевод термина; вариант ответа не назван. Прямые демонстрации ключа исправлены отдельно."
+      }
     },
     {
       "id": "q20",
@@ -133,7 +163,13 @@
       "id": "q22",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки содержат исходный глагол, смысловую роль/время/тип ситуации либо перевод термина; вариант ответа не назван. Прямые демонстрации ключа исправлены отдельно."
+      }
     },
     {
       "id": "q23",
@@ -157,7 +193,13 @@
       "id": "q26",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки содержат исходный глагол, смысловую роль/время/тип ситуации либо перевод термина; вариант ответа не назван. Прямые демонстрации ключа исправлены отдельно."
+      }
     },
     {
       "id": "q27",
@@ -187,7 +229,13 @@
       "id": "q31",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки содержат исходный глагол, смысловую роль/время/тип ситуации либо перевод термина; вариант ответа не назван. Прямые демонстрации ключа исправлены отдельно."
+      }
     },
     {
       "id": "q32",
@@ -217,7 +265,13 @@
       "id": "q36",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки содержат исходный глагол, смысловую роль/время/тип ситуации либо перевод термина; вариант ответа не назван. Прямые демонстрации ключа исправлены отдельно."
+      }
     },
     {
       "id": "q37",
@@ -229,7 +283,13 @@
       "id": "q38",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: explanation, prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки содержат исходный глагол, смысловую роль/время/тип ситуации либо перевод термина; вариант ответа не назван. Прямые демонстрации ключа исправлены отдельно."
+      }
     },
     {
       "id": "q39",
@@ -259,7 +319,13 @@
       "id": "q43",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: explanation, prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки содержат исходный глагол, смысловую роль/время/тип ситуации либо перевод термина; вариант ответа не назван. Прямые демонстрации ключа исправлены отдельно."
+      }
     },
     {
       "id": "q44",
@@ -289,7 +355,13 @@
       "id": "q48",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: explanation, prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки содержат исходный глагол, смысловую роль/время/тип ситуации либо перевод термина; вариант ответа не назван. Прямые демонстрации ключа исправлены отдельно."
+      }
     },
     {
       "id": "q49",
@@ -301,7 +373,13 @@
       "id": "q50",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки содержат исходный глагол, смысловую роль/время/тип ситуации либо перевод термина; вариант ответа не назван. Прямые демонстрации ключа исправлены отдельно."
+      }
     },
     {
       "id": "q51",
@@ -331,7 +409,13 @@
       "id": "q55",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки содержат исходный глагол, смысловую роль/время/тип ситуации либо перевод термина; вариант ответа не назван. Прямые демонстрации ключа исправлены отдельно."
+      }
     },
     {
       "id": "q56",
@@ -361,7 +445,13 @@
       "id": "q60",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки содержат исходный глагол, смысловую роль/время/тип ситуации либо перевод термина; вариант ответа не назван. Прямые демонстрации ключа исправлены отдельно."
+      }
     }
   ],
   "checks": [
@@ -369,6 +459,11 @@
       "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
       "result": "pass",
       "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    },
+    {
+      "command": "python3 logs/complaints/parenthetical-audit-20261104/worker-2-validate.py",
+      "result": "pass",
+      "evidence": "Parentheses audit 2026-11-04, worker-2: exact identity/order/type/difficulty/theory bindings, unmodified objects and prior report decisions preserved against assigned baseline; logs/complaints/parenthetical-audit-20261104/worker-2-evidence/preservation-and-validators.json. Narrow audit only, not renewed whole-file editorial verification."
     }
   ],
   "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."

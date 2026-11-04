@@ -13,43 +13,85 @@
       "id": "q1",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают род или число для согласования, но не содержат готовое сочетание или форму; требуется применить правило согласования/числительных."
+      }
     },
     {
       "id": "q2",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают род или число для согласования, но не содержат готовое сочетание или форму; требуется применить правило согласования/числительных."
+      }
     },
     {
       "id": "q3",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают род или число для согласования, но не содержат готовое сочетание или форму; требуется применить правило согласования/числительных."
+      }
     },
     {
       "id": "q4",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают род или число для согласования, но не содержат готовое сочетание или форму; требуется применить правило согласования/числительных."
+      }
     },
     {
       "id": "q5",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают род или число для согласования, но не содержат готовое сочетание или форму; требуется применить правило согласования/числительных."
+      }
     },
     {
       "id": "q6",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают род или число для согласования, но не содержат готовое сочетание или форму; требуется применить правило согласования/числительных."
+      }
     },
     {
       "id": "q7",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают род или число для согласования, но не содержат готовое сочетание или форму; требуется применить правило согласования/числительных."
+      }
     },
     {
       "id": "q8",

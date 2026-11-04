@@ -55,61 +55,121 @@
       "id": "q8",
       "decision": "fixed",
       "note": "Исправлены вымышленные формы и ошибочное определение конца основы; повторные вопросы разнообразены при сохранении орфографической цели. Правильные формы: pesqué, gasté, cogí.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Прочитаны prompt, все варианты, ключ и объяснение. Скобки дают русский смысл или параметры рода/лица/времени; целевой формы в них нет."
+      }
     },
     {
       "id": "q9",
       "decision": "ok",
       "note": "Форма прошедшего времени, ударение и орфографическое объяснение правильны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Прочитаны prompt, все варианты, ключ и объяснение. Скобки дают русский смысл или параметры рода/лица/времени; целевой формы в них нет."
+      }
     },
     {
       "id": "q10",
       "decision": "fixed",
       "note": "Исправлены вымышленные формы и ошибочное определение конца основы; повторные вопросы разнообразены при сохранении орфографической цели. Правильные формы: pesqué, gasté, cogí.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Прочитаны prompt, все варианты, ключ и объяснение. Скобки дают русский смысл или параметры рода/лица/времени; целевой формы в них нет."
+      }
     },
     {
       "id": "q11",
       "decision": "ok",
       "note": "Форма прошедшего времени, ударение и орфографическое объяснение правильны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Прочитаны prompt, все варианты, ключ и объяснение. Скобки дают русский смысл или параметры рода/лица/времени; целевой формы в них нет."
+      }
     },
     {
       "id": "q12",
       "decision": "fixed",
       "note": "Исправлены вымышленные формы и ошибочное определение конца основы; повторные вопросы разнообразены при сохранении орфографической цели. Правильные формы: pesqué, gasté, cogí.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Прочитаны prompt, все варианты, ключ и объяснение. Скобки дают русский смысл или параметры рода/лица/времени; целевой формы в них нет."
+      }
     },
     {
       "id": "q13",
       "decision": "fixed",
       "note": "Исправлены вымышленные формы и ошибочное определение конца основы; повторные вопросы разнообразены при сохранении орфографической цели. Правильные формы: pesqué, gasté, cogí.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Прочитаны prompt, все варианты, ключ и объяснение. Скобки дают русский смысл или параметры рода/лица/времени; целевой формы в них нет."
+      }
     },
     {
       "id": "q14",
       "decision": "ok",
       "note": "Форма прошедшего времени, ударение и орфографическое объяснение правильны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Прочитаны prompt, все варианты, ключ и объяснение. Скобки дают русский смысл или параметры рода/лица/времени; целевой формы в них нет."
+      }
     },
     {
       "id": "q15",
       "decision": "fixed",
       "note": "Исправлены вымышленные формы и ошибочное определение конца основы; повторные вопросы разнообразены при сохранении орфографической цели. Правильные формы: pesqué, gasté, cogí.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Прочитаны prompt, все варианты, ключ и объяснение. Скобки дают русский смысл или параметры рода/лица/времени; целевой формы в них нет."
+      }
     },
     {
       "id": "q16",
       "decision": "fixed",
       "note": "Исправлены вымышленные формы и ошибочное определение конца основы; повторные вопросы разнообразены при сохранении орфографической цели. Правильные формы: pesqué, gasté, cogí.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Прочитаны prompt, все варианты, ключ и объяснение. Скобки дают русский смысл или параметры рода/лица/времени; целевой формы в них нет."
+      }
     },
     {
       "id": "q17",
       "decision": "fixed",
       "note": "Исправлены вымышленные формы и ошибочное определение конца основы; повторные вопросы разнообразены при сохранении орфографической цели. Правильные формы: pesqué, gasté, cogí.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Прочитаны prompt, все варианты, ключ и объяснение. Скобки дают русский смысл или параметры рода/лица/времени; целевой формы в них нет."
+      }
     }
   ],
   "checks": [
@@ -132,6 +192,11 @@
       "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
       "result": "pass",
       "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    },
+    {
+      "command": "python3 logs/complaints/parenthetical-audit-20261104/worker-2-validate.py",
+      "result": "pass",
+      "evidence": "Parentheses audit 2026-11-04, worker-2: exact identity/order/type/difficulty/theory bindings, unmodified objects and prior report decisions preserved against assigned baseline; logs/complaints/parenthetical-audit-20261104/worker-2-evidence/preservation-and-validators.json. Narrow audit only, not renewed whole-file editorial verification."
     }
   ],
   "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."

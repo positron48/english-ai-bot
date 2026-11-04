@@ -1,19 +1,28 @@
 {
   "version": 1,
   "source": "courses/spanish-grammar/chapters/125.es.grammar.subjunctive_noun_clauses.build_speak_wishes_recommendations_emotions_opinions/03-questions.json",
-  "source_sha256": "9ea3d19dbe531d879ee947bcb637c4671b253b2efa086faa50bd492b3029dcb4",
+  "source_sha256": "200fecaaad0032ab76535ad3d7f959122039b0cb4850ca3359c0b873ae6131a1",
   "context_sha256": "9e261bff5077e4b711485df56e054f849163686fcf27bdafbf744bc14f4e2c49",
   "editor": "Codex editor 2026-09-06",
   "verifier": "Anton Filatov (user)",
-  "phase": "done",
+  "phase": "awaiting_verification",
   "reviewed_at": "2026-09-05T23:19:01.214999Z",
   "verified_at": "2026-09-06T17:58:18.569986Z",
   "questions": [
     {
       "id": "q1",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Убрана подсказка цели главы «сборка фраз» и мета-вопрос о структуре учебника. Теперь проверяется соединение эмоциональной оценки и утвердительного мнения.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "fixed",
+        "note": "Убрана подсказка цели главы «сборка фраз» и мета-вопрос о структуре учебника. Теперь проверяется соединение эмоциональной оценки и утвердительного мнения.",
+        "verifier": "parentheses_1",
+        "verified_at": "2026-11-04T09:19:42.825635+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q2",
@@ -25,7 +34,13 @@
       "id": "q3",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают лемму, адресата либо смысл сопоставления; ответ требует образования формы или выбора грамматически правильной конструкции."
+      }
     },
     {
       "id": "q4",
@@ -43,7 +58,13 @@
       "id": "q6",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают лемму, адресата либо смысл сопоставления; ответ требует образования формы или выбора грамматически правильной конструкции."
+      }
     },
     {
       "id": "q7",
@@ -73,7 +94,13 @@
       "id": "q11",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают лемму, адресата либо смысл сопоставления; ответ требует образования формы или выбора грамматически правильной конструкции."
+      }
     },
     {
       "id": "q12",
@@ -89,9 +116,18 @@
     },
     {
       "id": "q14",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Независимая проверка: русское «прийти» допускало llegar наряду с venir. Дана исходная личная форма vengo для преобразования в инфинитив; готовый ключ не назван.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "Независимая проверка: русское «прийти» допускало llegar наряду с venir. Дана исходная личная форма vengo для преобразования в инфинитив; готовый ключ не назван.",
+        "verifier": "parentheses_1",
+        "verified_at": "2026-11-04T09:19:42.825635+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q15",
@@ -109,7 +145,13 @@
       "id": "q17",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают лемму, адресата либо смысл сопоставления; ответ требует образования формы или выбора грамматически правильной конструкции."
+      }
     },
     {
       "id": "q18",
@@ -121,7 +163,13 @@
       "id": "q19",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают лемму, адресата либо смысл сопоставления; ответ требует образования формы или выбора грамматически правильной конструкции."
+      }
     },
     {
       "id": "q20",
@@ -145,7 +193,13 @@
       "id": "q23",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают лемму, адресата либо смысл сопоставления; ответ требует образования формы или выбора грамматически правильной конструкции."
+      }
     },
     {
       "id": "q24",
@@ -163,7 +217,13 @@
       "id": "q26",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают лемму, адресата либо смысл сопоставления; ответ требует образования формы или выбора грамматически правильной конструкции."
+      }
     },
     {
       "id": "q27",
@@ -199,7 +259,13 @@
       "id": "q32",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают лемму, адресата либо смысл сопоставления; ответ требует образования формы или выбора грамматически правильной конструкции."
+      }
     },
     {
       "id": "q33",
@@ -217,13 +283,25 @@
       "id": "q35",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают лемму, адресата либо смысл сопоставления; ответ требует образования формы или выбора грамматически правильной конструкции."
+      }
     },
     {
       "id": "q36",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают лемму, адресата либо смысл сопоставления; ответ требует образования формы или выбора грамматически правильной конструкции."
+      }
     },
     {
       "id": "q37",
@@ -235,7 +313,13 @@
       "id": "q38",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают лемму, лицо, временной/смысловой контекст; целевая форма либо сочетание выбирается самостоятельно, готовый ключ не указан."
+      }
     },
     {
       "id": "q39",
@@ -277,7 +361,13 @@
       "id": "q45",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают лемму, лицо, временной/смысловой контекст; целевая форма либо сочетание выбирается самостоятельно, готовый ключ не указан."
+      }
     },
     {
       "id": "q46",
@@ -289,13 +379,25 @@
       "id": "q47",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают лемму, лицо, временной/смысловой контекст; целевая форма либо сочетание выбирается самостоятельно, готовый ключ не указан."
+      }
     },
     {
       "id": "q48",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки дают пример проверяемого утверждения о наклонении, но не сообщают true/false."
+      }
     },
     {
       "id": "q49",
@@ -307,7 +409,13 @@
       "id": "q50",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают лемму, лицо, временной/смысловой контекст; целевая форма либо сочетание выбирается самостоятельно, готовый ключ не указан."
+      }
     },
     {
       "id": "q51",
@@ -343,7 +451,13 @@
       "id": "q56",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают лемму, лицо, временной/смысловой контекст; целевая форма либо сочетание выбирается самостоятельно, готовый ключ не указан."
+      }
     },
     {
       "id": "q57",
@@ -361,7 +475,13 @@
       "id": "q59",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают лемму, лицо, временной/смысловой контекст; целевая форма либо сочетание выбирается самостоятельно, готовый ключ не указан."
+      }
     },
     {
       "id": "q60",
@@ -379,7 +499,13 @@
       "id": "q62",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают лемму, лицо, временной/смысловой контекст; целевая форма либо сочетание выбирается самостоятельно, готовый ключ не указан."
+      }
     },
     {
       "id": "q63",
@@ -391,13 +517,25 @@
       "id": "q64",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки иллюстрируют разные главные рамки; требуется решить, допустимо ли переключение наклонений."
+      }
     },
     {
       "id": "q65",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают лемму, лицо, временной/смысловой контекст; целевая форма либо сочетание выбирается самостоятельно, готовый ключ не указан."
+      }
     },
     {
       "id": "q66",
@@ -421,7 +559,13 @@
       "id": "q69",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают лемму, лицо, временной/смысловой контекст; целевая форма либо сочетание выбирается самостоятельно, готовый ключ не указан."
+      }
     },
     {
       "id": "q70",
@@ -437,5 +581,91 @@
       "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
     }
   ],
-  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось.",
+  "parentheses_audit_verification": {
+    "scope": "Narrow parenthetical answer-leakage audit and correctness of edits; not completion of the full grammar review campaign.",
+    "editor": "coordinator",
+    "verifier": "parentheses_1",
+    "verified_at": "2026-11-04T09:19:42.825635+00:00",
+    "verification": "ok",
+    "read_question_ids": [
+      "q1",
+      "q2",
+      "q3",
+      "q4",
+      "q5",
+      "q6",
+      "q7",
+      "q8",
+      "q9",
+      "q10",
+      "q11",
+      "q12",
+      "q13",
+      "q14",
+      "q15",
+      "q16",
+      "q17",
+      "q18",
+      "q19",
+      "q20",
+      "q21",
+      "q22",
+      "q23",
+      "q24",
+      "q25",
+      "q26",
+      "q27",
+      "q28",
+      "q29",
+      "q30",
+      "q31",
+      "q32",
+      "q33",
+      "q34",
+      "q35",
+      "q36",
+      "q37",
+      "q38",
+      "q39",
+      "q40",
+      "q41",
+      "q42",
+      "q43",
+      "q44",
+      "q45",
+      "q46",
+      "q47",
+      "q48",
+      "q49",
+      "q50",
+      "q51",
+      "q52",
+      "q53",
+      "q54",
+      "q55",
+      "q56",
+      "q57",
+      "q58",
+      "q59",
+      "q60",
+      "q61",
+      "q62",
+      "q63",
+      "q64",
+      "q65",
+      "q66",
+      "q67",
+      "q68",
+      "q69",
+      "q70"
+    ],
+    "accepted_changed_ids": [
+      "q1",
+      "q14"
+    ],
+    "evidence": "logs/complaints/parenthetical-audit-20261104/independent-worker-4.json",
+    "out_of_scope_ids": [],
+    "note": "All questions in this changed source were read with context. Pre-existing findings outside selected_ids remain separately recorded in independent evidence; historical full-review metadata and source/context fingerprints are preserved."
+  }
 }

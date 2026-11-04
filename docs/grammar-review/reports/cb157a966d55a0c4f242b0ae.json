@@ -25,13 +25,25 @@
       "id": "q3",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Цифра 2 задаёт число, испанское dos надо написать."
+      }
     },
     {
       "id": "q4",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Цифра 11 задаёт число, once надо написать."
+      }
     },
     {
       "id": "q5",
@@ -61,7 +73,13 @@
       "id": "q9",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Цифра 4 задаёт число, cuatro нужно написать."
+      }
     },
     {
       "id": "q10",
@@ -181,7 +199,13 @@
       "id": "q29",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Число 100 задаёт значение, cien нужно выбрать перед существительным."
+      }
     },
     {
       "id": "q30",
@@ -211,7 +235,13 @@
       "id": "q34",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "uno требует женской формы una по páginas."
+      }
     },
     {
       "id": "q35",
@@ -241,7 +271,13 @@
       "id": "q39",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "uno требует сокращённой формы un перед perro, форма в скобках не дана."
+      }
     },
     {
       "id": "q40",
@@ -265,13 +301,25 @@
       "id": "q43",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "bastante требует множественного bastantes; готовое слово отсутствует."
+      }
     },
     {
       "id": "q44",
       "decision": "fixed",
       "note": "Открытый ответ ограничен нужной лексемой; исправлены ложные обобщения и альтернативно допустимая слитная запись.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "poco требует poca по женскому agua."
+      }
     },
     {
       "id": "q45",
@@ -301,7 +349,13 @@
       "id": "q49",
       "decision": "fixed",
       "note": "Открытый ответ ограничен нужной лексемой; исправлены ложные обобщения и альтернативно допустимая слитная запись.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "mucho требует muchos по указанной группе мужского пола."
+      }
     },
     {
       "id": "q50",
@@ -331,7 +385,13 @@
       "id": "q54",
       "decision": "fixed",
       "note": "Открытый ответ ограничен нужной лексемой; исправлены ложные обобщения и альтернативно допустимая слитная запись.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "poco требует pocas по opciones."
+      }
     },
     {
       "id": "q55",
@@ -349,7 +409,13 @@
       "id": "q57",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Цифра 26 задаёт значение, корректную орфографию veintiséis надо выбрать."
+      }
     },
     {
       "id": "q58",
@@ -361,7 +427,13 @@
       "id": "q59",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Цифра 22 задаёт значение, орфографию veintidós надо выбрать."
+      }
     },
     {
       "id": "q60",

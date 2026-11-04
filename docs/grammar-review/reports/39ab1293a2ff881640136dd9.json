@@ -67,13 +67,25 @@
       "id": "q10",
       "decision": "fixed",
       "note": "Убрана подсказка из условия или исправлено ложное обобщение об изменяемости прилагательных.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Артикли и согласование: перевод и параметры рода/числа допустимы для этой грамматической задачи, готовый артикль или согласованное прилагательное не даны."
+      }
     },
     {
       "id": "q11",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Прочитаны prompt, все варианты, ключ и объяснение. Скобки дают русский смысл или параметры рода/лица/времени; целевой формы в них нет."
+      }
     },
     {
       "id": "q12",
@@ -85,31 +97,61 @@
       "id": "q13",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Прочитаны prompt, все варианты, ключ и объяснение. Скобки дают русский смысл или параметры рода/лица/времени; целевой формы в них нет."
+      }
     },
     {
       "id": "q14",
       "decision": "fixed",
       "note": "Убрана подсказка из условия или исправлено ложное обобщение об изменяемости прилагательных.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Прочитаны prompt, все варианты, ключ и объяснение. Скобки дают русский смысл или параметры рода/лица/времени; целевой формы в них нет."
+      }
     },
     {
       "id": "q15",
       "decision": "fixed",
       "note": "Убрана подсказка из условия или исправлено ложное обобщение об изменяемости прилагательных.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Прочитаны prompt, все варианты, ключ и объяснение. Скобки дают русский смысл или параметры рода/лица/времени; целевой формы в них нет."
+      }
     },
     {
       "id": "q16",
       "decision": "fixed",
       "note": "Убрана подсказка из условия или исправлено ложное обобщение об изменяемости прилагательных.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Прочитаны prompt, все варианты, ключ и объяснение. Скобки дают русский смысл или параметры рода/лица/времени; целевой формы в них нет."
+      }
     },
     {
       "id": "q17",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Прочитаны prompt, все варианты, ключ и объяснение. Скобки дают русский смысл или параметры рода/лица/времени; целевой формы в них нет."
+      }
     }
   ],
   "checks": [
@@ -132,6 +174,11 @@
       "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
       "result": "pass",
       "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    },
+    {
+      "command": "python3 logs/complaints/parenthetical-audit-20261104/worker-2-validate.py",
+      "result": "pass",
+      "evidence": "Parentheses audit 2026-11-04, worker-2: exact identity/order/type/difficulty/theory bindings, unmodified objects and prior report decisions preserved against assigned baseline; logs/complaints/parenthetical-audit-20261104/worker-2-evidence/preservation-and-validators.json. Narrow audit only, not renewed whole-file editorial verification."
     }
   ],
   "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."

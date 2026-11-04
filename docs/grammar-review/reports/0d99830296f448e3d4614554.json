@@ -1,11 +1,11 @@
 {
   "version": 1,
   "source": "courses/spanish-grammar/chapters/133.es.grammar.subjunctive_past_counterfactuals.imperfect_subjunctive_forms_ra_se/03-questions.json",
-  "source_sha256": "397ea4aed1989cbaeba1a466d55783161c179aa30e758cbb7aef1f7ab0aa6baf",
+  "source_sha256": "cadff3dd0623bfe1b4f3b33c6e49646727a04862a476e51e6e99e6d0ec52365e",
   "context_sha256": "316105e273c274a8f2ec36598b357dc113aba0adda76a01344964063052a734a",
   "editor": "Codex editor 2026-09-06",
   "verifier": "Anton Filatov (user)",
-  "phase": "done",
+  "phase": "awaiting_verification",
   "reviewed_at": "2026-09-05T23:58:24.580224Z",
   "verified_at": "2026-09-06T17:58:18.569986Z",
   "questions": [
@@ -37,7 +37,13 @@
       "id": "q133_b2_mcq_m",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают русский смысл, исходную лемму или нужную парадигму/лицо; готовая конечная форма не раскрыта. Альтернативы -ra/-se ограничены для единственного ключа."
+      }
     },
     {
       "id": "q133_b2_mcq_h",
@@ -121,79 +127,163 @@
       "id": "q133_b1_cloze",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: correct_answer, word_bank. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают русский смысл, исходную лемму или нужную парадигму/лицо; готовая конечная форма не раскрыта. Альтернативы -ra/-se ограничены для единственного ключа."
+      }
     },
     {
       "id": "q133_b2_cloze",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: word_bank. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают русский смысл, исходную лемму или нужную парадигму/лицо; готовая конечная форма не раскрыта. Альтернативы -ra/-se ограничены для единственного ключа."
+      }
     },
     {
       "id": "q133_b3_cloze",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают русский смысл, исходную лемму или нужную парадигму/лицо; готовая конечная форма не раскрыта. Альтернативы -ra/-se ограничены для единственного ключа."
+      }
     },
     {
       "id": "q133_b4_cloze",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Независимая проверка: скобки повторяли готовый инфинитив reservar; дана личная форма reservé, которую надо преобразовать после quisiera.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "Независимая проверка: скобки повторяли готовый инфинитив reservar; дана личная форма reservé, которую надо преобразовать после quisiera.",
+        "verifier": "parentheses_1",
+        "verified_at": "2026-11-04T09:19:42.825635+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q133_b5_cloze",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают русский смысл, исходную лемму или нужную парадигму/лицо; готовая конечная форма не раскрыта. Альтернативы -ra/-se ограничены для единственного ключа."
+      }
     },
     {
       "id": "q133_b6_cloze",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: correct_answer, explanation, prompt, word_bank. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают русский смысл, исходную лемму или нужную парадигму/лицо; готовая конечная форма не раскрыта. Альтернативы -ra/-se ограничены для единственного ключа."
+      }
     },
     {
       "id": "q133_b1_fill",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Исходная форма, лицо, вариант -ra/-se и смысл задают преобразование; конечный ответ не сообщается."
+      }
     },
     {
       "id": "q133_b2_fill",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Исходная форма, лицо, вариант -ra/-se и смысл задают преобразование; конечный ответ не сообщается."
+      }
     },
     {
       "id": "q133_b3_fill",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Исходная форма, лицо, вариант -ra/-se и смысл задают преобразование; конечный ответ не сообщается."
+      }
     },
     {
       "id": "q133_b4_fill",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: explanation, prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Исходная форма, лицо, вариант -ra/-se и смысл задают преобразование; конечный ответ не сообщается."
+      }
     },
     {
       "id": "q133_b5_fill",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Исходная форма, лицо, вариант -ra/-se и смысл задают преобразование; конечный ответ не сообщается."
+      }
     },
     {
       "id": "q133_b6_fill",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Исходная форма, лицо, вариант -ra/-se и смысл задают преобразование; конечный ответ не сообщается."
+      }
     },
     {
       "id": "q133_b1_tf",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Сопутствующая явная ошибка: imperfecto de subjuntivo называлось отдельным наклонением. Теперь различены наклонение subjuntivo и время imperfecto внутри него.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "fixed",
+        "note": "Сопутствующая явная ошибка: imperfecto de subjuntivo называлось отдельным наклонением. Теперь различены наклонение subjuntivo и время imperfecto внутри него.",
+        "verifier": "parentheses_1",
+        "verified_at": "2026-11-04T09:19:42.825635+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q133_b2_tf",
@@ -221,9 +311,18 @@
     },
     {
       "id": "q133_b6_tf",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Скобки заранее подписывали indicativo/subjuntivo, а вопрос просил подтвердить различие. Подписи убраны: нужно распознать наклонения самих форм.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "fixed",
+        "note": "Скобки заранее подписывали indicativo/subjuntivo, а вопрос просил подтвердить различие. Подписи убраны: нужно распознать наклонения самих форм.",
+        "verifier": "parentheses_1",
+        "verified_at": "2026-11-04T09:19:42.825635+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q133_b1_err",
@@ -307,7 +406,13 @@
       "id": "q133_b2_transform",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: correct_answer, source_sentence. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Исходная форма, лицо, вариант -ra/-se и смысл задают преобразование; конечный ответ не сообщается."
+      }
     },
     {
       "id": "q133_b3_transform",
@@ -372,26 +477,62 @@
     {
       "id": "q133_b1_prod",
       "decision": "fixed",
-      "note": "Исправлены или уточнены поля: correct_answer, prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "note": "Из hints убраны готовые формы и складывающиеся в ответ фразы; сохранена задача самостоятельно образовать формы и собрать высказывание.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "fixed",
+        "note": "Из hints убраны готовые формы и складывающиеся в ответ фразы; сохранена задача самостоятельно образовать формы и собрать высказывание.",
+        "verifier": "parentheses_1",
+        "verified_at": "2026-11-04T09:19:42.825635+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q133_b2_prod",
       "decision": "fixed",
-      "note": "Исправлены или уточнены поля: correct_answer, hints, prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "note": "Из hints убраны готовые формы и складывающиеся в ответ фразы; сохранена задача самостоятельно образовать формы и собрать высказывание.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "fixed",
+        "note": "Из hints убраны готовые формы и складывающиеся в ответ фразы; сохранена задача самостоятельно образовать формы и собрать высказывание.",
+        "verifier": "parentheses_1",
+        "verified_at": "2026-11-04T09:19:42.825635+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q133_b3_prod",
       "decision": "fixed",
-      "note": "Исправлены или уточнены поля: correct_answer, prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "note": "Из hints убраны готовые формы и складывающиеся в ответ фразы; сохранена задача самостоятельно образовать формы и собрать высказывание.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "fixed",
+        "note": "Из hints убраны готовые формы и складывающиеся в ответ фразы; сохранена задача самостоятельно образовать формы и собрать высказывание.",
+        "verifier": "parentheses_1",
+        "verified_at": "2026-11-04T09:19:42.825635+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q133_b4_prod",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Из hints убраны готовые формы и складывающиеся в ответ фразы; сохранена задача самостоятельно образовать формы и собрать высказывание.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "fixed",
+        "note": "Из hints убраны готовые формы и складывающиеся в ответ фразы; сохранена задача самостоятельно образовать формы и собрать высказывание.",
+        "verifier": "parentheses_1",
+        "verified_at": "2026-11-04T09:19:42.825635+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q133_b5_prod",
@@ -413,5 +554,92 @@
       "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
     }
   ],
-  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось.",
+  "parentheses_audit_verification": {
+    "scope": "Narrow parenthetical answer-leakage audit and correctness of edits; not completion of the full grammar review campaign.",
+    "editor": "coordinator",
+    "verifier": "parentheses_1",
+    "verified_at": "2026-11-04T09:19:42.825635+00:00",
+    "verification": "ok",
+    "read_question_ids": [
+      "q133_b1_mcq_e",
+      "q133_b1_mcq_m",
+      "q133_b1_mcq_h",
+      "q133_b2_mcq_e",
+      "q133_b2_mcq_m",
+      "q133_b2_mcq_h",
+      "q133_b3_mcq_e",
+      "q133_b3_mcq_m",
+      "q133_b3_mcq_h",
+      "q133_b4_mcq_e",
+      "q133_b4_mcq_m",
+      "q133_b4_mcq_h",
+      "q133_b5_mcq_e",
+      "q133_b5_mcq_m",
+      "q133_b5_mcq_h",
+      "q133_b6_mcq_e",
+      "q133_b6_mcq_m",
+      "q133_b6_mcq_h",
+      "q133_b1_cloze",
+      "q133_b2_cloze",
+      "q133_b3_cloze",
+      "q133_b4_cloze",
+      "q133_b5_cloze",
+      "q133_b6_cloze",
+      "q133_b1_fill",
+      "q133_b2_fill",
+      "q133_b3_fill",
+      "q133_b4_fill",
+      "q133_b5_fill",
+      "q133_b6_fill",
+      "q133_b1_tf",
+      "q133_b2_tf",
+      "q133_b3_tf",
+      "q133_b4_tf",
+      "q133_b5_tf",
+      "q133_b6_tf",
+      "q133_b1_err",
+      "q133_b2_err",
+      "q133_b3_err",
+      "q133_b4_err",
+      "q133_b5_err",
+      "q133_b6_err",
+      "q133_b1_reorder",
+      "q133_b2_reorder",
+      "q133_b3_reorder",
+      "q133_b4_reorder",
+      "q133_b5_reorder",
+      "q133_b6_reorder",
+      "q133_b1_transform",
+      "q133_b2_transform",
+      "q133_b3_transform",
+      "q133_b4_transform",
+      "q133_b5_transform",
+      "q133_b6_transform",
+      "q133_b1_explain",
+      "q133_b2_explain",
+      "q133_b3_explain",
+      "q133_b4_explain",
+      "q133_b5_explain",
+      "q133_b6_explain",
+      "q133_b1_prod",
+      "q133_b2_prod",
+      "q133_b3_prod",
+      "q133_b4_prod",
+      "q133_b5_prod",
+      "q133_b6_prod"
+    ],
+    "accepted_changed_ids": [
+      "q133_b4_cloze",
+      "q133_b1_tf",
+      "q133_b6_tf",
+      "q133_b1_prod",
+      "q133_b2_prod",
+      "q133_b3_prod",
+      "q133_b4_prod"
+    ],
+    "evidence": "logs/complaints/parenthetical-audit-20261104/independent-worker-4.json",
+    "out_of_scope_ids": [],
+    "note": "All questions in this changed source were read with context. Pre-existing findings outside selected_ids remain separately recorded in independent evidence; historical full-review metadata and source/context fingerprints are preserved."
+  }
 }

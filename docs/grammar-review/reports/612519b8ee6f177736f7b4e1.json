@@ -19,7 +19,13 @@
       "id": "q2",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "«Нет» задаёт отсутствие в отрицательном контексте; any не раскрыт."
+      }
     },
     {
       "id": "q3",
@@ -43,7 +49,13 @@
       "id": "q6",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "«Несколько» задаёт значение квантификатора, some не дано."
+      }
     },
     {
       "id": "q7",
@@ -61,7 +73,13 @@
       "id": "q9",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "«Немного» задаёт значение some, английский ключ не раскрыт."
+      }
     },
     {
       "id": "q10",
@@ -109,7 +127,13 @@
       "id": "q19",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "«Предложение» задаёт функцию высказывания, some не написано."
+      }
     },
     {
       "id": "q20",
@@ -211,7 +235,13 @@
       "id": "q42",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "«Нет» задаёт отсутствие в отрицательном контексте, any не дан."
+      }
     },
     {
       "id": "q43",
@@ -259,7 +289,13 @@
       "id": "q52",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "«Нет» требует отрицательного контекста с any, ключ не написан."
+      }
     },
     {
       "id": "q53",
@@ -295,7 +331,13 @@
       "id": "q59",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "«Нет» задаёт отсутствие chairs, готовое any не раскрыто."
+      }
     },
     {
       "id": "q60",

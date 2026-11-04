@@ -1,11 +1,11 @@
 {
   "version": 1,
   "source": "courses/english-grammar/chapters/036.en.grammar.past_1_past_simple.irregular_verbs_how_to/03-questions.json",
-  "source_sha256": "579914c5d3c87219e943d5ed356b3a3e8accb2fe35428123f29a0b4bfc3859c3",
+  "source_sha256": "e06bec3697bee1cbf6b513fb03b7c2255c6f95852ec9c9c7e7a731b7a04de61b",
   "context_sha256": "4ca60d57b1087e200486b3a02d4a61acd0e8560e6e8a622df89bfdf4f7fe69bb",
   "editor": "Codex editor 2026-09-04",
   "verifier": "Anton Filatov (user)",
-  "phase": "done",
+  "phase": "awaiting_verification",
   "reviewed_at": "2026-09-04T17:11:27.694075+00:00",
   "verified_at": "2026-09-06T17:58:18.569986Z",
   "questions": [
@@ -19,7 +19,13 @@
       "id": "q2",
       "decision": "fixed",
       "note": "Исправлен ключ после did, уточнена базовая форма или время; вместо неподтверждённых чисел и гарантий эффективности даны конкретные закономерности.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "go требует неправильной формы went."
+      }
     },
     {
       "id": "q3",
@@ -49,7 +55,13 @@
       "id": "q7",
       "decision": "fixed",
       "note": "Исправлен ключ после did, уточнена базовая форма или время; вместо неподтверждённых чисел и гарантий эффективности даны конкретные закономерности.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "send требует неправильной формы sent."
+      }
     },
     {
       "id": "q8",
@@ -73,7 +85,13 @@
       "id": "q11",
       "decision": "fixed",
       "note": "Исправлен ключ после did, уточнена базовая форма или время; вместо неподтверждённых чисел и гарантий эффективности даны конкретные закономерности.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "know требует неправильной формы knew."
+      }
     },
     {
       "id": "q12",
@@ -114,8 +132,17 @@
     {
       "id": "q18",
       "decision": "fixed",
-      "note": "Исправлен ключ после did, уточнена базовая форма или время; вместо неподтверждённых чисел и гарантий эффективности даны конкретные закономерности.",
-      "verification": "ok"
+      "note": "2026-11-04: скобки заранее сообщали, что формы глагола одинаковы. Вместо готового правила дана другая форма cutting; требуется самостоятельно восстановить Past Simple cut, ключ не переписывается из условия.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "fixed",
+        "note": "Вместо готового правила об одинаковых формах дано cutting; требуется получить cut.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q19",
@@ -145,7 +172,13 @@
       "id": "q23",
       "decision": "fixed",
       "note": "Уточнены время, лексическое значение cost и конкретные модели вместо вопросов о частотных рейтингах или универсальной эффективности.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "sing требует неправильной формы sang."
+      }
     },
     {
       "id": "q24",
@@ -163,7 +196,13 @@
       "id": "q26",
       "decision": "fixed",
       "note": "Уточнены время, лексическое значение cost и конкретные модели вместо вопросов о частотных рейтингах или универсальной эффективности.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "send требует неправильной формы sent."
+      }
     },
     {
       "id": "q27",
@@ -186,8 +225,17 @@
     {
       "id": "q30",
       "decision": "fixed",
-      "note": "Уточнены время, лексическое значение cost и конкретные модели вместо вопросов о частотных рейтингах или универсальной эффективности.",
-      "verification": "ok"
+      "note": "2026-11-04: убрана подсказка «глагол с одинаковыми формами». Исходная форма putting задаёт лексему, а правильную форму Past Simple put ученик образует самостоятельно.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "fixed",
+        "note": "Вместо подсказки об одинаковых формах дано putting; требуется получить put.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q31",
@@ -199,7 +247,13 @@
       "id": "q32",
       "decision": "fixed",
       "note": "Уточнены время, лексическое значение cost и конкретные модели вместо вопросов о частотных рейтингах или универсальной эффективности.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "drink требует неправильной формы drank."
+      }
     },
     {
       "id": "q33",
@@ -211,19 +265,37 @@
       "id": "q34",
       "decision": "fixed",
       "note": "Уточнены время, лексическое значение cost и конкретные модели вместо вопросов о частотных рейтингах или универсальной эффективности.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "build требует неправильной формы built."
+      }
     },
     {
       "id": "q36",
       "decision": "fixed",
       "note": "Уточнены время, лексическое значение cost и конкретные модели вместо вопросов о частотных рейтингах или универсальной эффективности.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "buy требует неправильной формы bought."
+      }
     },
     {
       "id": "q38",
       "decision": "fixed",
       "note": "Уточнены время, лексическое значение cost и конкретные модели вместо вопросов о частотных рейтингах или универсальной эффективности.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "come требует прошедшей формы came."
+      }
     },
     {
       "id": "q39",
@@ -259,37 +331,73 @@
       "id": "q46",
       "decision": "fixed",
       "note": "Уточнено время, роль did и конкретное упражнение вместо абсолютных оценок методов или достаточности числа глаголов.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "do требует вспомогательного did в Past Simple."
+      }
     },
     {
       "id": "q47",
       "decision": "fixed",
       "note": "Уточнено время, роль did и конкретное упражнение вместо абсолютных оценок методов или достаточности числа глаголов.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "say требует неправильной формы said."
+      }
     },
     {
       "id": "q48",
       "decision": "fixed",
       "note": "Уточнено время, роль did и конкретное упражнение вместо абсолютных оценок методов или достаточности числа глаголов.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "get требует неправильной формы got."
+      }
     },
     {
       "id": "q49",
       "decision": "fixed",
       "note": "Уточнено время, роль did и конкретное упражнение вместо абсолютных оценок методов или достаточности числа глаголов.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "come требует неправильной формы came."
+      }
     },
     {
       "id": "q51",
       "decision": "fixed",
       "note": "Уточнено время, роль did и конкретное упражнение вместо абсолютных оценок методов или достаточности числа глаголов.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "know требует неправильной формы knew."
+      }
     },
     {
       "id": "q52",
       "decision": "fixed",
       "note": "Уточнено время, роль did и конкретное упражнение вместо абсолютных оценок методов или достаточности числа глаголов.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "think требует неправильной формы thought."
+      }
     },
     {
       "id": "q53",
@@ -404,7 +512,26 @@
       "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
       "result": "pass",
       "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    },
+    {
+      "command": "python3 logs/complaints/parenthetical-audit-20261104/worker-1-validate.py",
+      "result": "pass",
+      "evidence": "2026-11-04 narrow parentheses audit: identity/order/bindings and untouched questions preserved; source/final/embedded exact; official isolated chapter assembly/validation or training validate_question and signature checks passed. See worker-1-evidence/validation.json."
     }
   ],
-  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+  "verification_note": "2026-11-04 parenthetical-hints audit: changed questions awaiting independent verification. Historical verification applies only to unchanged questions.",
+  "parentheses_audit_verification": {
+    "verifier": "parentheses_3",
+    "verified_at": "2026-11-04T09:44:02.337656+00:00",
+    "verification": "ok",
+    "scope": "narrow_parentheses_audit_changed_questions",
+    "question_ids": [
+      "q18",
+      "q30"
+    ],
+    "evidence": [
+      "docs/grammar-review/batches/2026-11-04-parenthetical-hints/independent-worker-1.json"
+    ],
+    "note": "Независимо прочитаны все вопросы изменённого источника; подтверждены изменённые вопросы узкого аудита. Advisory вне selected не сертифицированы. Фазы общего обзора и source/context hashes не изменялись."
+  }
 }

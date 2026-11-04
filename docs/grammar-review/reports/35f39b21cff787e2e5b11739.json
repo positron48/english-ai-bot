@@ -1,11 +1,11 @@
 {
   "version": 1,
   "source": "courses/english-grammar/chapters/044.en.grammar.past_2_background_process.when_while_as_in/03-questions.json",
-  "source_sha256": "8a2f3f32dc90c9a0a26a91f1644d6d75dfd118f2a2943e9eefd508f04b71323a",
+  "source_sha256": "feebc1fccf8add9a6f2a3b5db0b93732b239b1e40964aabc5efa7b56060b23c3",
   "context_sha256": "ed2354a434e04d74919f78024b22416f4df6905fcd14acc602077a872fda2e09",
   "editor": "Codex editor 2026-09-04",
   "verifier": "Anton Filatov (user)",
-  "phase": "done",
+  "phase": "awaiting_verification",
   "reviewed_at": "2026-09-04T18:27:08.813251+00:00",
   "verified_at": "2026-09-06T17:58:18.569986Z",
   "questions": [
@@ -23,9 +23,18 @@
     },
     {
       "id": "q3",
-      "decision": "ok",
-      "note": "Грамматика, ключ и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Независимая проверка: неполное start дополнено to rain, ключ started сохранён; смежный дефект.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "Независимая проверка: неполное start дополнено to rain, ключ started сохранён; смежный дефект.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q5",
@@ -49,7 +58,13 @@
       "id": "q8",
       "decision": "ok",
       "note": "Грамматика, ключ и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки дают исходный глагол либо несколько альтернатив союзов; готовый ключ не выделен."
+      }
     },
     {
       "id": "q9",
@@ -67,7 +82,13 @@
       "id": "q12",
       "decision": "fixed",
       "note": "Исправлен выбор союза или снято ложное абсолютное правило.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки дают исходный глагол либо несколько альтернатив союзов; готовый ключ не выделен."
+      }
     },
     {
       "id": "q13",
@@ -83,9 +104,18 @@
     },
     {
       "id": "q16",
-      "decision": "ok",
-      "note": "Грамматика, ключ и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Независимая проверка: when и while допустимы в исходном контексте. Альтернативы during/while проверяют союз перед предложением и дают единственный ключ While.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "Независимая проверка: when и while допустимы в исходном контексте. Альтернативы during/while проверяют союз перед предложением и дают единственный ключ While.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q17",
@@ -115,7 +145,13 @@
       "id": "q22",
       "decision": "ok",
       "note": "Грамматика, ключ и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки дают исходный глагол либо несколько альтернатив союзов; готовый ключ не выделен."
+      }
     },
     {
       "id": "q23",
@@ -133,7 +169,13 @@
       "id": "q26",
       "decision": "ok",
       "note": "Грамматика, ключ и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки дают исходный глагол либо несколько альтернатив союзов; готовый ключ не выделен."
+      }
     },
     {
       "id": "q27",
@@ -163,7 +205,13 @@
       "id": "q32",
       "decision": "ok",
       "note": "Грамматика, ключ и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки дают исходный глагол либо несколько альтернатив союзов; готовый ключ не выделен."
+      }
     },
     {
       "id": "q33",
@@ -180,8 +228,17 @@
     {
       "id": "q36",
       "decision": "fixed",
-      "note": "Исправлен выбор союза или снято ложное абсолютное правило.",
-      "verification": "ok"
+      "note": "Вместо прямой команды вставить when дано событие на фоне прогулки; союз нужно выбрать по связи процесса и события.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "fixed",
+        "note": "Вместо прямой команды вставить when дано событие на фоне прогулки; союз нужно выбрать по связи процесса и события.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q37",
@@ -205,7 +262,13 @@
       "id": "q43",
       "decision": "ok",
       "note": "Грамматика, ключ и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки дают исходный глагол либо несколько альтернатив союзов; готовый ключ не выделен."
+      }
     },
     {
       "id": "q45",
@@ -215,9 +278,18 @@
     },
     {
       "id": "q46",
-      "decision": "ok",
-      "note": "Грамматика, ключ и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Независимая проверка: неполное I heard дополнено a noise; ключ heard сохранён, смежный дефект.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "Независимая проверка: неполное I heard дополнено a noise; ключ heard сохранён, смежный дефект.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q47",
@@ -247,7 +319,13 @@
       "id": "q52",
       "decision": "ok",
       "note": "Грамматика, ключ и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки дают исходный глагол либо несколько альтернатив союзов; готовый ключ не выделен."
+      }
     },
     {
       "id": "q53",
@@ -265,7 +343,13 @@
       "id": "q55",
       "decision": "fixed",
       "note": "Исправлен выбор союза или снято ложное абсолютное правило.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки дают исходный глагол либо несколько альтернатив союзов; готовый ключ не выделен."
+      }
     },
     {
       "id": "q56",
@@ -281,9 +365,18 @@
     },
     {
       "id": "q59",
-      "decision": "ok",
-      "note": "Грамматика, ключ и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Независимая проверка: неполное I heard дополнено a noise; ключ heard сохранён, смежный дефект.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "Независимая проверка: неполное I heard дополнено a noise; ключ heard сохранён, смежный дефект.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q60",
@@ -297,7 +390,34 @@
       "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
       "result": "pass",
       "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    },
+    {
+      "command": "python3 logs/complaints/parenthetical-audit-20261104/worker-2-validate.py",
+      "result": "pass",
+      "evidence": "Parentheses audit 2026-11-04, worker-2: exact identity/order/type/difficulty/theory bindings, unmodified objects and prior report decisions preserved against assigned baseline; logs/complaints/parenthetical-audit-20261104/worker-2-evidence/preservation-and-validators.json. Narrow audit only, not renewed whole-file editorial verification."
+    },
+    {
+      "command": "python3 logs/complaints/parenthetical-audit-20261104/worker-2-validate.py [assigned courses/english-grammar/chapters/044.en.grammar.past_2_background_process.when_while_as_in/03-questions.json]",
+      "result": "pass",
+      "evidence": "Stock chapter validator logic on baseline and final, with output artifact redirected to worker-2 evidence: 0 errors, 0 warnings, 0 suggestions in both. Source questions equal final question bank; final and embedded byte-identical. logs/complaints/parenthetical-audit-20261104/worker-2-evidence/preservation-and-validators.json"
     }
   ],
-  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось. Изменение q36 2026-11-04: проверка подсказок в скобках, независимая проверка ожидается.",
+  "parentheses_audit_verification": {
+    "verifier": "parentheses_3",
+    "verified_at": "2026-11-04T09:44:02.337656+00:00",
+    "verification": "ok",
+    "scope": "narrow_parentheses_audit_changed_questions",
+    "question_ids": [
+      "q3",
+      "q16",
+      "q36",
+      "q46",
+      "q59"
+    ],
+    "evidence": [
+      "docs/grammar-review/batches/2026-11-04-parenthetical-hints/independent-worker-2.json"
+    ],
+    "note": "Независимо прочитаны все вопросы изменённого источника; подтверждены изменённые вопросы узкого аудита. Advisory вне selected не сертифицированы. Фазы общего обзора и source/context hashes не изменялись."
+  }
 }

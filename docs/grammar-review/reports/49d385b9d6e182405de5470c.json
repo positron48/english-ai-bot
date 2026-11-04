@@ -1,11 +1,11 @@
 {
   "version": 1,
   "source": "courses/spanish-grammar/chapters/144.es.grammar.voice_reported_speech_distancing.evidential_distancing_expressions_al_parecer_segun_se_dice/03-questions.json",
-  "source_sha256": "6577cb0892b3eae6e2630a2b9a92515f0009a10779e705894b2bd545e589b9bc",
+  "source_sha256": "443be28afd805ac81821c128e9dc71761b38dd8877d9ba9a66bc5184123bc569",
   "context_sha256": "074b27e65c796dfa180dab5b5bc623680eb61bb1e42673a1e86619bde2b61d05",
   "editor": "Codex editor 2026-09-06",
   "verifier": "Anton Filatov (user)",
-  "phase": "done",
+  "phase": "awaiting_verification",
   "reviewed_at": "2026-09-06T00:22:27.171690Z",
   "verified_at": "2026-09-06T17:58:18.569986Z",
   "questions": [
@@ -36,14 +36,32 @@
     {
       "id": "q144_b1_f1",
       "decision": "fixed",
-      "note": "Исправлены или уточнены поля: prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "note": "Независимая проверка: открытый ввод допускал pero/aunque/mas; задан набор союзов с различными отношениями и требуемое противопоставление.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "Независимая проверка: открытый ввод допускал pero/aunque/mas; задан набор союзов с различными отношениями и требуемое противопоставление.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q144_b1_f2",
       "decision": "fixed",
-      "note": "Исправлены или уточнены поля: prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "note": "Вместо угадывания слова puntos из примера теории проверяется маркер атрибуции; нет требования помнить конкретную фразу.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "fixed",
+        "note": "Вместо угадывания слова puntos из примера теории проверяется маркер атрибуции; нет требования помнить конкретную фразу.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q144_b1_t1",
@@ -79,7 +97,13 @@
       "id": "q144_b1_match",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: pairs. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Условие, варианты/пары, ключ и объяснение прочитаны. Оставлены смысловые и грамматические параметры, не содержащие готовой формы ответа."
+      }
     },
     {
       "id": "q144_b2_m1",
@@ -109,13 +133,28 @@
       "id": "q144_b2_f1",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Условие, варианты/пары, ключ и объяснение прочитаны. Оставлены смысловые и грамматические параметры, не содержащие готовой формы ответа."
+      }
     },
     {
       "id": "q144_b2_f2",
       "decision": "fixed",
-      "note": "Исправлены или уточнены поля: correct_answer, prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "note": "Вместо угадывания última из примера теории проверяется изучаемый маркер дистанции.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "fixed",
+        "note": "Вместо угадывания última из примера теории проверяется изучаемый маркер дистанции.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q144_b2_t1",
@@ -151,7 +190,13 @@
       "id": "q144_b2_match",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Условие, варианты/пары, ключ и объяснение прочитаны. Оставлены смысловые и грамматические параметры, не содержащие готовой формы ответа."
+      }
     },
     {
       "id": "q144_b3_m1",
@@ -180,14 +225,32 @@
     {
       "id": "q144_b3_f1",
       "decision": "fixed",
-      "note": "Исправлены или уточнены поля: prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "note": "Вместо угадывания лексемы plazo из теории проверяется форма глагола в фактической атрибуции.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "fixed",
+        "note": "Вместо угадывания лексемы plazo из теории проверяется форма глагола в фактической атрибуции.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q144_b3_f2",
       "decision": "fixed",
-      "note": "Исправлены или уточнены поля: correct_answer, prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "note": "Вместо угадывания наречия aquí из теории проверяется форма глагола при сообщении нормы; письменное ударение сохранено.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "fixed",
+        "note": "Вместо угадывания наречия aquí из теории проверяется форма глагола при сообщении нормы; письменное ударение сохранено.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q144_b3_t1",
@@ -205,7 +268,13 @@
       "id": "q144_b3_e1",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: choices, prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Условие, варианты/пары, ключ и объяснение прочитаны. Оставлены смысловые и грамматические параметры, не содержащие готовой формы ответа."
+      }
     },
     {
       "id": "q144_b3_r1",
@@ -215,15 +284,30 @@
     },
     {
       "id": "q144_b3_r2",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Классификация «нейтральное местоимение» практически называла lo; заменена русским смыслом для самостоятельного выбора конструкции lo que.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "fixed",
+        "note": "Классификация «нейтральное местоимение» практически называла lo; заменена русским смыслом для самостоятельного выбора конструкции lo que.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q144_b3_match",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: pairs. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Условие, варианты/пары, ключ и объяснение прочитаны. Оставлены смысловые и грамматические параметры, не содержащие готовой формы ответа."
+      }
     },
     {
       "id": "q144_b4_m1",
@@ -241,7 +325,13 @@
       "id": "q144_b4_m3",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Условие, варианты/пары, ключ и объяснение прочитаны. Оставлены смысловые и грамматические параметры, не содержащие готовой формы ответа."
+      }
     },
     {
       "id": "q144_b4_m4",
@@ -253,13 +343,25 @@
       "id": "q144_b4_f1",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Условие, варианты/пары, ключ и объяснение прочитаны. Оставлены смысловые и грамматические параметры, не содержащие готовой формы ответа."
+      }
     },
     {
       "id": "q144_b4_f2",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Условие, варианты/пары, ключ и объяснение прочитаны. Оставлены смысловые и грамматические параметры, не содержащие готовой формы ответа."
+      }
     },
     {
       "id": "q144_b4_t1",
@@ -277,7 +379,13 @@
       "id": "q144_b4_e1",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: choices, explanation, prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Условие, варианты/пары, ключ и объяснение прочитаны. Оставлены смысловые и грамматические параметры, не содержащие готовой формы ответа."
+      }
     },
     {
       "id": "q144_b4_r1",
@@ -295,7 +403,13 @@
       "id": "q144_b4_match",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Условие, варианты/пары, ключ и объяснение прочитаны. Оставлены смысловые и грамматические параметры, не содержащие готовой формы ответа."
+      }
     },
     {
       "id": "q144_b5_m1",
@@ -325,13 +439,28 @@
       "id": "q144_b5_f1",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Условие, варианты/пары, ключ и объяснение прочитаны. Оставлены смысловые и грамматические параметры, не содержащие готовой формы ответа."
+      }
     },
     {
       "id": "q144_b5_f2",
       "decision": "fixed",
-      "note": "Исправлены или уточнены поля: prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "note": "Для одного строкового ключа fuera уточнён вариант парадигмы -ra; без этого равноправно подходит fuese. Готовая форма не дана.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "fixed",
+        "note": "Для одного строкового ключа fuera уточнён вариант парадигмы -ra; без этого равноправно подходит fuese. Готовая форма не дана.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q144_b5_t1",
@@ -349,13 +478,25 @@
       "id": "q144_b5_e1",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: choices. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Условие, варианты/пары, ключ и объяснение прочитаны. Оставлены смысловые и грамматические параметры, не содержащие готовой формы ответа."
+      }
     },
     {
       "id": "q144_b5_r1",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Условие, варианты/пары, ключ и объяснение прочитаны. Оставлены смысловые и грамматические параметры, не содержащие готовой формы ответа."
+      }
     },
     {
       "id": "q144_b5_r2",
@@ -367,7 +508,13 @@
       "id": "q144_b5_match",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Условие, варианты/пары, ключ и объяснение прочитаны. Оставлены смысловые и грамматические параметры, не содержащие готовой формы ответа."
+      }
     },
     {
       "id": "q144_b6_m1",
@@ -396,14 +543,29 @@
     {
       "id": "q144_b6_f1",
       "decision": "fixed",
-      "note": "Исправлены или уточнены поля: correct_answer, explanation, prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "note": "Вместо угадывания mañana из примера теории проверяется предлог в маркере официальной атрибуции.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "fixed",
+        "note": "Вместо угадывания mañana из примера теории проверяется предлог в маркере официальной атрибуции.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q144_b6_f2",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Условие, варианты/пары, ключ и объяснение прочитаны. Оставлены смысловые и грамматические параметры, не содержащие готовой формы ответа."
+      }
     },
     {
       "id": "q144_b6_t1",
@@ -439,7 +601,13 @@
       "id": "q144_b6_match",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: pairs, prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Условие, варианты/пары, ключ и объяснение прочитаны. Оставлены смысловые и грамматические параметры, не содержащие готовой формы ответа."
+      }
     }
   ],
   "checks": [
@@ -447,7 +615,37 @@
       "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
       "result": "pass",
       "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    },
+    {
+      "command": "python3 logs/complaints/parenthetical-audit-20261104/worker-2-validate.py",
+      "result": "pass",
+      "evidence": "Parentheses audit 2026-11-04, worker-2: exact identity/order/type/difficulty/theory bindings, unmodified objects and prior report decisions preserved against assigned baseline; logs/complaints/parenthetical-audit-20261104/worker-2-evidence/preservation-and-validators.json. Narrow audit only, not renewed whole-file editorial verification."
+    },
+    {
+      "command": "python3 logs/complaints/parenthetical-audit-20261104/worker-2-validate.py [assigned courses/spanish-grammar/chapters/144.es.grammar.voice_reported_speech_distancing.evidential_distancing_expressions_al_parecer_segun_se_dice/03-questions.json]",
+      "result": "pass",
+      "evidence": "Stock chapter validator logic on baseline and final, with output artifact redirected to worker-2 evidence: 0 errors, 0 warnings, 0 suggestions in both. Source questions equal final question bank; final and embedded byte-identical. logs/complaints/parenthetical-audit-20261104/worker-2-evidence/preservation-and-validators.json"
     }
   ],
-  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось. Изменение q144_b1_f1 2026-11-04: проверка подсказок в скобках, независимая проверка ожидается. Изменение q144_b1_f2 2026-11-04: проверка подсказок в скобках, независимая проверка ожидается. Изменение q144_b2_f2 2026-11-04: проверка подсказок в скобках, независимая проверка ожидается. Изменение q144_b3_f1 2026-11-04: проверка подсказок в скобках, независимая проверка ожидается. Изменение q144_b3_f2 2026-11-04: проверка подсказок в скобках, независимая проверка ожидается. Изменение q144_b3_r2 2026-11-04: проверка подсказок в скобках, независимая проверка ожидается. Изменение q144_b5_f2 2026-11-04: проверка подсказок в скобках, независимая проверка ожидается. Изменение q144_b6_f1 2026-11-04: проверка подсказок в скобках, независимая проверка ожидается.",
+  "parentheses_audit_verification": {
+    "verifier": "parentheses_3",
+    "verified_at": "2026-11-04T09:44:02.337656+00:00",
+    "verification": "ok",
+    "scope": "narrow_parentheses_audit_changed_questions",
+    "question_ids": [
+      "q144_b1_f1",
+      "q144_b1_f2",
+      "q144_b2_f2",
+      "q144_b3_f1",
+      "q144_b3_f2",
+      "q144_b3_r2",
+      "q144_b5_f2",
+      "q144_b6_f1"
+    ],
+    "evidence": [
+      "docs/grammar-review/batches/2026-11-04-parenthetical-hints/independent-worker-2.json"
+    ],
+    "note": "Независимо прочитаны все вопросы изменённого источника; подтверждены изменённые вопросы узкого аудита. Advisory вне selected не сертифицированы. Фазы общего обзора и source/context hashes не изменялись."
+  }
 }

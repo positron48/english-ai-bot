@@ -13,13 +13,25 @@
       "id": "q1",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Близость — смысловой контекст; this и согласование нужно выбрать."
+      }
     },
     {
       "id": "q2",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Удалённость задаёт контекст; that требуется определить."
+      }
     },
     {
       "id": "q3",

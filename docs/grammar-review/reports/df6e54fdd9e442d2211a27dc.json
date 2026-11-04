@@ -37,7 +37,13 @@
       "id": "q5",
       "decision": "fixed",
       "note": "Убраны служебная формулировка и терминология выше A0; конкретная пара омонимичного произношения.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Пометы задают тип условного предложения, исходную форму/звук, русский смысл или формат ввода. Нормальная неизменяемость lunes во множественном числе сохранена как грамматическая цель; прямые ключи исправлены отдельно."
+      }
     },
     {
       "id": "q6",
@@ -55,7 +61,13 @@
       "id": "q8",
       "decision": "fixed",
       "note": "Устранена русско-испанская фраза с угадыванием familia; проверяется чтение v после паузы.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Пометы задают тип условного предложения, исходную форму/звук, русский смысл или формат ввода. Нормальная неизменяемость lunes во множественном числе сохранена как грамматическая цель; прямые ключи исправлены отдельно."
+      }
     },
     {
       "id": "q9",
@@ -109,13 +121,25 @@
       "id": "q17",
       "decision": "fixed",
       "note": "Убрана неясная конструкция «после q сохранить k»; конкретное написание queso с одним ответом.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Пометы задают тип условного предложения, исходную форму/звук, русский смысл или формат ввода. Нормальная неизменяемость lunes во множественном числе сохранена как грамматическая цель; прямые ключи исправлены отдельно."
+      }
     },
     {
       "id": "q18",
       "decision": "ok",
       "note": "Существующая правка верно учитывает [s]/[θ] и исключает [k].",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Пометы задают тип условного предложения, исходную форму/звук, русский смысл или формат ввода. Нормальная неизменяемость lunes во множественном числе сохранена как грамматическая цель; прямые ключи исправлены отдельно."
+      }
     },
     {
       "id": "q19",
@@ -217,7 +241,13 @@
       "id": "q35",
       "decision": "fixed",
       "note": "Убрана проверка необъяснённых названий; проверяется само региональное чтение.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Пометы задают тип условного предложения, исходную форму/звук, русский смысл или формат ввода. Нормальная неизменяемость lunes во множественном числе сохранена как грамматическая цель; прямые ключи исправлены отдельно."
+      }
     },
     {
       "id": "q36",
@@ -325,7 +355,13 @@
       "id": "q53",
       "decision": "fixed",
       "note": "Убрана подсказка буквами rr в условии; варианты приведены к одной схеме.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Пометы задают тип условного предложения, исходную форму/звук, русский смысл или формат ввода. Нормальная неизменяемость lunes во множественном числе сохранена как грамматическая цель; прямые ключи исправлены отдельно."
+      }
     },
     {
       "id": "q54",
@@ -361,19 +397,37 @@
       "id": "q59",
       "decision": "fixed",
       "note": "Учебные предпочтения с альтернативно допустимым порядком чтения заменены оценкой двух нормативных произношений.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Пометы задают тип условного предложения, исходную форму/звук, русский смысл или формат ввода. Нормальная неизменяемость lunes во множественном числе сохранена как грамматическая цель; прямые ключи исправлены отдельно."
+      }
     },
     {
       "id": "q60",
       "decision": "fixed",
       "note": "Расплывчатая карта чтения заменена конкретным правилом c перед a в обоих вариантах.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Пометы задают тип условного предложения, исходную форму/звук, русский смысл или формат ввода. Нормальная неизменяемость lunes во множественном числе сохранена как грамматическая цель; прямые ключи исправлены отдельно."
+      }
     },
     {
       "id": "q61",
       "decision": "fixed",
       "note": "Вместо субъективной трудности для новичка — ошибочный начальный [k].",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Пометы задают тип условного предложения, исходную форму/звук, русский смысл или формат ввода. Нормальная неизменяемость lunes во множественном числе сохранена как грамматическая цель; прямые ключи исправлены отдельно."
+      }
     },
     {
       "id": "q62",
@@ -385,7 +439,13 @@
       "id": "q63",
       "decision": "ok",
       "note": "Существующая правка правильно допускает [s] и [θ].",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Пометы задают тип условного предложения, исходную форму/звук, русский смысл или формат ввода. Нормальная неизменяемость lunes во множественном числе сохранена как грамматическая цель; прямые ключи исправлены отдельно."
+      }
     }
   ],
   "checks": [
@@ -418,6 +478,11 @@
       "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
       "result": "pass",
       "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    },
+    {
+      "command": "python3 logs/complaints/parenthetical-audit-20261104/worker-2-validate.py",
+      "result": "pass",
+      "evidence": "Parentheses audit 2026-11-04, worker-2: exact identity/order/type/difficulty/theory bindings, unmodified objects and prior report decisions preserved against assigned baseline; logs/complaints/parenthetical-audit-20261104/worker-2-evidence/preservation-and-validators.json. Narrow audit only, not renewed whole-file editorial verification."
     }
   ],
   "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."

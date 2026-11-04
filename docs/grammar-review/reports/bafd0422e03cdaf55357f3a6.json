@@ -13,7 +13,13 @@
       "id": "q1",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Скобки уточняют ситуацию/референт/время, а не дают готовый ответ."
+      }
     },
     {
       "id": "q2",
@@ -43,7 +49,13 @@
       "id": "q6",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Скобки уточняют ситуацию/референт/время, а не дают готовый ответ."
+      }
     },
     {
       "id": "q7",
@@ -67,7 +79,13 @@
       "id": "q10",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Скобки уточняют ситуацию/референт/время, а не дают готовый ответ."
+      }
     }
   ],
   "checks": [

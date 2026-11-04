@@ -25,7 +25,13 @@
       "id": "q031_b1_03",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Отрицательная частица — категория, no требуется восстановить."
+      }
     },
     {
       "id": "q031_b1_04",
@@ -55,7 +61,13 @@
       "id": "q031_b1_08",
       "decision": "fixed",
       "note": "Заменён служебный feedback с буквами вариантов, уточнены область отрицания/порядок, перевод ustedes или лексический выбор.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Русская отрицательная цель и категория частицы не пишут no."
+      }
     },
     {
       "id": "q031_b1_10",
@@ -79,7 +91,13 @@
       "id": "q031_b2_03",
       "decision": "fixed",
       "note": "Заменён служебный feedback с буквами вариантов, уточнены область отрицания/порядок, перевод ustedes или лексический выбор.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Три альтернативы частоты требуют выбора nunca по смыслу."
+      }
     },
     {
       "id": "q031_b2_04",
@@ -109,7 +127,13 @@
       "id": "q031_b2_08",
       "decision": "fixed",
       "note": "Заменён служебный feedback с буквами вариантов, уточнены область отрицания/порядок, перевод ustedes или лексический выбор.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Три альтернативы частоты требуют выбора nunca по смыслу."
+      }
     },
     {
       "id": "q031_b2_10",
@@ -133,7 +157,13 @@
       "id": "q031_b3_03",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Отрицательное согласие задаёт функцию tampoco, слово не дано."
+      }
     },
     {
       "id": "q031_b3_04",
@@ -163,7 +193,13 @@
       "id": "q031_b3_08",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Отрицательное тоже задаёт функцию tampoco, готового слова нет."
+      }
     },
     {
       "id": "q031_b3_10",
@@ -187,7 +223,13 @@
       "id": "q031_b4_03",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Больше не и категория частицы задают ya no, ключ no не написан."
+      }
     },
     {
       "id": "q031_b4_04",
@@ -217,7 +259,13 @@
       "id": "q031_b4_08",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Отрицательная частица — категория, no требуется восстановить в ya no."
+      }
     },
     {
       "id": "q031_b4_10",
@@ -241,7 +289,13 @@
       "id": "q031_b5_03",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Отрицательное местоимение и ничего задают значение nada, ключ не дан."
+      }
     },
     {
       "id": "q031_b5_04",
@@ -271,7 +325,13 @@
       "id": "q031_b5_08",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Отрицательное местоимение и никого задают nadie, слово не дано."
+      }
     },
     {
       "id": "q031_b5_10",
@@ -295,7 +355,13 @@
       "id": "q031_b6_03",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Отрицательная частица — категория, no не раскрыто."
+      }
     },
     {
       "id": "q031_b6_04",
@@ -325,7 +391,13 @@
       "id": "q031_b6_08",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Отрицательное согласие задаёт функцию tampoco, не готовую форму."
+      }
     },
     {
       "id": "q031_b6_10",

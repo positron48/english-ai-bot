@@ -37,13 +37,25 @@
       "id": "q5",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Пометы задают тип условного предложения, исходную форму/звук, русский смысл или формат ввода. Нормальная неизменяемость lunes во множественном числе сохранена как грамматическая цель; прямые ключи исправлены отдельно."
+      }
     },
     {
       "id": "q6",
       "decision": "fixed",
       "note": "Без значения подходят и другие предлоги, например cerca de; задано «в».",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Пометы задают тип условного предложения, исходную форму/звук, русский смысл или формат ввода. Нормальная неизменяемость lunes во множественном числе сохранена как грамматическая цель; прямые ключи исправлены отдельно."
+      }
     },
     {
       "id": "q7",
@@ -97,13 +109,25 @@
       "id": "q15",
       "decision": "fixed",
       "note": "Указаны инфинитив, время и лицо для однозначного ввода.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Пометы задают тип условного предложения, исходную форму/звук, русский смысл или формат ввода. Нормальная неизменяемость lunes во множественном числе сохранена как грамматическая цель; прямые ключи исправлены отдельно."
+      }
     },
     {
       "id": "q16",
       "decision": "fixed",
       "note": "Вы могло означать ustedes; явно задано usted одному человеку.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Пометы задают тип условного предложения, исходную форму/звук, русский смысл или формат ввода. Нормальная неизменяемость lunes во множественном числе сохранена как грамматическая цель; прямые ключи исправлены отдельно."
+      }
     },
     {
       "id": "q17",
@@ -217,13 +241,25 @@
       "id": "q35",
       "decision": "fixed",
       "note": "Исключены другие отрицательные наречия, задано значение «не».",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Пометы задают тип условного предложения, исходную форму/звук, русский смысл или формат ввода. Нормальная неизменяемость lunes во множественном числе сохранена как грамматическая цель; прямые ключи исправлены отдельно."
+      }
     },
     {
       "id": "q36",
       "decision": "fixed",
       "note": "Исключены nunca/tampoco, задано значение «не».",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Пометы задают тип условного предложения, исходную форму/звук, русский смысл или формат ввода. Нормальная неизменяемость lunes во множественном числе сохранена как грамматическая цель; прямые ключи исправлены отдельно."
+      }
     },
     {
       "id": "q37",
@@ -277,13 +313,25 @@
       "id": "q45",
       "decision": "fixed",
       "note": "Форма es вопроса привязана к usted, а ответ к yo; задан инфинитив.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках глагольная лемма или смысл характеристики/происхождения; требуется согласовать ser/estar либо выбрать вопросительное слово."
+      }
     },
     {
       "id": "q46",
       "decision": "fixed",
       "note": "Вопрос задан группе на ustedes, ответ от nosotros; задан инфинитив.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках глагольная лемма или смысл характеристики/происхождения; требуется согласовать ser/estar либо выбрать вопросительное слово."
+      }
     },
     {
       "id": "q47",
@@ -337,13 +385,25 @@
       "id": "q55",
       "decision": "fixed",
       "note": "Указаны инфинитив, время и лицо.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках глагольная лемма или смысл характеристики/происхождения; требуется согласовать ser/estar либо выбрать вопросительное слово."
+      }
     },
     {
       "id": "q56",
       "decision": "fixed",
       "note": "Без инфинитива и времени подходят другие формы; задан ser/yo.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках глагольная лемма или смысл характеристики/происхождения; требуется согласовать ser/estar либо выбрать вопросительное слово."
+      }
     },
     {
       "id": "q57",
@@ -410,6 +470,11 @@
       "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
       "result": "pass",
       "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    },
+    {
+      "command": "python3 logs/complaints/parenthetical-audit-20261104/worker-2-validate.py",
+      "result": "pass",
+      "evidence": "Parentheses audit 2026-11-04, worker-2: exact identity/order/type/difficulty/theory bindings, unmodified objects and prior report decisions preserved against assigned baseline; logs/complaints/parenthetical-audit-20261104/worker-2-evidence/preservation-and-validators.json. Narrow audit only, not renewed whole-file editorial verification."
     }
   ],
   "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."

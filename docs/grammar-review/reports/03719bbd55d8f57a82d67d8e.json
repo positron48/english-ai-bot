@@ -1,11 +1,11 @@
 {
   "version": 1,
   "source": "courses/spanish-grammar/chapters/114.es.grammar.compound_tenses_narration.future_perfect_conditional_perfect/03-questions.json",
-  "source_sha256": "df7d8b54db18874e00c901e6a8ae09d5db04aa0823931bbe88f1d4e6b775d7e1",
+  "source_sha256": "9865a5205164c193ba124dacfabde35d1ccd661c123d1be99f80d1d33b7b4257",
   "context_sha256": "f287bfc03112a6a8f1568ce78637e21b6ff321d1db9fa7299675968cbf39cd71",
   "editor": "Codex editor 2026-09-06",
   "verifier": "Anton Filatov (user)",
-  "phase": "done",
+  "phase": "awaiting_verification",
   "reviewed_at": "2026-09-05T22:11:31.499810Z",
   "verified_at": "2026-09-06T17:58:18.569986Z",
   "questions": [
@@ -13,7 +13,13 @@
       "id": "q1",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки прочитаны вместе с заданием и ключом: исходный глагол, лицо/время и смысловые ограничения не дают готового ответа."
+      }
     },
     {
       "id": "q2",
@@ -25,7 +31,13 @@
       "id": "q3",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: explanation. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки прочитаны вместе с заданием и ключом: исходный глагол, лицо/время и смысловые ограничения не дают готового ответа."
+      }
     },
     {
       "id": "q4",
@@ -49,7 +61,13 @@
       "id": "q7",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки прочитаны вместе с заданием и ключом: исходный глагол, лицо/время и смысловые ограничения не дают готового ответа."
+      }
     },
     {
       "id": "q8",
@@ -91,7 +109,13 @@
       "id": "q14",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки прочитаны вместе с заданием и ключом: исходный глагол, лицо/время и смысловые ограничения не дают готового ответа."
+      }
     },
     {
       "id": "q15",
@@ -109,13 +133,25 @@
       "id": "q17",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки прочитаны вместе с заданием и ключом: исходный глагол, лицо/время и смысловые ограничения не дают готового ответа."
+      }
     },
     {
       "id": "q18",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки прочитаны вместе с заданием и ключом: исходный глагол, лицо/время и смысловые ограничения не дают готового ответа."
+      }
     },
     {
       "id": "q19",
@@ -139,7 +175,13 @@
       "id": "q22",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки прочитаны вместе с заданием и ключом: исходный глагол, лицо/время и смысловые ограничения не дают готового ответа."
+      }
     },
     {
       "id": "q23",
@@ -157,7 +199,13 @@
       "id": "q25",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки прочитаны вместе с заданием и ключом: исходный глагол, лицо/время и смысловые ограничения не дают готового ответа."
+      }
     },
     {
       "id": "q26",
@@ -235,7 +283,13 @@
       "id": "q38",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: explanation. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки прочитаны вместе с заданием и ключом: исходный глагол, лицо/время и смысловые ограничения не дают готового ответа."
+      }
     },
     {
       "id": "q39",
@@ -265,13 +319,25 @@
       "id": "q43",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки прочитаны вместе с заданием и ключом: исходный глагол, лицо/время и смысловые ограничения не дают готового ответа."
+      }
     },
     {
       "id": "q44",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки прочитаны вместе с заданием и ключом: исходный глагол, лицо/время и смысловые ограничения не дают готового ответа."
+      }
     },
     {
       "id": "q45",
@@ -289,13 +355,25 @@
       "id": "q47",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки прочитаны вместе с заданием и ключом: исходный глагол, лицо/время и смысловые ограничения не дают готового ответа."
+      }
     },
     {
       "id": "q48",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки прочитаны вместе с заданием и ключом: исходный глагол, лицо/время и смысловые ограничения не дают готового ответа."
+      }
     },
     {
       "id": "q49",
@@ -331,7 +409,13 @@
       "id": "q54",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки прочитаны вместе с заданием и ключом: исходный глагол, лицо/время и смысловые ограничения не дают готового ответа."
+      }
     },
     {
       "id": "q55",
@@ -347,9 +431,18 @@
     },
     {
       "id": "q57",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "При чтении обнаружены два грамматически допустимых варианта (habrían/hubieran tomado); добавлено допустимое ограничение на время, без готовой формы ответа, и исправлен feedback.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "fixed",
+        "note": "При чтении обнаружены два грамматически допустимых варианта (habrían/hubieran tomado); добавлено допустимое ограничение на время, без готовой формы ответа, и исправлен feedback.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q58",
@@ -373,19 +466,37 @@
       "id": "q61",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки прочитаны вместе с заданием и ключом: исходный глагол, лицо/время и смысловые ограничения не дают готового ответа."
+      }
     },
     {
       "id": "q62",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки прочитаны вместе с заданием и ключом: исходный глагол, лицо/время и смысловые ограничения не дают готового ответа."
+      }
     },
     {
       "id": "q63",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки прочитаны вместе с заданием и ключом: исходный глагол, лицо/время и смысловые ограничения не дают готового ответа."
+      }
     },
     {
       "id": "q64",
@@ -435,7 +546,30 @@
       "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
       "result": "pass",
       "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    },
+    {
+      "command": "python3 logs/complaints/parenthetical-audit-20261104/worker-2-validate.py",
+      "result": "pass",
+      "evidence": "Parentheses audit 2026-11-04, worker-2: exact identity/order/type/difficulty/theory bindings, unmodified objects and prior report decisions preserved against assigned baseline; logs/complaints/parenthetical-audit-20261104/worker-2-evidence/preservation-and-validators.json. Narrow audit only, not renewed whole-file editorial verification."
+    },
+    {
+      "command": "python3 logs/complaints/parenthetical-audit-20261104/worker-2-validate.py [assigned courses/spanish-grammar/chapters/114.es.grammar.compound_tenses_narration.future_perfect_conditional_perfect/03-questions.json]",
+      "result": "pass",
+      "evidence": "Stock chapter validator logic on baseline and final, with output artifact redirected to worker-2 evidence: 0 errors, 0 warnings, 0 suggestions in both. Source questions equal final question bank; final and embedded byte-identical. logs/complaints/parenthetical-audit-20261104/worker-2-evidence/preservation-and-validators.json"
     }
   ],
-  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось. Изменение q57 2026-11-04: проверка подсказок в скобках, независимая проверка ожидается.",
+  "parentheses_audit_verification": {
+    "verifier": "parentheses_3",
+    "verified_at": "2026-11-04T09:44:02.337656+00:00",
+    "verification": "ok",
+    "scope": "narrow_parentheses_audit_changed_questions",
+    "question_ids": [
+      "q57"
+    ],
+    "evidence": [
+      "docs/grammar-review/batches/2026-11-04-parenthetical-hints/independent-worker-2.json"
+    ],
+    "note": "Независимо прочитаны все вопросы изменённого источника; подтверждены изменённые вопросы узкого аудита. Advisory вне selected не сертифицированы. Фазы общего обзора и source/context hashes не изменялись."
+  }
 }

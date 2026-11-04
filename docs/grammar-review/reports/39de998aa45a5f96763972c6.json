@@ -1,11 +1,11 @@
 {
   "version": 1,
   "source": "courses/spanish-grammar/training_pack/chapters/003/es.05.b5_theory_esdrujulas_always_accented.questions.json",
-  "source_sha256": "c3258aa036f93125f9f04a4d986b3ba7d2e9deec88f1eb754d17a0f8d8a61076",
+  "source_sha256": "e9d5ffe2f83e5fcaa8b8fee6585e6760b024709a186380001cbf4e8416434073",
   "context_sha256": "9fdba53951595674bc94b4350a94f40a8664f9efd8ad982e25918ddab4725fd2",
   "editor": "Codex editor 2026-09-04",
   "verifier": "Anton Filatov (user)",
-  "phase": "done",
+  "phase": "awaiting_verification",
   "reviewed_at": "2026-09-04T09:37:39.853798+00:00",
   "verified_at": "2026-09-06T17:58:18.569986Z",
   "questions": [
@@ -48,8 +48,17 @@
     {
       "id": "q8",
       "decision": "fixed",
-      "note": "Визуальный поиск единственной tilde заменён применением правила к técnico.",
-      "verification": "ok"
+      "note": "Убрана фонетическая разбивка в скобках с уже выделенным ударным слогом. Теперь ударение и отношение к тильде нужно определить по самому слову и изученному правилу.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "fixed",
+        "note": "Убрана фонетическая разбивка в скобках с уже выделенным ударным слогом. Теперь ударение и отношение к тильде нужно определить по самому слову и изученному правилу.",
+        "verifier": "parentheses_1",
+        "verified_at": "2026-11-04T09:19:42.825635+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q9",
@@ -72,14 +81,32 @@
     {
       "id": "q12",
       "decision": "fixed",
-      "note": "Повтор поиска единственного знака заменён счётом слогов от конца.",
-      "verification": "ok"
+      "note": "Убрана фонетическая разбивка в скобках с уже выделенным ударным слогом. Теперь ударение и отношение к тильде нужно определить по самому слову и изученному правилу.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "fixed",
+        "note": "Убрана фонетическая разбивка в скобках с уже выделенным ударным слогом. Теперь ударение и отношение к тильде нужно определить по самому слову и изученному правилу.",
+        "verifier": "parentheses_1",
+        "verified_at": "2026-11-04T09:19:42.825635+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q13",
       "decision": "fixed",
-      "note": "Повтор поиска знака заменён объяснением обязательной tilde независимо от конца на s.",
-      "verification": "ok"
+      "note": "Убрана фонетическая разбивка в скобках с уже выделенным ударным слогом. Теперь ударение и отношение к тильде нужно определить по самому слову и изученному правилу.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "fixed",
+        "note": "Убрана фонетическая разбивка в скобках с уже выделенным ударным слогом. Теперь ударение и отношение к тильде нужно определить по самому слову и изученному правилу.",
+        "verifier": "parentheses_1",
+        "verified_at": "2026-11-04T09:19:42.825635+00:00",
+        "verification": "ok"
+      }
     }
   ],
   "checks": [
@@ -104,5 +131,34 @@
       "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
     }
   ],
-  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось.",
+  "parentheses_audit_verification": {
+    "scope": "Narrow parenthetical answer-leakage audit and correctness of edits; not completion of the full grammar review campaign.",
+    "editor": "coordinator",
+    "verifier": "parentheses_1",
+    "verified_at": "2026-11-04T09:19:42.825635+00:00",
+    "verification": "ok",
+    "read_question_ids": [
+      "q1",
+      "q2",
+      "q3",
+      "q5",
+      "q6",
+      "q7",
+      "q8",
+      "q9",
+      "q10",
+      "q11",
+      "q12",
+      "q13"
+    ],
+    "accepted_changed_ids": [
+      "q8",
+      "q12",
+      "q13"
+    ],
+    "evidence": "logs/complaints/parenthetical-audit-20261104/independent-worker-4.json",
+    "out_of_scope_ids": [],
+    "note": "All questions in this changed source were read with context. Pre-existing findings outside selected_ids remain separately recorded in independent evidence; historical full-review metadata and source/context fingerprints are preserved."
+  }
 }

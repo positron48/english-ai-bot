@@ -1,11 +1,11 @@
 {
   "version": 1,
   "source": "courses/english-grammar/chapters/050.en.grammar.future_plans.time_clauses_when_after/03-questions.json",
-  "source_sha256": "99e8cbea88ca3d8521e98e575f95bc8e12c42b1b51324d6c4d3c8a9eb7d6efb8",
+  "source_sha256": "47e814aa00920443d86a92e45e4a28b21a417354509409142344f6fa4591b49a",
   "context_sha256": "64e31eda57e873df505464f1903f462266e7fc04c5c6c1be9f047d40f6391702",
   "editor": "Codex editor 2026-09-04",
   "verifier": "Anton Filatov (user)",
-  "phase": "done",
+  "phase": "awaiting_verification",
   "reviewed_at": "2026-09-04T19:21:54.803931+00:00",
   "verified_at": "2026-09-06T17:58:18.569986Z",
   "questions": [
@@ -17,9 +17,18 @@
     },
     {
       "id": "q2",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Независимая проверка: отсутствовал исходный глагол для единственного строкового ключа; добавлена лемма или другая личная форма, если лемма совпадает с ответом.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "Независимая проверка: отсутствовал исходный глагол для единственного строкового ключа; добавлена лемма или другая личная форма, если лемма совпадает с ответом.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q3",
@@ -59,9 +68,18 @@
     },
     {
       "id": "q12",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Независимая проверка: отсутствовал исходный глагол для единственного строкового ключа; добавлена лемма или другая личная форма, если лемма совпадает с ответом.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "Независимая проверка: отсутствовал исходный глагол для единственного строкового ключа; добавлена лемма или другая личная форма, если лемма совпадает с ответом.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q13",
@@ -71,9 +89,18 @@
     },
     {
       "id": "q14",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Независимая проверка: отсутствовал исходный глагол для единственного строкового ключа; добавлена лемма или другая личная форма, если лемма совпадает с ответом.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "Независимая проверка: отсутствовал исходный глагол для единственного строкового ключа; добавлена лемма или другая личная форма, если лемма совпадает с ответом.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q15",
@@ -101,9 +128,18 @@
     },
     {
       "id": "q19",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Независимая проверка: отсутствовал исходный глагол для единственного строкового ключа; добавлена лемма или другая личная форма, если лемма совпадает с ответом.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "Независимая проверка: отсутствовал исходный глагол для единственного строкового ключа; добавлена лемма или другая личная форма, если лемма совпадает с ответом.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q20",
@@ -125,9 +161,18 @@
     },
     {
       "id": "q23",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "2026-11-04: подсказка «без will» заранее сообщала проверяемое правило. Убрана; hot возвращено в само предложение, чтобы ключ gets образовывал правильную фразу gets hot. Ограничение одним словом исключает has got/will get без называния нужного времени.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "fixed",
+        "note": "Убрана подсказка «без will»; hot перенесено в предложение, пропуск ограничен одним словом.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q24",
@@ -167,9 +212,18 @@
     },
     {
       "id": "q31",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Независимая проверка: отсутствовал исходный глагол для единственного строкового ключа; добавлена лемма или другая личная форма, если лемма совпадает с ответом.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "Независимая проверка: отсутствовал исходный глагол для единственного строкового ключа; добавлена лемма или другая личная форма, если лемма совпадает с ответом.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q32",
@@ -193,7 +247,13 @@
       "id": "q35",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "end требует ends по the meeting."
+      }
     },
     {
       "id": "q36",
@@ -233,9 +293,18 @@
     },
     {
       "id": "q43",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Независимая проверка: отсутствовал исходный глагол для единственного строкового ключа; добавлена лемма или другая личная форма, если лемма совпадает с ответом.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "Независимая проверка: отсутствовал исходный глагол для единственного строкового ключа; добавлена лемма или другая личная форма, если лемма совпадает с ответом.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q44",
@@ -257,9 +326,18 @@
     },
     {
       "id": "q47",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Независимая проверка: отсутствовал исходный глагол для единственного строкового ключа; добавлена лемма или другая личная форма, если лемма совпадает с ответом.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "Независимая проверка: отсутствовал исходный глагол для единственного строкового ключа; добавлена лемма или другая личная форма, если лемма совпадает с ответом.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q48",
@@ -275,9 +353,18 @@
     },
     {
       "id": "q50",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Независимая проверка: помета «порядок» не задавала единственный временной союз; дан набор союзов с различной функцией.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "Независимая проверка: помета «порядок» не задавала единственный временной союз; дан набор союзов с различной функцией.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q51",
@@ -299,9 +386,18 @@
     },
     {
       "id": "q55",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Независимая проверка: помета «порядок» не задавала единственный временной союз; дан набор союзов с различной функцией.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "Независимая проверка: помета «порядок» не задавала единственный временной союз; дан набор союзов с различной функцией.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q56",
@@ -323,9 +419,18 @@
     },
     {
       "id": "q60",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Независимая проверка: помета «порядок» не задавала единственный временной союз; дан набор союзов с различной функцией.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "Независимая проверка: помета «порядок» не задавала единственный временной союз; дан набор союзов с различной функцией.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q61",
@@ -335,9 +440,18 @@
     },
     {
       "id": "q62",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Независимая проверка: отсутствовал исходный глагол для единственного строкового ключа; добавлена лемма или другая личная форма, если лемма совпадает с ответом.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "Независимая проверка: отсутствовал исходный глагол для единственного строкового ключа; добавлена лемма или другая личная форма, если лемма совпадает с ответом.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q63",
@@ -359,9 +473,18 @@
     },
     {
       "id": "q66",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Независимая проверка: отсутствовал исходный глагол для единственного строкового ключа; добавлена лемма или другая личная форма, если лемма совпадает с ответом.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "Независимая проверка: отсутствовал исходный глагол для единственного строкового ключа; добавлена лемма или другая личная форма, если лемма совпадает с ответом.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q67",
@@ -389,9 +512,18 @@
     },
     {
       "id": "q71",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Независимая проверка: отсутствовал исходный глагол для единственного строкового ключа; добавлена лемма или другая личная форма, если лемма совпадает с ответом.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "Независимая проверка: отсутствовал исходный глагол для единственного строкового ключа; добавлена лемма или другая личная форма, если лемма совпадает с ответом.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q72",
@@ -405,7 +537,38 @@
       "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
       "result": "pass",
       "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    },
+    {
+      "command": "python3 logs/complaints/parenthetical-audit-20261104/worker-1-validate.py",
+      "result": "pass",
+      "evidence": "2026-11-04 narrow parentheses audit: identity/order/bindings and untouched questions preserved; source/final/embedded exact; official isolated chapter assembly/validation or training validate_question and signature checks passed. See worker-1-evidence/validation.json."
     }
   ],
-  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+  "verification_note": "2026-11-04 parenthetical-hints audit: changed questions awaiting independent verification. Historical verification applies only to unchanged questions.",
+  "parentheses_audit_verification": {
+    "verifier": "parentheses_3",
+    "verified_at": "2026-11-04T09:44:02.337656+00:00",
+    "verification": "ok",
+    "scope": "narrow_parentheses_audit_changed_questions",
+    "question_ids": [
+      "q2",
+      "q12",
+      "q14",
+      "q19",
+      "q23",
+      "q31",
+      "q43",
+      "q47",
+      "q50",
+      "q55",
+      "q60",
+      "q62",
+      "q66",
+      "q71"
+    ],
+    "evidence": [
+      "docs/grammar-review/batches/2026-11-04-parenthetical-hints/independent-worker-1.json"
+    ],
+    "note": "Независимо прочитаны все вопросы изменённого источника; подтверждены изменённые вопросы узкого аудита. Advisory вне selected не сертифицированы. Фазы общего обзора и source/context hashes не изменялись."
+  }
 }

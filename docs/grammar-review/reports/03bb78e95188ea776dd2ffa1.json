@@ -79,7 +79,13 @@
       "id": "q12",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "por/para — альтернативы, причина задаёт значение, не ответ."
+      }
     },
     {
       "id": "q13",
@@ -115,7 +121,13 @@
       "id": "q18",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "«Конкретное лицо» задаёт категорию дополнения, a не сообщена."
+      }
     },
     {
       "id": "q19",
@@ -169,7 +181,13 @@
       "id": "q27",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Русское значение благодарности снимает неоднозначность, не даёт por."
+      }
     },
     {
       "id": "q28",
@@ -187,7 +205,13 @@
       "id": "q30",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Русское «за» задаёт смысл извинения, не испанский предлог."
+      }
     },
     {
       "id": "q31",
@@ -235,13 +259,25 @@
       "id": "q38",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: choices, explanation. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Получатель задаёт нужное отношение, но не испанское para."
+      }
     },
     {
       "id": "q39",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Дедлайн уточняет значение mañana, para нужно выбрать."
+      }
     },
     {
       "id": "q40",
@@ -259,7 +295,13 @@
       "id": "q42",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Цель и инфинитив задают категории конструкции, но не форму para."
+      }
     },
     {
       "id": "q43",
@@ -277,13 +319,25 @@
       "id": "q45",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Подарок уточняет адресата в переводе, не даёт испанскую фразу."
+      }
     },
     {
       "id": "q46",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: explanation, prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Дедлайн задаёт смысл срока, не ключ para."
+      }
     },
     {
       "id": "q47",
@@ -307,7 +361,13 @@
       "id": "q50",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: choices, explanation. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Тема мысли уточняет перевод, управление pensar en нужно знать."
+      }
     },
     {
       "id": "q51",
@@ -409,7 +469,13 @@
       "id": "q67",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "regalo и en mi lugar задают два смысла, правильные предлоги нужно выбрать."
+      }
     },
     {
       "id": "q68",

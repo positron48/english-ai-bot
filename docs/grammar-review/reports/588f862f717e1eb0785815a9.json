@@ -13,13 +13,25 @@
       "id": "q1",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Прочитаны условие, варианты, ключ и объяснение: скобки задают смысл/грамматическую задачу и не раскрывают готовый ответ."
+      }
     },
     {
       "id": "q2",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Прочитаны условие, варианты, ключ и объяснение: скобки задают смысл/грамматическую задачу и не раскрывают готовый ответ."
+      }
     },
     {
       "id": "q3",
@@ -55,13 +67,25 @@
       "id": "q8",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Прочитаны условие, варианты, ключ и объяснение: скобки задают смысл/грамматическую задачу и не раскрывают готовый ответ."
+      }
     },
     {
       "id": "q9",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: explanation. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Временные союзы: скобки уточняют русский смысл, время или субъект; готовая испанская форма ответа не дана."
+      }
     },
     {
       "id": "q10",
@@ -73,13 +97,25 @@
       "id": "q11",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Временные союзы: скобки уточняют русский смысл, время или субъект; готовая испанская форма ответа не дана."
+      }
     },
     {
       "id": "q12",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: explanation, prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Временные союзы: скобки уточняют русский смысл, время или субъект; готовая испанская форма ответа не дана."
+      }
     },
     {
       "id": "q13",
@@ -91,7 +127,13 @@
       "id": "q14",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Временные союзы: скобки уточняют русский смысл, время или субъект; готовая испанская форма ответа не дана."
+      }
     },
     {
       "id": "q15",
@@ -127,7 +169,13 @@
       "id": "q20",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Временные союзы: скобки уточняют русский смысл, время или субъект; готовая испанская форма ответа не дана."
+      }
     },
     {
       "id": "q21",
@@ -145,19 +193,37 @@
       "id": "q23",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Временные союзы: скобки уточняют русский смысл, время или субъект; готовая испанская форма ответа не дана."
+      }
     },
     {
       "id": "q24",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Временные союзы: скобки уточняют русский смысл, время или субъект; готовая испанская форма ответа не дана."
+      }
     },
     {
       "id": "q25",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Временные союзы: скобки уточняют русский смысл, время или субъект; готовая испанская форма ответа не дана."
+      }
     },
     {
       "id": "q26",
@@ -199,7 +265,13 @@
       "id": "q32",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Временные союзы: скобки уточняют русский смысл, время или субъект; готовая испанская форма ответа не дана."
+      }
     },
     {
       "id": "q33",
@@ -223,7 +295,13 @@
       "id": "q36",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Временные союзы: скобки уточняют русский смысл, время или субъект; готовая испанская форма ответа не дана."
+      }
     },
     {
       "id": "q37",
@@ -271,13 +349,25 @@
       "id": "q44",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: explanation, prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Временные союзы: скобки уточняют русский смысл, время или субъект; готовая испанская форма ответа не дана."
+      }
     },
     {
       "id": "q45",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Временные союзы: скобки уточняют русский смысл, время или субъект; готовая испанская форма ответа не дана."
+      }
     },
     {
       "id": "q46",
@@ -343,13 +433,25 @@
       "id": "q56",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Временные союзы: скобки уточняют русский смысл, время или субъект; готовая испанская форма ответа не дана."
+      }
     },
     {
       "id": "q57",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Временные союзы: скобки уточняют русский смысл, время или субъект; готовая испанская форма ответа не дана."
+      }
     },
     {
       "id": "q58",
@@ -361,13 +463,25 @@
       "id": "q59",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: explanation, prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Временные союзы: скобки уточняют русский смысл, время или субъект; готовая испанская форма ответа не дана."
+      }
     },
     {
       "id": "q60",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Временные союзы: скобки уточняют русский смысл, время или субъект; готовая испанская форма ответа не дана."
+      }
     },
     {
       "id": "q61",
@@ -415,7 +529,13 @@
       "id": "q68",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Временные союзы: скобки уточняют русский смысл, время или субъект; готовая испанская форма ответа не дана."
+      }
     },
     {
       "id": "q69",
@@ -447,6 +567,11 @@
       "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
       "result": "pass",
       "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    },
+    {
+      "command": "python3 logs/complaints/parenthetical-audit-20261104/worker-2-validate.py",
+      "result": "pass",
+      "evidence": "Parentheses audit 2026-11-04, worker-2: exact identity/order/type/difficulty/theory bindings, unmodified objects and prior report decisions preserved against assigned baseline; logs/complaints/parenthetical-audit-20261104/worker-2-evidence/preservation-and-validators.json. Narrow audit only, not renewed whole-file editorial verification."
     }
   ],
   "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."

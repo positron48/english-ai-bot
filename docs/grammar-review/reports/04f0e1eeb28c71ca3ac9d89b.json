@@ -1,11 +1,11 @@
 {
   "version": 1,
   "source": "courses/english-grammar/chapters/054.en.grammar.core_modality_ability_permission.must_vs_have_to/03-questions.json",
-  "source_sha256": "281c1efd21cf359cf925354191c89f2376fb05b053ef41a917f3735befe3e23a",
+  "source_sha256": "fe15ccc2a0bd9b0599385eca0b2f4c0326b75db2f37d10e7a6c9eaf5ccf53544",
   "context_sha256": "baebb53714c32a6cb44d84f687cd7e21d72945a04bf5b6b03f99c11e8453fb68",
   "editor": "Codex editor 2026-09-04",
   "verifier": "Anton Filatov (user)",
-  "phase": "done",
+  "phase": "awaiting_verification",
   "reviewed_at": "2026-09-04T19:50:25.093170+00:00",
   "verified_at": "2026-09-06T17:58:18.569986Z",
   "questions": [
@@ -18,8 +18,17 @@
     {
       "id": "q2",
       "decision": "fixed",
-      "note": "Уточнена формулировка, чтобы у задания был один правильный ответ.",
-      "verification": "ok"
+      "note": "Подсказка «используйте must» полностью раскрывала пропущенный модальный глагол. Задание теперь проверяет форму смыслового глагола после must; форма для преобразования отличается от ответа.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "fixed",
+        "note": "Подсказка «используйте must» полностью раскрывала пропущенный модальный глагол. Задание теперь проверяет форму смыслового глагола после must; форма для преобразования отличается от ответа.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q3",
@@ -48,8 +57,17 @@
     {
       "id": "q7",
       "decision": "fixed",
-      "note": "Уточнена формулировка, чтобы у задания был один правильный ответ.",
-      "verification": "ok"
+      "note": "Подсказка «используйте must» полностью раскрывала пропущенный модальный глагол. Задание теперь проверяет форму смыслового глагола после must; форма для преобразования отличается от ответа.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "fixed",
+        "note": "Подсказка «используйте must» полностью раскрывала пропущенный модальный глагол. Задание теперь проверяет форму смыслового глагола после must; форма для преобразования отличается от ответа.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q8",
@@ -72,8 +90,17 @@
     {
       "id": "q11",
       "decision": "fixed",
-      "note": "Уточнена формулировка, чтобы у задания был один правильный ответ.",
-      "verification": "ok"
+      "note": "Подсказка «используйте must» полностью раскрывала пропущенный модальный глагол. Задание теперь проверяет форму смыслового глагола после must; форма для преобразования отличается от ответа.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "fixed",
+        "note": "Подсказка «используйте must» полностью раскрывала пропущенный модальный глагол. Задание теперь проверяет форму смыслового глагола после must; форма для преобразования отличается от ответа.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q12",
@@ -91,7 +118,13 @@
       "id": "q14",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают грамматический класс или коммуникативный смысл, русский перевод либо контекст. Прямые подсказки modal/zero исправлены отдельно."
+      }
     },
     {
       "id": "q15",
@@ -121,7 +154,13 @@
       "id": "q19",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают грамматический класс или коммуникативный смысл, русский перевод либо контекст. Прямые подсказки modal/zero исправлены отдельно."
+      }
     },
     {
       "id": "q20",
@@ -145,7 +184,13 @@
       "id": "q23",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают грамматический класс или коммуникативный смысл, русский перевод либо контекст. Прямые подсказки modal/zero исправлены отдельно."
+      }
     },
     {
       "id": "q24",
@@ -163,7 +208,13 @@
       "id": "q26",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают грамматический класс или коммуникативный смысл, русский перевод либо контекст. Прямые подсказки modal/zero исправлены отдельно."
+      }
     },
     {
       "id": "q27",
@@ -191,9 +242,18 @@
     },
     {
       "id": "q31",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Независимая проверка: свободное модальное заполнение имело несколько допустимых ответов. Задан набор сравниваемых форм; ключ выбирается по грамматике или различию запрета и отсутствия необходимости, а не копируется из прямой инструкции.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "Независимая проверка: свободное модальное заполнение имело несколько допустимых ответов. Задан набор сравниваемых форм; ключ выбирается по грамматике или различию запрета и отсутствия необходимости, а не копируется из прямой инструкции.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q32",
@@ -215,9 +275,18 @@
     },
     {
       "id": "q35",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Независимая проверка: свободное модальное заполнение имело несколько допустимых ответов. Задан набор сравниваемых форм; ключ выбирается по грамматике или различию запрета и отсутствия необходимости, а не копируется из прямой инструкции.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "Независимая проверка: свободное модальное заполнение имело несколько допустимых ответов. Задан набор сравниваемых форм; ключ выбирается по грамматике или различию запрета и отсутствия необходимости, а не копируется из прямой инструкции.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q37",
@@ -229,7 +298,13 @@
       "id": "q38",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают грамматический класс или коммуникативный смысл, русский перевод либо контекст. Прямые подсказки modal/zero исправлены отдельно."
+      }
     },
     {
       "id": "q39",
@@ -259,7 +334,13 @@
       "id": "q43",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают грамматический класс или коммуникативный смысл, русский перевод либо контекст. Прямые подсказки modal/zero исправлены отдельно."
+      }
     },
     {
       "id": "q44",
@@ -283,7 +364,13 @@
       "id": "q47",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают грамматический класс или коммуникативный смысл, русский перевод либо контекст. Прямые подсказки modal/zero исправлены отдельно."
+      }
     },
     {
       "id": "q48",
@@ -301,7 +388,13 @@
       "id": "q50",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают грамматический класс или коммуникативный смысл, русский перевод либо контекст. Прямые подсказки modal/zero исправлены отдельно."
+      }
     },
     {
       "id": "q51",
@@ -324,8 +417,17 @@
     {
       "id": "q55",
       "decision": "fixed",
-      "note": "Исправлено чрезмерно абсолютное правило или неверная грамматическая модель.",
-      "verification": "ok"
+      "note": "Подсказка «используйте must» полностью раскрывала пропущенный модальный глагол. Задание теперь проверяет форму смыслового глагола после must; форма для преобразования отличается от ответа.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "fixed",
+        "note": "Подсказка «используйте must» полностью раскрывала пропущенный модальный глагол. Задание теперь проверяет форму смыслового глагола после must; форма для преобразования отличается от ответа.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q56",
@@ -349,7 +451,13 @@
       "id": "q59",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают грамматический класс или коммуникативный смысл, русский перевод либо контекст. Прямые подсказки modal/zero исправлены отдельно."
+      }
     },
     {
       "id": "q60",
@@ -363,7 +471,35 @@
       "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
       "result": "pass",
       "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    },
+    {
+      "command": "python3 logs/complaints/parenthetical-audit-20261104/worker-2-validate.py",
+      "result": "pass",
+      "evidence": "Parentheses audit 2026-11-04, worker-2: exact identity/order/type/difficulty/theory bindings, unmodified objects and prior report decisions preserved against assigned baseline; logs/complaints/parenthetical-audit-20261104/worker-2-evidence/preservation-and-validators.json. Narrow audit only, not renewed whole-file editorial verification."
+    },
+    {
+      "command": "python3 logs/complaints/parenthetical-audit-20261104/worker-2-validate.py [assigned courses/english-grammar/chapters/054.en.grammar.core_modality_ability_permission.must_vs_have_to/03-questions.json]",
+      "result": "pass",
+      "evidence": "Stock chapter validator logic on baseline and final, with output artifact redirected to worker-2 evidence: 0 errors, 0 warnings, 0 suggestions in both. Source questions equal final question bank; final and embedded byte-identical. logs/complaints/parenthetical-audit-20261104/worker-2-evidence/preservation-and-validators.json"
     }
   ],
-  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось. Изменение q2 2026-11-04: проверка подсказок в скобках, независимая проверка ожидается. Изменение q7 2026-11-04: проверка подсказок в скобках, независимая проверка ожидается. Изменение q11 2026-11-04: проверка подсказок в скобках, независимая проверка ожидается. Изменение q55 2026-11-04: проверка подсказок в скобках, независимая проверка ожидается.",
+  "parentheses_audit_verification": {
+    "verifier": "parentheses_3",
+    "verified_at": "2026-11-04T09:44:02.337656+00:00",
+    "verification": "ok",
+    "scope": "narrow_parentheses_audit_changed_questions",
+    "question_ids": [
+      "q2",
+      "q7",
+      "q11",
+      "q31",
+      "q35",
+      "q55"
+    ],
+    "evidence": [
+      "docs/grammar-review/batches/2026-11-04-parenthetical-hints/independent-worker-2.json"
+    ],
+    "note": "Независимо прочитаны все вопросы изменённого источника; подтверждены изменённые вопросы узкого аудита. Advisory вне selected не сертифицированы. Фазы общего обзора и source/context hashes не изменялись."
+  }
 }

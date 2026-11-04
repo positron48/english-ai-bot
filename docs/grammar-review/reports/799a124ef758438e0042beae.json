@@ -91,7 +91,13 @@
       "id": "q14",
       "decision": "fixed",
       "note": "Варианты переведены на русский для A0, убрана ссылка на теорию.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки содержат исходный глагол, смысловую роль/время/тип ситуации либо перевод термина; вариант ответа не назван. Прямые демонстрации ключа исправлены отдельно."
+      }
     },
     {
       "id": "q15",
@@ -115,6 +121,11 @@
       "command": "git diff --check && git -C courses/spanish-grammar diff --check && git -C courses/english-grammar diff --check",
       "result": "pass",
       "evidence": "Все три дерева: без whitespace errors."
+    },
+    {
+      "command": "python3 logs/complaints/parenthetical-audit-20261104/worker-2-validate.py",
+      "result": "pass",
+      "evidence": "Parentheses audit 2026-11-04, worker-2: exact identity/order/type/difficulty/theory bindings, unmodified objects and prior report decisions preserved against assigned baseline; logs/complaints/parenthetical-audit-20261104/worker-2-evidence/preservation-and-validators.json. Narrow audit only, not renewed whole-file editorial verification."
     }
   ],
   "verification_note": "Пользователь подтвердил проверку пилота ES 001 → EN 001: «я проверил, ок, правим дальше» (2026-09-04). Подтверждение относится к сохранённым 224 вопросам; source/context hashes перед фиксацией сверены. Запись внесена координатором по сообщению пользователя."

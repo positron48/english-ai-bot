@@ -1,19 +1,28 @@
 {
   "version": 1,
   "source": "courses/english-grammar/chapters/080.en.grammar.prepositions_verb_patterns.phrasal_verbs_as_grammar/03-questions.json",
-  "source_sha256": "07e3ad449f7fc62ea2cf0cf48aa959b491d47748cbdbec748ba33a86870e48de",
+  "source_sha256": "8283bac2a90b09b055a796a482c1950c5031ded9e351a1dfb40f4b71046a9859",
   "context_sha256": "0076900f063315807c90800d0f12e1be7ecd41d96dae5ae018e8bf1e4e1b8e49",
   "editor": "Codex editor 2026-09-05",
   "verifier": "Anton Filatov (user)",
-  "phase": "done",
+  "phase": "awaiting_verification",
   "reviewed_at": "2026-09-05T09:58:26.414518Z",
   "verified_at": "2026-09-06T17:58:18.569986Z",
   "questions": [
     {
       "id": "q1",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "2026-11-04: условие/скобки буквально содержали правильный вариант. Готовый ключ убран; сохранены тип, варианты и ответ. Русский контекст задаёт смысл либо проверяется допустимая позиция дополнения фразового глагола.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "fixed",
+        "note": "Готовое turn off заменено русской целью выключить свет.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q3",
@@ -49,7 +58,13 @@
       "id": "q9",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "close it — английское смысловое пояснение, ключ shut не назван; нужно выбрать простой глагол среди фразовых."
+      }
     },
     {
       "id": "q11",
@@ -59,15 +74,33 @@
     },
     {
       "id": "q12",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "2026-11-04: условие/скобки буквально содержали правильный вариант. Готовый ключ убран; сохранены тип, варианты и ответ. Русский контекст задаёт смысл либо проверяется допустимая позиция дополнения фразового глагола.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "fixed",
+        "note": "Готовое fill in удалено; задана русская цель заполнить бланк.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q13",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "2026-11-04: условие/скобки буквально содержали правильный вариант. Готовый ключ убран; сохранены тип, варианты и ответ. Русский контекст задаёт смысл либо проверяется допустимая позиция дополнения фразового глагола.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "fixed",
+        "note": "Подсказка turn off удалена; смысл выключить телевизор задан по-русски.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q15",
@@ -83,9 +116,18 @@
     },
     {
       "id": "q17",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "2026-11-04: условие/скобки буквально содержали правильный вариант. Готовый ключ убран; сохранены тип, варианты и ответ. Русский контекст задаёт смысл либо проверяется допустимая позиция дополнения фразового глагола.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "fixed",
+        "note": "Готовое put on удалено; задан смысл надеть обувь.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q19",
@@ -101,9 +143,18 @@
     },
     {
       "id": "q21",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "2026-11-04: условие/скобки буквально содержали правильный вариант. Готовый ключ убран; сохранены тип, варианты и ответ. Русский контекст задаёт смысл либо проверяется допустимая позиция дополнения фразового глагола.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "fixed",
+        "note": "Готовое pick up удалено; задан смысл подобрать мусор.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q23",
@@ -113,15 +164,30 @@
     },
     {
       "id": "q25",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "2026-11-04: условие/скобки буквально содержали правильный вариант. Готовый ключ убран; сохранены тип, варианты и ответ. Русский контекст задаёт смысл либо проверяется допустимая позиция дополнения фразового глагола.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "fixed",
+        "note": "Ключ it в скобках удалён; по контексту ключа и структуре нужно выбрать местоимение.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q26",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "they требует объектного them между turn и off."
+      }
     },
     {
       "id": "q27",
@@ -137,15 +203,33 @@
     },
     {
       "id": "q29",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "2026-11-04: условие/скобки буквально содержали правильный вариант. Готовый ключ убран; сохранены тип, варианты и ответ. Русский контекст задаёт смысл либо проверяется допустимая позиция дополнения фразового глагола.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "fixed",
+        "note": "Ключ it убран из скобок; добавлен контекст куртки.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q30",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "2026-11-04: повторная сверка устранила повтор готового them во второй части; сохранена задача преобразования they в объектное местоимение между pick и up.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "fixed",
+        "note": "adjacent_defect: местоименное дополнение согласовано; затем повтор готового them исключён новой фразой Pick ___ up from the floor. (they).",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q31",
@@ -161,15 +245,30 @@
     },
     {
       "id": "q33",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "2026-11-04: условие/скобки буквально содержали правильный вариант. Готовый ключ убран; сохранены тип, варианты и ответ. Русский контекст задаёт смысл либо проверяется допустимая позиция дополнения фразового глагола.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "fixed",
+        "note": "Готовое it убрано; контекст радио сохраняет смысл turn down.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q34",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "they требует объектного them между put и away."
+      }
     },
     {
       "id": "q35",
@@ -179,9 +278,18 @@
     },
     {
       "id": "q36",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "2026-11-04: условие/скобки буквально содержали правильный вариант. Готовый ключ убран; сохранены тип, варианты и ответ. Русский контекст задаёт смысл либо проверяется допустимая позиция дополнения фразового глагола.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "fixed",
+        "note": "Готовое it убрано; контекст пальто задаёт смысл take off.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q37",
@@ -240,8 +348,17 @@
     {
       "id": "q49",
       "decision": "fixed",
-      "note": "Исправлены или уточнены поля: explanation, prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "note": "2026-11-04: условие/скобки буквально содержали правильный вариант. Готовый ключ убран; сохранены тип, варианты и ответ. Русский контекст задаёт смысл либо проверяется допустимая позиция дополнения фразового глагола.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "fixed",
+        "note": "Убрана точная именная группа-ключ; теперь проверяется допустимость NP после turn off вместо местоимения.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q51",
@@ -276,8 +393,17 @@
     {
       "id": "q57",
       "decision": "fixed",
-      "note": "Исправлены или уточнены поля: explanation, prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "note": "2026-11-04: условие/скобки буквально содержали правильный вариант. Готовый ключ убран; сохранены тип, варианты и ответ. Русский контекст задаёт смысл либо проверяется допустимая позиция дополнения фразового глагола.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "fixed",
+        "note": "Убрана точная группа-ключ; проверяется позиция дополнения после pick up.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q59",
@@ -288,20 +414,44 @@
     {
       "id": "q60",
       "decision": "fixed",
-      "note": "Исправлены или уточнены поля: explanation, prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "note": "2026-11-04: условие/скобки буквально содержали правильный вариант. Готовый ключ убран; сохранены тип, варианты и ответ. Русский контекст задаёт смысл либо проверяется допустимая позиция дополнения фразового глагола.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "fixed",
+        "note": "Точная группа-ключ удалена; грамматический выбор после turn off сохранён.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q61",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "2026-11-04: условие/скобки буквально содержали правильный вариант. Готовый ключ убран; сохранены тип, варианты и ответ. Русский контекст задаёт смысл либо проверяется допустимая позиция дополнения фразового глагола.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "fixed",
+        "note": "Подсказка it удалена; русский контекст принтера задаёт референт.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q62",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "they требует объектного them после pick."
+      }
     },
     {
       "id": "q63",
@@ -325,7 +475,13 @@
       "id": "q66",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: explanation, prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "the music нужно заменить на it, ключ не дан."
+      }
     },
     {
       "id": "q67",
@@ -343,7 +499,13 @@
       "id": "q70",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: explanation, prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "the radio нужно заменить местоимением it, ключ не дан."
+      }
     },
     {
       "id": "q71",
@@ -354,8 +516,17 @@
     {
       "id": "q72",
       "decision": "fixed",
-      "note": "Исправлены или уточнены поля: explanation, prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "note": "2026-11-04: chapter validator выявил новый одинаковый prompt с q49; q72 получил естественный контекст про достаточное тепло, сохранив выбор позиции именной группы.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "fixed",
+        "note": "Точная группа the heater удалена; пропуск после off требует выбрать NP, не местоимение.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     }
   ],
   "checks": [
@@ -363,7 +534,39 @@
       "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
       "result": "pass",
       "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    },
+    {
+      "command": "python3 logs/complaints/parenthetical-audit-20261104/worker-1-validate.py",
+      "result": "pass",
+      "evidence": "2026-11-04 narrow parentheses audit: identity/order/bindings and untouched questions preserved; source/final/embedded exact; official isolated chapter assembly/validation or training validate_question and signature checks passed. See worker-1-evidence/validation.json."
     }
   ],
-  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+  "verification_note": "2026-11-04 parenthetical-hints audit: changed questions awaiting independent verification. Historical verification applies only to unchanged questions.",
+  "parentheses_audit_verification": {
+    "verifier": "parentheses_3",
+    "verified_at": "2026-11-04T09:44:02.337656+00:00",
+    "verification": "ok",
+    "scope": "narrow_parentheses_audit_changed_questions",
+    "question_ids": [
+      "q1",
+      "q12",
+      "q13",
+      "q17",
+      "q21",
+      "q25",
+      "q29",
+      "q30",
+      "q33",
+      "q36",
+      "q49",
+      "q57",
+      "q60",
+      "q61",
+      "q72"
+    ],
+    "evidence": [
+      "docs/grammar-review/batches/2026-11-04-parenthetical-hints/independent-worker-1.json"
+    ],
+    "note": "Независимо прочитаны все вопросы изменённого источника; подтверждены изменённые вопросы узкого аудита. Advisory вне selected не сертифицированы. Фазы общего обзора и source/context hashes не изменялись."
+  }
 }

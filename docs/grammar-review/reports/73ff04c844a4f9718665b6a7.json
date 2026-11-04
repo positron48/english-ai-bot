@@ -25,13 +25,25 @@
       "id": "q3",
       "decision": "fixed",
       "note": "Уточнён смысл/форма ответа и исправлено объяснение или русская формулировка.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках глагольная лемма или смысл характеристики/происхождения; требуется согласовать ser/estar либо выбрать вопросительное слово."
+      }
     },
     {
       "id": "q4",
       "decision": "fixed",
       "note": "Уточнён смысл/форма ответа и исправлено объяснение или русская формулировка.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках глагольная лемма или смысл характеристики/происхождения; требуется согласовать ser/estar либо выбрать вопросительное слово."
+      }
     },
     {
       "id": "q5",
@@ -55,7 +67,13 @@
       "id": "q8",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках глагольная лемма или смысл характеристики/происхождения; требуется согласовать ser/estar либо выбрать вопросительное слово."
+      }
     },
     {
       "id": "q9",
@@ -91,13 +109,25 @@
       "id": "q14",
       "decision": "fixed",
       "note": "Уточнён смысл/форма ответа и исправлено объяснение или русская формулировка.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Исходные ser/estar/tener и смысловые пометы ограничивают значение, но не подсказывают спряжённую форму или вариант ответа."
+      }
     },
     {
       "id": "q15",
       "decision": "fixed",
       "note": "Уточнён смысл/форма ответа и исправлено объяснение или русская формулировка.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Исходные ser/estar/tener и смысловые пометы ограничивают значение, но не подсказывают спряжённую форму или вариант ответа."
+      }
     },
     {
       "id": "q16",
@@ -145,7 +175,13 @@
       "id": "q23",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Исходные ser/estar/tener и смысловые пометы ограничивают значение, но не подсказывают спряжённую форму или вариант ответа."
+      }
     },
     {
       "id": "q24",
@@ -157,13 +193,25 @@
       "id": "q25",
       "decision": "fixed",
       "note": "Уточнён смысл/время или убрано неестественное объяснение.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Исходные ser/estar/tener и смысловые пометы ограничивают значение, но не подсказывают спряжённую форму или вариант ответа."
+      }
     },
     {
       "id": "q26",
       "decision": "fixed",
       "note": "Уточнён смысл/время или убрано неестественное объяснение.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Исходные ser/estar/tener и смысловые пометы ограничивают значение, но не подсказывают спряжённую форму или вариант ответа."
+      }
     },
     {
       "id": "q27",
@@ -187,7 +235,13 @@
       "id": "q30",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Исходные ser/estar/tener и смысловые пометы ограничивают значение, но не подсказывают спряжённую форму или вариант ответа."
+      }
     },
     {
       "id": "q31",
@@ -199,13 +253,25 @@
       "id": "q32",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Исходные ser/estar/tener и смысловые пометы ограничивают значение, но не подсказывают спряжённую форму или вариант ответа."
+      }
     },
     {
       "id": "q33",
       "decision": "fixed",
       "note": "Убран допустимый в вариантах испанского estar interesante.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Исходные ser/estar/tener и смысловые пометы ограничивают значение, но не подсказывают спряжённую форму или вариант ответа."
+      }
     },
     {
       "id": "q34",
@@ -223,13 +289,25 @@
       "id": "q36",
       "decision": "fixed",
       "note": "Уточнён смысл/время или убрано неестественное объяснение.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Исходные ser/estar/tener и смысловые пометы ограничивают значение, но не подсказывают спряжённую форму или вариант ответа."
+      }
     },
     {
       "id": "q37",
       "decision": "fixed",
       "note": "Уточнён смысл/время или убрано неестественное объяснение.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Исходные ser/estar/tener и смысловые пометы ограничивают значение, но не подсказывают спряжённую форму или вариант ответа."
+      }
     },
     {
       "id": "q38",
@@ -265,7 +343,13 @@
       "id": "q43",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Исходные ser/estar/tener и смысловые пометы ограничивают значение, но не подсказывают спряжённую форму или вариант ответа."
+      }
     },
     {
       "id": "q44",
@@ -289,13 +373,25 @@
       "id": "q47",
       "decision": "fixed",
       "note": "Уточнены контекст и время; значение, а не временное слово, определяет выбор глагола.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Исходные ser/estar/tener и смысловые пометы ограничивают значение, но не подсказывают спряжённую форму или вариант ответа."
+      }
     },
     {
       "id": "q48",
       "decision": "fixed",
       "note": "Уточнены контекст и время; значение, а не временное слово, определяет выбор глагола.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Исходные ser/estar/tener и смысловые пометы ограничивают значение, но не подсказывают спряжённую форму или вариант ответа."
+      }
     },
     {
       "id": "q49",
@@ -355,13 +451,25 @@
       "id": "q58",
       "decision": "fixed",
       "note": "Уточнены контекст и время; значение, а не временное слово, определяет выбор глагола.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Исходные ser/estar/tener и смысловые пометы ограничивают значение, но не подсказывают спряжённую форму или вариант ответа."
+      }
     },
     {
       "id": "q59",
       "decision": "fixed",
       "note": "Уточнены контекст и время; значение, а не временное слово, определяет выбор глагола.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Исходные ser/estar/tener и смысловые пометы ограничивают значение, но не подсказывают спряжённую форму или вариант ответа."
+      }
     },
     {
       "id": "q60",
@@ -385,7 +493,13 @@
       "id": "q63",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Исходные ser/estar/tener и смысловые пометы ограничивают значение, но не подсказывают спряжённую форму или вариант ответа."
+      }
     },
     {
       "id": "q64",
@@ -446,6 +560,11 @@
       "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
       "result": "pass",
       "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    },
+    {
+      "command": "python3 logs/complaints/parenthetical-audit-20261104/worker-2-validate.py",
+      "result": "pass",
+      "evidence": "Parentheses audit 2026-11-04, worker-2: exact identity/order/type/difficulty/theory bindings, unmodified objects and prior report decisions preserved against assigned baseline; logs/complaints/parenthetical-audit-20261104/worker-2-evidence/preservation-and-validators.json. Narrow audit only, not renewed whole-file editorial verification."
     }
   ],
   "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."

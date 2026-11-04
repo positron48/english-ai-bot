@@ -37,7 +37,13 @@
       "id": "q045_b1_05",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Скобка (а) в русском переводе обозначает пол говорящего, ключ не раскрывает."
+      }
     },
     {
       "id": "q045_b1_06",
@@ -49,13 +55,25 @@
       "id": "q045_b1_07",
       "decision": "fixed",
       "note": "Исправлены условие.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "aprender задаёт лексему, he определяется yo."
+      }
     },
     {
       "id": "q045_b1_08",
       "decision": "fixed",
       "note": "Исправлены условие, объяснение.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "cambiar задаёт лексему, ha определяется ситуацией в единственном числе."
+      }
     },
     {
       "id": "q045_b1_09",
@@ -103,25 +121,49 @@
       "id": "q045_b2_05",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Скобка (а) в русском переводе — гендерное окончание, не подсказка ключа."
+      }
     },
     {
       "id": "q045_b2_06",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Скобка (а) — гендерное окончание, не раскрывает испанскую грамматику."
+      }
     },
     {
       "id": "q045_b2_07",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "estar задаёт лексему, Has буквально не написано."
+      }
     },
     {
       "id": "q045_b2_08",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "probar задаёт лексему, he не сообщено."
+      }
     },
     {
       "id": "q045_b2_09",
@@ -163,13 +205,25 @@
       "id": "q045_b3_04",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "IPA лишь уточняет гласные вспомогательного, не сообщает оценку ритма и пауз."
+      }
     },
     {
       "id": "q045_b3_05",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Скобка (а) — гендерное окончание русского перевода, не раскрывает ключ."
+      }
     },
     {
       "id": "q045_b3_06",
@@ -181,13 +235,25 @@
       "id": "q045_b3_07",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "cerrar задаёт лемму, he не написано."
+      }
     },
     {
       "id": "q045_b3_08",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "preparar задаёт лемму, han нужно согласовать с ellos."
+      }
     },
     {
       "id": "q045_b3_09",
@@ -241,25 +307,49 @@
       "id": "q045_b4_05",
       "decision": "fixed",
       "note": "Исправлены варианты.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Открытый текущий день — временной контекст; родовая скобка переводная, формы не даны."
+      }
     },
     {
       "id": "q045_b4_06",
       "decision": "fixed",
       "note": "Исправлены варианты.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Открытая неделя задаёт временную перспективу, правильное he leído нужно выбрать."
+      }
     },
     {
       "id": "q045_b4_07",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "ahorrar — лемма, вспомогательное he не дано."
+      }
     },
     {
       "id": "q045_b4_08",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "correr — лемма, вспомогательное he не дано."
+      }
     },
     {
       "id": "q045_b4_09",
@@ -313,25 +403,49 @@
       "id": "q045_b5_05",
       "decision": "fixed",
       "note": "Исправлены варианты.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Скобка (а) — русское родовое окончание, не испанская подсказка."
+      }
     },
     {
       "id": "q045_b5_06",
       "decision": "fixed",
       "note": "Исправлены условие, варианты.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Открытый год задаёт перспективу, форма he empezado не раскрыта."
+      }
     },
     {
       "id": "q045_b5_07",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "pagar — лемма, he надо восстановить."
+      }
     },
     {
       "id": "q045_b5_08",
       "decision": "fixed",
       "note": "Исправлены условие.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "empezar — лемма, he надо восстановить."
+      }
     },
     {
       "id": "q045_b5_09",
@@ -385,7 +499,13 @@
       "id": "q045_b6_05",
       "decision": "fixed",
       "note": "Исправлены условие, варианты.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Год ещё идёт — смысловой контекст, hemos viajado нужно выбрать."
+      }
     },
     {
       "id": "q045_b6_06",
@@ -397,13 +517,25 @@
       "id": "q045_b6_07",
       "decision": "fixed",
       "note": "Исправлены условие.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "viajar — лемма, hemos определяется nosotros."
+      }
     },
     {
       "id": "q045_b6_08",
       "decision": "fixed",
       "note": "Исправлены условие.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "leer — лемма, has определяется tú."
+      }
     },
     {
       "id": "q045_b6_09",

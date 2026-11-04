@@ -1,0 +1,412 @@
+{
+  "reviewer": "parentheses_1",
+  "sources": [
+    {
+      "source": "courses/spanish-grammar/chapters/120.es.grammar.subjunctive_noun_clauses.emotion_evaluation_me_alegra_que_es_bueno_que/03-questions.json",
+      "source_sha256": "165868ca8c21533ea7cb7d1676bf1104fa36e73f064a6116f73e300a1a29563c",
+      "source_bytes_sha256": "f9e1c594565eec50391ac32b087bd39f2a4de87f44f6c159a7b871085640f86a",
+      "context_sha256": "d9934d003e3712a53d477b00ac883d813424690f715e82fc2b1c3f4cb4b0792e",
+      "report": "docs/grammar-review/reports/05c4619bd2fd77567c8134e1.json",
+      "report_sha256": "2d2dbebf80c2c60aef70d6d2dd3370c8a9d99c9dbe236af8e102912d69592394",
+      "initial_report_status": "done",
+      "final": "courses/spanish-grammar/chapters/120.es.grammar.subjunctive_noun_clauses.emotion_evaluation_me_alegra_que_es_bueno_que/05-final.json",
+      "final_sha256": "da8fd8d48e2b3342cb4db9e07290e34f56bf4fb8a28bbfda948d9f7e3027a2fc",
+      "embedded": "internal/grammarbundle/es/chapters/es.grammar.subjunctive_noun_clauses.emotion_evaluation_me_alegra_que_es_bueno_que.json",
+      "embedded_sha256": "da8fd8d48e2b3342cb4db9e07290e34f56bf4fb8a28bbfda948d9f7e3027a2fc",
+      "question_count": 70,
+      "changed_ids": [
+        "q10",
+        "q52"
+      ],
+      "report_verification_update": "60 edited rows independently verified; phase and historical metadata preserved",
+      "report_status_at_prepublication_snapshot": "awaiting_verification",
+      "phase_after_independent_verification": "awaiting_verification"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/123.es.grammar.subjunctive_noun_clauses.negative_commands_polite_commands_subjunctive/03-questions.json",
+      "source_sha256": "ba4dcdd537334d4a1f961ad906dd793f42331a27c64756423b5614104cc067f8",
+      "source_bytes_sha256": "c737e8827e0f20addc814145e50b46fe272b5066a7002ae5ccc8bcaddde8259a",
+      "context_sha256": "aee190b4fef72115adf2d817dd786e49c1d930608d2a679941363cef284ce223",
+      "report": "docs/grammar-review/reports/9efc7506257fa3ff409e1520.json",
+      "report_sha256": "628e6b04031954cdb089fab07ccd2b1eabfc0138a85dadd5e43c7e03291d1ec6",
+      "initial_report_status": "done",
+      "final": "courses/spanish-grammar/chapters/123.es.grammar.subjunctive_noun_clauses.negative_commands_polite_commands_subjunctive/05-final.json",
+      "final_sha256": "1fc4b0cbf5bcd3523b50379d92d7929bdd6dddcbb285df14febf7271264b6bd8",
+      "embedded": "internal/grammarbundle/es/chapters/es.grammar.subjunctive_noun_clauses.negative_commands_polite_commands_subjunctive.json",
+      "embedded_sha256": "1fc4b0cbf5bcd3523b50379d92d7929bdd6dddcbb285df14febf7271264b6bd8",
+      "question_count": 70,
+      "changed_ids": [
+        "q59"
+      ],
+      "report_verification_update": "60 edited rows independently verified; phase and historical metadata preserved",
+      "report_status_at_prepublication_snapshot": "awaiting_verification",
+      "phase_after_independent_verification": "awaiting_verification"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/125.es.grammar.subjunctive_noun_clauses.build_speak_wishes_recommendations_emotions_opinions/03-questions.json",
+      "source_sha256": "200fecaaad0032ab76535ad3d7f959122039b0cb4850ca3359c0b873ae6131a1",
+      "source_bytes_sha256": "ccc63404d1ac206787801498dada80c2aa7ce20a9ae1d6d919878a14ef9fb70f",
+      "context_sha256": "9e261bff5077e4b711485df56e054f849163686fcf27bdafbf744bc14f4e2c49",
+      "report": "docs/grammar-review/reports/25e2e47ea67fb850a5acb0dc.json",
+      "report_sha256": "e0956467a2a7ea009c66e3450ecc3e3ff4b7d54ede146e70a04c8eaa080bdf0d",
+      "initial_report_status": "done",
+      "final": "courses/spanish-grammar/chapters/125.es.grammar.subjunctive_noun_clauses.build_speak_wishes_recommendations_emotions_opinions/05-final.json",
+      "final_sha256": "8b21da228ff85ff6a0f903db690b1aff2cdc2992b83d97ea032b99df2f9bb3a2",
+      "embedded": "internal/grammarbundle/es/chapters/es.grammar.subjunctive_noun_clauses.build_speak_wishes_recommendations_emotions_opinions.json",
+      "embedded_sha256": "8b21da228ff85ff6a0f903db690b1aff2cdc2992b83d97ea032b99df2f9bb3a2",
+      "question_count": 70,
+      "changed_ids": [
+        "q1",
+        "q14"
+      ],
+      "report_verification_update": "60 edited rows independently verified; phase and historical metadata preserved",
+      "report_status_at_prepublication_snapshot": "awaiting_verification",
+      "phase_after_independent_verification": "awaiting_verification"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/129.es.grammar.subjunctive_time_purpose_relative.aunque_por_mas_que_como_si_meaning_mood/03-questions.json",
+      "source_sha256": "ff92d9347eadea950588e5343ebadba16036aeb19d76a9335385dcbbe74c310d",
+      "source_bytes_sha256": "98ded1e433b44fdb22332c25441898915dede449686ea7a797981baa843190bf",
+      "context_sha256": "9bc4934ac580940a9255edd164e7168623f38a5454607f6911516d4ea9d65b5d",
+      "report": "docs/grammar-review/reports/10c851b0b457d692690c7495.json",
+      "report_sha256": "71d75d4fb8c9a6a0533fb7764a6db81a68e5c4599b7e043d89a95c7b64eda186",
+      "initial_report_status": "done",
+      "final": "courses/spanish-grammar/chapters/129.es.grammar.subjunctive_time_purpose_relative.aunque_por_mas_que_como_si_meaning_mood/05-final.json",
+      "final_sha256": "ef041dd3ef652e8ddb7b52edabbcdeb4eef4347efe2a1b37320ded77d750d933",
+      "embedded": "internal/grammarbundle/es/chapters/es.grammar.subjunctive_time_purpose_relative.aunque_por_mas_que_como_si_meaning_mood.json",
+      "embedded_sha256": "ef041dd3ef652e8ddb7b52edabbcdeb4eef4347efe2a1b37320ded77d750d933",
+      "question_count": 60,
+      "changed_ids": [
+        "q129_b5_cloze",
+        "q129_b3_prod",
+        "q129_b4_prod",
+        "q129_b6_prod",
+        "q129_b2_prod",
+        "q129_b5_prod2"
+      ],
+      "report_verification_update": "60 edited rows independently verified; phase and historical metadata preserved",
+      "report_status_at_prepublication_snapshot": "awaiting_verification",
+      "phase_after_independent_verification": "awaiting_verification"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/130.es.grammar.subjunctive_time_purpose_relative.relative_clauses_known_unknown_hypothetical_reference/03-questions.json",
+      "source_sha256": "dfa8396cd0e3377638c715fb4e67acb3a3078118a9dcf8abb5d6dc648835365f",
+      "source_bytes_sha256": "339a27fe6a0c380cdef337cc528b143c5f026db7b1691dc8c75f3a647656fd27",
+      "context_sha256": "97b1eec9fa84a41f06115b3954eb3be7e7072b5cb4b0bc516690172d3b2366b0",
+      "report": "docs/grammar-review/reports/c9743b49bd94a6951ee5e7fb.json",
+      "report_sha256": "cb0e815bf8868353b695c083abdded3d6ba6cddb61a9d7f68c3675bad77ee4e5",
+      "initial_report_status": "done",
+      "final": "courses/spanish-grammar/chapters/130.es.grammar.subjunctive_time_purpose_relative.relative_clauses_known_unknown_hypothetical_reference/05-final.json",
+      "final_sha256": "cc551c39cf8c3d4d3dcda620ec5d4de4edeccce61aec0095d93978af1676ce46",
+      "embedded": "internal/grammarbundle/es/chapters/es.grammar.subjunctive_time_purpose_relative.relative_clauses_known_unknown_hypothetical_reference.json",
+      "embedded_sha256": "cc551c39cf8c3d4d3dcda620ec5d4de4edeccce61aec0095d93978af1676ce46",
+      "question_count": 64,
+      "changed_ids": [
+        "q130_b1_prod",
+        "q130_b2_prod",
+        "q130_b3_prod",
+        "q130_b4_prod",
+        "q130_b5_prod",
+        "q130_b6_prod",
+        "q130_b5_prod2"
+      ],
+      "report_verification_update": "60 edited rows independently verified; phase and historical metadata preserved",
+      "report_status_at_prepublication_snapshot": "awaiting_verification",
+      "phase_after_independent_verification": "awaiting_verification"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/133.es.grammar.subjunctive_past_counterfactuals.imperfect_subjunctive_forms_ra_se/03-questions.json",
+      "source_sha256": "cadff3dd0623bfe1b4f3b33c6e49646727a04862a476e51e6e99e6d0ec52365e",
+      "source_bytes_sha256": "bee0dd5c6dedcbbe9f12bcc0901278485461502ff67526fa61b23542de4af365",
+      "context_sha256": "316105e273c274a8f2ec36598b357dc113aba0adda76a01344964063052a734a",
+      "report": "docs/grammar-review/reports/0d99830296f448e3d4614554.json",
+      "report_sha256": "a5905d8ac8d4976d32ff3e2ecae047f029207f4a4916d13b23cc8faf20d95b45",
+      "initial_report_status": "done",
+      "final": "courses/spanish-grammar/chapters/133.es.grammar.subjunctive_past_counterfactuals.imperfect_subjunctive_forms_ra_se/05-final.json",
+      "final_sha256": "94435e287a1d470d7e8a3cda9b8cae89596f2a484f0f4fd17106f82f61680c72",
+      "embedded": "internal/grammarbundle/es/chapters/es.grammar.subjunctive_past_counterfactuals.imperfect_subjunctive_forms_ra_se.json",
+      "embedded_sha256": "94435e287a1d470d7e8a3cda9b8cae89596f2a484f0f4fd17106f82f61680c72",
+      "question_count": 66,
+      "changed_ids": [
+        "q133_b4_cloze",
+        "q133_b1_tf",
+        "q133_b6_tf",
+        "q133_b1_prod",
+        "q133_b2_prod",
+        "q133_b3_prod",
+        "q133_b4_prod"
+      ],
+      "report_verification_update": "60 edited rows independently verified; phase and historical metadata preserved",
+      "report_status_at_prepublication_snapshot": "awaiting_verification",
+      "phase_after_independent_verification": "awaiting_verification"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/135.es.grammar.subjunctive_past_counterfactuals.si_plus_imperfect_subjunctive_plus_conditional/03-questions.json",
+      "source_sha256": "e48c4f826b740bc0d17f768b475ee5d84b5ed50b76de819e5fc828997615cbaa",
+      "source_bytes_sha256": "7367e65e28926d46cee7dfbd36bd3a6e09ab3027c4a5f888aa2a26fc2bf85a8c",
+      "context_sha256": "a96fd8fd67d5620022b12781852f393b7d146970d96509017e677000e3473dbc",
+      "report": "docs/grammar-review/reports/8d6d2a1d0dfb977d8f083232.json",
+      "report_sha256": "b7babaed691b330b29680e782c808696a7a733440becd79d622818e75a9f1967",
+      "initial_report_status": "done",
+      "final": "courses/spanish-grammar/chapters/135.es.grammar.subjunctive_past_counterfactuals.si_plus_imperfect_subjunctive_plus_conditional/05-final.json",
+      "final_sha256": "82ec520e464c464e5e9964c61ddb3dcdd8746590f75f3dc430f3c94e8643d44d",
+      "embedded": "internal/grammarbundle/es/chapters/es.grammar.subjunctive_past_counterfactuals.si_plus_imperfect_subjunctive_plus_conditional.json",
+      "embedded_sha256": "82ec520e464c464e5e9964c61ddb3dcdd8746590f75f3dc430f3c94e8643d44d",
+      "question_count": 60,
+      "changed_ids": [
+        "q135_b5_transform"
+      ],
+      "report_verification_update": "60 edited rows independently verified; phase and historical metadata preserved",
+      "report_status_at_prepublication_snapshot": "awaiting_verification",
+      "phase_after_independent_verification": "awaiting_verification"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/138.es.grammar.subjunctive_past_counterfactuals.third_conditional_mixed_counterfactuals/03-questions.json",
+      "source_sha256": "bedeebe5c7de88e7e30695d67a4e07709fdd60171a51b1834b28a46aa32d130a",
+      "source_bytes_sha256": "bba2a3ec62b7a60ba97dfc23dd5e17cdbb80f8d539746a33e123168f92104cc0",
+      "context_sha256": "7bf7bb70b1a19530a78962bc61c316d82951effad13e1238ee1b4956bbd5d145",
+      "report": "docs/grammar-review/reports/3d65b14fa57d03dd289e1cc3.json",
+      "report_sha256": "b1bc3c54457a4db230a13269628a48901785b3c85866d5c149fdb1e709599c90",
+      "initial_report_status": "done",
+      "final": "courses/spanish-grammar/chapters/138.es.grammar.subjunctive_past_counterfactuals.third_conditional_mixed_counterfactuals/05-final.json",
+      "final_sha256": "6374204fa6fffc5b6c930c5849a1855ac051205e5994f99ed72827e96b955171",
+      "embedded": "internal/grammarbundle/es/chapters/es.grammar.subjunctive_past_counterfactuals.third_conditional_mixed_counterfactuals.json",
+      "embedded_sha256": "6374204fa6fffc5b6c930c5849a1855ac051205e5994f99ed72827e96b955171",
+      "question_count": 72,
+      "changed_ids": [
+        "q138_b2_fill_1",
+        "q138_b4_fill_2",
+        "q138_b6_fill_2"
+      ],
+      "report_verification_update": "60 edited rows independently verified; phase and historical metadata preserved",
+      "report_status_at_prepublication_snapshot": "awaiting_verification",
+      "phase_after_independent_verification": "awaiting_verification"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/140.es.grammar.voice_reported_speech_distancing.passive_ser_agent_phrases/03-questions.json",
+      "source_sha256": "b189e752cb484f2a4beccf4ae79e821297e5ad24657897d63a2550147bf3962d",
+      "source_bytes_sha256": "94c9f8f18a1c272a0427b43007461ec3dbf7190e74ce15969ec0cc5ca1f479be",
+      "context_sha256": "2521620f1345e35f2da3a0c0d3fad2b391888af99d70efc14987848a9dea9e1c",
+      "report": "docs/grammar-review/reports/0d281f785e7e2b7a7605e25e.json",
+      "report_sha256": "fce99942cf07700bc7fbc7ddb4fe6b2cc1bbb196ed5740cbb0fb43f5f99a2970",
+      "initial_report_status": "done",
+      "final": "courses/spanish-grammar/chapters/140.es.grammar.voice_reported_speech_distancing.passive_ser_agent_phrases/05-final.json",
+      "final_sha256": "a2f239fb55c48cfecf5a0cbaa223ed23d7c3e96f951fd1d5d2ce9c1fe3a43d2c",
+      "embedded": "internal/grammarbundle/es/chapters/es.grammar.voice_reported_speech_distancing.passive_ser_agent_phrases.json",
+      "embedded_sha256": "a2f239fb55c48cfecf5a0cbaa223ed23d7c3e96f951fd1d5d2ce9c1fe3a43d2c",
+      "question_count": 72,
+      "changed_ids": [
+        "q140_b6_f2"
+      ],
+      "report_verification_update": "60 edited rows independently verified; phase and historical metadata preserved",
+      "report_status_at_prepublication_snapshot": "awaiting_verification",
+      "phase_after_independent_verification": "awaiting_verification"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/150.es.grammar.c1_style_discourse_register.hedging_stance_precision_quiza_al_parecer_es_probable/03-questions.json",
+      "source_sha256": "d1c6843394a4efcc4c20b7033926cc73f9f462ecf9fc20623edb66d71ee72b16",
+      "source_bytes_sha256": "c96742ff32500c35e19b85dd38da62b5d2865f8232578a36bcdb7262b7de70f9",
+      "context_sha256": "2dd9a63ceb6999407a020d7c5be1a9da81ebec6a8f10a1f1e7851c4ee79c2169",
+      "report": "docs/grammar-review/reports/1d2fabc6d5a33db370d4d195.json",
+      "report_sha256": "4921e66fe5f096f8697fff02bcc012cc6acecb66ac9e942900b543d070afe722",
+      "initial_report_status": "done",
+      "final": "courses/spanish-grammar/chapters/150.es.grammar.c1_style_discourse_register.hedging_stance_precision_quiza_al_parecer_es_probable/05-final.json",
+      "final_sha256": "f6368a675aeda351cfbc3f7df4744ed501c53c8eb9c3175a7c684af02775b8dc",
+      "embedded": "internal/grammarbundle/es/chapters/es.grammar.c1_style_discourse_register.hedging_stance_precision_quiza_al_parecer_es_probable.json",
+      "embedded_sha256": "f6368a675aeda351cfbc3f7df4744ed501c53c8eb9c3175a7c684af02775b8dc",
+      "question_count": 28,
+      "changed_ids": [
+        "q150_b4_m3",
+        "q150_b6_m2"
+      ],
+      "report_verification_update": "60 edited rows independently verified; phase and historical metadata preserved",
+      "report_status_at_prepublication_snapshot": "awaiting_verification",
+      "phase_after_independent_verification": "awaiting_verification"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/151.es.grammar.c1_style_discourse_register.formal_informal_tone_email_interview_essay_debate/03-questions.json",
+      "source_sha256": "d63d90791b16f22442eb0dad4fafc636e32d9db17f8ef76bbe0b3bb71d35e4ed",
+      "source_bytes_sha256": "bc53c6b401bc2a5e5bdd92c5f52aebd16e238e11f2ec6105dd2baa214b9a153d",
+      "context_sha256": "1578dec5f38d18c02eef475027f67529e70468636865018f44966ff6a4d52662",
+      "report": "docs/grammar-review/reports/0c461f4b0d3042a818aa372f.json",
+      "report_sha256": "7e432ea8caa3948e53251e7020217b781eac865aa8e54d2483cc93e9095d2942",
+      "initial_report_status": "done",
+      "final": "courses/spanish-grammar/chapters/151.es.grammar.c1_style_discourse_register.formal_informal_tone_email_interview_essay_debate/05-final.json",
+      "final_sha256": "dcfc71a2b5680c551b5a0d1ac018f5d53cbeb31e398279848678e2b8f15ea7a3",
+      "embedded": "internal/grammarbundle/es/chapters/es.grammar.c1_style_discourse_register.formal_informal_tone_email_interview_essay_debate.json",
+      "embedded_sha256": "dcfc71a2b5680c551b5a0d1ac018f5d53cbeb31e398279848678e2b8f15ea7a3",
+      "question_count": 28,
+      "changed_ids": [
+        "q151_b4_m2",
+        "q151_b5_r4"
+      ],
+      "report_verification_update": "60 edited rows independently verified; phase and historical metadata preserved",
+      "report_status_at_prepublication_snapshot": "awaiting_verification",
+      "phase_after_independent_verification": "awaiting_verification"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/152.es.grammar.c1_style_discourse_register.build_rewrite_neutral_formal_spoken_written_direct_tactful/03-questions.json",
+      "source_sha256": "37fedbf7fab3118da45e5251223d419a760c43c6cc59a7ef36dd641d8bedc657",
+      "source_bytes_sha256": "93cbbe4befa0e95724db9095842a02a32b0d3badc43c15b82b8c1d0fce7b0925",
+      "context_sha256": "a5f506e67dd9fc86d5f19a70f64da86063c56015cb0633bd262568d1d429072c",
+      "report": "docs/grammar-review/reports/7be2ebeb9e0ac6d2b538dfa7.json",
+      "report_sha256": "ce85def720f7dbef6019640746573ba55a7bffb1f41dbee3bfa115c4f9adb5cf",
+      "initial_report_status": "done",
+      "final": "courses/spanish-grammar/chapters/152.es.grammar.c1_style_discourse_register.build_rewrite_neutral_formal_spoken_written_direct_tactful/05-final.json",
+      "final_sha256": "03715c484a5f0471c94470c72a113b531d7662b39ce39724972ffdb986994603",
+      "embedded": "internal/grammarbundle/es/chapters/es.grammar.c1_style_discourse_register.build_rewrite_neutral_formal_spoken_written_direct_tactful.json",
+      "embedded_sha256": "03715c484a5f0471c94470c72a113b531d7662b39ce39724972ffdb986994603",
+      "question_count": 28,
+      "changed_ids": [
+        "q152_b2_m3",
+        "q152_b3_m3",
+        "q152_b4_r4",
+        "q152_b5_m3"
+      ],
+      "report_verification_update": "60 edited rows independently verified; phase and historical metadata preserved",
+      "report_status_at_prepublication_snapshot": "awaiting_verification",
+      "phase_after_independent_verification": "awaiting_verification"
+    },
+    {
+      "source": "courses/spanish-grammar/training_pack/chapters/003/es.01.b1_theory_stressed_syllable.questions.json",
+      "source_sha256": "5dde4a56df24f787c4fb49754ab5b2b4db462c542593a9d8ab7a5a2d8d556531",
+      "source_bytes_sha256": "4fec5017830c76bdd7f90d9cee16ea64dae712ea06d66891f76bd4422223ff91",
+      "context_sha256": "9fdba53951595674bc94b4350a94f40a8664f9efd8ad982e25918ddab4725fd2",
+      "report": "docs/grammar-review/reports/65d4989e37bff2260bf74412.json",
+      "report_sha256": "d1afd6b94f2a02694ae805cb1c65a901216b53f37c5ef4a4596dd8420a4457fb",
+      "initial_report_status": "done",
+      "final": "courses/spanish-grammar/training_pack/chapters/003/es.01.b1_theory_stressed_syllable.questions.json",
+      "final_sha256": "4fec5017830c76bdd7f90d9cee16ea64dae712ea06d66891f76bd4422223ff91",
+      "embedded": "internal/grammartrainingpack/es/chapters/003/es.01.b1_theory_stressed_syllable.questions.json",
+      "embedded_sha256": "4fec5017830c76bdd7f90d9cee16ea64dae712ea06d66891f76bd4422223ff91",
+      "question_count": 16,
+      "changed_ids": [
+        "q6",
+        "q13",
+        "q17",
+        "q18"
+      ],
+      "report_verification_update": "60 edited rows independently verified; phase and historical metadata preserved",
+      "report_status_at_prepublication_snapshot": "awaiting_verification",
+      "phase_after_independent_verification": "awaiting_verification"
+    },
+    {
+      "source": "courses/spanish-grammar/training_pack/chapters/003/es.05.b5_theory_esdrujulas_always_accented.questions.json",
+      "source_sha256": "e9d5ffe2f83e5fcaa8b8fee6585e6760b024709a186380001cbf4e8416434073",
+      "source_bytes_sha256": "86633081b1d858f279a2c44a8cdc2c0c4dfc0b1bcb54dda3dec6ca7ff831ee3d",
+      "context_sha256": "9fdba53951595674bc94b4350a94f40a8664f9efd8ad982e25918ddab4725fd2",
+      "report": "docs/grammar-review/reports/39de998aa45a5f96763972c6.json",
+      "report_sha256": "15e15797b2d8b55dc56dcf14a5ad83fd3172198e63ef842af1d39d7bfdf162aa",
+      "initial_report_status": "done",
+      "final": "courses/spanish-grammar/training_pack/chapters/003/es.05.b5_theory_esdrujulas_always_accented.questions.json",
+      "final_sha256": "86633081b1d858f279a2c44a8cdc2c0c4dfc0b1bcb54dda3dec6ca7ff831ee3d",
+      "embedded": "internal/grammartrainingpack/es/chapters/003/es.05.b5_theory_esdrujulas_always_accented.questions.json",
+      "embedded_sha256": "86633081b1d858f279a2c44a8cdc2c0c4dfc0b1bcb54dda3dec6ca7ff831ee3d",
+      "question_count": 12,
+      "changed_ids": [
+        "q8",
+        "q12",
+        "q13"
+      ],
+      "report_verification_update": "60 edited rows independently verified; phase and historical metadata preserved",
+      "report_status_at_prepublication_snapshot": "awaiting_verification",
+      "phase_after_independent_verification": "awaiting_verification"
+    },
+    {
+      "source": "courses/spanish-grammar/training_pack/chapters/049/es.02.b2_theory_regular_ar_endings_indefinido_a2.questions.json",
+      "source_sha256": "5b8443178a819315c1e7e6864c310a4d0785d19338769050e248e4f407a64ce8",
+      "source_bytes_sha256": "52a502154571056f2ab133721d853f607f11381be9303e37a763d85e534d2275",
+      "context_sha256": "e9eb607ad113344439e94e30bfcf5c7fd847be97c08273c3072d8d1e789efde1",
+      "report": "docs/grammar-review/reports/a0110597e733131bd0bd8f13.json",
+      "report_sha256": "e2fdac51c27f456f4749a65b5df03e90711a339c900df099abd75d035f548c80",
+      "initial_report_status": "done",
+      "final": "courses/spanish-grammar/training_pack/chapters/049/es.02.b2_theory_regular_ar_endings_indefinido_a2.questions.json",
+      "final_sha256": "52a502154571056f2ab133721d853f607f11381be9303e37a763d85e534d2275",
+      "embedded": "internal/grammartrainingpack/es/chapters/049/es.02.b2_theory_regular_ar_endings_indefinido_a2.questions.json",
+      "embedded_sha256": "52a502154571056f2ab133721d853f607f11381be9303e37a763d85e534d2275",
+      "question_count": 15,
+      "changed_ids": [
+        "q4",
+        "q5"
+      ],
+      "report_verification_update": "60 edited rows independently verified; phase and historical metadata preserved",
+      "report_status_at_prepublication_snapshot": "awaiting_verification",
+      "phase_after_independent_verification": "awaiting_verification"
+    },
+    {
+      "source": "courses/spanish-grammar/training_pack/chapters/054/es.02.b2_theory_high_frequency_forms.questions.json",
+      "source_sha256": "4d48df9244d11e89aef7760529dc1c78c74e3bedab5ba01776306317e4effcf2",
+      "source_bytes_sha256": "46d4c84745eeb4c2c474c14ec6cf28b8476b25faa5b81103ecbe6ebce2e2cb77",
+      "context_sha256": "8be776d88f6c2205353144347a91903eb82753ee34e55ca7522d093c659662ba",
+      "report": "docs/grammar-review/reports/8d0761d880d0b5c18f934ae5.json",
+      "report_sha256": "3c88d3f2e15959035bc1c44ae4f907ad3fcb1ae61f7a92b1530d5af47ef42afd",
+      "initial_report_status": "done",
+      "final": "courses/spanish-grammar/training_pack/chapters/054/es.02.b2_theory_high_frequency_forms.questions.json",
+      "final_sha256": "46d4c84745eeb4c2c474c14ec6cf28b8476b25faa5b81103ecbe6ebce2e2cb77",
+      "embedded": "internal/grammartrainingpack/es/chapters/054/es.02.b2_theory_high_frequency_forms.questions.json",
+      "embedded_sha256": "46d4c84745eeb4c2c474c14ec6cf28b8476b25faa5b81103ecbe6ebce2e2cb77",
+      "question_count": 19,
+      "changed_ids": [
+        "q10",
+        "q11",
+        "q12",
+        "q13",
+        "q14",
+        "q15",
+        "q19"
+      ],
+      "report_verification_update": "60 edited rows independently verified; phase and historical metadata preserved",
+      "report_status_at_prepublication_snapshot": "awaiting_verification",
+      "phase_after_independent_verification": "awaiting_verification"
+    },
+    {
+      "source": "courses/spanish-grammar/training_pack/chapters/077/es.02.b2_theory_generic_reference_without_article.questions.json",
+      "source_sha256": "830acf199a3e92176c0ffbc46d84c13ec6a8ba6f51644a3b4a625ace9aa03f37",
+      "source_bytes_sha256": "f687632e40973dc7f64e8571ccdf7fab714a59123da9126156f121da019d0d86",
+      "context_sha256": "2a4a110f09236a547a27709f247707288d09a34fcc90945f74be6a3a3179498b",
+      "report": "docs/grammar-review/reports/fa068be6f44fee232ffce994.json",
+      "report_sha256": "fe4babbc3893f980b6d705a82db6de667cee26d238b1902b62cc11c2ed65faa0",
+      "initial_report_status": "done",
+      "final": "courses/spanish-grammar/training_pack/chapters/077/es.02.b2_theory_generic_reference_without_article.questions.json",
+      "final_sha256": "f687632e40973dc7f64e8571ccdf7fab714a59123da9126156f121da019d0d86",
+      "embedded": "internal/grammartrainingpack/es/chapters/077/es.02.b2_theory_generic_reference_without_article.questions.json",
+      "embedded_sha256": "f687632e40973dc7f64e8571ccdf7fab714a59123da9126156f121da019d0d86",
+      "question_count": 10,
+      "changed_ids": [
+        "q2",
+        "q3",
+        "q4",
+        "q6",
+        "q7",
+        "q9"
+      ],
+      "report_verification_update": "60 edited rows independently verified; phase and historical metadata preserved",
+      "report_status_at_prepublication_snapshot": "awaiting_verification",
+      "phase_after_independent_verification": "awaiting_verification"
+    }
+  ],
+  "changed_questions": 60,
+  "preservation": "pass",
+  "allowed_generated_metadata_change": "Chapter assembly updates meta.updated_at; all other non-question final content preserved.",
+  "diff_check": [
+    {
+      "repo": ".",
+      "result": "pass"
+    },
+    {
+      "repo": "courses/english-grammar",
+      "result": "pass"
+    },
+    {
+      "repo": "courses/spanish-grammar",
+      "result": "pass"
+    }
+  ],
+  "editor_validators_evidence": {
+    "path": "logs/complaints/parenthetical-audit-20261104/worker-4-evidence/sync-and-validators.json",
+    "sha256": "824a054212d211fcc28d0a5adc5f0b0cb04ab2e906160765d9c519802523da0e",
+    "count": 17,
+    "note": "Read editor evidence of official baseline/current validators; no redundant rerun of chapter validators. Training validation/signatures rechecked independently."
+  },
+  "post_report_verification_evidence": "logs/complaints/parenthetical-audit-20261104/worker-1-evidence/worker-4-report-verification-update.json"
+}

@@ -19,7 +19,13 @@
       "id": "q2",
       "decision": "fixed",
       "note": "Уточнены Past Simple без отрицания и обычный вопрос вместо переспроса; убраны раскрытый ответ, повтор и оценка простоты.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Назван класс вспомогательного глагола, но did не дан; нужно знать вопрос Past Simple."
+      }
     },
     {
       "id": "q3",
@@ -37,7 +43,13 @@
       "id": "q6",
       "decision": "fixed",
       "note": "Уточнены Past Simple без отрицания и обычный вопрос вместо переспроса; убраны раскрытый ответ, повтор и оценка простоты.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Класс вспомогательного глагола не раскрывает Did; she не меняет его форму."
+      }
     },
     {
       "id": "q7",
@@ -49,7 +61,13 @@
       "id": "q9",
       "decision": "fixed",
       "note": "Уточнены Past Simple без отрицания и обычный вопрос вместо переспроса; убраны раскрытый ответ, повтор и оценка простоты.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Класс вспомогательного глагола задаёт слот, не готовый ответ."
+      }
     },
     {
       "id": "q11",
@@ -67,7 +85,13 @@
       "id": "q14",
       "decision": "fixed",
       "note": "Уточнены Past Simple без отрицания и обычный вопрос вместо переспроса; убраны раскрытый ответ, повтор и оценка простоты.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Слот вспомогательного глагола требует восстановить Did."
+      }
     },
     {
       "id": "q15",
@@ -85,7 +109,13 @@
       "id": "q17",
       "decision": "fixed",
       "note": "Уточнены Past Simple без отрицания и обычный вопрос вместо переспроса; убраны раскрытый ответ, повтор и оценка простоты.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Нужно подобрать вспомогательное Did для Past Simple."
+      }
     },
     {
       "id": "q18",
@@ -97,7 +127,13 @@
       "id": "q19",
       "decision": "fixed",
       "note": "Уточнены Past Simple без отрицания и обычный вопрос вместо переспроса; убраны раскрытый ответ, повтор и оценка простоты.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Уточнение she/прошедшего времени оставляет выбор формы вспомогательного ученику."
+      }
     },
     {
       "id": "q20",
@@ -109,7 +145,13 @@
       "id": "q22",
       "decision": "fixed",
       "note": "Уточнены Past Simple без отрицания и обычный вопрос вместо переспроса; убраны раскрытый ответ, повтор и оценка простоты.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Вспомогательный глагол — категория; Did требуется знать."
+      }
     },
     {
       "id": "q23",
@@ -133,7 +175,13 @@
       "id": "q26",
       "decision": "fixed",
       "note": "Уточнены время без отрицания, тип вопроса и различие с переспросом; исправлен перевод where и роль there.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Вспомогательный глагол — категория; Did не дан."
+      }
     },
     {
       "id": "q27",
@@ -151,7 +199,13 @@
       "id": "q30",
       "decision": "fixed",
       "note": "Уточнены время без отрицания, тип вопроса и различие с переспросом; исправлен перевод where и роль there.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Вспомогательный глагол — категория; форма для he не дана."
+      }
     },
     {
       "id": "q32",
@@ -169,7 +223,13 @@
       "id": "q34",
       "decision": "fixed",
       "note": "Уточнены время без отрицания, тип вопроса и различие с переспросом; исправлен перевод where и роль there.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Вспомогательный глагол — категория; по Past Simple нужен Did."
+      }
     },
     {
       "id": "q36",
@@ -187,7 +247,13 @@
       "id": "q38",
       "decision": "ok",
       "note": "Форма после did, значение и порядок слов согласованы.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Русское «что» задаёт семантику вопросительного слова What."
+      }
     },
     {
       "id": "q39",
@@ -199,7 +265,13 @@
       "id": "q41",
       "decision": "fixed",
       "note": "Уточнены время без отрицания, тип вопроса и различие с переспросом; исправлен перевод where и роль there.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Русское «куда» задаёт семантику Where, английская форма не дана."
+      }
     },
     {
       "id": "q43",
@@ -211,7 +283,13 @@
       "id": "q44",
       "decision": "ok",
       "note": "Форма после did, значение и порядок слов согласованы.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Русское «почему» задаёт семантику Why."
+      }
     },
     {
       "id": "q45",
@@ -223,7 +301,13 @@
       "id": "q47",
       "decision": "ok",
       "note": "Форма после did, значение и порядок слов согласованы.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Русское «когда» задаёт смысл When, готовое английское слово не дано."
+      }
     },
     {
       "id": "q48",
@@ -241,7 +325,13 @@
       "id": "q52",
       "decision": "ok",
       "note": "Форма после did, значение и порядок слов согласованы.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Русское «видеть» требует выбора V1 see после did."
+      }
     },
     {
       "id": "q53",
@@ -253,7 +343,13 @@
       "id": "q55",
       "decision": "ok",
       "note": "Базовая форма после did и значение согласованы.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Русское «приходить» требует come после did."
+      }
     },
     {
       "id": "q56",

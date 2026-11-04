@@ -19,7 +19,13 @@
       "id": "q_b1_mcq_d3_1",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают лицо, парадигму, смысл условия или формат ответа; целевая форма в них не сообщается."
+      }
     },
     {
       "id": "q_b1_mcq_d5_1",
@@ -121,73 +127,145 @@
       "id": "q_b1_fill_1",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают лицо, парадигму, смысл условия или формат ответа; целевая форма в них не сообщается."
+      }
     },
     {
       "id": "q_b1_fill_2",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают лицо, парадигму, смысл условия или формат ответа; целевая форма в них не сообщается."
+      }
     },
     {
       "id": "q_b2_fill_1",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают лицо, парадигму, смысл условия или формат ответа; целевая форма в них не сообщается."
+      }
     },
     {
       "id": "q_b2_fill_2",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают лицо/время, русский смысл или технический формат записи. Для ответа требуется знать форму haber/participio или оценить грамматическое утверждение; полного ключа в скобках нет."
+      }
     },
     {
       "id": "q_b2_fill_3",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают лицо/время, русский смысл или технический формат записи. Для ответа требуется знать форму haber/participio или оценить грамматическое утверждение; полного ключа в скобках нет."
+      }
     },
     {
       "id": "q_b3_fill_1",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают лицо/время, русский смысл или технический формат записи. Для ответа требуется знать форму haber/participio или оценить грамматическое утверждение; полного ключа в скобках нет."
+      }
     },
     {
       "id": "q_b3_fill_2",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают лицо/время, русский смысл или технический формат записи. Для ответа требуется знать форму haber/participio или оценить грамматическое утверждение; полного ключа в скобках нет."
+      }
     },
     {
       "id": "q_b4_fill_1",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают лицо/время, русский смысл или технический формат записи. Для ответа требуется знать форму haber/participio или оценить грамматическое утверждение; полного ключа в скобках нет."
+      }
     },
     {
       "id": "q_b4_fill_2",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают лицо/время, русский смысл или технический формат записи. Для ответа требуется знать форму haber/participio или оценить грамматическое утверждение; полного ключа в скобках нет."
+      }
     },
     {
       "id": "q_b5_fill_1",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают лицо/время, русский смысл или технический формат записи. Для ответа требуется знать форму haber/participio или оценить грамматическое утверждение; полного ключа в скобках нет."
+      }
     },
     {
       "id": "q_b6_fill_1",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают лицо/время, русский смысл или технический формат записи. Для ответа требуется знать форму haber/participio или оценить грамматическое утверждение; полного ключа в скобках нет."
+      }
     },
     {
       "id": "q_b6_fill_2",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают лицо/время, русский смысл или технический формат записи. Для ответа требуется знать форму haber/participio или оценить грамматическое утверждение; полного ключа в скобках нет."
+      }
     },
     {
       "id": "q_b1_tf_1",
@@ -205,7 +283,13 @@
       "id": "q_b2_tf_1",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "«Без тильды» описывает именно проверяемую орфографическую гипотезу, а не подсказку, что выбрать false."
+      }
     },
     {
       "id": "q_b2_tf_2",
@@ -235,7 +319,13 @@
       "id": "q_b4_tf_2",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают лицо/время, русский смысл или технический формат записи. Для ответа требуется знать форму haber/participio или оценить грамматическое утверждение; полного ключа в скобках нет."
+      }
     },
     {
       "id": "q_b5_tf_1",
@@ -367,37 +457,73 @@
       "id": "q_b6_reorder_2",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают лицо/время, русский смысл или технический формат записи. Для ответа требуется знать форму haber/participio или оценить грамматическое утверждение; полного ключа в скобках нет."
+      }
     },
     {
       "id": "q_b2_cloze_1",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Парадигма содержит формы других лиц; отсутствующую форму nosotros нужно восстановить. Напоминание о диакритике не даёт целевой формы."
+      }
     },
     {
       "id": "q_b3_cloze_1",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают лицо/время, русский смысл или технический формат записи. Для ответа требуется знать форму haber/participio или оценить грамматическое утверждение; полного ключа в скобках нет."
+      }
     },
     {
       "id": "q_b4_cloze_1",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают лицо/время, русский смысл или технический формат записи. Для ответа требуется знать форму haber/participio или оценить грамматическое утверждение; полного ключа в скобках нет."
+      }
     },
     {
       "id": "q_b5_cloze_1",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают лицо/время, русский смысл или технический формат записи. Для ответа требуется знать форму haber/participio или оценить грамматическое утверждение; полного ключа в скобках нет."
+      }
     },
     {
       "id": "q_b6_cloze_1",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Дан набор альтернатив и название времени; необходимо распознать соответствующую форму вспомогательного глагола, готовый вариант не выделен."
+      }
     }
   ],
   "checks": [

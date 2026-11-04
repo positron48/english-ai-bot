@@ -1,11 +1,11 @@
 {
   "version": 1,
   "source": "courses/english-grammar/chapters/038.en.grammar.past_1_past_simple.negatives_didn_t_v1/03-questions.json",
-  "source_sha256": "696a2731cdf22cdb90b7759f0877b2ed1dd38380c619c09bb695c8aba0d812f8",
+  "source_sha256": "7a393399563f3d4c653b216d5aec93b2357d09875f736d59d3d6fdafbfc8deaa",
   "context_sha256": "0668aee669641473d6ed096193ec6a404e53f66d36134d411a1974e7c712b302",
   "editor": "Codex editor 2026-09-04",
   "verifier": "Anton Filatov (user)",
-  "phase": "done",
+  "phase": "awaiting_verification",
   "reviewed_at": "2026-09-04T17:15:49.604151+00:00",
   "verified_at": "2026-09-06T17:58:18.569986Z",
   "questions": [
@@ -19,7 +19,13 @@
       "id": "q2",
       "decision": "fixed",
       "note": "Исправлены feedback и формула отрицания, уточнены смысл/время, допустимое really и сокращение без запрета полной формы.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "do not нужно преобразовать в сокращённый Past Simple didn't."
+      }
     },
     {
       "id": "q3",
@@ -37,7 +43,13 @@
       "id": "q6",
       "decision": "fixed",
       "note": "Исправлены feedback и формула отрицания, уточнены смысл/время, допустимое really и сокращение без запрета полной формы.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "do not нужно преобразовать в didn't по Past Simple."
+      }
     },
     {
       "id": "q7",
@@ -73,7 +85,13 @@
       "id": "q14",
       "decision": "ok",
       "note": "Базовая форма после didn’t, значение и ключ согласованы.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Русский смысл знать требует V1 know после didn't."
+      }
     },
     {
       "id": "q16",
@@ -90,8 +108,17 @@
     {
       "id": "q18",
       "decision": "fixed",
-      "note": "Исправлены feedback и формула отрицания, уточнены смысл/время, допустимое really и сокращение без запрета полной формы.",
-      "verification": "ok"
+      "note": "2026-11-04: подсказка to go уже содержала требуемый go. Заменена на went, чтобы проверялось восстановление базовой формы после didn't, а не копирование указанного инфинитива.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "fixed",
+        "note": "to go заменено на went: проверяется восстановление go после didn't.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q19",
@@ -132,8 +159,17 @@
     {
       "id": "q27",
       "decision": "fixed",
-      "note": "Уточнены смысл и порядок наречий без запрета альтернатив, сокращение be и формы ответов; убраны буквенные ссылки.",
-      "verification": "ok"
+      "note": "2026-11-04: прежний пропуск yesterday проверял перевод подсказки «вчера», хотя тема — отрицание Past Simple. Пропуск перенесён на didn't; временной маркер дан в предложении, готовое отрицание не раскрыто.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "fixed",
+        "note": "Лексический пропуск yesterday заменён грамматическим didn't по теме главы.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q29",
@@ -156,8 +192,17 @@
     {
       "id": "q32",
       "decision": "fixed",
-      "note": "Уточнены смысл и порядок наречий без запрета альтернатив, сокращение be и формы ответов; убраны буквенные ссылки.",
-      "verification": "ok"
+      "note": "2026-11-04: to come содержало готовый come. Дана форма came, которую требуется преобразовать в базовую после didn't.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "fixed",
+        "note": "to come заменено на came: нужно получить come после didn't.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q33",
@@ -199,7 +244,13 @@
       "id": "q42",
       "decision": "fixed",
       "note": "Уточнены смысл и порядок наречий без запрета альтернатив, сокращение be и формы ответов; убраны буквенные ссылки.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "do not надо изменить в didn't для краткого ответа на did."
+      }
     },
     {
       "id": "q43",
@@ -223,7 +274,13 @@
       "id": "q47",
       "decision": "fixed",
       "note": "Уточнены смысл и порядок наречий без запрета альтернатив, сокращение be и формы ответов; убраны буквенные ссылки.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "do not надо изменить в didn't для краткого ответа."
+      }
     },
     {
       "id": "q48",
@@ -247,7 +304,13 @@
       "id": "q52",
       "decision": "fixed",
       "note": "Уточнены смысл и порядок наречий без запрета альтернатив, сокращение be и формы ответов; убраны буквенные ссылки.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "be и отрицание требуют weren't по we."
+      }
     },
     {
       "id": "q53",
@@ -259,7 +322,13 @@
       "id": "q54",
       "decision": "fixed",
       "note": "Уточнены время и сокращённая форма be; убрана ссылка на букву ответа и неточное противопоставление have.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "be и отрицание требуют wasn't по he."
+      }
     },
     {
       "id": "q56",
@@ -277,7 +346,13 @@
       "id": "q59",
       "decision": "fixed",
       "note": "Уточнены время и сокращённая форма be; убрана ссылка на букву ответа и неточное противопоставление have.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "be и отрицание требуют weren't по they."
+      }
     }
   ],
   "checks": [
@@ -320,7 +395,27 @@
       "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
       "result": "pass",
       "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    },
+    {
+      "command": "python3 logs/complaints/parenthetical-audit-20261104/worker-1-validate.py",
+      "result": "pass",
+      "evidence": "2026-11-04 narrow parentheses audit: identity/order/bindings and untouched questions preserved; source/final/embedded exact; official isolated chapter assembly/validation or training validate_question and signature checks passed. See worker-1-evidence/validation.json."
     }
   ],
-  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+  "verification_note": "2026-11-04 parenthetical-hints audit: changed questions awaiting independent verification. Historical verification applies only to unchanged questions.",
+  "parentheses_audit_verification": {
+    "verifier": "parentheses_3",
+    "verified_at": "2026-11-04T09:44:02.337656+00:00",
+    "verification": "ok",
+    "scope": "narrow_parentheses_audit_changed_questions",
+    "question_ids": [
+      "q18",
+      "q27",
+      "q32"
+    ],
+    "evidence": [
+      "docs/grammar-review/batches/2026-11-04-parenthetical-hints/independent-worker-1.json"
+    ],
+    "note": "Независимо прочитаны все вопросы изменённого источника; подтверждены изменённые вопросы узкого аудита. Advisory вне selected не сертифицированы. Фазы общего обзора и source/context hashes не изменялись."
+  }
 }

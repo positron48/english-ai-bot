@@ -1,11 +1,11 @@
 {
   "version": 1,
   "source": "courses/spanish-grammar/chapters/135.es.grammar.subjunctive_past_counterfactuals.si_plus_imperfect_subjunctive_plus_conditional/03-questions.json",
-  "source_sha256": "f9addbb48ea14d9b4d7290249b40daa8e4df8fd98d9da3a60042d3b297e9687b",
+  "source_sha256": "e48c4f826b740bc0d17f768b475ee5d84b5ed50b76de819e5fc828997615cbaa",
   "context_sha256": "a96fd8fd67d5620022b12781852f393b7d146970d96509017e677000e3473dbc",
   "editor": "Codex editor 2026-09-06",
   "verifier": "Anton Filatov (user)",
-  "phase": "done",
+  "phase": "awaiting_verification",
   "reviewed_at": "2026-09-05T23:58:25.922795Z",
   "verified_at": "2026-09-06T17:58:18.569986Z",
   "questions": [
@@ -13,7 +13,13 @@
       "id": "q135_b1_mcq_e",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: choices. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Исходная форма, лицо, вариант -ra/-se и смысл задают преобразование; конечный ответ не сообщается."
+      }
     },
     {
       "id": "q135_b1_mcq_m",
@@ -31,13 +37,25 @@
       "id": "q135_b1_cloze",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: correct_answer, explanation, prompt, word_bank. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Исходная форма, лицо, вариант -ra/-se и смысл задают преобразование; конечный ответ не сообщается."
+      }
     },
     {
       "id": "q135_b1_fill",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Исходная форма, лицо, вариант -ra/-se и смысл задают преобразование; конечный ответ не сообщается."
+      }
     },
     {
       "id": "q135_b1_tf",
@@ -61,7 +79,13 @@
       "id": "q135_b1_transform",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: correct_answer, explanation, source_sentence. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Исходная форма, лицо, вариант -ra/-se и смысл задают преобразование; конечный ответ не сообщается."
+      }
     },
     {
       "id": "q135_b1_explain",
@@ -79,7 +103,13 @@
       "id": "q135_b2_mcq_m",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: choices. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Исходная форма, лицо, вариант -ra/-se и смысл задают преобразование; конечный ответ не сообщается."
+      }
     },
     {
       "id": "q135_b2_mcq_h",
@@ -91,13 +121,25 @@
       "id": "q135_b2_cloze",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: correct_answer, explanation, prompt, word_bank. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Исходная форма, лицо, вариант -ra/-se и смысл задают преобразование; конечный ответ не сообщается."
+      }
     },
     {
       "id": "q135_b2_fill",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: explanation, prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Исходная форма, лицо, вариант -ra/-se и смысл задают преобразование; конечный ответ не сообщается."
+      }
     },
     {
       "id": "q135_b2_tf",
@@ -115,7 +157,13 @@
       "id": "q135_b2_reorder",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают лицо, парадигму, смысл условия или формат ответа; целевая форма в них не сообщается."
+      }
     },
     {
       "id": "q135_b2_transform",
@@ -133,7 +181,13 @@
       "id": "q135_b3_mcq_e",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают лицо, парадигму, смысл условия или формат ответа; целевая форма в них не сообщается."
+      }
     },
     {
       "id": "q135_b3_mcq_m",
@@ -151,13 +205,25 @@
       "id": "q135_b3_cloze",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: prompt, word_bank. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают лицо, парадигму, смысл условия или формат ответа; целевая форма в них не сообщается."
+      }
     },
     {
       "id": "q135_b3_fill",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают лицо, парадигму, смысл условия или формат ответа; целевая форма в них не сообщается."
+      }
     },
     {
       "id": "q135_b3_tf",
@@ -175,7 +241,13 @@
       "id": "q135_b3_reorder",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают лицо, парадигму, смысл условия или формат ответа; целевая форма в них не сообщается."
+      }
     },
     {
       "id": "q135_b3_transform",
@@ -205,19 +277,37 @@
       "id": "q135_b4_mcq_h",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: choices, explanation. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают лицо, парадигму, смысл условия или формат ответа; целевая форма в них не сообщается."
+      }
     },
     {
       "id": "q135_b4_cloze",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: prompt, word_bank. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают лицо, парадигму, смысл условия или формат ответа; целевая форма в них не сообщается."
+      }
     },
     {
       "id": "q135_b4_fill",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают лицо, парадигму, смысл условия или формат ответа; целевая форма в них не сообщается."
+      }
     },
     {
       "id": "q135_b4_tf",
@@ -235,13 +325,25 @@
       "id": "q135_b4_reorder",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают лицо, парадигму, смысл условия или формат ответа; целевая форма в них не сообщается."
+      }
     },
     {
       "id": "q135_b4_transform",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: correct_answer, explanation. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают лицо, парадигму, смысл условия или формат ответа; целевая форма в них не сообщается."
+      }
     },
     {
       "id": "q135_b4_explain",
@@ -271,13 +373,25 @@
       "id": "q135_b5_cloze",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: prompt, word_bank. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают лицо, парадигму, смысл условия или формат ответа; целевая форма в них не сообщается."
+      }
     },
     {
       "id": "q135_b5_fill",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают лицо, парадигму, смысл условия или формат ответа; целевая форма в них не сообщается."
+      }
     },
     {
       "id": "q135_b5_tf",
@@ -295,13 +409,28 @@
       "id": "q135_b5_reorder",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают лицо, парадигму, смысл условия или формат ответа; целевая форма в них не сообщается."
+      }
     },
     {
       "id": "q135_b5_transform",
       "decision": "fixed",
-      "note": "Исправлены или уточнены поля: correct_answer, source_sentence. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "note": "Убрана команда «без si»: она заранее называла единственную ошибку в исходном Ojalá si tuviera. Учащийся теперь сам находит лишний союз.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "fixed",
+        "note": "Убрана команда «без si»: она заранее называла единственную ошибку в исходном Ojalá si tuviera. Учащийся теперь сам находит лишний союз.",
+        "verifier": "parentheses_1",
+        "verified_at": "2026-11-04T09:19:42.825635+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q135_b5_explain",
@@ -331,13 +460,25 @@
       "id": "q135_b6_cloze",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: correct_answer, word_bank. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают лицо, парадигму, смысл условия или формат ответа; целевая форма в них не сообщается."
+      }
     },
     {
       "id": "q135_b6_fill",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: explanation, prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки задают лицо, парадигму, смысл условия или формат ответа; целевая форма в них не сообщается."
+      }
     },
     {
       "id": "q135_b6_tf",
@@ -377,5 +518,82 @@
       "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
     }
   ],
-  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось.",
+  "parentheses_audit_verification": {
+    "scope": "Narrow parenthetical answer-leakage audit and correctness of edits; not completion of the full grammar review campaign.",
+    "editor": "coordinator",
+    "verifier": "parentheses_1",
+    "verified_at": "2026-11-04T09:19:42.825635+00:00",
+    "verification": "ok",
+    "read_question_ids": [
+      "q135_b1_mcq_e",
+      "q135_b1_mcq_m",
+      "q135_b1_mcq_h",
+      "q135_b1_cloze",
+      "q135_b1_fill",
+      "q135_b1_tf",
+      "q135_b1_err",
+      "q135_b1_reorder",
+      "q135_b1_transform",
+      "q135_b1_explain",
+      "q135_b2_mcq_e",
+      "q135_b2_mcq_m",
+      "q135_b2_mcq_h",
+      "q135_b2_cloze",
+      "q135_b2_fill",
+      "q135_b2_tf",
+      "q135_b2_err",
+      "q135_b2_reorder",
+      "q135_b2_transform",
+      "q135_b2_explain",
+      "q135_b3_mcq_e",
+      "q135_b3_mcq_m",
+      "q135_b3_mcq_h",
+      "q135_b3_cloze",
+      "q135_b3_fill",
+      "q135_b3_tf",
+      "q135_b3_err",
+      "q135_b3_reorder",
+      "q135_b3_transform",
+      "q135_b3_explain",
+      "q135_b4_mcq_e",
+      "q135_b4_mcq_m",
+      "q135_b4_mcq_h",
+      "q135_b4_cloze",
+      "q135_b4_fill",
+      "q135_b4_tf",
+      "q135_b4_err",
+      "q135_b4_reorder",
+      "q135_b4_transform",
+      "q135_b4_explain",
+      "q135_b5_mcq_e",
+      "q135_b5_mcq_m",
+      "q135_b5_mcq_h",
+      "q135_b5_cloze",
+      "q135_b5_fill",
+      "q135_b5_tf",
+      "q135_b5_err",
+      "q135_b5_reorder",
+      "q135_b5_transform",
+      "q135_b5_explain",
+      "q135_b6_mcq_e",
+      "q135_b6_mcq_m",
+      "q135_b6_mcq_h",
+      "q135_b6_cloze",
+      "q135_b6_fill",
+      "q135_b6_tf",
+      "q135_b6_err",
+      "q135_b6_reorder",
+      "q135_b6_transform",
+      "q135_b6_explain"
+    ],
+    "accepted_changed_ids": [
+      "q135_b5_transform"
+    ],
+    "evidence": "logs/complaints/parenthetical-audit-20261104/independent-worker-4.json",
+    "out_of_scope_ids": [
+      "q135_b5_mcq_m"
+    ],
+    "note": "All questions in this changed source were read with context. Pre-existing findings outside selected_ids remain separately recorded in independent evidence; historical full-review metadata and source/context fingerprints are preserved."
+  }
 }

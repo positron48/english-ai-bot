@@ -67,7 +67,13 @@
       "id": "q10",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки уточняют значение, лицо, число или ситуацию; готовую испанскую форму не дают. Выбор требует согласования или интерпретации времени."
+      }
     },
     {
       "id": "q11",
@@ -79,7 +85,13 @@
       "id": "q12",
       "decision": "fixed",
       "note": "Исправлены варианты.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки уточняют значение, лицо, число или ситуацию; готовую испанскую форму не дают. Выбор требует согласования или интерпретации времени."
+      }
     },
     {
       "id": "q13",
@@ -91,13 +103,25 @@
       "id": "q14",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки уточняют значение, лицо, число или ситуацию; готовую испанскую форму не дают. Выбор требует согласования или интерпретации времени."
+      }
     },
     {
       "id": "q15",
       "decision": "fixed",
       "note": "Исправлены объяснение.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки уточняют значение, лицо, число или ситуацию; готовую испанскую форму не дают. Выбор требует согласования или интерпретации времени."
+      }
     },
     {
       "id": "q16",

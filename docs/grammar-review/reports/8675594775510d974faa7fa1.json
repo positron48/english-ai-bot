@@ -37,7 +37,13 @@
       "id": "q5",
       "decision": "fixed",
       "note": "Запрос полной -ing-формы вместо окончания; уточнены правило и допустимый вариант tieing.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Русский перевод леммы не раскрывает правильное написание dying."
+      }
     },
     {
       "id": "q6",

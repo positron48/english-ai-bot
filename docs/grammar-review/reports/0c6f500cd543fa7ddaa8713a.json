@@ -13,7 +13,13 @@
       "id": "q1",
       "decision": "fixed",
       "note": "Убрана подсказка ответа see в условии; база распознаётся среди четырёх форм.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "V1 расшифровывает базовую форму; see надо выбрать среди четырёх форм."
+      }
     },
     {
       "id": "q2",

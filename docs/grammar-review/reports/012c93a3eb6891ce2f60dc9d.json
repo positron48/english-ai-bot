@@ -43,7 +43,13 @@
       "id": "q6",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Цель и русское «чтобы» задают смысл отношения; испанский предлог не дан."
+      }
     },
     {
       "id": "q7",
@@ -91,7 +97,13 @@
       "id": "q14",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "«Цель» задаёт значение, para нужно выбрать самостоятельно."
+      }
     },
     {
       "id": "q15",
@@ -127,7 +139,13 @@
       "id": "q20",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "«Вопрос о цели» снимает неоднозначность por/para, но не даёт испанский ключ."
+      }
     },
     {
       "id": "q21",
@@ -163,7 +181,13 @@
       "id": "q26",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Благодарность задаёт смысл, не испанский предлог por."
+      }
     },
     {
       "id": "q27",
@@ -187,7 +211,13 @@
       "id": "q30",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Дедлайн уточняет русское «к пятнице», правило выбора para нужно знать."
+      }
     },
     {
       "id": "q31",
@@ -199,7 +229,13 @@
       "id": "q32",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Длительность снимает неоднозначность временного смысла, por не дано."
+      }
     },
     {
       "id": "q33",
@@ -253,7 +289,13 @@
       "id": "q41",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Русское «через» уточняет маршрут; испанский предлог не сообщён."
+      }
     },
     {
       "id": "q42",
@@ -283,13 +325,25 @@
       "id": "q46",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "por/para — набор вариантов; срок задаёт смысл, выбор остаётся ученику."
+      }
     },
     {
       "id": "q47",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Траектория уточняет перевод и не даёт испанскую конструкцию."
+      }
     },
     {
       "id": "q48",
@@ -319,7 +373,13 @@
       "id": "q52",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Ограничение одним словом не раскрывает para."
+      }
     },
     {
       "id": "q53",
@@ -385,7 +445,13 @@
       "id": "q63",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Длительность и не дедлайн уточняют смысл, а не готовую форму por."
+      }
     },
     {
       "id": "q64",
@@ -409,13 +475,25 @@
       "id": "q67",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Цель уточняет значение «зачем», перевод вопроса нужно выбрать."
+      }
     },
     {
       "id": "q68",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "por/para — альтернативы, благодарность задаёт значение, не единственный показанный ответ."
+      }
     },
     {
       "id": "q69",
@@ -427,7 +505,13 @@
       "id": "q70",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Русское значение подарка для адресата снимает неоднозначность, испанский предлог не дан."
+      }
     },
     {
       "id": "q71",

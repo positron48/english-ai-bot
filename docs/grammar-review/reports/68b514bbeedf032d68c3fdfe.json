@@ -1,11 +1,11 @@
 {
   "version": 1,
   "source": "courses/english-grammar/training_pack/chapters/036/en.02.b2_theory_patterns_over_memorization.questions.json",
-  "source_sha256": "b978990f45d3f8c3d9a6bafa314e972f0533a1c14252e346af9507fab8bae8a3",
+  "source_sha256": "1a5c468850d1abd26a0d5822c59da5b16729523f1f60639436416ab179586a9a",
   "context_sha256": "d7e51ec694e9731a66ddc41cffcc590b9c7850e606205fb069ace7b4fa0808a3",
   "editor": "Codex editor 2026-09-04",
   "verifier": "Anton Filatov (user)",
-  "phase": "done",
+  "phase": "awaiting_verification",
   "reviewed_at": "2026-09-04T17:10:15.504791+00:00",
   "verified_at": "2026-09-06T17:58:18.569986Z",
   "questions": [
@@ -13,7 +13,13 @@
       "id": "q1",
       "decision": "fixed",
       "note": "Формы V1/V2/V3 отделены от времён, переведена метатерминология или убрана зависимость от текста теории.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "V1/V2/V3 уточняют названия форм; глагол с тождеством форм нужно знать."
+      }
     },
     {
       "id": "q2",
@@ -23,15 +29,30 @@
     },
     {
       "id": "q3",
-      "decision": "ok",
-      "note": "Закономерность и единственный ключ согласованы.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "2026-11-04: скобки «изменение -d на -t» позволяли выбрать единственный вариант на -d (send), не зная его форм. Готовый графический критерий убран; требуется знание V1/V2/V3. Signature пересчитана штатной функцией курса.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "fixed",
+        "note": "Удалён признак -d→-t, выдававший единственный вариант send по последней букве.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q4",
       "decision": "fixed",
       "note": "Формы V1/V2/V3 отделены от времён, переведена метатерминология или убрана зависимость от текста теории.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "V1/V2/V3 задают сравниваемые формы, нужная группа не сообщена."
+      }
     },
     {
       "id": "q5",
@@ -90,7 +111,25 @@
       "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
       "result": "pass",
       "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    },
+    {
+      "command": "python3 logs/complaints/parenthetical-audit-20261104/worker-1-validate.py",
+      "result": "pass",
+      "evidence": "2026-11-04 narrow parentheses audit: identity/order/bindings and untouched questions preserved; source/final/embedded exact; official isolated chapter assembly/validation or training validate_question and signature checks passed. See worker-1-evidence/validation.json."
     }
   ],
-  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+  "verification_note": "2026-11-04 parenthetical-hints audit: changed questions awaiting independent verification. Historical verification applies only to unchanged questions.",
+  "parentheses_audit_verification": {
+    "verifier": "parentheses_3",
+    "verified_at": "2026-11-04T09:44:02.337656+00:00",
+    "verification": "ok",
+    "scope": "narrow_parentheses_audit_changed_questions",
+    "question_ids": [
+      "q3"
+    ],
+    "evidence": [
+      "docs/grammar-review/batches/2026-11-04-parenthetical-hints/independent-worker-1.json"
+    ],
+    "note": "Независимо прочитаны все вопросы изменённого источника; подтверждены изменённые вопросы узкого аудита. Advisory вне selected не сертифицированы. Фазы общего обзора и source/context hashes не изменялись."
+  }
 }

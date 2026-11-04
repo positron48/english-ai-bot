@@ -31,31 +31,61 @@
       "id": "q4",
       "decision": "ok",
       "note": "Русская подсказка «я» и am однозначно задают I.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают исходный глагол, русский смысл местоимения либо класс артикля; согласование и выбор формы остаются задачей учащегося."
+      }
     },
     {
       "id": "q5",
       "decision": "ok",
       "note": "Русская подсказка «она» и is задают She.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают исходный глагол, русский смысл местоимения либо класс артикля; согласование и выбор формы остаются задачей учащегося."
+      }
     },
     {
       "id": "q6",
       "decision": "ok",
       "note": "Русская подсказка «мы» и are задают We.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают исходный глагол, русский смысл местоимения либо класс артикля; согласование и выбор формы остаются задачей учащегося."
+      }
     },
     {
       "id": "q7",
       "decision": "ok",
       "note": "Русская подсказка «он» задаёт He в изучаемом значении.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают исходный глагол, русский смысл местоимения либо класс артикля; согласование и выбор формы остаются задачей учащегося."
+      }
     },
     {
       "id": "q8",
       "decision": "ok",
       "note": "Русская подсказка «они» задаёт They.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают исходный глагол, русский смысл местоимения либо класс артикля; согласование и выбор формы остаются задачей учащегося."
+      }
     },
     {
       "id": "q9",
@@ -91,31 +121,61 @@
       "id": "q16",
       "decision": "fixed",
       "note": "Указано Present Simple: прежний ввод допускал was; объяснение ограничено контекстом.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают исходный глагол, русский смысл местоимения либо класс артикля; согласование и выбор формы остаются задачей учащегося."
+      }
     },
     {
       "id": "q17",
       "decision": "fixed",
       "note": "Указано Present Simple: исключена также подходящая форма was.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают исходный глагол, русский смысл местоимения либо класс артикля; согласование и выбор формы остаются задачей учащегося."
+      }
     },
     {
       "id": "q18",
       "decision": "fixed",
       "note": "Указано Present Simple: исключена также подходящая форма were.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают исходный глагол, русский смысл местоимения либо класс артикля; согласование и выбор формы остаются задачей учащегося."
+      }
     },
     {
       "id": "q19",
       "decision": "fixed",
       "note": "Указано Present Simple: исключена также подходящая форма was.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают исходный глагол, русский смысл местоимения либо класс артикля; согласование и выбор формы остаются задачей учащегося."
+      }
     },
     {
       "id": "q20",
       "decision": "fixed",
       "note": "Указано Present Simple: исключена также подходящая форма were.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают исходный глагол, русский смысл местоимения либо класс артикля; согласование и выбор формы остаются задачей учащегося."
+      }
     },
     {
       "id": "q21",
@@ -151,31 +211,61 @@
       "id": "q28",
       "decision": "fixed",
       "note": "Указано Present Simple, исключено was; правило не распространяется на все времена.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают исходный глагол, русский смысл местоимения либо класс артикля; согласование и выбор формы остаются задачей учащегося."
+      }
     },
     {
       "id": "q29",
       "decision": "fixed",
       "note": "Указано Present Simple, исключено was; правило сужено.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают исходный глагол, русский смысл местоимения либо класс артикля; согласование и выбор формы остаются задачей учащегося."
+      }
     },
     {
       "id": "q30",
       "decision": "fixed",
       "note": "Указано Present Simple, исключено were; правило сужено.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают исходный глагол, русский смысл местоимения либо класс артикля; согласование и выбор формы остаются задачей учащегося."
+      }
     },
     {
       "id": "q31",
       "decision": "fixed",
       "note": "Указано Present Simple, исключено were; you are верно для одного адресата.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают исходный глагол, русский смысл местоимения либо класс артикля; согласование и выбор формы остаются задачей учащегося."
+      }
     },
     {
       "id": "q32",
       "decision": "fixed",
       "note": "Указано Present Simple, исключено was; правило сужено.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают исходный глагол, русский смысл местоимения либо класс артикля; согласование и выбор формы остаются задачей учащегося."
+      }
     },
     {
       "id": "q33",
@@ -285,6 +375,11 @@
       "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
       "result": "pass",
       "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    },
+    {
+      "command": "python3 logs/complaints/parenthetical-audit-20261104/worker-2-validate.py",
+      "result": "pass",
+      "evidence": "Parentheses audit 2026-11-04, worker-2: exact identity/order/type/difficulty/theory bindings, unmodified objects and prior report decisions preserved against assigned baseline; logs/complaints/parenthetical-audit-20261104/worker-2-evidence/preservation-and-validators.json. Narrow audit only, not renewed whole-file editorial verification."
     }
   ],
   "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."

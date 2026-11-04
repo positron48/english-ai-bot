@@ -1,11 +1,11 @@
 {
   "version": 1,
   "source": "courses/english-grammar/chapters/129.en.grammar.information_structure_style.formal_vs_informal_contractions/03-questions.json",
-  "source_sha256": "cb6211f2803ae4d87854febc77d0b9f65194b09912756b004328a4de8ac78059",
+  "source_sha256": "87a6c634047ab0c3a0b537ad141d5b40041e2fc796365aecfe9f9125918d1ba0",
   "context_sha256": "e86b1e6508eaec1faa8ac27746e725682d00fac182a8f42d593475f3754d8c48",
   "editor": "Codex editor 2026-09-06",
   "verifier": "Anton Filatov (user)",
-  "phase": "done",
+  "phase": "awaiting_verification",
   "reviewed_at": "2026-09-05T23:31:00.369515Z",
   "verified_at": "2026-09-06T17:58:18.569986Z",
   "questions": [
@@ -18,14 +18,32 @@
     {
       "id": "q2",
       "decision": "fixed",
-      "note": "Исправлены или уточнены поля: explanation, prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "note": "2026-11-04: вместо пустого служебного маркера добавлена осмысленная категория отрицательной частицы; соблюдён контракт fill_blank без раскрытия not.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "fixed",
+        "note": "Adjacent defect: убран служебный placeholder «подсказка».",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q3",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "2026-11-04: Убрано «без сокращений»: условие заранее называло критерий, который позволяет визуально выбрать единственный полный вариант без оценки регистра.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "fixed",
+        "note": "Убран готовый критерий «без сокращений»; требуется оценить формальный регистр.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q4",
@@ -55,7 +73,13 @@
       "id": "q9",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Деловой стиль задаёт регистр, не готовый вариант."
+      }
     },
     {
       "id": "q10",
@@ -79,7 +103,13 @@
       "id": "q15",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Формальная связка задаёт категорию, however нужно отличить от других союзов."
+      }
     },
     {
       "id": "q16",
@@ -114,8 +144,17 @@
     {
       "id": "q22",
       "decision": "fixed",
-      "note": "Исправлены или уточнены поля: explanation, prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "note": "Независимая проверка: открытая подсказка допускала несколько лексем или модальных форм. Задан набор сравниваемых вариантов либо исходный глагол для однозначного ключа; готовый ответ не продиктован.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "Независимая проверка: открытая подсказка допускала несколько лексем или модальных форм. Задан набор сравниваемых вариантов либо исходный глагол для однозначного ключа; готовый ответ не продиктован.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q23",
@@ -127,7 +166,13 @@
       "id": "q24",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Причина-следствие задаёт логическую связь, formal therefore нужно выбрать."
+      }
     },
     {
       "id": "q25",
@@ -138,8 +183,17 @@
     {
       "id": "q26",
       "decision": "fixed",
-      "note": "Исправлены или уточнены поля: explanation, prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "note": "2026-11-04: после удаления пустого маркера форма задания уточнена: вместо неоднозначного bit/little/tad проверяется единственный артикль a в смягчителе a bit.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "fixed",
+        "note": "Пустой маркер удалён; неоднозначный bit/little/tad заменён однозначным артиклем a в смягчителе a bit.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q27",
@@ -168,8 +222,17 @@
     {
       "id": "q31",
       "decision": "fixed",
-      "note": "Исправлены или уточнены поля: explanation, prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "note": "2026-11-04: после удаления пустого маркера неоднозначный выбор sort/kind заменён однозначным предлогом of в смягчителе sort of.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "fixed",
+        "note": "Пустой маркер удалён; неоднозначный sort/kind заменён однозначным предлогом of в смягчителе sort of.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q32",
@@ -197,9 +260,18 @@
     },
     {
       "id": "q36",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Независимая проверка: открытая подсказка допускала несколько лексем или модальных форм. Задан набор сравниваемых вариантов либо исходный глагол для однозначного ключа; готовый ответ не продиктован.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "Независимая проверка: открытая подсказка допускала несколько лексем или модальных форм. Задан набор сравниваемых вариантов либо исходный глагол для однозначного ключа; готовый ответ не продиктован.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q37",
@@ -209,15 +281,30 @@
     },
     {
       "id": "q38",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Независимая проверка: открытая подсказка допускала несколько лексем или модальных форм. Задан набор сравниваемых вариантов либо исходный глагол для однозначного ключа; готовый ответ не продиктован.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "Независимая проверка: открытая подсказка допускала несколько лексем или модальных форм. Задан набор сравниваемых вариантов либо исходный глагол для однозначного ключа; готовый ответ не продиктован.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q39",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Деловая переписка задаёт регистр; вежливый вариант выбирается по конструкции."
+      }
     },
     {
       "id": "q40",
@@ -241,7 +328,13 @@
       "id": "q43",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "check требует checking после mind."
+      }
     },
     {
       "id": "q44",
@@ -253,7 +346,13 @@
       "id": "q45",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Нейтральный тон задаёт регистр, готовый вариант не сообщён."
+      }
     },
     {
       "id": "q46",
@@ -275,9 +374,18 @@
     },
     {
       "id": "q50",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Независимая проверка: открытая подсказка допускала несколько лексем или модальных форм. Задан набор сравниваемых вариантов либо исходный глагол для однозначного ключа; готовый ответ не продиктован.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "Независимая проверка: открытая подсказка допускала несколько лексем или модальных форм. Задан набор сравниваемых вариантов либо исходный глагол для однозначного ключа; готовый ответ не продиктован.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q51",
@@ -305,9 +413,18 @@
     },
     {
       "id": "q55",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Независимая проверка: открытая подсказка допускала несколько лексем или модальных форм. Задан набор сравниваемых вариантов либо исходный глагол для однозначного ключа; готовый ответ не продиктован.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "Независимая проверка: открытая подсказка допускала несколько лексем или модальных форм. Задан набор сравниваемых вариантов либо исходный глагол для однозначного ключа; готовый ответ не продиктован.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q56",
@@ -335,9 +452,18 @@
     },
     {
       "id": "q60",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Независимая проверка: открытая подсказка допускала несколько лексем или модальных форм. Задан набор сравниваемых вариантов либо исходный глагол для однозначного ключа; готовый ответ не продиктован.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "Независимая проверка: открытая подсказка допускала несколько лексем или модальных форм. Задан набор сравниваемых вариантов либо исходный глагол для однозначного ключа; готовый ответ не продиктован.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     }
   ],
   "checks": [
@@ -345,7 +471,34 @@
       "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
       "result": "pass",
       "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    },
+    {
+      "command": "python3 logs/complaints/parenthetical-audit-20261104/worker-1-validate.py",
+      "result": "pass",
+      "evidence": "2026-11-04 narrow parentheses audit: identity/order/bindings and untouched questions preserved; source/final/embedded exact; official isolated chapter assembly/validation or training validate_question and signature checks passed. See worker-1-evidence/validation.json."
     }
   ],
-  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+  "verification_note": "2026-11-04 parenthetical-hints audit: changed questions awaiting independent verification. Historical verification applies only to unchanged questions.",
+  "parentheses_audit_verification": {
+    "verifier": "parentheses_3",
+    "verified_at": "2026-11-04T09:44:02.337656+00:00",
+    "verification": "ok",
+    "scope": "narrow_parentheses_audit_changed_questions",
+    "question_ids": [
+      "q2",
+      "q3",
+      "q22",
+      "q26",
+      "q31",
+      "q36",
+      "q38",
+      "q50",
+      "q55",
+      "q60"
+    ],
+    "evidence": [
+      "docs/grammar-review/batches/2026-11-04-parenthetical-hints/independent-worker-1.json"
+    ],
+    "note": "Независимо прочитаны все вопросы изменённого источника; подтверждены изменённые вопросы узкого аудита. Advisory вне selected не сертифицированы. Фазы общего обзора и source/context hashes не изменялись."
+  }
 }

@@ -115,7 +115,13 @@
       "id": "q18",
       "decision": "ok",
       "note": "Открытый ответ u однозначен, регистр нормализуется.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Последняя гласная задаёт позицию в ряду, буква u не написана."
+      }
     },
     {
       "id": "q19",
@@ -133,7 +139,13 @@
       "id": "q21",
       "decision": "ok",
       "note": "qu перед e/i; условие ограничено обычными словами.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "[k] — проверяемый звук, испанское написание qu ещё нужно определить."
+      }
     },
     {
       "id": "q22",
@@ -163,13 +175,25 @@
       "id": "q26",
       "decision": "fixed",
       "note": "Устранены неверное описание звука ке перед i, метатекст и примеры-подсказки.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "[k] — часть утверждения о звуке, оценка true/false не дана."
+      }
     },
     {
       "id": "q27",
       "decision": "ok",
       "note": "quinto соответствует данному значению и произношению.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Транскрипция и русский перевод задают произношение/значение, написание quinto необходимо выбрать."
+      }
     },
     {
       "id": "q28",
@@ -325,7 +349,13 @@
       "id": "q53",
       "decision": "fixed",
       "note": "Исходное /s/ не универсально: добавлено ограничение seseo и признан вариант /θ/.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "[s] — часть проверяемого утверждения о seseo, готовой оценки нет."
+      }
     },
     {
       "id": "q54",
@@ -337,7 +367,13 @@
       "id": "q55",
       "decision": "fixed",
       "note": "В вымышленном слове kefa также передавало заданный звук; заменено нормативным quince.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Русская передача звучания задаёт задачу орфографии; правильное quince не написано."
+      }
     },
     {
       "id": "q56",

@@ -1,0 +1,4469 @@
+{
+  "worker": "worker-1",
+  "findings": [
+    {
+      "source": "courses/english-grammar/chapters/028.en.grammar.now_present_continuous_contrast.form_am_is_are/03-questions.json",
+      "id": "q57",
+      "before": {
+        "id": "q57",
+        "type": "fill_blank",
+        "prompt": "Вставьте -ing-форму с заменой ie на y: I am ___ my shoes. (tie)",
+        "theory_block_id": "b5_theory_spelling_ie",
+        "difficulty": 3,
+        "correct_answer": "tying",
+        "explanation": "При указанном способе образования tie превращается в tying. Словарный вариант tieing существует, но не использует запрошенную замену.",
+        "tags": [
+          "spelling",
+          "ie_rule"
+        ]
+      },
+      "after": {
+        "id": "q57",
+        "type": "fill_blank",
+        "prompt": "Вставьте -ing-форму глагола: The battery is ___. (die)",
+        "theory_block_id": "b5_theory_spelling_ie",
+        "difficulty": 3,
+        "correct_answer": "dying",
+        "explanation": "В форме dying конечное ie глагола die заменяется на y перед -ing: die → dying.",
+        "tags": [
+          "spelling",
+          "ie_rule"
+        ]
+      },
+      "reason": "2026-11-04: условие заранее сообщало орфографическое правило замены ie на y. Убрана инструкция с готовым преобразованием; оставлены лемма tie и требуемая -ing-форма, которую ученик должен образовать сам. 2026-11-04: при повторной проверке заменён tie на die, чтобы исключить словарный альтернативный вариант tieing в задании с единственным строковым ключом; сохранена цель ie → y + ing.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/english-grammar/chapters/036.en.grammar.past_1_past_simple.irregular_verbs_how_to/03-questions.json",
+      "id": "q18",
+      "before": {
+        "id": "q18",
+        "type": "fill_blank",
+        "prompt": "Заполните пропуск в Past Simple: \"I ___ the bread yesterday.\" (резать, глагол с одинаковыми формами)",
+        "theory_block_id": "b2_theory_patterns_over_memorization",
+        "difficulty": 2,
+        "correct_answer": "cut",
+        "explanation": "Правильный ответ: cut. Глагол cut относится к группе с одинаковыми формами: cut-cut-cut. Форма V1, V2 и V3 одинаковая.",
+        "tags": [
+          "patterns",
+          "fill_blank"
+        ]
+      },
+      "after": {
+        "id": "q18",
+        "type": "fill_blank",
+        "prompt": "Вставьте форму Past Simple глагола из скобок: \"I ___ the bread yesterday.\" (cutting)",
+        "theory_block_id": "b2_theory_patterns_over_memorization",
+        "difficulty": 2,
+        "correct_answer": "cut",
+        "explanation": "Правильный ответ: cut. Глагол cut относится к группе с одинаковыми формами: cut-cut-cut. Форма V1, V2 и V3 одинаковая.",
+        "tags": [
+          "patterns",
+          "fill_blank"
+        ]
+      },
+      "reason": "2026-11-04: скобки заранее сообщали, что формы глагола одинаковы. Вместо готового правила дана другая форма cutting; требуется самостоятельно восстановить Past Simple cut, ключ не переписывается из условия.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/english-grammar/chapters/036.en.grammar.past_1_past_simple.irregular_verbs_how_to/03-questions.json",
+      "id": "q30",
+      "before": {
+        "id": "q30",
+        "type": "fill_blank",
+        "prompt": "Заполните пропуск в Past Simple: \"I ___ the book on the table yesterday.\" (класть, глагол с одинаковыми формами)",
+        "theory_block_id": "b3_theory_common_groups",
+        "difficulty": 2,
+        "correct_answer": "put",
+        "explanation": "Правильный ответ: put. Глагол put относится к группе с одинаковыми формами: put-put-put. Форма V1, V2 и V3 одинаковая.",
+        "tags": [
+          "groups",
+          "fill_blank"
+        ]
+      },
+      "after": {
+        "id": "q30",
+        "type": "fill_blank",
+        "prompt": "Вставьте форму Past Simple глагола из скобок: \"I ___ the book on the table yesterday.\" (putting)",
+        "theory_block_id": "b3_theory_common_groups",
+        "difficulty": 2,
+        "correct_answer": "put",
+        "explanation": "Правильный ответ: put. Глагол put относится к группе с одинаковыми формами: put-put-put. Форма V1, V2 и V3 одинаковая.",
+        "tags": [
+          "groups",
+          "fill_blank"
+        ]
+      },
+      "reason": "2026-11-04: убрана подсказка «глагол с одинаковыми формами». Исходная форма putting задаёт лексему, а правильную форму Past Simple put ученик образует самостоятельно.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/english-grammar/chapters/038.en.grammar.past_1_past_simple.negatives_didn_t_v1/03-questions.json",
+      "id": "q18",
+      "before": {
+        "id": "q18",
+        "type": "fill_blank",
+        "prompt": "Заполните пропуск: \"They didn’t ___ home early.\" (to go)",
+        "theory_block_id": "b2_theory_base_verb_after_didnt",
+        "difficulty": 2,
+        "correct_answer": "go",
+        "explanation": "Глагол 'идти' в базовой форме — go. После didn't используем именно V1."
+      },
+      "after": {
+        "id": "q18",
+        "type": "fill_blank",
+        "prompt": "Вставьте нужную форму глагола из скобок: \"They didn’t ___ home early.\" (went)",
+        "theory_block_id": "b2_theory_base_verb_after_didnt",
+        "difficulty": 2,
+        "correct_answer": "go",
+        "explanation": "Глагол 'идти' в базовой форме — go. После didn't используем именно V1."
+      },
+      "reason": "2026-11-04: подсказка to go уже содержала требуемый go. Заменена на went, чтобы проверялось восстановление базовой формы после didn't, а не копирование указанного инфинитива.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/english-grammar/chapters/038.en.grammar.past_1_past_simple.negatives_didn_t_v1/03-questions.json",
+      "id": "q27",
+      "before": {
+        "id": "q27",
+        "type": "fill_blank",
+        "prompt": "Заполните пропуск: \"They didn't meet us ___.\" (вчера)",
+        "theory_block_id": "b3_theory_word_order_negatives",
+        "difficulty": 1,
+        "correct_answer": "yesterday",
+        "explanation": "Yesterday означает «вчера». В этом задании для обстоятельства времени оставлен пропуск в конце предложения."
+      },
+      "after": {
+        "id": "q27",
+        "type": "fill_blank",
+        "prompt": "Заполните пропуск в Past Simple, используя сокращённое отрицание: \"They ___ meet us yesterday.\" (do)",
+        "theory_block_id": "b3_theory_word_order_negatives",
+        "difficulty": 1,
+        "correct_answer": "didn't",
+        "explanation": "В отрицании Past Simple используется did not, в сокращённой форме didn't. Смысловой глагол после didn't остаётся в базовой форме: They didn't meet us yesterday."
+      },
+      "reason": "2026-11-04: прежний пропуск yesterday проверял перевод подсказки «вчера», хотя тема — отрицание Past Simple. Пропуск перенесён на didn't; временной маркер дан в предложении, готовое отрицание не раскрыто.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/english-grammar/chapters/038.en.grammar.past_1_past_simple.negatives_didn_t_v1/03-questions.json",
+      "id": "q32",
+      "before": {
+        "id": "q32",
+        "type": "fill_blank",
+        "prompt": "Заполните пропуск: \"He didn’t ___ to work on Friday.\" (to come)",
+        "theory_block_id": "b3_theory_word_order_negatives",
+        "difficulty": 2,
+        "correct_answer": "come",
+        "explanation": "После didn’t нужна базовая форма come. Далее идут to work и обстоятельство времени on Friday."
+      },
+      "after": {
+        "id": "q32",
+        "type": "fill_blank",
+        "prompt": "Вставьте нужную форму глагола из скобок: \"He didn’t ___ to work on Friday.\" (came)",
+        "theory_block_id": "b3_theory_word_order_negatives",
+        "difficulty": 2,
+        "correct_answer": "come",
+        "explanation": "После didn’t нужна базовая форма come. Далее идут to work и обстоятельство времени on Friday."
+      },
+      "reason": "2026-11-04: to come содержало готовый come. Дана форма came, которую требуется преобразовать в базовую после didn't.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/english-grammar/chapters/050.en.grammar.future_plans.time_clauses_when_after/03-questions.json",
+      "id": "q23",
+      "before": {
+        "id": "q23",
+        "type": "fill_blank",
+        "prompt": "I'll open the windows when it ___. (get hot, без will)",
+        "theory_block_id": "b2_theory_when",
+        "difficulty": 2,
+        "correct_answer": "gets",
+        "explanation": "Present Simple в time clause: gets hot."
+      },
+      "after": {
+        "id": "q23",
+        "type": "fill_blank",
+        "prompt": "Вставьте одно слово, чтобы описать будущее действие: \"I'll open the windows when it ___ hot.\" (get)",
+        "theory_block_id": "b2_theory_when",
+        "difficulty": 2,
+        "correct_answer": "gets",
+        "explanation": "Present Simple в time clause: gets hot."
+      },
+      "reason": "2026-11-04: подсказка «без will» заранее сообщала проверяемое правило. Убрана; hot возвращено в само предложение, чтобы ключ gets образовывал правильную фразу gets hot. Ограничение одним словом исключает has got/will get без называния нужного времени.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/english-grammar/chapters/057.en.grammar.core_modality_ability_permission.may_might_probability/03-questions.json",
+      "id": "q2",
+      "before": {
+        "id": "q2",
+        "type": "fill_blank",
+        "prompt": "She ___ be at the gym now. (используйте might для неуверенного предположения)",
+        "theory_block_id": "b1_probability_meaning",
+        "difficulty": 1,
+        "correct_answer": "might",
+        "explanation": "Might выражает неуверенное предположение. May также могло бы выражать возможность, поэтому целевая форма названа в условии."
+      },
+      "after": {
+        "id": "q2",
+        "type": "fill_blank",
+        "prompt": "Вставьте нужную форму глагола из скобок: She might ___ at the gym now. (was)",
+        "theory_block_id": "b1_probability_meaning",
+        "difficulty": 1,
+        "correct_answer": "be",
+        "explanation": "После might нужна базовая форма be: She might be at the gym now. Предложение выражает неуверенное предположение."
+      },
+      "reason": "2026-11-04: скобки прямо называли единственный ключ might/may. Пропуск перенесён на форму смыслового глагола после модального; дана другая форма, требующая преобразования. Готовый ответ не раскрыт, сохранены ID, тип, сложность и привязка к теории.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/english-grammar/chapters/057.en.grammar.core_modality_ability_permission.may_might_probability/03-questions.json",
+      "id": "q9",
+      "before": {
+        "id": "q9",
+        "type": "fill_blank",
+        "prompt": "The train ___ arrive late. (используйте might: возможно)",
+        "theory_block_id": "b1_probability_meaning",
+        "difficulty": 2,
+        "correct_answer": "might",
+        "explanation": "Might выражает возможность задержки. May тоже грамматично, поэтому условие называет целевую форму."
+      },
+      "after": {
+        "id": "q9",
+        "type": "fill_blank",
+        "prompt": "Вставьте нужную форму глагола из скобок: The train might ___ late. (arrived)",
+        "theory_block_id": "b1_probability_meaning",
+        "difficulty": 2,
+        "correct_answer": "arrive",
+        "explanation": "После might используется базовая форма arrive: поезд, возможно, опоздает."
+      },
+      "reason": "2026-11-04: скобки прямо называли единственный ключ might/may. Пропуск перенесён на форму смыслового глагола после модального; дана другая форма, требующая преобразования. Готовый ответ не раскрыт, сохранены ID, тип, сложность и привязка к теории.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/english-grammar/chapters/057.en.grammar.core_modality_ability_permission.may_might_probability/03-questions.json",
+      "id": "q51",
+      "before": {
+        "id": "q51",
+        "type": "fill_blank",
+        "prompt": "It ___ rain, but I'm not sure. (используйте might для более осторожного оттенка)",
+        "theory_block_id": "b5_may_vs_might",
+        "difficulty": 2,
+        "correct_answer": "might",
+        "explanation": "Might может подчеркнуть осторожность. May тоже возможно, поэтому целевая форма названа."
+      },
+      "after": {
+        "id": "q51",
+        "type": "fill_blank",
+        "prompt": "Вставьте нужную форму глагола из скобок: It might ___ later, but I'm not sure. (rained)",
+        "theory_block_id": "b5_may_vs_might",
+        "difficulty": 2,
+        "correct_answer": "rain",
+        "explanation": "Might выражает осторожное предположение; после него нужна базовая форма rain, а не rained."
+      },
+      "reason": "2026-11-04: скобки прямо называли единственный ключ might/may. Пропуск перенесён на форму смыслового глагола после модального; дана другая форма, требующая преобразования. Готовый ответ не раскрыт, сохранены ID, тип, сложность и привязка к теории.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/english-grammar/chapters/057.en.grammar.core_modality_ability_permission.may_might_probability/03-questions.json",
+      "id": "q54",
+      "before": {
+        "id": "q54",
+        "type": "fill_blank",
+        "prompt": "I ___ be late, but it's unlikely. (используйте might для более осторожной формулировки)",
+        "theory_block_id": "b5_may_vs_might",
+        "difficulty": 2,
+        "correct_answer": "might",
+        "explanation": "Might передаёт осторожное предположение. May также не задаёт точного процента вероятности."
+      },
+      "after": {
+        "id": "q54",
+        "type": "fill_blank",
+        "prompt": "Вставьте нужную форму глагола из скобок: I might ___ late, but it's unlikely. (was)",
+        "theory_block_id": "b5_may_vs_might",
+        "difficulty": 2,
+        "correct_answer": "be",
+        "explanation": "Might выражает осторожное предположение. После модального глагола используется базовая форма be, независимо от подлежащего."
+      },
+      "reason": "2026-11-04: скобки прямо называли единственный ключ might/may. Пропуск перенесён на форму смыслового глагола после модального; дана другая форма, требующая преобразования. Готовый ответ не раскрыт, сохранены ID, тип, сложность и привязка к теории.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/english-grammar/chapters/057.en.grammar.core_modality_ability_permission.may_might_probability/03-questions.json",
+      "id": "q57",
+      "before": {
+        "id": "q57",
+        "type": "fill_blank",
+        "prompt": "She ___ join us, but I'm not sure. (используйте might для более осторожного оттенка)",
+        "theory_block_id": "b5_may_vs_might",
+        "difficulty": 2,
+        "correct_answer": "might",
+        "explanation": "Might подчёркивает осторожность. May также возможно, поэтому форма названа."
+      },
+      "after": {
+        "id": "q57",
+        "type": "fill_blank",
+        "prompt": "Вставьте нужную форму глагола из скобок: She might ___ us, but I'm not sure. (joined)",
+        "theory_block_id": "b5_may_vs_might",
+        "difficulty": 2,
+        "correct_answer": "join",
+        "explanation": "Might выражает осторожное предположение. После него нужна базовая форма join, а не joined."
+      },
+      "reason": "2026-11-04: скобки прямо называли единственный ключ might/may. Пропуск перенесён на форму смыслового глагола после модального; дана другая форма, требующая преобразования. Готовый ответ не раскрыт, сохранены ID, тип, сложность и привязка к теории.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/english-grammar/chapters/057.en.grammar.core_modality_ability_permission.may_might_probability/03-questions.json",
+      "id": "q66",
+      "before": {
+        "id": "q66",
+        "type": "fill_blank",
+        "prompt": "She ___ be right, but I'm not sure. (используйте модальный глагол may)",
+        "theory_block_id": "b6_maybe_position",
+        "difficulty": 2,
+        "correct_answer": "may",
+        "explanation": "May стоит перед базовой формой be. Might тоже могло бы выражать предположение, поэтому форма указана."
+      },
+      "after": {
+        "id": "q66",
+        "type": "fill_blank",
+        "prompt": "Вставьте нужную форму глагола из скобок: She may ___ right, but I'm not sure. (was)",
+        "theory_block_id": "b6_maybe_position",
+        "difficulty": 2,
+        "correct_answer": "be",
+        "explanation": "May — модальный глагол, после которого нужна базовая форма be. Наречие maybe само по себе не образует такую конструкцию."
+      },
+      "reason": "2026-11-04: скобки прямо называли единственный ключ might/may. Пропуск перенесён на форму смыслового глагола после модального; дана другая форма, требующая преобразования. Готовый ответ не раскрыт, сохранены ID, тип, сложность и привязка к теории.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/english-grammar/chapters/080.en.grammar.prepositions_verb_patterns.phrasal_verbs_as_grammar/03-questions.json",
+      "id": "q1",
+      "before": {
+        "type": "mcq_single",
+        "prompt": "Выберите правильный вариант: Please ___ the lights. (turn off)",
+        "theory_block_id": "b1_phrasal_what_is",
+        "difficulty": 1,
+        "choices": [
+          {
+            "id": "a",
+            "text": "turn off"
+          },
+          {
+            "id": "b",
+            "text": "turn to"
+          },
+          {
+            "id": "c",
+            "text": "turn on"
+          }
+        ],
+        "correct_answer": "a",
+        "explanation": "Turn off — фразовый глагол со значением «выключить».",
+        "id": "q1"
+      },
+      "after": {
+        "type": "mcq_single",
+        "prompt": "Попросите выключить свет. Выберите правильный вариант: Please ___ the lights.",
+        "theory_block_id": "b1_phrasal_what_is",
+        "difficulty": 1,
+        "choices": [
+          {
+            "id": "a",
+            "text": "turn off"
+          },
+          {
+            "id": "b",
+            "text": "turn to"
+          },
+          {
+            "id": "c",
+            "text": "turn on"
+          }
+        ],
+        "correct_answer": "a",
+        "explanation": "Turn off — фразовый глагол со значением «выключить».",
+        "id": "q1"
+      },
+      "reason": "2026-11-04: условие/скобки буквально содержали правильный вариант. Готовый ключ убран; сохранены тип, варианты и ответ. Русский контекст задаёт смысл либо проверяется допустимая позиция дополнения фразового глагола.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/english-grammar/chapters/080.en.grammar.prepositions_verb_patterns.phrasal_verbs_as_grammar/03-questions.json",
+      "id": "q12",
+      "before": {
+        "type": "mcq_single",
+        "prompt": "Выберите правильный вариант: I need to ___ this form. (fill in)",
+        "theory_block_id": "b1_phrasal_what_is",
+        "difficulty": 2,
+        "choices": [
+          {
+            "id": "a",
+            "text": "fill in"
+          },
+          {
+            "id": "b",
+            "text": "fill on"
+          },
+          {
+            "id": "c",
+            "text": "fill to"
+          }
+        ],
+        "correct_answer": "a",
+        "explanation": "Fill in — фразовый глагол «заполнить».",
+        "id": "q12"
+      },
+      "after": {
+        "type": "mcq_single",
+        "prompt": "Нужно заполнить бланк. Выберите правильный вариант: I need to ___ this form.",
+        "theory_block_id": "b1_phrasal_what_is",
+        "difficulty": 2,
+        "choices": [
+          {
+            "id": "a",
+            "text": "fill in"
+          },
+          {
+            "id": "b",
+            "text": "fill on"
+          },
+          {
+            "id": "c",
+            "text": "fill to"
+          }
+        ],
+        "correct_answer": "a",
+        "explanation": "Fill in — фразовый глагол «заполнить».",
+        "id": "q12"
+      },
+      "reason": "2026-11-04: условие/скобки буквально содержали правильный вариант. Готовый ключ убран; сохранены тип, варианты и ответ. Русский контекст задаёт смысл либо проверяется допустимая позиция дополнения фразового глагола.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/english-grammar/chapters/080.en.grammar.prepositions_verb_patterns.phrasal_verbs_as_grammar/03-questions.json",
+      "id": "q13",
+      "before": {
+        "type": "mcq_single",
+        "prompt": "Выберите правильный вариант: Turn ___ the TV, please. (turn off)",
+        "theory_block_id": "b2_phrasal_separable",
+        "difficulty": 1,
+        "choices": [
+          {
+            "id": "a",
+            "text": "off"
+          },
+          {
+            "id": "b",
+            "text": "up"
+          },
+          {
+            "id": "c",
+            "text": "in"
+          }
+        ],
+        "correct_answer": "a",
+        "explanation": "Turn off — разделяемый phrasal verb.",
+        "id": "q13"
+      },
+      "after": {
+        "type": "mcq_single",
+        "prompt": "Попросите выключить телевизор. Выберите правильный вариант: Turn ___ the TV, please.",
+        "theory_block_id": "b2_phrasal_separable",
+        "difficulty": 1,
+        "choices": [
+          {
+            "id": "a",
+            "text": "off"
+          },
+          {
+            "id": "b",
+            "text": "up"
+          },
+          {
+            "id": "c",
+            "text": "in"
+          }
+        ],
+        "correct_answer": "a",
+        "explanation": "Turn off — разделяемый phrasal verb.",
+        "id": "q13"
+      },
+      "reason": "2026-11-04: условие/скобки буквально содержали правильный вариант. Готовый ключ убран; сохранены тип, варианты и ответ. Русский контекст задаёт смысл либо проверяется допустимая позиция дополнения фразового глагола.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/english-grammar/chapters/080.en.grammar.prepositions_verb_patterns.phrasal_verbs_as_grammar/03-questions.json",
+      "id": "q17",
+      "before": {
+        "type": "mcq_single",
+        "prompt": "Выберите правильный вариант: Put ___ your shoes. (put on)",
+        "theory_block_id": "b2_phrasal_separable",
+        "difficulty": 1,
+        "choices": [
+          {
+            "id": "a",
+            "text": "on"
+          },
+          {
+            "id": "b",
+            "text": "off"
+          },
+          {
+            "id": "c",
+            "text": "out"
+          }
+        ],
+        "correct_answer": "a",
+        "explanation": "Put on — разделяемый фразовый глагол.",
+        "id": "q17"
+      },
+      "after": {
+        "type": "mcq_single",
+        "prompt": "Попросите надеть обувь. Выберите правильный вариант: Put ___ your shoes.",
+        "theory_block_id": "b2_phrasal_separable",
+        "difficulty": 1,
+        "choices": [
+          {
+            "id": "a",
+            "text": "on"
+          },
+          {
+            "id": "b",
+            "text": "off"
+          },
+          {
+            "id": "c",
+            "text": "out"
+          }
+        ],
+        "correct_answer": "a",
+        "explanation": "Put on — разделяемый фразовый глагол.",
+        "id": "q17"
+      },
+      "reason": "2026-11-04: условие/скобки буквально содержали правильный вариант. Готовый ключ убран; сохранены тип, варианты и ответ. Русский контекст задаёт смысл либо проверяется допустимая позиция дополнения фразового глагола.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/english-grammar/chapters/080.en.grammar.prepositions_verb_patterns.phrasal_verbs_as_grammar/03-questions.json",
+      "id": "q21",
+      "before": {
+        "type": "mcq_single",
+        "prompt": "Выберите правильный вариант: Please pick ___ the trash. (pick up)",
+        "theory_block_id": "b2_phrasal_separable",
+        "difficulty": 1,
+        "choices": [
+          {
+            "id": "a",
+            "text": "up"
+          },
+          {
+            "id": "b",
+            "text": "off"
+          },
+          {
+            "id": "c",
+            "text": "in"
+          }
+        ],
+        "correct_answer": "a",
+        "explanation": "Pick up — разделяемый phrasal verb.",
+        "id": "q21"
+      },
+      "after": {
+        "type": "mcq_single",
+        "prompt": "Попросите подобрать мусор. Выберите правильный вариант: Please pick ___ the trash.",
+        "theory_block_id": "b2_phrasal_separable",
+        "difficulty": 1,
+        "choices": [
+          {
+            "id": "a",
+            "text": "up"
+          },
+          {
+            "id": "b",
+            "text": "off"
+          },
+          {
+            "id": "c",
+            "text": "in"
+          }
+        ],
+        "correct_answer": "a",
+        "explanation": "Pick up — разделяемый phrasal verb.",
+        "id": "q21"
+      },
+      "reason": "2026-11-04: условие/скобки буквально содержали правильный вариант. Готовый ключ убран; сохранены тип, варианты и ответ. Русский контекст задаёт смысл либо проверяется допустимая позиция дополнения фразового глагола.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/english-grammar/chapters/080.en.grammar.prepositions_verb_patterns.phrasal_verbs_as_grammar/03-questions.json",
+      "id": "q25",
+      "before": {
+        "type": "mcq_single",
+        "prompt": "Выберите правильный вариант: Pick ___ up. (it)",
+        "theory_block_id": "b3_phrasal_pronoun_rule",
+        "difficulty": 1,
+        "choices": [
+          {
+            "id": "a",
+            "text": "it"
+          },
+          {
+            "id": "b",
+            "text": "up it"
+          },
+          {
+            "id": "c",
+            "text": "up"
+          }
+        ],
+        "correct_answer": "a",
+        "explanation": "Местоимение ставится между: pick it up.",
+        "id": "q25"
+      },
+      "after": {
+        "type": "mcq_single",
+        "prompt": "Попросите поднять упавший ключ. Выберите правильный вариант: Pick ___ up.",
+        "theory_block_id": "b3_phrasal_pronoun_rule",
+        "difficulty": 1,
+        "choices": [
+          {
+            "id": "a",
+            "text": "it"
+          },
+          {
+            "id": "b",
+            "text": "up it"
+          },
+          {
+            "id": "c",
+            "text": "up"
+          }
+        ],
+        "correct_answer": "a",
+        "explanation": "Местоимение ставится между: pick it up.",
+        "id": "q25"
+      },
+      "reason": "2026-11-04: условие/скобки буквально содержали правильный вариант. Готовый ключ убран; сохранены тип, варианты и ответ. Русский контекст задаёт смысл либо проверяется допустимая позиция дополнения фразового глагола.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/english-grammar/chapters/080.en.grammar.prepositions_verb_patterns.phrasal_verbs_as_grammar/03-questions.json",
+      "id": "q29",
+      "before": {
+        "type": "mcq_single",
+        "prompt": "Выберите правильный вариант: Put ___ on. (it)",
+        "theory_block_id": "b3_phrasal_pronoun_rule",
+        "difficulty": 1,
+        "choices": [
+          {
+            "id": "a",
+            "text": "it"
+          },
+          {
+            "id": "b",
+            "text": "on it"
+          },
+          {
+            "id": "c",
+            "text": "on"
+          }
+        ],
+        "correct_answer": "a",
+        "explanation": "Put it on — правильный порядок.",
+        "id": "q29"
+      },
+      "after": {
+        "type": "mcq_single",
+        "prompt": "Попросите надеть куртку. Выберите правильный вариант: Put ___ on.",
+        "theory_block_id": "b3_phrasal_pronoun_rule",
+        "difficulty": 1,
+        "choices": [
+          {
+            "id": "a",
+            "text": "it"
+          },
+          {
+            "id": "b",
+            "text": "on it"
+          },
+          {
+            "id": "c",
+            "text": "on"
+          }
+        ],
+        "correct_answer": "a",
+        "explanation": "Put it on — правильный порядок.",
+        "id": "q29"
+      },
+      "reason": "2026-11-04: условие/скобки буквально содержали правильный вариант. Готовый ключ убран; сохранены тип, варианты и ответ. Русский контекст задаёт смысл либо проверяется допустимая позиция дополнения фразового глагола.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/english-grammar/chapters/080.en.grammar.prepositions_verb_patterns.phrasal_verbs_as_grammar/03-questions.json",
+      "id": "q33",
+      "before": {
+        "type": "mcq_single",
+        "prompt": "Выберите правильный вариант: Turn ___ down. (it)",
+        "theory_block_id": "b3_phrasal_pronoun_rule",
+        "difficulty": 1,
+        "choices": [
+          {
+            "id": "a",
+            "text": "it"
+          },
+          {
+            "id": "b",
+            "text": "down it"
+          },
+          {
+            "id": "c",
+            "text": "down"
+          }
+        ],
+        "correct_answer": "a",
+        "explanation": "Местоимение между: turn it down.",
+        "id": "q33"
+      },
+      "after": {
+        "type": "mcq_single",
+        "prompt": "Попросите убавить громкость радио. Выберите правильный вариант: Turn ___ down.",
+        "theory_block_id": "b3_phrasal_pronoun_rule",
+        "difficulty": 1,
+        "choices": [
+          {
+            "id": "a",
+            "text": "it"
+          },
+          {
+            "id": "b",
+            "text": "down it"
+          },
+          {
+            "id": "c",
+            "text": "down"
+          }
+        ],
+        "correct_answer": "a",
+        "explanation": "Местоимение между: turn it down.",
+        "id": "q33"
+      },
+      "reason": "2026-11-04: условие/скобки буквально содержали правильный вариант. Готовый ключ убран; сохранены тип, варианты и ответ. Русский контекст задаёт смысл либо проверяется допустимая позиция дополнения фразового глагола.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/english-grammar/chapters/080.en.grammar.prepositions_verb_patterns.phrasal_verbs_as_grammar/03-questions.json",
+      "id": "q36",
+      "before": {
+        "type": "mcq_single",
+        "prompt": "Выберите правильный вариант: Take ___ off. (it)",
+        "theory_block_id": "b3_phrasal_pronoun_rule",
+        "difficulty": 1,
+        "choices": [
+          {
+            "id": "a",
+            "text": "it"
+          },
+          {
+            "id": "b",
+            "text": "off it"
+          },
+          {
+            "id": "c",
+            "text": "off"
+          }
+        ],
+        "correct_answer": "a",
+        "explanation": "Take it off — правильный порядок.",
+        "id": "q36"
+      },
+      "after": {
+        "type": "mcq_single",
+        "prompt": "Попросите снять пальто. Выберите правильный вариант: Take ___ off.",
+        "theory_block_id": "b3_phrasal_pronoun_rule",
+        "difficulty": 1,
+        "choices": [
+          {
+            "id": "a",
+            "text": "it"
+          },
+          {
+            "id": "b",
+            "text": "off it"
+          },
+          {
+            "id": "c",
+            "text": "off"
+          }
+        ],
+        "correct_answer": "a",
+        "explanation": "Take it off — правильный порядок.",
+        "id": "q36"
+      },
+      "reason": "2026-11-04: условие/скобки буквально содержали правильный вариант. Готовый ключ убран; сохранены тип, варианты и ответ. Русский контекст задаёт смысл либо проверяется допустимая позиция дополнения фразового глагола.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/english-grammar/chapters/080.en.grammar.prepositions_verb_patterns.phrasal_verbs_as_grammar/03-questions.json",
+      "id": "q49",
+      "before": {
+        "type": "mcq_single",
+        "prompt": "Вставьте указанную именную группу без замены местоимением: Turn off ___. (the lights in the hallway)",
+        "theory_block_id": "b5_phrasal_object_length",
+        "difficulty": 2,
+        "choices": [
+          {
+            "id": "a",
+            "text": "the lights in the hallway"
+          },
+          {
+            "id": "b",
+            "text": "it"
+          },
+          {
+            "id": "c",
+            "text": "them"
+          }
+        ],
+        "correct_answer": "a",
+        "explanation": "С длинной именной группой естественен порядок turn off + object.",
+        "id": "q49"
+      },
+      "after": {
+        "type": "mcq_single",
+        "prompt": "Выберите грамматически правильное дополнение: Turn off ___.",
+        "theory_block_id": "b5_phrasal_object_length",
+        "difficulty": 2,
+        "choices": [
+          {
+            "id": "a",
+            "text": "the lights in the hallway"
+          },
+          {
+            "id": "b",
+            "text": "it"
+          },
+          {
+            "id": "c",
+            "text": "them"
+          }
+        ],
+        "correct_answer": "a",
+        "explanation": "С длинной именной группой естественен порядок turn off + object.",
+        "id": "q49"
+      },
+      "reason": "2026-11-04: условие/скобки буквально содержали правильный вариант. Готовый ключ убран; сохранены тип, варианты и ответ. Русский контекст задаёт смысл либо проверяется допустимая позиция дополнения фразового глагола.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/english-grammar/chapters/080.en.grammar.prepositions_verb_patterns.phrasal_verbs_as_grammar/03-questions.json",
+      "id": "q57",
+      "before": {
+        "type": "mcq_single",
+        "prompt": "Вставьте указанную именную группу без замены местоимением: Pick up ___. (the heavy box with tools)",
+        "theory_block_id": "b5_phrasal_object_length",
+        "difficulty": 2,
+        "choices": [
+          {
+            "id": "a",
+            "text": "the heavy box with tools"
+          },
+          {
+            "id": "b",
+            "text": "it"
+          },
+          {
+            "id": "c",
+            "text": "them"
+          }
+        ],
+        "correct_answer": "a",
+        "explanation": "Длинная именная группа естественно стоит после частицы: pick up the heavy box with tools.",
+        "id": "q57"
+      },
+      "after": {
+        "type": "mcq_single",
+        "prompt": "Выберите грамматически правильное дополнение: Pick up ___.",
+        "theory_block_id": "b5_phrasal_object_length",
+        "difficulty": 2,
+        "choices": [
+          {
+            "id": "a",
+            "text": "the heavy box with tools"
+          },
+          {
+            "id": "b",
+            "text": "it"
+          },
+          {
+            "id": "c",
+            "text": "them"
+          }
+        ],
+        "correct_answer": "a",
+        "explanation": "Длинная именная группа естественно стоит после частицы: pick up the heavy box with tools.",
+        "id": "q57"
+      },
+      "reason": "2026-11-04: условие/скобки буквально содержали правильный вариант. Готовый ключ убран; сохранены тип, варианты и ответ. Русский контекст задаёт смысл либо проверяется допустимая позиция дополнения фразового глагола.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/english-grammar/chapters/080.en.grammar.prepositions_verb_patterns.phrasal_verbs_as_grammar/03-questions.json",
+      "id": "q60",
+      "before": {
+        "type": "mcq_single",
+        "prompt": "Вставьте указанную именную группу без замены местоимением: Turn off ___ before you leave. (the lights in the kitchen)",
+        "theory_block_id": "b5_phrasal_object_length",
+        "difficulty": 2,
+        "choices": [
+          {
+            "id": "a",
+            "text": "the lights in the kitchen"
+          },
+          {
+            "id": "b",
+            "text": "it"
+          },
+          {
+            "id": "c",
+            "text": "them"
+          }
+        ],
+        "correct_answer": "a",
+        "explanation": "Длинная именная группа естественно стоит после частицы.",
+        "id": "q60"
+      },
+      "after": {
+        "type": "mcq_single",
+        "prompt": "Выберите грамматически правильное дополнение: Turn off ___ before you leave.",
+        "theory_block_id": "b5_phrasal_object_length",
+        "difficulty": 2,
+        "choices": [
+          {
+            "id": "a",
+            "text": "the lights in the kitchen"
+          },
+          {
+            "id": "b",
+            "text": "it"
+          },
+          {
+            "id": "c",
+            "text": "them"
+          }
+        ],
+        "correct_answer": "a",
+        "explanation": "Длинная именная группа естественно стоит после частицы.",
+        "id": "q60"
+      },
+      "reason": "2026-11-04: условие/скобки буквально содержали правильный вариант. Готовый ключ убран; сохранены тип, варианты и ответ. Русский контекст задаёт смысл либо проверяется допустимая позиция дополнения фразового глагола.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/english-grammar/chapters/080.en.grammar.prepositions_verb_patterns.phrasal_verbs_as_grammar/03-questions.json",
+      "id": "q61",
+      "before": {
+        "type": "mcq_single",
+        "prompt": "Выберите правильный вариант: Please turn ___ off. (it)",
+        "theory_block_id": "b6_phrasal_word_order_traps",
+        "difficulty": 1,
+        "choices": [
+          {
+            "id": "a",
+            "text": "it"
+          },
+          {
+            "id": "b",
+            "text": "off it"
+          },
+          {
+            "id": "c",
+            "text": "off"
+          }
+        ],
+        "correct_answer": "a",
+        "explanation": "С местоимением порядок фиксирован: turn it off.",
+        "id": "q61"
+      },
+      "after": {
+        "type": "mcq_single",
+        "prompt": "Попросите выключить принтер. Выберите правильный вариант: Please turn ___ off.",
+        "theory_block_id": "b6_phrasal_word_order_traps",
+        "difficulty": 1,
+        "choices": [
+          {
+            "id": "a",
+            "text": "it"
+          },
+          {
+            "id": "b",
+            "text": "off it"
+          },
+          {
+            "id": "c",
+            "text": "off"
+          }
+        ],
+        "correct_answer": "a",
+        "explanation": "С местоимением порядок фиксирован: turn it off.",
+        "id": "q61"
+      },
+      "reason": "2026-11-04: условие/скобки буквально содержали правильный вариант. Готовый ключ убран; сохранены тип, варианты и ответ. Русский контекст задаёт смысл либо проверяется допустимая позиция дополнения фразового глагола.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/english-grammar/chapters/080.en.grammar.prepositions_verb_patterns.phrasal_verbs_as_grammar/03-questions.json",
+      "id": "q30",
+      "before": {
+        "type": "fill_blank",
+        "prompt": "Вставьте местоимение: Pick ___ up and take it outside. (they)",
+        "theory_block_id": "b3_phrasal_pronoun_rule",
+        "difficulty": 2,
+        "correct_answer": "them",
+        "explanation": "Местоимение между глаголом и частицей.",
+        "id": "q30"
+      },
+      "after": {
+        "type": "fill_blank",
+        "prompt": "Вставьте местоимение: Pick ___ up from the floor. (they)",
+        "theory_block_id": "b3_phrasal_pronoun_rule",
+        "difficulty": 2,
+        "correct_answer": "them",
+        "explanation": "После глагола нужна объектная форма them: Pick them up from the floor. В разделяемом фразовом глаголе местоимение стоит между pick и up.",
+        "id": "q30"
+      },
+      "reason": "2026-11-04 adjacent_defect: при исходном they и ключе them продолжение ошибочно переключалось на it. Согласовано множественное число them; подсказка they по-прежнему требует объектной формы. 2026-11-04: повторная сверка устранила повтор готового them во второй части; сохранена задача преобразования they в объектное местоимение между pick и up.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/english-grammar/chapters/080.en.grammar.prepositions_verb_patterns.phrasal_verbs_as_grammar/03-questions.json",
+      "id": "q72",
+      "before": {
+        "type": "mcq_single",
+        "prompt": "Вставьте указанную именную группу без замены местоимением: Turn ___ off. (the heater)",
+        "theory_block_id": "b6_phrasal_word_order_traps",
+        "difficulty": 2,
+        "choices": [
+          {
+            "id": "a",
+            "text": "the heater"
+          },
+          {
+            "id": "b",
+            "text": "it"
+          },
+          {
+            "id": "c",
+            "text": "them"
+          }
+        ],
+        "correct_answer": "a",
+        "explanation": "С существительным возможен порядок verb + object + particle: turn the heater off.",
+        "id": "q72"
+      },
+      "after": {
+        "type": "mcq_single",
+        "prompt": "Выберите грамматически правильное дополнение: It's warm enough now. Turn off ___.",
+        "theory_block_id": "b6_phrasal_word_order_traps",
+        "difficulty": 2,
+        "choices": [
+          {
+            "id": "a",
+            "text": "the heater"
+          },
+          {
+            "id": "b",
+            "text": "it"
+          },
+          {
+            "id": "c",
+            "text": "them"
+          }
+        ],
+        "correct_answer": "a",
+        "explanation": "Именная группа the heater может стоять после off: Turn off the heater. Личное местоимение ставится между глаголом и частицей: Turn it off, а не Turn off it.",
+        "id": "q72"
+      },
+      "reason": "2026-11-04: точная группа the heater была прямо дана в скобках. Подсказка убрана, пропуск перенесён после off, чтобы только именная группа была грамматически верна среди сохранённых вариантов; формы it/them после частицы недопустимы. 2026-11-04: chapter validator выявил новый одинаковый prompt с q49; q72 получил естественный контекст про достаточное тепло, сохранив выбор позиции именной группы.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/english-grammar/chapters/083.en.grammar.complex_sentences_1_connecting.because_so_although_but/03-questions.json",
+      "id": "q72",
+      "before": {
+        "type": "mcq_single",
+        "prompt": "Выберите правильный вариант: Because it was late, ___ we left. (ошибка исправить)",
+        "theory_block_id": "b6_common_errors",
+        "difficulty": 2,
+        "choices": [
+          {
+            "id": "a",
+            "text": "we left"
+          },
+          {
+            "id": "b",
+            "text": "so we left"
+          },
+          {
+            "id": "c",
+            "text": "but we left"
+          }
+        ],
+        "correct_answer": "a",
+        "explanation": "Because уже выражает причину, добавляем только основное предложение.",
+        "id": "q72"
+      },
+      "after": {
+        "type": "mcq_single",
+        "prompt": "Выберите грамматически правильное завершение: Because it was late, ___.",
+        "theory_block_id": "b6_common_errors",
+        "difficulty": 2,
+        "choices": [
+          {
+            "id": "a",
+            "text": "we left"
+          },
+          {
+            "id": "b",
+            "text": "so we left"
+          },
+          {
+            "id": "c",
+            "text": "but we left"
+          }
+        ],
+        "correct_answer": "a",
+        "explanation": "Because уже выражает причину, добавляем только основное предложение.",
+        "id": "q72"
+      },
+      "reason": "2026-11-04: готовый ключ we left был повторён после пропуска, из-за чего любой вариант дублировал сказуемое. Убраны повтор и служебное «ошибка исправить», проверяется отсутствие двойной связки because + so/but.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/english-grammar/chapters/092.en.grammar.perfect_aspect_experience_result.experience_have_you_ever/03-questions.json",
+      "id": "q64",
+      "before": {
+        "id": "q64",
+        "type": "error_spotting",
+        "prompt": "Выберите предложение без ошибки (без точного времени).",
+        "theory_block_id": "b6_theory_time_marker_traps",
+        "difficulty": 2,
+        "choices": [
+          {
+            "id": "a",
+            "text": "I have met your boss last week.",
+            "feedback": "Last week требует Past Simple."
+          },
+          {
+            "id": "b",
+            "text": "I have met your boss before.",
+            "feedback": "Опыт без конкретного времени — корректно."
+          },
+          {
+            "id": "c",
+            "text": "I have met your boss in 2022.",
+            "feedback": "Конкретный год → Past Simple."
+          }
+        ],
+        "correct_answer": "b",
+        "explanation": "Present Perfect допустим, если время не указано явно."
+      },
+      "after": {
+        "id": "q64",
+        "type": "error_spotting",
+        "prompt": "Выберите предложение без грамматической ошибки.",
+        "theory_block_id": "b6_theory_time_marker_traps",
+        "difficulty": 2,
+        "choices": [
+          {
+            "id": "a",
+            "text": "I have met your boss last week.",
+            "feedback": "Last week требует Past Simple."
+          },
+          {
+            "id": "b",
+            "text": "I have met your boss before.",
+            "feedback": "Опыт без конкретного времени — корректно."
+          },
+          {
+            "id": "c",
+            "text": "I have met your boss in 2022.",
+            "feedback": "Конкретный год → Past Simple."
+          }
+        ],
+        "correct_answer": "b",
+        "explanation": "Present Perfect допустим, если время не указано явно."
+      },
+      "reason": "2026-11-04: скобки «без точного времени» заранее называли признак правильного варианта и позволяли выбрать before без знания Present Perfect. Подсказка удалена; требуется самостоятельно оценить совместимость времени и обстоятельства.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/english-grammar/chapters/097.en.grammar.perfect_aspect_experience_result.build_speak_biography_experience/03-questions.json",
+      "id": "q30",
+      "before": {
+        "id": "q30",
+        "type": "fill_blank",
+        "prompt": "Заполните пропуск: \"I've met her before. We ___ in Paris in 2018.\" (meet)",
+        "theory_block_id": "b3_theory_details_past_simple",
+        "difficulty": 2,
+        "correct_answer": "met",
+        "explanation": "Деталь с конкретным временем in 2018 — Past Simple. Верно: met.",
+        "tags": []
+      },
+      "after": {
+        "id": "q30",
+        "type": "fill_blank",
+        "prompt": "Заполните пропуск: \"I've known her for years. We ___ in Paris in 2018.\" (meet)",
+        "theory_block_id": "b3_theory_details_past_simple",
+        "difficulty": 2,
+        "correct_answer": "met",
+        "explanation": "Деталь с конкретным временем in 2018 — Past Simple. Верно: met.",
+        "tags": []
+      },
+      "reason": "2026-11-04: готовый ключ met уже встречался в предыдущем предложении I've met her before. Контекст заменён на I've known her for years; контраст опыта/состояния с конкретным прошлым событием сохранён, ответ больше не копируется.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/english-grammar/chapters/097.en.grammar.perfect_aspect_experience_result.build_speak_biography_experience/03-questions.json",
+      "id": "q70",
+      "before": {
+        "id": "q70",
+        "type": "fill_blank",
+        "prompt": "Заполните пропуск: \"I've never worked in banking, but I ___ in finance in 2017.\" (work)",
+        "theory_block_id": "b6_theory_story_structure",
+        "difficulty": 2,
+        "correct_answer": "worked",
+        "explanation": "Вторая часть с in 2017 — Past Simple: worked. Структура «биография + деталь» сохраняется.",
+        "tags": []
+      },
+      "after": {
+        "id": "q70",
+        "type": "fill_blank",
+        "prompt": "Заполните пропуск: \"I've never been a banker, but I ___ in finance in 2017.\" (work)",
+        "theory_block_id": "b6_theory_story_structure",
+        "difficulty": 2,
+        "correct_answer": "worked",
+        "explanation": "Вторая часть с in 2017 — Past Simple: worked. Структура «биография + деталь» сохраняется.",
+        "tags": []
+      },
+      "reason": "2026-11-04: предыдущая часть I've never worked содержала готовый ключ worked. Переписана через been a banker; контраст опыта с конкретным прошлым сохранён, требуется самостоятельно образовать worked.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/english-grammar/chapters/127.en.grammar.information_structure_style.ellipsis_substitution_so_neither/03-questions.json",
+      "id": "q38",
+      "before": {
+        "id": "q38",
+        "type": "fill_blank",
+        "prompt": "Заполните пропуск: \"Take the smaller ___, not the large ones.\" (замена)",
+        "theory_block_id": "b4_theory_one_ones",
+        "difficulty": 2,
+        "correct_answer": "ones",
+        "explanation": "Если речь о множественном числе, используем ones."
+      },
+      "after": {
+        "id": "q38",
+        "type": "fill_blank",
+        "prompt": "Заполните пропуск: \"Take the smaller ___, not the large boxes.\" (замените существительное, сохранив множественное число)",
+        "theory_block_id": "b4_theory_one_ones",
+        "difficulty": 2,
+        "correct_answer": "ones",
+        "explanation": "Если речь о множественном числе, используем ones."
+      },
+      "reason": "Независимая проверка: явно сохранено множественное число заменяемой группы, чтобы исключить one при выборе одного предмета.",
+      "report_state": "done",
+      "revision_editor": "coordinator"
+    },
+    {
+      "source": "courses/english-grammar/chapters/129.en.grammar.information_structure_style.formal_vs_informal_contractions/03-questions.json",
+      "id": "q2",
+      "before": {
+        "id": "q2",
+        "type": "fill_blank",
+        "prompt": "Заполните пропуск: “We do ___ recommend proceeding without approval.” (подсказка)",
+        "theory_block_id": "b1_theory_contractions",
+        "difficulty": 2,
+        "correct_answer": "not",
+        "explanation": "Полная отрицательная форма *do not recommend* звучит формальнее сокращения *don’t recommend*. В пропуск вставляется *not*."
+      },
+      "after": {
+        "id": "q2",
+        "type": "fill_blank",
+        "prompt": "Заполните пропуск: “We do ___ recommend proceeding without approval.” (отрицательная частица)",
+        "theory_block_id": "b1_theory_contractions",
+        "difficulty": 2,
+        "correct_answer": "not",
+        "explanation": "Полная отрицательная форма *do not recommend* звучит формальнее сокращения *don’t recommend*. В пропуск вставляется *not*."
+      },
+      "reason": "2026-11-04: Adjacent defect: удалён служебный placeholder «подсказка», не содержащий учебного контекста. 2026-11-04: вместо пустого служебного маркера добавлена осмысленная категория отрицательной частицы; соблюдён контракт fill_blank без раскрытия not.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/english-grammar/chapters/129.en.grammar.information_structure_style.formal_vs_informal_contractions/03-questions.json",
+      "id": "q3",
+      "before": {
+        "id": "q3",
+        "type": "error_spotting",
+        "prompt": "Выберите более формальный вариант предложения (без сокращений).",
+        "theory_block_id": "b1_theory_contractions",
+        "difficulty": 3,
+        "choices": [
+          {
+            "id": "a",
+            "text": "I don't think it's suitable.",
+            "feedback": "Есть сокращения."
+          },
+          {
+            "id": "b",
+            "text": "I do not think it is suitable.",
+            "feedback": "Верно: без сокращений."
+          },
+          {
+            "id": "c",
+            "text": "I ain't think it's suitable.",
+            "feedback": "Неверная и разговорная форма."
+          },
+          {
+            "id": "d",
+            "text": "I won't think it is suitable.",
+            "feedback": "Меняет смысл."
+          }
+        ],
+        "correct_answer": "b",
+        "explanation": "Формальный вариант избегает сокращений: do not, it is."
+      },
+      "after": {
+        "id": "q3",
+        "type": "error_spotting",
+        "prompt": "Выберите более формальный вариант предложения.",
+        "theory_block_id": "b1_theory_contractions",
+        "difficulty": 3,
+        "choices": [
+          {
+            "id": "a",
+            "text": "I don't think it's suitable.",
+            "feedback": "Есть сокращения."
+          },
+          {
+            "id": "b",
+            "text": "I do not think it is suitable.",
+            "feedback": "Верно: без сокращений."
+          },
+          {
+            "id": "c",
+            "text": "I ain't think it's suitable.",
+            "feedback": "Неверная и разговорная форма."
+          },
+          {
+            "id": "d",
+            "text": "I won't think it is suitable.",
+            "feedback": "Меняет смысл."
+          }
+        ],
+        "correct_answer": "b",
+        "explanation": "Формальный вариант избегает сокращений: do not, it is."
+      },
+      "reason": "2026-11-04: Убрано «без сокращений»: условие заранее называло критерий, который позволяет визуально выбрать единственный полный вариант без оценки регистра.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/english-grammar/chapters/129.en.grammar.information_structure_style.formal_vs_informal_contractions/03-questions.json",
+      "id": "q26",
+      "before": {
+        "id": "q26",
+        "type": "fill_blank",
+        "prompt": "Заполните пропуск: “It’s a ___ late to change the plan.” (подсказка)",
+        "theory_block_id": "b3_theory_informal_markers",
+        "difficulty": 2,
+        "correct_answer": "bit",
+        "explanation": "Разговорный смягчитель образует сочетание *a bit late*. Вставляется слово *bit*."
+      },
+      "after": {
+        "id": "q26",
+        "type": "fill_blank",
+        "prompt": "Вставьте артикль в разговорный смягчитель: “It’s ___ bit late to change the plan.” (артикль)",
+        "theory_block_id": "b3_theory_informal_markers",
+        "difficulty": 2,
+        "correct_answer": "a",
+        "explanation": "Разговорный смягчитель a bit содержит неопределённый артикль a: It’s a bit late to change the plan."
+      },
+      "reason": "2026-11-04: Adjacent defect: удалён служебный placeholder «подсказка». 2026-11-04: после удаления пустого маркера форма задания уточнена: вместо неоднозначного bit/little/tad проверяется единственный артикль a в смягчителе a bit.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/english-grammar/chapters/129.en.grammar.information_structure_style.formal_vs_informal_contractions/03-questions.json",
+      "id": "q31",
+      "before": {
+        "id": "q31",
+        "type": "fill_blank",
+        "prompt": "Заполните пропуск: “I’m ___ of tired today.” (подсказка)",
+        "theory_block_id": "b3_theory_informal_markers",
+        "difficulty": 2,
+        "correct_answer": "sort",
+        "explanation": "Разговорный смягчитель — *sort of*. В пропуск вставляется слово *sort*."
+      },
+      "after": {
+        "id": "q31",
+        "type": "fill_blank",
+        "prompt": "Вставьте пропущенный предлог: “I’m sort ___ tired today.” (предлог)",
+        "theory_block_id": "b3_theory_informal_markers",
+        "difficulty": 2,
+        "correct_answer": "of",
+        "explanation": "Разговорный смягчитель sort of состоит из sort и предлога of: I’m sort of tired today."
+      },
+      "reason": "2026-11-04: Adjacent defect: удалён служебный placeholder «подсказка». 2026-11-04: после удаления пустого маркера неоднозначный выбор sort/kind заменён однозначным предлогом of в смягчителе sort of.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/english-grammar/training_pack/chapters/036/en.02.b2_theory_patterns_over_memorization.questions.json",
+      "id": "q3",
+      "before": {
+        "type": "mcq_single",
+        "prompt": "Какой глагол следует паттерну, где V2 и V3 одинаковы, но отличаются от V1 (изменение -d на -t)?",
+        "choices": [
+          {
+            "id": "a",
+            "text": "cut"
+          },
+          {
+            "id": "b",
+            "text": "send"
+          },
+          {
+            "id": "c",
+            "text": "hit"
+          },
+          {
+            "id": "d",
+            "text": "put"
+          }
+        ],
+        "correct_answer": "b",
+        "explanation": "Глагол 'send' имеет форму send-sent-sent, где V2 и V3 (sent) отличаются от V1 (send) из-за изменения -d на -t.",
+        "theory_block_id": "b2_theory_patterns_over_memorization",
+        "chapter_id": "en.grammar.past_1_past_simple.irregular_verbs_how_to",
+        "concept_id": "learning_patterns_vs_memorization",
+        "difficulty": 1,
+        "id": "q3",
+        "signature": "dd13e4a30987b7f2"
+      },
+      "after": {
+        "type": "mcq_single",
+        "prompt": "Какой глагол следует паттерну, где V2 и V3 одинаковы, но отличаются от V1?",
+        "choices": [
+          {
+            "id": "a",
+            "text": "cut"
+          },
+          {
+            "id": "b",
+            "text": "send"
+          },
+          {
+            "id": "c",
+            "text": "hit"
+          },
+          {
+            "id": "d",
+            "text": "put"
+          }
+        ],
+        "correct_answer": "b",
+        "explanation": "Глагол 'send' имеет форму send-sent-sent, где V2 и V3 (sent) отличаются от V1 (send) из-за изменения -d на -t.",
+        "theory_block_id": "b2_theory_patterns_over_memorization",
+        "chapter_id": "en.grammar.past_1_past_simple.irregular_verbs_how_to",
+        "concept_id": "learning_patterns_vs_memorization",
+        "difficulty": 1,
+        "id": "q3",
+        "signature": "9c54b628906fc8dc"
+      },
+      "reason": "2026-11-04: скобки «изменение -d на -t» позволяли выбрать единственный вариант на -d (send), не зная его форм. Готовый графический критерий убран; требуется знание V1/V2/V3. Signature пересчитана штатной функцией курса.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/english-grammar/training_pack/chapters/068/en.02.b2_size_age_color.questions.json",
+      "id": "q2",
+      "before": {
+        "type": "mcq_single",
+        "prompt": "Какая фраза соответствует правилу порядка прилагательных (size → age) для 'small new car'?",
+        "choices": [
+          {
+            "id": "a",
+            "text": "a small new car"
+          },
+          {
+            "id": "b",
+            "text": "a new small car"
+          },
+          {
+            "id": "c",
+            "text": "a small car new"
+          },
+          {
+            "id": "d",
+            "text": "a car small new"
+          }
+        ],
+        "correct_answer": "a",
+        "explanation": "Размер (small) должен стоять перед возрастом (new). Вариант b нарушает порядок.",
+        "theory_block_id": "b2_size_age_color",
+        "chapter_id": "en.grammar.describing_precisely_adjectives_adverbs.adjective_order",
+        "concept_id": "adj_order_size_age_color",
+        "difficulty": 2,
+        "id": "q2",
+        "signature": "8a100556170d181d"
+      },
+      "after": {
+        "type": "mcq_single",
+        "prompt": "Выберите нейтральный порядок прилагательных перед существительным. Используйте слова: new, car, small.",
+        "choices": [
+          {
+            "id": "a",
+            "text": "a small new car"
+          },
+          {
+            "id": "b",
+            "text": "a new small car"
+          },
+          {
+            "id": "c",
+            "text": "a small car new"
+          },
+          {
+            "id": "d",
+            "text": "a car small new"
+          }
+        ],
+        "correct_answer": "a",
+        "explanation": "Размер (small) должен стоять перед возрастом (new). Вариант b нарушает порядок.",
+        "theory_block_id": "b2_size_age_color",
+        "chapter_id": "en.grammar.describing_precisely_adjectives_adverbs.adjective_order",
+        "concept_id": "adj_order_size_age_color",
+        "difficulty": 2,
+        "id": "q2",
+        "signature": "6bc9855b1241b732"
+      },
+      "reason": "2026-11-04: условие давало готовую последовательность прилагательных и прямо называло правило порядка size→age/color. Обе подсказки удалены; лексемы перечислены в перемешанном порядке, выбор требует знания нейтрального английского порядка. Signature пересчитана.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/english-grammar/training_pack/chapters/068/en.02.b2_size_age_color.questions.json",
+      "id": "q3",
+      "before": {
+        "type": "mcq_single",
+        "prompt": "Какой пример использует правильный порядок прилагательных (size → color) для 'long black coat'?",
+        "choices": [
+          {
+            "id": "a",
+            "text": "a long black coat"
+          },
+          {
+            "id": "b",
+            "text": "a black long coat"
+          },
+          {
+            "id": "c",
+            "text": "a coat long black"
+          },
+          {
+            "id": "d",
+            "text": "a long coat black"
+          }
+        ],
+        "correct_answer": "a",
+        "explanation": "В отсутствие прилагательного возраста порядок: размер (long) → цвет (black).",
+        "theory_block_id": "b2_size_age_color",
+        "chapter_id": "en.grammar.describing_precisely_adjectives_adverbs.adjective_order",
+        "concept_id": "adj_order_size_age_color",
+        "difficulty": 2,
+        "id": "q3",
+        "signature": "4594dc9b60f58c61"
+      },
+      "after": {
+        "type": "mcq_single",
+        "prompt": "Выберите нейтральный порядок прилагательных перед существительным. Используйте слова: black, coat, long.",
+        "choices": [
+          {
+            "id": "a",
+            "text": "a long black coat"
+          },
+          {
+            "id": "b",
+            "text": "a black long coat"
+          },
+          {
+            "id": "c",
+            "text": "a coat long black"
+          },
+          {
+            "id": "d",
+            "text": "a long coat black"
+          }
+        ],
+        "correct_answer": "a",
+        "explanation": "В отсутствие прилагательного возраста порядок: размер (long) → цвет (black).",
+        "theory_block_id": "b2_size_age_color",
+        "chapter_id": "en.grammar.describing_precisely_adjectives_adverbs.adjective_order",
+        "concept_id": "adj_order_size_age_color",
+        "difficulty": 2,
+        "id": "q3",
+        "signature": "48c0ab98ab2d7ae9"
+      },
+      "reason": "2026-11-04: условие давало готовую последовательность прилагательных и прямо называло правило порядка size→age/color. Обе подсказки удалены; лексемы перечислены в перемешанном порядке, выбор требует знания нейтрального английского порядка. Signature пересчитана.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/english-grammar/training_pack/chapters/068/en.02.b2_size_age_color.questions.json",
+      "id": "q7",
+      "before": {
+        "type": "mcq_single",
+        "prompt": "Какой пример соответствует правилу порядка прилагательных (size → age) для 'tall old building'?",
+        "choices": [
+          {
+            "id": "a",
+            "text": "a tall old building"
+          },
+          {
+            "id": "b",
+            "text": "a old tall building"
+          },
+          {
+            "id": "c",
+            "text": "a building tall old"
+          },
+          {
+            "id": "d",
+            "text": "a tall building old"
+          }
+        ],
+        "correct_answer": "a",
+        "explanation": "Порядок: размер (tall) → возраст (old).",
+        "theory_block_id": "b2_size_age_color",
+        "chapter_id": "en.grammar.describing_precisely_adjectives_adverbs.adjective_order",
+        "concept_id": "adj_order_size_age_color",
+        "difficulty": 2,
+        "id": "q7",
+        "signature": "9b845c78d43d474e"
+      },
+      "after": {
+        "type": "mcq_single",
+        "prompt": "Выберите нейтральный порядок прилагательных перед существительным. Используйте слова: old, building, tall.",
+        "choices": [
+          {
+            "id": "a",
+            "text": "a tall old building"
+          },
+          {
+            "id": "b",
+            "text": "a old tall building"
+          },
+          {
+            "id": "c",
+            "text": "a building tall old"
+          },
+          {
+            "id": "d",
+            "text": "a tall building old"
+          }
+        ],
+        "correct_answer": "a",
+        "explanation": "Порядок: размер (tall) → возраст (old).",
+        "theory_block_id": "b2_size_age_color",
+        "chapter_id": "en.grammar.describing_precisely_adjectives_adverbs.adjective_order",
+        "concept_id": "adj_order_size_age_color",
+        "difficulty": 2,
+        "id": "q7",
+        "signature": "8b267115809ee300"
+      },
+      "reason": "2026-11-04: условие давало готовую последовательность прилагательных и прямо называло правило порядка size→age/color. Обе подсказки удалены; лексемы перечислены в перемешанном порядке, выбор требует знания нейтрального английского порядка. Signature пересчитана.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/003.es.grammar.orientation_alphabet_sounds.stress_rules_written_accents/03-questions.json",
+      "id": "q37",
+      "before": {
+        "id": "q37",
+        "type": "true_false",
+        "prompt": "Верно ли утверждение?\n\n**Llana, оканчивающаяся на согласную l (например, fácil), должна писаться с тильдой.**",
+        "theory_block_id": "b4_theory_agudas_llanas_written_accent",
+        "difficulty": 2,
+        "correct_answer": "true",
+        "explanation": "Да, верно. Llanas на согласную, отличную от n и s, получают письменную тильду: fácil."
+      },
+      "after": {
+        "id": "q37",
+        "type": "true_false",
+        "prompt": "Верно ли утверждение?\n\n**Llana, оканчивающаяся на согласную l, должна писаться с тильдой.**",
+        "theory_block_id": "b4_theory_agudas_llanas_written_accent",
+        "difficulty": 2,
+        "correct_answer": "true",
+        "explanation": "Да, верно. Llanas на согласную, отличную от n и s, получают письменную тильду: fácil."
+      },
+      "reason": "2026-11-04: пример fácil в скобках уже демонстрировал тильду и подсказывал true для проверяемого правила. Пример убран; требуется оценить правило ударения по категории и окончанию.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/006.es.grammar.orientation_alphabet_sounds.build_read_decode_words_read_mini_sentences_aloud/03-questions.json",
+      "id": "q29",
+      "before": {
+        "id": "q29",
+        "type": "mcq_single",
+        "prompt": "Выберите правильный вариант: чтобы в середине слова **между гласными** передать сильную дрожащую r (как в *carro*), обычно пишут...",
+        "theory_block_id": "b3_theory_core_sound_letter_traps_in_words",
+        "difficulty": 2,
+        "choices": [
+          {
+            "id": "a",
+            "text": "одну r"
+          },
+          {
+            "id": "b",
+            "text": "две rr"
+          },
+          {
+            "id": "c",
+            "text": "букву h"
+          },
+          {
+            "id": "d",
+            "text": "букву j"
+          }
+        ],
+        "correct_answer": "b",
+        "explanation": "Между гласными сильный дрожащий звук обычно обозначают как rr (например, caro vs carro)."
+      },
+      "after": {
+        "id": "q29",
+        "type": "mcq_single",
+        "prompt": "Выберите правильный вариант: чтобы в середине слова **между гласными** передать сильную дрожащую r, обычно пишут...",
+        "theory_block_id": "b3_theory_core_sound_letter_traps_in_words",
+        "difficulty": 2,
+        "choices": [
+          {
+            "id": "a",
+            "text": "одну r"
+          },
+          {
+            "id": "b",
+            "text": "две rr"
+          },
+          {
+            "id": "c",
+            "text": "букву h"
+          },
+          {
+            "id": "d",
+            "text": "букву j"
+          }
+        ],
+        "correct_answer": "b",
+        "explanation": "Между гласными сильный дрожащий звук обычно обозначают как rr (например, caro vs carro)."
+      },
+      "reason": "2026-11-04: пример carro прямо показывал двойную rr, о выборе которой спрашивали. Пример убран; требуется знание записи сильного звука между гласными.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/006.es.grammar.orientation_alphabet_sounds.build_read_decode_words_read_mini_sentences_aloud/03-questions.json",
+      "id": "q58",
+      "before": {
+        "id": "q58",
+        "type": "fill_blank",
+        "prompt": "Дополните совет: после первого чтения полезно сделать __, чтобы найти пропущенные слова и ошибки ударения. (самопроверка)",
+        "theory_block_id": "b6_theory_read_aloud_routine_self_check",
+        "difficulty": 1,
+        "correct_answer": "самопроверку",
+        "explanation": "Самопроверка помогает быстро поправить акценты и мини-слова."
+      },
+      "after": {
+        "id": "q58",
+        "type": "fill_blank",
+        "prompt": "При самопроверке вы заметили, что в начале испанского вопроса пропущен знак. Вставьте его: **__Cómo te llamas?** (знак препинания)",
+        "theory_block_id": "b6_theory_read_aloud_routine_self_check",
+        "difficulty": 1,
+        "correct_answer": "¿",
+        "explanation": "Испанский вопрос оформляется парой знаков: ¿ в начале и ? в конце. При самопроверке нужно восстановить пропущенный открывающий знак."
+      },
+      "reason": "2026-11-04: подсказка «самопроверка» давала почти готовый русский ответ «самопроверку» и проверяла только падеж. Задание заменено практической самопроверкой испанской вопросительной рамки по тому же блоку; сохранены ID, тип, сложность и привязка. 2026-11-04: добавлена категория знака препинания без самого ответа для соблюдения формата fill_blank.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/021.es.grammar.existence_location_possession.estar_location_temporary_states/03-questions.json",
+      "id": "q55",
+      "before": {
+        "id": "q55",
+        "type": "fill_blank",
+        "prompt": "Дополните реплику мужчины о себе формой настоящего времени: Estoy en casa y __ cansado. (estar)",
+        "theory_block_id": "b6_theory_building_everyday_lines_location_state",
+        "difficulty": 1,
+        "correct_answer": "estoy",
+        "explanation": "Во второй части снова нужно сказать о состоянии yo, поэтому ставим estoy."
+      },
+      "after": {
+        "id": "q55",
+        "type": "fill_blank",
+        "prompt": "Дополните реплику мужчины о себе формой настоящего времени: Yo __ en casa, cansado después del trabajo. (estar)",
+        "theory_block_id": "b6_theory_building_everyday_lines_location_state",
+        "difficulty": 1,
+        "correct_answer": "estoy",
+        "explanation": "Для yo в настоящем времени estar принимает форму estoy: Yo estoy en casa. Прилагательное cansado описывает состояние говорящего."
+      },
+      "reason": "2026-11-04: готовая форма estoy уже стояла в первой части исходной реплики. Предложение переписано без повторения ключа; форму estar для yo требуется образовать самостоятельно. 2026-11-04: объяснение синхронизировано с новой репликой без ссылки на удалённую вторую часть.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/021.es.grammar.existence_location_possession.estar_location_temporary_states/03-questions.json",
+      "id": "q56",
+      "before": {
+        "id": "q56",
+        "type": "fill_blank",
+        "prompt": "Дополните реплику о «нас» формой настоящего времени: Estamos en el metro y __ con prisa hoy. (estar)",
+        "theory_block_id": "b6_theory_building_everyday_lines_location_state",
+        "difficulty": 2,
+        "correct_answer": "estamos",
+        "explanation": "Для nosotros форма одна и та же в обеих частях: estamos."
+      },
+      "after": {
+        "id": "q56",
+        "type": "fill_blank",
+        "prompt": "Дополните реплику о «нас» формой настоящего времени: Hoy nosotros __ en el metro, con mucha prisa. (estar)",
+        "theory_block_id": "b6_theory_building_everyday_lines_location_state",
+        "difficulty": 2,
+        "correct_answer": "estamos",
+        "explanation": "Для nosotros в настоящем времени нужна форма estamos: Hoy nosotros estamos en el metro, con mucha prisa."
+      },
+      "reason": "2026-11-04: готовая форма estamos уже была в начале исходной реплики. Ключ больше не повторяется, остаётся задача спряжения estar для nosotros. 2026-11-04: объяснение синхронизировано с новой репликой без ссылки на две одинаковые формы.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/081.es.grammar.prepositions_verb_patterns.personal_object_marking/03-questions.json",
+      "id": "q11",
+      "before": {
+        "id": "q11",
+        "type": "error_spotting",
+        "theory_block_id": "b1_theory_personal_a_what_and_why",
+        "difficulty": 3,
+        "prompt": "Выберите **ошибочную** фразу (пропуск personal a):",
+        "choices": [
+          {
+            "id": "a",
+            "text": "Quiero a mis hijos.",
+            "feedback": "Нет: a на месте перед людьми."
+          },
+          {
+            "id": "b",
+            "text": "Conozco Ana.",
+            "feedback": "Да: перед именем человека нужна a."
+          },
+          {
+            "id": "c",
+            "text": "Respeto mucho a esta profesora.",
+            "feedback": "Нет: a верна перед конкретным человеком."
+          },
+          {
+            "id": "d",
+            "text": "Leo el periódico cada mañana.",
+            "feedback": "Нет: вещь как прямое дополнение идёт без personal a."
+          }
+        ],
+        "correct_answer": "b",
+        "explanation": "Нужно Conozco a Ana: имя человека как прямое дополнение требует personal a.",
+        "tags": []
+      },
+      "after": {
+        "id": "q11",
+        "type": "error_spotting",
+        "theory_block_id": "b1_theory_personal_a_what_and_why",
+        "difficulty": 3,
+        "prompt": "Выберите **ошибочную** фразу:",
+        "choices": [
+          {
+            "id": "a",
+            "text": "Quiero a mis hijos.",
+            "feedback": "Нет: a на месте перед людьми."
+          },
+          {
+            "id": "b",
+            "text": "Conozco Ana.",
+            "feedback": "Да: перед именем человека нужна a."
+          },
+          {
+            "id": "c",
+            "text": "Respeto mucho a esta profesora.",
+            "feedback": "Нет: a верна перед конкретным человеком."
+          },
+          {
+            "id": "d",
+            "text": "Leo el periódico cada mañana.",
+            "feedback": "Нет: вещь как прямое дополнение идёт без personal a."
+          }
+        ],
+        "correct_answer": "b",
+        "explanation": "Нужно Conozco a Ana: имя человека как прямое дополнение требует personal a.",
+        "tags": []
+      },
+      "reason": "2026-11-04: удалена готовая правка «пропуск personal a»: ученик должен сам определить ошибку и необходимость a перед человеком.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/081.es.grammar.prepositions_verb_patterns.personal_object_marking/03-questions.json",
+      "id": "q64",
+      "before": {
+        "id": "q64",
+        "type": "error_spotting",
+        "theory_block_id": "b6_theory_personal_a_ru_speaker_traps",
+        "difficulty": 3,
+        "prompt": "Выберите **ошибочную** фразу (лишняя a перед вещью):",
+        "choices": [
+          {
+            "id": "a",
+            "text": "Veo a mi primo.",
+            "feedback": "Нет: primo — человек, a нужна."
+          },
+          {
+            "id": "b",
+            "text": "Compro a pan.",
+            "feedback": "Да: pan — вещь, перед ней лишняя a."
+          },
+          {
+            "id": "c",
+            "text": "Llamo a mis padres.",
+            "feedback": "Нет: padres — люди."
+          },
+          {
+            "id": "d",
+            "text": "Extraño a mi gata.",
+            "feedback": "Нет: питомец может получать personal a."
+          }
+        ],
+        "correct_answer": "b",
+        "explanation": "Перед вещью как прямым дополнением personal a не ставят: Compro el pan.",
+        "tags": []
+      },
+      "after": {
+        "id": "q64",
+        "type": "error_spotting",
+        "theory_block_id": "b6_theory_personal_a_ru_speaker_traps",
+        "difficulty": 3,
+        "prompt": "В каком предложении допущена грамматическая ошибка?",
+        "choices": [
+          {
+            "id": "a",
+            "text": "Veo a mi primo.",
+            "feedback": "Нет: primo — человек, a нужна."
+          },
+          {
+            "id": "b",
+            "text": "Compro a pan.",
+            "feedback": "Да: pan — вещь, перед ней лишняя a."
+          },
+          {
+            "id": "c",
+            "text": "Llamo a mis padres.",
+            "feedback": "Нет: padres — люди."
+          },
+          {
+            "id": "d",
+            "text": "Extraño a mi gata.",
+            "feedback": "Нет: питомец может получать personal a."
+          }
+        ],
+        "correct_answer": "b",
+        "explanation": "Перед вещью как прямым дополнением personal a не ставят: Compro el pan.",
+        "tags": []
+      },
+      "reason": "2026-11-04: удалено указание готовой правки «лишняя a перед вещью»: нужно самостоятельно применить правило personal a. 2026-11-04: формулировка отделена от q11, чтобы два задания не имели одинаковый prompt после удаления подсказок.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/088.es.grammar.pronouns_direct_indirect.direct_object_pronouns_lo_la_los_las/03-questions.json",
+      "id": "q27",
+      "before": {
+        "id": "q27",
+        "type": "fill_blank",
+        "theory_block_id": "b3_theory_placement_before_conjugated_verb",
+        "difficulty": 2,
+        "prompt": "Заполните: No ___ entiendo. (lo; «не понимаю это»)",
+        "correct_answer": "lo",
+        "explanation": "No lo entiendo — no перед lo.",
+        "tags": [
+          "negation"
+        ]
+      },
+      "after": {
+        "id": "q27",
+        "type": "fill_blank",
+        "theory_block_id": "b3_theory_placement_before_conjugated_verb",
+        "difficulty": 2,
+        "prompt": "Заполните: No ___ entiendo. («не понимаю это»)",
+        "correct_answer": "lo",
+        "explanation": "No lo entiendo — no перед lo.",
+        "tags": [
+          "negation"
+        ]
+      },
+      "reason": "2026-11-04: удалён готовый ключ lo из скобок; русский смысл сохраняет однозначный референт нейтрального местоимения.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/088.es.grammar.pronouns_direct_indirect.direct_object_pronouns_lo_la_los_las/03-questions.json",
+      "id": "q67",
+      "before": {
+        "id": "q67",
+        "type": "fill_blank",
+        "theory_block_id": "b6_theory_do_pronouns_ru_speaker_traps",
+        "difficulty": 2,
+        "prompt": "Заполните: No ___ digo en serio. (lo; «не говорю это всерьёз»)",
+        "correct_answer": "lo",
+        "explanation": "No lo digo — порядок no + lo + digo.",
+        "tags": [
+          "order"
+        ]
+      },
+      "after": {
+        "id": "q67",
+        "type": "fill_blank",
+        "theory_block_id": "b6_theory_do_pronouns_ru_speaker_traps",
+        "difficulty": 2,
+        "prompt": "Заполните: No ___ digo en serio. («не говорю это всерьёз»)",
+        "correct_answer": "lo",
+        "explanation": "No lo digo — порядок no + lo + digo.",
+        "tags": [
+          "order"
+        ]
+      },
+      "reason": "2026-11-04: удалён готовый ключ lo из скобок; русский смысл задаёт референт без испанского ответа.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/090.es.grammar.pronouns_direct_indirect.placement_rules_before_verb_attached_after/03-questions.json",
+      "id": "q1",
+      "before": {
+        "id": "q1",
+        "type": "mcq_single",
+        "theory_block_id": "b1_theory_object_pronoun_placement_overview",
+        "difficulty": 2,
+        "prompt": "В простой фразе со **спрягаемым** глаголом (*La veo*) местоимение lo/la/le обычно стоит:",
+        "choices": [
+          {
+            "id": "b",
+            "text": "Перед спрягаемой формой",
+            "feedback": "Да."
+          },
+          {
+            "id": "a",
+            "text": "Сразу после спрягаемой формы",
+            "feedback": "Нет: типичная калька с русского."
+          },
+          {
+            "id": "c",
+            "text": "Только в конце предложения",
+            "feedback": "Нет: это не базовая позиция для спрягаемого."
+          },
+          {
+            "id": "d",
+            "text": "Между no и глаголом, но после глагола в утверждении",
+            "feedback": "Нет: в утверждении — перед глаголом."
+          }
+        ],
+        "correct_answer": "b",
+        "explanation": "Базовое правило главы: перед спрягаемым в простой фразе.",
+        "tags": []
+      },
+      "after": {
+        "id": "q1",
+        "type": "mcq_single",
+        "theory_block_id": "b1_theory_object_pronoun_placement_overview",
+        "difficulty": 2,
+        "prompt": "В простом утвердительном предложении со **спрягаемым** глаголом местоимение lo/la/le обычно стоит:",
+        "choices": [
+          {
+            "id": "b",
+            "text": "Перед спрягаемой формой",
+            "feedback": "Да."
+          },
+          {
+            "id": "a",
+            "text": "Сразу после спрягаемой формы",
+            "feedback": "Нет: типичная калька с русского."
+          },
+          {
+            "id": "c",
+            "text": "Только в конце предложения",
+            "feedback": "Нет: это не базовая позиция для спрягаемого."
+          },
+          {
+            "id": "d",
+            "text": "Между no и глаголом, но после глагола в утверждении",
+            "feedback": "Нет: в утверждении — перед глаголом."
+          }
+        ],
+        "correct_answer": "b",
+        "explanation": "Базовое правило главы: перед спрягаемым в простой фразе.",
+        "tags": []
+      },
+      "reason": "2026-11-04: удалён готовый пример La veo, показывавший проверяемое положение местоимения; уточнено утвердительное предложение.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/090.es.grammar.pronouns_direct_indirect.placement_rules_before_verb_attached_after/03-questions.json",
+      "id": "q28",
+      "before": {
+        "id": "q28",
+        "type": "mcq_single",
+        "theory_block_id": "b3_theory_object_pronouns_attached_infinitive",
+        "difficulty": 2,
+        "prompt": "Два местоимения на инфинитиве (*тебе + это*): правильный порядок в *Quiero contártelo*",
+        "choices": [
+          {
+            "id": "b",
+            "text": "Сначала lo, затем te — *contártelo* → lo te",
+            "feedback": "Нет."
+          },
+          {
+            "id": "c",
+            "text": "Сначала косвенное (te), затем прямое (lo) — contarte + lo",
+            "feedback": "Да."
+          },
+          {
+            "id": "a",
+            "text": "Только lo, te запрещено",
+            "feedback": "Нет."
+          },
+          {
+            "id": "d",
+            "text": "Раздельно: *quiero lo contarte*",
+            "feedback": "Нет."
+          }
+        ],
+        "correct_answer": "c",
+        "explanation": "CI + CD на infinitivo: contártelo.",
+        "tags": []
+      },
+      "after": {
+        "id": "q28",
+        "type": "mcq_single",
+        "theory_block_id": "b3_theory_object_pronouns_attached_infinitive",
+        "difficulty": 2,
+        "prompt": "Какой порядок местоимений нужен при присоединении к инфинитиву contar в значении «рассказать тебе это»?",
+        "choices": [
+          {
+            "id": "b",
+            "text": "Сначала прямое (lo), затем косвенное (te)",
+            "feedback": "Нет."
+          },
+          {
+            "id": "c",
+            "text": "Сначала косвенное (te), затем прямое (lo) — contarte + lo",
+            "feedback": "Да."
+          },
+          {
+            "id": "a",
+            "text": "Только lo, te запрещено",
+            "feedback": "Нет."
+          },
+          {
+            "id": "d",
+            "text": "Раздельно: *quiero lo contarte*",
+            "feedback": "Нет."
+          }
+        ],
+        "correct_answer": "c",
+        "explanation": "CI + CD на infinitivo: contártelo.",
+        "tags": []
+      },
+      "reason": "2026-11-04: удалена готовая форма contártelo из условия вопроса о порядке; ложный вариант больше не цитирует правильную цепочку вопреки своему тексту.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/090.es.grammar.pronouns_direct_indirect.placement_rules_before_verb_attached_after/03-questions.json",
+      "id": "q31",
+      "before": {
+        "id": "q31",
+        "type": "mcq_single",
+        "theory_block_id": "b3_theory_object_pronouns_attached_infinitive",
+        "difficulty": 2,
+        "prompt": "Выберите норму для *Mañana voy a ___ el informe.* (объяснить **ему/ей** это — *explicar + se + lo*):",
+        "choices": [
+          {
+            "id": "b",
+            "text": "explicárselo",
+            "feedback": "Да: se + lo слитно на инфинитиве, тильда сохраняет ударение."
+          },
+          {
+            "id": "a",
+            "text": "explicarselo",
+            "feedback": "Нет: без тильды нарушается правило ударения после присоединения."
+          },
+          {
+            "id": "c",
+            "text": "explicar se lo",
+            "feedback": "Нет: отдельные слова после infinitivo — типичная калька."
+          },
+          {
+            "id": "d",
+            "text": "le explicarlo",
+            "feedback": "Нет: *le* + *lo* не так; для «ему/ей это» — *se* + *lo* на инфинитиве."
+          }
+        ],
+        "correct_answer": "b",
+        "explanation": "Se + lo присоединяются к infinitivo: explicárselo (графическое ударение обязательно).",
+        "tags": []
+      },
+      "after": {
+        "id": "q31",
+        "type": "mcq_single",
+        "theory_block_id": "b3_theory_object_pronouns_attached_infinitive",
+        "difficulty": 2,
+        "prompt": "Выберите правильное завершение: *Mañana voy a ___.* («Завтра я собираюсь объяснить ему/ей это»; explicar)",
+        "choices": [
+          {
+            "id": "b",
+            "text": "explicárselo",
+            "feedback": "Да: se + lo слитно на инфинитиве, тильда сохраняет ударение."
+          },
+          {
+            "id": "a",
+            "text": "explicarselo",
+            "feedback": "Нет: без тильды нарушается правило ударения после присоединения."
+          },
+          {
+            "id": "c",
+            "text": "explicar se lo",
+            "feedback": "Нет: отдельные слова после infinitivo — типичная калька."
+          },
+          {
+            "id": "d",
+            "text": "le explicarlo",
+            "feedback": "Нет: *le* + *lo* не так; для «ему/ей это» — *se* + *lo* на инфинитиве."
+          }
+        ],
+        "correct_answer": "b",
+        "explanation": "Se + lo присоединяются к infinitivo: explicárselo (графическое ударение обязательно).",
+        "tags": []
+      },
+      "reason": "2026-11-04: удалена готовая цепочка se + lo; также устранён adjacent_defect — лишнее el informe после уже заменяющего его lo.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/090.es.grammar.pronouns_direct_indirect.placement_rules_before_verb_attached_after/03-questions.json",
+      "id": "q61",
+      "before": {
+        "id": "q61",
+        "type": "mcq_single",
+        "theory_block_id": "b6_theory_object_pronoun_placement_ru_traps",
+        "difficulty": 2,
+        "prompt": "«Скажу ему/ей это» (*decir + se + lo*, futuro próximo) — нейтральный порядок:",
+        "choices": [
+          {
+            "id": "a",
+            "text": "Se lo voy a decir",
+            "feedback": "Да: se + lo перед спрягаемым; альтернатива — *Voy a decírselo*."
+          },
+          {
+            "id": "b",
+            "text": "Le lo voy a decir",
+            "feedback": "Нет: для «ему/ей + это» — *se* + *lo*, не *le lo*."
+          },
+          {
+            "id": "c",
+            "text": "Voy a decir se lo",
+            "feedback": "Нет: отдельный «хвост» после infinitivo — типичная калька."
+          },
+          {
+            "id": "d",
+            "text": "Lo le voy a decir",
+            "feedback": "Нет: неверный порядок и форма (*le* вместо *se* в паре с *lo*)."
+          }
+        ],
+        "correct_answer": "a",
+        "explanation": "Двойная цепочка: se lo перед voy или decírselo на infinitivo; не *le lo* и не *decir se lo*.",
+        "tags": []
+      },
+      "after": {
+        "id": "q61",
+        "type": "mcq_single",
+        "theory_block_id": "b6_theory_object_pronoun_placement_ru_traps",
+        "difficulty": 2,
+        "prompt": "«Скажу ему/ей это» (decir; futuro próximo) — выберите правильное предложение:",
+        "choices": [
+          {
+            "id": "a",
+            "text": "Se lo voy a decir",
+            "feedback": "Да: se + lo перед спрягаемым; альтернатива — *Voy a decírselo*."
+          },
+          {
+            "id": "b",
+            "text": "Le lo voy a decir",
+            "feedback": "Нет: для «ему/ей + это» — *se* + *lo*, не *le lo*."
+          },
+          {
+            "id": "c",
+            "text": "Voy a decir se lo",
+            "feedback": "Нет: отдельный «хвост» после infinitivo — типичная калька."
+          },
+          {
+            "id": "d",
+            "text": "Lo le voy a decir",
+            "feedback": "Нет: неверный порядок и форма (*le* вместо *se* в паре с *lo*)."
+          }
+        ],
+        "correct_answer": "a",
+        "explanation": "Двойная цепочка: se lo перед voy или decírselo на infinitivo; не *le lo* и не *decir se lo*.",
+        "tags": []
+      },
+      "reason": "2026-11-04: удалена готовая цепочка se + lo, подсказывавшая проверяемые замену le и порядок местоимений.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/091.es.grammar.pronouns_direct_indirect.double_pronouns_me_lo_se_lo_te_la/03-questions.json",
+      "id": "q3",
+      "before": {
+        "id": "q3",
+        "type": "true_false",
+        "theory_block_id": "b1_theory_double_pronouns_overview",
+        "difficulty": 2,
+        "prompt": "Верно ли: если в контексте ясны и получатель, и объект, нормально заменить оба местоимениями (*Se lo doy* вместо *Le doy el libro*)?",
+        "correct_answer": "true",
+        "explanation": "Оба дополнения можно выразить цепочкой, когда контекст ясен.",
+        "tags": []
+      },
+      "after": {
+        "id": "q3",
+        "type": "true_false",
+        "theory_block_id": "b1_theory_double_pronouns_overview",
+        "difficulty": 2,
+        "prompt": "Верно ли: если в контексте ясны и получатель, и объект, нормально заменить оба местоимениями?",
+        "correct_answer": "true",
+        "explanation": "Оба дополнения можно выразить цепочкой, когда контекст ясен.",
+        "tags": []
+      },
+      "reason": "2026-11-04: удалён готовый пример преобразования Se lo doy вместо Le doy el libro, демонстрировавший ответ на проверяемое правило.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/091.es.grammar.pronouns_direct_indirect.double_pronouns_me_lo_se_lo_te_la/03-questions.json",
+      "id": "q10",
+      "before": {
+        "id": "q10",
+        "type": "true_false",
+        "theory_block_id": "b1_theory_double_pronouns_overview",
+        "difficulty": 2,
+        "prompt": "Верно ли: **te** в *Te la muestro* меняется по роду объекта (книга → te la, regalo → te lo)?",
+        "correct_answer": "false",
+        "explanation": "Te/me/nos/os не меняются по роду; род объекта — в lo/la/los/las.",
+        "tags": []
+      },
+      "after": {
+        "id": "q10",
+        "type": "true_false",
+        "theory_block_id": "b1_theory_double_pronouns_overview",
+        "difficulty": 2,
+        "prompt": "Верно ли: **te** в *Te la muestro* меняется по роду объекта?",
+        "correct_answer": "false",
+        "explanation": "Te/me/nos/os не меняются по роду; род объекта — в lo/la/los/las.",
+        "tags": []
+      },
+      "reason": "2026-11-04: удалены готовые примеры te la / te lo, в которых неизменность проверяемого te была видна прямо из условия.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/091.es.grammar.pronouns_direct_indirect.double_pronouns_me_lo_se_lo_te_la/03-questions.json",
+      "id": "q26",
+      "before": {
+        "id": "q26",
+        "type": "fill_blank",
+        "theory_block_id": "b3_theory_le_to_se_before_lo",
+        "difficulty": 2,
+        "prompt": "Заполните: *___ lo dejo en la mesa.* (получатель 3-е л.; не *le lo*)",
+        "correct_answer": "Se",
+        "explanation": "Se lo — le→se перед lo.",
+        "tags": []
+      },
+      "after": {
+        "id": "q26",
+        "type": "fill_blank",
+        "theory_block_id": "b3_theory_le_to_se_before_lo",
+        "difficulty": 2,
+        "prompt": "Заполните: *___ lo dejo en la mesa.* (получатель — он или она)",
+        "correct_answer": "Se",
+        "explanation": "Se lo — le→se перед lo.",
+        "tags": []
+      },
+      "reason": "2026-11-04: удалено готовое исключение не le lo; получатель сохранён, замену le на se ученик должен применить сам.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/091.es.grammar.pronouns_direct_indirect.double_pronouns_me_lo_se_lo_te_la/03-questions.json",
+      "id": "q60",
+      "before": {
+        "id": "q60",
+        "type": "true_false",
+        "theory_block_id": "b5_theory_double_pronouns_imperative",
+        "difficulty": 2,
+        "prompt": "Верно ли: на императиве перед lo **le** тоже становится **se** (*Dígaselo*)?",
+        "correct_answer": "true",
+        "explanation": "То же правило le/les→se, что и в обычной фразе.",
+        "tags": []
+      },
+      "after": {
+        "id": "q60",
+        "type": "true_false",
+        "theory_block_id": "b5_theory_double_pronouns_imperative",
+        "difficulty": 2,
+        "prompt": "Верно ли: на императиве перед lo **le** тоже становится **se**?",
+        "correct_answer": "true",
+        "explanation": "То же правило le/les→se, что и в обычной фразе.",
+        "tags": []
+      },
+      "reason": "2026-11-04: удалён готовый пример Dígaselo, показывавший результат проверяемого преобразования.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/091.es.grammar.pronouns_direct_indirect.double_pronouns_me_lo_se_lo_te_la/03-questions.json",
+      "id": "q65",
+      "before": {
+        "id": "q65",
+        "type": "fill_blank",
+        "theory_block_id": "b6_theory_double_pronouns_ru_traps",
+        "difficulty": 2,
+        "prompt": "Заполните: *___ lo doy* (ему/ей «его»; не le lo)",
+        "correct_answer": "Se",
+        "explanation": "Se lo doy — чеклист и таблица.",
+        "tags": []
+      },
+      "after": {
+        "id": "q65",
+        "type": "fill_blank",
+        "theory_block_id": "b6_theory_double_pronouns_ru_traps",
+        "difficulty": 2,
+        "prompt": "Заполните: *___ lo doy.* (ему/ей «его»)",
+        "correct_answer": "Se",
+        "explanation": "Se lo doy — чеклист и таблица.",
+        "tags": []
+      },
+      "reason": "2026-11-04: удалено готовое исключение не le lo; русский смысл задаёт получателя без раскрытия нужного преобразования.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/092.es.grammar.pronouns_direct_indirect.le_lo_la_baseline_norm_learners_should_treat/03-questions.json",
+      "id": "q63",
+      "before": {
+        "type": "fill_blank",
+        "theory_block_id": "b6_theory_baseline_norm_ru_traps",
+        "difficulty": 2,
+        "prompt": "«ему это сказал» → *___ lo dije.* (перед lo: se, не le)",
+        "correct_answer": "Se",
+        "explanation": "«Ему» сначала соответствовало бы le, но перед lo оно меняется на se. Получается *Se lo dije*.",
+        "tags": [],
+        "id": "q63"
+      },
+      "after": {
+        "type": "fill_blank",
+        "theory_block_id": "b6_theory_baseline_norm_ru_traps",
+        "difficulty": 2,
+        "prompt": "«Ему это сказал» → *___ lo dije.* (местоимение)",
+        "correct_answer": "Se",
+        "explanation": "«Ему» сначала соответствовало бы le, но перед lo оно меняется на se. Получается *Se lo dije*.",
+        "tags": [],
+        "id": "q63"
+      },
+      "reason": "2026-11-04: удалён буквальный ключ и готовое правило «перед lo: se, не le»; русский смысл позволяет самостоятельно выбрать Se. 2026-11-04: сохранён формат fill_blank с категорией местоимения вместо удалённого готового ключа.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/098.es.grammar.se_system_pronominal_verbs.ser_estar_contrast_result_state_participles/03-questions.json",
+      "id": "q098_b3_06",
+      "before": {
+        "id": "q098_b3_06",
+        "type": "error_spotting",
+        "theory_block_id": "b3_theory_ser_participio_characteristic",
+        "difficulty": 2,
+        "prompt": "Где **калька с русского** (ser вместо estar для estado)?",
+        "choices": [
+          {
+            "id": "a",
+            "text": "*La ley es revisada cada año por expertos.*",
+            "feedback": "Верно: аналитический пассив с названными исполнителями."
+          },
+          {
+            "id": "b",
+            "text": "*Es respetado en el barrio.*",
+            "feedback": "Верно: *respetado* характеризует репутацию."
+          },
+          {
+            "id": "c",
+            "text": "*La puerta es cerrada.*",
+            "feedback": "Да: «сейчас закрыта» → está cerrada."
+          },
+          {
+            "id": "d",
+            "text": "*Son productos importados.*",
+            "feedback": "Верно: *importados* обозначает категорию товаров."
+          }
+        ],
+        "correct_answer": "c",
+        "explanation": "Для текущего состояния закрытой двери нужен *estar*: *está cerrada*.",
+        "tags": [
+          "ser",
+          "trap"
+        ]
+      },
+      "after": {
+        "id": "q098_b3_06",
+        "type": "error_spotting",
+        "theory_block_id": "b3_theory_ser_participio_characteristic",
+        "difficulty": 2,
+        "prompt": "В каком предложении допущена грамматическая ошибка?",
+        "choices": [
+          {
+            "id": "a",
+            "text": "*La ley es revisada cada año por expertos.*",
+            "feedback": "Верно: аналитический пассив с названными исполнителями."
+          },
+          {
+            "id": "b",
+            "text": "*Es respetado en el barrio.*",
+            "feedback": "Верно: *respetado* характеризует репутацию."
+          },
+          {
+            "id": "c",
+            "text": "*La puerta es cerrada desde ayer.*",
+            "feedback": "Да: состояние, которое сохраняется со вчерашнего дня, требует está cerrada."
+          },
+          {
+            "id": "d",
+            "text": "*Son productos importados.*",
+            "feedback": "Верно: *importados* обозначает категорию товаров."
+          }
+        ],
+        "correct_answer": "c",
+        "explanation": "Для состояния двери, которое сохраняется со вчерашнего дня, нужен *estar*: *La puerta está cerrada desde ayer*.",
+        "tags": [
+          "ser",
+          "trap"
+        ]
+      },
+      "reason": "2026-11-04: удалена готовая правка ser вместо estar; в ошибочный вариант добавлен контекст сохраняющегося состояния desde ayer для однозначности.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/098.es.grammar.se_system_pronominal_verbs.ser_estar_contrast_result_state_participles/03-questions.json",
+      "id": "q098_b6_09",
+      "before": {
+        "id": "q098_b6_09",
+        "type": "true_false",
+        "theory_block_id": "b6_theory_passive_se_preview_ru_traps",
+        "difficulty": 2,
+        "prompt": "Русское «дверь была закрыта» (сейчас) калькируют как *es cerrada* — ошибка; норма *está cerrada*.",
+        "correct_answer": "true",
+        "explanation": "Краткое причастие RU → estar в ES.",
+        "tags": [
+          "trap",
+          "ru"
+        ]
+      },
+      "after": {
+        "id": "q098_b6_09",
+        "type": "true_false",
+        "theory_block_id": "b6_theory_passive_se_preview_ru_traps",
+        "difficulty": 2,
+        "prompt": "Русское «дверь закрыта» (состояние сейчас) калькируют как *es cerrada* — ошибка; норма *está cerrada*.",
+        "correct_answer": "true",
+        "explanation": "Для текущего состояния двери употребляют *estar*: *La puerta está cerrada*.",
+        "tags": [
+          "trap",
+          "ru"
+        ]
+      },
+      "reason": "2026-11-04 adjacent_defect: устранено противоречие «была закрыта» и «сейчас»; утверждение и объяснение согласованы с текущим состоянием.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/108.es.grammar.non_finite_forms_periphrases.gerundio_ongoing_action_manner_do/03-questions.json",
+      "id": "q049",
+      "before": {
+        "id": "q049",
+        "type": "fill_blank",
+        "prompt": "Вставьте одно слово: **Salió sin ___ adiós.** (подсказка: глагол *decir*, нужен инфинитив)",
+        "theory_block_id": "b5_theory_gerundio_syntactic_limits",
+        "difficulty": 2,
+        "correct_answer": "decir",
+        "explanation": "*sin* + инфинитив.",
+        "tags": []
+      },
+      "after": {
+        "id": "q049",
+        "type": "fill_blank",
+        "prompt": "Вставьте нужную форму глагола из скобок: **Salió sin ___ adiós.** (dijo)",
+        "theory_block_id": "b5_theory_gerundio_syntactic_limits",
+        "difficulty": 2,
+        "correct_answer": "decir",
+        "explanation": "*sin* + инфинитив.",
+        "tags": []
+      },
+      "reason": "2026-11-04: вместо готового ответа decir и указания нужен инфинитив дана личная форма dijo; форму после sin нужно определить самостоятельно.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/108.es.grammar.non_finite_forms_periphrases.gerundio_ongoing_action_manner_do/03-questions.json",
+      "id": "q050",
+      "before": {
+        "id": "q050",
+        "type": "fill_blank",
+        "prompt": "Вставьте одно слово: **Llámame al ___ el informe.** (подсказка: глагол *terminar*, нужен инфинитив)",
+        "theory_block_id": "b5_theory_gerundio_syntactic_limits",
+        "difficulty": 2,
+        "correct_answer": "terminar",
+        "explanation": "*al* + инфинитив: *al terminar*.",
+        "tags": []
+      },
+      "after": {
+        "id": "q050",
+        "type": "fill_blank",
+        "prompt": "Вставьте нужную форму глагола из скобок: **Llámame al ___ el informe.** (terminó)",
+        "theory_block_id": "b5_theory_gerundio_syntactic_limits",
+        "difficulty": 2,
+        "correct_answer": "terminar",
+        "explanation": "*al* + инфинитив: *al terminar*.",
+        "tags": []
+      },
+      "reason": "2026-11-04: вместо готового terminar и указания нужен инфинитив дана личная форма terminó; форму после al нужно определить самостоятельно.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/110.es.grammar.non_finite_forms_periphrases.periphrases_change_process_seguir_plus_gerundio_acabar_de/03-questions.json",
+      "id": "q004",
+      "before": {
+        "id": "q004",
+        "type": "mcq_single",
+        "prompt": "Выберите предложение, где есть перифраза **продолжения процесса** (*seguir* + gerundio).",
+        "theory_block_id": "b1_theory_seguir_plus_gerundio_continuation",
+        "difficulty": 2,
+        "choices": [
+          {
+            "id": "a",
+            "text": "*Acaba de llover.*",
+            "feedback": "Нет: недавность/завершение эпизода, не *seguir* + gerundio."
+          },
+          {
+            "id": "b",
+            "text": "*Sigue lloviendo.*",
+            "feedback": "Да: дождь **продолжается**."
+          },
+          {
+            "id": "c",
+            "text": "*Vuelve a llover.*",
+            "feedback": "Нет: повтор, не обязательно «всё ещё без перерыва»."
+          },
+          {
+            "id": "d",
+            "text": "*Deja de llover.*",
+            "feedback": "Нет: прекращение."
+          }
+        ],
+        "correct_answer": "b",
+        "explanation": "*Sigue lloviendo* — классический пример продолжения процесса.",
+        "tags": []
+      },
+      "after": {
+        "id": "q004",
+        "type": "mcq_single",
+        "prompt": "Выберите предложение, где есть перифраза **продолжения процесса**.",
+        "theory_block_id": "b1_theory_seguir_plus_gerundio_continuation",
+        "difficulty": 2,
+        "choices": [
+          {
+            "id": "a",
+            "text": "*Acaba de llover.*",
+            "feedback": "Нет: недавность/завершение эпизода, не *seguir* + gerundio."
+          },
+          {
+            "id": "b",
+            "text": "*Sigue lloviendo.*",
+            "feedback": "Да: дождь **продолжается**."
+          },
+          {
+            "id": "c",
+            "text": "*Vuelve a llover.*",
+            "feedback": "Нет: повтор, не обязательно «всё ещё без перерыва»."
+          },
+          {
+            "id": "d",
+            "text": "*Deja de llover.*",
+            "feedback": "Нет: прекращение."
+          }
+        ],
+        "correct_answer": "b",
+        "explanation": "*Sigue lloviendo* — классический пример продолжения процесса.",
+        "tags": []
+      },
+      "reason": "2026-11-04: удалена готовая модель seguir + gerundio, прямо указывавшая единственный вариант с Sigue; сохранено проверяемое значение продолжения.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/110.es.grammar.non_finite_forms_periphrases.periphrases_change_process_seguir_plus_gerundio_acabar_de/03-questions.json",
+      "id": "q032",
+      "before": {
+        "id": "q032",
+        "type": "error_spotting",
+        "prompt": "Какое предложение **содержит типичную ошибку** (gerundio вместо infinitivo после *volver a*)?",
+        "theory_block_id": "b3_theory_volver_a_plus_infinitivo_repetition",
+        "difficulty": 2,
+        "choices": [
+          {
+            "id": "a",
+            "text": "Vuelve a llover.",
+            "feedback": "Нет: это норма."
+          },
+          {
+            "id": "b",
+            "text": "Vuelve lloviendo.",
+            "feedback": "Да: неверная замена infinitivo gerundio в этой перифразе."
+          },
+          {
+            "id": "c",
+            "text": "Vuelve a nevar.",
+            "feedback": "Нет: норма."
+          },
+          {
+            "id": "d",
+            "text": "Vuelve a caer granizo.",
+            "feedback": "Нет: норма."
+          }
+        ],
+        "correct_answer": "b",
+        "explanation": "После *volver a* нужен **infinitivo** (*llover*), не *lloviendo*.",
+        "tags": []
+      },
+      "after": {
+        "id": "q032",
+        "type": "error_spotting",
+        "prompt": "Какое предложение **содержит грамматическую ошибку**?",
+        "theory_block_id": "b3_theory_volver_a_plus_infinitivo_repetition",
+        "difficulty": 2,
+        "choices": [
+          {
+            "id": "a",
+            "text": "Vuelve a llover.",
+            "feedback": "Нет: это норма."
+          },
+          {
+            "id": "b",
+            "text": "Vuelve a lloviendo.",
+            "feedback": "Да: после volver a требуется инфинитив, а не герундий."
+          },
+          {
+            "id": "c",
+            "text": "Vuelve a nevar.",
+            "feedback": "Нет: норма."
+          },
+          {
+            "id": "d",
+            "text": "Vuelve a caer granizo.",
+            "feedback": "Нет: норма."
+          }
+        ],
+        "correct_answer": "b",
+        "explanation": "После *volver a* нужен **infinitivo** (*llover*), не *lloviendo*.",
+        "tags": []
+      },
+      "reason": "2026-11-04: удалено готовое правило infinitivo вместо gerundio; ошибочный вариант уточнён до Vuelve a lloviendo, чтобы исключить чтение volver как возвращаться.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/110.es.grammar.non_finite_forms_periphrases.periphrases_change_process_seguir_plus_gerundio_acabar_de/03-questions.json",
+      "id": "q043",
+      "before": {
+        "id": "q043",
+        "type": "error_spotting",
+        "prompt": "Где типичная ошибка (gerundio вместо infinitivo после *de*)?",
+        "theory_block_id": "b4_theory_dejar_de_plus_infinitivo_cessation",
+        "difficulty": 2,
+        "choices": [
+          {
+            "id": "a",
+            "text": "Dejaron de negociar.",
+            "feedback": "Нет ошибки."
+          },
+          {
+            "id": "b",
+            "text": "Dejaron de negociando.",
+            "feedback": "Да: после *de* нужен infinitivo, не gerundio."
+          },
+          {
+            "id": "c",
+            "text": "Dejaron negociar de.",
+            "feedback": "Да: порядок сломан."
+          },
+          {
+            "id": "d",
+            "text": "Dejaron a negociar.",
+            "feedback": "Да: предлог *a* не тот."
+          }
+        ],
+        "correct_answer": "b",
+        "explanation": "После *de* в этой перифразе — **infinitivo** (*negociar*).",
+        "tags": []
+      },
+      "after": {
+        "id": "q043",
+        "type": "error_spotting",
+        "prompt": "В каком предложении допущена грамматическая ошибка?",
+        "theory_block_id": "b4_theory_dejar_de_plus_infinitivo_cessation",
+        "difficulty": 2,
+        "choices": [
+          {
+            "id": "a",
+            "text": "Dejaron de negociar.",
+            "feedback": "Нет ошибки."
+          },
+          {
+            "id": "b",
+            "text": "Dejaron de negociando.",
+            "feedback": "Да: после *de* нужен infinitivo, не gerundio."
+          },
+          {
+            "id": "c",
+            "text": "Dejan de negociar.",
+            "feedback": "Нет ошибки: dejar de + инфинитив в настоящем времени."
+          },
+          {
+            "id": "d",
+            "text": "Dejaremos de negociar.",
+            "feedback": "Нет ошибки: dejar de + инфинитив в будущем времени."
+          }
+        ],
+        "correct_answer": "b",
+        "explanation": "После *de* в этой перифразе — **infinitivo** (*negociar*).",
+        "tags": []
+      },
+      "reason": "2026-11-04: удалена готовая правка gerundio вместо infinitivo; два других ошибочных distractors сделаны правильными, чтобы сохранить единственный ключ b в общем поиске ошибки.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/111.es.grammar.non_finite_forms_periphrases.soler_llevar_plus_gerundio_terminar_por_aspect_nuance/03-questions.json",
+      "id": "q005",
+      "before": {
+        "type": "fill_blank",
+        "prompt": "Вставьте одну форму: *Yo ___ levantarme a las seis los laborables.* (инфинитив: levantarse)",
+        "theory_block_id": "b1_theory_soler_plus_infinitive_habit_typicality",
+        "difficulty": 2,
+        "correct_answer": "suelo",
+        "explanation": "Настоящее *soler* + infinitivo.",
+        "tags": [],
+        "id": "q005"
+      },
+      "after": {
+        "type": "fill_blank",
+        "prompt": "Вставьте нужную форму глагола: *Yo ___ levantarme a las seis los laborables.* (soler; presente)",
+        "theory_block_id": "b1_theory_soler_plus_infinitive_habit_typicality",
+        "difficulty": 2,
+        "correct_answer": "suelo",
+        "explanation": "Настоящее *soler* + infinitivo.",
+        "tags": [],
+        "id": "q005"
+      },
+      "reason": "2026-11-04 adjacent_defect: вместо levantarse, уже выраженного после пропуска, указан действительно спрягаемый soler и настоящее время; ключ suelo теперь соответствует инструкции.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/111.es.grammar.non_finite_forms_periphrases.soler_llevar_plus_gerundio_terminar_por_aspect_nuance/03-questions.json",
+      "id": "q060",
+      "before": {
+        "type": "fill_blank",
+        "prompt": "*___ levantarme tarde los fines de semana.* (форма: soler, мы)",
+        "theory_block_id": "b6_theory_ru_traps_register_b2",
+        "difficulty": 2,
+        "correct_answer": "Solemos",
+        "explanation": "Множественное число.",
+        "tags": [],
+        "id": "q060"
+      },
+      "after": {
+        "type": "fill_blank",
+        "prompt": "*___ levantarnos tarde los fines de semana.* (soler; nosotros; presente)",
+        "theory_block_id": "b6_theory_ru_traps_register_b2",
+        "difficulty": 2,
+        "correct_answer": "Solemos",
+        "explanation": "Множественное число.",
+        "tags": [],
+        "id": "q060"
+      },
+      "reason": "2026-11-04 adjacent_defect: исправлено несогласованное levantarmе на levantarnos при nosotros/Solemos; сохранены цель спряжения и ключ.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/118.es.grammar.subjunctive_noun_clauses.form_present_subjunctive/03-questions.json",
+      "id": "q18",
+      "before": {
+        "id": "q18",
+        "type": "true_false",
+        "prompt": "Утверждение: *¡Habla!* (imperativo tú) и *hables* (subjuntivo tú) — одна и та же форма.",
+        "theory_block_id": "b2_theory_ar_verbs_subjunctive",
+        "difficulty": 2,
+        "correct_answer": "false",
+        "explanation": "Imperativo -a; subjuntivo -es.",
+        "tags": [
+          "b2"
+        ]
+      },
+      "after": {
+        "id": "q18",
+        "type": "true_false",
+        "prompt": "Утверждение: у hablar формы утвердительного imperativo tú и presente de subjuntivo tú совпадают.",
+        "theory_block_id": "b2_theory_ar_verbs_subjunctive",
+        "difficulty": 2,
+        "correct_answer": "false",
+        "explanation": "Imperativo -a; subjuntivo -es.",
+        "tags": [
+          "b2"
+        ]
+      },
+      "reason": "2026-11-04: удалены готовые Habla и hables, позволявшие ответить простым сравнением написания; теперь требуется знание различия форм.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/118.es.grammar.subjunctive_noun_clauses.form_present_subjunctive/03-questions.json",
+      "id": "q28",
+      "before": {
+        "id": "q28",
+        "type": "fill_blank",
+        "prompt": "Dudo que él **___** a tiempo. (vivir, él)",
+        "theory_block_id": "b3_theory_er_ir_verbs_subjunctive",
+        "difficulty": 2,
+        "correct_answer": "viva",
+        "explanation": "él -er/-ir: -a.",
+        "tags": [
+          "b3"
+        ]
+      },
+      "after": {
+        "id": "q28",
+        "type": "fill_blank",
+        "prompt": "Dudo que él **___** cerca. (vivir, él)",
+        "theory_block_id": "b3_theory_er_ir_verbs_subjunctive",
+        "difficulty": 2,
+        "correct_answer": "viva",
+        "explanation": "él -er/-ir: -a.",
+        "tags": [
+          "b3"
+        ]
+      },
+      "reason": "2026-11-04 adjacent_defect: неестественное vivir a tiempo заменено на vivir cerca; проверяемая форма viva и привязка сохранены.",
+      "report_state": "done"
+    },
+    {
+      "source": "courses/english-grammar/chapters/050.en.grammar.future_plans.time_clauses_when_after/03-questions.json",
+      "id": "q2",
+      "before": {
+        "id": "q2",
+        "type": "fill_blank",
+        "prompt": "We'll start after everyone ___. (правило)",
+        "theory_block_id": "b1_theory_time_clause_rule",
+        "difficulty": 1,
+        "correct_answer": "comes",
+        "explanation": "После after в будущем используем Present Simple: everyone comes."
+      },
+      "report_state": "done",
+      "after": {
+        "id": "q2",
+        "type": "fill_blank",
+        "prompt": "Вставьте нужную форму глагола из скобок: We'll start after everyone ___. (come)",
+        "theory_block_id": "b1_theory_time_clause_rule",
+        "difficulty": 1,
+        "correct_answer": "comes",
+        "explanation": "После after в будущем используем Present Simple: everyone comes."
+      },
+      "reason": "Независимая проверка: отсутствовал исходный глагол для единственного строкового ключа; добавлена лемма или другая личная форма, если лемма совпадает с ответом.",
+      "revision_editor": "coordinator"
+    },
+    {
+      "source": "courses/english-grammar/chapters/050.en.grammar.future_plans.time_clauses_when_after/03-questions.json",
+      "id": "q12",
+      "before": {
+        "id": "q12",
+        "type": "fill_blank",
+        "prompt": "We'll call after the movie ___. (правило)",
+        "theory_block_id": "b1_theory_time_clause_rule",
+        "difficulty": 1,
+        "correct_answer": "ends",
+        "explanation": "Present Simple в time clause: the movie ends."
+      },
+      "report_state": "done",
+      "after": {
+        "id": "q12",
+        "type": "fill_blank",
+        "prompt": "Вставьте нужную форму глагола из скобок: We'll call after the movie ___. (end)",
+        "theory_block_id": "b1_theory_time_clause_rule",
+        "difficulty": 1,
+        "correct_answer": "ends",
+        "explanation": "Present Simple в time clause: the movie ends."
+      },
+      "reason": "Независимая проверка: отсутствовал исходный глагол для единственного строкового ключа; добавлена лемма или другая личная форма, если лемма совпадает с ответом.",
+      "revision_editor": "coordinator"
+    },
+    {
+      "source": "courses/english-grammar/chapters/050.en.grammar.future_plans.time_clauses_when_after/03-questions.json",
+      "id": "q14",
+      "before": {
+        "id": "q14",
+        "type": "fill_blank",
+        "prompt": "I'll text you when the meeting ___. (когда)",
+        "theory_block_id": "b2_theory_when",
+        "difficulty": 1,
+        "correct_answer": "ends",
+        "explanation": "Present Simple используется после when, поэтому ends."
+      },
+      "report_state": "done",
+      "after": {
+        "id": "q14",
+        "type": "fill_blank",
+        "prompt": "Вставьте нужную форму глагола из скобок: I'll text you when the meeting ___. (end)",
+        "theory_block_id": "b2_theory_when",
+        "difficulty": 1,
+        "correct_answer": "ends",
+        "explanation": "Present Simple используется после when, поэтому ends."
+      },
+      "reason": "Независимая проверка: отсутствовал исходный глагол для единственного строкового ключа; добавлена лемма или другая личная форма, если лемма совпадает с ответом.",
+      "revision_editor": "coordinator"
+    },
+    {
+      "source": "courses/english-grammar/chapters/050.en.grammar.future_plans.time_clauses_when_after/03-questions.json",
+      "id": "q19",
+      "before": {
+        "id": "q19",
+        "type": "fill_blank",
+        "prompt": "When she ___ home, she'll call me. (когда)",
+        "theory_block_id": "b2_theory_when",
+        "difficulty": 2,
+        "correct_answer": "gets",
+        "explanation": "Present Simple после when: gets."
+      },
+      "report_state": "done",
+      "after": {
+        "id": "q19",
+        "type": "fill_blank",
+        "prompt": "Вставьте нужную форму глагола из скобок: When she ___ home, she'll call me. (get)",
+        "theory_block_id": "b2_theory_when",
+        "difficulty": 2,
+        "correct_answer": "gets",
+        "explanation": "Present Simple после when: gets."
+      },
+      "reason": "Независимая проверка: отсутствовал исходный глагол для единственного строкового ключа; добавлена лемма или другая личная форма, если лемма совпадает с ответом.",
+      "revision_editor": "coordinator"
+    },
+    {
+      "source": "courses/english-grammar/chapters/050.en.grammar.future_plans.time_clauses_when_after/03-questions.json",
+      "id": "q31",
+      "before": {
+        "id": "q31",
+        "type": "fill_blank",
+        "prompt": "After he ___ home, he'll rest. (после)",
+        "theory_block_id": "b3_theory_after",
+        "difficulty": 2,
+        "correct_answer": "gets",
+        "explanation": "Present Simple после after: gets."
+      },
+      "report_state": "done",
+      "after": {
+        "id": "q31",
+        "type": "fill_blank",
+        "prompt": "Вставьте нужную форму глагола из скобок: After he ___ home, he'll rest. (get)",
+        "theory_block_id": "b3_theory_after",
+        "difficulty": 2,
+        "correct_answer": "gets",
+        "explanation": "Present Simple после after: gets."
+      },
+      "reason": "Независимая проверка: отсутствовал исходный глагол для единственного строкового ключа; добавлена лемма или другая личная форма, если лемма совпадает с ответом.",
+      "revision_editor": "coordinator"
+    },
+    {
+      "source": "courses/english-grammar/chapters/050.en.grammar.future_plans.time_clauses_when_after/03-questions.json",
+      "id": "q43",
+      "before": {
+        "id": "q43",
+        "type": "fill_blank",
+        "prompt": "As soon as she ___ here, we'll begin. (как только)",
+        "theory_block_id": "b4_theory_as_soon_as",
+        "difficulty": 2,
+        "correct_answer": "gets",
+        "explanation": "В придаточном Present Simple: gets."
+      },
+      "report_state": "done",
+      "after": {
+        "id": "q43",
+        "type": "fill_blank",
+        "prompt": "Вставьте нужную форму глагола из скобок: As soon as she ___ here, we'll begin. (get)",
+        "theory_block_id": "b4_theory_as_soon_as",
+        "difficulty": 2,
+        "correct_answer": "gets",
+        "explanation": "В придаточном Present Simple: gets."
+      },
+      "reason": "Независимая проверка: отсутствовал исходный глагол для единственного строкового ключа; добавлена лемма или другая личная форма, если лемма совпадает с ответом.",
+      "revision_editor": "coordinator"
+    },
+    {
+      "source": "courses/english-grammar/chapters/050.en.grammar.future_plans.time_clauses_when_after/03-questions.json",
+      "id": "q47",
+      "before": {
+        "id": "q47",
+        "type": "fill_blank",
+        "prompt": "I'll tell you as soon as I ___ more. (как только)",
+        "theory_block_id": "b4_theory_as_soon_as",
+        "difficulty": 1,
+        "correct_answer": "know",
+        "explanation": "Present Simple в придаточном: know."
+      },
+      "report_state": "done",
+      "after": {
+        "id": "q47",
+        "type": "fill_blank",
+        "prompt": "Вставьте нужную форму глагола из скобок: I'll tell you as soon as I ___ more. (knew)",
+        "theory_block_id": "b4_theory_as_soon_as",
+        "difficulty": 1,
+        "correct_answer": "know",
+        "explanation": "Present Simple в придаточном: know."
+      },
+      "reason": "Независимая проверка: отсутствовал исходный глагол для единственного строкового ключа; добавлена лемма или другая личная форма, если лемма совпадает с ответом.",
+      "revision_editor": "coordinator"
+    },
+    {
+      "source": "courses/english-grammar/chapters/050.en.grammar.future_plans.time_clauses_when_after/03-questions.json",
+      "id": "q62",
+      "before": {
+        "id": "q62",
+        "type": "fill_blank",
+        "prompt": "I'm going to leave when the meeting ___. (контраст)",
+        "theory_block_id": "b6_theory_examples_contrast",
+        "difficulty": 2,
+        "correct_answer": "ends",
+        "explanation": "В time clause используется Present Simple: ends."
+      },
+      "report_state": "done",
+      "after": {
+        "id": "q62",
+        "type": "fill_blank",
+        "prompt": "Вставьте нужную форму глагола из скобок: I'm going to leave when the meeting ___. (end)",
+        "theory_block_id": "b6_theory_examples_contrast",
+        "difficulty": 2,
+        "correct_answer": "ends",
+        "explanation": "В time clause используется Present Simple: ends."
+      },
+      "reason": "Независимая проверка: отсутствовал исходный глагол для единственного строкового ключа; добавлена лемма или другая личная форма, если лемма совпадает с ответом.",
+      "revision_editor": "coordinator"
+    },
+    {
+      "source": "courses/english-grammar/chapters/050.en.grammar.future_plans.time_clauses_when_after/03-questions.json",
+      "id": "q66",
+      "before": {
+        "id": "q66",
+        "type": "fill_blank",
+        "prompt": "We'll start after the teacher ___. (контраст)",
+        "theory_block_id": "b6_theory_examples_contrast",
+        "difficulty": 1,
+        "correct_answer": "arrives",
+        "explanation": "Present Simple в time clause: arrives."
+      },
+      "report_state": "done",
+      "after": {
+        "id": "q66",
+        "type": "fill_blank",
+        "prompt": "Вставьте нужную форму глагола из скобок: We'll start after the teacher ___. (arrive)",
+        "theory_block_id": "b6_theory_examples_contrast",
+        "difficulty": 1,
+        "correct_answer": "arrives",
+        "explanation": "Present Simple в time clause: arrives."
+      },
+      "reason": "Независимая проверка: отсутствовал исходный глагол для единственного строкового ключа; добавлена лемма или другая личная форма, если лемма совпадает с ответом.",
+      "revision_editor": "coordinator"
+    },
+    {
+      "source": "courses/english-grammar/chapters/050.en.grammar.future_plans.time_clauses_when_after/03-questions.json",
+      "id": "q71",
+      "before": {
+        "id": "q71",
+        "type": "fill_blank",
+        "prompt": "I'll send the file as soon as I ___. (контраст)",
+        "theory_block_id": "b6_theory_examples_contrast",
+        "difficulty": 1,
+        "correct_answer": "finish",
+        "explanation": "Time clause требует Present Simple: finish."
+      },
+      "report_state": "done",
+      "after": {
+        "id": "q71",
+        "type": "fill_blank",
+        "prompt": "Вставьте нужную форму глагола из скобок: I'll send the file as soon as I ___. (finished)",
+        "theory_block_id": "b6_theory_examples_contrast",
+        "difficulty": 1,
+        "correct_answer": "finish",
+        "explanation": "Time clause требует Present Simple: finish."
+      },
+      "reason": "Независимая проверка: отсутствовал исходный глагол для единственного строкового ключа; добавлена лемма или другая личная форма, если лемма совпадает с ответом.",
+      "revision_editor": "coordinator"
+    },
+    {
+      "source": "courses/english-grammar/chapters/050.en.grammar.future_plans.time_clauses_when_after/03-questions.json",
+      "id": "q50",
+      "before": {
+        "id": "q50",
+        "type": "fill_blank",
+        "prompt": "I'll call you ___ I arrive. (порядок)",
+        "theory_block_id": "b5_theory_word_order",
+        "difficulty": 1,
+        "correct_answer": "when",
+        "explanation": "Если time clause во второй части, запятая не нужна."
+      },
+      "report_state": "done",
+      "after": {
+        "id": "q50",
+        "type": "fill_blank",
+        "prompt": "Выберите союз, который вводит указание времени: I'll call you ___ I arrive. (when | because | although)",
+        "theory_block_id": "b5_theory_word_order",
+        "difficulty": 1,
+        "correct_answer": "when",
+        "explanation": "Если time clause во второй части, запятая не нужна."
+      },
+      "reason": "Независимая проверка: помета «порядок» не задавала единственный временной союз; дан набор союзов с различной функцией.",
+      "revision_editor": "coordinator"
+    },
+    {
+      "source": "courses/english-grammar/chapters/050.en.grammar.future_plans.time_clauses_when_after/03-questions.json",
+      "id": "q55",
+      "before": {
+        "id": "q55",
+        "type": "fill_blank",
+        "prompt": "___ I get the news, I'll call you. (порядок)",
+        "theory_block_id": "b5_theory_word_order",
+        "difficulty": 2,
+        "correct_answer": "When",
+        "explanation": "Time clause в начале: When I get the news, ..."
+      },
+      "report_state": "done",
+      "after": {
+        "id": "q55",
+        "type": "fill_blank",
+        "prompt": "Выберите союз, который вводит указание времени: ___ I get the news, I'll call you. (When | Because | Although)",
+        "theory_block_id": "b5_theory_word_order",
+        "difficulty": 2,
+        "correct_answer": "When",
+        "explanation": "Time clause в начале: When I get the news, ..."
+      },
+      "reason": "Независимая проверка: помета «порядок» не задавала единственный временной союз; дан набор союзов с различной функцией.",
+      "revision_editor": "coordinator"
+    },
+    {
+      "source": "courses/english-grammar/chapters/050.en.grammar.future_plans.time_clauses_when_after/03-questions.json",
+      "id": "q60",
+      "before": {
+        "id": "q60",
+        "type": "fill_blank",
+        "prompt": "I'll send it ___ I finish. (порядок)",
+        "theory_block_id": "b5_theory_word_order",
+        "difficulty": 1,
+        "correct_answer": "after",
+        "explanation": "Придаточное стоит вторым, запятая не нужна."
+      },
+      "report_state": "done",
+      "after": {
+        "id": "q60",
+        "type": "fill_blank",
+        "prompt": "Выберите союз, который вводит указание времени: I'll send it ___ I finish. (after | because | although)",
+        "theory_block_id": "b5_theory_word_order",
+        "difficulty": 1,
+        "correct_answer": "after",
+        "explanation": "Придаточное стоит вторым, запятая не нужна."
+      },
+      "reason": "Независимая проверка: помета «порядок» не задавала единственный временной союз; дан набор союзов с различной функцией.",
+      "revision_editor": "coordinator"
+    },
+    {
+      "source": "courses/english-grammar/chapters/057.en.grammar.core_modality_ability_permission.may_might_probability/03-questions.json",
+      "id": "q14",
+      "before": {
+        "id": "q14",
+        "type": "fill_blank",
+        "prompt": "They might ___ early. (прийти)",
+        "theory_block_id": "b2_form_may_might",
+        "difficulty": 1,
+        "correct_answer": "come",
+        "explanation": "После might стоит базовая форма глагола. Здесь правильный вариант: come."
+      },
+      "report_state": "done",
+      "after": {
+        "id": "q14",
+        "type": "fill_blank",
+        "prompt": "Вставьте нужную форму глагола из скобок: They might ___ early. (came)",
+        "theory_block_id": "b2_form_may_might",
+        "difficulty": 1,
+        "correct_answer": "come",
+        "explanation": "После might стоит базовая форма глагола. Здесь правильный вариант: come."
+      },
+      "reason": "Независимая проверка: перевод допускал лексические синонимы; другая личная форма задаёт глагол для образования базовой формы после модального.",
+      "revision_editor": "coordinator"
+    },
+    {
+      "source": "courses/english-grammar/chapters/057.en.grammar.core_modality_ability_permission.may_might_probability/03-questions.json",
+      "id": "q23",
+      "before": {
+        "id": "q23",
+        "type": "fill_blank",
+        "prompt": "She may ___ a taxi. (вызвать)",
+        "theory_block_id": "b2_form_may_might",
+        "difficulty": 2,
+        "correct_answer": "call",
+        "explanation": "После may ставится базовая форма. В этом контексте: call a taxi."
+      },
+      "report_state": "done",
+      "after": {
+        "id": "q23",
+        "type": "fill_blank",
+        "prompt": "Вставьте нужную форму глагола из скобок: She may ___ a taxi. (called)",
+        "theory_block_id": "b2_form_may_might",
+        "difficulty": 2,
+        "correct_answer": "call",
+        "explanation": "После may ставится базовая форма. В этом контексте: call a taxi."
+      },
+      "reason": "Независимая проверка: перевод допускал лексические синонимы; другая личная форма задаёт глагол для образования базовой формы после модального.",
+      "revision_editor": "coordinator"
+    },
+    {
+      "source": "courses/english-grammar/chapters/057.en.grammar.core_modality_ability_permission.may_might_probability/03-questions.json",
+      "id": "q42",
+      "before": {
+        "id": "q42",
+        "type": "fill_blank",
+        "prompt": "___ he be sick? (вопрос о вероятности)",
+        "theory_block_id": "b4_questions_possibility",
+        "difficulty": 2,
+        "correct_answer": "Might",
+        "explanation": "Для вопроса о вероятности можно использовать Might. Структура: Might he be...?"
+      },
+      "report_state": "done",
+      "after": {
+        "id": "q42",
+        "type": "fill_blank",
+        "prompt": "Выберите подходящее слово из скобок: ___ he be sick? (Might | Does | Is)",
+        "theory_block_id": "b4_questions_possibility",
+        "difficulty": 2,
+        "correct_answer": "Might",
+        "explanation": "Для вопроса о вероятности можно использовать Might. Структура: Might he be...?"
+      },
+      "reason": "Независимая проверка: несколько модальных глаголов/наречий подходили под открытое условие; задан набор форм с единственным грамматичным ответом.",
+      "revision_editor": "coordinator"
+    },
+    {
+      "source": "courses/english-grammar/chapters/057.en.grammar.core_modality_ability_permission.may_might_probability/03-questions.json",
+      "id": "q62",
+      "before": {
+        "id": "q62",
+        "type": "fill_blank",
+        "prompt": "___ we can meet on Friday. (наречие)",
+        "theory_block_id": "b6_maybe_position",
+        "difficulty": 1,
+        "correct_answer": "Maybe",
+        "explanation": "Maybe стоит отдельно и означает «возможно». Оно не соединяется с V1 как модальный глагол."
+      },
+      "report_state": "done",
+      "after": {
+        "id": "q62",
+        "type": "fill_blank",
+        "prompt": "Выберите подходящее слово из скобок: ___ we can meet on Friday. (Maybe | May | Might)",
+        "theory_block_id": "b6_maybe_position",
+        "difficulty": 1,
+        "correct_answer": "Maybe",
+        "explanation": "Maybe стоит отдельно и означает «возможно». Оно не соединяется с V1 как модальный глагол."
+      },
+      "reason": "Независимая проверка: несколько модальных глаголов/наречий подходили под открытое условие; задан набор форм с единственным грамматичным ответом.",
+      "revision_editor": "coordinator"
+    },
+    {
+      "source": "courses/english-grammar/chapters/057.en.grammar.core_modality_ability_permission.may_might_probability/03-questions.json",
+      "id": "q70",
+      "before": {
+        "id": "q70",
+        "type": "fill_blank",
+        "prompt": "___ you can try again later. (наречие)",
+        "theory_block_id": "b6_maybe_position",
+        "difficulty": 1,
+        "correct_answer": "Maybe",
+        "explanation": "Maybe — наречие, и в начале предложения оно звучит естественно. Это соответствует правилу, разобранному в этом блоке."
+      },
+      "report_state": "done",
+      "after": {
+        "id": "q70",
+        "type": "fill_blank",
+        "prompt": "Выберите подходящее слово из скобок: ___ you can try again later. (Maybe | May | Might)",
+        "theory_block_id": "b6_maybe_position",
+        "difficulty": 1,
+        "correct_answer": "Maybe",
+        "explanation": "Maybe — наречие, и в начале предложения оно звучит естественно. Это соответствует правилу, разобранному в этом блоке."
+      },
+      "reason": "Независимая проверка: несколько модальных глаголов/наречий подходили под открытое условие; задан набор форм с единственным грамматичным ответом.",
+      "revision_editor": "coordinator"
+    },
+    {
+      "source": "courses/english-grammar/chapters/083.en.grammar.complex_sentences_1_connecting.because_so_although_but/03-questions.json",
+      "id": "q2",
+      "before": {
+        "type": "fill_blank",
+        "prompt": "Вставьте союз: ___ it was late, we left. (причина)",
+        "theory_block_id": "b1_because_cause",
+        "difficulty": 1,
+        "correct_answer": "Because",
+        "explanation": "Because может стоять в начале предложения.",
+        "id": "q2"
+      },
+      "report_state": "done",
+      "after": {
+        "type": "fill_blank",
+        "prompt": "Выберите союз из скобок: ___ it was late, we left. (Because | although | so; причина)",
+        "theory_block_id": "b1_because_cause",
+        "difficulty": 1,
+        "correct_answer": "Because",
+        "explanation": "Because может стоять в начале предложения.",
+        "id": "q2"
+      },
+      "reason": "Независимая проверка: несколько синонимичных союзов соответствовали функции; задан набор разных связей для единственного ключа.",
+      "revision_editor": "coordinator"
+    },
+    {
+      "source": "courses/english-grammar/chapters/083.en.grammar.complex_sentences_1_connecting.because_so_although_but/03-questions.json",
+      "id": "q6",
+      "before": {
+        "type": "fill_blank",
+        "prompt": "Вставьте союз: We canceled the trip ___ it rained. (причина)",
+        "theory_block_id": "b1_because_cause",
+        "difficulty": 1,
+        "correct_answer": "because",
+        "explanation": "Because вводит причину.",
+        "id": "q6"
+      },
+      "report_state": "done",
+      "after": {
+        "type": "fill_blank",
+        "prompt": "Выберите союз из скобок: We canceled the trip ___ it rained. (because | although | so; причина)",
+        "theory_block_id": "b1_because_cause",
+        "difficulty": 1,
+        "correct_answer": "because",
+        "explanation": "Because вводит причину.",
+        "id": "q6"
+      },
+      "reason": "Независимая проверка: несколько синонимичных союзов соответствовали функции; задан набор разных связей для единственного ключа.",
+      "revision_editor": "coordinator"
+    },
+    {
+      "source": "courses/english-grammar/chapters/083.en.grammar.complex_sentences_1_connecting.because_so_although_but/03-questions.json",
+      "id": "q10",
+      "before": {
+        "type": "fill_blank",
+        "prompt": "Вставьте союз: He was late ___ he missed the bus. (причина)",
+        "theory_block_id": "b1_because_cause",
+        "difficulty": 2,
+        "correct_answer": "because",
+        "explanation": "Because связывает причину и факт.",
+        "id": "q10"
+      },
+      "report_state": "done",
+      "after": {
+        "type": "fill_blank",
+        "prompt": "Выберите союз из скобок: He was late ___ he missed the bus. (because | although | so; причина)",
+        "theory_block_id": "b1_because_cause",
+        "difficulty": 2,
+        "correct_answer": "because",
+        "explanation": "Because связывает причину и факт.",
+        "id": "q10"
+      },
+      "reason": "Независимая проверка: несколько синонимичных союзов соответствовали функции; задан набор разных связей для единственного ключа.",
+      "revision_editor": "coordinator"
+    },
+    {
+      "source": "courses/english-grammar/chapters/083.en.grammar.complex_sentences_1_connecting.because_so_although_but/03-questions.json",
+      "id": "q30",
+      "before": {
+        "type": "fill_blank",
+        "prompt": "Вставьте союз: ___ I like it, I won't buy it. (уступка)",
+        "theory_block_id": "b3_although_contrast",
+        "difficulty": 2,
+        "correct_answer": "Although",
+        "explanation": "Although вводит уступку.",
+        "id": "q30"
+      },
+      "report_state": "done",
+      "after": {
+        "type": "fill_blank",
+        "prompt": "Выберите союз из скобок: ___ I like it, I won't buy it. (Although | because | so; уступка)",
+        "theory_block_id": "b3_although_contrast",
+        "difficulty": 2,
+        "correct_answer": "Although",
+        "explanation": "Although вводит уступку.",
+        "id": "q30"
+      },
+      "reason": "Независимая проверка: несколько синонимичных союзов соответствовали функции; задан набор разных связей для единственного ключа.",
+      "revision_editor": "coordinator"
+    },
+    {
+      "source": "courses/english-grammar/chapters/083.en.grammar.complex_sentences_1_connecting.because_so_although_but/03-questions.json",
+      "id": "q38",
+      "before": {
+        "type": "fill_blank",
+        "prompt": "Вставьте союз: He likes sports, ___ his brother prefers music. (контраст)",
+        "theory_block_id": "b4_while_whereas",
+        "difficulty": 2,
+        "correct_answer": "whereas",
+        "explanation": "Whereas — более формальный союз контраста.",
+        "id": "q38"
+      },
+      "report_state": "done",
+      "after": {
+        "type": "fill_blank",
+        "prompt": "Выберите союз из скобок: He likes sports, ___ his brother prefers music. (whereas | because | so; сопоставление)",
+        "theory_block_id": "b4_while_whereas",
+        "difficulty": 2,
+        "correct_answer": "whereas",
+        "explanation": "Whereas — более формальный союз контраста.",
+        "id": "q38"
+      },
+      "reason": "Независимая проверка: несколько синонимичных союзов соответствовали функции; задан набор разных связей для единственного ключа.",
+      "revision_editor": "coordinator"
+    },
+    {
+      "source": "courses/english-grammar/chapters/083.en.grammar.complex_sentences_1_connecting.because_so_although_but/03-questions.json",
+      "id": "q42",
+      "before": {
+        "type": "fill_blank",
+        "prompt": "Вставьте союз: ___ I agree, I still have doubts. (контраст)",
+        "theory_block_id": "b4_while_whereas",
+        "difficulty": 2,
+        "correct_answer": "While",
+        "explanation": "While может вводить контраст.",
+        "id": "q42"
+      },
+      "report_state": "done",
+      "after": {
+        "type": "fill_blank",
+        "prompt": "Выберите союз из скобок: ___ I agree, I still have doubts. (While | because | so; уступка)",
+        "theory_block_id": "b4_while_whereas",
+        "difficulty": 2,
+        "correct_answer": "While",
+        "explanation": "While может вводить контраст.",
+        "id": "q42"
+      },
+      "reason": "Независимая проверка: несколько синонимичных союзов соответствовали функции; задан набор разных связей для единственного ключа.",
+      "revision_editor": "coordinator"
+    },
+    {
+      "source": "courses/english-grammar/chapters/083.en.grammar.complex_sentences_1_connecting.because_so_although_but/03-questions.json",
+      "id": "q46",
+      "before": {
+        "type": "fill_blank",
+        "prompt": "Вставьте союз: I prefer mornings, ___ my partner likes evenings. (контраст)",
+        "theory_block_id": "b4_while_whereas",
+        "difficulty": 2,
+        "correct_answer": "whereas",
+        "explanation": "Whereas — союз контраста.",
+        "id": "q46"
+      },
+      "report_state": "done",
+      "after": {
+        "type": "fill_blank",
+        "prompt": "Выберите союз из скобок: I prefer mornings, ___ my partner likes evenings. (whereas | because | so; сопоставление)",
+        "theory_block_id": "b4_while_whereas",
+        "difficulty": 2,
+        "correct_answer": "whereas",
+        "explanation": "Whereas — союз контраста.",
+        "id": "q46"
+      },
+      "reason": "Независимая проверка: несколько синонимичных союзов соответствовали функции; задан набор разных связей для единственного ключа.",
+      "revision_editor": "coordinator"
+    },
+    {
+      "source": "courses/english-grammar/chapters/083.en.grammar.complex_sentences_1_connecting.because_so_although_but/03-questions.json",
+      "id": "q54",
+      "before": {
+        "type": "fill_blank",
+        "prompt": "Вставьте слово: ___ I was late, I called you. (причина)",
+        "theory_block_id": "b5_clause_order_punct",
+        "difficulty": 2,
+        "correct_answer": "Because",
+        "explanation": "Начальное придаточное с because.",
+        "id": "q54"
+      },
+      "report_state": "done",
+      "after": {
+        "type": "fill_blank",
+        "prompt": "Выберите союз из скобок: ___ I was late, I called you. (Because | although | so; причина)",
+        "theory_block_id": "b5_clause_order_punct",
+        "difficulty": 2,
+        "correct_answer": "Because",
+        "explanation": "Начальное придаточное с because.",
+        "id": "q54"
+      },
+      "reason": "Независимая проверка: несколько синонимичных союзов соответствовали функции; задан набор разных связей для единственного ключа.",
+      "revision_editor": "coordinator"
+    },
+    {
+      "source": "courses/english-grammar/chapters/083.en.grammar.complex_sentences_1_connecting.because_so_although_but/03-questions.json",
+      "id": "q58",
+      "before": {
+        "type": "fill_blank",
+        "prompt": "Вставьте слово: He left early, ___ he was tired. (причина)",
+        "theory_block_id": "b5_clause_order_punct",
+        "difficulty": 2,
+        "correct_answer": "because",
+        "explanation": "Because вводит причину в конце.",
+        "id": "q58"
+      },
+      "report_state": "done",
+      "after": {
+        "type": "fill_blank",
+        "prompt": "Выберите союз из скобок: He left early, ___ he was tired. (because | although | so; причина)",
+        "theory_block_id": "b5_clause_order_punct",
+        "difficulty": 2,
+        "correct_answer": "because",
+        "explanation": "Because вводит причину в конце.",
+        "id": "q58"
+      },
+      "reason": "Независимая проверка: несколько синонимичных союзов соответствовали функции; задан набор разных связей для единственного ключа.",
+      "revision_editor": "coordinator"
+    },
+    {
+      "source": "courses/english-grammar/chapters/083.en.grammar.complex_sentences_1_connecting.because_so_although_but/03-questions.json",
+      "id": "q70",
+      "before": {
+        "type": "fill_blank",
+        "prompt": "Вставьте союз: We left ___ it was late. (причина)",
+        "theory_block_id": "b6_common_errors",
+        "difficulty": 1,
+        "correct_answer": "because",
+        "explanation": "Because вводит причину.",
+        "id": "q70"
+      },
+      "report_state": "done",
+      "after": {
+        "type": "fill_blank",
+        "prompt": "Выберите союз из скобок: We left ___ it was late. (because | although | so; причина)",
+        "theory_block_id": "b6_common_errors",
+        "difficulty": 1,
+        "correct_answer": "because",
+        "explanation": "Because вводит причину.",
+        "id": "q70"
+      },
+      "reason": "Независимая проверка: несколько синонимичных союзов соответствовали функции; задан набор разных связей для единственного ключа.",
+      "revision_editor": "coordinator"
+    },
+    {
+      "source": "courses/english-grammar/chapters/092.en.grammar.perfect_aspect_experience_result.experience_have_you_ever/03-questions.json",
+      "id": "q14",
+      "before": {
+        "id": "q14",
+        "type": "fill_blank",
+        "prompt": "Заполните пропуск: \"She has ___ been to Africa.\" (not)",
+        "theory_block_id": "b2_theory_markers_ever_never",
+        "difficulty": 2,
+        "correct_answer": "never",
+        "explanation": "Never = «никогда» для опыта: has never been."
+      },
+      "report_state": "done",
+      "after": {
+        "id": "q14",
+        "type": "fill_blank",
+        "prompt": "Выберите слово: \"She has ___ been to Africa.\" (never | ever | already; она никогда не бывала в Африке)",
+        "theory_block_id": "b2_theory_markers_ever_never",
+        "difficulty": 2,
+        "correct_answer": "never",
+        "explanation": "Never = «никогда» для опыта: has never been."
+      },
+      "reason": "Независимая проверка: неверный стимул not заменён выбором маркера отсутствия опыта без прямого указания ключа.",
+      "revision_editor": "coordinator"
+    },
+    {
+      "source": "courses/english-grammar/chapters/097.en.grammar.perfect_aspect_experience_result.build_speak_biography_experience/03-questions.json",
+      "id": "q14",
+      "before": {
+        "id": "q14",
+        "type": "fill_blank",
+        "prompt": "Заполните пропуск: \"I have ___ been to Africa.\" (наречие отрицания)",
+        "theory_block_id": "b2_theory_experience_markers",
+        "difficulty": 1,
+        "correct_answer": "never",
+        "explanation": "Never с Present Perfect — отсутствие опыта. Форма утвердительная, значение отрицательное.",
+        "tags": []
+      },
+      "report_state": "done",
+      "after": {
+        "id": "q14",
+        "type": "fill_blank",
+        "prompt": "Выберите слово: \"I have ___ been to Africa.\" (never | ever | already; я никогда не бывал в Африке)",
+        "theory_block_id": "b2_theory_experience_markers",
+        "difficulty": 1,
+        "correct_answer": "never",
+        "explanation": "Never с Present Perfect — отсутствие опыта. Форма утвердительная, значение отрицательное.",
+        "tags": []
+      },
+      "reason": "Независимая проверка: категория «наречие отрицания» не различала not/never; задан семантический контекст и набор маркеров.",
+      "revision_editor": "coordinator"
+    },
+    {
+      "source": "courses/english-grammar/chapters/097.en.grammar.perfect_aspect_experience_result.build_speak_biography_experience/03-questions.json",
+      "id": "q18",
+      "before": {
+        "id": "q18",
+        "type": "fill_blank",
+        "prompt": "Заполните пропуск: \"They have ___ arrived; you can come in.\" (very recently)",
+        "theory_block_id": "b2_theory_experience_markers",
+        "difficulty": 2,
+        "correct_answer": "just",
+        "explanation": "Just — недавнее действие, сочетается с Present Perfect. Ставится между have и past participle.",
+        "tags": []
+      },
+      "report_state": "done",
+      "after": {
+        "id": "q18",
+        "type": "fill_blank",
+        "prompt": "Выберите слово: \"They have ___ arrived; you can come in.\" (just | ever | never; они только что приехали)",
+        "theory_block_id": "b2_theory_experience_markers",
+        "difficulty": 2,
+        "correct_answer": "just",
+        "explanation": "Just — недавнее действие, сочетается с Present Perfect. Ставится между have и past participle.",
+        "tags": []
+      },
+      "reason": "Независимая проверка: very recently допускало just/recently; дан набор маркеров для указанного недавнего события.",
+      "revision_editor": "coordinator"
+    },
+    {
+      "source": "courses/english-grammar/chapters/097.en.grammar.perfect_aspect_experience_result.build_speak_biography_experience/03-questions.json",
+      "id": "q58",
+      "before": {
+        "id": "q58",
+        "type": "fill_blank",
+        "prompt": "Заполните пропуск: \"I called him before I ___ to the airport.\" (go)",
+        "theory_block_id": "b5_theory_time_linkers",
+        "difficulty": 2,
+        "correct_answer": "went",
+        "explanation": "После before возможен Past Simple при ясном порядке. Действие «уйти» позже — естественно went. Past Perfect здесь не обязателен.",
+        "tags": []
+      },
+      "report_state": "done",
+      "after": {
+        "id": "q58",
+        "type": "fill_blank",
+        "prompt": "Вставьте форму Past Simple: \"I called him before I ___ to the airport.\" (go)",
+        "theory_block_id": "b5_theory_time_linkers",
+        "difficulty": 2,
+        "correct_answer": "went",
+        "explanation": "После before возможен Past Simple при ясном порядке. Действие «уйти» позже — естественно went. Past Perfect здесь не обязателен.",
+        "tags": []
+      },
+      "reason": "Независимая проверка: явно задан Past Simple, чтобы исключить также допустимый Past Perfect had gone.",
+      "revision_editor": "coordinator"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/086.es.grammar.prepositions_verb_patterns.adjective_plus_preposition_patterns_contento_con_parecido_lleno/03-questions.json",
+      "id": "q26",
+      "before": {
+        "id": "q26",
+        "type": "fill_blank",
+        "theory_block_id": "b3_theory_parecido_a_comparison",
+        "difficulty": 2,
+        "prompt": "Заполните: Este barrio es parecido ___ el nuestro. (похож на; a/de/con)",
+        "correct_answer": "a",
+        "explanation": "Parecido a — якорь сравнения.",
+        "tags": []
+      },
+      "report_state": "done",
+      "after": {
+        "id": "q26",
+        "type": "fill_blank",
+        "theory_block_id": "b3_theory_parecido_a_comparison",
+        "difficulty": 2,
+        "prompt": "Заполните: Este barrio es parecido ___ los del centro. (похож на; a/de/con)",
+        "correct_answer": "a",
+        "explanation": "Parecido a — якорь сравнения.",
+        "tags": []
+      },
+      "reason": "Самопроверка editor1 выявила a el при ключе a; координатор заменил дополнение на множественное число, чтобы проверять предлог без пропущенного обязательного слияния al. Требуется независимое принятие parentheses_3.",
+      "revision_editor": "coordinator"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/086.es.grammar.prepositions_verb_patterns.adjective_plus_preposition_patterns_contento_con_parecido_lleno/03-questions.json",
+      "id": "q35",
+      "before": {
+        "id": "q35",
+        "type": "fill_blank",
+        "theory_block_id": "b3_theory_parecido_a_comparison",
+        "difficulty": 2,
+        "prompt": "Заполните: El problema se parece ___ el mío. (глагол «быть похожим»; a/de/en)",
+        "correct_answer": "a",
+        "explanation": "Parecerse a — глагольная модель гл. 85, тот же a.",
+        "tags": []
+      },
+      "report_state": "done",
+      "after": {
+        "id": "q35",
+        "type": "fill_blank",
+        "theory_block_id": "b3_theory_parecido_a_comparison",
+        "difficulty": 2,
+        "prompt": "Заполните: El problema se parece ___ los anteriores. (глагол «быть похожим»; a/de/en)",
+        "correct_answer": "a",
+        "explanation": "Parecerse a — глагольная модель гл. 85, тот же a.",
+        "tags": []
+      },
+      "reason": "Самопроверка editor1 выявила a el при ключе a; координатор заменил дополнение на множественное число, сохранив проверку управления parecerse a. Требуется независимое принятие parentheses_3.",
+      "revision_editor": "coordinator"
+    },
+    {
+      "source": "courses/english-grammar/chapters/127.en.grammar.information_structure_style.ellipsis_substitution_so_neither/03-questions.json",
+      "id": "q60",
+      "before": {
+        "id": "q60",
+        "type": "fill_blank",
+        "prompt": "Заполните пропуск: \"I prefer the soft pillows, not the hard ___.\" (замена)",
+        "theory_block_id": "b5_theory_style_limits",
+        "difficulty": 2,
+        "correct_answer": "ones",
+        "explanation": "Pillows — множественное число, поэтому ones."
+      },
+      "report_state": "done",
+      "after": {
+        "id": "q60",
+        "type": "fill_blank",
+        "prompt": "Заполните пропуск: \"I prefer the soft pillows, not the hard ___.\" (замените существительное, сохранив множественное число)",
+        "theory_block_id": "b5_theory_style_limits",
+        "difficulty": 2,
+        "correct_answer": "ones",
+        "explanation": "Pillows — множественное число, поэтому ones."
+      },
+      "reason": "Независимая проверка: явно сохранено множественное число заменяемой группы, чтобы исключить one при выборе одного предмета.",
+      "revision_editor": "coordinator"
+    },
+    {
+      "source": "courses/english-grammar/chapters/129.en.grammar.information_structure_style.formal_vs_informal_contractions/03-questions.json",
+      "id": "q22",
+      "before": {
+        "id": "q22",
+        "type": "fill_blank",
+        "prompt": "Заполните пропуск: “The proposal has some advantages. ___, we cannot approve the request.” (linker)",
+        "theory_block_id": "b2_theory_formal_linking",
+        "difficulty": 2,
+        "correct_answer": "however",
+        "explanation": "*However* вводит контраст между преимуществами предложения и невозможностью его одобрить."
+      },
+      "report_state": "done",
+      "after": {
+        "id": "q22",
+        "type": "fill_blank",
+        "prompt": "Выберите связку контраста: “The proposal has some advantages. ___, we cannot approve the request.” (However | Therefore | Moreover)",
+        "theory_block_id": "b2_theory_formal_linking",
+        "difficulty": 2,
+        "correct_answer": "however",
+        "explanation": "*However* вводит контраст между преимуществами предложения и невозможностью его одобрить."
+      },
+      "reason": "Независимая проверка: открытая подсказка допускала несколько лексем или модальных форм. Задан набор сравниваемых вариантов либо исходный глагол для однозначного ключа; готовый ответ не продиктован.",
+      "revision_editor": "coordinator"
+    },
+    {
+      "source": "courses/english-grammar/chapters/129.en.grammar.information_structure_style.formal_vs_informal_contractions/03-questions.json",
+      "id": "q36",
+      "before": {
+        "id": "q36",
+        "type": "fill_blank",
+        "prompt": "Заполните пропуск: \"That's ___ annoying.\" (informal)",
+        "theory_block_id": "b3_theory_informal_markers",
+        "difficulty": 2,
+        "correct_answer": "pretty",
+        "explanation": "Pretty — разговорный маркер степени."
+      },
+      "report_state": "done",
+      "after": {
+        "id": "q36",
+        "type": "fill_blank",
+        "prompt": "Выберите разговорный усилитель: \"That’s ___ annoying.\" (pretty | prettier | prettiest)",
+        "theory_block_id": "b3_theory_informal_markers",
+        "difficulty": 2,
+        "correct_answer": "pretty",
+        "explanation": "Pretty — разговорный маркер степени."
+      },
+      "reason": "Независимая проверка: открытая подсказка допускала несколько лексем или модальных форм. Задан набор сравниваемых вариантов либо исходный глагол для однозначного ключа; готовый ответ не продиктован.",
+      "revision_editor": "coordinator"
+    },
+    {
+      "source": "courses/english-grammar/chapters/129.en.grammar.information_structure_style.formal_vs_informal_contractions/03-questions.json",
+      "id": "q38",
+      "before": {
+        "id": "q38",
+        "type": "fill_blank",
+        "prompt": "Заполните пропуск: \"I would appreciate it if you ___ respond by Friday.\" (модальный)",
+        "theory_block_id": "b4_theory_politeness",
+        "difficulty": 2,
+        "correct_answer": "could",
+        "explanation": "Вежливая формула: I would appreciate it if you could..."
+      },
+      "report_state": "done",
+      "after": {
+        "id": "q38",
+        "type": "fill_blank",
+        "prompt": "Выберите подходящий модальный глагол: \"I would appreciate it if you ___ respond by Friday.\" (could | was | has)",
+        "theory_block_id": "b4_theory_politeness",
+        "difficulty": 2,
+        "correct_answer": "could",
+        "explanation": "Вежливая формула: I would appreciate it if you could..."
+      },
+      "reason": "Независимая проверка: открытая подсказка допускала несколько лексем или модальных форм. Задан набор сравниваемых вариантов либо исходный глагол для однозначного ключа; готовый ответ не продиктован.",
+      "revision_editor": "coordinator"
+    },
+    {
+      "source": "courses/english-grammar/chapters/129.en.grammar.information_structure_style.formal_vs_informal_contractions/03-questions.json",
+      "id": "q50",
+      "before": {
+        "id": "q50",
+        "type": "fill_blank",
+        "prompt": "Заполните пропуск: \"Hey, just a heads-up: the request got ___.\" (verb)",
+        "theory_block_id": "b5_theory_style_mismatch",
+        "difficulty": 2,
+        "correct_answer": "rejected",
+        "explanation": "В разговорном стиле возможно got rejected."
+      },
+      "report_state": "done",
+      "after": {
+        "id": "q50",
+        "type": "fill_blank",
+        "prompt": "Заполните пропуск: \"Hey, just a heads-up: the request got ___.\" (reject)",
+        "theory_block_id": "b5_theory_style_mismatch",
+        "difficulty": 2,
+        "correct_answer": "rejected",
+        "explanation": "В разговорном стиле возможно got rejected."
+      },
+      "reason": "Независимая проверка: открытая подсказка допускала несколько лексем или модальных форм. Задан набор сравниваемых вариантов либо исходный глагол для однозначного ключа; готовый ответ не продиктован.",
+      "revision_editor": "coordinator"
+    },
+    {
+      "source": "courses/english-grammar/chapters/129.en.grammar.information_structure_style.formal_vs_informal_contractions/03-questions.json",
+      "id": "q55",
+      "before": {
+        "id": "q55",
+        "type": "fill_blank",
+        "prompt": "Заполните пропуск: \"Please be ___ that the request was denied.\" (verb)",
+        "theory_block_id": "b5_theory_style_mismatch",
+        "difficulty": 2,
+        "correct_answer": "advised",
+        "explanation": "Please be advised — формальная формула уведомления."
+      },
+      "report_state": "done",
+      "after": {
+        "id": "q55",
+        "type": "fill_blank",
+        "prompt": "Заполните пропуск: \"Please be ___ that the request was denied.\" (advise)",
+        "theory_block_id": "b5_theory_style_mismatch",
+        "difficulty": 2,
+        "correct_answer": "advised",
+        "explanation": "Please be advised — формальная формула уведомления."
+      },
+      "reason": "Независимая проверка: открытая подсказка допускала несколько лексем или модальных форм. Задан набор сравниваемых вариантов либо исходный глагол для однозначного ключа; готовый ответ не продиктован.",
+      "revision_editor": "coordinator"
+    },
+    {
+      "source": "courses/english-grammar/chapters/129.en.grammar.information_structure_style.formal_vs_informal_contractions/03-questions.json",
+      "id": "q60",
+      "before": {
+        "id": "q60",
+        "type": "fill_blank",
+        "prompt": "Заполните пропуск: \"We ___ to inform you that the request was denied.\" (формальный глагол)",
+        "theory_block_id": "b5_theory_style_mismatch",
+        "difficulty": 2,
+        "correct_answer": "regret",
+        "explanation": "Формальная конструкция: We regret to inform you..."
+      },
+      "report_state": "done",
+      "after": {
+        "id": "q60",
+        "type": "fill_blank",
+        "prompt": "Вставьте форму Present Simple: \"We ___ to inform you that the request was denied.\" (regretted)",
+        "theory_block_id": "b5_theory_style_mismatch",
+        "difficulty": 2,
+        "correct_answer": "regret",
+        "explanation": "Формальная конструкция: We regret to inform you..."
+      },
+      "reason": "Независимая проверка: открытая подсказка допускала несколько лексем или модальных форм. Задан набор сравниваемых вариантов либо исходный глагол для однозначного ключа; готовый ответ не продиктован.",
+      "revision_editor": "coordinator"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/081.es.grammar.prepositions_verb_patterns.personal_object_marking/03-questions.json",
+      "id": "q30",
+      "before": {
+        "id": "q30",
+        "type": "fill_blank",
+        "theory_block_id": "b3_theory_no_personal_a_things_and_contrast",
+        "difficulty": 2,
+        "prompt": "Заполните: Prefiero ___ té, no el café. (напиток — вещь, артикль)",
+        "correct_answer": "el",
+        "explanation": "Prefiero el té — вещь без personal a.",
+        "tags": []
+      },
+      "report_state": "done",
+      "after": {
+        "id": "q30",
+        "type": "fill_blank",
+        "theory_block_id": "b3_theory_no_personal_a_things_and_contrast",
+        "difficulty": 2,
+        "prompt": "Заполните пропуск артиклем, чтобы выразить общее предпочтение напитка, а не заказать порцию: Prefiero ___ té, no el café.",
+        "correct_answer": "el",
+        "explanation": "Prefiero el té — вещь без personal a.",
+        "tags": []
+      },
+      "reason": "Уточнено обобщённое предпочтение напитка, исключён неопределённый артикль порции.",
+      "revision_editor": "coordinator"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/081.es.grammar.prepositions_verb_patterns.personal_object_marking/03-questions.json",
+      "id": "q52",
+      "before": {
+        "id": "q52",
+        "type": "fill_blank",
+        "theory_block_id": "b5_theory_personal_a_syntax_and_pronouns_preview",
+        "difficulty": 2,
+        "prompt": "Заполните: Sí, ___ veo desde la ventana. (местоимение, ж.р.)",
+        "correct_answer": "La",
+        "explanation": "La veo — без a.",
+        "tags": []
+      },
+      "report_state": "done",
+      "after": {
+        "id": "q52",
+        "type": "fill_blank",
+        "theory_block_id": "b5_theory_personal_a_syntax_and_pronouns_preview",
+        "difficulty": 2,
+        "prompt": "Замените имя Laura местоимением прямого дополнения: — ¿Ves a Laura? — Sí, ___ veo desde la ventana.",
+        "correct_answer": "la",
+        "explanation": "Laura — один человек женского рода, поэтому прямое дополнение заменяется местоимением la: Sí, la veo. Предлог a перед местоимением не нужен.",
+        "tags": []
+      },
+      "reason": "Явно задан референт Laura и его число; убрана неоднозначность la/las.",
+      "revision_editor": "coordinator"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/086.es.grammar.prepositions_verb_patterns.adjective_plus_preposition_patterns_contento_con_parecido_lleno/03-questions.json",
+      "id": "q9",
+      "before": {
+        "id": "q9",
+        "type": "fill_blank",
+        "theory_block_id": "b1_theory_adjective_preposition_patterns_overview",
+        "difficulty": 2,
+        "prompt": "Заполните: Tu plan es parecido ___ el mío. (похож на; один предлог)",
+        "correct_answer": "a",
+        "explanation": "Parecido a — сходство «на образец».",
+        "tags": []
+      },
+      "report_state": "done",
+      "after": {
+        "id": "q9",
+        "type": "fill_blank",
+        "theory_block_id": "b1_theory_adjective_preposition_patterns_overview",
+        "difficulty": 2,
+        "prompt": "Заполните: Tu plan es parecido ___ mi proyecto. (похож на; один предлог)",
+        "correct_answer": "a",
+        "explanation": "Parecido a — сходство «на образец».",
+        "tags": []
+      },
+      "reason": "После a больше нет артикля el: исключено недопустимое сочетание a el.",
+      "revision_editor": "coordinator"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/086.es.grammar.prepositions_verb_patterns.adjective_plus_preposition_patterns_contento_con_parecido_lleno/03-questions.json",
+      "id": "q14",
+      "before": {
+        "id": "q14",
+        "type": "fill_blank",
+        "theory_block_id": "b2_theory_contento_con_emotion_relation",
+        "difficulty": 2,
+        "prompt": "Заполните: Estamos muy contentos ___ la decisión. (довольны; con/de/en)",
+        "correct_answer": "con",
+        "explanation": "Contentos con — мн. ч., предлог con неизменен.",
+        "tags": []
+      },
+      "report_state": "done",
+      "after": {
+        "id": "q14",
+        "type": "fill_blank",
+        "theory_block_id": "b2_theory_contento_con_emotion_relation",
+        "difficulty": 2,
+        "prompt": "Выберите предлог: Estamos muy contentos ___ la decisión. (довольны; con | hacia | entre)",
+        "correct_answer": "con",
+        "explanation": "Contentos con — мн. ч., предлог con неизменен.",
+        "tags": []
+      },
+      "reason": "Исключён второй допустимый вариант de; выбор con остаётся самостоятельной проверкой управления.",
+      "revision_editor": "coordinator"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/086.es.grammar.prepositions_verb_patterns.adjective_plus_preposition_patterns_contento_con_parecido_lleno/03-questions.json",
+      "id": "q31",
+      "before": {
+        "id": "q31",
+        "type": "fill_blank",
+        "theory_block_id": "b3_theory_parecido_a_comparison",
+        "difficulty": 2,
+        "prompt": "Заполните: Tu idea es distinta ___ la propuesta oficial. (прилагательное distinto; один предлог)",
+        "correct_answer": "de",
+        "explanation": "Distinto de — параллель diferente de.",
+        "tags": []
+      },
+      "report_state": "done",
+      "after": {
+        "id": "q31",
+        "type": "fill_blank",
+        "theory_block_id": "b3_theory_parecido_a_comparison",
+        "difficulty": 2,
+        "prompt": "Выберите предлог: Tu idea es distinta ___ la propuesta oficial. (de | con | sobre)",
+        "correct_answer": "de",
+        "explanation": "Из предложенных вариантов подходит de: distinta de la propuesta. Перед существительным также возможно distinta a, но этого варианта здесь нет.",
+        "tags": []
+      },
+      "reason": "Ограничены варианты, поскольку distinto допускает оба предлога a и de.",
+      "revision_editor": "coordinator"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/108.es.grammar.non_finite_forms_periphrases.gerundio_ongoing_action_manner_do/03-questions.json",
+      "id": "q039",
+      "before": {
+        "id": "q039",
+        "type": "fill_blank",
+        "prompt": "Вставьте одно слово: **Mis padres ___ viendo las noticias.** (подсказка: *estar* 3 л. мн. число)",
+        "theory_block_id": "b4_theory_estar_plus_gerundio_aspect",
+        "difficulty": 2,
+        "correct_answer": "están",
+        "explanation": "*Están viendo* — процесс сейчас.",
+        "tags": []
+      },
+      "report_state": "done",
+      "after": {
+        "id": "q039",
+        "type": "fill_blank",
+        "prompt": "Вставьте форму presente de indicativo: **Mis padres ___ viendo las noticias.** (estar)",
+        "theory_block_id": "b4_theory_estar_plus_gerundio_aspect",
+        "difficulty": 2,
+        "correct_answer": "están",
+        "explanation": "*Están viendo* — процесс сейчас.",
+        "tags": []
+      },
+      "reason": "Не задано время estar: están и estaban одинаково подходят. Указать presente.",
+      "revision_editor": "coordinator"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/110.es.grammar.non_finite_forms_periphrases.periphrases_change_process_seguir_plus_gerundio_acabar_de/03-questions.json",
+      "id": "q006",
+      "before": {
+        "id": "q006",
+        "type": "fill_blank",
+        "prompt": "Заполните пропуск формой *seguir*: **¿Tú aún ___ corriendo por las mañanas?** (seguir)",
+        "theory_block_id": "b1_theory_seguir_plus_gerundio_continuation",
+        "difficulty": 2,
+        "correct_answer": "sigues",
+        "explanation": "2-е лицо *sigues* + gerundio.",
+        "tags": []
+      },
+      "report_state": "done",
+      "after": {
+        "id": "q006",
+        "type": "fill_blank",
+        "prompt": "Заполните пропуск формой *seguir* в presente de indicativo: **¿Tú aún ___ corriendo por las mañanas?** (seguir)",
+        "theory_block_id": "b1_theory_seguir_plus_gerundio_continuation",
+        "difficulty": 2,
+        "correct_answer": "sigues",
+        "explanation": "2-е лицо *sigues* + gerundio.",
+        "tags": []
+      },
+      "reason": "Не задано время seguir: sigues и seguías подходят. Указать presente.",
+      "revision_editor": "coordinator"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/110.es.grammar.non_finite_forms_periphrases.periphrases_change_process_seguir_plus_gerundio_acabar_de/03-questions.json",
+      "id": "q016",
+      "before": {
+        "id": "q016",
+        "type": "fill_blank",
+        "prompt": "Заполните пропуск формой *acabar*: **Yo ___ de ver la noticia.** (acabar)",
+        "theory_block_id": "b2_theory_acabar_de_plus_infinitivo_recency",
+        "difficulty": 2,
+        "correct_answer": "Acabo",
+        "explanation": "1-е лицо *acabo de* + infinitivo.",
+        "tags": []
+      },
+      "report_state": "done",
+      "after": {
+        "id": "q016",
+        "type": "fill_blank",
+        "prompt": "Заполните пропуск формой *acabar* в presente de indicativo: **Yo ___ de ver la noticia.** (acabar)",
+        "theory_block_id": "b2_theory_acabar_de_plus_infinitivo_recency",
+        "difficulty": 2,
+        "correct_answer": "acabo",
+        "explanation": "1-е лицо *acabo de* + infinitivo.",
+        "tags": []
+      },
+      "reason": "Не задано время acabar: acabo и acababa подходят. Указать presente.",
+      "revision_editor": "coordinator"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/110.es.grammar.non_finite_forms_periphrases.periphrases_change_process_seguir_plus_gerundio_acabar_de/03-questions.json",
+      "id": "q027",
+      "before": {
+        "id": "q027",
+        "type": "fill_blank",
+        "prompt": "Заполните пропуск формой *volver*: **___ a llover por la tarde.** (volver)",
+        "theory_block_id": "b3_theory_volver_a_plus_infinitivo_repetition",
+        "difficulty": 2,
+        "correct_answer": "Vuelve",
+        "explanation": "3-е лицо *vuelve a* + infinitivo.",
+        "tags": []
+      },
+      "report_state": "done",
+      "after": {
+        "id": "q027",
+        "type": "fill_blank",
+        "prompt": "Заполните пропуск формой *volver* в presente de indicativo: **___ a llover por la tarde.** (volver)",
+        "theory_block_id": "b3_theory_volver_a_plus_infinitivo_repetition",
+        "difficulty": 2,
+        "correct_answer": "Vuelve",
+        "explanation": "3-е лицо *vuelve a* + infinitivo.",
+        "tags": []
+      },
+      "reason": "Не задано время volver: vuelve/volvió/volverá подходят. Указать presente.",
+      "revision_editor": "coordinator"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/110.es.grammar.non_finite_forms_periphrases.periphrases_change_process_seguir_plus_gerundio_acabar_de/03-questions.json",
+      "id": "q028",
+      "before": {
+        "id": "q028",
+        "type": "fill_blank",
+        "prompt": "Заполните пропуск формой *volver*: **No ___ a discutir el mismo asunto.** (volver, tú)",
+        "theory_block_id": "b3_theory_volver_a_plus_infinitivo_repetition",
+        "difficulty": 2,
+        "correct_answer": "vuelvas",
+        "explanation": "В отрицательном повелительном обращении к *tú* используется subjuntivo: *no vuelvas a* + infinitivo.",
+        "tags": []
+      },
+      "report_state": "done",
+      "after": {
+        "id": "q028",
+        "type": "fill_blank",
+        "prompt": "Скажите одному собеседнику «Не обсуждай снова тот же вопрос»: **No ___ a discutir el mismo asunto.** (volver, tú)",
+        "theory_block_id": "b3_theory_volver_a_plus_infinitivo_repetition",
+        "difficulty": 2,
+        "correct_answer": "vuelvas",
+        "explanation": "В отрицательном повелительном обращении к *tú* используется subjuntivo: *no vuelvas a* + infinitivo.",
+        "tags": []
+      },
+      "reason": "No + форма volver не задаёт приказ: vuelves (констатация) также грамматично. Указать отрицательное повелительное к tú.",
+      "revision_editor": "coordinator"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/110.es.grammar.non_finite_forms_periphrases.periphrases_change_process_seguir_plus_gerundio_acabar_de/03-questions.json",
+      "id": "q038",
+      "before": {
+        "id": "q038",
+        "type": "fill_blank",
+        "prompt": "Заполните пропуск формой *dejar*: **Nosotros ___ de llamar tantas veces al día.** (dejar)",
+        "theory_block_id": "b4_theory_dejar_de_plus_infinitivo_cessation",
+        "difficulty": 2,
+        "correct_answer": "Dejamos",
+        "explanation": "*Dejamos de* + infinitivo.",
+        "tags": []
+      },
+      "report_state": "done",
+      "after": {
+        "id": "q038",
+        "type": "fill_blank",
+        "prompt": "Заполните пропуск формой *dejar* в presente de indicativo: **Nosotros ___ de llamar tantas veces al día.** (dejar)",
+        "theory_block_id": "b4_theory_dejar_de_plus_infinitivo_cessation",
+        "difficulty": 2,
+        "correct_answer": "dejamos",
+        "explanation": "*Dejamos de* + infinitivo.",
+        "tags": []
+      },
+      "reason": "Не задано время dejar: dejamos/dejábamos/dejaremos подходят. Указать presente.",
+      "revision_editor": "coordinator"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/110.es.grammar.non_finite_forms_periphrases.periphrases_change_process_seguir_plus_gerundio_acabar_de/03-questions.json",
+      "id": "q049",
+      "before": {
+        "id": "q049",
+        "type": "fill_blank",
+        "prompt": "Заполните пропуск формой *acabar*: **___ de llover hace un minuto.** (acabar)",
+        "theory_block_id": "b5_theory_periphrase_contrasts_aspect",
+        "difficulty": 2,
+        "correct_answer": "Acaba",
+        "explanation": "*Acaba de llover* сообщает, что дождь закончился совсем недавно.",
+        "tags": []
+      },
+      "report_state": "done",
+      "after": {
+        "id": "q049",
+        "type": "fill_blank",
+        "prompt": "Заполните пропуск формой *acabar* в presente de indicativo: **___ de llover hace un minuto.** (acabar)",
+        "theory_block_id": "b5_theory_periphrase_contrasts_aspect",
+        "difficulty": 2,
+        "correct_answer": "Acaba",
+        "explanation": "*Acaba de llover* сообщает, что дождь закончился совсем недавно.",
+        "tags": []
+      },
+      "reason": "Acaba и acabó de llover hace un minuto допустимы; указать presente.",
+      "revision_editor": "coordinator"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/110.es.grammar.non_finite_forms_periphrases.periphrases_change_process_seguir_plus_gerundio_acabar_de/03-questions.json",
+      "id": "q060",
+      "before": {
+        "id": "q060",
+        "type": "fill_blank",
+        "prompt": "Заполните пропуск формой *seguir*: **Yo ___ preparando los anexos, aunque ya envié la propuesta.** (seguir)",
+        "theory_block_id": "b6_theory_ru_traps_register_b2",
+        "difficulty": 2,
+        "correct_answer": "Sigo",
+        "explanation": "*Sigo preparando* показывает, что работа над приложениями продолжается после отправки предложения.",
+        "tags": []
+      },
+      "report_state": "done",
+      "after": {
+        "id": "q060",
+        "type": "fill_blank",
+        "prompt": "Заполните пропуск формой *seguir* в presente de indicativo: **Yo ___ preparando los anexos, aunque ya envié la propuesta.** (seguir)",
+        "theory_block_id": "b6_theory_ru_traps_register_b2",
+        "difficulty": 2,
+        "correct_answer": "sigo",
+        "explanation": "*Sigo preparando* показывает, что работа над приложениями продолжается после отправки предложения.",
+        "tags": []
+      },
+      "reason": "Sigo и seguí preparando после уже отправленной заявки допустимы; указать presente.",
+      "revision_editor": "coordinator"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/110.es.grammar.non_finite_forms_periphrases.periphrases_change_process_seguir_plus_gerundio_acabar_de/03-questions.json",
+      "id": "q061",
+      "before": {
+        "id": "q061",
+        "type": "fill_blank",
+        "prompt": "Заполните пропуск формой *volver*: **Yo no ___ a repetir el mismo error.** (volver)",
+        "theory_block_id": "b6_theory_ru_traps_register_b2",
+        "difficulty": 2,
+        "correct_answer": "vuelvo",
+        "explanation": "*No vuelvo a* + infinitivo.",
+        "tags": []
+      },
+      "report_state": "done",
+      "after": {
+        "id": "q061",
+        "type": "fill_blank",
+        "prompt": "Заполните пропуск формой *volver* в presente de indicativo: **Yo no ___ a repetir el mismo error.** (volver)",
+        "theory_block_id": "b6_theory_ru_traps_register_b2",
+        "difficulty": 2,
+        "correct_answer": "vuelvo",
+        "explanation": "*No vuelvo a* + infinitivo.",
+        "tags": []
+      },
+      "reason": "Vuelvo и volveré a repetir подходят; указать presente.",
+      "revision_editor": "coordinator"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/111.es.grammar.non_finite_forms_periphrases.soler_llevar_plus_gerundio_terminar_por_aspect_nuance/03-questions.json",
+      "id": "q006",
+      "before": {
+        "type": "fill_blank",
+        "prompt": "Вставьте одну форму: *Mis padres ___ visitarnos los domingos.* (форма: soler, они)",
+        "theory_block_id": "b1_theory_soler_plus_infinitive_habit_typicality",
+        "difficulty": 2,
+        "correct_answer": "suelen",
+        "explanation": "Множественное число: *suelen* + infinitivo.",
+        "tags": [],
+        "id": "q006"
+      },
+      "report_state": "done",
+      "after": {
+        "type": "fill_blank",
+        "prompt": "Вставьте форму presente de indicativo: *Mis padres ___ visitarnos los domingos.* (soler)",
+        "theory_block_id": "b1_theory_soler_plus_infinitive_habit_typicality",
+        "difficulty": 2,
+        "correct_answer": "suelen",
+        "explanation": "Множественное число: *suelen* + infinitivo.",
+        "tags": [],
+        "id": "q006"
+      },
+      "reason": "Suelen и solían visitarnos подходят; указать presente.",
+      "revision_editor": "coordinator"
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/111.es.grammar.non_finite_forms_periphrases.soler_llevar_plus_gerundio_terminar_por_aspect_nuance/03-questions.json",
+      "id": "q027",
+      "before": {
+        "type": "fill_blank",
+        "prompt": "*Al final ___ por decir la verdad.* (основа: terminar, он)",
+        "theory_block_id": "b3_theory_terminar_por_plus_infinitivo_eventual_outcome",
+        "difficulty": 2,
+        "correct_answer": "terminó",
+        "explanation": "*Terminó por* + infinitivo дальше.",
+        "tags": [],
+        "id": "q027"
+      },
+      "report_state": "done",
+      "after": {
+        "type": "fill_blank",
+        "prompt": "Вставьте форму pretérito indefinido: *Al final ___ por decir la verdad.* (terminar, él)",
+        "theory_block_id": "b3_theory_terminar_por_plus_infinitivo_eventual_outcome",
+        "difficulty": 2,
+        "correct_answer": "terminó",
+        "explanation": "*Terminó por* + infinitivo дальше.",
+        "tags": [],
+        "id": "q027"
+      },
+      "reason": "Terminó/termina/terminará por decir подходят; указать pretérito indefinido.",
+      "revision_editor": "coordinator"
+    }
+  ],
+  "status": "editorial_complete_awaiting_independent_verification",
+  "coverage": {
+    "reviewed": 1137,
+    "ok": 1066,
+    "fixed": 71,
+    "blocked": 0,
+    "changed_sources": 26
+  },
+  "checks": {
+    "command": "python3 logs/complaints/parenthetical-audit-20261104/worker-1-validate.py",
+    "result": "pass",
+    "evidence": "92 unit preservation/context checks; 24 isolated official assemble-chapter.sh + validate-chapter.sh; 2 training validate_question/signatures; root and both course git diff --check",
+    "path": "logs/complaints/parenthetical-audit-20261104/worker-1-evidence/validation.json"
+  },
+  "preexisting_stale_reports": [
+    {
+      "source": "courses/spanish-grammar/chapters/029.es.grammar.present_regular_actions.present_statements_regular_verbs/03-questions.json",
+      "report": "docs/grammar-review/reports/821c9e2d906ced22058c64ac.json",
+      "note": "Already stale before this narrow audit; previous fingerprints, historical decisions and source preserved. Parentheses annotations do not claim full review."
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/030.es.grammar.present_regular_actions.present_questions_where_subject_adverbs_go/03-questions.json",
+      "report": "docs/grammar-review/reports/7a7e29701a2e7eb3df0e3e5f.json",
+      "note": "Already stale before this narrow audit; previous fingerprints, historical decisions and source preserved. Parentheses annotations do not claim full review."
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/058.es.grammar.past_imperfecto_contrast.antes_siempre_de_nino_habitual_past/03-questions.json",
+      "report": "docs/grammar-review/reports/a7a5741e5361faa0a2b987b4.json",
+      "note": "Already stale before this narrow audit; previous fingerprints, historical decisions and source preserved. Parentheses annotations do not claim full review."
+    },
+    {
+      "source": "courses/spanish-grammar/chapters/061.es.grammar.future_conditionals.ir_plus_infinitive_plans_near_future/03-questions.json",
+      "report": "docs/grammar-review/reports/2bfda466358ff51d531fcabf.json",
+      "note": "Already stale before this narrow audit; previous fingerprints, historical decisions and source preserved. Parentheses annotations do not claim full review."
+    }
+  ],
+  "final_status": "complete_independently_verified",
+  "independent_verification": "complete",
+  "final_counts": {
+    "reviewed": 1137,
+    "fixed": 128,
+    "ok": 1009
+  },
+  "final_evidence": "README.md and independent-source-acceptance.json"
+}

@@ -25,7 +25,13 @@
       "id": "q030_b1_03",
       "decision": "fixed",
       "note": "Исправлены неверные шаблоны a qué hora/двойное подлежащее, раскрытое окончание или ложные ограничения порядка и интонации.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "cocinar требует cocina по tu primo."
+      }
     },
     {
       "id": "q030_b1_04",
@@ -55,7 +61,13 @@
       "id": "q030_b1_08",
       "decision": "fixed",
       "note": "Исправлены неверные шаблоны a qué hora/двойное подлежащее, раскрытое окончание или ложные ограничения порядка и интонации.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "pasear требует paseamos по nosotros."
+      }
     },
     {
       "id": "q030_b1_10",
@@ -145,7 +157,13 @@
       "id": "q030_b3_03",
       "decision": "fixed",
       "note": "Убраны раскрытые окончания и ложные запреты порядка наречий/субъекта; уточнены никогда и mucho deporte.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "estudiar требует estudian по los niños."
+      }
     },
     {
       "id": "q030_b3_04",
@@ -175,7 +193,13 @@
       "id": "q030_b3_08",
       "decision": "fixed",
       "note": "Убраны раскрытые окончания и ложные запреты порядка наречий/субъекта; уточнены никогда и mucho deporte.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "hablar требует habla по el director."
+      }
     },
     {
       "id": "q030_b3_10",
@@ -205,7 +229,13 @@
       "id": "q030_b4_03",
       "decision": "fixed",
       "note": "Убраны раскрытые окончания и ложные запреты порядка наречий/субъекта; уточнены никогда и mucho deporte.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Три альтернативы частоты и русский смысл требуют семантического выбора, единственный ключ не выделен."
+      }
     },
     {
       "id": "q030_b4_04",
@@ -235,7 +265,13 @@
       "id": "q030_b4_08",
       "decision": "fixed",
       "note": "Убраны раскрытые окончания и ложные запреты порядка наречий/субъекта; уточнены никогда и mucho deporte.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "hacer требует hacen по ustedes."
+      }
     },
     {
       "id": "q030_b4_10",
@@ -265,7 +301,13 @@
       "id": "q030_b5_03",
       "decision": "fixed",
       "note": "Устранены ложные запреты инверсии, подсказки с ответом, неверные утверждения о позиции a veces и лице глагола.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Русское они/мужская группа задают ellos, ключ не дан."
+      }
     },
     {
       "id": "q030_b5_04",
@@ -325,7 +367,13 @@
       "id": "q030_b6_03",
       "decision": "fixed",
       "note": "Устранены ложные запреты инверсии, подсказки с ответом, неверные утверждения о позиции a veces и лице глагола.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "estudiar требует estudia по tu compañera."
+      }
     },
     {
       "id": "q030_b6_04",
@@ -355,7 +403,13 @@
       "id": "q030_b6_08",
       "decision": "fixed",
       "note": "Устранены ложные запреты инверсии, подсказки с ответом, неверные утверждения о позиции a veces и лице глагола.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Три наречия и русский смысл оставляют выбор nunca; единственный ключ не дан."
+      }
     },
     {
       "id": "q030_b6_10",

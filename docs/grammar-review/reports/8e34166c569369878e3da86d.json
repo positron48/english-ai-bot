@@ -37,7 +37,13 @@
       "id": "q5",
       "decision": "fixed",
       "note": "Задан вид артикля; снят общий запрет bare noun/определённого артикля; lápiz переведён как карандаш; ключи распределены.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Скобки уточняют ситуацию/референт/время, а не дают готовый ответ."
+      }
     },
     {
       "id": "q6",

@@ -19,7 +19,13 @@
       "id": "q3",
       "decision": "fixed",
       "note": "Уточнены смысл, форма или учебная рекомендация; устранены допустимые альтернативы и слишком широкие правила.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "go требует went в рассказе о прошлом."
+      }
     },
     {
       "id": "q5",
@@ -43,7 +49,13 @@
       "id": "q8",
       "decision": "fixed",
       "note": "Уточнены смысл, форма или учебная рекомендация; устранены допустимые альтернативы и слишком широкие правила.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "be требует were по we в прошлом."
+      }
     },
     {
       "id": "q9",
@@ -61,7 +73,13 @@
       "id": "q12",
       "decision": "fixed",
       "note": "Уточнены смысл, форма или учебная рекомендация; устранены допустимые альтернативы и слишком широкие правила.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "then/than — два варианта, русский смысл помогает выбрать временной связующий элемент."
+      }
     },
     {
       "id": "q13",
@@ -79,7 +97,13 @@
       "id": "q16",
       "decision": "ok",
       "note": "Задание и ключ соответствуют последовательности рассказа; открытый ответ задан однозначно.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Русское «после» задаёт временную связь After that в повествовании."
+      }
     },
     {
       "id": "q17",
@@ -115,7 +139,13 @@
       "id": "q23",
       "decision": "fixed",
       "note": "Уточнены смысл, форма или учебная рекомендация; устранены допустимые альтернативы и слишком широкие правила.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "V1 — пояснение термина, не отдельный ответ true/false."
+      }
     },
     {
       "id": "q25",
@@ -127,7 +157,13 @@
       "id": "q26",
       "decision": "fixed",
       "note": "Уточнены смысл, форма или учебная рекомендация; устранены допустимые альтернативы и слишком широкие правила.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "close требует closed в Past Simple."
+      }
     },
     {
       "id": "q27",
@@ -187,7 +223,13 @@
       "id": "q42",
       "decision": "fixed",
       "note": "Уточнено содержание итоговой фразы, грамматическая форма или область правила вместо субъективного предпочтения и ложного обязательного did.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "arrive требует arrived в Past Simple."
+      }
     },
     {
       "id": "q44",
@@ -211,13 +253,25 @@
       "id": "q50",
       "decision": "fixed",
       "note": "Уточнено содержание итоговой фразы, грамматическая форма или область правила вместо субъективного предпочтения и ложного обязательного did.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "come требует came в Past Simple."
+      }
     },
     {
       "id": "q53",
       "decision": "fixed",
       "note": "Задана конкретная лексема saw → see; подсказка не повторяет ответ, сохранён штатный формат.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "saw требует восстановления see после Did."
+      }
     },
     {
       "id": "q54",
@@ -235,7 +289,13 @@
       "id": "q58",
       "decision": "fixed",
       "note": "Уточнено содержание итоговой фразы, грамматическая форма или область правила вместо субъективного предпочтения и ложного обязательного did.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "be требует was по it."
+      }
     },
     {
       "id": "q59",

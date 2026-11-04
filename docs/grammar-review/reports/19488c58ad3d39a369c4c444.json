@@ -1,11 +1,11 @@
 {
   "version": 1,
   "source": "courses/spanish-grammar/chapters/118.es.grammar.subjunctive_noun_clauses.form_present_subjunctive/03-questions.json",
-  "source_sha256": "40c463d2adc780846bf002d0501fe65d97a241ed2314ccff0a6f0b56b3a9179e",
+  "source_sha256": "c2bd0c9f477b12063c918208d57986848d6f4371b1da6602f3961fa25b72e4fa",
   "context_sha256": "6ae6a522fd4bff96f8e7668261f3fed4089960e4da68d2b87f3256c9d98a36e2",
   "editor": "Codex editor 2026-09-06",
   "verifier": "Anton Filatov (user)",
-  "phase": "done",
+  "phase": "awaiting_verification",
   "reviewed_at": "2026-09-05T22:34:04.821342Z",
   "verified_at": "2026-09-06T17:58:18.569986Z",
   "questions": [
@@ -31,13 +31,25 @@
       "id": "q4",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "tengo и hago иллюстрируют исходные yo indicativo; соответствующие subjuntivo не показаны."
+      }
     },
     {
       "id": "q5",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "vivo — исходная форма, выделение основы viv является проверяемой операцией."
+      }
     },
     {
       "id": "q6",
@@ -67,7 +79,13 @@
       "id": "q10",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "hago — исходная форма для выделения основы hag, правило удаления окончания не дано."
+      }
     },
     {
       "id": "q11",
@@ -103,7 +121,13 @@
       "id": "q16",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "hablar, tú и subjuntivo — параметры, нужное hables не дано."
+      }
     },
     {
       "id": "q17",
@@ -113,9 +137,18 @@
     },
     {
       "id": "q18",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "2026-11-04: удалены готовые Habla и hables, позволявшие ответить простым сравнением написания; теперь требуется знание различия форм.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "fixed",
+        "note": "Убраны готовые Habla/hables: ответ теперь требует знания форм, а не визуального сравнения разных слов.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q19",
@@ -133,13 +166,25 @@
       "id": "q21",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "hablar и ellos задают лемму/лицо, hablen нужно образовать."
+      }
     },
     {
       "id": "q22",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "yo/tú/él задаёт рассматриваемые окончания, гласная e не сообщена в условии."
+      }
     },
     {
       "id": "q23",
@@ -173,9 +218,18 @@
     },
     {
       "id": "q28",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "2026-11-04 adjacent_defect: неестественное vivir a tiempo заменено на vivir cerca; проверяемая форма viva и привязка сохранены.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "fixed",
+        "note": "adjacent_defect: неестественное vivir a tiempo заменено на vivir cerca; viva остаётся тем же грамматическим ключом.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q29",
@@ -205,19 +259,37 @@
       "id": "q33",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "comer — лемма, форму comamos нужно образовать."
+      }
     },
     {
       "id": "q34",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Готовые формы являются материалом анализа групп окончаний; категорию явления требуется определить, прямого ответа нет."
+      }
     },
     {
       "id": "q35",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Нерегулярная основа задаёт категорию, но среди нерегулярных форм нужно выбрать нужное лицо."
+      }
     },
     {
       "id": "q36",
@@ -235,7 +307,13 @@
       "id": "q38",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "él задаёт лицо subjuntivo, sea не дано."
+      }
     },
     {
       "id": "q39",
@@ -247,19 +325,37 @@
       "id": "q40",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "saber и él — исходные параметры, нерегулярное sepa нужно знать."
+      }
     },
     {
       "id": "q41",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "yo задаёт лицо subjuntivo, форму haya нужно выбрать."
+      }
     },
     {
       "id": "q42",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "tener, tú и subjuntivo — исходные параметры, tengas не дано."
+      }
     },
     {
       "id": "q43",
@@ -271,7 +367,13 @@
       "id": "q44",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "decir, ellos и subjuntivo задают спряжение; digan нужно выбрать."
+      }
     },
     {
       "id": "q45",
@@ -283,13 +385,25 @@
       "id": "q46",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "venir и ellos — лемма/лицо, нерегулярную форму vengan нужно образовать."
+      }
     },
     {
       "id": "q47",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "poder, yo и subjuntivo задают категорию, pueda нужно знать."
+      }
     },
     {
       "id": "q48",
@@ -301,43 +415,85 @@
       "id": "q49",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "buscar, yo и subjuntivo задают параметры, орфографическая замена c на qu не сообщена."
+      }
     },
     {
       "id": "q50",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "llegar, él и subjuntivo — исходные параметры; написание llegue нужно выбрать самостоятельно."
+      }
     },
     {
       "id": "q51",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "empezar и tú — лемма/лицо, empieces с двумя изменениями нужно образовать."
+      }
     },
     {
       "id": "q52",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "pensar, él и subjuntivo требуют выбрать правильную основу и окончание."
+      }
     },
     {
       "id": "q53",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "dormir, yo и subjuntivo требуют выбрать duerma самостоятельно."
+      }
     },
     {
       "id": "q54",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Орфография и чередование обозначают свойства проверяемой формы; истинность утверждения оценивается учеником."
+      }
     },
     {
       "id": "q55",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "pedir, ellos и subjuntivo задают категории, pidan не дано."
+      }
     },
     {
       "id": "q56",
@@ -349,7 +505,13 @@
       "id": "q57",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "encontrar и nosotros — лемма/лицо; отсутствие дифтонга и окончание нужно знать."
+      }
     },
     {
       "id": "q58",
@@ -361,7 +523,13 @@
       "id": "q59",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "pagar, yo и subjuntivo — параметры, написание pague не раскрыто."
+      }
     },
     {
       "id": "q60",
@@ -373,7 +541,13 @@
       "id": "q61",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Слово «форма» уточняет предмет распознавания, но не указывает вариант hables."
+      }
     },
     {
       "id": "q62",
@@ -391,7 +565,13 @@
       "id": "q64",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "ser и él задают лемму/лицо, sea нужно образовать."
+      }
     },
     {
       "id": "q65",
@@ -403,7 +583,13 @@
       "id": "q66",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Нужен subjuntivo задаёт наклонение, неправильную форму и её исправление нужно найти."
+      }
     },
     {
       "id": "q67",
@@ -415,7 +601,13 @@
       "id": "q68",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "ser — исходный глагол, форму sea в требуемом смысле нужно выбрать."
+      }
     },
     {
       "id": "q69",
@@ -435,7 +627,26 @@
       "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
       "result": "pass",
       "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    },
+    {
+      "command": "python3 logs/complaints/parenthetical-audit-20261104/worker-1-validate.py",
+      "result": "pass",
+      "evidence": "2026-11-04 narrow parentheses audit: identity/order/bindings and untouched questions preserved; source/final/embedded exact; official isolated chapter assembly/validation or training validate_question and signature checks passed. See worker-1-evidence/validation.json."
     }
   ],
-  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+  "verification_note": "2026-11-04 parenthetical-hints audit: changed questions awaiting independent verification. Historical verification applies only to unchanged questions.",
+  "parentheses_audit_verification": {
+    "verifier": "parentheses_3",
+    "verified_at": "2026-11-04T09:44:02.337656+00:00",
+    "verification": "ok",
+    "scope": "narrow_parentheses_audit_changed_questions",
+    "question_ids": [
+      "q18",
+      "q28"
+    ],
+    "evidence": [
+      "docs/grammar-review/batches/2026-11-04-parenthetical-hints/independent-worker-1.json"
+    ],
+    "note": "Независимо прочитаны все вопросы изменённого источника; подтверждены изменённые вопросы узкого аудита. Advisory вне selected не сертифицированы. Фазы общего обзора и source/context hashes не изменялись."
+  }
 }

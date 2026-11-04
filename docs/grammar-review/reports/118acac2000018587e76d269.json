@@ -25,7 +25,13 @@
       "id": "q039_b1_03",
       "decision": "ok",
       "note": "Poco pan — подлежащее, nos — кому.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Скобки поясняют значение остатка, но не сообщают правильность синтаксического разбора."
+      }
     },
     {
       "id": "q039_b1_04",
@@ -37,13 +43,25 @@
       "id": "q039_b1_05",
       "decision": "ok",
       "note": "Él/ella/usted адресат le.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Личные формы él/ella/usted требуют преобразования в дательное Le."
+      }
     },
     {
       "id": "q039_b1_06",
       "decision": "fixed",
       "note": "Уточнено presente de indicativo; подсказка сохранена в обязательных конечных скобках.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "faltar требует falta по mucho tiempo, форма не дана."
+      }
     },
     {
       "id": "q039_b1_07",
@@ -109,13 +127,25 @@
       "id": "q039_b2_05",
       "decision": "fixed",
       "note": "Уточнено presente de indicativo; подсказка сохранена в обязательных конечных скобках.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "doler требует duele по el hombro."
+      }
     },
     {
       "id": "q039_b2_06",
       "decision": "fixed",
       "note": "Уточнено presente de indicativo; подсказка сохранена в обязательных конечных скобках.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "doler требует duelen по los ojos."
+      }
     },
     {
       "id": "q039_b2_07",
@@ -181,13 +211,25 @@
       "id": "q039_b3_05",
       "decision": "fixed",
       "note": "Уточнено presente de indicativo; подсказка сохранена в обязательных конечных скобках.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "faltar требует falta по información."
+      }
     },
     {
       "id": "q039_b3_06",
       "decision": "fixed",
       "note": "Уточнено presente de indicativo; подсказка сохранена в обязательных конечных скобках.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "faltar требует faltan по dos llaves."
+      }
     },
     {
       "id": "q039_b3_07",
@@ -253,13 +295,25 @@
       "id": "q039_b4_05",
       "decision": "fixed",
       "note": "Уточнено presente de indicativo; подсказка сохранена в обязательных конечных скобках.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "quedar требует queda по café."
+      }
     },
     {
       "id": "q039_b4_06",
       "decision": "fixed",
       "note": "Уточнено presente de indicativo; подсказка сохранена в обязательных конечных скобках.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "quedar требует quedan по diez minutos."
+      }
     },
     {
       "id": "q039_b4_07",
@@ -325,13 +379,25 @@
       "id": "q039_b5_05",
       "decision": "ok",
       "note": "A vosotros требует os.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "vosotros требует объектного os, ключ не написан."
+      }
     },
     {
       "id": "q039_b5_06",
       "decision": "ok",
       "note": "Им соответствует les.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Русское им задаёт адресата Les, готовая испанская форма не дана."
+      }
     },
     {
       "id": "q039_b5_07",
@@ -355,7 +421,13 @@
       "id": "q039_b5_10",
       "decision": "ok",
       "note": "Tú адресат te.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "tú требует объектного Te среди вариантов."
+      }
     },
     {
       "id": "q039_b5_11",
@@ -391,19 +463,37 @@
       "id": "q039_b6_05",
       "decision": "fixed",
       "note": "Уточнено presente de indicativo; подсказка сохранена в обязательных конечных скобках.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "doler требует duele по idea; другая форма duelen в контексте не совпадает с ключом."
+      }
     },
     {
       "id": "q039_b6_06",
       "decision": "fixed",
       "note": "Уточнено presente de indicativo; подсказка сохранена в обязательных конечных скобках.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "quedar требует queda по energía."
+      }
     },
     {
       "id": "q039_b6_07",
       "decision": "ok",
       "note": "Me quedan dos horas — остаток.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Запас времени уточняет смысл quedar, нужную форму quedan нужно согласовать."
+      }
     },
     {
       "id": "q039_b6_08",

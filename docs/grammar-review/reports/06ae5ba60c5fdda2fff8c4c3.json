@@ -1,11 +1,11 @@
 {
   "version": 1,
   "source": "courses/spanish-grammar/chapters/128.es.grammar.subjunctive_time_purpose_relative.antes_de_que_despues_de_que_subject_change/03-questions.json",
-  "source_sha256": "e1de8d71e3db068772736bb655e7df1d46ffe3346bc0d54c5cb9277ad4f360f1",
+  "source_sha256": "b51902a71e07455ce529726e79a1496a69c64e2eddfe32dfdbc1dd01f2e653f2",
   "context_sha256": "d26a2891b17e4d6efaf34e179a01be32d7844bb3159472f43341272aab8eb30b",
   "editor": "Codex editor 2026-09-06",
   "verifier": "Anton Filatov (user)",
-  "phase": "done",
+  "phase": "awaiting_verification",
   "reviewed_at": "2026-09-05T23:20:21.604201Z",
   "verified_at": "2026-09-06T17:58:18.569986Z",
   "questions": [
@@ -43,7 +43,13 @@
       "id": "q6",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Смысловые пометы и исходные глаголы в скобках прочитаны; готовый ответ не продиктован."
+      }
     },
     {
       "id": "q7",
@@ -85,13 +91,25 @@
       "id": "q13",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Прочитаны все поля, включая банк слов и подсказки. Скобки задают смысл, лицо и время без готовой целевой формы."
+      }
     },
     {
       "id": "q14",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Прочитаны все поля, включая банк слов и подсказки. Скобки задают смысл, лицо и время без готовой целевой формы."
+      }
     },
     {
       "id": "q15",
@@ -115,7 +133,13 @@
       "id": "q18",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Прочитаны все поля, включая банк слов и подсказки. Скобки задают смысл, лицо и время без готовой целевой формы."
+      }
     },
     {
       "id": "q19",
@@ -157,13 +181,25 @@
       "id": "q25",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: correct_answer. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Прочитаны все поля, включая банк слов и подсказки. Скобки задают смысл, лицо и время без готовой целевой формы."
+      }
     },
     {
       "id": "q26",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Прочитаны все поля, включая банк слов и подсказки. Скобки задают смысл, лицо и время без готовой целевой формы."
+      }
     },
     {
       "id": "q27",
@@ -173,9 +209,18 @@
     },
     {
       "id": "q28",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "При чтении найден грамматически допустимый отвлекающий вариант después que; заменён на однозначно неверный futuro в ожидаемом временном придаточном. Для единственности ключа также устранён спорный инфинитивный вариант, где он был.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "fixed",
+        "note": "При чтении найден грамматически допустимый отвлекающий вариант después que; заменён на однозначно неверный futuro в ожидаемом временном придаточном. Для единственности ключа также устранён спорный инфинитивный вариант, где он был.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q29",
@@ -187,7 +232,13 @@
       "id": "q30",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: explanation, prompt. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Прочитаны все поля, включая банк слов и подсказки. Скобки задают смысл, лицо и время без готовой целевой формы."
+      }
     },
     {
       "id": "q31",
@@ -235,7 +286,13 @@
       "id": "q38",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Прочитаны все поля, включая банк слов и подсказки. Скобки задают смысл, лицо и время без готовой целевой формы."
+      }
     },
     {
       "id": "q39",
@@ -257,15 +314,33 @@
     },
     {
       "id": "q42",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Координатор: исходный distractor с инфинитивом и выраженным субъектом не следует отвергать общим правилом разных субъектов. Заменён на однозначно неверную конструкцию с личной формой без que; объяснение сужено до используемой конструкции. RAE/ASALE El buen uso del español, раздел о субъекте инфинитива (https://buenidioma.com/wp-content/uploads/2024/04/El-buen-uso-del-espanol-RAE-y-ASALE.pdf).",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "Координатор: исходный distractor с инфинитивом и выраженным субъектом не следует отвергать общим правилом разных субъектов. Заменён на однозначно неверную конструкцию с личной формой без que; объяснение сужено до используемой конструкции. RAE/ASALE El buen uso del español, раздел о субъекте инфинитива (https://buenidioma.com/wp-content/uploads/2024/04/El-buen-uso-del-espanol-RAE-y-ASALE.pdf).",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q43",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Независимая проверка: lo — прямое дополнение, а не возвратное местоимение; исправлена ложная грамматическая помета.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "Независимая проверка: lo — прямое дополнение, а не возвратное местоимение; исправлена ложная грамматическая помета.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q44",
@@ -301,7 +376,13 @@
       "id": "q49",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Прочитаны все поля, включая банк слов и подсказки. Скобки задают смысл, лицо и время без готовой целевой формы."
+      }
     },
     {
       "id": "q50",
@@ -319,7 +400,13 @@
       "id": "q52",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Прочитаны все поля, включая банк слов и подсказки. Скобки задают смысл, лицо и время без готовой целевой формы."
+      }
     },
     {
       "id": "q53",
@@ -379,7 +466,13 @@
       "id": "q62",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Прочитаны все поля, включая банк слов и подсказки. Скобки задают смысл, лицо и время без готовой целевой формы."
+      }
     },
     {
       "id": "q63",
@@ -409,7 +502,13 @@
       "id": "q67",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Прочитаны все поля, включая банк слов и подсказки. Скобки задают смысл, лицо и время без готовой целевой формы."
+      }
     },
     {
       "id": "q68",
@@ -447,7 +546,32 @@
       "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
       "result": "pass",
       "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    },
+    {
+      "command": "python3 logs/complaints/parenthetical-audit-20261104/worker-2-validate.py",
+      "result": "pass",
+      "evidence": "Parentheses audit 2026-11-04, worker-2: exact identity/order/type/difficulty/theory bindings, unmodified objects and prior report decisions preserved against assigned baseline; logs/complaints/parenthetical-audit-20261104/worker-2-evidence/preservation-and-validators.json. Narrow audit only, not renewed whole-file editorial verification."
+    },
+    {
+      "command": "python3 logs/complaints/parenthetical-audit-20261104/worker-2-validate.py [assigned courses/spanish-grammar/chapters/128.es.grammar.subjunctive_time_purpose_relative.antes_de_que_despues_de_que_subject_change/03-questions.json]",
+      "result": "pass",
+      "evidence": "Stock chapter validator logic on baseline and final, with output artifact redirected to worker-2 evidence: 0 errors, 0 warnings, 0 suggestions in both. Source questions equal final question bank; final and embedded byte-identical. logs/complaints/parenthetical-audit-20261104/worker-2-evidence/preservation-and-validators.json"
     }
   ],
-  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось. Изменение q28 2026-11-04: проверка подсказок в скобках, независимая проверка ожидается. Изменение q42 2026-11-04: проверка подсказок в скобках, независимая проверка ожидается.",
+  "parentheses_audit_verification": {
+    "verifier": "parentheses_3",
+    "verified_at": "2026-11-04T09:44:02.337656+00:00",
+    "verification": "ok",
+    "scope": "narrow_parentheses_audit_changed_questions",
+    "question_ids": [
+      "q28",
+      "q42",
+      "q43"
+    ],
+    "evidence": [
+      "docs/grammar-review/batches/2026-11-04-parenthetical-hints/independent-worker-2.json"
+    ],
+    "note": "Независимо прочитаны все вопросы изменённого источника; подтверждены изменённые вопросы узкого аудита. Advisory вне selected не сертифицированы. Фазы общего обзора и source/context hashes не изменялись."
+  }
 }

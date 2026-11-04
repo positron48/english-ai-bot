@@ -37,13 +37,25 @@
       "id": "q061_b1_05",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "ir — лемма, ella требует самостоятельно выбрать va."
+      }
     },
     {
       "id": "q061_b1_06",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "ir — лемма, vosotros требует выбрать vais."
+      }
     },
     {
       "id": "q061_b1_07",
@@ -97,13 +109,25 @@
       "id": "q061_b2_05",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "ir не раскрывает vamos; утечки ключа в скобках нет, остальная неоднозначность вне узкого прохода."
+      }
     },
     {
       "id": "q061_b2_06",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "ir — инфинитив, voy нужно образовать для yo."
+      }
     },
     {
       "id": "q061_b2_07",
@@ -157,7 +181,13 @@
       "id": "q061_b3_05",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Русский смысл «сейчас» снимает лексическую неопределённость, Ahora не дано."
+      }
     },
     {
       "id": "q061_b3_06",
@@ -217,13 +247,25 @@
       "id": "q061_b4_05",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "negación задаёт функцию пропуска, не готовый испанский отрицатель."
+      }
     },
     {
       "id": "q061_b4_06",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "ir не сообщает Vas; утечки ключа нет, лицо вне узкого прохода."
+      }
     },
     {
       "id": "q061_b4_07",
@@ -277,13 +319,25 @@
       "id": "q061_b5_05",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Русское «это» и мужской род задают референт, lo нужно выбрать."
+      }
     },
     {
       "id": "q061_b5_06",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Русское «тебе» задаёт адресата, te нужно выбрать самостоятельно."
+      }
     },
     {
       "id": "q061_b5_07",
@@ -337,7 +391,13 @@
       "id": "q061_b6_05",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "ir — исходный инфинитив, voy не показано."
+      }
     },
     {
       "id": "q061_b6_06",
@@ -349,7 +409,13 @@
       "id": "q061_b6_07",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "ir, yo и presente задают спряжение, не готовую форму."
+      }
     },
     {
       "id": "q061_b6_08",

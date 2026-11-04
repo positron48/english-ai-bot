@@ -1,37 +1,73 @@
 {
   "version": 1,
   "source": "courses/english-grammar/training_pack/chapters/098/en.04.b4_theory_be_tense_agreement.questions.json",
-  "source_sha256": "0b438476e843dacecee6bb3d09701326b51ac15984faf6a5cf9306a6b2f32fc0",
+  "source_sha256": "38354cc2cc4f3914b221427e7cd166ed6ba6515e75631fc9dac27bd41a30089e",
   "context_sha256": "2f19edca416e53fe67919c1716033cee7f6f20d7ebb6fc5fd19e52cc929da157",
   "editor": "Codex editor 2026-09-05",
   "verifier": "Anton Filatov (user)",
-  "phase": "done",
+  "phase": "awaiting_verification",
   "reviewed_at": "2026-09-05T20:10:21.543496Z",
   "verified_at": "2026-09-06T17:58:18.569986Z",
   "questions": [
     {
       "id": "q1",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Сопутствующий явный дефект: английскую форму be предлагалось вставлять в русское или незавершённое предложение. Добавлен полный английский пассивный контекст; ключ, время, число и варианты сохранены.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "fixed",
+        "note": "Сопутствующий явный дефект: английскую форму be предлагалось вставлять в русское или незавершённое предложение. Добавлен полный английский пассивный контекст; ключ, время, число и варианты сохранены.",
+        "verifier": "parentheses_2",
+        "verified_at": "2026-11-04T09:40:29.033435+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q2",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Сопутствующий явный дефект: английскую форму be предлагалось вставлять в русское или незавершённое предложение. Добавлен полный английский пассивный контекст; ключ, время, число и варианты сохранены.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "fixed",
+        "note": "Сопутствующий явный дефект: английскую форму be предлагалось вставлять в русское или незавершённое предложение. Добавлен полный английский пассивный контекст; ключ, время, число и варианты сохранены.",
+        "verifier": "parentheses_2",
+        "verified_at": "2026-11-04T09:40:29.033435+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q3",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Сопутствующий явный дефект: английскую форму be предлагалось вставлять в русское или незавершённое предложение. Добавлен полный английский пассивный контекст; ключ, время, число и варианты сохранены.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "fixed",
+        "note": "Сопутствующий явный дефект: английскую форму be предлагалось вставлять в русское или незавершённое предложение. Добавлен полный английский пассивный контекст; ключ, время, число и варианты сохранены.",
+        "verifier": "parentheses_2",
+        "verified_at": "2026-11-04T09:40:29.033435+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q4",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Сопутствующий явный дефект: английскую форму be предлагалось вставлять в русское или незавершённое предложение. Добавлен полный английский пассивный контекст; ключ, время, число и варианты сохранены.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "fixed",
+        "note": "Сопутствующий явный дефект: английскую форму be предлагалось вставлять в русское или незавершённое предложение. Добавлен полный английский пассивный контекст; ключ, время, число и варианты сохранены.",
+        "verifier": "parentheses_2",
+        "verified_at": "2026-11-04T09:40:29.033435+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q5",
@@ -43,7 +79,13 @@
       "id": "q6",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Грамматическое ограничение в скобках снимает неоднозначность; нужную форму/конструкцию всё равно требуется построить."
+      }
     },
     {
       "id": "q7",
@@ -53,9 +95,18 @@
     },
     {
       "id": "q8",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Сопутствующий явный дефект: английскую форму be предлагалось вставлять в русское или незавершённое предложение. Добавлен полный английский пассивный контекст; ключ, время, число и варианты сохранены.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "fixed",
+        "note": "Сопутствующий явный дефект: английскую форму be предлагалось вставлять в русское или незавершённое предложение. Добавлен полный английский пассивный контекст; ключ, время, число и варианты сохранены.",
+        "verifier": "parentheses_2",
+        "verified_at": "2026-11-04T09:40:29.033435+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q9",
@@ -65,9 +116,18 @@
     },
     {
       "id": "q10",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Сопутствующий явный дефект: английскую форму be предлагалось вставлять в русское или незавершённое предложение. Добавлен полный английский пассивный контекст; ключ, время, число и варианты сохранены.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "fixed",
+        "note": "Сопутствующий явный дефект: английскую форму be предлагалось вставлять в русское или незавершённое предложение. Добавлен полный английский пассивный контекст; ключ, время, число и варианты сохранены.",
+        "verifier": "parentheses_2",
+        "verified_at": "2026-11-04T09:40:29.033435+00:00",
+        "verification": "ok"
+      }
     }
   ],
   "checks": [
@@ -75,7 +135,31 @@
       "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
       "result": "pass",
       "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    },
+    {
+      "command": "python3 logs/complaints/parenthetical-audit-20261104/worker-3-validate.py",
+      "result": "pass",
+      "evidence": "1549 selected decisions complete; 5921 objects compared with baseline, 5836 untouched; IDs/order/type/difficulty/theory/choice IDs preserved; source/final/embedded and signatures checked. Evidence: logs/complaints/parenthetical-audit-20261104/worker-3-validation.json."
     }
   ],
-  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+  "verification_note": "Parenthetical-hints audit 2026-11-04: changed questions await independent verification; prior unrelated decisions retained.",
+  "parentheses_audit_verification": {
+    "verifier": "parentheses_2",
+    "verified_at": "2026-11-04T09:40:29.033435+00:00",
+    "verification": "ok",
+    "scope": "narrow_parentheses_audit_changed_questions",
+    "question_ids": [
+      "q1",
+      "q2",
+      "q3",
+      "q4",
+      "q8",
+      "q10"
+    ],
+    "evidence": [
+      "docs/grammar-review/batches/2026-11-04-parenthetical-hints/independent-worker-3.json",
+      "docs/grammar-review/batches/2026-11-04-parenthetical-hints/independent-worker-3-extension.json"
+    ],
+    "note": "Независимая проверка изменённых вопросов узкого аудита подсказок; out_of_scope не сертифицированы. Фазы общего обзора и source/context hashes не изменялись."
+  }
 }

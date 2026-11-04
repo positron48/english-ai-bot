@@ -31,7 +31,13 @@
       "id": "q4",
       "decision": "fixed",
       "note": "Уточнены время и конкретный глагол; исправлено смешение действия/состояния, вспомогательного do и формы read.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают владельца/русское значение либо исходную лексику действия; английская грамматическая форма не сообщается."
+      }
     },
     {
       "id": "q5",
@@ -61,7 +67,13 @@
       "id": "q9",
       "decision": "fixed",
       "note": "Уточнены время и конкретный глагол; исправлено смешение действия/состояния, вспомогательного do и формы read.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают владельца/русское значение либо исходную лексику действия; английская грамматическая форма не сообщается."
+      }
     },
     {
       "id": "q10",
@@ -91,7 +103,13 @@
       "id": "q14",
       "decision": "fixed",
       "note": "Уточнены время и конкретный глагол; исправлено смешение действия/состояния, вспомогательного do и формы read.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают владельца/русское значение либо исходную лексику действия; английская грамматическая форма не сообщается."
+      }
     },
     {
       "id": "q15",
@@ -109,7 +127,13 @@
       "id": "q18",
       "decision": "fixed",
       "note": "Уточнены время и конкретный глагол; исправлено смешение действия/состояния, вспомогательного do и формы read.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают владельца/русское значение либо исходную лексику действия; английская грамматическая форма не сообщается."
+      }
     },
     {
       "id": "q19",
@@ -127,7 +151,13 @@
       "id": "q21",
       "decision": "fixed",
       "note": "Уточнены время и конкретный глагол; исправлено смешение действия/состояния, вспомогательного do и формы read.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают владельца/русское значение либо исходную лексику действия; английская грамматическая форма не сообщается."
+      }
     },
     {
       "id": "q22",
@@ -151,13 +181,25 @@
       "id": "q26",
       "decision": "fixed",
       "note": "Уточнён Present Simple и конкретное правило; исправлены чрезмерные обобщения о написании и будущем времени.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают владельца/русское значение либо исходную лексику действия; английская грамматическая форма не сообщается."
+      }
     },
     {
       "id": "q27",
       "decision": "fixed",
       "note": "Уточнён Present Simple и конкретное правило; исправлены чрезмерные обобщения о написании и будущем времени.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают владельца/русское значение либо исходную лексику действия; английская грамматическая форма не сообщается."
+      }
     },
     {
       "id": "q28",
@@ -169,7 +211,13 @@
       "id": "q31",
       "decision": "fixed",
       "note": "Уточнён Present Simple и конкретное правило; исправлены чрезмерные обобщения о написании и будущем времени.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают владельца/русское значение либо исходную лексику действия; английская грамматическая форма не сообщается."
+      }
     },
     {
       "id": "q32",
@@ -181,7 +229,13 @@
       "id": "q34",
       "decision": "fixed",
       "note": "Уточнён Present Simple и конкретное правило; исправлены чрезмерные обобщения о написании и будущем времени.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Дана исходная лексема/русский перевод или форма для преобразования; требуется выбрать окончание Present Simple по подлежащему, готовой формы нет."
+      }
     },
     {
       "id": "q35",
@@ -199,13 +253,25 @@
       "id": "q38",
       "decision": "fixed",
       "note": "Уточнён Present Simple и конкретное правило; исправлены чрезмерные обобщения о написании и будущем времени.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Дана исходная лексема/русский перевод или форма для преобразования; требуется выбрать окончание Present Simple по подлежащему, готовой формы нет."
+      }
     },
     {
       "id": "q40",
       "decision": "fixed",
       "note": "Уточнён Present Simple и конкретное правило; исправлены чрезмерные обобщения о написании и будущем времени.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Дана исходная лексема/русский перевод или форма для преобразования; требуется выбрать окончание Present Simple по подлежащему, готовой формы нет."
+      }
     },
     {
       "id": "q41",
@@ -217,7 +283,13 @@
       "id": "q42",
       "decision": "fixed",
       "note": "Уточнён Present Simple и конкретное правило; исправлены чрезмерные обобщения о написании и будущем времени.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Дана исходная лексема/русский перевод или форма для преобразования; требуется выбрать окончание Present Simple по подлежащему, готовой формы нет."
+      }
     },
     {
       "id": "q43",
@@ -235,7 +307,13 @@
       "id": "q45",
       "decision": "fixed",
       "note": "Уточнён Present Simple и конкретное правило; исправлены чрезмерные обобщения о написании и будущем времени.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Дана исходная лексема/русский перевод или форма для преобразования; требуется выбрать окончание Present Simple по подлежащему, готовой формы нет."
+      }
     },
     {
       "id": "q46",
@@ -253,7 +331,13 @@
       "id": "q48",
       "decision": "fixed",
       "note": "Исправлены несоответствующий feedback, абсолютные правила или неоднозначная форма без заданного времени.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Дана исходная лексема/русский перевод или форма для преобразования; требуется выбрать окончание Present Simple по подлежащему, готовой формы нет."
+      }
     },
     {
       "id": "q49",
@@ -265,13 +349,25 @@
       "id": "q50",
       "decision": "fixed",
       "note": "Исправлены несоответствующий feedback, абсолютные правила или неоднозначная форма без заданного времени.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Дана исходная лексема/русский перевод или форма для преобразования; требуется выбрать окончание Present Simple по подлежащему, готовой формы нет."
+      }
     },
     {
       "id": "q51",
       "decision": "fixed",
       "note": "Исправлены несоответствующий feedback, абсолютные правила или неоднозначная форма без заданного времени.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Дана исходная лексема/русский перевод или форма для преобразования; требуется выбрать окончание Present Simple по подлежащему, готовой формы нет."
+      }
     },
     {
       "id": "q52",
@@ -289,7 +385,13 @@
       "id": "q54",
       "decision": "fixed",
       "note": "Исправлены несоответствующий feedback, абсолютные правила или неоднозначная форма без заданного времени.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Дана исходная лексема/русский перевод или форма для преобразования; требуется выбрать окончание Present Simple по подлежащему, готовой формы нет."
+      }
     },
     {
       "id": "q55",
@@ -313,7 +415,13 @@
       "id": "q60",
       "decision": "fixed",
       "note": "Исправлены несоответствующий feedback, абсолютные правила или неоднозначная форма без заданного времени.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Дана исходная лексема/русский перевод или форма для преобразования; требуется выбрать окончание Present Simple по подлежащему, готовой формы нет."
+      }
     },
     {
       "id": "q62",
@@ -392,6 +500,11 @@
       "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
       "result": "pass",
       "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    },
+    {
+      "command": "python3 logs/complaints/parenthetical-audit-20261104/worker-2-validate.py",
+      "result": "pass",
+      "evidence": "Parentheses audit 2026-11-04, worker-2: exact identity/order/type/difficulty/theory bindings, unmodified objects and prior report decisions preserved against assigned baseline; logs/complaints/parenthetical-audit-20261104/worker-2-evidence/preservation-and-validators.json. Narrow audit only, not renewed whole-file editorial verification."
     }
   ],
   "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."

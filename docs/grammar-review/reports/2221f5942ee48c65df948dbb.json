@@ -25,7 +25,13 @@
       "id": "q3",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Русский смысл степени/направления либо класс предлога не сообщает английский ключ; требуется подобрать целевое слово."
+      }
     },
     {
       "id": "q4",
@@ -49,7 +55,13 @@
       "id": "q7",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Русский смысл степени/направления либо класс предлога не сообщает английский ключ; требуется подобрать целевое слово."
+      }
     },
     {
       "id": "q8",
@@ -67,7 +79,13 @@
       "id": "q10",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Русский смысл степени/направления либо класс предлога не сообщает английский ключ; требуется подобрать целевое слово."
+      }
     },
     {
       "id": "q11",
@@ -97,7 +115,13 @@
       "id": "q15",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Русский смысл степени/направления либо класс предлога не сообщает английский ключ; требуется подобрать целевое слово."
+      }
     },
     {
       "id": "q16",
@@ -121,7 +145,13 @@
       "id": "q19",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Русский смысл степени/направления либо класс предлога не сообщает английский ключ; требуется подобрать целевое слово."
+      }
     },
     {
       "id": "q20",
@@ -157,7 +187,13 @@
       "id": "q26",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Русский смысл степени/направления либо класс предлога не сообщает английский ключ; требуется подобрать целевое слово."
+      }
     },
     {
       "id": "q27",
@@ -181,7 +217,13 @@
       "id": "q30",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Русский смысл степени/направления либо класс предлога не сообщает английский ключ; требуется подобрать целевое слово."
+      }
     },
     {
       "id": "q31",
@@ -205,7 +247,13 @@
       "id": "q34",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Русский смысл степени/направления либо класс предлога не сообщает английский ключ; требуется подобрать целевое слово."
+      }
     },
     {
       "id": "q35",
@@ -229,7 +277,13 @@
       "id": "q38",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Русский смысл степени/направления либо класс предлога не сообщает английский ключ; требуется подобрать целевое слово."
+      }
     },
     {
       "id": "q39",
@@ -253,7 +307,13 @@
       "id": "q42",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Русский смысл степени/направления либо класс предлога не сообщает английский ключ; требуется подобрать целевое слово."
+      }
     },
     {
       "id": "q43",
@@ -277,7 +337,13 @@
       "id": "q46",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Русский смысл степени/направления либо класс предлога не сообщает английский ключ; требуется подобрать целевое слово."
+      }
     },
     {
       "id": "q47",
@@ -301,7 +367,13 @@
       "id": "q50",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Русский смысл степени/направления либо класс предлога не сообщает английский ключ; требуется подобрать целевое слово."
+      }
     },
     {
       "id": "q51",
@@ -325,7 +397,13 @@
       "id": "q54",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Русский смысл степени/направления либо класс предлога не сообщает английский ключ; требуется подобрать целевое слово."
+      }
     },
     {
       "id": "q55",
@@ -349,7 +427,13 @@
       "id": "q58",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Русский смысл степени/направления либо класс предлога не сообщает английский ключ; требуется подобрать целевое слово."
+      }
     },
     {
       "id": "q59",
@@ -373,7 +457,13 @@
       "id": "q62",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Русский смысл степени/направления либо класс предлога не сообщает английский ключ; требуется подобрать целевое слово."
+      }
     },
     {
       "id": "q63",
@@ -397,7 +487,13 @@
       "id": "q66",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Русский смысл степени/направления либо класс предлога не сообщает английский ключ; требуется подобрать целевое слово."
+      }
     },
     {
       "id": "q67",
@@ -421,7 +517,13 @@
       "id": "q70",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Подсказка называет исходный глагол/прилагательное или класс движения; зависимый предлог не дан и его нужно знать."
+      }
     },
     {
       "id": "q71",
@@ -441,6 +543,11 @@
       "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
       "result": "pass",
       "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    },
+    {
+      "command": "python3 logs/complaints/parenthetical-audit-20261104/worker-2-validate.py",
+      "result": "pass",
+      "evidence": "Parentheses audit 2026-11-04, worker-2: exact identity/order/type/difficulty/theory bindings, unmodified objects and prior report decisions preserved against assigned baseline; logs/complaints/parenthetical-audit-20261104/worker-2-evidence/preservation-and-validators.json. Narrow audit only, not renewed whole-file editorial verification."
     }
   ],
   "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."

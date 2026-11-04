@@ -19,7 +19,13 @@
       "id": "q2",
       "decision": "fixed",
       "note": "Уточнены время, порядок обычного вопроса и значения some/any; допустимые альтернативы не объявлены ошибками.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "be требует согласовать are с books."
+      }
     },
     {
       "id": "q3",
@@ -43,7 +49,13 @@
       "id": "q7",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "some/any — два конкурирующих варианта; выбор по утверждению сохраняется."
+      }
     },
     {
       "id": "q8",
@@ -61,7 +73,13 @@
       "id": "q10",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "some/any — два конкурирующих варианта; требуется выбрать по контексту."
+      }
     },
     {
       "id": "q12",
@@ -79,7 +97,13 @@
       "id": "q14",
       "decision": "fixed",
       "note": "Уточнены время, порядок обычного вопроса и значения some/any; допустимые альтернативы не объявлены ошибками.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "be требует is с неисчисляемым information."
+      }
     },
     {
       "id": "q15",
@@ -97,7 +121,13 @@
       "id": "q17",
       "decision": "fixed",
       "note": "Уточнены время, порядок обычного вопроса и значения some/any; допустимые альтернативы не объявлены ошибками.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "be требует вопросительное Are с books."
+      }
     },
     {
       "id": "q18",
@@ -121,7 +151,13 @@
       "id": "q22",
       "decision": "fixed",
       "note": "Уточнены время, порядок обычного вопроса и значения some/any; допустимые альтернативы не объявлены ошибками.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "be требует вопросительное Are с pens."
+      }
     },
     {
       "id": "q23",
@@ -139,7 +175,13 @@
       "id": "q25",
       "decision": "fixed",
       "note": "Исправлены противоречащие ключу объяснения, допустимые some-вопросы, область отрицания и неоднозначная форма be.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Выбор some/any определяется нейтральным вопросом; ответ не сообщён."
+      }
     },
     {
       "id": "q26",
@@ -163,7 +205,13 @@
       "id": "q29",
       "decision": "fixed",
       "note": "Исправлены противоречащие ключу объяснения, допустимые some-вопросы, область отрицания и неоднозначная форма be.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "be требует Is с money."
+      }
     },
     {
       "id": "q30",
@@ -175,7 +223,13 @@
       "id": "q31",
       "decision": "fixed",
       "note": "Исправлены противоречащие ключу объяснения, допустимые some-вопросы, область отрицания и неоднозначная форма be.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "be требует is с water."
+      }
     },
     {
       "id": "q32",
@@ -211,7 +265,13 @@
       "id": "q41",
       "decision": "fixed",
       "note": "Исправлены противоречащие ключу объяснения, допустимые some-вопросы, область отрицания и неоднозначная форма be.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "be требует is с information."
+      }
     },
     {
       "id": "q42",
@@ -229,7 +289,13 @@
       "id": "q44",
       "decision": "fixed",
       "note": "Исправлены противоречащие ключу объяснения, допустимые some-вопросы, область отрицания и неоднозначная форма be.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "be и отрицание требуют самостоятельно образовать aren't."
+      }
     },
     {
       "id": "q45",
@@ -271,7 +337,13 @@
       "id": "q56",
       "decision": "fixed",
       "note": "Сняты ложные запреты any/a coffee и несколько верных ответов; добавлен смысл просьбы/угощения, исправлено объяснение false.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Два варианта some/any; сценарий просьбы снимает неоднозначность, не даёт слово."
+      }
     },
     {
       "id": "q57",
@@ -301,13 +373,25 @@
       "id": "q61",
       "decision": "fixed",
       "note": "Сняты ложные запреты any/a coffee и несколько верных ответов; добавлен смысл просьбы/угощения, исправлено объяснение false.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Предложение угощения задаёт выбор some/any по функции высказывания."
+      }
     },
     {
       "id": "q62",
       "decision": "fixed",
       "note": "Сняты ложные запреты any/a coffee и несколько верных ответов; добавлен смысл просьбы/угощения, исправлено объяснение false.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Примеры вопросительных рамок не раскрывают оценку перепутанного правила."
+      }
     },
     {
       "id": "q63",

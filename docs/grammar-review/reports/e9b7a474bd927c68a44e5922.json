@@ -13,43 +13,85 @@
       "id": "q1",
       "decision": "fixed",
       "note": "Исправлено согласование и явно задано начало слова.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Условие, варианты/пары, ключ и объяснение прочитаны. Оставлены смысловые и грамматические параметры, не содержащие готовой формы ответа."
+      }
     },
     {
       "id": "q2",
       "decision": "fixed",
       "note": "Исправлено согласование «Какой из слов» и задана позиция.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Условие, варианты/пары, ключ и объяснение прочитаны. Оставлены смысловые и грамматические параметры, не содержащие готовой формы ответа."
+      }
     },
     {
       "id": "q4",
       "decision": "fixed",
       "note": "Исходное casa также содержит [sa]; вопрос ограничен начальной согласной.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Проверены задания на звук и артикли: скобки содержат произношение, русский смысл или род/число, а испанский ответ нужно определить самостоятельно."
+      }
     },
     {
       "id": "q8",
       "decision": "fixed",
       "note": "Исправлено «с звуком» и уточнено начало слова.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Проверены задания на звук и артикли: скобки содержат произношение, русский смысл или род/число, а испанский ответ нужно определить самостоятельно."
+      }
     },
     {
       "id": "q11",
       "decision": "fixed",
       "note": "Уточнено начало слова, убран дословный повтор инструкции соседнего вопроса.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Проверены задания на звук и артикли: скобки содержат произношение, русский смысл или род/число, а испанский ответ нужно определить самостоятельно."
+      }
     },
     {
       "id": "q15",
       "decision": "fixed",
       "note": "Исправлено «с звуком» и уточнено начало слова.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Проверены задания на звук и артикли: скобки содержат произношение, русский смысл или род/число, а испанский ответ нужно определить самостоятельно."
+      }
     },
     {
       "id": "q16",
       "decision": "fixed",
       "note": "Устранён второй ответ casa с конечным [sa]; явно задана начальная согласная.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Проверены задания на звук и артикли: скобки содержат произношение, русский смысл или род/число, а испанский ответ нужно определить самостоятельно."
+      }
     }
   ],
   "checks": [
@@ -82,6 +124,11 @@
       "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
       "result": "pass",
       "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    },
+    {
+      "command": "python3 logs/complaints/parenthetical-audit-20261104/worker-2-validate.py",
+      "result": "pass",
+      "evidence": "Parentheses audit 2026-11-04, worker-2: exact identity/order/type/difficulty/theory bindings, unmodified objects and prior report decisions preserved against assigned baseline; logs/complaints/parenthetical-audit-20261104/worker-2-evidence/preservation-and-validators.json. Narrow audit only, not renewed whole-file editorial verification."
     }
   ],
   "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."

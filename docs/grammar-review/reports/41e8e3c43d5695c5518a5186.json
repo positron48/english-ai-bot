@@ -43,13 +43,25 @@
       "id": "q038_b1_06",
       "decision": "ok",
       "note": "Yo как получатель даёт me.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Подсказка даёт лемму, лицо адресата или существительное-подлежащее gustar; требуемая личная форма/клитика не сообщается."
+      }
     },
     {
       "id": "q038_b1_07",
       "decision": "fixed",
       "note": "Убрана подсказка числа; указано время.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Подсказка даёт лемму, лицо адресата или существительное-подлежащее gustar; требуемая личная форма/клитика не сообщается."
+      }
     },
     {
       "id": "q038_b1_08",
@@ -85,19 +97,37 @@
       "id": "q038_b2_01",
       "decision": "ok",
       "note": "Las manzanas требует gustan.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Подсказка даёт лемму, лицо адресата или существительное-подлежащее gustar; требуемая личная форма/клитика не сообщается."
+      }
     },
     {
       "id": "q038_b2_02",
       "decision": "ok",
       "note": "Este plan требует gusta при nos.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Подсказка даёт лемму, лицо адресата или существительное-подлежащее gustar; требуемая личная форма/клитика не сообщается."
+      }
     },
     {
       "id": "q038_b2_03",
       "decision": "ok",
       "note": "Los documentos требует gustan.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Подсказка даёт лемму, лицо адресата или существительное-подлежащее gustar; требуемая личная форма/клитика не сообщается."
+      }
     },
     {
       "id": "q038_b2_04",
@@ -115,13 +145,25 @@
       "id": "q038_b2_06",
       "decision": "fixed",
       "note": "Убрана подсказка числа, указано время.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Подсказка даёт лемму, лицо адресата или существительное-подлежащее gustar; требуемая личная форма/клитика не сообщается."
+      }
     },
     {
       "id": "q038_b2_07",
       "decision": "fixed",
       "note": "Убрана подсказка числа, указано время.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Подсказка даёт лемму, лицо адресата или существительное-подлежащее gustar; требуемая личная форма/клитика не сообщается."
+      }
     },
     {
       "id": "q038_b2_08",
@@ -157,19 +199,37 @@
       "id": "q038_b3_01",
       "decision": "ok",
       "note": "Vosotros адресат os.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Подсказка даёт лемму, лицо адресата или существительное-подлежащее gustar; требуемая личная форма/клитика не сообщается."
+      }
     },
     {
       "id": "q038_b3_02",
       "decision": "fixed",
       "note": "Убран повтор Le.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Подсказка даёт лемму, лицо адресата или существительное-подлежащее gustar; требуемая личная форма/клитика не сообщается."
+      }
     },
     {
       "id": "q038_b3_03",
       "decision": "ok",
       "note": "Él/ella/usted адресат le.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Подсказка даёт лемму, лицо адресата или существительное-подлежащее gustar; требуемая личная форма/клитика не сообщается."
+      }
     },
     {
       "id": "q038_b3_04",
@@ -187,13 +247,25 @@
       "id": "q038_b3_06",
       "decision": "ok",
       "note": "Ellos/ellas адресат les.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Подсказка даёт лемму, лицо адресата или существительное-подлежащее gustar; требуемая личная форма/клитика не сообщается."
+      }
     },
     {
       "id": "q038_b3_07",
       "decision": "ok",
       "note": "Nosotros адресат nos.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Подсказка даёт лемму, лицо адресата или существительное-подлежащее gustar; требуемая личная форма/клитика не сообщается."
+      }
     },
     {
       "id": "q038_b3_08",
@@ -229,13 +301,25 @@
       "id": "q038_b4_01",
       "decision": "ok",
       "note": "La lluvia требует encanta.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Подсказка даёт лемму, лицо адресата или существительное-подлежащее gustar; требуемая личная форма/клитика не сообщается."
+      }
     },
     {
       "id": "q038_b4_02",
       "decision": "ok",
       "note": "Tus fotos требует encantan.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Подсказка даёт лемму, лицо адресата или существительное-подлежащее gustar; требуемая личная форма/клитика не сообщается."
+      }
     },
     {
       "id": "q038_b4_03",
@@ -247,7 +331,13 @@
       "id": "q038_b4_04",
       "decision": "ok",
       "note": "Las noticias требует interesan.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Подсказка даёт лемму, лицо адресата или существительное-подлежащее gustar; требуемая личная форма/клитика не сообщается."
+      }
     },
     {
       "id": "q038_b4_05",
@@ -265,13 +355,25 @@
       "id": "q038_b4_07",
       "decision": "fixed",
       "note": "Убрана подсказка числа, добавлено время.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Подсказка даёт лемму, лицо адресата или существительное-подлежащее gustar; требуемая личная форма/клитика не сообщается."
+      }
     },
     {
       "id": "q038_b4_08",
       "decision": "fixed",
       "note": "Убрана подсказка числа, добавлено время.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Подсказка даёт лемму, лицо адресата или существительное-подлежащее gustar; требуемая личная форма/клитика не сообщается."
+      }
     },
     {
       "id": "q038_b4_09",
@@ -331,13 +433,25 @@
       "id": "q038_b5_06",
       "decision": "ok",
       "note": "A ellos требует les.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают адресата, лемму/лицо/время, процессуальный смысл либо проверяемый ошибочный пример; готовый ключ не раскрыт."
+      }
     },
     {
       "id": "q038_b5_07",
       "decision": "ok",
       "note": "A ti требует te.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают адресата, лемму/лицо/время, процессуальный смысл либо проверяемый ошибочный пример; готовый ключ не раскрыт."
+      }
     },
     {
       "id": "q038_b5_08",
@@ -361,7 +475,13 @@
       "id": "q038_b5_11",
       "decision": "ok",
       "note": "La montaña допустимо означает горы в общем.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают адресата, лемму/лицо/время, процессуальный смысл либо проверяемый ошибочный пример; готовый ключ не раскрыт."
+      }
     },
     {
       "id": "q038_b5_12",
@@ -403,13 +523,25 @@
       "id": "q038_b6_06",
       "decision": "ok",
       "note": "Los niños как получатели требуют les.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают адресата, лемму/лицо/время, процессуальный смысл либо проверяемый ошибочный пример; готовый ключ не раскрыт."
+      }
     },
     {
       "id": "q038_b6_07",
       "decision": "ok",
       "note": "A los turistas требует les.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают адресата, лемму/лицо/время, процессуальный смысл либо проверяемый ошибочный пример; готовый ключ не раскрыт."
+      }
     },
     {
       "id": "q038_b6_08",
@@ -482,6 +614,11 @@
       "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
       "result": "pass",
       "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    },
+    {
+      "command": "python3 logs/complaints/parenthetical-audit-20261104/worker-2-validate.py",
+      "result": "pass",
+      "evidence": "Parentheses audit 2026-11-04, worker-2: exact identity/order/type/difficulty/theory bindings, unmodified objects and prior report decisions preserved against assigned baseline; logs/complaints/parenthetical-audit-20261104/worker-2-evidence/preservation-and-validators.json. Narrow audit only, not renewed whole-file editorial verification."
     }
   ],
   "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."

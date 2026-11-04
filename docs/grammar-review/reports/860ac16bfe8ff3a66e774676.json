@@ -25,7 +25,13 @@
       "id": "q033_b1_03",
       "decision": "fixed",
       "note": "Уточнены время и лицо, убраны служебные «опорная форма»/«латиницей без ударений»; q033_b2_05 исключает другую допустимую временную форму.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают исходный глагол, лицо/время или обозначают фонетический звук в проверяемом утверждении; ответная форма не дана."
+      }
     },
     {
       "id": "q033_b1_04",
@@ -37,7 +43,13 @@
       "id": "q033_b1_05",
       "decision": "ok",
       "note": "Орфографическое правило c/qu, g/gu или z/c, форма и ключ согласованы; перевод и порядок слов корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают исходный глагол, лицо/время или обозначают фонетический звук в проверяемом утверждении; ответная форма не дана."
+      }
     },
     {
       "id": "q033_b1_06",
@@ -55,7 +67,13 @@
       "id": "q033_b1_09",
       "decision": "fixed",
       "note": "Уточнены время и лицо, убраны служебные «опорная форма»/«латиницей без ударений»; q033_b2_05 исключает другую допустимую временную форму.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают исходный глагол, лицо/время или обозначают фонетический звук в проверяемом утверждении; ответная форма не дана."
+      }
     },
     {
       "id": "q033_b1_10",
@@ -91,7 +109,13 @@
       "id": "q033_b2_03",
       "decision": "fixed",
       "note": "Уточнены время и лицо, убраны служебные «опорная форма»/«латиницей без ударений»; q033_b2_05 исключает другую допустимую временную форму.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают исходный глагол, лицо/время или обозначают фонетический звук в проверяемом утверждении; ответная форма не дана."
+      }
     },
     {
       "id": "q033_b2_04",
@@ -121,7 +145,13 @@
       "id": "q033_b2_09",
       "decision": "fixed",
       "note": "Уточнены время и лицо, убраны служебные «опорная форма»/«латиницей без ударений»; q033_b2_05 исключает другую допустимую временную форму.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают исходный глагол, лицо/время или обозначают фонетический звук в проверяемом утверждении; ответная форма не дана."
+      }
     },
     {
       "id": "q033_b2_10",
@@ -133,7 +163,13 @@
       "id": "q033_b2_11",
       "decision": "ok",
       "note": "Написание форм и единственный ключ корректны; примеры и перевод согласованы.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают исходный глагол, лицо/время или обозначают фонетический звук в проверяемом утверждении; ответная форма не дана."
+      }
     },
     {
       "id": "q033_b2_12",
@@ -157,7 +193,13 @@
       "id": "q033_b3_03",
       "decision": "fixed",
       "note": "Уточнены время/лицо и понятные инструкции; правила немой u и juego/jugué отделены от чередования гласных и объяснены точно.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают исходный глагол, лицо/время или обозначают фонетический звук в проверяемом утверждении; ответная форма не дана."
+      }
     },
     {
       "id": "q033_b3_04",
@@ -181,13 +223,25 @@
       "id": "q033_b3_07",
       "decision": "fixed",
       "note": "Уточнены время/лицо и понятные инструкции; правила немой u и juego/jugué отделены от чередования гласных и объяснены точно.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают исходный глагол, лицо/время или обозначают фонетический звук в проверяемом утверждении; ответная форма не дана."
+      }
     },
     {
       "id": "q033_b3_09",
       "decision": "fixed",
       "note": "Уточнены время/лицо и понятные инструкции; правила немой u и juego/jugué отделены от чередования гласных и объяснены точно.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают исходный глагол, лицо/время или обозначают фонетический звук в проверяемом утверждении; ответная форма не дана."
+      }
     },
     {
       "id": "q033_b3_10",
@@ -223,7 +277,13 @@
       "id": "q033_b4_03",
       "decision": "fixed",
       "note": "Уточнены время/лицо и понятные инструкции; правила немой u и juego/jugué отделены от чередования гласных и объяснены точно.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают исходный глагол, лицо/время или обозначают фонетический звук в проверяемом утверждении; ответная форма не дана."
+      }
     },
     {
       "id": "q033_b4_04",
@@ -253,7 +313,13 @@
       "id": "q033_b4_09",
       "decision": "fixed",
       "note": "Устранены неоднозначные варианты, неверное снятие ударения, неестественное sacar la ventana и недоказанные утверждения о русской привычке; q033_b6_02 теперь проверяет чтение ge с ключом false.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают исходный глагол, лицо/время или обозначают фонетический звук в проверяемом утверждении; ответная форма не дана."
+      }
     },
     {
       "id": "q033_b4_10",
@@ -289,7 +355,13 @@
       "id": "q033_b5_03",
       "decision": "fixed",
       "note": "Устранены неоднозначные варианты, неверное снятие ударения, неестественное sacar la ventana и недоказанные утверждения о русской привычке; q033_b6_02 теперь проверяет чтение ge с ключом false.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают исходный глагол, лицо/время или обозначают фонетический звук в проверяемом утверждении; ответная форма не дана."
+      }
     },
     {
       "id": "q033_b5_04",
@@ -319,7 +391,13 @@
       "id": "q033_b5_09",
       "decision": "fixed",
       "note": "Устранены неоднозначные варианты, неверное снятие ударения, неестественное sacar la ventana и недоказанные утверждения о русской привычке; q033_b6_02 теперь проверяет чтение ge с ключом false.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают исходный глагол, лицо/время или обозначают фонетический звук в проверяемом утверждении; ответная форма не дана."
+      }
     },
     {
       "id": "q033_b5_10",
@@ -349,7 +427,13 @@
       "id": "q033_b6_02",
       "decision": "fixed",
       "note": "Устранены неоднозначные варианты, неверное снятие ударения, неестественное sacar la ventana и недоказанные утверждения о русской привычке; q033_b6_02 теперь проверяет чтение ge с ключом false.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают исходный глагол, лицо/время или обозначают фонетический звук в проверяемом утверждении; ответная форма не дана."
+      }
     },
     {
       "id": "q033_b6_03",
@@ -379,19 +463,37 @@
       "id": "q033_b6_07",
       "decision": "ok",
       "note": "Правило и ключ однозначны; формы и перевод корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают исходный глагол, лицо/время или обозначают фонетический звук в проверяемом утверждении; ответная форма не дана."
+      }
     },
     {
       "id": "q033_b6_09",
       "decision": "fixed",
       "note": "Уточнено, что нужно найти ошибочное написание, а не другую правильную форму; исправлены инструкция и объяснение.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают исходный глагол, лицо/время или обозначают фонетический звук в проверяемом утверждении; ответная форма не дана."
+      }
     },
     {
       "id": "q033_b6_10",
       "decision": "ok",
       "note": "Правило и ключ однозначны; формы и перевод корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают исходный глагол, лицо/время или обозначают фонетический звук в проверяемом утверждении; ответная форма не дана."
+      }
     },
     {
       "id": "q033_b6_11",
@@ -446,6 +548,11 @@
       "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
       "result": "pass",
       "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    },
+    {
+      "command": "python3 logs/complaints/parenthetical-audit-20261104/worker-2-validate.py",
+      "result": "pass",
+      "evidence": "Parentheses audit 2026-11-04, worker-2: exact identity/order/type/difficulty/theory bindings, unmodified objects and prior report decisions preserved against assigned baseline; logs/complaints/parenthetical-audit-20261104/worker-2-evidence/preservation-and-validators.json. Narrow audit only, not renewed whole-file editorial verification."
     }
   ],
   "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."

@@ -43,7 +43,13 @@
       "id": "q7",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках русский смысл, исходный глагол или название грамматической категории; готовая форма не сообщается. Выявленные механические подсказки исправлены отдельно."
+      }
     },
     {
       "id": "q8",
@@ -67,7 +73,13 @@
       "id": "q11",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках русский смысл, исходный глагол или название грамматической категории; готовая форма не сообщается. Выявленные механические подсказки исправлены отдельно."
+      }
     },
     {
       "id": "q12",
@@ -91,7 +103,13 @@
       "id": "q15",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках русский смысл, исходный глагол или название грамматической категории; готовая форма не сообщается. Выявленные механические подсказки исправлены отдельно."
+      }
     },
     {
       "id": "q16",
@@ -115,7 +133,13 @@
       "id": "q19",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках русский смысл, исходный глагол или название грамматической категории; готовая форма не сообщается. Выявленные механические подсказки исправлены отдельно."
+      }
     },
     {
       "id": "q20",
@@ -133,7 +157,13 @@
       "id": "q22",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках русский смысл, исходный глагол или название грамматической категории; готовая форма не сообщается. Выявленные механические подсказки исправлены отдельно."
+      }
     },
     {
       "id": "q23",
@@ -145,7 +175,13 @@
       "id": "q26",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках русский смысл, исходный глагол или название грамматической категории; готовая форма не сообщается. Выявленные механические подсказки исправлены отдельно."
+      }
     },
     {
       "id": "q27",
@@ -169,7 +205,13 @@
       "id": "q30",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках русский смысл, исходный глагол или название грамматической категории; готовая форма не сообщается. Выявленные механические подсказки исправлены отдельно."
+      }
     },
     {
       "id": "q31",
@@ -187,7 +229,13 @@
       "id": "q33",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках русский смысл, исходный глагол или название грамматической категории; готовая форма не сообщается. Выявленные механические подсказки исправлены отдельно."
+      }
     },
     {
       "id": "q34",
@@ -211,7 +259,13 @@
       "id": "q37",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках русский смысл, исходный глагол или название грамматической категории; готовая форма не сообщается. Выявленные механические подсказки исправлены отдельно."
+      }
     },
     {
       "id": "q38",
@@ -253,7 +307,13 @@
       "id": "q45",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках русский смысл, исходный глагол или название грамматической категории; готовая форма не сообщается. Выявленные механические подсказки исправлены отдельно."
+      }
     },
     {
       "id": "q46",
@@ -271,7 +331,13 @@
       "id": "q48",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках русский смысл, исходный глагол или название грамматической категории; готовая форма не сообщается. Выявленные механические подсказки исправлены отдельно."
+      }
     },
     {
       "id": "q49",
@@ -307,13 +373,25 @@
       "id": "q54",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках русский смысл, исходный глагол или название грамматической категории; готовая форма не сообщается. Выявленные механические подсказки исправлены отдельно."
+      }
     },
     {
       "id": "q55",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках русский смысл, исходный глагол или название грамматической категории; готовая форма не сообщается. Выявленные механические подсказки исправлены отдельно."
+      }
     },
     {
       "id": "q56",
@@ -351,6 +429,11 @@
       "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
       "result": "pass",
       "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    },
+    {
+      "command": "python3 logs/complaints/parenthetical-audit-20261104/worker-2-validate.py",
+      "result": "pass",
+      "evidence": "Parentheses audit 2026-11-04, worker-2: exact identity/order/type/difficulty/theory bindings, unmodified objects and prior report decisions preserved against assigned baseline; logs/complaints/parenthetical-audit-20261104/worker-2-evidence/preservation-and-validators.json. Narrow audit only, not renewed whole-file editorial verification."
     }
   ],
   "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."

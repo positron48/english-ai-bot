@@ -1,11 +1,11 @@
 {
   "version": 1,
   "source": "courses/spanish-grammar/training_pack/chapters/049/es.02.b2_theory_regular_ar_endings_indefinido_a2.questions.json",
-  "source_sha256": "957cea277d079cce708c6e8a4e4628ffd2cd94da9e91097d3a59c750391d0b9b",
+  "source_sha256": "5b8443178a819315c1e7e6864c310a4d0785d19338769050e248e4f407a64ce8",
   "context_sha256": "e9eb607ad113344439e94e30bfcf5c7fd847be97c08273c3072d8d1e789efde1",
   "editor": "Codex editor 2026-09-04",
   "verifier": "Anton Filatov (user)",
-  "phase": "done",
+  "phase": "awaiting_verification",
   "reviewed_at": "2026-09-04T19:30:30.296940+00:00",
   "verified_at": "2026-09-06T17:58:18.569986Z",
   "questions": [
@@ -30,26 +30,56 @@
     {
       "id": "q4",
       "decision": "fixed",
-      "note": "Исправлено неточное грамматическое объяснение.",
-      "verification": "ok"
+      "note": "Смежный дефект: без времени подходят estudio, estudiaba и estudié; явно задано pretérito indefinido, инфинитив оставлен как нормальное условие.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "fixed",
+        "note": "Смежный дефект: без времени подходят estudio, estudiaba и estudié; явно задано pretérito indefinido, инфинитив оставлен как нормальное условие.",
+        "verifier": "parentheses_1",
+        "verified_at": "2026-11-04T09:19:42.825635+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q5",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Смежный дефект: варианты содержат полные формы, поэтому вопрос уточнён как выбор формы, а не окончания; названо требуемое время.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "fixed",
+        "note": "Смежный дефект: варианты содержат полные формы, поэтому вопрос уточнён как выбор формы, а не окончания; названо требуемое время.",
+        "verifier": "parentheses_1",
+        "verified_at": "2026-11-04T09:19:42.825635+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q6",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки содержат исходный инфинитив, лицо или смысловой контекст; они не раскрывают готовое спряжение. Русское окончание (а) не является подсказкой."
+      }
     },
     {
       "id": "q7",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки содержат исходный инфинитив, лицо или смысловой контекст; они не раскрывают готовое спряжение. Русское окончание (а) не является подсказкой."
+      }
     },
     {
       "id": "q8",
@@ -61,13 +91,25 @@
       "id": "q9",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки содержат исходный инфинитив, лицо или смысловой контекст; они не раскрывают готовое спряжение. Русское окончание (а) не является подсказкой."
+      }
     },
     {
       "id": "q10",
       "decision": "fixed",
       "note": "Исправлены формулировка, перевод или опечатка без изменения проверяемого навыка.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки содержат исходный инфинитив, лицо или смысловой контекст; они не раскрывают готовое спряжение. Русское окончание (а) не является подсказкой."
+      }
     },
     {
       "id": "q11",
@@ -91,7 +133,13 @@
       "id": "q14",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки содержат исходный инфинитив, лицо или смысловой контекст; они не раскрывают готовое спряжение. Русское окончание (а) не является подсказкой."
+      }
     },
     {
       "id": "q15",
@@ -107,5 +155,38 @@
       "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
     }
   ],
-  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось.",
+  "parentheses_audit_verification": {
+    "scope": "Narrow parenthetical answer-leakage audit and correctness of edits; not completion of the full grammar review campaign.",
+    "editor": "coordinator",
+    "verifier": "parentheses_1",
+    "verified_at": "2026-11-04T09:19:42.825635+00:00",
+    "verification": "ok",
+    "read_question_ids": [
+      "q1",
+      "q2",
+      "q3",
+      "q4",
+      "q5",
+      "q6",
+      "q7",
+      "q8",
+      "q9",
+      "q10",
+      "q11",
+      "q12",
+      "q13",
+      "q14",
+      "q15"
+    ],
+    "accepted_changed_ids": [
+      "q4",
+      "q5"
+    ],
+    "evidence": "logs/complaints/parenthetical-audit-20261104/independent-worker-4.json",
+    "out_of_scope_ids": [
+      "q3"
+    ],
+    "note": "All questions in this changed source were read with context. Pre-existing findings outside selected_ids remain separately recorded in independent evidence; historical full-review metadata and source/context fingerprints are preserved."
+  }
 }

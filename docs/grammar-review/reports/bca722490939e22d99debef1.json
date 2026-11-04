@@ -31,7 +31,13 @@
       "id": "q4",
       "decision": "fixed",
       "note": "Уточнено время и конкретный глагол; исправлены типы предложений, согласование, they и неоднозначные переводы.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Дана исходная лексема/русский перевод или форма для преобразования; требуется выбрать окончание Present Simple по подлежащему, готовой формы нет."
+      }
     },
     {
       "id": "q5",
@@ -55,7 +61,13 @@
       "id": "q9",
       "decision": "fixed",
       "note": "Уточнено время и конкретный глагол; исправлены типы предложений, согласование, they и неоднозначные переводы.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Дана исходная лексема/русский перевод или форма для преобразования; требуется выбрать окончание Present Simple по подлежащему, готовой формы нет."
+      }
     },
     {
       "id": "q10",
@@ -91,25 +103,49 @@
       "id": "q16",
       "decision": "fixed",
       "note": "Уточнено время и конкретный глагол; исправлены типы предложений, согласование, they и неоднозначные переводы.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Дана исходная лексема/русский перевод или форма для преобразования; требуется выбрать окончание Present Simple по подлежащему, готовой формы нет."
+      }
     },
     {
       "id": "q17",
       "decision": "fixed",
       "note": "Уточнено время и конкретный глагол; исправлены типы предложений, согласование, they и неоднозначные переводы.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Дана исходная лексема/русский перевод или форма для преобразования; требуется выбрать окончание Present Simple по подлежащему, готовой формы нет."
+      }
     },
     {
       "id": "q18",
       "decision": "fixed",
       "note": "Уточнено время и конкретный глагол; исправлены типы предложений, согласование, they и неоднозначные переводы.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Дана исходная лексема/русский перевод или форма для преобразования; требуется выбрать окончание Present Simple по подлежащему, готовой формы нет."
+      }
     },
     {
       "id": "q19",
       "decision": "fixed",
       "note": "Уточнено время и конкретный глагол; исправлены типы предложений, согласование, they и неоднозначные переводы.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Дана исходная лексема/русский перевод или форма для преобразования; требуется выбрать окончание Present Simple по подлежащему, готовой формы нет."
+      }
     },
     {
       "id": "q21",
@@ -133,7 +169,13 @@
       "id": "q26",
       "decision": "fixed",
       "note": "Уточнены время, форма и порядок; исправлены неполный Continuous, обязательность дополнения и несколько верных ответов.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Дана исходная лексема/русский перевод или форма для преобразования; требуется выбрать окончание Present Simple по подлежащему, готовой формы нет."
+      }
     },
     {
       "id": "q27",
@@ -157,19 +199,37 @@
       "id": "q30",
       "decision": "fixed",
       "note": "Уточнены время, форма и порядок; исправлены неполный Continuous, обязательность дополнения и несколько верных ответов.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Дана исходная лексема/русский перевод или форма для преобразования; требуется выбрать окончание Present Simple по подлежащему, готовой формы нет."
+      }
     },
     {
       "id": "q31",
       "decision": "fixed",
       "note": "Уточнены время, форма и порядок; исправлены неполный Continuous, обязательность дополнения и несколько верных ответов.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Дана исходная лексема/русский перевод или форма для преобразования; требуется выбрать окончание Present Simple по подлежащему, готовой формы нет."
+      }
     },
     {
       "id": "q32",
       "decision": "fixed",
       "note": "Уточнены время, форма и порядок; исправлены неполный Continuous, обязательность дополнения и несколько верных ответов.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Дана исходная лексема/русский перевод или форма для преобразования; требуется выбрать окончание Present Simple по подлежащему, готовой формы нет."
+      }
     },
     {
       "id": "q34",
@@ -187,7 +247,13 @@
       "id": "q38",
       "decision": "fixed",
       "note": "Уточнены время, форма и порядок; исправлены неполный Continuous, обязательность дополнения и несколько верных ответов.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках русский смысл, категория отрицания либо примеры предмета вопроса. Выбор формы/стиля и согласования остаётся самостоятельным."
+      }
     },
     {
       "id": "q39",
@@ -205,7 +271,13 @@
       "id": "q41",
       "decision": "fixed",
       "note": "Уточнены время, форма и порядок; исправлены неполный Continuous, обязательность дополнения и несколько верных ответов.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках русский смысл, категория отрицания либо примеры предмета вопроса. Выбор формы/стиля и согласования остаётся самостоятельным."
+      }
     },
     {
       "id": "q42",
@@ -241,7 +313,13 @@
       "id": "q49",
       "decision": "fixed",
       "note": "Уточнены время, форма и порядок; исправлены неполный Continuous, обязательность дополнения и несколько верных ответов.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках русский смысл, категория отрицания либо примеры предмета вопроса. Выбор формы/стиля и согласования остаётся самостоятельным."
+      }
     },
     {
       "id": "q50",
@@ -259,7 +337,13 @@
       "id": "q52",
       "decision": "fixed",
       "note": "Уточнены форма, время и варианты перевода; исправлены -ies, формы -ing и ложное исключение только have.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках русский смысл, категория отрицания либо примеры предмета вопроса. Выбор формы/стиля и согласования остаётся самостоятельным."
+      }
     },
     {
       "id": "q53",
@@ -283,19 +367,37 @@
       "id": "q58",
       "decision": "fixed",
       "note": "Уточнены форма, время и варианты перевода; исправлены -ies, формы -ing и ложное исключение только have.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках русский смысл, категория отрицания либо примеры предмета вопроса. Выбор формы/стиля и согласования остаётся самостоятельным."
+      }
     },
     {
       "id": "q59",
       "decision": "fixed",
       "note": "Уточнены форма, время и варианты перевода; исправлены -ies, формы -ing и ложное исключение только have.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках русский смысл, категория отрицания либо примеры предмета вопроса. Выбор формы/стиля и согласования остаётся самостоятельным."
+      }
     },
     {
       "id": "q60",
       "decision": "fixed",
       "note": "Уточнены форма, время и варианты перевода; исправлены -ies, формы -ing и ложное исключение только have.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках русский смысл, категория отрицания либо примеры предмета вопроса. Выбор формы/стиля и согласования остаётся самостоятельным."
+      }
     },
     {
       "id": "q61",
@@ -313,13 +415,25 @@
       "id": "q63",
       "decision": "fixed",
       "note": "Уточнены форма, время и варианты перевода; исправлены -ies, формы -ing и ложное исключение только have.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках русский смысл, категория отрицания либо примеры предмета вопроса. Выбор формы/стиля и согласования остаётся самостоятельным."
+      }
     },
     {
       "id": "q64",
       "decision": "fixed",
       "note": "Уточнены форма, время и варианты перевода; исправлены -ies, формы -ing и ложное исключение только have.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках русский смысл, категория отрицания либо примеры предмета вопроса. Выбор формы/стиля и согласования остаётся самостоятельным."
+      }
     },
     {
       "id": "q66",
@@ -331,7 +445,13 @@
       "id": "q67",
       "decision": "fixed",
       "note": "Уточнены форма, время и варианты перевода; исправлены -ies, формы -ing и ложное исключение только have.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках русский смысл, категория отрицания либо примеры предмета вопроса. Выбор формы/стиля и согласования остаётся самостоятельным."
+      }
     },
     {
       "id": "q68",
@@ -380,6 +500,11 @@
       "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
       "result": "pass",
       "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    },
+    {
+      "command": "python3 logs/complaints/parenthetical-audit-20261104/worker-2-validate.py",
+      "result": "pass",
+      "evidence": "Parentheses audit 2026-11-04, worker-2: exact identity/order/type/difficulty/theory bindings, unmodified objects and prior report decisions preserved against assigned baseline; logs/complaints/parenthetical-audit-20261104/worker-2-evidence/preservation-and-validators.json. Narrow audit only, not renewed whole-file editorial verification."
     }
   ],
   "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."

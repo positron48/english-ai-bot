@@ -25,7 +25,13 @@
       "id": "q3",
       "decision": "fixed",
       "note": "Исправлены условие, объяснение.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Уточнение текущей недели задаёт временной контекст; ни ключ, ни название требуемого времени не сообщается."
+      }
     },
     {
       "id": "q4",
@@ -37,25 +43,49 @@
       "id": "q5",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки уточняют значение, лицо, число или ситуацию; готовую испанскую форму не дают. Выбор требует согласования или интерпретации времени."
+      }
     },
     {
       "id": "q6",
       "decision": "fixed",
       "note": "Исправлены условие, объяснение.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки содержат исходный инфинитив, лицо или смысловой контекст; они не раскрывают готовое спряжение. Русское окончание (а) не является подсказкой."
+      }
     },
     {
       "id": "q7",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки содержат исходный инфинитив, лицо или смысловой контекст; они не раскрывают готовое спряжение. Русское окончание (а) не является подсказкой."
+      }
     },
     {
       "id": "q8",
       "decision": "fixed",
       "note": "Исправлены условие.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки содержат исходный инфинитив, лицо или смысловой контекст; они не раскрывают готовое спряжение. Русское окончание (а) не является подсказкой."
+      }
     },
     {
       "id": "q9",
@@ -67,7 +97,13 @@
       "id": "q10",
       "decision": "fixed",
       "note": "Исправлены условие, объяснение.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки содержат исходный инфинитив, лицо или смысловой контекст; они не раскрывают готовое спряжение. Русское окончание (а) не является подсказкой."
+      }
     }
   ],
   "checks": [

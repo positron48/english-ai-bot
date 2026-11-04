@@ -13,7 +13,13 @@
       "id": "q1",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: explanation. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Скобки передают смысл синонимом или переводом, а не готовой грамматической формой ответа."
+      }
     },
     {
       "id": "q2",

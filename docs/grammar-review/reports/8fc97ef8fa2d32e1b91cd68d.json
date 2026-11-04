@@ -1,11 +1,11 @@
 {
   "version": 1,
   "source": "courses/english-grammar/chapters/057.en.grammar.core_modality_ability_permission.may_might_probability/03-questions.json",
-  "source_sha256": "4067e1a36258da41d1fcc7dc2cb84e7da3c486b28d792ea596a1725152caf45b",
+  "source_sha256": "a5b8645ab976e5278f17bcd363622212b65ee8556cf23073cee7b91b3aaceed0",
   "context_sha256": "5b35d91ef98412cdd34f23471d41e456123e61be3f181b2db4e2ae1ff4eed2d4",
   "editor": "Codex editor 2026-09-04",
   "verifier": "Anton Filatov (user)",
-  "phase": "done",
+  "phase": "awaiting_verification",
   "reviewed_at": "2026-09-04T20:21:21.222068+00:00",
   "verified_at": "2026-09-06T17:58:18.569986Z",
   "questions": [
@@ -18,8 +18,17 @@
     {
       "id": "q2",
       "decision": "fixed",
-      "note": "Уточнено условие или разведены нормативные варианты, чтобы ответ был единственным.",
-      "verification": "ok"
+      "note": "2026-11-04: скобки прямо называли единственный ключ might/may. Пропуск перенесён на форму смыслового глагола после модального; дана другая форма, требующая преобразования. Готовый ответ не раскрыт, сохранены ID, тип, сложность и привязка к теории.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "fixed",
+        "note": "Прямой ответ might удалён из скобок; теперь требуется be после might из was.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q3",
@@ -54,8 +63,17 @@
     {
       "id": "q9",
       "decision": "fixed",
-      "note": "Уточнено условие или разведены нормативные варианты, чтобы ответ был единственным.",
-      "verification": "ok"
+      "note": "2026-11-04: скобки прямо называли единственный ключ might/may. Пропуск перенесён на форму смыслового глагола после модального; дана другая форма, требующая преобразования. Готовый ответ не раскрыт, сохранены ID, тип, сложность и привязка к теории.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "fixed",
+        "note": "Убрано «используйте might»; проверяется arrive после might из arrived.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q11",
@@ -77,9 +95,18 @@
     },
     {
       "id": "q14",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Независимая проверка: перевод допускал лексические синонимы; другая личная форма задаёт глагол для образования базовой формы после модального.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "Независимая проверка: перевод допускал лексические синонимы; другая личная форма задаёт глагол для образования базовой формы после модального.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q15",
@@ -97,7 +124,13 @@
       "id": "q17",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Русское «быть» не даёт английское be, форму после may надо знать."
+      }
     },
     {
       "id": "q18",
@@ -115,7 +148,13 @@
       "id": "q20",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Русское «знать» задаёт смысл; know не написано."
+      }
     },
     {
       "id": "q21",
@@ -131,9 +170,18 @@
     },
     {
       "id": "q23",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Независимая проверка: перевод допускал лексические синонимы; другая личная форма задаёт глагол для образования базовой формы после модального.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "Независимая проверка: перевод допускал лексические синонимы; другая личная форма задаёт глагол для образования базовой формы после модального.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q24",
@@ -215,9 +263,18 @@
     },
     {
       "id": "q42",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Независимая проверка: несколько модальных глаголов/наречий подходили под открытое условие; задан набор форм с единственным грамматичным ответом.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "Независимая проверка: несколько модальных глаголов/наречий подходили под открытое условие; задан набор форм с единственным грамматичным ответом.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q43",
@@ -264,8 +321,17 @@
     {
       "id": "q51",
       "decision": "fixed",
-      "note": "Уточнено условие или разведены нормативные варианты, чтобы ответ был единственным.",
-      "verification": "ok"
+      "note": "2026-11-04: скобки прямо называли единственный ключ might/may. Пропуск перенесён на форму смыслового глагола после модального; дана другая форма, требующая преобразования. Готовый ответ не раскрыт, сохранены ID, тип, сложность и привязка к теории.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "fixed",
+        "note": "Убрано прямое might в подсказке; проверяется rain после might из rained.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q52",
@@ -282,8 +348,17 @@
     {
       "id": "q54",
       "decision": "fixed",
-      "note": "Уточнено условие или разведены нормативные варианты, чтобы ответ был единственным.",
-      "verification": "ok"
+      "note": "2026-11-04: скобки прямо называли единственный ключ might/may. Пропуск перенесён на форму смыслового глагола после модального; дана другая форма, требующая преобразования. Готовый ответ не раскрыт, сохранены ID, тип, сложность и привязка к теории.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "fixed",
+        "note": "Убрана готовая инструкция might; проверяется be после might из was.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q55",
@@ -300,8 +375,17 @@
     {
       "id": "q57",
       "decision": "fixed",
-      "note": "Уточнено условие или разведены нормативные варианты, чтобы ответ был единственным.",
-      "verification": "ok"
+      "note": "2026-11-04: скобки прямо называли единственный ключ might/may. Пропуск перенесён на форму смыслового глагола после модального; дана другая форма, требующая преобразования. Готовый ответ не раскрыт, сохранены ID, тип, сложность и привязка к теории.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "fixed",
+        "note": "Убрана готовая подсказка might; нужно получить join после might из joined.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q58",
@@ -329,9 +413,18 @@
     },
     {
       "id": "q62",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Независимая проверка: несколько модальных глаголов/наречий подходили под открытое условие; задан набор форм с единственным грамматичным ответом.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "Независимая проверка: несколько модальных глаголов/наречий подходили под открытое условие; задан набор форм с единственным грамматичным ответом.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q63",
@@ -354,8 +447,17 @@
     {
       "id": "q66",
       "decision": "fixed",
-      "note": "Уточнено условие или разведены нормативные варианты, чтобы ответ был единственным.",
-      "verification": "ok"
+      "note": "2026-11-04: скобки прямо называли единственный ключ might/may. Пропуск перенесён на форму смыслового глагола после модального; дана другая форма, требующая преобразования. Готовый ответ не раскрыт, сохранены ID, тип, сложность и привязка к теории.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "fixed",
+        "note": "Прямое may в подсказке убрано; проверяется be после may из was.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q67",
@@ -377,9 +479,18 @@
     },
     {
       "id": "q70",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Независимая проверка: несколько модальных глаголов/наречий подходили под открытое условие; задан набор форм с единственным грамматичным ответом.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "Независимая проверка: несколько модальных глаголов/наречий подходили под открытое условие; задан набор форм с единственным грамматичным ответом.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q71",
@@ -399,7 +510,35 @@
       "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
       "result": "pass",
       "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    },
+    {
+      "command": "python3 logs/complaints/parenthetical-audit-20261104/worker-1-validate.py",
+      "result": "pass",
+      "evidence": "2026-11-04 narrow parentheses audit: identity/order/bindings and untouched questions preserved; source/final/embedded exact; official isolated chapter assembly/validation or training validate_question and signature checks passed. See worker-1-evidence/validation.json."
     }
   ],
-  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+  "verification_note": "2026-11-04 parenthetical-hints audit: changed questions awaiting independent verification. Historical verification applies only to unchanged questions.",
+  "parentheses_audit_verification": {
+    "verifier": "parentheses_3",
+    "verified_at": "2026-11-04T09:44:02.337656+00:00",
+    "verification": "ok",
+    "scope": "narrow_parentheses_audit_changed_questions",
+    "question_ids": [
+      "q2",
+      "q9",
+      "q14",
+      "q23",
+      "q42",
+      "q51",
+      "q54",
+      "q57",
+      "q62",
+      "q66",
+      "q70"
+    ],
+    "evidence": [
+      "docs/grammar-review/batches/2026-11-04-parenthetical-hints/independent-worker-1.json"
+    ],
+    "note": "Независимо прочитаны все вопросы изменённого источника; подтверждены изменённые вопросы узкого аудита. Advisory вне selected не сертифицированы. Фазы общего обзора и source/context hashes не изменялись."
+  }
 }

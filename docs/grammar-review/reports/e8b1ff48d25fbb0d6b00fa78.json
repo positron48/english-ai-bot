@@ -19,7 +19,13 @@
       "id": "q2",
       "decision": "fixed",
       "note": "Правило V2 сужено до утвердительного Past Simple, исключая вопросы с did.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "go — исходная форма; требуется вывести went по yesterday."
+      }
     },
     {
       "id": "q3",
@@ -37,7 +43,13 @@
       "id": "q6",
       "decision": "fixed",
       "note": "Добавлен смысл отсутствия после отъезда, чтобы отличить gone от been при описании посещения.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "go задан как лемма; gone нужно выбрать по контексту отсутствия и has."
+      }
     },
     {
       "id": "q7",
@@ -55,7 +67,13 @@
       "id": "q10",
       "decision": "fixed",
       "note": "Русская подсказка допускала walk; дана форма went, которую нужно преобразовать в V1, без раскрытия ответа.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "went требует преобразования в go для регулярного действия."
+      }
     },
     {
       "id": "q11",
@@ -73,7 +91,13 @@
       "id": "q14",
       "decision": "fixed",
       "note": "Уточнено точное окончание -es и утвердительный Present Simple.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "go требует согласования goes с she."
+      }
     },
     {
       "id": "q15",
@@ -91,13 +115,25 @@
       "id": "q18",
       "decision": "fixed",
       "note": "Вместо неоднозначного перевода дана went для преобразования в базовую форму после don’t.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "went нужно преобразовать в V1 после don't."
+      }
     },
     {
       "id": "q19",
       "decision": "ok",
       "note": "После перечисленных can/must/should базовая форма; true верно.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Примеры модальных глаголов задают категорию утверждения, а не true/false."
+      }
     },
     {
       "id": "q21",
@@ -109,7 +145,13 @@
       "id": "q22",
       "decision": "fixed",
       "note": "Вместо неоднозначного перевода дана went для преобразования в базовую форму после must.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "went требует восстановления V1 после must."
+      }
     },
     {
       "id": "q23",
@@ -121,7 +163,13 @@
       "id": "q26",
       "decision": "fixed",
       "note": "Уточнено, что V2 нужна в данном утверждении Past Simple.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "go требует прошедшей формы по last year."
+      }
     },
     {
       "id": "q27",
@@ -139,7 +187,13 @@
       "id": "q30",
       "decision": "ok",
       "note": "Один ожидаемый worked от заданного work в Past Simple.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "work требует образования V2 worked."
+      }
     },
     {
       "id": "q31",
@@ -169,13 +223,25 @@
       "id": "q36",
       "decision": "fixed",
       "note": "Точный повтор q30 заменён правильным глаголом play; перевод обновлён.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "play и Past Simple задают преобразование, played не раскрыт."
+      }
     },
     {
       "id": "q38",
       "decision": "ok",
       "note": "После have требуется seen от заданного see; ответ однозначен.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "see требует V3 после have."
+      }
     },
     {
       "id": "q39",
@@ -193,7 +259,13 @@
       "id": "q42",
       "decision": "ok",
       "note": "The work is done — корректный пассив/результат; do задан.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "do требует V3 в пассиве."
+      }
     },
     {
       "id": "q43",
@@ -211,7 +283,13 @@
       "id": "q46",
       "decision": "ok",
       "note": "Seen после haven’t; форма от see однозначна.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "see требует V3 после haven't."
+      }
     },
     {
       "id": "q47",

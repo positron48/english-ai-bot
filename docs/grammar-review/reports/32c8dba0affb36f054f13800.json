@@ -31,7 +31,13 @@
       "id": "q4",
       "decision": "ok",
       "note": "Libros требует faltan.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки уточняют значение, лицо, число или ситуацию; готовую испанскую форму не дают. Выбор требует согласования или интерпретации времени."
+      }
     },
     {
       "id": "q5",
@@ -49,7 +55,13 @@
       "id": "q7",
       "decision": "ok",
       "note": "Tiempo в единственном требует queda.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки уточняют значение, лицо, число или ситуацию; готовую испанскую форму не дают. Выбор требует согласования или интерпретации времени."
+      }
     },
     {
       "id": "q8",
@@ -61,7 +73,13 @@
       "id": "q9",
       "decision": "ok",
       "note": "10 euros требует quedan.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator",
+        "decision": "ok",
+        "note": "Скобки уточняют значение, лицо, число или ситуацию; готовую испанскую форму не дают. Выбор требует согласования или интерпретации времени."
+      }
     },
     {
       "id": "q10",

@@ -1,11 +1,11 @@
 {
   "version": 1,
   "source": "courses/spanish-grammar/chapters/099.es.grammar.se_system_pronominal_verbs.build_write_everyday_incidents_rules_short_news_items/03-questions.json",
-  "source_sha256": "2cef241e486ef8b0ade7021572316f4ad14883c949681619f063233a94637eb1",
+  "source_sha256": "ff1497c621a56b6574b923c3f52ccad59e9ca900e4a2a34449935dcbb50fe766",
   "context_sha256": "e6b18807e3e21700fdc53bd7d30f4c657a4e3692ff515dacada57c5d8e4ca3a2",
   "editor": "Codex editor 2026-09-05",
   "verifier": "Anton Filatov (user)",
-  "phase": "done",
+  "phase": "awaiting_verification",
   "reviewed_at": "2026-09-05T20:32:30.448391Z",
   "verified_at": "2026-09-06T17:58:18.569986Z",
   "questions": [
@@ -91,7 +91,13 @@
       "id": "q099_b2_02",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Прочитаны условие, варианты, ключ и объяснение: скобки задают смысл/грамматическую задачу и не раскрывают готовый ответ."
+      }
     },
     {
       "id": "q099_b2_03",
@@ -125,9 +131,18 @@
     },
     {
       "id": "q099_b2_08",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Независимая проверка: задано pretérito indefinido для единственного ключа cayeron; ранее без времени подходили другие формы.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "Независимая проверка: задано pretérito indefinido для единственного ключа cayeron; ранее без времени подходили другие формы.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q099_b2_09",
@@ -145,7 +160,13 @@
       "id": "q099_b2_11",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: choices. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Прочитаны условие, варианты, ключ и объяснение: скобки задают смысл/грамматическую задачу и не раскрывают готовый ответ."
+      }
     },
     {
       "id": "q099_b2_12",
@@ -157,7 +178,13 @@
       "id": "q099_b3_01",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Прочитаны условие, варианты, ключ и объяснение: скобки задают смысл/грамматическую задачу и не раскрывают готовый ответ."
+      }
     },
     {
       "id": "q099_b3_02",
@@ -169,7 +196,13 @@
       "id": "q099_b3_03",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: explanation. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Прочитаны условие, варианты, ключ и объяснение: скобки задают смысл/грамматическую задачу и не раскрывают готовый ответ."
+      }
     },
     {
       "id": "q099_b3_04",
@@ -181,19 +214,40 @@
       "id": "q099_b3_05",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Прочитаны условие, варианты, ключ и объяснение: скобки задают смысл/грамматическую задачу и не раскрывают готовый ответ."
+      }
     },
     {
       "id": "q099_b3_06",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Убраны готовая форма informa и отрицательный образец из скобок; остаётся проверяемое утверждение о безличном согласовании.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "fixed",
+        "note": "Убраны готовая форма informa и отрицательный образец из скобок; остаётся проверяемое утверждение о безличном согласовании.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q099_b3_07",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Прочитаны условие, варианты, ключ и объяснение: скобки задают смысл/грамматическую задачу и не раскрывают готовый ответ."
+      }
     },
     {
       "id": "q099_b3_08",
@@ -205,7 +259,13 @@
       "id": "q099_b3_09",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Прочитаны условие, варианты, ключ и объяснение: скобки задают смысл/грамматическую задачу и не раскрывают готовый ответ."
+      }
     },
     {
       "id": "q099_b3_10",
@@ -246,14 +306,29 @@
     {
       "id": "q099_b4_04",
       "decision": "fixed",
-      "note": "Исправлены или уточнены поля: explanation. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "note": "Убраны предварительная оценка «Норма» и подсказка с отвергнутой формой из скобок; правильность предложения нужно определить самостоятельно.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "fixed",
+        "note": "Убраны предварительная оценка «Норма» и подсказка с отвергнутой формой из скобок; правильность предложения нужно определить самостоятельно.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q099_b4_05",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Прочитаны условие, варианты, ключ и объяснение: скобки задают смысл/грамматическую задачу и не раскрывают готовый ответ."
+      }
     },
     {
       "id": "q099_b4_06",
@@ -307,7 +382,13 @@
       "id": "q099_b5_02",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Прочитаны условие, варианты, ключ и объяснение: скобки задают смысл/грамматическую задачу и не раскрывают готовый ответ."
+      }
     },
     {
       "id": "q099_b5_03",
@@ -337,7 +418,13 @@
       "id": "q099_b5_07",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Прочитаны условие, варианты, ключ и объяснение: скобки задают смысл/грамматическую задачу и не раскрывают готовый ответ."
+      }
     },
     {
       "id": "q099_b5_08",
@@ -349,7 +436,13 @@
       "id": "q099_b5_09",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Прочитаны условие, варианты, ключ и объяснение: скобки задают смысл/грамматическую задачу и не раскрывают готовый ответ."
+      }
     },
     {
       "id": "q099_b5_10",
@@ -403,7 +496,13 @@
       "id": "q099_b6_06",
       "decision": "fixed",
       "note": "Исправлены или уточнены поля: explanation. Устранена смысловая, языковая или ключевая неоднозначность.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Прочитаны условие, варианты, ключ и объяснение: скобки задают смысл/грамматическую задачу и не раскрывают готовый ответ."
+      }
     },
     {
       "id": "q099_b6_07",
@@ -415,7 +514,13 @@
       "id": "q099_b6_08",
       "decision": "ok",
       "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Прочитаны условие, варианты, ключ и объяснение: скобки задают смысл/грамматическую задачу и не раскрывают готовый ответ."
+      }
     },
     {
       "id": "q099_b6_09",
@@ -447,7 +552,32 @@
       "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
       "result": "pass",
       "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    },
+    {
+      "command": "python3 logs/complaints/parenthetical-audit-20261104/worker-2-validate.py",
+      "result": "pass",
+      "evidence": "Parentheses audit 2026-11-04, worker-2: exact identity/order/type/difficulty/theory bindings, unmodified objects and prior report decisions preserved against assigned baseline; logs/complaints/parenthetical-audit-20261104/worker-2-evidence/preservation-and-validators.json. Narrow audit only, not renewed whole-file editorial verification."
+    },
+    {
+      "command": "python3 logs/complaints/parenthetical-audit-20261104/worker-2-validate.py [assigned courses/spanish-grammar/chapters/099.es.grammar.se_system_pronominal_verbs.build_write_everyday_incidents_rules_short_news_items/03-questions.json]",
+      "result": "pass",
+      "evidence": "Stock chapter validator logic on baseline and final, with output artifact redirected to worker-2 evidence: 0 errors, 0 warnings, 0 suggestions in both. Source questions equal final question bank; final and embedded byte-identical. logs/complaints/parenthetical-audit-20261104/worker-2-evidence/preservation-and-validators.json"
     }
   ],
-  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось. Изменение q099_b3_06 2026-11-04: проверка подсказок в скобках, независимая проверка ожидается. Изменение q099_b4_04 2026-11-04: проверка подсказок в скобках, независимая проверка ожидается.",
+  "parentheses_audit_verification": {
+    "verifier": "parentheses_3",
+    "verified_at": "2026-11-04T09:44:02.337656+00:00",
+    "verification": "ok",
+    "scope": "narrow_parentheses_audit_changed_questions",
+    "question_ids": [
+      "q099_b2_08",
+      "q099_b3_06",
+      "q099_b4_04"
+    ],
+    "evidence": [
+      "docs/grammar-review/batches/2026-11-04-parenthetical-hints/independent-worker-2.json"
+    ],
+    "note": "Независимо прочитаны все вопросы изменённого источника; подтверждены изменённые вопросы узкого аудита. Advisory вне selected не сертифицированы. Фазы общего обзора и source/context hashes не изменялись."
+  }
 }

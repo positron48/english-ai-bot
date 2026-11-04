@@ -19,7 +19,13 @@
       "id": "q2",
       "decision": "fixed",
       "note": "Уточнён смысл неопределённого артикля, контекст или единственность ответа.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают исходный глагол, русский смысл местоимения либо класс артикля; согласование и выбор формы остаются задачей учащегося."
+      }
     },
     {
       "id": "q3",
@@ -43,7 +49,13 @@
       "id": "q7",
       "decision": "fixed",
       "note": "Уточнён смысл неопределённого артикля, контекст или единственность ответа.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают исходный глагол, русский смысл местоимения либо класс артикля; согласование и выбор формы остаются задачей учащегося."
+      }
     },
     {
       "id": "q8",
@@ -67,7 +79,13 @@
       "id": "q11",
       "decision": "fixed",
       "note": "Уточнён смысл неопределённого артикля, контекст или единственность ответа.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки задают исходный глагол, русский смысл местоимения либо класс артикля; согласование и выбор формы остаются задачей учащегося."
+      }
     },
     {
       "id": "q12",
@@ -85,7 +103,13 @@
       "id": "q14",
       "decision": "fixed",
       "note": "Уточнён смысл неопределённого артикля, контекст или единственность ответа.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках дан класс артикля, фонетическое пояснение проверяемого утверждения или инфинитив be; готовая нужная форма не указана."
+      }
     },
     {
       "id": "q15",
@@ -103,13 +127,25 @@
       "id": "q18",
       "decision": "fixed",
       "note": "Уточнён смысл неопределённого артикля, контекст или единственность ответа.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках дан класс артикля, фонетическое пояснение проверяемого утверждения или инфинитив be; готовая нужная форма не указана."
+      }
     },
     {
       "id": "q20",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках дан класс артикля, фонетическое пояснение проверяемого утверждения или инфинитив be; готовая нужная форма не указана."
+      }
     },
     {
       "id": "q22",
@@ -139,7 +175,13 @@
       "id": "q29",
       "decision": "fixed",
       "note": "Уточнено требование к артиклю или исключены ложные запреты допустимых форм.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках дан класс артикля, фонетическое пояснение проверяемого утверждения или инфинитив be; готовая нужная форма не указана."
+      }
     },
     {
       "id": "q30",
@@ -151,7 +193,13 @@
       "id": "q31",
       "decision": "fixed",
       "note": "Уточнено требование к артиклю или исключены ложные запреты допустимых форм.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках дан класс артикля, фонетическое пояснение проверяемого утверждения или инфинитив be; готовая нужная форма не указана."
+      }
     },
     {
       "id": "q32",
@@ -163,7 +211,13 @@
       "id": "q33",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках дан класс артикля, фонетическое пояснение проверяемого утверждения или инфинитив be; готовая нужная форма не указана."
+      }
     },
     {
       "id": "q34",
@@ -175,7 +229,13 @@
       "id": "q35",
       "decision": "fixed",
       "note": "Уточнено требование к артиклю или исключены ложные запреты допустимых форм.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках дан класс артикля, фонетическое пояснение проверяемого утверждения или инфинитив be; готовая нужная форма не указана."
+      }
     },
     {
       "id": "q36",
@@ -193,7 +253,13 @@
       "id": "q39",
       "decision": "fixed",
       "note": "Уточнено требование к артиклю или исключены ложные запреты допустимых форм.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках дан класс артикля, фонетическое пояснение проверяемого утверждения или инфинитив be; готовая нужная форма не указана."
+      }
     },
     {
       "id": "q40",
@@ -205,7 +271,13 @@
       "id": "q41",
       "decision": "fixed",
       "note": "Уточнено требование к артиклю или исключены ложные запреты допустимых форм.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках дан класс артикля, фонетическое пояснение проверяемого утверждения или инфинитив be; готовая нужная форма не указана."
+      }
     },
     {
       "id": "q42",
@@ -217,7 +289,13 @@
       "id": "q44",
       "decision": "fixed",
       "note": "Уточнено требование к артиклю или исключены ложные запреты допустимых форм.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках дан класс артикля, фонетическое пояснение проверяемого утверждения или инфинитив be; готовая нужная форма не указана."
+      }
     },
     {
       "id": "q45",
@@ -235,7 +313,13 @@
       "id": "q48",
       "decision": "fixed",
       "note": "Уточнено требование к артиклю или исключены ложные запреты допустимых форм.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках дан класс артикля, фонетическое пояснение проверяемого утверждения или инфинитив be; готовая нужная форма не указана."
+      }
     },
     {
       "id": "q50",
@@ -247,7 +331,13 @@
       "id": "q51",
       "decision": "fixed",
       "note": "Уточнено требование к артиклю или исключены ложные запреты допустимых форм.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках дан класс артикля, фонетическое пояснение проверяемого утверждения или инфинитив be; готовая нужная форма не указана."
+      }
     },
     {
       "id": "q52",
@@ -265,7 +355,13 @@
       "id": "q54",
       "decision": "fixed",
       "note": "В открытом ответе указан неопределённый артикль.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках дан класс артикля, фонетическое пояснение проверяемого утверждения или инфинитив be; готовая нужная форма не указана."
+      }
     },
     {
       "id": "q56",
@@ -277,7 +373,13 @@
       "id": "q57",
       "decision": "fixed",
       "note": "В открытом ответе указан неопределённый артикль.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "В скобках дан класс артикля, фонетическое пояснение проверяемого утверждения или инфинитив be; готовая нужная форма не указана."
+      }
     },
     {
       "id": "q58",
@@ -321,6 +423,11 @@
       "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
       "result": "pass",
       "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    },
+    {
+      "command": "python3 logs/complaints/parenthetical-audit-20261104/worker-2-validate.py",
+      "result": "pass",
+      "evidence": "Parentheses audit 2026-11-04, worker-2: exact identity/order/type/difficulty/theory bindings, unmodified objects and prior report decisions preserved against assigned baseline; logs/complaints/parenthetical-audit-20261104/worker-2-evidence/preservation-and-validators.json. Narrow audit only, not renewed whole-file editorial verification."
     }
   ],
   "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."

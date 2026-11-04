@@ -25,7 +25,13 @@
       "id": "q3",
       "decision": "fixed",
       "note": "Эмоциональный смысл ограничен контекстом; проверяется заданная форма/позиция вместо абсолютных запретов и нескольких ответов.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "arrive требует arriving с удалением e."
+      }
     },
     {
       "id": "q4",
@@ -37,7 +43,13 @@
       "id": "q6",
       "decision": "ok",
       "note": "Форма -ing, условие и контекст согласованы.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "lose требует losing с удалением e."
+      }
     },
     {
       "id": "q7",
@@ -55,7 +67,13 @@
       "id": "q9",
       "decision": "fixed",
       "note": "Эмоциональный смысл ограничен контекстом; проверяется заданная форма/позиция вместо абсолютных запретов и нескольких ответов.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "complain требует формы complaining после is."
+      }
     },
     {
       "id": "q10",
@@ -73,7 +91,13 @@
       "id": "q13",
       "decision": "fixed",
       "note": "Эмоциональный смысл ограничен контекстом; проверяется заданная форма/позиция вместо абсолютных запретов и нескольких ответов.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "leave требует leaving после are."
+      }
     },
     {
       "id": "q14",
@@ -85,7 +109,13 @@
       "id": "q16",
       "decision": "fixed",
       "note": "Эмоциональный смысл ограничен контекстом; проверяется заданная форма/позиция вместо абсолютных запретов и нескольких ответов.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "talk требует talking после is."
+      }
     },
     {
       "id": "q17",
@@ -103,7 +133,13 @@
       "id": "q20",
       "decision": "fixed",
       "note": "Эмоциональный смысл ограничен контекстом; проверяется заданная форма/позиция вместо абсолютных запретов и нескольких ответов.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "face требует facing с удалением e."
+      }
     },
     {
       "id": "q21",
@@ -121,7 +157,13 @@
       "id": "q23",
       "decision": "fixed",
       "note": "Эмоциональный смысл ограничен контекстом; проверяется заданная форма/позиция вместо абсолютных запретов и нескольких ответов.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "break требует breaking; частица down задана как контекст."
+      }
     },
     {
       "id": "q25",
@@ -133,7 +175,13 @@
       "id": "q26",
       "decision": "fixed",
       "note": "Уточнены смысл и критерий формы; сняты ложные запреты эмоций с Simple и одобрения с Continuous.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "talk требует talking после is constantly."
+      }
     },
     {
       "id": "q27",
@@ -151,7 +199,13 @@
       "id": "q29",
       "decision": "fixed",
       "note": "Уточнены смысл и критерий формы; сняты ложные запреты эмоций с Simple и одобрения с Continuous.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "make требует making с удалением e."
+      }
     },
     {
       "id": "q31",
@@ -163,7 +217,13 @@
       "id": "q32",
       "decision": "ok",
       "note": "Контекст жалобы и форма согласованы.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "leave требует leaving для continuous с forever."
+      }
     },
     {
       "id": "q34",
@@ -187,7 +247,13 @@
       "id": "q37",
       "decision": "fixed",
       "note": "Уточнены смысл и критерий формы; сняты ложные запреты эмоций с Simple и одобрения с Continuous.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "drink требует drinks для she в Present Simple."
+      }
     },
     {
       "id": "q39",
@@ -205,7 +271,13 @@
       "id": "q41",
       "decision": "ok",
       "note": "Контекст жалобы и форма согласованы.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "arrive требует arriving; коммуникативная функция жалобы не раскрывает форму."
+      }
     },
     {
       "id": "q42",
@@ -223,7 +295,13 @@
       "id": "q44",
       "decision": "ok",
       "note": "Контекст жалобы и форма согласованы.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "leave требует leaving; функция недовольства задаёт контекст."
+      }
     },
     {
       "id": "q45",
@@ -241,7 +319,13 @@
       "id": "q48",
       "decision": "ok",
       "note": "Контекст жалобы и форма согласованы.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "interrupt требует interrupting; жалоба не даёт готовый ключ."
+      }
     },
     {
       "id": "q49",
@@ -259,7 +343,13 @@
       "id": "q51",
       "decision": "fixed",
       "note": "Исправлены неверные ключи о необходимости эмоции и контексте; уточнены выбор и естественная лексика.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "disconnect требует disconnecting."
+      }
     },
     {
       "id": "q53",
@@ -277,7 +367,13 @@
       "id": "q55",
       "decision": "ok",
       "note": "Жалоба и форма -ing согласованы.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "run требует running с удвоением n."
+      }
     },
     {
       "id": "q56",
@@ -295,7 +391,13 @@
       "id": "q59",
       "decision": "ok",
       "note": "Жалоба и форма -ing согласованы.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "break требует breaking; объект promises не даёт форму."
+      }
     },
     {
       "id": "q60",

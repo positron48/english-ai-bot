@@ -25,7 +25,13 @@
       "id": "q032_b1_theory_frequency_siempre_03",
       "decision": "fixed",
       "note": "Уточнён критерий порядка слов/частоты; устранены альтернативно верные ответы, ссылка на блок либо отсутствующее me в me despierto.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Русский смысл/ситуация в скобках задаёт нужное значение, английский/испанский ответ не назван."
+      }
     },
     {
       "id": "q032_b1_theory_frequency_siempre_04",
@@ -55,7 +61,13 @@
       "id": "q032_b1_theory_frequency_siempre_08",
       "decision": "ok",
       "note": "Задание, ответ и пояснение согласованы.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Русский смысл/ситуация в скобках задаёт нужное значение, английский/испанский ответ не назван."
+      }
     },
     {
       "id": "q032_b1_theory_frequency_siempre_10",
@@ -115,7 +127,13 @@
       "id": "q032_b2_theory_frequency_a_menudo_08",
       "decision": "ok",
       "note": "Задание, ответ и пояснение согласованы.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Русский смысл/ситуация в скобках задаёт нужное значение, английский/испанский ответ не назван."
+      }
     },
     {
       "id": "q032_b2_theory_frequency_a_menudo_10",
@@ -181,7 +199,13 @@
       "id": "q032_b3_theory_frequency_a_veces_10",
       "decision": "fixed",
       "note": "Уточнён смысл и порядок, снята неоднозначность nunca/jamás, исправлено отрицательное согласование или ссылка на теорию.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "Скобки поясняют формат задания или допустимую форму записи, не сообщая ответ."
+      }
     },
     {
       "id": "q032_b3_theory_frequency_a_veces_11",
@@ -205,7 +229,13 @@
       "id": "q032_b4_theory_frequency_nunca_03",
       "decision": "fixed",
       "note": "Уточнён смысл и порядок, снята неоднозначность nunca/jamás, исправлено отрицательное согласование или ссылка на теорию.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "В скобках перечислены альтернативы; выбрать правильную всё равно требуется по грамматике и контексту."
+      }
     },
     {
       "id": "q032_b4_theory_frequency_nunca_04",
@@ -235,7 +265,13 @@
       "id": "q032_b4_theory_frequency_nunca_08",
       "decision": "fixed",
       "note": "Уточнён смысл и порядок, снята неоднозначность nunca/jamás, исправлено отрицательное согласование или ссылка на теорию.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "В скобках перечислены альтернативы; выбрать правильную всё равно требуется по грамматике и контексту."
+      }
     },
     {
       "id": "q032_b4_theory_frequency_nunca_10",
@@ -325,7 +361,13 @@
       "id": "q032_b6_theory_frequency_ru_traps_03",
       "decision": "fixed",
       "note": "Конкретный критерий вместо предпочтения учебной модели; исправлены отрицание, перевод, альтернативные ответы или ссылки на блок.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_3",
+        "decision": "ok",
+        "note": "В скобках перечислены альтернативы; выбрать правильную всё равно требуется по грамматике и контексту."
+      }
     },
     {
       "id": "q032_b6_theory_frequency_ru_traps_04",

@@ -1,11 +1,11 @@
 {
   "version": 1,
   "source": "courses/english-grammar/chapters/033.en.grammar.now_present_continuous_contrast.build_speak_what_s/03-questions.json",
-  "source_sha256": "7f3d5636b0d1a7b968101f586a25f1595cc2242d983f177792903297f546d6a3",
+  "source_sha256": "579f41b98d0458a877bc6db3608d7e6292c3aef7b1a0ac8cbf1c97d41b8d95bd",
   "context_sha256": "4e8d1d384fa401a2f625f0b64f8d4e1356c732e033e3f63839d003839b0f1161",
   "editor": "Codex editor 2026-09-04",
   "verifier": "Anton Filatov (user)",
-  "phase": "done",
+  "phase": "awaiting_verification",
   "reviewed_at": "2026-09-04T16:36:00.665376+00:00",
   "verified_at": "2026-09-06T17:58:18.569986Z",
   "questions": [
@@ -18,8 +18,17 @@
     {
       "id": "q2",
       "decision": "fixed",
-      "note": "Уточнены контекст, открытые ответы и ограничения маркеров; исправлены Неневерно и разбор read/What do you do.",
-      "verification": "ok"
+      "note": "Повторная проверка точных совпадений: При явно заданных I и Present Simple ключ go уже дан единственным to go; практически достаточно скопировать слово. Минимальное преобразование восстановит задачу.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "Повторная проверка точных совпадений: При явно заданных I и Present Simple ключ go уже дан единственным to go; практически достаточно скопировать слово. Минимальное преобразование восстановит задачу.",
+        "verifier": "parentheses_1",
+        "verified_at": "2026-11-04T09:39:50.342853+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q3",
@@ -54,8 +63,17 @@
     {
       "id": "q9",
       "decision": "fixed",
-      "note": "Уточнены контекст, открытые ответы и ограничения маркеров; исправлены Неневерно и разбор read/What do you do.",
-      "verification": "ok"
+      "note": "Повторная проверка точных совпадений: При I и явно заданном Present Simple единственный to go непосредственно содержит ключ go.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "Повторная проверка точных совпадений: При I и явно заданном Present Simple единственный to go непосредственно содержит ключ go.",
+        "verifier": "parentheses_1",
+        "verified_at": "2026-11-04T09:39:50.342853+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q10",
@@ -144,8 +162,17 @@
     {
       "id": "q30",
       "decision": "fixed",
-      "note": "Уточнены требуемые времена вместо абсолютного действия маркеров; исправлены Неневерно, контраст и запрет отдельных предложений.",
-      "verification": "ok"
+      "note": "Повторная проверка точных совпадений: При I и явно заданном Present Simple единственная скобка to drink уже даёт ключ drink.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "coordinator-after-independent-review",
+        "decision": "fixed",
+        "note": "Повторная проверка точных совпадений: При I и явно заданном Present Simple единственная скобка to drink уже даёт ключ drink.",
+        "verifier": "parentheses_1",
+        "verified_at": "2026-11-04T09:39:50.342853+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q31",
@@ -163,7 +190,13 @@
       "id": "q33",
       "decision": "fixed",
       "note": "Уточнены требуемые времена вместо абсолютного действия маркеров; исправлены Неневерно, контраст и запрет отдельных предложений.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Инфинитив be/смысловая помета/глагол в скобках задают материал; согласование или выбор временной формы не сообщаются. Совпадение базовой формы для I — нормальное правило согласования, а не посторонняя лексическая подсказка."
+      }
     },
     {
       "id": "q34",
@@ -314,7 +347,79 @@
       "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
       "result": "pass",
       "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    },
+    {
+      "command": "python3 logs/complaints/parenthetical-audit-20261104/worker-2-validate.py",
+      "result": "pass",
+      "evidence": "Parentheses audit 2026-11-04, worker-2: exact identity/order/type/difficulty/theory bindings, unmodified objects and prior report decisions preserved against assigned baseline; logs/complaints/parenthetical-audit-20261104/worker-2-evidence/preservation-and-validators.json. Narrow audit only, not renewed whole-file editorial verification."
     }
   ],
-  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось.",
+  "parentheses_audit_verification": {
+    "editor": "coordinator",
+    "verifier": "parentheses_1",
+    "verified_at": "2026-11-04T09:39:50.342853+00:00",
+    "verification": "ok",
+    "scope": "Complete source/context reading for the narrow parentheses audit extension; not full grammar campaign completion.",
+    "read_ids": [
+      "q1",
+      "q2",
+      "q3",
+      "q4",
+      "q6",
+      "q7",
+      "q8",
+      "q9",
+      "q10",
+      "q11",
+      "q12",
+      "q13",
+      "q15",
+      "q16",
+      "q19",
+      "q21",
+      "q22",
+      "q24",
+      "q25",
+      "q26",
+      "q28",
+      "q29",
+      "q30",
+      "q31",
+      "q32",
+      "q33",
+      "q34",
+      "q35",
+      "q37",
+      "q38",
+      "q39",
+      "q42",
+      "q43",
+      "q45",
+      "q47",
+      "q49",
+      "q50",
+      "q51",
+      "q54",
+      "q55",
+      "q57",
+      "q59",
+      "q61",
+      "q62"
+    ],
+    "selected_read_ids": [
+      "q2",
+      "q9",
+      "q30",
+      "q33"
+    ],
+    "accepted_changed_ids": [
+      "q2",
+      "q9",
+      "q30"
+    ],
+    "evidence": "docs/grammar-review/batches/2026-11-04-parenthetical-hints/independent-literal-worker-2-extension.json",
+    "source_fingerprint": "579f41b98d0458a877bc6db3608d7e6292c3aef7b1a0ac8cbf1c97d41b8d95bd",
+    "context_fingerprint": "4e8d1d384fa401a2f625f0b64f8d4e1356c732e033e3f63839d003839b0f1161"
+  }
 }

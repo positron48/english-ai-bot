@@ -19,19 +19,37 @@
       "id": "q2",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки уточняют роль, количество/время или перевод проверяемого высказывания; ключевая испанская форма не названа."
+      }
     },
     {
       "id": "q4",
       "decision": "fixed",
       "note": "Уточнены текущее время и часть суток; исключены регионально допустимые предлоги из неверных вариантов.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки уточняют роль, количество/время или перевод проверяемого высказывания; ключевая испанская форма не названа."
+      }
     },
     {
       "id": "q5",
       "decision": "fixed",
       "note": "Уточнены текущее время и часть суток; исключены регионально допустимые предлоги из неверных вариантов.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки уточняют роль, количество/время или перевод проверяемого высказывания; ключевая испанская форма не названа."
+      }
     },
     {
       "id": "q6",
@@ -79,19 +97,37 @@
       "id": "q13",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Скобки уточняют роль, количество/время или перевод проверяемого высказывания; ключевая испанская форма не названа."
+      }
     },
     {
       "id": "q15",
       "decision": "fixed",
       "note": "Уточнены текущее время и часть суток; исключены регионально допустимые предлоги из неверных вариантов.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Исходный глагол, значение предлога и календарный контекст не раскрывают целевое испанское слово/форму; набор альтернатив не выделяет ключ."
+      }
     },
     {
       "id": "q16",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Исходный глагол, значение предлога и календарный контекст не раскрывают целевое испанское слово/форму; набор альтернатив не выделяет ключ."
+      }
     },
     {
       "id": "q17",
@@ -145,13 +181,25 @@
       "id": "q26",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Исходный глагол, значение предлога и календарный контекст не раскрывают целевое испанское слово/форму; набор альтернатив не выделяет ключ."
+      }
     },
     {
       "id": "q27",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Исходный глагол, значение предлога и календарный контекст не раскрывают целевое испанское слово/форму; набор альтернатив не выделяет ключ."
+      }
     },
     {
       "id": "q28",
@@ -205,13 +253,25 @@
       "id": "q37",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Исходный глагол, значение предлога и календарный контекст не раскрывают целевое испанское слово/форму; набор альтернатив не выделяет ключ."
+      }
     },
     {
       "id": "q38",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Исходный глагол, значение предлога и календарный контекст не раскрывают целевое испанское слово/форму; набор альтернатив не выделяет ключ."
+      }
     },
     {
       "id": "q39",
@@ -265,7 +325,13 @@
       "id": "q48",
       "decision": "fixed",
       "note": "Уточнены настоящее время и безличные формы, сняты альтернативные погодные конструкции среди дистракторов.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Исходный глагол, значение предлога и календарный контекст не раскрывают целевое испанское слово/форму; набор альтернатив не выделяет ключ."
+      }
     },
     {
       "id": "q49",
@@ -325,13 +391,25 @@
       "id": "q59",
       "decision": "fixed",
       "note": "Уточнены настоящее время и безличные формы, сняты альтернативные погодные конструкции среди дистракторов.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Исходный глагол, значение предлога и календарный контекст не раскрывают целевое испанское слово/форму; набор альтернатив не выделяет ключ."
+      }
     },
     {
       "id": "q60",
       "decision": "fixed",
       "note": "Уточнены настоящее время и безличные формы, сняты альтернативные погодные конструкции среди дистракторов.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_2",
+        "decision": "ok",
+        "note": "Исходный глагол, значение предлога и календарный контекст не раскрывают целевое испанское слово/форму; набор альтернатив не выделяет ключ."
+      }
     },
     {
       "id": "q61",
@@ -410,6 +488,11 @@
       "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
       "result": "pass",
       "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    },
+    {
+      "command": "python3 logs/complaints/parenthetical-audit-20261104/worker-2-validate.py",
+      "result": "pass",
+      "evidence": "Parentheses audit 2026-11-04, worker-2: exact identity/order/type/difficulty/theory bindings, unmodified objects and prior report decisions preserved against assigned baseline; logs/complaints/parenthetical-audit-20261104/worker-2-evidence/preservation-and-validators.json. Narrow audit only, not renewed whole-file editorial verification."
     }
   ],
   "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."

@@ -19,7 +19,13 @@
       "id": "q2",
       "decision": "fixed",
       "note": "Задано настоящее время, исключено Were.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "be — лемма; Are определяется you и вопросом."
+      }
     },
     {
       "id": "q3",
@@ -49,7 +55,13 @@
       "id": "q7",
       "decision": "fixed",
       "note": "Задано настоящее время, исключено Was.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "be — лемма; Is определяется he."
+      }
     },
     {
       "id": "q8",
@@ -79,7 +91,13 @@
       "id": "q12",
       "decision": "fixed",
       "note": "Задано настоящее время, исключено Was.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "be — лемма; Am определяется I."
+      }
     },
     {
       "id": "q13",
@@ -91,7 +109,13 @@
       "id": "q14",
       "decision": "fixed",
       "note": "Задан смысл вопроса об имени, исключены другие возможные значения Wh-пропуска.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Категория вопросительного слова не раскрывает What; смысл дан по-русски."
+      }
     },
     {
       "id": "q15",
@@ -115,7 +139,13 @@
       "id": "q19",
       "decision": "fixed",
       "note": "Задан русский смысл вопроса о происхождении.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Категория вопросительного слова не раскрывает Where; смысл дан по-русски."
+      }
     },
     {
       "id": "q20",
@@ -145,7 +175,13 @@
       "id": "q26",
       "decision": "fixed",
       "note": "Объяснено согласование с I вместо копирования are.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "be нужно согласовать с I, а не копировать Are из вопроса."
+      }
     },
     {
       "id": "q27",
@@ -193,7 +229,13 @@
       "id": "q36",
       "decision": "fixed",
       "note": "Объяснение опирается на we, не на всеобщее копирование формы.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "be задаёт глагол для краткого ответа; are нужно согласовать с we."
+      }
     },
     {
       "id": "q37",
@@ -205,7 +247,13 @@
       "id": "q38",
       "decision": "fixed",
       "note": "Задано настоящее время, исключено Were.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "be требует Are по подлежащему you."
+      }
     },
     {
       "id": "q39",
@@ -235,7 +283,13 @@
       "id": "q43",
       "decision": "fixed",
       "note": "Задан смысл вопроса об имени для единственного Wh-ответа.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Категория слова не раскрывает What; дан коммуникативный смысл."
+      }
     },
     {
       "id": "q44",
@@ -271,7 +325,13 @@
       "id": "q50",
       "decision": "fixed",
       "note": "Добавлен смысл «откуда», вместо неопределённого типичного вопроса.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Категория слова не раскрывает Where; нужно оформить вопрос об источнике."
+      }
     },
     {
       "id": "q51",
@@ -301,7 +361,13 @@
       "id": "q55",
       "decision": "ok",
       "note": "Подсказка «кто это» однозначно требует Who.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Русское «кто это» задаёт смысл, Who надо подобрать самостоятельно."
+      }
     },
     {
       "id": "q56",
@@ -325,7 +391,13 @@
       "id": "q60",
       "decision": "fixed",
       "note": "Задан смысл местоположения; без контекста возможны другие Wh-слова.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Категория слова не раскрывает Where."
+      }
     }
   ],
   "checks": [

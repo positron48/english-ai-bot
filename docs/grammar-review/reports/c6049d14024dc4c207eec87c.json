@@ -37,7 +37,13 @@
       "id": "q5",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Самка задаёт пол животного, gata нужно выбрать."
+      }
     },
     {
       "id": "q6",
@@ -61,7 +67,13 @@
       "id": "q9",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "profesor требует женской формы profesora."
+      }
     },
     {
       "id": "q10",
@@ -115,13 +127,25 @@
       "id": "q18",
       "decision": "fixed",
       "note": "Указан определённый артикль: una тоже грамматически допустимо.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Определённость задаёт класс артикля, la определяется родом canción."
+      }
     },
     {
       "id": "q19",
       "decision": "fixed",
       "note": "Указан определённый артикль: un тоже грамматически допустимо.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Определённость задаёт класс, el надо выбрать по роду mapa."
+      }
     },
     {
       "id": "q20",
@@ -181,7 +205,13 @@
       "id": "q29",
       "decision": "fixed",
       "note": "Указан определённый артикль для исключения un/mi/este.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Определённый артикль — категория, el определяется coche."
+      }
     },
     {
       "id": "q30",
@@ -235,13 +265,25 @@
       "id": "q38",
       "decision": "fixed",
       "note": "Указан определённый артикль: una тоже допустимо без ограничения.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Определённость задаёт категорию; la определяется nueva."
+      }
     },
     {
       "id": "q39",
       "decision": "fixed",
       "note": "Объяснение согласования переведено целиком на русский.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "nueva требует согласования nuevo с el estudiante."
+      }
     },
     {
       "id": "q40",
@@ -295,13 +337,25 @@
       "id": "q48",
       "decision": "fixed",
       "note": "Указан определённый артикль для единственного открытого ответа.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Определённость задаёт класс артикля, el определяется родом mapa."
+      }
     },
     {
       "id": "q49",
       "decision": "fixed",
       "note": "Часть тела допускала pierna/oreja и другие слова; задан точный перевод кисть руки.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Русское «кисть руки» задаёт значение mano, испанский ключ не написан."
+      }
     },
     {
       "id": "q50",
@@ -355,13 +409,25 @@
       "id": "q58",
       "decision": "ok",
       "note": "",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "derecho требует согласования derecha с mano."
+      }
     },
     {
       "id": "q59",
       "decision": "fixed",
       "note": "Указан определённый артикль для исключения других определителей.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Определённость задаёт категорию; род problema требует el."
+      }
     },
     {
       "id": "q60",

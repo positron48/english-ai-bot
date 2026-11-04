@@ -1,11 +1,11 @@
 {
   "version": 1,
   "source": "courses/spanish-grammar/chapters/003.es.grammar.orientation_alphabet_sounds.stress_rules_written_accents/03-questions.json",
-  "source_sha256": "f9a059a311cbdbcc74e0a9339181ff16a1b034e7685fa7e1290acc8f5f906bbb",
+  "source_sha256": "2f79773776035fefe9ac8eb48488ffc78316d28fe13f1756c83c679933067f8b",
   "context_sha256": "06d4da3e6c93ae9785d44718bb37204095574d2fe83cbe09ce8d9156ceacceb1",
   "editor": "Codex editor 2026-09-04",
   "verifier": "Anton Filatov (user)",
-  "phase": "done",
+  "phase": "awaiting_verification",
   "reviewed_at": "2026-09-04T09:38:41.687518+00:00",
   "verified_at": "2026-09-06T17:58:18.569986Z",
   "questions": [
@@ -55,13 +55,25 @@
       "id": "q8",
       "decision": "fixed",
       "note": "Убрано неверное «esdrújula-подобный»; корректное написание термина без забегания в правило.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Русский термин задаёт смысл, tónica нужно выбрать с правильной тильдой."
+      }
     },
     {
       "id": "q9",
       "decision": "ok",
       "note": "Формат ответа me/sa ограничен; ударение ME-sa верно.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "me/sa — два варианта, ударный слог надо определить."
+      }
     },
     {
       "id": "q10",
@@ -115,7 +127,13 @@
       "id": "q18",
       "decision": "ok",
       "note": "Однозначный ввод ca; CA-sas верно.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "ca/sas — два варианта, ударение надо определить."
+      }
     },
     {
       "id": "q19",
@@ -157,7 +175,13 @@
       "id": "q25",
       "decision": "fixed",
       "note": "Термин aguda раскрыт в условии; только hotel имеет конечное ударение.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "aguda расшифровывает класс по ударению; слово hotel не дано."
+      }
     },
     {
       "id": "q26",
@@ -175,7 +199,13 @@
       "id": "q28",
       "decision": "fixed",
       "note": "Формат ввода ограничен aguda/llana; варианты в конечных скобках по контракту валидатора.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "aguda/llana — альтернативы; ударение hotel нужно знать."
+      }
     },
     {
       "id": "q29",
@@ -199,13 +229,25 @@
       "id": "q32",
       "decision": "fixed",
       "note": "Объяснение сужено до конкретных окончаний вариантов без обобщения на стечения согласных.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Отсутствие тильд — условие орфографической задачи, правильное слово не указано."
+      }
     },
     {
       "id": "q33",
       "decision": "fixed",
       "note": "Объяснены конкретные окончания, сохранён único ключ fácil.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Отсутствие тильд — условие задачи, слово fácil нужно определить по правилу."
+      }
     },
     {
       "id": "q34",
@@ -227,21 +269,42 @@
     },
     {
       "id": "q37",
-      "decision": "ok",
-      "note": "Llana на l требует tilde; пример fácil корректен.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "2026-11-04: пример fácil в скобках уже демонстрировал тильду и подсказывал true для проверяемого правила. Пример убран; требуется оценить правило ударения по категории и окончанию.",
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "fixed",
+        "note": "Пример fácil с уже готовой тильдой убран из утверждения о необходимости тильды.",
+        "verifier": "parentheses_3",
+        "verified_at": "2026-11-04T09:44:02.337656+00:00",
+        "verification": "ok"
+      }
     },
     {
       "id": "q38",
       "decision": "ok",
       "note": "Однозначный ввод aguda, ударение menú задано.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "aguda/llana — альтернативы для классификации заданного ударения, ключ не назван."
+      }
     },
     {
       "id": "q39",
       "decision": "ok",
       "note": "Однозначный ввод llana для FÁ-cil.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "FÁ-cil показывает произношение, а термин llana нужно выбрать по классу ударения."
+      }
     },
     {
       "id": "q40",
@@ -265,7 +328,13 @@
       "id": "q43",
       "decision": "ok",
       "note": "Пропуск tilde явно указан; teléfono есть в теории, ключ верен.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Общее снятие тильд задаёт упражнение, teléfono нужно определить самостоятельно."
+      }
     },
     {
       "id": "q44",
@@ -355,7 +424,13 @@
       "id": "q58",
       "decision": "fixed",
       "note": "Повтор определения tilde заменён применением к médico.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Слоговое деление médico задаёт объект распознавания письменного ударения; нужно интерпретировать тильду."
+      }
     },
     {
       "id": "q59",
@@ -395,7 +470,25 @@
       "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
       "result": "pass",
       "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+    },
+    {
+      "command": "python3 logs/complaints/parenthetical-audit-20261104/worker-1-validate.py",
+      "result": "pass",
+      "evidence": "2026-11-04 narrow parentheses audit: identity/order/bindings and untouched questions preserved; source/final/embedded exact; official isolated chapter assembly/validation or training validate_question and signature checks passed. See worker-1-evidence/validation.json."
     }
   ],
-  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+  "verification_note": "2026-11-04 parenthetical-hints audit: changed questions awaiting independent verification. Historical verification applies only to unchanged questions.",
+  "parentheses_audit_verification": {
+    "verifier": "parentheses_3",
+    "verified_at": "2026-11-04T09:44:02.337656+00:00",
+    "verification": "ok",
+    "scope": "narrow_parentheses_audit_changed_questions",
+    "question_ids": [
+      "q37"
+    ],
+    "evidence": [
+      "docs/grammar-review/batches/2026-11-04-parenthetical-hints/independent-worker-1.json"
+    ],
+    "note": "Независимо прочитаны все вопросы изменённого источника; подтверждены изменённые вопросы узкого аудита. Advisory вне selected не сертифицированы. Фазы общего обзора и source/context hashes не изменялись."
+  }
 }

@@ -55,13 +55,25 @@
       "id": "q8",
       "decision": "fixed",
       "note": "Для fuertes также допустимо abiertas; открытый ответ заменён однозначной недостающей буквой.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Одна буква — формат ответа, e нужно знать из класса гласных."
+      }
     },
     {
       "id": "q9",
       "decision": "fixed",
       "note": "Уточнена форма испанского термина, убран метатекст о назначении классификации.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Испанский термин/число ограничивают формат, diptongo не дан."
+      }
     },
     {
       "id": "q10",
@@ -115,13 +127,25 @@
       "id": "q18",
       "decision": "fixed",
       "note": "Для ответа не требуется неизученное числительное dos: указана цифра, объяснение без метатекста.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Цифра — формат ответа, ядра в mesa надо посчитать."
+      }
     },
     {
       "id": "q19",
       "decision": "ok",
       "note": "В sol ядро o, однозначная буква.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Одна буква — формат; требуется найти гласную в sol."
+      }
     },
     {
       "id": "q20",
@@ -175,13 +199,25 @@
       "id": "q28",
       "decision": "ok",
       "note": "me — однозначный первый слог.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Первый слог — позиция ответа; mesa нужно разделить на слоги."
+      }
     },
     {
       "id": "q29",
       "decision": "ok",
       "note": "te — однозначный последний слог.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Последний слог — позиция ответа; tomate нужно разделить."
+      }
     },
     {
       "id": "q30",
@@ -235,13 +271,25 @@
       "id": "q38",
       "decision": "fixed",
       "note": "Для открытого ответа задан испанский язык и единственное число.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Испанский термин/число задают формат; diptongo нужно определить по au."
+      }
     },
     {
       "id": "q39",
       "decision": "fixed",
       "note": "Для открытого ответа заданы язык, число и орфографический контекст ui.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Термин/число задают формат; тип ui нужно определить."
+      }
     },
     {
       "id": "q40",
@@ -295,13 +343,25 @@
       "id": "q48",
       "decision": "fixed",
       "note": "Задан цифровой ответ без проверки неизученных испанских числительных.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Цифра — формат, слоги país нужно посчитать."
+      }
     },
     {
       "id": "q49",
       "decision": "fixed",
       "note": "Указаны испанский язык и единственное число открытого ответа.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Термин/число — формат; hiato определяется сочетанием í+o."
+      }
     },
     {
       "id": "q50",
@@ -313,7 +373,13 @@
       "id": "q51",
       "decision": "ok",
       "note": "bonito 3; grande/limpio/fuerte 2 в обычном делении.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Три слога расшифровывает термин трёхсложное, не указывает bonito."
+      }
     },
     {
       "id": "q52",
@@ -355,13 +421,25 @@
       "id": "q58",
       "decision": "fixed",
       "note": "acento/tilde — альтернативно верные ответы; заменено однозначным подсчётом слогов hoy.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Цифра — формат; нужно посчитать слоги hoy."
+      }
     },
     {
       "id": "q59",
       "decision": "fixed",
       "note": "Число слогов вводится цифрой, без неизученного tres.",
-      "verification": "ok"
+      "verification": "ok",
+      "parentheses_audit": {
+        "date": "2026-11-04",
+        "reviewer": "parentheses_1",
+        "decision": "ok",
+        "note": "Цифра — формат; нужно посчитать слоги María."
+      }
     },
     {
       "id": "q60",
