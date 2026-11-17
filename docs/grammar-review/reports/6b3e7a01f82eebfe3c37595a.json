@@ -1,81 +1,81 @@
 {
   "version": 1,
   "source": "courses/spanish-grammar/training_pack/chapters/060/es.05.b5_theory_linking_sentences.questions.json",
-  "source_sha256": "f245e444b97fa8d7f698cd37e5c37cd78084e6a0770d6466dc90c224efdc8075",
+  "source_sha256": "6d9b6678cde19193fbf42a5f50add5f016e278924e009ab2f63b32352b045fe2",
   "context_sha256": "8fae8efd970a475de321a1f56f43ebef9da9abd39565395c3f5d5421b8e7edc6",
-  "editor": "Codex editor 2026-09-04",
-  "verifier": "Anton Filatov (user)",
-  "phase": "done",
-  "reviewed_at": "2026-09-04T20:44:25.049023+00:00",
-  "verified_at": "2026-09-06T17:58:18.569986Z",
+  "editor": "Codex 2026-11-17",
+  "verifier": "",
+  "phase": "awaiting_verification",
+  "reviewed_at": "2026-11-17T14:36:03.217694+00:00",
+  "verified_at": "",
   "questions": [
     {
       "id": "q1",
       "decision": "fixed",
-      "note": "Устранены несколько правильных связок: вопрос теперь явно спрашивает вариант с luego.",
-      "verification": "ok"
+      "note": "Primero comimos называет первое действие. Luego fuimos al parque показывает, что прогулка началась после еды.",
+      "verification": "pending"
     },
     {
       "id": "q2",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Entonces связывает решение вернуться домой с тем, что было уже поздно.",
+      "verification": "pending"
     },
     {
       "id": "q3",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Llovía описывает погоду в тот момент, а salieron называет событие на этом фоне.",
+      "verification": "pending"
     },
     {
       "id": "q4",
       "decision": "fixed",
-      "note": "Исправлено ложное утверждение, что pero не служит связности; названа реальная синтаксическая ошибка.",
-      "verification": "ok"
+      "note": "В отдельной фразе Cuando salimos al patio («Когда мы вышли во двор…») есть только указание на время. Для законченного рассказа нужна главная часть.",
+      "verification": "pending"
     },
     {
       "id": "q5",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Luego ставит следующее действие, pusimos la mesa, после первого, guardamos los juguetes.",
+      "verification": "pending"
     },
     {
       "id": "q6",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Hacía sol описывает погоду. Cuando salimos de casa указывает момент, в который она была такой.",
+      "verification": "pending"
     },
     {
       "id": "q7",
       "decision": "fixed",
-      "note": "Исправлена нелогичная причинная связь «было темно — выключили свет».",
-      "verification": "ok"
+      "note": "Hacía frío объясняет, почему мы закрыли окно. Entonces связывает поступок с его причиной.",
+      "verification": "pending"
     },
     {
       "id": "q8",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Empezó называет момент начала дождя. Todavía jugábamos означает, что в этот момент игра ещё продолжалась.",
+      "verification": "pending"
     },
     {
       "id": "q9",
-      "decision": "ok",
-      "note": "Грамматика, ключ, варианты и объяснение корректны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Мы увидели свой автобус, и это заставило нас побежать. Entonces связывает два события, а echamos a correr означает «мы побежали».",
+      "verification": "pending"
     },
     {
       "id": "q10",
       "decision": "fixed",
-      "note": "Исправлен перевод después de comer: это «после еды», не обязательно после ужина.",
-      "verification": "ok"
+      "note": "Сначала названо cerró el libro. Luego указывает, что свет дедушка выключил после этого.",
+      "verification": "pending"
     }
   ],
   "checks": [
     {
-      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
+      "command": "validate_question, question_signature, source/embedded comparison, ES import dry-run",
       "result": "pass",
-      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+      "evidence": "Проверены все 10 вопросов блока, ключи и сохранение ID. Подробности в журнале жалоб от 2026-11-17."
     }
   ],
-  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+  "verification_note": "Блок перечитан с текущей теорией. Независимая проверка новой редакции ожидается."
 }

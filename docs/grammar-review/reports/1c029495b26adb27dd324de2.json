@@ -1,96 +1,81 @@
 {
   "version": 1,
   "source": "courses/spanish-grammar/training_pack/chapters/032/es.04.b4_theory_frequency_nunca.questions.json",
-  "source_sha256": "8a26ecf17540cbf581c75b9b9af9786ebfc0b3a95098329980a908766947ec1d",
-  "context_sha256": "e024bc7b7ae6c62b9bca18667232426838878293dba6913855f40f090586e97a",
-  "editor": "Codex editor 2026-09-04",
-  "verifier": "Anton Filatov (user)",
-  "phase": "done",
-  "reviewed_at": "2026-09-04T16:15:09.696517+00:00",
-  "verified_at": "2026-09-06T17:58:18.569986Z",
+  "source_sha256": "9e20d21d2ad050cf26f5a6fcc56517162bdae62b342be12af8370f155d74d53d",
+  "context_sha256": "78d5fb323295cf9289cb0eb6d97208b262947e06e28ffe503d773718509a8b9a",
+  "editor": "Codex 2026-11-17",
+  "verifier": "",
+  "phase": "awaiting_verification",
+  "reviewed_at": "2026-11-17T14:36:03.216582+00:00",
+  "verified_at": "",
   "questions": [
     {
       "id": "q1",
       "decision": "fixed",
-      "note": "Правило ограничено nunca перед глаголом; исправлены фактическая позиция no и русский вопрос.",
-      "verification": "ok"
+      "note": "Анна говорит о себе, поэтому нужна форма desayuno. Перед глаголом nunca уже выражает отрицание.",
+      "verification": "pending"
     },
     {
       "id": "q2",
       "decision": "fixed",
       "note": "Правило ограничено nunca перед глаголом; исправлены фактическая позиция no и русский вопрос.",
-      "verification": "ok"
+      "verification": "pending"
     },
     {
       "id": "q3",
       "decision": "fixed",
       "note": "Правило ограничено nunca перед глаголом; исправлены фактическая позиция no и русский вопрос.",
-      "verification": "ok"
+      "verification": "pending"
     },
     {
       "id": "q4",
       "decision": "ok",
       "note": "Значение и выбор отрицательной модели однозначны.",
-      "verification": "ok"
+      "verification": "pending"
     },
     {
       "id": "q5",
-      "decision": "ok",
-      "note": "Значение и выбор отрицательной модели однозначны.",
-      "verification": "ok"
+      "decision": "fixed",
+      "note": "Como — форма первого лица. В начале предложения nunca уже означает «никогда», поэтому перед como не нужно добавлять no.",
+      "verification": "pending"
     },
     {
       "id": "q6",
       "decision": "fixed",
-      "note": "Правило ограничено nunca перед глаголом; исправлены фактическая позиция no и русский вопрос.",
-      "verification": "ok"
+      "note": "С ella нужна форма llega. Перед llega достаточно одного отрицательного слова nunca.",
+      "verification": "pending"
     },
     {
       "id": "q7",
       "decision": "fixed",
-      "note": "Правило ограничено nunca перед глаголом; исправлены фактическая позиция no и русский вопрос.",
-      "verification": "ok"
+      "note": "В сочетании nunca no cocina перед глаголом стоят и nunca, и no. В обычном сообщении о привычке достаточно Mi hermano nunca cocina.",
+      "verification": "pending"
     },
     {
       "id": "q8",
       "decision": "fixed",
       "note": "Правило ограничено nunca перед глаголом; исправлены фактическая позиция no и русский вопрос.",
-      "verification": "ok"
+      "verification": "pending"
     },
     {
       "id": "q9",
       "decision": "fixed",
       "note": "Правило ограничено nunca перед глаголом; исправлены фактическая позиция no и русский вопрос.",
-      "verification": "ok"
+      "verification": "pending"
     },
     {
       "id": "q10",
       "decision": "fixed",
-      "note": "Правило ограничено nunca перед глаголом; исправлены фактическая позиция no и русский вопрос.",
-      "verification": "ok"
+      "note": "«Мы учимся» — estudiamos. Слово nunca перед этой формой уже выражает отрицание.",
+      "verification": "pending"
     }
   ],
   "checks": [
     {
-      "command": "python3 docs/grammar-review/batches/2026-09-04-es029-032/check.py",
+      "command": "validate_question, question_signature, source/embedded comparison, ES import dry-run",
       "result": "pass",
-      "evidence": "All 488 IDs/contracts, decisions versus baseline, fingerprints, native training validation, signatures and source-final-embedded equality; validation.log. ES 029 main baseline is the saved pre-batch source."
-    },
-    {
-      "command": "go test ./internal/grammarbundle ./internal/repository -run 'TestValidateEmbeddedBundleID|TestGrammar.*Bundle|TestGrammar.*Reorder' -count=1",
-      "result": "pass",
-      "evidence": "Both packages passed on final integrated data; go-tests.log."
-    },
-    {
-      "command": "git diff --check; git -C courses/spanish-grammar diff --check; git -C courses/english-grammar diff --check",
-      "result": "pass",
-      "evidence": "Three separately executed commands exit 0; diff-check.log. All 818 earlier dirty files outside review docs and authorized in-scope sources preserved; preservation.log."
-    },
-    {
-      "command": "python3 scripts/grammar-review.py status; full chapter and verb artifact validators; focused Go bundle/sync tests",
-      "result": "pass",
-      "evidence": "Current source/context fingerprints and all 63,943 IDs matched; all 282 chapters and 363 verb artifacts validated; review, grammar bundle, repository, verb training and sync tests passed."
+      "evidence": "Проверены все 10 вопросов блока, ключи и сохранение ID. Подробности в журнале жалоб от 2026-11-17."
     }
   ],
-  "verification_note": "Пользователь независимо проверил весь оставшийся материал и явно подтвердил результат 2026-09-06; незакрытых замечаний не осталось."
+  "verification_note": "Блок перечитан с текущей теорией. Независимая проверка новой редакции ожидается."
 }
