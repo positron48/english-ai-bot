@@ -42,6 +42,7 @@ RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o fix_misassigned_words 
 
 # Final stage
 FROM alpine:3.24
+RUN apk upgrade --no-cache
 
 # Install ca-certificates for HTTPS; ffmpeg for OpenRouter TTS (PCM→MP3)
 RUN apk --no-cache add ca-certificates tzdata ffmpeg
