@@ -1,5 +1,5 @@
 # Build stage
-FROM golang:1.24-alpine AS builder
+FROM golang:1.26.11-alpine AS builder
 
 # Install build dependencies
 RUN apk add --no-cache git ca-certificates tzdata nodejs npm
@@ -41,7 +41,7 @@ RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o split_shared_words ./c
 RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-s -w" -o fix_misassigned_words ./cmd/fix_misassigned_words
 
 # Final stage
-FROM alpine:latest
+FROM alpine:3.24
 
 # Install ca-certificates for HTTPS; ffmpeg for OpenRouter TTS (PCM→MP3)
 RUN apk --no-cache add ca-certificates tzdata ffmpeg

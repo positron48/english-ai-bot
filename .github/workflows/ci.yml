@@ -8,7 +8,7 @@ on:
     branches: [ master ]
 
 env:
-  GO_VERSION: '1.24'
+  GO_VERSION: '1.26.11'
   APP_NAME: 'universal-ai-bot'
   IMAGE_NAME: ghcr.io/${{ github.repository_owner }}/linglow
 
@@ -23,7 +23,7 @@ jobs:
     - name: Set up Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: '20'
+        node-version: '24'
         cache: 'npm'
         cache-dependency-path: webapp/package-lock.json
 
@@ -65,7 +65,7 @@ jobs:
     - name: Run golangci-lint
       uses: golangci/golangci-lint-action@v9
       with:
-        version: v2.10.1
+        version: v2.15.0
         # Schema verification fetches golangci-lint.run and can fail before linting.
         # The lint run still parses the config and reports code/config errors.
         verify: false
@@ -109,7 +109,7 @@ jobs:
     - name: Set up Node.js
       uses: actions/setup-node@v4
       with:
-        node-version: '20'
+        node-version: '24'
         cache: 'npm'
         cache-dependency-path: webapp/package-lock.json
 
@@ -243,7 +243,7 @@ jobs:
     - name: Set up Node.js
       uses: actions/setup-node@v7
       with:
-        node-version: '20'
+        node-version: '24'
 
     - name: Set up Java
       uses: actions/setup-java@v5
